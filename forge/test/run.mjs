@@ -27,6 +27,8 @@ assert.equal(finishes[0].ok, false, "first (premature) finish must be rejected")
 assert.equal(finishes[1].ok, true);
 const verifies = events.filter((e) => e.type === "verify");
 assert.deepEqual(verifies.map((v) => v.passed), [false, true]);
+assert.ok(!fs.existsSync(path.join(GAMES_DIR, "mock-game")), "builder must write to the target slug, not a default");
+assert.ok(events.find((e) => e.type === "tool" && e.name === "verify_game" && !e.ok === false && e.result.includes("data-game-root")), "first verify fails on contract, not on a missing file");
 assert.ok(fs.existsSync(path.join(AGENTS_DIR, "level-designer.json")), "spawned agent persisted");
 assert.ok(fs.readdirSync(LESSONS_DIR).some((f) => f.includes("data-game-root")), "lesson persisted");
 assert.ok(events.some((e) => e.type === "delegate_end" && e.agent === "builder"), "builder sub-agent ran");

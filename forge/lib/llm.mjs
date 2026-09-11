@@ -70,7 +70,7 @@ function mockProvider() {
       const n = (steps.get(loopId) || 0) + 1;
       steps.set(loopId, n);
       const first = typeof messages[0].content === "string" ? messages[0].content : "";
-      const slug = first.match(/Target slug:\s*([a-z0-9-]+)/)?.[1] || "mock-game";
+      const slug = first.match(/Target slug:\s*([a-z0-9-]+)/)?.[1] || first.match(/games\/([a-z0-9-]+)\//)?.[1] || "mock-game";
       const last = messages[messages.length - 1];
       const lastResult = Array.isArray(last.content) && last.content[0]?.type === "tool_result" ? String(last.content[0].content) : "";
 
