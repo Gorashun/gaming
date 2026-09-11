@@ -1,0 +1,5 @@
+node_modules/
+forge/runs/*/
+!forge/runs/.gitkeep
+.env
+forge/LAST_RUN.md

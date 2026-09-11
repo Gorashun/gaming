@@ -1,0 +1,19 @@
+{
+  "name": "gaming-forge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Forge: a bounded, auditable self-improving agent system that builds and verifies browser games.",
+  "scripts": {
+    "forge": "node forge/forge.mjs",
+    "test": "node forge/test/run.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.125.0",
+    "playwright": "^1.63.0",
+    "zod": "^3.25.76"
+  }
+}

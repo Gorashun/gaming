@@ -1,0 +1,5 @@
+[
+  { "type": "exists", "selector": "[data-game-root]" },
+  { "type": "state", "path": "over", "equals": false },
+  { "type": "text", "selector": "h1", "includes": "" }
+]

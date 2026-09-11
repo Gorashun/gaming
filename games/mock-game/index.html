@@ -1,0 +1,8 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Mock</title></head>
+<body><div id="app"><h1>Mock game</h1><p id="score">0</p></div>
+<script>
+let state={score:0,over:false,turn:0};
+window.GameAPI={name:"mock",reset(){state={score:0,over:false,turn:0};render();},getState(){return state;},
+actions(){return state.over?[]:["left","right"];},act(a){state.turn++;state.score+= a==="left"?1:2;if(state.turn>=20)state.over=true;render();}};
+function render(){document.getElementById("score").textContent=state.score;}
+</script></body></html>
