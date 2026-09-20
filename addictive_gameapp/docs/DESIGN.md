@@ -107,3 +107,7 @@ Regeln "ingen tidspress i UI:t" omformuleras till: **ingen synlig nedräkning oc
 - Timern startar när objektet blir släppbart (cooldown klar) och nollställs vid varje drop.
 - Konfig i `app/src/data/pacing.ts`: `PACING.mode: 'off' | 'flow'` (default `flow` i testversion 2), `nudgeAtMs`, `autoDropAtMs`, `wobbleDeg`, `wobbleHz`.
 - Mätning i testhook: `autoDrops`, `dropLatencies` (ms från släppbar till drop) för att räkna P50/P90 och andel auto-drop. Mål: <10 % auto-drop hos vuxna, <20 % hos barn.
+
+## 12. Ramp och siktlinje (beslut 2026-09-20)
+- **Ramp**: auto-drop-tiden minskar med antal drops i rundan. `autoDropAtMs` går linjärt från 6000 ms vid drop 0 till 3500 ms vid drop 60, sedan konstant (golv). `nudgeAtMs` är alltid halva auto-drop-tiden. Övriga regler i §11 gäller oförändrat (bara Flöde, efter första egna drop, aldrig fara/slow-mo/special/Lugnt läge). Konfig i `data/pacing.ts`: `rampStartMs`, `rampEndMs`, `rampDrops`.
+- **Siktlinje**: tre lägen i `data/aim.ts`: `always` | `aiming` | `off`. Default `aiming`: linjen visas bara medan fingret är nere och siktar, tonar in på 80 ms och ut på 120 ms. Inställning på startskärmen: en fjärde ikon (siktlinje) med två lägen, på = `aiming`, av = `off`. Av-läge ritas överkryssat i hudDim enligt UI.md. Sparas i `settings.aimLine`. `always` finns bara som konfig för test.
