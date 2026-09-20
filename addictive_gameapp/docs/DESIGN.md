@@ -1,0 +1,96 @@
+# DESIGN.md – KLUNK (sanningskälla för spelet)
+
+Version 1.0 · 2026-09-20 · Ägare: projektledare. Ändringar loggas i STATUS.md.
+
+## 1. Kärnloop
+1. Ett objekt hänger i toppen av burken. Spelaren drar fingret i sidled för att sikta, släpper för att tappa.
+2. Objektet faller med fysik. Två objekt av **samma nivå** som nuddar smälter ihop till **ett objekt av nästa nivå** i kontaktpunktens mittpunkt, med en liten utåtriktad impuls på grannarna.
+3. Nästa objekt kommer från kön (se Regissören). Förhandsvisning av nästa objekt syns hela tiden.
+4. Förlust när något objekt (som inte är det senast tappade) har sitt centrum ovanför **farolinjen** i mer än 1,5 s sammanhängande.
+5. Ett tryck på förlustskärmen startar ny runda på under 0,5 s. Ingen bekräftelse, ingen meny.
+
+## 2. Objektnivåer
+11 nivåer, index 0–10. Tema bestäms av UI-designern (INTE frukter). Data ligger i `app/src/data/levels.ts`.
+
+| Nivå | Radie (px vid burkbredd 360) | Poäng vid skapande | Får ligga i kön |
+|---|---|---|---|
+| 0 | 14 | 1 | ja |
+| 1 | 19 | 3 | ja |
+| 2 | 25 | 6 | ja |
+| 3 | 31 | 10 | ja |
+| 4 | 38 | 15 | ja |
+| 5 | 46 | 21 | nej |
+| 6 | 55 | 28 | nej |
+| 7 | 64 | 36 | nej |
+| 8 | 74 | 45 | nej |
+| 9 | 85 | 55 | nej |
+| 10 | 97 | 66 + bonus 500 | nej |
+
+Två nivå 10 som möts försvinner båda (poäng 1000, stor kick). Poäng är triangulära tal; balansering sker i data, inte i kod.
+
+## 3. Burk och fysik
+- Logisk spelyta 360×640, skalas till skärmen (Phaser Scale.FIT, porträtt). Burken är 320 bred, väggar 20 px, botten vid y=600, farolinjen vid y=110.
+- Matter.js. Restitution 0,1, friktion 0,3, densitet proportionell mot radie². Gravitation 1,0 (Phaser-standard) justerbar i data.
+- Dropp-cooldown: nästa objekt får släppas när det förra har nuddat något ELLER efter 600 ms, vad som kommer först.
+- Merge-regel: kollisionsevent mellan två bodies med samma nivå och som inte redan är markerade för merge denna frame. Aldrig merga fler än ett par per body per frame.
+
+## 4. Regissören (`app/src/systems/director.ts`)
+Styr endast **vilken nivå nästa köobjekt får**. Rör aldrig fysiken. Seedbar (mulberry32) och testbar utan rendering. All balansering i `app/src/data/director.ts`.
+
+| Läge | Varaktighet (drops) | Val av nivå |
+|---|---|---|
+| **Torka** | 15–40 slumpat | Likformigt 0–4, men **undviker** nivåer som just nu kan mergea direkt (finns fritt liggande objekt av den nivån nära toppen) med sannolikhet 0,7 |
+| **Flöde** | 8–20 slumpat | Väljer med sannolikhet 0,6 en nivå som **kan** mergea direkt, annars likformigt 0–4 |
+| **Kick** | 1 drop | Ett specialobjekt, sedan tillbaka till Torka |
+
+- Lägesordning: Torka → Flöde → Torka → Flöde … Kick avfyras när räknaren `dropsSinceKick` passerar ett slumpat mål i intervallet 25–60. Målet dras om efter varje Kick.
+- Första 10 dropsen i en runda är alltid Flöde (onboarding: spelaren ska få en merge inom 10 s).
+- "Kan mergea direkt" = det finns minst ett fritt objekt av samma nivå vars ovansida ligger inom 120 px från farolinjen eller är översta objektet i sin kolumn (uppskattning, justeras).
+
+### Specialobjekt (v1: två stycken)
+- **Bomb** (radie 25): vid första kontakt med något: förstör alla objekt inom radie 110 px, poäng = summan av förstörda nivåers poäng ×2. Juice-intensitet 1,0.
+- **Regnbåge** (radie 25): vid första kontakt med ett vanligt objekt av nivå n: de två blir ett objekt av nivå n+1. Juice-intensitet 0,8.
+- Magnet skjuts till v1.1.
+- Specialobjekt visas i förhandsvisningen med en tydligt annorlunda form och puls så spelaren hinner planera.
+
+## 5. Combo och near-miss
+- **Combo**: merges inom 1,2 s efter föregående merge ökar `combo` med 1. Reset när fönstret går ut. Pitch på merge-ljudet = bas × 2^(combo/12), tak vid combo 12.
+- **Kedjemerge**: en merge som direkt orsakar nästa räknas som kedja; kedjelängd ≥3 ger kamerazoom och "kaskad"-ljud.
+- **Near-miss (äkta)**: två objekt av nivå ≥8 som har mindre än 20 px gap men inte nuddar får en svag synkron puls. Aldrig fejkad. Försvinner när gapet ändras.
+- **Rekordjakt**: när poäng ≥ 90 % av highscore visas highscore-markören som pulserande i HUD. När den passeras: newRecord-kick (intensitet 0,9).
+- **Fara**: när något objekt har centrum inom 40 px under farolinjen: slow-mo till 0,6× tidsfaktor och dov ton. Tillbaka till 1,0× när faran är över. Max 3 slow-mo-triggers per 10 s.
+
+## 6. Juice (`app/src/systems/juice.ts`)
+En ingång: `juice.trigger(event, intensity: 0..1, x?, y?)`. Alla effekter skalas linjärt från intensity. Events: `drop`, `land`, `merge`, `chain`, `special`, `danger`, `loss`, `newRecord`, `record`.
+
+| Effekt | Skalning | Tak |
+|---|---|---|
+| Ljud, pitch-stegring | pitch från combo, volym från intensity | – |
+| Hit-stop | 0–6 frames vid intensity ≥0,3 | 100 ms |
+| Scale-punch på det nya objektet | 1,0 → 1,0+0,35·i → 1,0, Back.easeOut, 220 ms | – |
+| Partiklar | 6 + 24·i stycken, ärver hastighet, färg från objektets tema | 40 |
+| Screen shake | amplitud 0–8 px, dämpas till 0 inom 300 ms | 8 px |
+| Scorepop | siffra flyger från (x,y) till HUD på 500 ms | – |
+| Haptik | 10 ms vid i<0,3, 30 ms vid i<0,7, 60 ms annars | – |
+| Kamerazoom | endast `chain` och `special`, 1,0 → 1,06 → 1,0 på 400 ms | – |
+
+**Lugnt läge** (ikon på startskärmen): alla intensiteter ×0,5, shake och zoom av.
+**Flash-guard**: inget element får växla ljusstyrka mer än 3 gånger per sekund. Vitblixtar max 2 per sekund. Aldrig mättad röd blinkning. Testas i Playwright.
+
+## 7. Skärmar
+1. **Start**: logotyp, stor "spela"-ikon (▶), hylla med bästa objekt + highscore, tre små ikoner: ljud, haptik, lugnt läge. Ingen text utöver logotypen.
+2. **Spel**: burk, nästa-förhandsvisning uppe till höger, poäng uppe till vänster, highscore-markör.
+3. **Förlust**: overlay med poäng, highscore, bästa objekt denna runda. Hela ytan är en knapp: tryck = ny runda.
+Onboarding: en animerad hand visar drag+släpp tills spelaren gjort sin första drop.
+
+## 8. Sparning
+`app/src/systems/save.ts`: `{ highscore, bestLevel, settings: { sound, haptics, calm }, stats: { runs, merges } }`. Capacitor Preferences på mobil, localStorage i webb. Skriv efter varje runda och vid inställningsändring. Aldrig tappa progression: skriv även vid `visibilitychange`.
+
+## 9. Inte i v1
+Konton, nätverk, annonser, köp, push, dagliga belöningar, timers, magnet-objekt, kosmetiska teman (v1.1), ledartavlor.
+
+## 10. Acceptans för "testversion"
+- Körs i webbläsare på mobilviewport 390×844, 60 fps på laptop, ≥50 fps på mellanklass-Android (mäts i fas 4).
+- En 7-åring kan starta, tappa, mergea och starta om utan att läsa.
+- Highscore överlever omstart av appen.
+- APK byggd i GitHub Actions kan installeras på en Android-telefon.
