@@ -22,7 +22,9 @@ import { drawBackground } from '../ui/background';
 import { iconTextureKey } from '../ui/icons';
 import { resolveMerges, type MergeCandidate } from '../systems/merge';
 import { findNearMiss, type NearMissItem } from '../systems/nearmiss';
-import { createDirector, type Director, type DirectorState } from '../systems/director';
+import { createDirector, type Director, type DirectorMode, type DirectorState } from '../systems/director';
+import { PACING, type PacingMode } from '../data/pacing';
+import { createPacer, type Pacer, type PacerInput } from '../systems/pacing';
 import { createComboTracker, type ComboTracker } from '../systems/combo';
 import { createDangerTracker, type DangerTracker } from '../systems/danger';
 import { Juice } from '../systems/juice';
@@ -52,6 +54,8 @@ interface Ball {
 const L = THEME.layout;
 const PREVIEW_R = 24;
 const DEG = Math.PI / 180;
+/** Tak för mätbufferten i testhooken (DESIGN §11). */
+const LATENCY_MAX = 500;
 /** Rotation och skalpuls per specialobjekt (UI.md §4). */
 const SPECIAL_FX = {
   bomb: {
@@ -127,6 +131,31 @@ export class Game extends Phaser.Scene {
   private passedRecord = false;
   private pending: Ball | null = null;
 
+  // ---- pacing (DESIGN §11). Allt återanvänds, update() allokerar inget.
+  /** Kan bytas i testbygget via __game.setPacing(). */
+  private pacingMode: PacingMode = PACING.mode;
+  private pacer: Pacer = createPacer();
+  /** Regissörens läge för objektet som hänger nu, respektive för det i kön. */
+  private currentMode: DirectorMode = 'flow';
+  private nextMode: DirectorMode = 'flow';
+  private pacingIn: PacerInput = {
+    mode: 'off',
+    nowMs: 0,
+    directorMode: 'flow',
+    isSpecial: false,
+    isDanger: false,
+    isTimeStopped: false,
+    calm: false,
+    hasDroppedThisRun: false,
+  };
+  /** Pacing vilar tills spelaren gjort sitt första egna drop i rundan (DESIGN §11). */
+  private manualDropped = false;
+  private autoDrops = 0;
+  private baseAutoDrops = 0;
+  /** Ringbuffert med ms från släppbar till drop (mätning, DESIGN §11). */
+  private dropLatencies: number[] = [];
+  private latencyIndex = 0;
+
   private onHide = (): void => {
     if (document.visibilityState === 'hidden') this.persist();
   };
@@ -146,6 +175,13 @@ export class Game extends Phaser.Scene {
     this.aiming = false;
     this.pending = null;
     this.dropReadyAt = 0;
+    this.pacer.reset();
+    this.manualDropped = false;
+    this.currentMode = 'flow';
+    this.nextMode = 'flow';
+    this.autoDrops = 0;
+    this.dropLatencies.length = 0;
+    this.latencyIndex = 0;
     this.runMerges = 0;
     this.recordPulsing = false;
     this.passedRecord = false;
@@ -163,7 +199,14 @@ export class Game extends Phaser.Scene {
     const data = cached();
     this.highscore = data.highscore;
     this.baseMerges = data.stats.merges;
-    void save({ stats: { runs: data.stats.runs + 1, merges: data.stats.merges } });
+    this.baseAutoDrops = data.stats.autoDrops;
+    void save({
+      stats: {
+        runs: data.stats.runs + 1,
+        merges: data.stats.merges,
+        autoDrops: data.stats.autoDrops,
+      },
+    });
 
     this.director = createDirector(mulberry32(SEED ?? ((Date.now() ^ 0x9e3779b9) >>> 0)));
     this.combo = createComboTracker();
@@ -252,6 +295,20 @@ export class Game extends Phaser.Scene {
       },
       forceLoss(): void {
         self.gameOver();
+      },
+      /** Antal auto-drops i rundan (DESIGN §11). */
+      get autoDrops(): number {
+        return self.autoDrops;
+      },
+      /** ms från släppbar till drop, senaste 500. */
+      get dropLatencies(): number[] {
+        return self.dropLatencies.slice();
+      },
+      get pacingPhase(): string {
+        return self.pacer.result.phase;
+      },
+      setPacing(mode: string): void {
+        self.pacingMode = mode === 'off' ? 'off' : 'flow';
       },
     };
   }
@@ -435,6 +492,7 @@ export class Game extends Phaser.Scene {
   private takeNext(): void {
     this.computeMergeable();
     const pick = this.director.next(this.dirState);
+    this.nextMode = this.director.mode;
     if (pick.kind === 'special') {
       this.nextSpecial = pick.type;
     } else {
@@ -504,6 +562,9 @@ export class Game extends Phaser.Scene {
   private spawnHanging(): void {
     this.currentLevel = this.nextLevel;
     this.currentSpecial = this.nextSpecial;
+    this.currentMode = this.nextMode;
+    // Objektet är släppbart direkt när det hängts upp: pacing-timern startar här (§11).
+    this.pacer.ready(this.time.now);
     this.dropIndex++;
     this.takeNext();
 
@@ -538,9 +599,16 @@ export class Game extends Phaser.Scene {
     this.aimLine.y = CAN.spawnY + r;
   }
 
-  private doDrop(): void {
+  /** Enda vägen ner i burken. `auto` = mjuk auto-drop (§11), annars spelarens eget drop. */
+  private doDrop(auto = false): void {
     if (this.over || !this.hanging) return;
     const x = this.hanging.x;
+    const ready = this.pacer.readySinceMs;
+    if (ready !== null) this.recordLatency(this.time.now - ready);
+    if (auto) this.autoDrops++;
+    else this.manualDropped = true;
+    this.pacer.drop();
+    this.hanging.setRotation(0);
     this.hanging.destroy();
     this.hanging = null;
     this.aimLine.clear();
@@ -555,6 +623,16 @@ export class Game extends Phaser.Scene {
     this.lastDropAt = this.time.now;
     this.juice.trigger('drop', 0.2, x, CAN.spawnY);
     this.hideHand();
+  }
+
+  /** Ringbuffert, max 500 poster. Allokerar bara tills bufferten är full. */
+  private recordLatency(ms: number): void {
+    if (this.dropLatencies.length < LATENCY_MAX) {
+      this.dropLatencies.push(ms);
+      return;
+    }
+    this.dropLatencies[this.latencyIndex] = ms;
+    this.latencyIndex = (this.latencyIndex + 1) % LATENCY_MAX;
   }
 
   // ---------------------------------------------------------------- bodies
@@ -929,6 +1007,8 @@ export class Game extends Phaser.Scene {
       }
     }
 
+    this.updatePacing(now);
+
     let near = false;
     for (let i = 0; i < this.balls.length; i++) {
       const ball = this.balls[i];
@@ -952,6 +1032,27 @@ export class Game extends Phaser.Scene {
     const signal = this.dangerTracker.update(now, near);
     if (signal === 'start') this.juice.trigger('danger', 1);
     else if (signal === 'end') this.juice.endDanger();
+  }
+
+  /**
+   * Mjuk auto-drop (DESIGN §11): vickning på bilden (aldrig på fysikkroppen), och efter
+   * 6 s samma kodväg som ett pointerup. Håller spelaren fingret nere väntar auto-droppet.
+   */
+  private updatePacing(now: number): void {
+    if (!this.hanging) return;
+    const p = this.pacingIn;
+    p.mode = this.pacingMode;
+    p.nowMs = now;
+    p.directorMode = this.currentMode;
+    p.isSpecial = this.currentSpecial !== null;
+    p.isDanger = this.dangerTracker.active;
+    p.isTimeStopped = this.juice.timeAltered;
+    p.calm = cached().settings.calm;
+    p.hasDroppedThisRun = this.manualDropped;
+
+    const out = this.pacer.update(p);
+    this.hanging.setRotation(out.wobbleAngleDeg * DEG);
+    if (out.phase === 'autodrop' && !this.aiming) this.doDrop(true);
   }
 
   /** Flaggar objekten (nivå ≥8) som ligger nära varandra utan att nudda. */
@@ -982,7 +1083,11 @@ export class Game extends Phaser.Scene {
 
   private persist(): void {
     void save({
-      stats: { runs: cached().stats.runs, merges: this.baseMerges + this.runMerges },
+      stats: {
+        runs: cached().stats.runs,
+        merges: this.baseMerges + this.runMerges,
+        autoDrops: this.baseAutoDrops + this.autoDrops,
+      },
     });
     void submitRun(this.score, this.bestLevel);
   }
@@ -996,7 +1101,11 @@ export class Game extends Phaser.Scene {
     const score = this.score;
     const bestLevel = this.bestLevel;
     void save({
-      stats: { runs: cached().stats.runs, merges: this.baseMerges + this.runMerges },
+      stats: {
+        runs: cached().stats.runs,
+        merges: this.baseMerges + this.runMerges,
+        autoDrops: this.baseAutoDrops + this.autoDrops,
+      },
     });
     void submitRun(score, bestLevel).then((record) => {
       this.scene.pause();

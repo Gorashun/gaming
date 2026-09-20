@@ -19,6 +19,14 @@ export interface GameHook {
   forceLoss(): void;
   /** Fast seed + omstart av rundan. */
   seed(n: number): void;
+  /** Antal auto-drops i rundan (DESIGN §11). */
+  readonly autoDrops: number;
+  /** ms från släppbar till drop, senaste 500. */
+  readonly dropLatencies: number[];
+  /** 'idle' | 'nudge' | 'autodrop'. */
+  readonly pacingPhase: string;
+  /** Slår av/på mjuk auto-drop: 'off' | 'flow'. */
+  setPacing(mode: string): void;
 }
 
 declare global {

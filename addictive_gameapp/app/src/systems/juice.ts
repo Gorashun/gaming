@@ -86,6 +86,11 @@ export class Juice {
     this.calm = on;
   }
 
+  /** Hit-stop eller slow-mo pågår just nu (pacing vilar då, DESIGN §11). */
+  get timeAltered(): boolean {
+    return this.stopped || this.dangerActive || this.jackpotSlowmo;
+  }
+
   // ---------------------------------------------------------------- ingång
 
   trigger(event: JuiceEvent, intensity: number, x = 180, y = 320, opts: TriggerOpts = EMPTY): void {
