@@ -23,6 +23,13 @@ export const ICONS = {
   calmOn: (c = '#7CF9FF') =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="22"/><path d="M14 32 q 9 -12 18 0 q 9 12 18 0"/></svg>`,
 
+  // Siktlinje: liten boll överst + streckad lodrät linje. AV = samma form överkryssad i hudDim.
+  aimOn: (c = '#7CF9FF') =>
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="14" r="11" fill="${c}"/><path d="M32 31 V58" stroke-width="7" stroke-dasharray="1 12"/></svg>`,
+
+  aimOff: (c = '#8FA3C8') =>
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="14" r="11" fill="${c}"/><path d="M32 31 V58" stroke-width="7" stroke-dasharray="1 12"/><path d="M14 54 L50 12"/></svg>`,
+
   crown: (c = '#FFD75E') =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><path d="M10 46 L14 18 L26 30 L32 14 L38 30 L50 18 L54 46 Z" fill="${c}" stroke="${c}" stroke-width="6" stroke-linejoin="round"/></svg>`,
 
@@ -49,6 +56,8 @@ export const ICON_KEYS: readonly IconKey[] = [
   'hapticOff',
   'calmOn',
   'calmOff',
+  'aimOn',
+  'aimOff',
   'crown',
   'replay',
   'hand',

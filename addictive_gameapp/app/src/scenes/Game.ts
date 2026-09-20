@@ -24,7 +24,8 @@ import { resolveMerges, type MergeCandidate } from '../systems/merge';
 import { findNearMiss, type NearMissItem } from '../systems/nearmiss';
 import { createDirector, type Director, type DirectorMode, type DirectorState } from '../systems/director';
 import { PACING, type PacingMode } from '../data/pacing';
-import { createPacer, type Pacer, type PacerInput } from '../systems/pacing';
+import { AIM, type AimLineMode } from '../data/aim';
+import { autoDropMsForDrop, createPacer, type Pacer, type PacerInput } from '../systems/pacing';
 import { createComboTracker, type ComboTracker } from '../systems/combo';
 import { createDangerTracker, type DangerTracker } from '../systems/danger';
 import { Juice } from '../systems/juice';
@@ -121,6 +122,12 @@ export class Game extends Phaser.Scene {
   private bestLevel = 0;
   private dropIndex = 0;
   private aiming = false;
+  /** Antal drops i rundan (manuella + auto). Styr auto-drop-rampen (DESIGN §12). */
+  private dropsThisRun = 0;
+  // ---- siktlinje (DESIGN §12). Alpha ändras bara vid tillståndsbyten, aldrig i update().
+  private aimLineMode: AimLineMode = AIM.defaultMode;
+  private aimLineShown = false;
+  private aimTween: Phaser.Tweens.Tween | null = null;
   private over = false;
   private dropReadyAt = 0;
   private lastDropAt = 0;
@@ -141,6 +148,7 @@ export class Game extends Phaser.Scene {
   private pacingIn: PacerInput = {
     mode: 'off',
     nowMs: 0,
+    dropIndex: 0,
     directorMode: 'flow',
     isSpecial: false,
     isDanger: false,
@@ -171,8 +179,11 @@ export class Game extends Phaser.Scene {
     this.score = 0;
     this.bestLevel = 0;
     this.dropIndex = 0;
+    this.dropsThisRun = 0;
     this.over = false;
     this.aiming = false;
+    this.aimLineShown = false;
+    this.aimTween = null;
     this.pending = null;
     this.dropReadyAt = 0;
     this.pacer.reset();
@@ -197,6 +208,7 @@ export class Game extends Phaser.Scene {
     this.mergeable.clear();
 
     const data = cached();
+    this.aimLineMode = data.settings.aimLine ? AIM.defaultMode : 'off';
     this.highscore = data.highscore;
     this.baseMerges = data.stats.merges;
     this.baseAutoDrops = data.stats.autoDrops;
@@ -310,6 +322,22 @@ export class Game extends Phaser.Scene {
       setPacing(mode: string): void {
         self.pacingMode = mode === 'off' ? 'off' : 'flow';
       },
+      /** Auto-drop-tiden för det objekt som hänger nu (rampen, DESIGN §12). */
+      get autoDropAtMs(): number {
+        return autoDropMsForDrop(self.dropsThisRun);
+      },
+      /** 'always' | 'aiming' | 'off'. */
+      get aimLineMode(): string {
+        return self.aimLineMode;
+      },
+      get aimLineVisible(): boolean {
+        return self.aimLine.alpha > 0.05;
+      },
+      setAimLine(mode: string): void {
+        self.aimLineMode =
+          mode === 'off' ? 'off' : mode === 'always' ? 'always' : 'aiming';
+        self.refreshAimLine();
+      },
     };
   }
 
@@ -409,7 +437,7 @@ export class Game extends Phaser.Scene {
       .setDepth(10);
     this.showPreview();
 
-    this.aimLine = this.add.graphics().setDepth(3);
+    this.aimLine = this.add.graphics().setDepth(3).setAlpha(0);
   }
 
   /** Ramen byter färg när ett specialobjekt ligger i kön (UI.md §4). */
@@ -538,6 +566,7 @@ export class Game extends Phaser.Scene {
     if (this.over) return;
     this.aiming = true;
     this.moveHangingTo(p.worldX);
+    this.refreshAimLine();
   }
 
   private onPointerMove(p: Phaser.Input.Pointer): void {
@@ -548,6 +577,7 @@ export class Game extends Phaser.Scene {
   private onPointerUp(): void {
     if (this.over || !this.aiming) return;
     this.aiming = false;
+    this.refreshAimLine();
     this.doDrop();
   }
 
@@ -586,6 +616,7 @@ export class Game extends Phaser.Scene {
     });
     this.drawAimLine(r);
     this.aimLine.x = x;
+    this.refreshAimLine();
   }
 
   /** Streckad siktlinje, ritas om bara när radien ändras (aldrig per frame). */
@@ -599,6 +630,28 @@ export class Game extends Phaser.Scene {
     this.aimLine.y = CAN.spawnY + r;
   }
 
+  /**
+   * Siktlinjens synlighet (DESIGN §12): alltid i 'always', bara medan fingret siktar i
+   * 'aiming', aldrig i 'off'. Anropas vid tillståndsbyten – aldrig per frame.
+   */
+  private refreshAimLine(): void {
+    const show =
+      this.hanging !== null &&
+      (this.aimLineMode === 'always' || (this.aimLineMode === 'aiming' && this.aiming));
+    if (show === this.aimLineShown) return;
+    this.aimLineShown = show;
+    this.aimTween?.remove();
+    this.aimTween = this.tweens.add({
+      targets: this.aimLine,
+      alpha: show ? 1 : 0,
+      duration: show ? AIM.fadeInMs : AIM.fadeOutMs,
+      ease: 'Sine.easeOut',
+      onComplete: () => {
+        this.aimTween = null;
+      },
+    });
+  }
+
   /** Enda vägen ner i burken. `auto` = mjuk auto-drop (§11), annars spelarens eget drop. */
   private doDrop(auto = false): void {
     if (this.over || !this.hanging) return;
@@ -607,11 +660,16 @@ export class Game extends Phaser.Scene {
     if (ready !== null) this.recordLatency(this.time.now - ready);
     if (auto) this.autoDrops++;
     else this.manualDropped = true;
+    this.dropsThisRun++;
     this.pacer.drop();
     this.hanging.setRotation(0);
     this.hanging.destroy();
     this.hanging = null;
+    this.aimTween?.remove();
+    this.aimTween = null;
+    this.aimLineShown = false;
     this.aimLine.clear();
+    this.aimLine.setAlpha(0);
     const ball = this.addBall(x, CAN.spawnY, this.currentLevel, false, this.currentSpecial);
     if (this.currentSpecial) {
       this.juice.trigger('specialDrop', SPECIALS[this.currentSpecial].intensity, x, CAN.spawnY, {
@@ -1043,6 +1101,7 @@ export class Game extends Phaser.Scene {
     const p = this.pacingIn;
     p.mode = this.pacingMode;
     p.nowMs = now;
+    p.dropIndex = this.dropsThisRun;
     p.directorMode = this.currentMode;
     p.isSpecial = this.currentSpecial !== null;
     p.isDanger = this.dangerTracker.active;

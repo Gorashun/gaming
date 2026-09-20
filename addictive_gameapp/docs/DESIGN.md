@@ -105,7 +105,7 @@ Regeln "ingen tidspress i UI:t" omformuleras till: **ingen synlig nedräkning oc
 - Gäller endast i regissörens **Flöde**-läge. Aldrig i Torka, aldrig på specialobjekt, aldrig under fara/slow-mo/hit-stop. Av i Lugnt läge.
 - Efter 3,0 s utan drop börjar det hängande objektet vicka (±4°, 0,8 Hz, ingen ljusstyrkeändring). Efter 6,0 s faller det själv, rakt ner där det hänger.
 - Timern startar när objektet blir släppbart (cooldown klar) och nollställs vid varje drop.
-- Konfig i `app/src/data/pacing.ts`: `PACING.mode: 'off' | 'flow'` (default `flow` i testversion 2), `nudgeAtMs`, `autoDropAtMs`, `wobbleDeg`, `wobbleHz`.
+- Konfig i `app/src/data/pacing.ts`: `PACING.mode: 'off' | 'flow'` (default `flow`), `rampStartMs`, `rampEndMs`, `rampDrops` (se §12), `wobbleDeg`, `wobbleHz`.
 - Mätning i testhook: `autoDrops`, `dropLatencies` (ms från släppbar till drop) för att räkna P50/P90 och andel auto-drop. Mål: <10 % auto-drop hos vuxna, <20 % hos barn.
 
 ## 12. Ramp och siktlinje (beslut 2026-09-20)

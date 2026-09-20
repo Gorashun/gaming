@@ -44,3 +44,7 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 
 ## Fas 6 – iOS
 - [ ] P6.1 `npx cap add ios`, macos-26-workflow, TestFlight. Blockerad av Apple-konto och Mac-frågan.
+
+## v1.1-kandidater (från speltest)
+- [ ] U1 Siktlinje-ikonens på-läge ritas i accent (cyan) medan de tre andra är hud-vita. Harmonisera (ui-designer).
+- [ ] U2 Rampen räknar alla drops i rundan, även i Torka. Utvärdera om bara Flöde-drops ska räknas efter speltest.

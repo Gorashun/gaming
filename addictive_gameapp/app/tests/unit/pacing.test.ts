@@ -1,13 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import { PACING } from '../../src/data/pacing';
-import { createPacer, evaluatePacing, type PacerInput, type PacingInput } from '../../src/systems/pacing';
+import {
+  autoDropMsForDrop,
+  createPacer,
+  evaluatePacing,
+  nudgeMsForDrop,
+  type PacerInput,
+  type PacingInput,
+} from '../../src/systems/pacing';
 import { THEME } from '../../src/data/theme';
+
+/** Tiderna vid rundans första drop (rampens start, DESIGN §12). */
+const AUTO0 = PACING.rampStartMs;
+const NUDGE0 = AUTO0 / 2;
 
 /** Grundfall: allt tillåter pacing. Tiden räknas från t=1000. */
 const base = (over: Partial<PacingInput> = {}): PacingInput => ({
   mode: 'flow',
   nowMs: 1000,
   readySinceMs: 1000,
+  dropIndex: 0,
   directorMode: 'flow',
   isSpecial: false,
   isDanger: false,
@@ -50,12 +62,20 @@ describe('pacing: villkor (DESIGN §11)', () => {
 });
 
 describe('pacing: fasgränser', () => {
-  it('nudge från och med 3000 ms, autodrop från och med 6000 ms', () => {
-    expect(at(PACING.nudgeAtMs - 1).phase).toBe('idle');
-    expect(at(PACING.nudgeAtMs).phase).toBe('nudge');
-    expect(at(PACING.autoDropAtMs - 1).phase).toBe('nudge');
-    expect(at(PACING.autoDropAtMs).phase).toBe('autodrop');
-    expect(at(PACING.autoDropAtMs + 5000).phase).toBe('autodrop');
+  it('nudge från och med 3000 ms, autodrop från och med 6000 ms (drop 0)', () => {
+    expect(at(NUDGE0 - 1).phase).toBe('idle');
+    expect(at(NUDGE0).phase).toBe('nudge');
+    expect(at(AUTO0 - 1).phase).toBe('nudge');
+    expect(at(AUTO0).phase).toBe('autodrop');
+    expect(at(AUTO0 + 5000).phase).toBe('autodrop');
+  });
+
+  it('fasgränserna följer rampen: vid drop 60 faller objektet efter 3500 ms', () => {
+    const late = { dropIndex: 60 };
+    expect(at(1749, late).phase).toBe('idle');
+    expect(at(1750, late).phase).toBe('nudge');
+    expect(at(3499, late).phase).toBe('nudge');
+    expect(at(3500, late).phase).toBe('autodrop');
   });
 
   it('nollställs vid drop: readySinceMs null ⇒ idle och ingen vickning', () => {
@@ -75,9 +95,9 @@ describe('pacing: fasgränser', () => {
 
 describe('pacing: vickningen', () => {
   it('startar på 0 och håller sig inom ±wobbleDeg', () => {
-    expect(at(PACING.nudgeAtMs).wobbleAngleDeg).toBeCloseTo(0, 10);
+    expect(at(NUDGE0).wobbleAngleDeg).toBeCloseTo(0, 10);
     let max = 0;
-    for (let ms = PACING.nudgeAtMs; ms <= PACING.autoDropAtMs; ms += 5) {
+    for (let ms = NUDGE0; ms <= AUTO0; ms += 5) {
       const a = at(ms).wobbleAngleDeg;
       expect(Math.abs(a)).toBeLessThanOrEqual(PACING.wobbleDeg + 1e-9);
       max = Math.max(max, Math.abs(a));
@@ -88,12 +108,12 @@ describe('pacing: vickningen', () => {
   it('svänger med wobbleHz: perioden är 1/0,8 s', () => {
     const periodMs = 1000 / PACING.wobbleHz;
     expect(periodMs).toBe(1250);
-    const t0 = PACING.nudgeAtMs + 137;
+    const t0 = NUDGE0 + 137;
     expect(at(t0 + periodMs).wobbleAngleDeg).toBeCloseTo(at(t0).wobbleAngleDeg, 6);
     // Toppen ligger en kvartsperiod in, nollgenomgång en halv period in.
-    expect(at(PACING.nudgeAtMs + periodMs / 4).wobbleAngleDeg).toBeCloseTo(PACING.wobbleDeg, 6);
-    expect(at(PACING.nudgeAtMs + periodMs / 2).wobbleAngleDeg).toBeCloseTo(0, 6);
-    expect(at(PACING.nudgeAtMs + (periodMs * 3) / 4).wobbleAngleDeg).toBeCloseTo(
+    expect(at(NUDGE0 + periodMs / 4).wobbleAngleDeg).toBeCloseTo(PACING.wobbleDeg, 6);
+    expect(at(NUDGE0 + periodMs / 2).wobbleAngleDeg).toBeCloseTo(0, 6);
+    expect(at(NUDGE0 + (periodMs * 3) / 4).wobbleAngleDeg).toBeCloseTo(
       -PACING.wobbleDeg,
       6,
     );
@@ -114,13 +134,63 @@ describe('pacing: vickningen', () => {
 });
 
 describe('pacing: konfig', () => {
-  it('följer DESIGN §11', () => {
+  it('följer DESIGN §11–§12', () => {
     expect(PACING.mode).toBe('flow');
-    expect(PACING.nudgeAtMs).toBe(3000);
-    expect(PACING.autoDropAtMs).toBe(6000);
+    expect(PACING.rampStartMs).toBe(6000);
+    expect(PACING.rampEndMs).toBe(3500);
+    expect(PACING.rampDrops).toBe(60);
     expect(PACING.wobbleDeg).toBe(4);
     expect(PACING.wobbleHz).toBe(0.8);
-    expect(PACING.nudgeAtMs).toBeLessThan(PACING.autoDropAtMs);
+    expect(PACING.rampEndMs).toBeLessThan(PACING.rampStartMs);
+  });
+});
+
+describe('pacing: rampen (DESIGN §12)', () => {
+  it('interpolerar linjärt och landar på golvet', () => {
+    expect(autoDropMsForDrop(0)).toBe(6000);
+    expect(autoDropMsForDrop(30)).toBe(4750);
+    expect(autoDropMsForDrop(60)).toBe(3500);
+    expect(autoDropMsForDrop(200)).toBe(3500);
+  });
+
+  it('sjunker monotont och klampas nedåt vid negativa index', () => {
+    expect(autoDropMsForDrop(-5)).toBe(6000);
+    let prev = Infinity;
+    for (let i = 0; i <= 60; i++) {
+      const ms = autoDropMsForDrop(i);
+      expect(ms).toBeLessThanOrEqual(prev);
+      expect(ms).toBeGreaterThanOrEqual(PACING.rampEndMs);
+      prev = ms;
+    }
+  });
+
+  it('nudge är alltid halva auto-drop-tiden', () => {
+    for (const i of [0, 1, 30, 60, 200]) {
+      expect(nudgeMsForDrop(i)).toBe(autoDropMsForDrop(i) / 2);
+    }
+    expect(nudgeMsForDrop(0)).toBe(3000);
+    expect(nudgeMsForDrop(60)).toBe(1750);
+  });
+
+  it('pacern använder dropIndex från input', () => {
+    const pacer = createPacer();
+    pacer.ready(0);
+    const c = (nowMs: number, dropIndex: number): PacerInput => ({
+      mode: 'flow',
+      nowMs,
+      dropIndex,
+      directorMode: 'flow',
+      isSpecial: false,
+      isDanger: false,
+      isTimeStopped: false,
+      calm: false,
+      hasDroppedThisRun: true,
+    });
+    pacer.update(c(0, 60));
+    expect(pacer.update(c(3400, 60)).phase).toBe('nudge');
+    expect(pacer.update(c(3500, 60)).phase).toBe('autodrop');
+    // Samma tid men tidigt i rundan: inget auto-drop än.
+    expect(pacer.update(c(3500, 0)).phase).toBe('nudge');
   });
 });
 
@@ -128,6 +198,7 @@ describe('pacing: timern (createPacer)', () => {
   const cond = (over: Partial<PacerInput> = {}): PacerInput => ({
     mode: 'flow',
     nowMs: 0,
+    dropIndex: 0,
     directorMode: 'flow',
     isSpecial: false,
     isDanger: false,

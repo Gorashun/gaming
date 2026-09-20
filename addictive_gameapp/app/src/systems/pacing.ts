@@ -1,6 +1,6 @@
 /**
- * Mjuk auto-drop (DESIGN.md §11). Ren logik: in går tid och tillstånd, ut går fas och
- * vickningsvinkel. Ingen Phaser, inga scener – testbar utan rendering.
+ * Mjuk auto-drop (DESIGN.md §11) med ramp (§12). Ren logik: in går tid, tillstånd och
+ * antal drops i rundan, ut går fas och vickningsvinkel. Ingen Phaser, inga scener – testbar utan rendering.
  *
  * Villkor för att pacing ska vara aktiv alls:
  * bara mode 'flow', bara regissörens Flöde-läge, aldrig på specialobjekt,
@@ -29,6 +29,8 @@ export interface PacingInput extends PacingConditions {
   nowMs: number;
   /** När det hängande objektet blev släppbart (cooldown klar). null = inget att släppa. */
   readySinceMs: number | null;
+  /** Antal drops som redan gjorts i rundan (manuella + auto). Styr rampen (§12). */
+  dropIndex: number;
 }
 
 export interface PacingResult {
@@ -38,6 +40,20 @@ export interface PacingResult {
 }
 
 const TAU = Math.PI * 2;
+
+/**
+ * Auto-drop-tid för drop nummer `dropIndex` (0-baserat): linjärt från `rampStartMs` till
+ * `rampEndMs` över `rampDrops` drops, sedan konstant golv (DESIGN §12).
+ */
+export function autoDropMsForDrop(dropIndex: number, cfg: PacingConfig = PACING): number {
+  const t = Math.min(Math.max(dropIndex, 0), cfg.rampDrops) / cfg.rampDrops;
+  return cfg.rampStartMs + (cfg.rampEndMs - cfg.rampStartMs) * t;
+}
+
+/** Vickningen startar alltid på halva auto-drop-tiden (DESIGN §12). */
+export function nudgeMsForDrop(dropIndex: number, cfg: PacingConfig = PACING): number {
+  return autoDropMsForDrop(dropIndex, cfg) / 2;
+}
 
 /** Är pacing blockerad av tillståndet just nu? (Säger inget om timern.) */
 export function isPacingBlocked(c: PacingConditions): boolean {
@@ -67,16 +83,20 @@ export function evaluatePacing(
   if (input.readySinceMs === null) return out;
 
   const elapsed = input.nowMs - input.readySinceMs;
-  if (elapsed < cfg.nudgeAtMs) return out;
+  const autoAt = autoDropMsForDrop(input.dropIndex, cfg);
+  const nudgeAt = autoAt / 2;
+  if (elapsed < nudgeAt) return out;
 
-  out.phase = elapsed >= cfg.autoDropAtMs ? 'autodrop' : 'nudge';
+  out.phase = elapsed >= autoAt ? 'autodrop' : 'nudge';
   out.wobbleAngleDeg =
-    cfg.wobbleDeg * Math.sin((TAU * cfg.wobbleHz * (elapsed - cfg.nudgeAtMs)) / 1000);
+    cfg.wobbleDeg * Math.sin((TAU * cfg.wobbleHz * (elapsed - nudgeAt)) / 1000);
   return out;
 }
 
 export interface PacerInput extends PacingConditions {
   nowMs: number;
+  /** Antal drops som redan gjorts i rundan (manuella + auto). */
+  dropIndex: number;
 }
 
 /**
@@ -105,6 +125,7 @@ export function createPacer(cfg: PacingConfig = PACING): Pacer {
     mode: 'off',
     nowMs: 0,
     readySinceMs: null,
+    dropIndex: 0,
     directorMode: 'flow',
     isSpecial: false,
     isDanger: false,
@@ -132,6 +153,7 @@ export function createPacer(cfg: PacingConfig = PACING): Pacer {
       input.mode = c.mode;
       input.nowMs = c.nowMs;
       input.readySinceMs = readySince;
+      input.dropIndex = c.dropIndex;
       input.directorMode = c.directorMode;
       input.isSpecial = c.isSpecial;
       input.isDanger = c.isDanger;

@@ -9,6 +9,8 @@ import { setHapticsEnabled, vibrate } from '../systems/haptics';
 
 const L = THEME.layout;
 const TOUCH = THEME.touch.minLogical;
+/** Minsta mellanrum mellan två träffytor (UI.md §2.3). */
+const ICON_GAP = 8;
 
 interface Toggle {
   img: Phaser.GameObjects.Image;
@@ -151,21 +153,29 @@ export class Start extends Phaser.Scene {
 
   private drawIcons(): void {
     const s = cached().settings;
-    this.addToggle(100, 580, ['soundOn', 'soundOff'], () => s.sound, (v) => {
+    // Fyra 72 px-mål centrerade: 4·72 + 3·8 mellanrum = 312 px, marginal 24 px i kanterna.
+    const step = TOUCH + ICON_GAP;
+    const x0 = L.width / 2 - (step * 3) / 2;
+    const y = 580;
+    this.addToggle(x0, y, ['soundOn', 'soundOff'], () => s.sound, (v) => {
       s.sound = v;
       setSoundEnabled(v);
       if (v) unlockAudio();
       void save({ settings: { ...s, sound: v } });
     });
-    this.addToggle(180, 580, ['hapticOn', 'hapticOff'], () => s.haptics, (v) => {
+    this.addToggle(x0 + step, y, ['hapticOn', 'hapticOff'], () => s.haptics, (v) => {
       s.haptics = v;
       setHapticsEnabled(v);
       void save({ settings: { ...s, haptics: v } });
     });
-    this.addToggle(260, 580, ['calmOn', 'calmOff'], () => s.calm, (v) => {
+    this.addToggle(x0 + step * 2, y, ['calmOn', 'calmOff'], () => s.calm, (v) => {
       s.calm = v;
       setCalm(v);
       void save({ settings: { ...s, calm: v } });
+    });
+    this.addToggle(x0 + step * 3, y, ['aimOn', 'aimOff'], () => s.aimLine, (v) => {
+      s.aimLine = v;
+      void save({ settings: { ...s, aimLine: v } });
     });
   }
 

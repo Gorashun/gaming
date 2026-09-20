@@ -74,7 +74,7 @@ test('inställningsikonerna går att stänga av och sparas', async ({ page }) =>
     y: box.y + offsetY + y * scale,
   });
 
-  for (const x of [100, 180, 260]) {
+  for (const x of [60, 140, 220, 300]) {
     const p = toWorld(x, 580);
     await page.mouse.move(p.x, p.y);
     await page.mouse.down();
@@ -86,7 +86,7 @@ test('inställningsikonerna går att stänga av och sparas', async ({ page }) =>
   const settings = await page.evaluate(
     () => JSON.parse(localStorage.getItem('klunk.save.v1')!).settings,
   );
-  expect(settings).toEqual({ sound: false, haptics: false, calm: true });
+  expect(settings).toEqual({ sound: false, haptics: false, calm: true, aimLine: false });
   // Spelet ska inte ha startat av ett tryck på ikonraden.
   expect(await page.evaluate(() => window.__game === undefined)).toBe(true);
   expect(errors, errors.join('\n')).toEqual([]);

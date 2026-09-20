@@ -74,9 +74,10 @@ test('mjuk auto-drop: vickning efter 3 s, objektet faller själv efter 6 s', asy
   expect(after.over).toBe(false);
   expect(after.autoDrops).toBe(1);
   expect(after.bodies).toBe(before.bodies + 1);
-  // [0] = spelarens eget drop, [1] = auto-droppet.
+  // [0] = spelarens eget drop, [1] = auto-droppet. Rampen (§12) gör drop 1 lite snabbare
+  // än 6000 ms: 6000 − 2500/60 ≈ 5958 ms.
   expect(after.latencies.length).toBe(2);
-  expect(after.latencies[1]).toBeGreaterThanOrEqual(6000);
+  expect(after.latencies[1]).toBeGreaterThanOrEqual(5900);
   expect(after.latencies[1]).toBeLessThan(6800);
 
   // Stats sparas.

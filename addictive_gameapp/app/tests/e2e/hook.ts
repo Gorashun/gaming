@@ -27,6 +27,13 @@ export interface GameHook {
   readonly pacingPhase: string;
   /** Slår av/på mjuk auto-drop: 'off' | 'flow'. */
   setPacing(mode: string): void;
+  /** Auto-drop-tiden för objektet som hänger nu, efter rampen (DESIGN §12). */
+  readonly autoDropAtMs: number;
+  /** Siktlinjens läge: 'always' | 'aiming' | 'off'. */
+  readonly aimLineMode: string;
+  /** Siktlinjen är synlig (alpha > 0,05). */
+  readonly aimLineVisible: boolean;
+  setAimLine(mode: string): void;
 }
 
 declare global {

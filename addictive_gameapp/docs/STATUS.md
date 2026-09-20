@@ -31,3 +31,4 @@ Se PROPOSAL.md §10: go/no-go, Mac, Google Play-konto och dess ålder, Apple-kon
 - Kända luckor: kosmetisk upplåsning (v1.1), desaturering vid fara, tabulära siffror i HUD, pool för Matter-bodies.
 | 2026-09-20 | Rullande release `test-latest`: varje push ger ny APK på https://github.com/Gorashun/gaming/releases/download/test-latest/klunk-debug.apk |
 | 2026-09-20 | Mjuk auto-drop (DESIGN §11) klar: bara i Flöde, efter första egna drop, vickning 3 s, fall 6 s, timer nollställs när fara/slow-mo släpper. 75 unit + 13 e2e gröna. **Testversion 2** på samma länkar. |
+| 2026-09-20 | Ramp 6→3,5 s över 60 drops + siktlinje bara vid sikte, med inställningsikon. 80 unit + 17 e2e gröna. **Testversion 3.** |

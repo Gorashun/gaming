@@ -3,7 +3,7 @@
 export interface SaveData {
   highscore: number;
   bestLevel: number;
-  settings: { sound: boolean; haptics: boolean; calm: boolean };
+  settings: { sound: boolean; haptics: boolean; calm: boolean; aimLine: boolean };
   stats: { runs: number; merges: number; autoDrops: number };
 }
 
@@ -17,7 +17,7 @@ const KEY = 'klunk.save.v1';
 export const DEFAULT_SAVE: SaveData = {
   highscore: 0,
   bestLevel: 0,
-  settings: { sound: true, haptics: true, calm: false },
+  settings: { sound: true, haptics: true, calm: false, aimLine: true },
   stats: { runs: 0, merges: 0, autoDrops: 0 },
 };
 
