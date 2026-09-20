@@ -99,3 +99,11 @@ Konton, nätverk, annonser, köp, push, dagliga belöningar, timers, magnet-obje
 - Burkgeometri: inre öppning 320 px (x 20→340), väggarna ritas utanför (x 0–20 och 340–360), botten y=600. Fysikkropparna följer detta.
 - `record` = diskret rekordjakt-puls när poäng ≥90 % av highscore. `newRecord` = själva passeringen.
 - Tema: "Glimtarna", lysande djuphavsvarelser (se UI.md). Alla nivåer bakas till texturer vid boot.
+
+## 11. Pacing: mjuk auto-drop (beslut 2026-09-20, källa: research/urgency-research.md)
+Regeln "ingen tidspress i UI:t" omformuleras till: **ingen synlig nedräkning och inget tidsbaserat straff.**
+- Gäller endast i regissörens **Flöde**-läge. Aldrig i Torka, aldrig på specialobjekt, aldrig under fara/slow-mo/hit-stop. Av i Lugnt läge.
+- Efter 3,0 s utan drop börjar det hängande objektet vicka (±4°, 0,8 Hz, ingen ljusstyrkeändring). Efter 6,0 s faller det själv, rakt ner där det hänger.
+- Timern startar när objektet blir släppbart (cooldown klar) och nollställs vid varje drop.
+- Konfig i `app/src/data/pacing.ts`: `PACING.mode: 'off' | 'flow'` (default `flow` i testversion 2), `nudgeAtMs`, `autoDropAtMs`, `wobbleDeg`, `wobbleHz`.
+- Mätning i testhook: `autoDrops`, `dropLatencies` (ms från släppbar till drop) för att räkna P50/P90 och andel auto-drop. Mål: <10 % auto-drop hos vuxna, <20 % hos barn.
