@@ -12,6 +12,9 @@ concurrency:
   group: android-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -60,3 +63,14 @@ jobs:
           name: klunk-debug-apk
           path: addictive_gameapp/app/klunk-debug.apk
           retention-days: 30
+
+      - name: Publish rolling test release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: test-latest
+          name: KLUNK testversion (senaste bygget)
+          prerelease: true
+          body: |
+            Senaste debug-APK från branch `${{ github.ref_name }}`, commit `${{ github.sha }}`.
+            Ladda ner `klunk-debug.apk` nedan direkt på telefonen och installera.
+          files: addictive_gameapp/app/klunk-debug.apk
