@@ -8,13 +8,20 @@ import {
   WORLD,
   densityFor,
 } from '../data/physics';
-import { MAX_LEVEL, TOP_PAIR_SCORE, radiusOf, scoreForCreating } from '../data/levels';
+import { MAX_LEVEL, TOP_PAIR_SCORE, radiusOf, scoreForCreating, scoreOf } from '../data/levels';
 import { FEEL, JUICE, mergeIntensity } from '../data/juice';
+import { DIRECTOR, SPECIALS, type SpecialType } from '../data/director';
 import { INT, LEVEL_COLORS, THEME } from '../data/theme';
-import { ballTextureKey, scaleForBodyRadius } from '../ui/textures';
+import {
+  SPECIAL_BOMB,
+  SPECIAL_RAINBOW,
+  ballTextureKey,
+  scaleForBodyRadius,
+} from '../ui/textures';
 import { drawBackground } from '../ui/background';
 import { iconTextureKey } from '../ui/icons';
 import { resolveMerges, type MergeCandidate } from '../systems/merge';
+import { findNearMiss, type NearMissItem } from '../systems/nearmiss';
 import { createDirector, type Director, type DirectorState } from '../systems/director';
 import { createComboTracker, type ComboTracker } from '../systems/combo';
 import { createDangerTracker, type DangerTracker } from '../systems/danger';
@@ -31,10 +38,38 @@ interface Ball {
   /** Skapad av en merge (används för kedjedetektering). */
   fromMerge: boolean;
   landed: boolean;
+  /** Specialobjekt, annars null. Specialobjekt mergear aldrig. */
+  special: SpecialType | null;
+  /** Tidpunkt för första kontakt (specialobjektens nödaktivering). */
+  landedAt: number;
+  activated: boolean;
+  /** Ingår i ett near-miss-par just nu. */
+  nearMiss: boolean;
+  /** Puls pausad tills dess (landnings-/merge-tween äger skalan). */
+  noPulseUntil: number;
 }
 
 const L = THEME.layout;
 const PREVIEW_R = 24;
+const DEG = Math.PI / 180;
+/** Rotation och skalpuls per specialobjekt (UI.md §4). */
+const SPECIAL_FX = {
+  bomb: {
+    spin: THEME.special.bomb.spinDegPerSec * DEG,
+    pulseMs: THEME.special.bomb.pulseMs,
+    pulseScale: THEME.special.bomb.pulseScale,
+    texture: SPECIAL_BOMB,
+  },
+  rainbow: {
+    spin: THEME.special.rainbow.bandSpinDegPerSec * DEG,
+    pulseMs: THEME.special.rainbow.pulseMs,
+    pulseScale: THEME.special.rainbow.pulseScale,
+    texture: SPECIAL_RAINBOW,
+  },
+} as const;
+
+/** Sätts av testhooken `seed(n)` så e2e-körningar blir deterministiska. */
+let SEED: number | null = null;
 const TEST_HOOK = import.meta.env.DEV || new URLSearchParams(location.search).has('test');
 
 export class Game extends Phaser.Scene {
@@ -42,10 +77,20 @@ export class Game extends Phaser.Scene {
   private byId = new Map<number, Ball>();
   private pool: Ball[] = [];
   private candidates: MergeCandidate[] = [];
-  private boardLevels: number[] = [];
+  /** Nivåer som kan mergea direkt (DESIGN §4). Återanvänds, aldrig ny Set per drop. */
+  private mergeable = new Set<number>();
+  private colTopY: number[] = [];
+  private colTopIdx: number[] = [];
+  /** Specialobjekt som ska aktiveras efter kollisionsloopen. */
+  private actSpecial: Ball[] = [];
+  private actOther: (Ball | null)[] = [];
+  private nmItems: NearMissItem[] = [];
+  private nmOut: number[] = [];
+  private frame = 0;
+  private pulseMs = 0;
 
   private director!: Director;
-  private dirState: DirectorState = { dropIndex: 0, board: this.boardLevels };
+  private dirState: DirectorState = { mergeableLevels: this.mergeable };
   private combo!: ComboTracker;
   private dangerTracker!: DangerTracker;
   private juice!: Juice;
@@ -53,6 +98,8 @@ export class Game extends Phaser.Scene {
   private hanging: Phaser.GameObjects.Image | null = null;
   private aimLine!: Phaser.GameObjects.Graphics;
   private preview!: Phaser.GameObjects.Image;
+  private previewFrame!: Phaser.GameObjects.Graphics;
+  private previewTween: Phaser.Tweens.Tween | null = null;
   private scoreText!: Phaser.GameObjects.Text;
   private recordMarker!: Phaser.GameObjects.Container;
   private recordText!: Phaser.GameObjects.Text;
@@ -62,7 +109,10 @@ export class Game extends Phaser.Scene {
   private hand: Phaser.GameObjects.Container | null = null;
 
   private currentLevel = 0;
+  private currentSpecial: SpecialType | null = null;
   private nextLevel = 0;
+  private nextSpecial: SpecialType | null = null;
+  private specialsActivated = 0;
   private score = 0;
   private bestLevel = 0;
   private dropIndex = 0;
@@ -100,18 +150,25 @@ export class Game extends Phaser.Scene {
     this.recordPulsing = false;
     this.passedRecord = false;
     this.recordTween = null;
+    this.previewTween = null;
     this.hand = null;
     this.comboDots.length = 0;
+    this.currentSpecial = null;
+    this.nextSpecial = null;
+    this.specialsActivated = 0;
+    this.frame = 0;
+    this.pulseMs = 0;
+    this.mergeable.clear();
 
     const data = cached();
     this.highscore = data.highscore;
     this.baseMerges = data.stats.merges;
     void save({ stats: { runs: data.stats.runs + 1, merges: data.stats.merges } });
 
-    this.director = createDirector(mulberry32((Date.now() ^ 0x9e3779b9) >>> 0));
+    this.director = createDirector(mulberry32(SEED ?? ((Date.now() ^ 0x9e3779b9) >>> 0)));
     this.combo = createComboTracker();
     this.dangerTracker = createDangerTracker();
-    this.nextLevel = this.director.next(this.dirState);
+    this.takeNext();
 
     drawBackground(this);
     this.buildCan();
@@ -155,11 +212,43 @@ export class Game extends Phaser.Scene {
       get combo(): number {
         return self.combo.state.combo;
       },
+      get mode(): string {
+        return self.director.mode;
+      },
+      get dropsSinceKick(): number {
+        return self.director.dropsSinceKick;
+      },
+      /** Vad som ligger i förhandsvisningen: 'level' | 'bomb' | 'rainbow'. */
+      get nextKind(): string {
+        return self.nextSpecial ?? 'level';
+      },
+      get specialsActivated(): number {
+        return self.specialsActivated;
+      },
+      /** Fast seed + omstart av rundan, för deterministiska e2e-körningar. */
+      seed(n: number): void {
+        SEED = n >>> 0;
+        self.scene.restart();
+      },
       drop(x: number): void {
         if (self.over) return;
         if (!self.hanging) self.spawnHanging();
         self.moveHangingTo(x);
         self.doDrop();
+      },
+      /** Antal objekt som just nu pulsar av near-miss. */
+      get nearMissCount(): number {
+        let n = 0;
+        for (let i = 0; i < self.balls.length; i++) if (self.balls[i].nearMiss) n++;
+        return n;
+      },
+      /** Tömmer burken (håller långa e2e-körningar vid liv utan att röra balansen). */
+      clear(): void {
+        for (let i = self.balls.length - 1; i >= 0; i--) self.removeBall(self.balls[i]);
+      },
+      /** Placerar ett objekt direkt (scenarier som near-miss och jackpot). */
+      spawn(level: number, x: number, y: number): void {
+        if (!self.over) self.addBall(x, y, level, false);
       },
       forceLoss(): void {
         self.gameOver();
@@ -256,8 +345,21 @@ export class Game extends Phaser.Scene {
     }
 
     // Förhandsvisning: streckad ram + objektet.
-    const f = this.add.graphics().setDepth(10);
-    f.lineStyle(2, INT.jarEdge, 0.9);
+    this.previewFrame = this.add.graphics().setDepth(10);
+    this.drawPreviewFrame(INT.jarEdge);
+    this.preview = this.add
+      .image(L.preview.cx, L.preview.cy, ballTextureKey(this.nextLevel))
+      .setDepth(10);
+    this.showPreview();
+
+    this.aimLine = this.add.graphics().setDepth(3);
+  }
+
+  /** Ramen byter färg när ett specialobjekt ligger i kön (UI.md §4). */
+  private drawPreviewFrame(color: number): void {
+    const f = this.previewFrame;
+    f.clear();
+    f.lineStyle(2, color, 0.9);
     const bx = L.preview.cx - L.preview.boxW / 2;
     const by = L.preview.cy - L.preview.boxH / 2;
     for (let i = 0; i < 4; i++) {
@@ -267,11 +369,78 @@ export class Game extends Phaser.Scene {
       f.lineBetween(bx, by + along, bx, by + along + 7);
       f.lineBetween(bx + L.preview.boxW, by + along, bx + L.preview.boxW, by + along + 7);
     }
-    this.preview = this.add
-      .image(L.preview.cx, L.preview.cy, ballTextureKey(this.nextLevel))
-      .setDepth(10);
+  }
 
-    this.aimLine = this.add.graphics().setDepth(3);
+  /** Visar nästa objekt. Specialobjekt: annan form, accent2-ram och puls ≤1 Hz. */
+  private showPreview(): void {
+    this.previewTween?.remove();
+    this.previewTween = null;
+    const sp = this.nextSpecial;
+    const base = sp
+      ? PREVIEW_R / SPECIALS.radius
+      : scaleForBodyRadius(this.nextLevel, PREVIEW_R);
+    this.preview.setTexture(this.textureFor(sp, this.nextLevel)).setScale(base).setRotation(0);
+    this.drawPreviewFrame(sp ? INT.accent2 : INT.jarEdge);
+    if (!sp) return;
+    this.previewTween = this.tweens.add({
+      targets: this.preview,
+      scale: base * THEME.anim.previewPulse.scale,
+      duration: JUICE.pulseHalfCycleMs.preview,
+      ease: THEME.anim.previewPulse.ease,
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  private textureFor(special: SpecialType | null, level: number): string {
+    return special ? SPECIAL_FX[special].texture : ballTextureKey(level);
+  }
+
+  private radiusFor(special: SpecialType | null, level: number): number {
+    return special ? SPECIALS.radius : radiusOf(level);
+  }
+
+  /**
+   * Nivåer som kan mergea direkt (DESIGN §4): ovansidan inom 120 px från farolinjen,
+   * eller översta objektet i sin kolumn. Återanvänder Set och arrayer.
+   */
+  private computeMergeable(): void {
+    this.mergeable.clear();
+    const cols = DIRECTOR.columns;
+    const colW = (INNER_RIGHT - INNER_LEFT) / cols;
+    for (let c = 0; c < cols; c++) {
+      this.colTopY[c] = Infinity;
+      this.colTopIdx[c] = -1;
+    }
+    for (let i = 0; i < this.balls.length; i++) {
+      const b = this.balls[i];
+      if (b.special) continue;
+      const top = b.body.position.y - radiusOf(b.level);
+      if (top - CAN.dangerY <= DIRECTOR.mergeableWithinPx) this.mergeable.add(b.level);
+      let c = Math.floor((b.body.position.x - INNER_LEFT) / colW);
+      if (c < 0) c = 0;
+      else if (c >= cols) c = cols - 1;
+      if (top < this.colTopY[c]) {
+        this.colTopY[c] = top;
+        this.colTopIdx[c] = i;
+      }
+    }
+    for (let c = 0; c < cols; c++) {
+      const i = this.colTopIdx[c];
+      if (i >= 0) this.mergeable.add(this.balls[i].level);
+    }
+  }
+
+  /** Hämtar nästa köobjekt från regissören. */
+  private takeNext(): void {
+    this.computeMergeable();
+    const pick = this.director.next(this.dirState);
+    if (pick.kind === 'special') {
+      this.nextSpecial = pick.type;
+    } else {
+      this.nextSpecial = null;
+      this.nextLevel = pick.level;
+    }
   }
 
   private updateComboDots(): void {
@@ -326,7 +495,7 @@ export class Game extends Phaser.Scene {
 
   private moveHangingTo(x: number): void {
     if (!this.hanging) return;
-    const r = radiusOf(this.currentLevel);
+    const r = this.radiusFor(this.currentSpecial, this.currentLevel);
     const cx = Phaser.Math.Clamp(x, INNER_LEFT + r, INNER_RIGHT - r);
     this.hanging.x = cx;
     this.aimLine.x = cx;
@@ -334,22 +503,20 @@ export class Game extends Phaser.Scene {
 
   private spawnHanging(): void {
     this.currentLevel = this.nextLevel;
+    this.currentSpecial = this.nextSpecial;
     this.dropIndex++;
-    this.dirState.dropIndex = this.dropIndex;
-    this.boardLevels.length = 0;
-    for (let i = 0; i < this.balls.length; i++) this.boardLevels.push(this.balls[i].level);
-    this.nextLevel = this.director.next(this.dirState);
+    this.takeNext();
 
-    const r = radiusOf(this.currentLevel);
+    const r = this.radiusFor(this.currentSpecial, this.currentLevel);
     const x = Phaser.Math.Clamp(
       this.hanging ? this.hanging.x : WORLD.width / 2,
       INNER_LEFT + r,
       INNER_RIGHT - r,
     );
-    this.hanging = this.add.image(x, CAN.spawnY, ballTextureKey(this.currentLevel)).setDepth(6);
-    this.preview
-      .setTexture(ballTextureKey(this.nextLevel))
-      .setScale(scaleForBodyRadius(this.nextLevel, PREVIEW_R));
+    this.hanging = this.add
+      .image(x, CAN.spawnY, this.textureFor(this.currentSpecial, this.currentLevel))
+      .setDepth(6);
+    this.showPreview();
     this.tweens.add({
       targets: this.hanging,
       scale: { from: 0.7, to: 1 },
@@ -377,7 +544,12 @@ export class Game extends Phaser.Scene {
     this.hanging.destroy();
     this.hanging = null;
     this.aimLine.clear();
-    const ball = this.addBall(x, CAN.spawnY, this.currentLevel, false);
+    const ball = this.addBall(x, CAN.spawnY, this.currentLevel, false, this.currentSpecial);
+    if (this.currentSpecial) {
+      this.juice.trigger('specialDrop', SPECIALS[this.currentSpecial].intensity, x, CAN.spawnY, {
+        color: INT.accent2,
+      });
+    }
     this.pending = ball;
     this.dropReadyAt = this.time.now + PHYSICS.dropCooldownMs;
     this.lastDropAt = this.time.now;
@@ -387,8 +559,14 @@ export class Game extends Phaser.Scene {
 
   // ---------------------------------------------------------------- bodies
 
-  private addBall(x: number, y: number, level: number, fromMerge: boolean): Ball {
-    const r = radiusOf(level);
+  private addBall(
+    x: number,
+    y: number,
+    level: number,
+    fromMerge: boolean,
+    special: SpecialType | null = null,
+  ): Ball {
+    const r = this.radiusFor(special, level);
     const body = this.matter.add.circle(x, y, r, {
       restitution: PHYSICS.restitution,
       friction: PHYSICS.friction,
@@ -397,10 +575,11 @@ export class Game extends Phaser.Scene {
       density: densityFor(r),
     }) as MatterJS.BodyType;
 
+    const texture = this.textureFor(special, level);
     let ball = this.pool.pop();
     if (ball) {
       ball.body = body;
-      ball.img.setTexture(ballTextureKey(level)).setScale(1).setVisible(true).setPosition(x, y);
+      ball.img.setTexture(texture).setScale(1).setRotation(0).setVisible(true).setPosition(x, y);
       ball.level = level;
       ball.aboveMs = 0;
       ball.fromMerge = fromMerge;
@@ -408,16 +587,26 @@ export class Game extends Phaser.Scene {
     } else {
       ball = {
         body,
-        img: this.add.image(x, y, ballTextureKey(level)).setDepth(5),
+        img: this.add.image(x, y, texture).setDepth(5),
         level,
         aboveMs: 0,
         fromMerge,
         landed: false,
+        special: null,
+        landedAt: 0,
+        activated: false,
+        nearMiss: false,
+        noPulseUntil: 0,
       };
     }
+    ball.special = special;
+    ball.landedAt = 0;
+    ball.activated = false;
+    ball.nearMiss = false;
+    ball.noPulseUntil = 0;
     this.balls.push(ball);
     this.byId.set(body.id, ball);
-    if (level > this.bestLevel) this.bestLevel = level;
+    if (!special && level > this.bestLevel) this.bestLevel = level;
     return ball;
   }
 
@@ -446,6 +635,8 @@ export class Game extends Phaser.Scene {
     if (this.over) return;
     const pairs = event.pairs;
     this.candidates.length = 0;
+    this.actSpecial.length = 0;
+    this.actOther.length = 0;
     for (let i = 0; i < pairs.length; i++) {
       const bodyA = pairs[i].bodyA as MatterJS.BodyType;
       const bodyB = pairs[i].bodyB as MatterJS.BodyType;
@@ -454,9 +645,17 @@ export class Game extends Phaser.Scene {
       if (this.pending !== null && (a === this.pending || b === this.pending)) this.pending = null;
       if (a && !a.landed) this.land(a);
       if (b && !b.landed) this.land(b);
-      if (!a || !b) continue;
+      // Specialobjekt aktiveras efter loopen (de kan ta bort andra objekt).
+      if (a?.special) this.queueActivation(a, b ?? null);
+      if (b?.special) this.queueActivation(b, a ?? null);
+      if (!a || !b || a.special || b.special) continue;
       this.candidates.push({ a: bodyA.id, b: bodyB.id, levelA: a.level, levelB: b.level });
     }
+
+    for (let i = 0; i < this.actSpecial.length; i++) {
+      this.activateSpecial(this.actSpecial[i], this.actOther[i]);
+    }
+
     if (this.candidates.length === 0) return;
     const merges = resolveMerges(this.candidates);
     for (let i = 0; i < merges.length; i++) {
@@ -467,11 +666,119 @@ export class Game extends Phaser.Scene {
     }
   }
 
+  // ------------------------------------------------------------ specialobjekt
+
+  /**
+   * Bomben aktiveras vid första kontakt med VAD SOM HELST, regnbågen bara vid
+   * kontakt med ett vanligt objekt (DESIGN §4).
+   */
+  private queueActivation(s: Ball, other: Ball | null): void {
+    if (s.activated) return;
+    if (s.special === 'rainbow' && (!other || other.special)) return;
+    if (this.actSpecial.indexOf(s) >= 0) return;
+    this.actSpecial.push(s);
+    this.actOther.push(other && !other.special ? other : null);
+  }
+
+  private activateSpecial(s: Ball, other: Ball | null): void {
+    if (s.activated || !s.special) return;
+    s.activated = true;
+    this.specialsActivated++;
+    if (s.special === 'bomb') this.detonate(s);
+    else this.upgrade(s, other);
+  }
+
+  /** Bomb: förstör allt inom blastRadius, poäng = summan av nivåernas poäng ×2. */
+  private detonate(bomb: Ball): void {
+    const x = bomb.body.position.x;
+    const y = bomb.body.position.y;
+    const r2 = SPECIALS.bomb.blastRadius * SPECIALS.bomb.blastRadius;
+    this.removeBall(bomb);
+    let sum = 0;
+    for (let i = this.balls.length - 1; i >= 0; i--) {
+      const b = this.balls[i];
+      const dx = b.body.position.x - x;
+      const dy = b.body.position.y - y;
+      if (dx * dx + dy * dy > r2) continue;
+      if (!b.special) sum += scoreOf(b.level);
+      else b.activated = true;
+      this.removeBall(b);
+    }
+    const points = sum * SPECIALS.bomb.scoreMultiplier;
+    if (points > 0) this.addScore(points);
+    this.juice.trigger('bomb', SPECIALS.bomb.intensity, x, y, {
+      color: INT.accent2,
+      score: points,
+    });
+  }
+
+  /** Regnbåge: den och ett vanligt objekt av nivå n blir ett objekt av nivå n+1. */
+  private upgrade(rainbow: Ball, other: Ball | null): void {
+    const x = rainbow.body.position.x;
+    const y = rainbow.body.position.y;
+    this.removeBall(rainbow);
+    if (!other || other.special || !this.byId.has(other.body.id)) {
+      this.juice.trigger('special', SPECIALS.rainbow.intensity, x, y);
+      return;
+    }
+    const level = other.level;
+    const ox = other.body.position.x;
+    const oy = other.body.position.y;
+    this.removeBall(other);
+    this.fuse(level, ox, oy, SPECIALS.rainbow.intensity);
+  }
+
+  /**
+   * Två objekt av `level` blir ett av level+1 (nivå 10 → båda försvinner, 1000 p).
+   * Sköter poäng och juice; jackpot får sitt eget event (UI.md §6).
+   */
+  private fuse(level: number, x: number, y: number, intensity: number): void {
+    if (level >= MAX_LEVEL) {
+      this.addScore(TOP_PAIR_SCORE);
+      this.juice.trigger('jackpot', 1, x, y, { color: INT.gold, score: TOP_PAIR_SCORE });
+      return;
+    }
+    const created = this.addBall(x, y, level + 1, true);
+    created.noPulseUntil = this.time.now + JUICE.punch.durationMs;
+    const points = scoreForCreating(level + 1);
+    this.addScore(points);
+    const jackpot = level + 1 >= MAX_LEVEL;
+    this.juice.trigger(jackpot ? 'jackpot' : 'special', jackpot ? 1 : intensity, x, y, {
+      target: created.img,
+      color: LEVEL_COLORS[level + 1],
+      score: points,
+    });
+  }
+
+  /** Nödaktivering: ett specialobjekt får aldrig ligga kvar (DESIGN §4). */
+  private forceActivate(s: Ball): void {
+    if (s.special === 'bomb') {
+      this.activateSpecial(s, null);
+      return;
+    }
+    let best: Ball | null = null;
+    let bestGap: number = SPECIALS.rainbow.reachPx;
+    for (let i = 0; i < this.balls.length; i++) {
+      const b = this.balls[i];
+      if (b === s || b.special) continue;
+      const dx = b.body.position.x - s.body.position.x;
+      const dy = b.body.position.y - s.body.position.y;
+      const gap = Math.sqrt(dx * dx + dy * dy) - SPECIALS.radius - radiusOf(b.level);
+      if (gap < bestGap) {
+        bestGap = gap;
+        best = b;
+      }
+    }
+    this.activateSpecial(s, best);
+  }
+
   /** Första kontakten: "klunk" + squash. */
   private land(ball: Ball): void {
     ball.landed = true;
+    ball.landedAt = this.time.now;
     const speed = Math.abs(ball.body.velocity.y);
     if (speed < 1.5) return;
+    ball.noPulseUntil = this.time.now + THEME.anim.landSquash.durationMs;
     this.juice.trigger('land', Math.min(0.35, speed / 20), ball.img.x, ball.img.y);
     this.tweens.add({
       targets: ball.img,
@@ -501,16 +808,17 @@ export class Game extends Phaser.Scene {
     } else {
       newLevel = level + 1;
       const created = this.addBall(x, y, newLevel, true);
+      created.noPulseUntil = this.time.now + JUICE.punch.durationMs;
       target = created.img;
       points = scoreForCreating(newLevel);
     }
     this.addScore(points);
     this.updateComboDots();
 
-    const color = LEVEL_COLORS[newLevel];
     const jackpot = newLevel >= MAX_LEVEL;
+    const color = jackpot ? INT.gold : LEVEL_COLORS[newLevel];
     const chain = state.chain >= FEEL.chain.minLength;
-    const event = jackpot ? 'special' : chain ? 'chain' : 'merge';
+    const event = jackpot ? 'jackpot' : chain ? 'chain' : 'merge';
     const intensity = jackpot
       ? 1
       : chain
@@ -547,7 +855,11 @@ export class Game extends Phaser.Scene {
     if (this.hand) return;
     const hand = this.add.image(0, 0, iconTextureKey('hand')).setDisplaySize(56, 56);
     const swipe = this.add.image(0, 56, iconTextureKey('swipe')).setDisplaySize(84, 22);
-    this.hand = this.add.container(150, 96, [hand, swipe]).setDepth(15).setAlpha(0);
+    // y ovanför farolinjen (110) så gesten aldrig överlappar den.
+    this.hand = this.add
+      .container(150, FEEL.onboarding.handY, [hand, swipe])
+      .setDepth(15)
+      .setAlpha(0);
     this.tweens.chain({
       targets: this.hand,
       loop: -1,
@@ -575,12 +887,36 @@ export class Game extends Phaser.Scene {
     if (this.over) return;
     const now = this.time.now;
 
+    // Near-miss räknas om throttlat (DESIGN §5), aldrig varje frame.
+    this.frame++;
+    if (this.frame % FEEL.nearMiss.checkEveryFrames === 0) this.checkNearMiss();
+
+    // Synkron puls för alla near-miss-objekt: 500/600 ms ⇒ 0,83 Hz.
+    this.pulseMs += delta;
+    const nmPhase = (this.pulseMs / (FEEL.nearMiss.halfCycleMs * 2)) * Math.PI * 2;
+    const nmScale = 1 + (FEEL.nearMiss.scale - 1) * (0.5 - 0.5 * Math.cos(nmPhase));
+
     // Bild följer fysikkroppen. Inga allokeringar.
     for (let i = 0; i < this.balls.length; i++) {
       const b = this.balls[i];
       b.img.x = b.body.position.x;
       b.img.y = b.body.position.y;
+      if (b.special) {
+        const fx = SPECIAL_FX[b.special];
+        b.img.rotation += fx.spin * (delta / 1000);
+        const p = (this.pulseMs / (fx.pulseMs * 2)) * Math.PI * 2;
+        b.img.setScale(1 + (fx.pulseScale - 1) * (0.5 - 0.5 * Math.cos(p)));
+        if (!b.activated && b.landed && now - b.landedAt > SPECIALS.fallbackMs) {
+          this.forceActivate(b);
+        }
+        continue;
+      }
       b.img.rotation = b.body.angle;
+      if (b.nearMiss) {
+        b.img.setScale(nmScale);
+      } else if (b.img.scaleX !== 1 && now >= b.noPulseUntil && !this.tweens.isTweening(b.img)) {
+        b.img.setScale(1);
+      }
     }
 
     this.juice.update(delta);
@@ -616,6 +952,30 @@ export class Game extends Phaser.Scene {
     const signal = this.dangerTracker.update(now, near);
     if (signal === 'start') this.juice.trigger('danger', 1);
     else if (signal === 'end') this.juice.endDanger();
+  }
+
+  /** Flaggar objekten (nivå ≥8) som ligger nära varandra utan att nudda. */
+  private checkNearMiss(): void {
+    const n = this.balls.length;
+    for (let i = 0; i < n; i++) {
+      const b = this.balls[i];
+      let it = this.nmItems[i];
+      if (!it) {
+        it = { level: 0, x: 0, y: 0, r: 0 };
+        this.nmItems[i] = it;
+      }
+      it.level = b.special ? -1 : b.level;
+      it.x = b.body.position.x;
+      it.y = b.body.position.y;
+      it.r = this.radiusFor(b.special, b.level);
+      b.nearMiss = false;
+    }
+    findNearMiss(this.nmItems, n, FEEL.nearMiss, this.nmOut);
+    const now = this.time.now;
+    for (let k = 0; k < this.nmOut.length; k++) {
+      const b = this.balls[this.nmOut[k]];
+      if (now >= b.noPulseUntil) b.nearMiss = true;
+    }
   }
 
   // ---------------------------------------------------------------- slut

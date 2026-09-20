@@ -38,6 +38,11 @@ export function radiusOf(level: number): number {
   return LEVELS[level].radius;
 }
 
+/** Nivåns grundpoäng (utan bonus). Används bl.a. av bombens poängsumma. */
+export function scoreOf(level: number): number {
+  return LEVELS[level].score;
+}
+
 /** Poäng för att skapa ett objekt av given nivå (inkl. bonus). */
 export function scoreForCreating(level: number): number {
   const def = LEVELS[level];

@@ -42,6 +42,8 @@ export function ballPad(level: number): number {
 
 export const FX_DOT = 'fx-dot';
 export const FX_RING = 'fx-ring';
+/** Ringens radie i texturen (128×128, strokeCircle r=58). Scale = önskad radie / detta. */
+export const FX_RING_R = 58;
 export const SPECIAL_BOMB = 'special-bomb';
 export const SPECIAL_RAINBOW = 'special-rainbow';
 

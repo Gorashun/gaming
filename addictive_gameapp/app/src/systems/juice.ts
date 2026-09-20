@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
-import { EVENTS, JUICE, FEEL, type JuiceEvent } from '../data/juice';
-import { THEME } from '../data/theme';
-import { FX_DOT } from '../ui/textures';
+import { EVENTS, JUICE, FEEL, RINGS, SOUND_ALIAS, type JuiceEvent, type RingWave } from '../data/juice';
+import { THEME, hexToInt } from '../data/theme';
+import { FX_DOT, FX_RING, FX_RING_R } from '../ui/textures';
 import { playSound, startDanger, stopDanger } from './audio';
 import { hapticForIntensity } from './haptics';
 
@@ -41,6 +41,11 @@ export class Juice {
   private emitter: Phaser.GameObjects.Particles.ParticleEmitter | null = null;
   private readonly pops: Phaser.GameObjects.Text[] = [];
   private popIndex = 0;
+  private readonly rings: Phaser.GameObjects.Image[] = [];
+  private ringIndex = 0;
+  private tint: Phaser.GameObjects.Rectangle | null = null;
+  private dangerActive = false;
+  private jackpotSlowmo = false;
 
   private calm: boolean;
 
@@ -88,10 +93,11 @@ export class Juice {
     let i = Phaser.Math.Clamp(intensity, 0, 1);
     if (this.calm) i *= JUICE.calm.intensityScale;
 
-    playSound(event, { intensity: i, combo: opts.combo });
+    playSound(SOUND_ALIAS[event] ?? event, { intensity: i, combo: opts.combo });
     if (ch.haptics) hapticForIntensity(i);
 
     if (event === 'danger') {
+      this.dangerActive = true;
       this.startSlowmo();
       startDanger();
       return;
@@ -103,10 +109,14 @@ export class Juice {
     if (ch.shake > 0) this.shake(x, y, i * ch.shake);
     if (ch.scorePop && opts.score) this.scorePop(x, y, opts.score);
     if (ch.zoom) this.zoom(i);
+    const ring = RINGS[event];
+    if (ring) this.ringWave(x, y, ring);
+    if (event === 'jackpot') this.jackpot();
   }
 
   /** Faran är över: tillbaka till 1,0× och tyst. */
   endDanger(): void {
+    this.dangerActive = false;
     stopDanger();
     this.endSlowmo();
   }
@@ -216,6 +226,76 @@ export class Juice {
     });
   }
 
+  /** Expanderande strokad ring (aldrig en vitblixt, UI.md §6). */
+  private ringWave(x: number, y: number, cfg: RingWave): void {
+    for (let k = 0; k < cfg.count; k++) {
+      const img = this.ring();
+      img
+        .setPosition(x, y)
+        .setTint(hexToInt(cfg.color))
+        .setAlpha(cfg.alpha)
+        .setScale(0.08)
+        .setVisible(true);
+      this.scene.tweens.add({
+        targets: img,
+        scale: cfg.maxR / FX_RING_R,
+        alpha: 0,
+        delay: k * cfg.stepMs,
+        duration: cfg.durationMs,
+        ease: 'Quad.easeOut',
+        onComplete: () => img.setVisible(false),
+      });
+    }
+  }
+
+  private ring(): Phaser.GameObjects.Image {
+    let img = this.rings[this.ringIndex];
+    if (!img) {
+      img = this.scene.add.image(0, 0, FX_RING).setDepth(29).setBlendMode('ADD');
+      this.rings[this.ringIndex] = img;
+    }
+    this.ringIndex = (this.ringIndex + 1) % JUICE.ringPoolSize;
+    this.scene.tweens.killTweensOf(img);
+    return img;
+  }
+
+  /** Jackpot: guldton över hela burken + slow-mo. Enda tidsändringen utanför fara. */
+  private jackpot(): void {
+    const j = JUICE.jackpot;
+    if (!this.tint) {
+      this.tint = this.scene.add
+        .rectangle(
+          THEME.layout.width / 2,
+          THEME.layout.height / 2,
+          THEME.layout.width,
+          THEME.layout.height,
+          hexToInt(THEME.palette.gold),
+        )
+        .setDepth(28)
+        .setAlpha(0);
+    }
+    const tint = this.tint;
+    this.scene.tweens.killTweensOf(tint);
+    tint.setAlpha(0);
+    this.scene.tweens.add({
+      targets: tint,
+      alpha: j.tintAlpha,
+      duration: j.tintMs / 2,
+      yoyo: true,
+      ease: 'Sine.easeInOut',
+      onComplete: () => tint.setAlpha(0),
+    });
+
+    if (this.dangerActive) return;
+    this.jackpotSlowmo = true;
+    this.startSlowmo();
+    this.scene.time.delayedCall(j.slowmoMs, () => {
+      if (!this.jackpotSlowmo || this.dangerActive) return;
+      this.jackpotSlowmo = false;
+      this.endSlowmo();
+    });
+  }
+
   // ---------------------------------------------------------------- slow-mo
 
   private setTimeScale(v: number): void {
@@ -275,6 +355,8 @@ export class Juice {
   }
 
   destroy(): void {
+    this.dangerActive = false;
+    this.jackpotSlowmo = false;
     stopDanger();
     this.stopped = false;
     this.scene.matter?.world?.resume();
@@ -284,5 +366,7 @@ export class Juice {
     this.cam.setZoom(1);
     this.emitter = null;
     this.pops.length = 0;
+    this.rings.length = 0;
+    this.tint = null;
   }
 }

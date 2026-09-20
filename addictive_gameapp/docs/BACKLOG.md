@@ -27,10 +27,10 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [x] P2.6 Epilepsi-guard: max 3 blink/s, Lugnt läge-ikon. AK: testfall i Playwright.
 
 ## Fas 3 – Regissören och meta
-- [ ] P3.1 `systems/director.ts`, seedbar, lägen torka/flöde/kick, all balansering i `data/`. AK: enhetstest utan rendering.
-- [ ] P3.2 Specialobjekt bomb, regnbåge, magnet. AK: dyker upp efter 25–60 drops, slumpat.
-- [ ] P3.3 Äkta near-miss-markering (två näst-största bredvid varandra). AK: puls syns, aldrig falskt positiv.
-- [ ] P3.4 Startskärm med hylla (bästa objekt) och kosmetisk upplåsning. AK: noll text krävs.
+- [x] P3.1 `systems/director.ts`, seedbar, lägen torka/flöde/kick, all balansering i `data/`. AK: enhetstest utan rendering.
+- [x] P3.2 Specialobjekt bomb, regnbåge, magnet. AK: dyker upp efter 25–60 drops, slumpat.
+- [x] P3.3 Äkta near-miss-markering (två näst-största bredvid varandra). AK: puls syns, aldrig falskt positiv.
+- [~] P3.4 Startskärm med hylla (bästa objekt) klar i fas 2. Kosmetisk upplåsning flyttad till v1.1.
 
 ## Fas 4 – Android
 - [x] P4.1 Capacitor 8, `android/` incheckad, manifest utan INTERNET. AK: `npx cap sync android` grönt.

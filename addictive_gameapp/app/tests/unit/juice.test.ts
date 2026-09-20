@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EVENTS, FEEL, JUICE, mergeIntensity } from '../../src/data/juice';
+import { EVENTS, FEEL, JUICE, RINGS, mergeIntensity } from '../../src/data/juice';
 import { THEME } from '../../src/data/theme';
 
 const rgb = (hex: string): [number, number, number] => [
@@ -59,11 +59,29 @@ describe('juice-konfig', () => {
     expect(JUICE.calm.zoom).toBe(false);
   });
 
-  it('kamerazoom bara för chain och special', () => {
+  // DESIGN §6: zoom bara för chain och special. bomb och jackpot ÄR specialögonblick
+  // (UI.md §6: "Bomb detonerar" och "Jackpot" listar båda kamerazoom).
+  it('kamerazoom bara för chain och specialögonblicken', () => {
     const zooming = Object.entries(EVENTS)
       .filter(([, ch]) => ch.zoom)
       .map(([k]) => k);
-    expect(zooming.sort()).toEqual(['chain', 'special']);
+    expect(zooming.sort()).toEqual(['bomb', 'chain', 'jackpot', 'special']);
+  });
+
+  it('ringvågor i stället för vitblixtar, jackpot är enda tidsändringen utanför fara', () => {
+    expect(RINGS.bomb?.count).toBe(1);
+    expect(RINGS.jackpot?.count).toBe(3);
+    expect(JUICE.jackpot.timeScale).toBe(0.6);
+    expect(JUICE.jackpot.slowmoMs).toBe(600);
+    // Guldtonen är en hel upp-och-ner-tonning ⇒ under 3 växlingar per sekund.
+    expect(1000 / JUICE.jackpot.tintMs).toBeLessThan(3);
+  });
+
+  it('near-miss kan aldrig flagga objekt som nuddar och pulsar ≤1 Hz', () => {
+    expect(FEEL.nearMiss.minGapPx).toBeGreaterThan(0);
+    expect(FEEL.nearMiss.maxGapPx).toBe(20);
+    expect(FEEL.nearMiss.minLevel).toBe(8);
+    expect(500 / FEEL.nearMiss.halfCycleMs).toBeLessThanOrEqual(1);
   });
 
   it('partikelantalet följer 6 + 24·i med tak 40', () => {

@@ -4,6 +4,7 @@
  */
 import { THEME } from './theme';
 import { MAX_LEVEL } from './levels';
+import { SPECIALS } from './director';
 
 export type JuiceEvent =
   | 'drop'
@@ -11,6 +12,9 @@ export type JuiceEvent =
   | 'merge'
   | 'chain'
   | 'special'
+  | 'specialDrop'
+  | 'bomb'
+  | 'jackpot'
   | 'danger'
   | 'loss'
   | 'newRecord'
@@ -37,6 +41,10 @@ export const EVENTS: Readonly<Record<JuiceEvent, EventChannels>> = {
   merge: { shake: 0.4, particles: 1, zoom: false, hitStop: true, scorePop: true, haptics: true },
   chain: { shake: 0.75, particles: 1, zoom: true, hitStop: true, scorePop: true, haptics: true },
   special: { shake: 1, particles: 1, zoom: true, hitStop: true, scorePop: true, haptics: true },
+  // Sällsynt drop (UI.md §6): bara ljud, gnistor och haptik – ingen shake eller zoom.
+  specialDrop: { shake: 0, particles: 0.3, zoom: false, hitStop: false, scorePop: false, haptics: true },
+  bomb: { shake: 1, particles: 1, zoom: true, hitStop: true, scorePop: true, haptics: true },
+  jackpot: { shake: 1, particles: 1, zoom: true, hitStop: true, scorePop: true, haptics: true },
   danger: { shake: 0, particles: 0, zoom: false, hitStop: false, scorePop: false, haptics: false },
   loss: { shake: 0.4, particles: 0, zoom: false, hitStop: false, scorePop: false, haptics: true },
   newRecord: { shake: 0.6, particles: 1, zoom: false, hitStop: true, scorePop: false, haptics: true },
@@ -77,6 +85,19 @@ export const JUICE = {
     poolSize: 8,
     ease: THEME.anim.scorePop.ease,
   },
+  /** Antal återanvända ringbilder. */
+  ringPoolSize: 4,
+  /**
+   * Jackpot (UI.md §6): guldton över burken + slow-mo. Den enda effekten utöver
+   * faran som får röra tiden.
+   */
+  jackpot: {
+    slowmoMs: 600,
+    timeScale: THEME.anim.slowmoIn.timeScale,
+    tintAlpha: 0.22,
+    /** Hel upp-och-ner-tonning, dvs EN ljusstyrkeväxling – inte en blixt. */
+    tintMs: 520,
+  },
   /** Lugnt läge: intensitet ×0,5, shake och zoom av. */
   calm: {
     intensityScale: THEME.a11y.calm.intensityScale,
@@ -105,6 +126,47 @@ export const JUICE = {
   ] as readonly string[],
 } as const;
 
+export interface RingWave {
+  /** Antal ringar. */
+  count: number;
+  /** Radie i px som ringen växer till. */
+  maxR: number;
+  durationMs: number;
+  /** Fördröjning mellan ringarna. */
+  stepMs: number;
+  color: string;
+  alpha: number;
+}
+
+/**
+ * Expanderande strokade ringar i stället för vitblixtar (UI.md §6, §10.3).
+ * Events som saknas här ritar ingen ring.
+ */
+export const RINGS: Partial<Record<JuiceEvent, RingWave>> = {
+  bomb: {
+    count: 1,
+    maxR: SPECIALS.bomb.blastRadius,
+    durationMs: 420,
+    stepMs: 0,
+    color: THEME.palette.accent2,
+    alpha: 0.9,
+  },
+  jackpot: {
+    count: 3,
+    maxR: 210,
+    durationMs: 640,
+    stepMs: 120,
+    color: THEME.palette.gold,
+    alpha: 0.85,
+  },
+};
+
+/** Events utan egen post i ljudkartan lånar ett annat ljud (UI.md §8). */
+export const SOUND_ALIAS: Partial<Record<JuiceEvent, JuiceEvent>> = {
+  jackpot: 'newRecord',
+  specialDrop: 'special',
+};
+
 /** Combo, kedja, fara och rekordjakt (DESIGN §5). */
 export const FEEL = {
   combo: { windowMs: 1200, maxDots: 12 },
@@ -122,7 +184,20 @@ export const FEEL = {
     releaseMs: 400,
   },
   record: { thresholdPct: 0.9, intensity: 0.5, newRecordIntensity: 0.9 },
-  onboarding: { idleMs: 5000 },
+  /**
+   * Near-miss (DESIGN §5): två objekt av nivå ≥ minLevel med gap i (minGapPx, maxGapPx).
+   * minGapPx > 0 gör att objekt som nuddar aldrig ger puls.
+   */
+  nearMiss: {
+    minLevel: 8,
+    minGapPx: 1,
+    maxGapPx: 20,
+    /** Kontrollen körs var N:e frame (throttlad, O(n²) bara på nivå ≥8). */
+    checkEveryFrames: 10,
+    scale: THEME.anim.nearMiss.scale,
+    halfCycleMs: THEME.anim.nearMiss.durationMs,
+  },
+  onboarding: { idleMs: 5000, handY: 80, handSpanX: 80 },
 } as const;
 
 /** Intensitet för en vanlig merge: 0,25–0,45 från nivå, + combo-bonus (UI.md §6). */

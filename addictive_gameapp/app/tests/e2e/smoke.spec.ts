@@ -1,10 +1,5 @@
 import { test, expect } from '@playwright/test';
-
-declare global {
-  interface Window {
-    __game?: { bodyCount: number; score: number; over: boolean; combo: number; drop(x: number): void; forceLoss(): void };
-  }
-}
+import './hook';
 
 test('startar, tappar ett objekt och får en body i burken', async ({ page }) => {
   await page.goto('/?test=1');
