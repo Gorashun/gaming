@@ -22,3 +22,10 @@ Se PROPOSAL.md §10: go/no-go, Mac, Google Play-konto och dess ålder, Apple-kon
 | 2026-09-20 | Fas 0–1 klar och committad: kärnloop spelbar i webbläsare, 14 unit-tester + 2 e2e gröna. |
 | 2026-09-20 | Capacitor Android-projekt + GitHub Actions. Första gröna APK-build (debug, 4,1 MB): https://github.com/Gorashun/gaming/actions/runs/35503212251 |
 | 2026-09-20 | Fas 2 (juice, ljud, haptik, skärmar) pågår. |
+| 2026-09-20 | Fas 2 och 3 klara: juice, syntetiskt ljud, haptik, regissör, bomb/regnbåge, jackpot, near-miss. 47 unit + 8 e2e gröna. |
+| 2026-09-20 | **Testversion 1 levererad.** Webb: https://claude.ai/artifact/DNkPAJ9nfJuYRRtMYyrcwd · APK: https://github.com/Gorashun/gaming/actions/runs/35505844823 (artefakt `klunk-debug-apk`) |
+
+## Nästa steg (fas 5)
+- Anders testar på Android-telefon: prestanda i kaskad, touchkänsla, ljudlatens.
+- Speltest med barn 7–10. Justera regissören i `app/src/data/director.ts` efter observationer.
+- Kända luckor: kosmetisk upplåsning (v1.1), desaturering vid fara, tabulära siffror i HUD, pool för Matter-bodies.
