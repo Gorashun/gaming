@@ -29,3 +29,4 @@ Se PROPOSAL.md §10: go/no-go, Mac, Google Play-konto och dess ålder, Apple-kon
 - Anders testar på Android-telefon: prestanda i kaskad, touchkänsla, ljudlatens.
 - Speltest med barn 7–10. Justera regissören i `app/src/data/director.ts` efter observationer.
 - Kända luckor: kosmetisk upplåsning (v1.1), desaturering vid fara, tabulära siffror i HUD, pool för Matter-bodies.
+| 2026-09-20 | Rullande release `test-latest`: varje push ger ny APK på https://github.com/Gorashun/gaming/releases/download/test-latest/klunk-debug.apk |
