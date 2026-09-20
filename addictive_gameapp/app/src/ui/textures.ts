@@ -471,9 +471,31 @@ function bakeFx(scene: Phaser.Scene): void {
   }
 }
 
+export const BG_GLOW = 'bg-glow';
+
+function bakeBackground(scene: Phaser.Scene): void {
+  if (scene.textures.exists(BG_GLOW)) return;
+  const size = 256;
+  const canvas = scene.textures.createCanvas(BG_GLOW, size, size);
+  const ctx = canvas?.getContext();
+  if (!canvas || !ctx) return;
+  const c = THEME.palette.bgGlow;
+  const r = parseInt(c.slice(1, 3), 16);
+  const g = parseInt(c.slice(3, 5), 16);
+  const b = parseInt(c.slice(5, 7), 16);
+  const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  grad.addColorStop(0, `rgba(${r},${g},${b},1)`);
+  grad.addColorStop(0.55, `rgba(${r},${g},${b},0.45)`);
+  grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, size, size);
+  canvas.refresh();
+}
+
 /** Bakar allt vid boot. Idempotent. */
 export function bakeTextures(scene: Phaser.Scene): void {
   bakeLevels(scene);
   bakeSpecials(scene);
   bakeFx(scene);
+  bakeBackground(scene);
 }

@@ -1,42 +1,184 @@
 import Phaser from 'phaser';
-import { WORLD } from '../data/physics';
 import { INT, THEME } from '../data/theme';
-import { cached } from '../systems/save';
+import { ballTextureKey, scaleForBodyRadius } from '../ui/textures';
+import { drawBackground } from '../ui/background';
+import { iconTextureKey, type IconKey } from '../ui/icons';
+import { cached, save } from '../systems/save';
+import { playSound, setCalm, setSoundEnabled, unlockAudio } from '../systems/audio';
+import { setHapticsEnabled, vibrate } from '../systems/haptics';
 
-/** Tillfällig startskärm: bara en stor ▶-cirkel. Full startskärm byggs i fas 3 (P3.4). */
+const L = THEME.layout;
+const TOUCH = THEME.touch.minLogical;
+
+interface Toggle {
+  img: Phaser.GameObjects.Image;
+  on: () => boolean;
+  set: (v: boolean) => void;
+  keys: [onKey: IconKey, offKey: IconKey];
+}
+
+/** Startskärm enligt UI.md §7.1. Ingen text utöver logotypen och highscore-siffran. */
 export class Start extends Phaser.Scene {
+  private toggles: Toggle[] = [];
+
   constructor() {
     super('Start');
   }
 
   create(): void {
-    this.cameras.main.setBackgroundColor(INT.bg);
-    const cx = WORLD.width / 2;
-    const cy = WORLD.height / 2;
+    drawBackground(this);
+    this.toggles = [];
+    this.drawLogo();
+    this.drawPlay();
+    this.drawShelf();
+    this.drawIcons();
 
-    this.add
-      .text(cx, cy - 180, 'KLUNK', {
-        fontFamily: THEME.type.family,
-        fontSize: `${THEME.type.logo}px`,
-        color: THEME.palette.hud,
-      })
-      .setOrigin(0.5);
+    this.input.on('pointerdown', () => unlockAudio());
+    this.input.on('pointerup', (p: Phaser.Input.Pointer) => {
+      const hit = this.toggles.find(
+        (t) => Math.abs(p.worldX - t.img.x) <= TOUCH / 2 && Math.abs(p.worldY - t.img.y) <= TOUCH / 2,
+      );
+      if (hit) {
+        const next = !hit.on();
+        hit.set(next);
+        hit.img.setTexture(iconTextureKey(next ? hit.keys[0] : hit.keys[1]));
+        playSound('ui');
+        vibrate(10);
+        return;
+      }
+      if (p.worldY > 540) return; // ikonraden: ingen oavsiktlig start
+      playSound('ui');
+      this.scene.start('Game');
+    });
+  }
 
+  // ---------------------------------------------------------------- logotyp
+
+  private drawLogo(): void {
+    const baseline = 190;
+    const style = {
+      fontFamily: THEME.type.family,
+      fontSize: `${THEME.type.logo}px`,
+      color: THEME.palette.hud,
+      fontStyle: THEME.type.weightHeavy,
+    };
+    const sp = THEME.type.letterSpacingLogo;
+    const measure = (s: string): number => {
+      const t = this.make.text({ text: s, style }, false);
+      const w = t.width + sp * (s.length - 1);
+      t.destroy();
+      return w;
+    };
+    const wKL = measure('KL');
+    const wU = measure('U');
+    const wNK = measure('NK');
+    const total = wKL + sp + wU + sp + wNK;
+    let x = (L.width - total) / 2;
+
+    this.add.text(x, baseline, 'KL', style).setOrigin(0, 1).setLetterSpacing(sp);
+    x += wKL + sp;
+    this.drawJarGlyph(x, baseline, wU);
+    x += wU + sp;
+    this.add.text(x, baseline, 'NK', style).setOrigin(0, 1).setLetterSpacing(sp);
+  }
+
+  /** U:et i logotypen ÄR burken: öppen upptill, rimlinje ovanför, en glimt i sig. */
+  private drawJarGlyph(x: number, baseline: number, w: number): void {
+    const top = baseline - 48;
+    const bot = baseline - 4;
+    const r = Math.min(w / 2, (bot - top) / 2);
     const g = this.add.graphics();
-    g.fillStyle(INT.accent, 1);
-    g.fillCircle(cx, cy, 70);
-    g.fillStyle(INT.bg, 1);
-    g.fillTriangle(cx - 22, cy - 34, cx - 22, cy + 34, cx + 36, cy);
+    g.lineStyle(9, INT.hud, 1);
+    g.lineBetween(x + 4, top, x + 4, bot - r);
+    g.lineBetween(x + w - 4, top, x + w - 4, bot - r);
+    g.beginPath();
+    g.arc(x + w / 2, bot - r, w / 2 - 4, 0, Math.PI, false);
+    g.strokePath();
+    g.lineStyle(5, INT.jarEdge, 1);
+    g.lineBetween(x - 2, top - 8, x + w + 2, top - 8);
+    this.add
+      .image(x + w / 2, bot - r - 2, ballTextureKey(2))
+      .setScale(scaleForBodyRadius(2, w / 2 - 12));
+  }
+
+  // ---------------------------------------------------------------- play
+
+  private drawPlay(): void {
+    const cx = 180;
+    const cy = 330;
+    const g = this.add.graphics();
+    g.fillStyle(INT.accent, 0.12);
+    g.fillCircle(cx, cy, 56);
+    g.lineStyle(4, INT.accent, 1);
+    g.strokeCircle(cx, cy, 56);
+    const icon = this.add.image(cx + 4, cy, iconTextureKey('play')).setDisplaySize(64, 64);
+    this.tweens.add({
+      targets: icon,
+      scale: icon.scale * 1.06,
+      duration: THEME.anim.recordPulse.durationMs,
+      ease: THEME.anim.recordPulse.ease,
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  // ---------------------------------------------------------------- hylla
+
+  private drawShelf(): void {
+    const data = cached();
+    const g = this.add.graphics();
+    g.lineStyle(3, INT.jarEdge, 1);
+    g.lineBetween(80, 470, 280, 470);
+    g.lineBetween(92, 470, 92, 482);
+    g.lineBetween(268, 470, 268, 482);
 
     this.add
-      .text(cx, cy + 160, `${cached().highscore}`, {
-        fontFamily: THEME.type.family,
-        fontSize: `${THEME.type.sub}px`,
-        color: THEME.palette.gold,
-      })
-      .setOrigin(0.5);
+      .image(180, 436, ballTextureKey(data.bestLevel))
+      .setScale(scaleForBodyRadius(data.bestLevel, 34));
 
-    // Starta på pointerup så att samma gest inte läcker in som en drop i Game.
-    this.input.on('pointerup', () => this.scene.start('Game'));
+    this.add.image(140, 498, iconTextureKey('crown')).setDisplaySize(26, 26);
+    this.add
+      .text(172, 498, `${data.highscore}`, {
+        fontFamily: THEME.type.family,
+        fontSize: '28px',
+        color: THEME.palette.gold,
+        fontStyle: THEME.type.weightHeavy,
+      })
+      .setOrigin(0, 0.5);
+  }
+
+  // ---------------------------------------------------------------- ikoner
+
+  private drawIcons(): void {
+    const s = cached().settings;
+    this.addToggle(100, 580, ['soundOn', 'soundOff'], () => s.sound, (v) => {
+      s.sound = v;
+      setSoundEnabled(v);
+      if (v) unlockAudio();
+      void save({ settings: { ...s, sound: v } });
+    });
+    this.addToggle(180, 580, ['hapticOn', 'hapticOff'], () => s.haptics, (v) => {
+      s.haptics = v;
+      setHapticsEnabled(v);
+      void save({ settings: { ...s, haptics: v } });
+    });
+    this.addToggle(260, 580, ['calmOn', 'calmOff'], () => s.calm, (v) => {
+      s.calm = v;
+      setCalm(v);
+      void save({ settings: { ...s, calm: v } });
+    });
+  }
+
+  private addToggle(
+    x: number,
+    y: number,
+    keys: [IconKey, IconKey],
+    on: () => boolean,
+    set: (v: boolean) => void,
+  ): void {
+    const img = this.add
+      .image(x, y, iconTextureKey(on() ? keys[0] : keys[1]))
+      .setDisplaySize(48, 48);
+    this.toggles.push({ img, on, set, keys });
   }
 }

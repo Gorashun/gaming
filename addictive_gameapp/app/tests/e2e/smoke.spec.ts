@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 declare global {
   interface Window {
-    __game?: { bodyCount: number; score: number; drop(x: number): void };
+    __game?: { bodyCount: number; score: number; over: boolean; combo: number; drop(x: number): void; forceLoss(): void };
   }
 }
 

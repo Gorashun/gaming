@@ -4,27 +4,27 @@
 Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 
 ## Fas 0 – Grund (blockerad av go/no-go)
-- [ ] P0.1 Vite + Phaser 4 + TS-skelett i `app/`, `npm run dev` visar tom burk. AK: körs i webbläsare på 390×844-viewport. (programmerare)
-- [ ] P0.2 Playwright-test som startar spelet headless och tar screenshot. AK: `npm test` grönt. (programmerare)
-- [ ] P0.3 Benchmark-scen med 2 000 partiklar och fps-mätare. AK: fps loggas till konsol. (programmerare)
-- [ ] P0.4 `docs/TECH.md` med beslutad stack, mappstruktur, kommandon. (programmerare)
-- [ ] P0.5 `docs/DESIGN.md` med kärnloop, objektnivåer, regissörens lägen, belöningstabell. (projektledare + researcher)
-- [ ] P0.6 `docs/UI.md` med palett, objektstil, typografi, animationskurvor, ljudkarta. (ui-designer)
+- [x] P0.1 Vite + Phaser 4 + TS-skelett i `app/`, `npm run dev` visar tom burk. AK: körs i webbläsare på 390×844-viewport. (programmerare)
+- [x] P0.2 Playwright-test som startar spelet headless och tar screenshot. AK: `npm test` grönt. (programmerare)
+- [x] P0.3 Benchmark-scen med 2 000 partiklar och fps-mätare. AK: fps loggas till konsol. (programmerare)
+- [x] P0.4 `docs/TECH.md` med beslutad stack, mappstruktur, kommandon. (programmerare)
+- [x] P0.5 `docs/DESIGN.md` med kärnloop, objektnivåer, regissörens lägen, belöningstabell. (projektledare + researcher)
+- [x] P0.6 `docs/UI.md` med palett, objektstil, typografi, animationskurvor, ljudkarta. (ui-designer)
 
 ## Fas 1 – Kärnloop
-- [ ] P1.1 Burk med Matter-fysik, väggar, förlustlinje. AK: objekt faller och stannar.
-- [ ] P1.2 11 objektnivåer, merge vid kontakt mellan lika. AK: två lika → ett större, position = mittpunkt.
-- [ ] P1.3 Drop-kontroll: drag för att sikta, släpp för att tappa. Nästa-objekt-förhandsvisning. AK: fungerar med ett finger.
-- [ ] P1.4 Förlust när objekt ligger över linjen i >1,5 s, instant restart <0,5 s. AK: ett tryck → ny runda.
-- [ ] P1.5 Poäng och lokal highscore via Preferences/localStorage. AK: överlever omladdning.
+- [x] P1.1 Burk med Matter-fysik, väggar, förlustlinje. AK: objekt faller och stannar.
+- [x] P1.2 11 objektnivåer, merge vid kontakt mellan lika. AK: två lika → ett större, position = mittpunkt.
+- [x] P1.3 Drop-kontroll: drag för att sikta, släpp för att tappa. Nästa-objekt-förhandsvisning. AK: fungerar med ett finger.
+- [x] P1.4 Förlust när objekt ligger över linjen i >1,5 s, instant restart <0,5 s. AK: ett tryck → ny runda.
+- [x] P1.5 Poäng och lokal highscore via Preferences/localStorage. AK: överlever omladdning.
 
 ## Fas 2 – Juice
-- [ ] P2.1 `systems/juice.ts` med `trigger(event, intensity)`. AK: alla effekter skalas från en siffra.
-- [ ] P2.2 Ljudsprite + pitch-stegring per combo. AK: hörbar stegring, reset vid miss.
-- [ ] P2.3 Hit-stop, scale-punch, partiklar, screen shake, scorepop. AK: proportionellt mot merge-nivå.
-- [ ] P2.4 Haptik via Capacitor med web-fallback. AK: avstängbar.
-- [ ] P2.5 Slow-mo nära förlustlinjen. AK: triggas bara när det är äkta nära.
-- [ ] P2.6 Epilepsi-guard: max 3 blink/s, Lugnt läge-ikon. AK: testfall i Playwright.
+- [x] P2.1 `systems/juice.ts` med `trigger(event, intensity)`. AK: alla effekter skalas från en siffra.
+- [x] P2.2 Ljudsprite + pitch-stegring per combo. AK: hörbar stegring, reset vid miss.
+- [x] P2.3 Hit-stop, scale-punch, partiklar, screen shake, scorepop. AK: proportionellt mot merge-nivå.
+- [x] P2.4 Haptik via Capacitor med web-fallback. AK: avstängbar.
+- [x] P2.5 Slow-mo nära förlustlinjen. AK: triggas bara när det är äkta nära.
+- [x] P2.6 Epilepsi-guard: max 3 blink/s, Lugnt läge-ikon. AK: testfall i Playwright.
 
 ## Fas 3 – Regissören och meta
 - [ ] P3.1 `systems/director.ts`, seedbar, lägen torka/flöde/kick, all balansering i `data/`. AK: enhetstest utan rendering.
@@ -33,9 +33,9 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [ ] P3.4 Startskärm med hylla (bästa objekt) och kosmetisk upplåsning. AK: noll text krävs.
 
 ## Fas 4 – Android
-- [ ] P4.1 Capacitor 8, `android/` incheckad, manifest utan INTERNET. AK: `npx cap sync android` grönt.
-- [ ] P4.2 WebView-fällor stängda (viewport, touch-action, overscroll, pointerdown). AK: ingen zoom/bounce på telefon.
-- [ ] P4.3 GitHub Actions: build → sync → assembleRelease + bundleRelease, signerat via secrets. AK: APK-artifact laddas ner och installeras.
+- [x] P4.1 Capacitor 8, `android/` incheckad, manifest utan INTERNET. AK: `npx cap sync android` grönt.
+- [x] P4.2 WebView-fällor stängda (viewport, touch-action, overscroll, pointerdown). AK: ingen zoom/bounce på telefon.
+- [x] P4.3 GitHub Actions: build → sync → assembleRelease + bundleRelease, signerat via secrets. AK: APK-artifact laddas ner och installeras.
 - [ ] P4.4 Prestandamätning på riktig mellanklasstelefon. AK: ≥55 fps i kaskad.
 
 ## Fas 5 – Speltest och balans
