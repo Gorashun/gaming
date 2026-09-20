@@ -14,3 +14,8 @@ Se PROPOSAL.md §10: go/no-go, Mac, Google Play-konto och dess ålder, Apple-kon
 - 12 testare/14 dagar på Play för nya personliga konton (källa ej verifierad i containern).
 - WebView-prestanda måste mätas på riktig telefon tidigt (P0.3, P4.4).
 - Phaser 4 är ung (april 2026); fallback Phaser 3.
+
+## Beslut från Anders 2026-09-20
+- Arbetstitel KLUNK godkänd, villkorat att idé och namn inte bryter mot upphovsrätt/varumärke. Åtgärd: egen grafik och eget ljud, inga frukter, ordet "Suika"/"Watermelon Game" används aldrig; varumärkessökning (PRV/EUIPO/USPTO) före butiksrelease.
+- Inget Google Play-konto ännu. Utveckling sker via sideload av APK. Konto skaffas när produkten finns.
+- Three.js utvärderat som alternativ till Phaser: viabelt, men vald stack förblir Phaser för v1 (se svar i sessionen).
