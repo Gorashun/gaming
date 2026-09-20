@@ -94,3 +94,8 @@ Konton, nätverk, annonser, köp, push, dagliga belöningar, timers, magnet-obje
 - En 7-åring kan starta, tappa, mergea och starta om utan att läsa.
 - Highscore överlever omstart av appen.
 - APK byggd i GitHub Actions kan installeras på en Android-telefon.
+
+## Förtydliganden (2026-09-20, projektledare)
+- Burkgeometri: inre öppning 320 px (x 20→340), väggarna ritas utanför (x 0–20 och 340–360), botten y=600. Fysikkropparna följer detta.
+- `record` = diskret rekordjakt-puls när poäng ≥90 % av highscore. `newRecord` = själva passeringen.
+- Tema: "Glimtarna", lysande djuphavsvarelser (se UI.md). Alla nivåer bakas till texturer vid boot.
