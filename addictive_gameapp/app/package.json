@@ -11,6 +11,11 @@
     "e2e": "playwright test"
   },
   "dependencies": {
+    "@capacitor/android": "8.5.2",
+    "@capacitor/cli": "8.5.2",
+    "@capacitor/core": "8.5.2",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/preferences": "8.0.1",
     "phaser": "3.90.0"
   },
   "devDependencies": {

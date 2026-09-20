@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">KLUNK</string>
+    <string name="title_activity_main">KLUNK</string>
+    <string name="package_name">se.ferrer.klunk</string>
+    <string name="custom_url_scheme">se.ferrer.klunk</string>
+</resources>
