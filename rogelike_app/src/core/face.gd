@@ -1,71 +1,55 @@
 class_name Face
 extends RefCounted
-## En sida på en tärning. Sidor är permanenta items: smid om en 1:a till en
-## giftdroppe och tärningen blir en annan build (PROPOSAL §3, regel 4).
+## En tärningssida. GAME_DESIGN.md §2.1.
+## Sidor är permanenta items inom en run: smid om en 1:a till en Giftdroppe.
 
-enum Kind {
-	PIP, ## Vanlig siffersida. [member pips] är antalet ögon.
-	POISON, ## Ger gift istället för direkt skada.
-	SHIELD, ## Ger block till spelaren.
-	WILD, ## Räknas som vilket värde som helst vid par/triss/kåk.
-	BLANK, ## Inga ögon. Fyller en slot utan att bidra.
-}
-
-## Stabilt data-id, t.ex. "pip_3" eller "poison_drop".
+## Data-id, t.ex. "PIP_3" eller "POISON_DROP".
 var id: String = ""
-## Visningsnamn i UI.
-var label: String = ""
-var kind: int = Kind.PIP
-## Antal ögon. Grundvalutan i kedjan.
-var pips: int = 0
-## Fria taggar för relik-/synergivillkor, t.ex. ["iron", "starter"].
-var tags: Array[String] = []
+## Sidans ögonvärde, 0..9.
+var value: int = 0
+## En av [enum Rules.FaceEffectKind].
+var effect: int = Rules.FaceEffectKind.NONE
+## Effektens styrka. 0 när [member effect] är NONE.
+var magnitude: int = 0
+## Originalvärdet, används för att återställa GROW när striden slutar.
+var base_value: int = 0
 
 
-func _init(p_id: String = "", p_pips: int = 0, p_kind: int = Kind.PIP, p_label: String = "") -> void:
+func _init(p_id: String = "", p_value: int = 0, p_effect: int = Rules.FaceEffectKind.NONE, p_magnitude: int = 0) -> void:
 	id = p_id
-	pips = p_pips
-	kind = p_kind
-	label = p_label if p_label != "" else p_id
+	value = p_value
+	base_value = p_value
+	effect = p_effect
+	magnitude = p_magnitude
 
 
-## Sidans värde för par/triss/kåk-jämförelser. WILD matchar allt och hanteras
-## separat av resolvern, därför får den ett eget sentinel-värde.
-func match_value() -> int:
-	if kind == Kind.WILD:
-		return -1
-	return pips
+## Återställer värdet efter en strid där GROW eller sprickor ändrat det.
+func reset_value() -> void:
+	value = base_value
 
 
-func has_tag(tag: String) -> bool:
-	return tags.has(tag)
-
-
-func duplicate_face() -> Face:
-	var copy: Face = Face.new(id, pips, kind, label)
-	copy.tags = tags.duplicate()
-	return copy
+func copy() -> Face:
+	var other: Face = Face.new(id, value, effect, magnitude)
+	other.base_value = base_value
+	return other
 
 
 func to_dict() -> Dictionary:
 	return {
 		"id": id,
-		"label": label,
-		"kind": int(kind),
-		"pips": pips,
-		"tags": tags.duplicate(),
+		"value": value,
+		"effect": effect,
+		"magnitude": magnitude,
+		"base_value": base_value,
 	}
 
 
 static func from_dict(data: Dictionary) -> Face:
 	var face: Face = Face.new(
 		String(data.get("id", "")),
-		int(data.get("pips", 0)),
-		int(data.get("kind", Kind.PIP)),
-		String(data.get("label", "")),
+		int(data.get("value", 0)),
+		int(data.get("effect", Rules.FaceEffectKind.NONE)),
+		int(data.get("magnitude", 0)),
 	)
-	var tags: Array[String] = []
-	for tag: Variant in data.get("tags", []) as Array:
-		tags.append(String(tag))
-	face.tags = tags
+	face.base_value = int(data.get("base_value", face.value))
 	return face

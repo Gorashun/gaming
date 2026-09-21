@@ -1,52 +1,52 @@
 class_name Die
 extends RefCounted
-## En tärning: sex [Face]-sidor plus material. Tärningarna ÄR spelarens build.
+## En tärning med exakt sex [Face]-sidor. GAME_DESIGN.md §2.1.
 
-enum DieMaterial {
-	BONE, ## Billig, neutral. Startmaterial för Spelaren.
-	GLASS, ## Hög risk: kan spricka, men sidorna reagerar på varandra.
-	IRON, ## Tålig och tung. Färre tärningar, större värden.
-}
-
-const FACE_COUNT: int = 6
-
+## Unikt inom runnen, t.ex. "die_0".
 var id: String = ""
-var material: int = DieMaterial.BONE
+## En av [enum Rules.DieMaterial].
+var material: int = Rules.DieMaterial.IRON
+## EXAKT 6 sidor, index 0..5.
 var faces: Array[Face] = []
-## Hur många sprickor tärningen tål innan den går sönder. -1 = odödlig.
-var durability: int = -1
-## Senast rullade sidans index, eller -1 om tärningen inte rullats denna runda.
-var rolled_index: int = -1
+## Antal sprickor kvar innan tärningen förstörs. -1 = odödlig (IRON/BONE).
+var integrity: int = -1
+## Antal spruckna sidor hittills.
+var cracks: int = 0
+## Vilken sida som ligger upp efter kastet, index 0..5.
+var showing: int = 0
 
 
-func _init(p_id: String = "", p_faces: Array[Face] = [], p_material: int = DieMaterial.BONE) -> void:
+func _init(p_id: String = "", p_faces: Array[Face] = [], p_material: int = Rules.DieMaterial.IRON) -> void:
 	id = p_id
 	material = p_material
 	faces = p_faces.duplicate()
 
 
-## Standardtärning 1–6, för tester och startutrustning.
-static func standard(p_id: String, p_material: int = DieMaterial.BONE) -> Die:
+## Standardtärning med sidorna PIP_1..PIP_6.
+static func standard(p_id: String, p_material: int = Rules.DieMaterial.IRON) -> Die:
 	var faces: Array[Face] = []
-	for pips: int in range(1, FACE_COUNT + 1):
-		faces.append(Face.new("pip_%d" % pips, pips, Face.Kind.PIP))
-	return Die.new(p_id, faces, p_material)
+	for v: int in range(1, Rules.FACE_COUNT + 1):
+		faces.append(Face.new("PIP_%d" % v, v))
+	var die: Die = Die.new(p_id, faces, p_material)
+	if p_material == Rules.DieMaterial.GLASS:
+		die.integrity = 3
+	return die
 
 
-## Rullar tärningen med den seedade strömmen och returnerar den valda sidan.
-## Sätter även [member rolled_index] så att UI kan visa vilken sida som kom upp.
+## Sidan som ligger upp. Aldrig null för en välformad tärning.
+func showing_face() -> Face:
+	if showing < 0 or showing >= faces.size():
+		return null
+	return faces[showing]
+
+
+## Rullar tärningen med den seedade strömmen. Anropas bara av advance(),
+## aldrig av resolve() – resolve() är ren och ser ingen RNG (GAME_DESIGN §6.1).
 func roll(rng: Rng) -> Face:
 	if faces.is_empty():
-		rolled_index = -1
 		return null
-	rolled_index = rng.next_int(0, faces.size() - 1)
-	return faces[rolled_index]
-
-
-func rolled_face() -> Face:
-	if rolled_index < 0 or rolled_index >= faces.size():
-		return null
-	return faces[rolled_index]
+	showing = rng.next_int(0, faces.size() - 1)
+	return faces[showing]
 
 
 ## Smider om en sida. Returnerar false om indexet ligger utanför tärningen.
@@ -57,8 +57,19 @@ func reforge(index: int, face: Face) -> bool:
 	return true
 
 
-func is_broken() -> bool:
-	return durability == 0
+func is_destroyed() -> bool:
+	return integrity == 0
+
+
+func copy() -> Die:
+	var copied_faces: Array[Face] = []
+	for face: Face in faces:
+		copied_faces.append(face.copy())
+	var other: Die = Die.new(id, copied_faces, material)
+	other.integrity = integrity
+	other.cracks = cracks
+	other.showing = showing
+	return other
 
 
 func to_dict() -> Dictionary:
@@ -67,9 +78,10 @@ func to_dict() -> Dictionary:
 		face_data.append(face.to_dict())
 	return {
 		"id": id,
-		"material": int(material),
-		"durability": durability,
-		"rolled_index": rolled_index,
+		"material": material,
+		"integrity": integrity,
+		"cracks": cracks,
+		"showing": showing,
 		"faces": face_data,
 	}
 
@@ -81,8 +93,9 @@ static func from_dict(data: Dictionary) -> Die:
 	var die: Die = Die.new(
 		String(data.get("id", "")),
 		faces,
-		int(data.get("material", DieMaterial.BONE)),
+		int(data.get("material", Rules.DieMaterial.IRON)),
 	)
-	die.durability = int(data.get("durability", -1))
-	die.rolled_index = int(data.get("rolled_index", -1))
+	die.integrity = int(data.get("integrity", -1))
+	die.cracks = int(data.get("cracks", 0))
+	die.showing = int(data.get("showing", 0))
 	return die

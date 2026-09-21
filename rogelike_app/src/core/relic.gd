@@ -1,72 +1,49 @@
 class_name Relic
 extends RefCounted
-## En relik: passiv modifierare som resolvern läser. Reliker ändrar ALDRIG
-## slumpen i efterhand – de ändrar siffror, och kedjan visas före bekräftelse.
-
-enum Rarity {
-	COMMON,
-	UNCOMMON,
-	RARE,
-	LEGENDARY,
-}
+## En relik. GAME_DESIGN.md §2.1 och §4.6.
+## Reliker är rena modifierare som resolvern slår upp på id. De tillför ALDRIG
+## slump till en runda som redan bekräftats (GAME_DESIGN §6).
 
 var id: String = ""
+## En av [enum Rules.Rarity].
+var rarity: int = Rules.Rarity.COMMON
 var display_name: String = ""
 var description: String = ""
-var rarity: int = Rarity.COMMON
-## Nyckel→värde som resolvern slår upp, t.ex. {"flat_damage": 1, "combo_mult": 1.5}.
-var effects: Dictionary = {}
 
 
-func _init(p_id: String = "", p_rarity: int = Rarity.COMMON, p_effects: Dictionary = {}, p_name: String = "") -> void:
+func _init(p_id: String = "", p_rarity: int = Rules.Rarity.COMMON, p_name: String = "") -> void:
 	id = p_id
 	rarity = p_rarity
-	effects = p_effects.duplicate(true)
 	display_name = p_name if p_name != "" else p_id
 
 
-func effect(key: String, fallback: Variant = 0) -> Variant:
-	return effects.get(key, fallback)
-
-
-## Summerar en numerisk effekt över en lista reliker. Ordningen spelar ingen roll
-## för summor, vilket håller resolvern oberoende av relikernas sorteringsordning.
-static func sum_effect(relics: Array, key: String) -> float:
-	var total: float = 0.0
+## Sant om [param relics] innehåller en relik med [param id].
+static func has_relic(relics: Array, id: String) -> bool:
 	for relic: Variant in relics:
-		if relic is Relic:
-			total += float((relic as Relic).effect(key, 0))
-	return total
+		if relic is Relic and (relic as Relic).id == id:
+			return true
+	return false
 
 
-static func rarity_name(r: int) -> String:
-	match r:
-		Rarity.COMMON:
-			return "COMMON"
-		Rarity.UNCOMMON:
-			return "UNCOMMON"
-		Rarity.RARE:
-			return "RARE"
-		Rarity.LEGENDARY:
-			return "LEGENDARY"
-	return "UNKNOWN"
+func copy() -> Relic:
+	var other: Relic = Relic.new(id, rarity, display_name)
+	other.description = description
+	return other
 
 
 func to_dict() -> Dictionary:
 	return {
 		"id": id,
+		"rarity": rarity,
 		"display_name": display_name,
 		"description": description,
-		"rarity": int(rarity),
-		"effects": effects.duplicate(true),
 	}
 
 
 static func from_dict(data: Dictionary) -> Relic:
 	var relic: Relic = Relic.new(
 		String(data.get("id", "")),
-		int(data.get("rarity", Rarity.COMMON)),
-		data.get("effects", {}) as Dictionary,
+		int(data.get("rarity", Rules.Rarity.COMMON)),
 		String(data.get("display_name", "")),
 	)
 	relic.description = String(data.get("description", ""))

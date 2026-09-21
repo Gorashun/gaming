@@ -1,63 +1,33 @@
 class_name Slot
 extends RefCounted
-## En plats på brädet. Slot-typen avgör vad tärningen i den gör
-## (PROPOSAL §3, regel 3). Slots byts via reliker mellan strider.
-
-enum Type {
-	VOID, ## Tomrum: sidans ögon räknas inte som skada, de går rakt till Laddning.
-	FIRE, ## Eld: rak skada mot aktuell fiende.
-	MIRROR, ## Spegel: kopierar värdet från slotten till vänster.
-	ANVIL, ## Amboss: +N platt bonus innan multiplikatorer.
-	CHARGE, ## Ladda: allt här sparas till nästa runda istället för att slå.
-}
+## En plats på brädet. GAME_DESIGN.md §2.1 och §4.3.
+## Slot-typens regel avgör vad tärningen i den gör. En blockerad slot behandlas
+## EXAKT som en tom slot: inert, deltar inte i combos och bryter angränsning.
 
 var index: int = 0
-var type: int = Type.FIRE
-## Slot-specifik parameter. För ANVIL = platt bonus, för övriga oanvänd (0).
-var power: int = 0
-## Tärningens id som ligger här, eller "" om tom. Sätts av placeringssteget.
-var die_id: String = ""
+## En av [enum Rules.SlotType].
+var type: int = Rules.SlotType.PLAIN
+## Satt av fiendespecialen GRAB. Kan inte ta emot en tärning.
+var blocked: bool = false
 
 
-func _init(p_index: int = 0, p_type: int = Type.FIRE, p_power: int = 0) -> void:
+func _init(p_index: int = 0, p_type: int = Rules.SlotType.PLAIN, p_blocked: bool = false) -> void:
 	index = p_index
 	type = p_type
-	power = p_power
+	blocked = p_blocked
 
 
-func is_empty() -> bool:
-	return die_id == ""
-
-
-static func type_name(t: int) -> String:
-	match t:
-		Type.VOID:
-			return "VOID"
-		Type.FIRE:
-			return "FIRE"
-		Type.MIRROR:
-			return "MIRROR"
-		Type.ANVIL:
-			return "ANVIL"
-		Type.CHARGE:
-			return "CHARGE"
-	return "UNKNOWN"
+func copy() -> Slot:
+	return Slot.new(index, type, blocked)
 
 
 func to_dict() -> Dictionary:
-	return {
-		"index": index,
-		"type": int(type),
-		"power": power,
-		"die_id": die_id,
-	}
+	return {"index": index, "type": type, "blocked": blocked}
 
 
 static func from_dict(data: Dictionary) -> Slot:
-	var slot: Slot = Slot.new(
+	return Slot.new(
 		int(data.get("index", 0)),
-		int(data.get("type", Type.FIRE)),
-		int(data.get("power", 0)),
+		int(data.get("type", Rules.SlotType.PLAIN)),
+		bool(data.get("blocked", false)),
 	)
-	slot.die_id = String(data.get("die_id", ""))
-	return slot
