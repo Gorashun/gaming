@@ -14,18 +14,23 @@ extends Node
 ## byte-identisk med en run som aldrig kraschade.
 
 const SCREEN_TITLE: String = "TITLE"
-const SCREEN_MARCH: String = "MARCH"
+## Korridoren (M5). Hela våningen: utforskning, strid i de nedre 55 % och
+## belöningsvalet på golvet. Ersätter M1:s marsch-remsa.
+const SCREEN_CORRIDOR: String = "CORRIDOR"
+## Den platta stridsskärmen. Används bara av tutorialvåning 0 (källaren under
+## smedjan), där det inte finns någon korridor att stå i.
 const SCREEN_COMBAT: String = "COMBAT"
+## Tutorialens belöningskort. En riktig run visar dem i korridoren i stället.
 const SCREEN_REWARD: String = "REWARD"
 const SCREEN_GAMEOVER: String = "GAMEOVER"
-## Staden (M2.5). Tillfällig menyversion, se [TownScreen].
+## Staden Chalkrim som förstapersons torg (M5, CORRIDOR_DESIGN §5).
 const SCREEN_TOWN: String = "TOWN"
 ## Kroppsvalet vid första start (M2.5).
 const SCREEN_SMITH: String = "SMITH"
 
 const SCENE_PATHS: Dictionary = {
 	SCREEN_TITLE: "res://src/game/title/title_screen.tscn",
-	SCREEN_MARCH: "res://src/game/march/march_screen.tscn",
+	SCREEN_CORRIDOR: "res://src/game/corridor/corridor_screen.tscn",
 	SCREEN_COMBAT: "res://src/game/combat/combat_screen.tscn",
 	SCREEN_REWARD: "res://src/game/reward/reward_screen.tscn",
 	SCREEN_GAMEOVER: "res://src/game/gameover/gameover_screen.tscn",
@@ -37,6 +42,9 @@ const SCENE_PATHS: Dictionary = {
 const M1_FLOOR: int = 1
 ## Inställningsmodalen. Ligger ovanpå skärmen, inte i stället för den.
 const SETTINGS_SCENE: String = "res://src/game/settings/settings_screen.tscn"
+## Character sheetet (M5). Modal precis som inställningarna: den ska gå att
+## öppna i korridoren utan att kasta bort kamerans plats i rutnätet.
+const SHEET_SCENE: String = "res://src/game/sheet/character_sheet.tscn"
 
 ## Skärmen har bytts. Smoke-scriptet lyssnar på den här.
 signal screen_changed(screen_name: String)
@@ -65,6 +73,23 @@ var _arrival: Dictionary = {}
 
 var _screen: GameScreen = null
 var _screen_name: String = ""
+## Korridorskärmen medan den står framme. Den lever hela våningen igenom –
+## striden monteras i den, inte i stället för den.
+var _corridor: CorridorScreen = null
+## Stridsskärmen medan en strid pågår, oavsett om den är monterad i korridoren
+## eller står ensam i tutorialens källare.
+var _combat: CombatScreen = null
+## Våningens korridorkarta. [b]Sparas med runnen[/b] (map_state), så att en
+## återupptagen run hamnar på samma ruta med samma vinkel.
+var _map: CorridorMap = null
+var _corridor_state: Dictionary = {}
+## Noder vars möte redan är vunnet. Avgör om rutan man står på ska prima sina
+## egna monster eller nästa rums.
+var _cleared_nodes: Dictionary = {}
+## Character sheetet öppnas automatiskt efter runnens FÖRSTA belöning – en gång
+## per run, aldrig en gång per kort (CORRIDOR_DESIGN §4.4).
+var _sheet_shown_this_run: bool = false
+var _sheet_modal: Control = null
 var _node_id: String = ""
 var _rooms_cleared: int = 0
 var _best_chain: int = 0
@@ -136,14 +161,14 @@ static func back_action(screen_name: String, settings_open: bool, resolving: boo
 	if settings_open:
 		return BACK_CLOSE_SETTINGS
 	match screen_name:
-		SCREEN_COMBAT:
+		SCREEN_COMBAT, SCREEN_CORRIDOR:
 			# Mitt i kedjan betyder bakåt samma sak som en tapp på skärmen:
 			# hoppa till slutet. Att öppna en modal ovanpå en pågående
 			# uppspelning skulle frysa juicen bakom ett halvgenomskinligt lager.
 			return BACK_SKIP_PLAYBACK if resolving else BACK_OPEN_SETTINGS
-		SCREEN_MARCH, SCREEN_REWARD:
-			# Det finns inget "tillbaka" i en roguelike-marsch. Pausmenyn är
-			# det ärliga svaret: den har språk, ljud och nollställning.
+		SCREEN_REWARD:
+			# Det finns inget "tillbaka" i en roguelike. Pausmenyn är det
+			# ärliga svaret: den har språk, ljud och nollställning.
 			return BACK_OPEN_SETTINGS
 		SCREEN_GAMEOVER:
 			return BACK_TO_TITLE
@@ -166,7 +191,7 @@ func _notification(what: int) -> void:
 
 ## Kör bakåtknappens beslut. Returnerar vad som gjordes, för rökprov och test.
 func handle_back_request() -> String:
-	var combat: CombatScreen = _screen as CombatScreen
+	var combat: CombatScreen = current_combat()
 	var action: String = back_action(_screen_name, settings_open(), combat != null and combat.is_resolving())
 	match action:
 		BACK_CLOSE_SETTINGS:
@@ -201,10 +226,9 @@ func on_application_resumed() -> void:
 func can_autosave() -> bool:
 	if run == null or graph == null:
 		return false
-	if _screen_name != SCREEN_COMBAT:
+	if _combat == null or not is_instance_valid(_combat):
 		return true
-	var combat: CombatScreen = _screen as CombatScreen
-	return combat == null or combat.is_safe_to_autosave()
+	return _combat.is_safe_to_autosave()
 
 
 ## Titelskärmen. Alltid först, även med en tvingad seed: rökprovet och en
@@ -221,6 +245,16 @@ func _on_title_action(action: String) -> void:
 		"continue":
 			if resume_run():
 				return
+			# Sparfilen är trasig eller från före korridoren (M5). Kontraktet i
+			# [SaveIO] är att det aldrig får krascha; kontraktet här är att
+			# spelaren hamnar i staden med GO DOWN i tumzonen, inte i en run hen
+			# inte bad om.
+			SaveIO.clear()
+			if meta.tutorial_done:
+				show_town()
+			else:
+				start_tutorial()
+			return
 		"tutorial":
 			start_tutorial()
 			return
@@ -254,13 +288,19 @@ func next_seed() -> int:
 ## [code]GO DOWN[/code] ligger i tumzonen så att "en run till" är ett tapp.
 func show_town() -> void:
 	_tutorial_room = -1
+	_map = null
+	_corridor_state = {}
 	var arrival: Dictionary = _arrival.duplicate()
 	_arrival = {}
 	_show(SCREEN_TOWN, {
 		"meta": meta,
 		"seed": next_seed(),
 		"arrival": arrival,
-	}, {"go_down": _on_go_down})
+	}, {
+		"go_down": _on_go_down,
+		"character_sheet_requested": _on_sheet_requested,
+		"settings_requested": open_settings,
+	})
 
 
 func _on_go_down(seed_value: int) -> void:
@@ -393,21 +433,28 @@ func start_new_run(seed_value: int) -> void:
 	run.combat = Forge.apply_loadout(run.combat, meta.loadout)
 	rng = run.make_rng()
 	graph = RunGraph.generate_floor(M1_FLOOR, rng)
+	# [b]Forken är en sparfilsgaranti[/b] (CORRIDOR_DEV_NOTES §4.9): korridorens
+	# form får inte röra stridsströmmen, så en seed från före M5 ger fortfarande
+	# samma möten och samma kast.
+	_map = CorridorMap.build(graph, rng.fork("corridor"))
+	_corridor_state = _map.to_dict()
 	_node_id = graph.start_id
 	_rooms_cleared = 0
 	_best_chain = 0
 	_taken_ids = []
 	_run_won = false
 	_killed_by = ""
+	_sheet_shown_this_run = false
+	_cleared_nodes = {}
 	run.floor_index = M1_FLOOR
 	run.room_index = int(graph.node_at(_node_id).get("room", 1))
-	_autosave()
-	_show_march([_node_id])
+	_autosave(SCREEN_CORRIDOR)
+	_show_corridor()
 
 
 ## Läser sparfilen och fortsätter. Returnerar false när det inte finns någon
-## användbar sparfil – då startar [method _ready] en ny run i stället för att
-## krascha. Det är kontraktet i [SaveIO].
+## användbar sparfil – då går [method _on_title_action] till staden i stället
+## för att krascha. Det är kontraktet i [SaveIO].
 func resume_run() -> bool:
 	var data: Dictionary = SaveIO.load_dict()
 	if data.is_empty():
@@ -418,32 +465,314 @@ func resume_run() -> bool:
 
 	run = loaded
 	rng = run.make_rng()
-	var meta: Dictionary = run.meta
-	var graph_data: Dictionary = meta.get("graph", {}) as Dictionary
+	var saved: Dictionary = run.meta
+	var graph_data: Dictionary = saved.get("graph", {}) as Dictionary
 	if graph_data.is_empty():
 		return false
 	graph = RunGraph.from_dict(graph_data)
-	_node_id = String(meta.get("node_id", graph.start_id))
+	_node_id = String(saved.get("node_id", graph.start_id))
 	if not graph.has_node(_node_id):
 		return false
-	_rooms_cleared = int(meta.get("rooms_cleared", 0))
-	_best_chain = int(meta.get("best_chain", 0))
-	_taken_ids = (meta.get("taken_ids", []) as Array).duplicate()
-	_run_won = bool(meta.get("run_won", false))
+	_rooms_cleared = int(saved.get("rooms_cleared", 0))
+	_best_chain = int(saved.get("best_chain", 0))
+	_taken_ids = (saved.get("taken_ids", []) as Array).duplicate()
+	_run_won = bool(saved.get("run_won", false))
+	_sheet_shown_this_run = bool(saved.get("sheet_shown", false))
+	_cleared_nodes = {}
+	for id: Variant in saved.get("cleared_nodes", []) as Array:
+		_cleared_nodes[String(id)] = true
 
-	var phase: String = String(meta.get("phase", SCREEN_MARCH))
-	match phase:
-		SCREEN_COMBAT:
-			# Återupptas vid rundans början: kastet och intents är redan dragna
-			# och ligger i det sparade CombatState.
-			_show_combat()
-		SCREEN_REWARD:
-			_show_reward()
-		SCREEN_GAMEOVER:
-			_show_gameover()
-		_:
-			_show_march(graph.next_ids(_node_id) if bool(meta.get("node_cleared", false)) else [_node_id])
+	var phase: String = String(saved.get("phase", SCREEN_CORRIDOR))
+	if phase == SCREEN_GAMEOVER:
+		_show_gameover()
+		return true
+
+	# Korridoren ÄR runnen från och med M5. En sparfil utan map_state kan inte
+	# återupptas – [method SaveIO.migrate] fäller den redan, men vakten står
+	# kvar så att en handredigerad fil inte når [method CorridorMap.from_dict].
+	_corridor_state = saved.get("corridor", {}) as Dictionary
+	if _corridor_state.is_empty():
+		return false
+	_map = CorridorMap.from_dict(_corridor_state)
+	_show_corridor()
+	# Stod spelaren mitt i en strid monteras den på nytt, på samma ruta, med det
+	# kast som redan var draget och synligt (GAME_DESIGN §1).
+	if phase == SCREEN_COMBAT and run.combat != null \
+			and not run.combat.enemies.is_empty() and not run.combat.is_won():
+		_mount_combat.call_deferred()
+	elif phase == SCREEN_REWARD:
+		_show_reward.call_deferred()
 	return true
+
+
+# ---------------------------------------------------------------------------
+# Korridoren (M5)
+# ---------------------------------------------------------------------------
+
+## Monterar våningen. Anropas en gång per våning, aldrig per rum: 3D-världen
+## byggs om bara när kartan byts.
+func _show_corridor() -> void:
+	_show(SCREEN_CORRIDOR, {
+		"map": _map,
+		"hp": run.combat.player_hp,
+		"max_hp": run.combat.player_max_hp,
+		"room": run.room_index,
+		"pips": meta.pips,
+		"reduced_motion": Settings.reduced_motion,
+	}, {
+		"cell_changed": _on_cell_changed,
+		"encounter_reached": _on_encounter_reached,
+		"trap_choice": _on_trap_choice,
+		"trap_answered": _on_trap_answered,
+		"treasure_found": _on_treasure_found,
+		"treasure_taken": _on_treasure_taken,
+		"boss_door_reached": _on_boss_door_reached,
+		"door_opened": _on_door_opened,
+		"floor_cleared": _on_floor_cleared,
+		"reward_chosen": _on_corridor_reward_chosen,
+		"character_sheet_requested": _on_sheet_requested,
+		"settings_requested": open_settings,
+	})
+
+
+## Fienderna måste stå på plats INNAN spelaren ser silhuetten två rutor bort
+## (CORRIDOR_DESIGN §3.1 takt 1). Kartan vet vilken nod varje riktning leder
+## till; innehållet vet vilka varelser noden bär.
+##
+## [b]Rutan man står på går före rutan man går mot.[/b] Kliver spelaren in i en
+## kammare kommer [code]cell_changed[/code] FÖRE
+## [code]encounter_reached[/code] i samma händelselogg; utan den här ordningen
+## primades nästa rums monster ovanpå det möte som just skulle börja, och
+## spelaren mötte fyra Rostråttor med tre Slaggmalar i bild.
+func _prime_enemies() -> void:
+	if _corridor == null or not is_instance_valid(_corridor) or _map == null:
+		return
+	var cell: Dictionary = _map.current_cell()
+	var here: String = String(cell.get("node_id", ""))
+	if bool(cell.get("encounter", false)) and here != "" and not _cleared_nodes.has(here):
+		_set_next_enemies(here)
+		return
+	for action: Variant in _map.available_actions():
+		var info: Dictionary = (_map.available_actions()[action]) as Dictionary
+		var node_id: String = String(info.get("leads_to_node", ""))
+		if node_id == "":
+			node_id = String(info.get("node_id", ""))
+		if node_id != "" and _set_next_enemies(node_id):
+			return
+
+
+func _set_next_enemies(node_id: String) -> bool:
+	var node: Dictionary = graph.node_at(node_id)
+	if node.is_empty():
+		return false
+	var ids: Array = []
+	for enemy: Enemy in Content.encounter(int(node["room"]), int(node["variant"])):
+		ids.append(enemy.id)
+	_corridor.view().set_next_enemies(ids)
+	return true
+
+
+## Autosave-kroken. [b]Ett steg i korridoren är alltid en rundgräns[/b], så
+## spärren "aldrig mitt i en kedja" (GAME_DESIGN §1) gäller oförändrat.
+func _on_cell_changed(_cell: Dictionary, map_state: Dictionary) -> void:
+	_corridor_state = map_state
+	_prime_enemies()
+	if can_autosave():
+		_autosave(SCREEN_CORRIDOR)
+
+
+func _on_encounter_reached(node_id: String, _enemy_ids: Array) -> void:
+	if node_id == "" or not graph.has_node(node_id):
+		return
+	_node_id = node_id
+	var node: Dictionary = graph.node_at(node_id)
+	run.room_index = int(node.get("room", 1))
+	# Har rummet inte börjat ännu saknar staten fiender; då drar vi mötet och
+	# första kastet här (all slump före bekräftelse, GAME_DESIGN §6.4).
+	if run.combat.enemies.is_empty() or run.combat.is_won():
+		run.combat = RunFlow.start_room(run.combat, node, rng)
+	_autosave(SCREEN_COMBAT)
+	_mount_combat()
+
+
+func _mount_combat() -> void:
+	if _corridor == null or not is_instance_valid(_corridor):
+		return
+	_corridor.view().set_steering_enabled(false)
+	_combat = _corridor.mount_combat({
+		"state": run.combat,
+		"rng": rng,
+		"node": graph.node_at(_node_id),
+		"graph": graph,
+		"reveal": meta.reveal,
+		"tutorial_room": -1,
+		"best_chain": _best_chain,
+	}, {
+		"round_finished": _on_round_finished,
+		"combat_finished": _on_combat_finished,
+	})
+
+
+func _on_trap_choice(trap: Dictionary) -> void:
+	if _corridor != null:
+		_corridor.show_trap(trap)
+
+
+## Korridoren äger ingen regel och drar ingenting själv: priset tas ut i
+## [method RunFlow.pay_trap] (CORRIDOR_DEV_NOTES §4.5).
+func _on_trap_answered(index: int) -> void:
+	var chosen: Dictionary = _corridor.view().resolve_trap(index)
+	if not chosen.is_empty():
+		run.combat = RunFlow.pay_trap(run.combat, chosen, rng)
+	_refresh_corridor_status()
+	_corridor.view().set_steering_enabled(true)
+	_autosave(SCREEN_CORRIDOR)
+
+
+func _on_treasure_found(treasure: Dictionary) -> void:
+	if _corridor != null:
+		_corridor.show_treasure(treasure)
+
+
+## Altaret: en enda sak, ingen valsituation – belöningen var att du gick dit
+## (CORRIDOR_DESIGN §3.5).
+func _on_treasure_taken() -> void:
+	var cell: Dictionary = _map.current_cell()
+	var treasure: Dictionary = cell.get("treasure", {}) as Dictionary
+	var amount: int = int(treasure.get("amount", 0))
+	match String(treasure.get("id", "")):
+		"PIPS":
+			meta.pips += amount
+			SaveIO.save_meta(meta)
+		"CODEX":
+			# Kodexen bokförs som en sedd kombination; det är den enda räknaren
+			# profilen har för "ett uppslag till" i M5.
+			for enemy: Enemy in run.combat.enemies:
+				meta.see_enemy(enemy.id)
+			SaveIO.save_meta(meta)
+		"FORGE_FACE", "RELIC":
+			var option: Dictionary = _draw_single_reward(String(treasure["id"]))
+			if not option.is_empty():
+				run.combat = RewardApply.apply(run.combat, option,
+					RewardApply.default_target(run.combat, option))
+				_taken_ids.append(String(option.get("id", "")))
+	_refresh_corridor_status()
+	_corridor.view().set_steering_enabled(true)
+	_autosave(SCREEN_CORRIDOR)
+
+
+## Ett enda alternativ ur poolen, av den kategori altaret lovade. Drar ur samma
+## ström som belöningarna: altaret är en belöning, inte en gratislott.
+func _draw_single_reward(treasure_id: String) -> Dictionary:
+	var category: String = Rewards.CATEGORY_RELIC if treasure_id == "RELIC" else Rewards.CATEGORY_FORGE_FACE
+	var pool: Array[Dictionary] = RunFlow.available_pool(
+		Content.unlocked_pool(meta.unlocked), _taken_ids)
+	var options: Array[Dictionary] = Rewards.generate(pool, rng,
+		RunFlow.reward_floor_key(graph.node_at(_node_id)))
+	for option: Dictionary in options:
+		if String(option.get("category", "")) == category:
+			return option
+	return options[0] if not options.is_empty() else {}
+
+
+## Bossdörren. [b]Ett eget tapp[/b], aldrig automatiskt (§3.3).
+func _on_boss_door_reached() -> void:
+	if _corridor != null:
+		_corridor.show_door_prompt()
+
+
+func _on_door_opened() -> void:
+	await _corridor.view().open_door()
+	if _corridor != null and is_instance_valid(_corridor):
+		_corridor.view().set_steering_enabled(true)
+
+
+## Våningen är rensad. I M5 finns bara våning 1, så signalen bokförs och vinsten
+## avgörs av bossstriden; M3:s trappa ner hakar i här.
+func _on_floor_cleared(floor_index: int) -> void:
+	run.floor_index = maxi(run.floor_index, floor_index)
+
+
+func _refresh_corridor_status() -> void:
+	if _corridor == null or not is_instance_valid(_corridor):
+		return
+	_corridor.view().set_status(run.combat.player_hp, run.combat.player_max_hp,
+		run.room_index, meta.pips)
+
+
+func _on_corridor_reward_chosen(option: Dictionary, target: Dictionary) -> void:
+	if not option.is_empty():
+		run.combat = RewardApply.apply(run.combat, option, target)
+		_taken_ids.append(String(option.get("id", "")))
+	_autosave(SCREEN_CORRIDOR)
+	if _corridor == null or not is_instance_valid(_corridor):
+		return
+	_corridor.view().clear_encounter()
+	_refresh_corridor_status()
+	_corridor.view().show_explore_split(true)
+	_corridor.view().set_steering_enabled(true)
+	_prime_enemies()
+	# §4.4: en gång per run, efter den FÖRSTA belöningen. Då vill vi att spelaren
+	# ser att figuren ändrades; efter det vet hen det.
+	if not _sheet_shown_this_run:
+		_sheet_shown_this_run = true
+		open_character_sheet(String(option.get("id", "")))
+	else:
+		_corridor.view().set_sheet_badge(true)
+
+
+func _on_sheet_requested() -> void:
+	open_character_sheet()
+
+
+# ---------------------------------------------------------------------------
+# Character sheet (M5)
+# ---------------------------------------------------------------------------
+
+## Öppnar character sheetet ovanpå skärmen som är igång. [param highlight_id] är
+## belöningen som just togs; dess lager kritas på figuren (§4.3).
+func open_character_sheet(highlight_id: String = "") -> void:
+	if _sheet_modal != null and is_instance_valid(_sheet_modal):
+		return
+	var packed: PackedScene = ResourceLoader.load(SHEET_SCENE) as PackedScene
+	if packed == null:
+		push_error("GameController: kunde inte ladda %s" % SHEET_SCENE)
+		return
+	var sheet: CharacterSheet = packed.instantiate() as CharacterSheet
+	if sheet == null:
+		return
+	_sheet_modal = sheet
+	_modal_root.add_child(sheet)
+	sheet.closed.connect(_on_sheet_closed)
+	sheet.go_down_pressed.connect(_on_sheet_go_down)
+	sheet.open_for({
+		"state": run.combat if run != null else null,
+		"meta": meta,
+		"in_town": _screen_name == SCREEN_TOWN,
+		"room": run.room_index if run != null else 0,
+		"seed": run.seed_value if run != null else next_seed(),
+		"highlight": highlight_id,
+	})
+	if _corridor != null and is_instance_valid(_corridor):
+		_corridor.view().set_sheet_badge(false)
+
+
+func sheet_open() -> bool:
+	return _sheet_modal != null and is_instance_valid(_sheet_modal)
+
+
+func character_sheet() -> CharacterSheet:
+	return _sheet_modal as CharacterSheet
+
+
+func _on_sheet_closed() -> void:
+	_sheet_modal = null
+
+
+func _on_sheet_go_down(seed_value: int) -> void:
+	_sheet_modal = null
+	SaveIO.clear()
+	start_new_run(seed_value)
 
 
 func _fresh_seed() -> int:
@@ -473,6 +802,19 @@ func current_screen() -> GameScreen:
 	return _screen
 
 
+## Stridsskärmen som är igång, var den än är monterad. Rökprovet och
+## bakåtknappen frågar HÄR i stället för att casta [method current_screen]:
+## i korridoren är den skärmen [CorridorScreen], och striden är ett barn i den.
+func current_combat() -> CombatScreen:
+	if _combat != null and is_instance_valid(_combat):
+		return _combat
+	return null
+
+
+func corridor() -> CorridorScreen:
+	return _corridor if _corridor != null and is_instance_valid(_corridor) else null
+
+
 ## Byter skärm. [b]Alltid uppskjutet ett bildrutesteg.[/b]
 ##
 ## Skälet är konkret: skärmbytet utlöses av [signal CombatScreen.combat_finished],
@@ -486,6 +828,8 @@ func _show(screen_name: String, ctx: Dictionary, connections: Dictionary = {}) -
 		_screen.teardown()
 		_screen.queue_free()
 	_screen = null
+	_corridor = null
+	_combat = null
 	_screen_name = ""
 	_install_screen.call_deferred(screen_name, ctx, connections)
 
@@ -501,20 +845,23 @@ func _install_screen(screen_name: String, ctx: Dictionary, connections: Dictiona
 		push_error("GameController: %s har inte GameScreen som rot" % path)
 		return
 	_screen_name = screen_name
+	_corridor = _screen as CorridorScreen
+	if screen_name == SCREEN_COMBAT:
+		_combat = _screen as CombatScreen
 	_screen_root.add_child(_screen)
 	_screen.screen_done.connect(_on_screen_done.bind(screen_name))
 	for signal_name: String in connections:
 		_screen.connect(signal_name, connections[signal_name] as Callable)
 	_screen.setup(self, _world_root, ctx)
+	if _corridor != null:
+		# Fienderna i nästa kammare ska stå där innan spelaren tar sitt första
+		# steg – annars är silhuetten i mörkret tom (§3.1 takt 1).
+		_prime_enemies()
 	screen_changed.emit(screen_name)
 
 
 func _on_screen_done(payload: Dictionary, from_screen: String) -> void:
 	match from_screen:
-		SCREEN_MARCH:
-			_node_id = String(payload.get("node_id", _node_id))
-			run.room_index = int(graph.node_at(_node_id).get("room", 1))
-			_show_combat()
 		SCREEN_REWARD:
 			_on_reward_chosen(payload)
 		SCREEN_GAMEOVER:
@@ -522,51 +869,13 @@ func _on_screen_done(payload: Dictionary, from_screen: String) -> void:
 			# tumzonen: en run till är ett tapp därifrån (§A.4 regel 2).
 			SaveIO.clear()
 			show_town()
-		SCREEN_TITLE, SCREEN_COMBAT, SCREEN_TOWN, SCREEN_SMITH:
+		SCREEN_TITLE, SCREEN_CORRIDOR, SCREEN_COMBAT, SCREEN_TOWN, SCREEN_SMITH:
 			pass
 
 
-func _show_march(options: Array) -> void:
-	var typed: Array[String] = []
-	for value: Variant in options:
-		typed.append(String(value))
-	if typed.is_empty():
-		# Inget kvar att marschera till: våningen är slut.
-		_show_gameover()
-		return
-	_save_phase(SCREEN_MARCH, typed.size() > 1 or typed[0] != _node_id)
-	_show(SCREEN_MARCH, {
-		"graph": graph,
-		"from_id": _node_id,
-		"options": typed,
-		"rooms_cleared": _rooms_cleared,
-	})
-
-
-func _show_combat() -> void:
-	if run.combat == null:
-		push_error("GameController: ingen CombatState att strida med")
-		return
-	var node: Dictionary = graph.node_at(_node_id)
-	# Har rummet inte börjat ännu saknar staten fiender; då drar vi mötet och
-	# första kastet här (all slump före bekräftelse, GAME_DESIGN §6.4).
-	if run.combat.enemies.is_empty() or run.combat.is_won():
-		run.combat = RunFlow.start_room(run.combat, node, rng)
-		_autosave(SCREEN_COMBAT)
-	_show(SCREEN_COMBAT, {
-		"state": run.combat,
-		"rng": rng,
-		"node": node,
-		"graph": graph,
-		"reveal": meta.reveal,
-		"tutorial_room": -1,
-		"best_chain": _best_chain,
-	}, {
-		"round_finished": _on_round_finished,
-		"combat_finished": _on_combat_finished,
-	})
-
-
+## Belöningen [b]i rummet du just vann[/b] (CORRIDOR_DESIGN §3.5): tre kort över
+## korridorbilden, inte en egen skärm. Tutorialen har inget rum att stå i och
+## använder [constant SCREEN_REWARD] direkt i [method _advance_tutorial].
 func _show_reward() -> void:
 	var node: Dictionary = graph.node_at(_node_id)
 	# Poolen är startpoolen PLUS det spelaren köpt loss på Skrotmarknaden.
@@ -574,12 +883,21 @@ func _show_reward() -> void:
 	var pool: Array[Dictionary] = RunFlow.available_pool(
 		Content.unlocked_pool(meta.unlocked), _taken_ids)
 	var options: Array[Dictionary] = Rewards.generate(pool, rng, RunFlow.reward_floor_key(node))
-	_show(SCREEN_REWARD, {
-		"state": run.combat,
-		"options": options,
-		"node": node,
-		"breather": RunFlow.grants_breather(node),
-	})
+	if _corridor == null or not is_instance_valid(_corridor):
+		_show(SCREEN_REWARD, {
+			"state": run.combat,
+			"options": options,
+			"node": node,
+			"breather": RunFlow.grants_breather(node),
+		})
+		return
+	_corridor.unmount_combat()
+	_combat = null
+	if options.is_empty():
+		# Poolen är slut: gå vidare i stället för att visa ett tomt altare.
+		_on_corridor_reward_chosen({}, {})
+		return
+	_corridor.show_reward(run.combat, options, RunFlow.grants_breather(node))
 
 
 func _show_gameover() -> void:
@@ -657,8 +975,16 @@ func _note_combo(kind: String) -> void:
 		meta.see_enemy(enemy.id)
 
 
+## [b]Alltid uppskjutet en bildruta.[/b] Signalen kommer inifrån
+## [method EventPlayer._process] på stridsskärmen, och nästa steg river den
+## skärmen. Att göra det mitt i motorns träditeration kraschade Godot 4.6
+## reproducerbart (se noten vid [method _show]).
 func _on_combat_finished(won: bool, state: CombatState) -> void:
 	run.combat = state
+	_finish_combat.call_deferred(won, state)
+
+
+func _finish_combat(won: bool, state: CombatState) -> void:
 	if _tutorial_room >= 0:
 		# Träningshjulen: i våning 0 kan man inte dö, så "not won" kan bara
 		# betyda att rummet är oavslutat. Vi går vidare oavsett.
@@ -670,11 +996,12 @@ func _on_combat_finished(won: bool, state: CombatState) -> void:
 		return
 
 	_rooms_cleared += 1
+	_cleared_nodes[_node_id] = true
 	var node: Dictionary = graph.node_at(_node_id)
 	run.combat = RunFlow.finish_room(state, node)
 
 	if RunFlow.is_boss(node):
-		# M1 slutar efter våning 1:s boss. GAME_DESIGN §1 fortsätter med
+		# M5 slutar efter våning 1:s boss. GAME_DESIGN §1 fortsätter med
 		# FATE_ROLL och våning 2; det är M3-innehåll.
 		_run_won = true
 		_show_gameover()
@@ -684,17 +1011,16 @@ func _on_combat_finished(won: bool, state: CombatState) -> void:
 	_show_reward()
 
 
+## Tutorialens belöningsskärm. Korridorens tre kort går via
+## [method _on_corridor_reward_chosen] i stället.
 func _on_reward_chosen(payload: Dictionary) -> void:
 	if _tutorial_room >= 0:
 		# Tutorialens kort är berättande; förändringen ligger i rumsdatan.
 		_show_tutorial_room()
 		return
-	var choice: Dictionary = payload.get("choice", {}) as Dictionary
-	if not choice.is_empty():
-		run.combat = RewardApply.apply(run.combat, choice, payload.get("target", {}) as Dictionary)
-		_taken_ids.append(String(choice.get("id", "")))
-	_autosave(SCREEN_MARCH)
-	_show_march(graph.next_ids(_node_id))
+	_on_corridor_reward_chosen(
+		payload.get("choice", {}) as Dictionary,
+		payload.get("target", {}) as Dictionary)
 
 
 # ---------------------------------------------------------------------------
@@ -717,9 +1043,16 @@ func _autosave(phase: String = "") -> void:
 	run.store_rng(rng)
 	SaveIO.save_run(run, {
 		"graph": graph.to_dict(),
+		# map_state: hela korridorkartan, inklusive vilken ruta spelaren står på
+		# och åt vilket håll. Utan den går en run inte att återuppta mitt i
+		# korridoren (CORRIDOR_DEV_NOTES §4.4) – och det är därför
+		# [constant RunState.SAVE_VERSION] är 2.
+		"corridor": _corridor_state.duplicate(true),
 		"node_id": _node_id,
 		"rooms_cleared": _rooms_cleared,
 		"best_chain": _best_chain,
 		"taken_ids": _taken_ids.duplicate(),
 		"run_won": _run_won,
+		"sheet_shown": _sheet_shown_this_run,
+		"cleared_nodes": _cleared_nodes.keys(),
 	})

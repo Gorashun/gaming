@@ -26,6 +26,18 @@ func _run(seed_value: int = 4242) -> RunState:
 	return run
 
 
+## Sparfilens obligatoriska extradata sedan M5. [b]Utan [code]corridor[/code] är
+## filen inte återupptagbar[/b] och [method SaveIO.migrate] kasserar den –
+## korridoren ÄR runnen, och en run utan ruta finns inte.
+func _extra(more: Dictionary = {}) -> Dictionary:
+	var rng: Rng = Rng.new(3)
+	var graph: RunGraph = RunGraph.generate_floor(1, rng)
+	var extra: Dictionary = {"corridor": CorridorMap.build(graph, rng.fork("corridor")).to_dict()}
+	for key: Variant in more:
+		extra[key] = more[key]
+	return extra
+
+
 func _write_raw(text: String) -> void:
 	var file: FileAccess = FileAccess.open(TEST_PATH, FileAccess.WRITE)
 	file.store_string(text)
@@ -39,7 +51,7 @@ func test_has_save_is_false_before_anything_is_written() -> void:
 
 func test_roundtrip_preserves_the_run() -> void:
 	var run: RunState = _run()
-	assert_bool(SaveIO.save_run(run)).is_true()
+	assert_bool(SaveIO.save_run(run, _extra())).is_true()
 	assert_bool(SaveIO.has_save()).is_true()
 
 	var loaded: RunState = SaveIO.load_run()
@@ -59,7 +71,7 @@ func test_roundtrip_preserves_the_rng_position() -> void:
 	for i: int in range(5):
 		expected.append(rng.next_int(0, 1000))
 
-	SaveIO.save_run(run)
+	SaveIO.save_run(run, _extra())
 	var loaded_rng: Rng = SaveIO.load_run().make_rng()
 	var actual: Array[int] = []
 	for i: int in range(5):
@@ -68,14 +80,14 @@ func test_roundtrip_preserves_the_rng_position() -> void:
 
 
 func test_the_version_field_is_written_and_is_current() -> void:
-	SaveIO.save_run(_run())
+	SaveIO.save_run(_run(), _extra())
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_PATH)) as Dictionary
 	assert_bool(raw.has("version")).is_true()
 	assert_int(int(raw["version"])).is_equal(RunState.SAVE_VERSION)
 
 
 func test_extra_data_lands_in_meta() -> void:
-	SaveIO.save_run(_run(), {"node_id": "f1r2", "rooms_cleared": 2, "best_chain": 87})
+	SaveIO.save_run(_run(), _extra({"node_id": "f1r2", "rooms_cleared": 2, "best_chain": 87}))
 	var loaded: RunState = SaveIO.load_run()
 	assert_str(String(loaded.meta["node_id"])).is_equal("f1r2")
 	assert_int(int(loaded.meta["rooms_cleared"])).is_equal(2)
@@ -86,7 +98,7 @@ func test_extra_data_lands_in_meta() -> void:
 
 func test_a_run_graph_survives_the_save_file() -> void:
 	var graph: RunGraph = RunGraph.generate_floor(1, Rng.new(12))
-	SaveIO.save_run(_run(), {"graph": graph.to_dict(), "node_id": graph.start_id})
+	SaveIO.save_run(_run(), _extra({"graph": graph.to_dict(), "node_id": graph.start_id}))
 	var loaded: RunState = SaveIO.load_run()
 	var restored: RunGraph = RunGraph.from_dict(loaded.meta["graph"] as Dictionary)
 	assert_int(restored.nodes.size()).is_equal(graph.nodes.size())
@@ -101,7 +113,7 @@ func test_corrupt_json_gives_a_new_run_instead_of_a_crash() -> void:
 
 func test_truncated_file_gives_a_new_run_instead_of_a_crash() -> void:
 	# Precis vad som händer när OS:et dödar appen mitt i en skrivning.
-	SaveIO.save_run(_run())
+	SaveIO.save_run(_run(), _extra())
 	var text: String = FileAccess.get_file_as_string(TEST_PATH)
 	_write_raw(text.substr(0, text.length() / 2))
 	assert_object(SaveIO.load_run()).is_null()
@@ -123,7 +135,7 @@ func test_a_save_without_the_required_fields_gives_a_new_run() -> void:
 
 
 func test_a_future_version_is_refused_rather_than_misread() -> void:
-	SaveIO.save_run(_run())
+	SaveIO.save_run(_run(), _extra())
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_PATH)) as Dictionary
 	raw["version"] = RunState.SAVE_VERSION + 1
 	_write_raw(JSON.stringify(raw))
@@ -131,7 +143,7 @@ func test_a_future_version_is_refused_rather_than_misread() -> void:
 
 
 func test_version_zero_is_refused() -> void:
-	SaveIO.save_run(_run())
+	SaveIO.save_run(_run(), _extra())
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_PATH)) as Dictionary
 	raw["version"] = 0
 	_write_raw(JSON.stringify(raw))
@@ -141,7 +153,7 @@ func test_version_zero_is_refused() -> void:
 func test_a_failed_write_does_not_destroy_the_previous_save() -> void:
 	# Skrivningen går via en temporärfil och byter namn sist. En kvarlämnad
 	# temporärfil får aldrig räknas som sparfilen.
-	SaveIO.save_run(_run(7))
+	SaveIO.save_run(_run(7), _extra())
 	_write_raw_to(TEST_PATH + SaveIO.TEMP_SUFFIX, "halvskriven sopa")
 	var loaded: RunState = SaveIO.load_run()
 	assert_object(loaded).is_not_null()
@@ -149,7 +161,7 @@ func test_a_failed_write_does_not_destroy_the_previous_save() -> void:
 
 
 func test_clear_removes_both_the_save_and_the_temp_file() -> void:
-	SaveIO.save_run(_run())
+	SaveIO.save_run(_run(), _extra())
 	_write_raw_to(TEST_PATH + SaveIO.TEMP_SUFFIX, "skräp")
 	SaveIO.clear()
 	assert_bool(SaveIO.has_save()).is_false()
@@ -164,3 +176,42 @@ func _write_raw_to(path: String, text: String) -> void:
 	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
 	file.store_string(text)
 	file.close()
+
+
+# --- M5: korridoren i sparfilen --------------------------------------------
+
+func test_the_corridor_state_survives_the_save_file() -> void:
+	# map_state går rakt ner i JSON och tillbaka. Utan det hamnar en återupptagen
+	# run på startrutan igen, och spelaren får gå om halva våningen.
+	var rng: Rng = Rng.new(21)
+	var graph: RunGraph = RunGraph.generate_floor(1, rng)
+	var map: CorridorMap = CorridorMap.build(graph, rng.fork("corridor"))
+	map.apply(map.available_actions().keys()[0] as String)
+	SaveIO.save_run(_run(), {"corridor": map.to_dict()})
+
+	var loaded: RunState = SaveIO.load_run()
+	assert_object(loaded).is_not_null()
+	var restored: CorridorMap = CorridorMap.from_dict(loaded.meta["corridor"] as Dictionary)
+	assert_vector(Vector2(restored.position)).is_equal(Vector2(map.position))
+	assert_int(restored.yaw_quarters).is_equal(map.yaw_quarters)
+	assert_int(restored.steps_taken).is_equal(map.steps_taken)
+	assert_int(restored.cells.size()).is_equal(map.cells.size())
+
+
+func test_a_version_one_save_is_refused_instead_of_resuming_a_march_that_no_longer_exists() -> void:
+	# M5 bytte presentationen: marschen finns inte, och korridorrutan går inte
+	# att räkna fram i efterhand (forken har redan rullat). Filen kasseras, och
+	# GameController går till staden – aldrig en krasch (DECISIONS 2026-09-21).
+	SaveIO.save_run(_run(), _extra())
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_PATH)) as Dictionary
+	raw["version"] = 1
+	(raw["meta"] as Dictionary).erase("corridor")
+	_write_raw(JSON.stringify(raw))
+	assert_dict(SaveIO.load_dict()).is_empty()
+	assert_object(SaveIO.load_run()).is_null()
+
+
+func test_a_current_save_without_map_state_is_refused() -> void:
+	SaveIO.save_run(_run())
+	assert_dict(SaveIO.load_dict()).override_failure_message(
+		"en sparfil utan map_state är inte återupptagbar och ska kasseras").is_empty()

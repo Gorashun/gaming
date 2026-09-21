@@ -117,7 +117,6 @@ func _run() -> void:
 	await _play_title(controller)
 
 	var started_ms: int = Time.get_ticks_msec()
-	var rounds_played: int = 0
 	var rooms_seen: Dictionary = {}
 	var running: bool = true
 
@@ -130,6 +129,12 @@ func _run() -> void:
 			await _frames(1)
 			continue
 
+		# Character sheetet är en modal och kan ligga över vilken skärm som helst.
+		# Den öppnas automatiskt efter runnens första belöning (§4.4).
+		if controller.sheet_open():
+			await _play_sheet(controller)
+			continue
+
 		match controller.current_screen_name():
 			GameController.SCREEN_SMITH:
 				await _play_smith(screen as ChooseSmithScreen)
@@ -137,28 +142,25 @@ func _run() -> void:
 				await _play_town(screen as TownScreen)
 			GameController.SCREEN_TITLE:
 				await _play_title(controller)
-			GameController.SCREEN_MARCH:
-				await _play_march(screen as MarchScreen)
+			GameController.SCREEN_CORRIDOR:
+				var fight: CombatScreen = controller.current_combat()
+				if fight != null:
+					if not await _play_combat(controller, fight, rooms_seen):
+						running = false
+					continue
+				if not await _play_corridor(controller):
+					running = false
 			GameController.SCREEN_COMBAT:
-				var combat: CombatScreen = screen as CombatScreen
-				if combat.is_intro_active():
-					# Bossintron äger skärmen i högst 1,2 s och räknas som
-					# "resolving", så den måste fångas HÄR och inte i _play_round.
-					await _frames(4)
-					await _shot("05_boss_intro")
+				var combat: CombatScreen = controller.current_combat()
+				if combat == null:
 					await _frames(1)
 					continue
-				if combat.is_resolving():
-					await _frames(1)
-					continue
-				rounds_played += 1
-				rooms_seen[controller.run.room_index] = true
-				if not await _play_round(combat):
+				if not await _play_combat(controller, combat, rooms_seen):
 					running = false
 			GameController.SCREEN_REWARD:
 				await _play_reward(screen as RewardScreen)
 			GameController.SCREEN_GAMEOVER:
-				await _report(screen as GameOverScreen, rounds_played, rooms_seen.size())
+				await _report(screen as GameOverScreen, _rounds, rooms_seen.size())
 				# Knappen leder till staden, inte till en ny run: "en run till"
 				# är ett tapp DÄRIFRÅN (§A.4 regel 2). Vi följer med tillbaka
 				# så att hela slingan bevisas i ett svep.
@@ -241,7 +243,7 @@ func _play_town(town: TownScreen) -> void:
 	if not is_instance_valid(town):
 		return
 	_town_visits += 1
-	await _shot("10_town" if _town_visits == 1 else "14_town_after_run")
+	await _shot("10_town_square" if _town_visits == 1 else "40_town_after_run")
 	if _town_visits >= 2:
 		# Tutorial → staden → en run → tillbaka till staden. Slingan är sluten
 		# och rökprovet är klart; går vi ned igen snurrar det för evigt.
@@ -264,18 +266,117 @@ func _play_town(town: TownScreen) -> void:
 	await _frames(2)
 
 
-func _play_march(march: MarchScreen) -> void:
-	await _frames(8)
-	await _shot("02_march")
-	if not is_instance_valid(march):
-		return
-	march.arrive()
-	if is_instance_valid(march) and march.option_count() > 1:
+## Striden, var den än står: monterad i korridoren eller ensam i källaren.
+func _play_combat(controller: GameController, combat: CombatScreen, rooms_seen: Dictionary) -> bool:
+	if combat.is_intro_active():
+		# Bossintron äger skärmen i högst 1,2 s och räknas som "resolving", så
+		# den måste fångas HÄR och inte i _play_round.
 		await _frames(4)
-		await _shot("02b_march_branch")
-		if is_instance_valid(march):
-			march.choose(0)
-	await _frames(1)
+		await _shot("25_boss_intro")
+		await _frames(1)
+		return true
+	if combat.is_resolving():
+		await _frames(1)
+		return true
+	rooms_seen[controller.run.room_index] = true
+	_rounds += 1
+	return await _play_round(combat)
+
+
+# --- Korridoren (M5) ---------------------------------------------------
+
+## Hur många steg rökprovet får ta på en våning innan vi kallar det en loop.
+const CORRIDOR_STEP_GUARD: int = 140
+## CORRIDOR_DESIGN §8.1. Båda siffrorna skrivs ut och båda fäller körningen.
+const CORRIDOR_BUDGET_MS: float = 90000.0
+const MAX_QUIET_STEPS: int = 3
+## Korridortiden mäts på EN våning; budgeten gäller hela runnen (tre våningar).
+const FLOORS_PER_RUN: int = 3
+
+var _rounds: int = 0
+var _corridor_us: int = 0
+var _corridor_steps: int = 0
+var _quiet_steps: int = 0
+var _corridor_guard: int = 0
+
+
+## Ett drag i korridoren: svara på en fråga, välj en belöning eller ta ett steg.
+func _play_corridor(controller: GameController) -> bool:
+	var corridor: CorridorScreen = controller.corridor()
+	if corridor == null:
+		await _frames(1)
+		return true
+	var view: CorridorView = corridor.view()
+	if view == null or view.map == null:
+		await _frames(1)
+		return true
+
+	if not _taken.has("20_corridor"):
+		await _frames(4)
+		await _shot("20_corridor")
+
+	var reward: CorridorReward = corridor.reward()
+	if reward != null and reward.visible:
+		await _frames(6)
+		await _shot("26_reward_in_corridor")
+		if reward.option_count() <= 0:
+			_fail("the corridor reward showed zero options")
+			return false
+		reward.choose(0)
+		await _frames(3)
+		return true
+
+	var prompt: CorridorPrompt = corridor.prompt()
+	if prompt != null and prompt.visible:
+		var kind: String = String(prompt.get_meta(&"kind", ""))
+		await _frames(4)
+		await _shot("2%d_%s_prompt" % [2 if kind == "trap" else 7, kind])
+		prompt.press(0)
+		await _frames(3)
+		return true
+
+	_corridor_guard += 1
+	if _corridor_guard > CORRIDOR_STEP_GUARD:
+		_fail("the corridor never reached the boss (%d steps)" % _corridor_guard)
+		return false
+
+	var actions: Dictionary = view.map.available_actions()
+	if actions.is_empty():
+		await _frames(1)
+		return true
+	if actions.size() > 1 and not _taken.has("21_junction"):
+		await _frames(3)
+		await _shot("21_junction")
+
+	var started: int = Time.get_ticks_usec()
+	await view.step(_corridor_pick(actions))
+	_corridor_us += Time.get_ticks_usec() - started
+	_corridor_steps += 1
+	_quiet_steps = maxi(_quiet_steps, view.max_steps_without_event())
+	return true
+
+
+## Policy: alltid mot "fight" om det går. Den värsta vägen i stegbudgeten är
+## inte den intressanta här – den mest spelade är.
+static func _corridor_pick(actions: Dictionary) -> String:
+	for action: String in [CorridorMap.ACTION_LEFT, CorridorMap.ACTION_RIGHT, CorridorMap.ACTION_FORWARD]:
+		var info: Dictionary = actions.get(action, {}) as Dictionary
+		if String(info.get("sign", "")) == CorridorMap.SIGN_FIGHT:
+			return action
+	if actions.has(CorridorMap.ACTION_FORWARD):
+		return CorridorMap.ACTION_FORWARD
+	return String(actions.keys()[0])
+
+
+func _play_sheet(controller: GameController) -> void:
+	await _frames(8)
+	var sheet: CharacterSheet = controller.character_sheet()
+	if sheet == null:
+		return
+	await _shot("30_character_sheet_town" if sheet.in_town else "30_character_sheet")
+	if is_instance_valid(sheet):
+		sheet.close_sheet()
+	await _frames(3)
 
 func _play_round(combat: CombatScreen) -> bool:
 	# Tutorialens tips och kritpil försvinner vid första handling (§B.2), så
@@ -293,7 +394,8 @@ func _play_round(combat: CombatScreen) -> bool:
 			_fail("could not place die %d in slot %d" % [placement[slot], slot])
 	await _frames(3)
 	if room < 0:
-		await _shot("03_combat_before_confirm")
+		var prefix: String = "23_corridor_combat" if combat.in_corridor else "03_combat"
+		await _shot("%s_before_confirm" % prefix)
 		# Hjälp-lagret: sex callouts samtidigt, allt tänt på en gång (§6).
 		if not _taken.has("03b_combat_help"):
 			combat.open_help()
@@ -310,7 +412,7 @@ func _play_round(combat: CombatScreen) -> bool:
 	# (UI_GUIDE §12.3 rad 6 ligger på 876 ms).
 	await _seconds(1.0)
 	if is_instance_valid(combat) and combat.is_resolving():
-		await _shot("04_combat_mid_chain")
+		await _shot("24_combat_mid_chain")
 
 	# is_instance_valid: vinner rummet sin sista runda friar controllern
 	# stridsskärmen medan vi väntar. En statiskt typad Node-referens
@@ -347,7 +449,7 @@ func _report(over: GameOverScreen, rounds_played: int, rooms_seen: int) -> void:
 		return
 	var summary: Dictionary = over.summary()
 	var won: bool = bool(summary.get("won", false))
-	await _shot("07_win" if won else "07_death")
+	await _shot("35_win" if won else "35_death")
 	var score: Dictionary = summary.get("score", {}) as Dictionary
 	print("")
 	print("Run over: %s" % ("WIN" if won else "DEATH"))
@@ -360,6 +462,7 @@ func _report(over: GameOverScreen, rounds_played: int, rooms_seen: int) -> void:
 	print("  rooms visited   %d" % rooms_seen)
 	print("  juice calls     %d   haptic calls %d" % [
 		(juice.calls.size() if juice != null else 0), Haptics.calls.size()])
+	_report_corridor()
 	if juice != null:
 		var missing: Dictionary = juice.get("missing_sfx") as Dictionary
 		print("  sfx loaded      %d" % int(juice.get("sfx_loaded")))
@@ -372,6 +475,22 @@ func _report(over: GameOverScreen, rounds_played: int, rooms_seen: int) -> void:
 		_fail("no round was played")
 	if juice != null and juice.calls.is_empty():
 		_fail("the event player made no juice calls")
+
+## CORRIDOR_DESIGN §8.1:s två siffror. Båda fäller körningen om de spricker.
+func _report_corridor() -> void:
+	var floor_ms: float = float(_corridor_us) / 1000.0
+	var run_ms: float = floor_ms * float(FLOORS_PER_RUN)
+	print("  corridor steps  %d" % _corridor_steps)
+	print("  corridor time   %.0f ms on floor 1  →  %.0f ms per run (budget %.0f ms)" % [
+		floor_ms, run_ms, CORRIDOR_BUDGET_MS])
+	print("  quiet steps     %d (max %d)" % [_quiet_steps, MAX_QUIET_STEPS])
+	if _corridor_steps <= 0:
+		_fail("no corridor step was taken")
+	if run_ms > CORRIDOR_BUDGET_MS:
+		_fail("corridor time %.0f ms per run is over the %.0f ms budget" % [run_ms, CORRIDOR_BUDGET_MS])
+	if _quiet_steps > MAX_QUIET_STEPS:
+		_fail("%d steps without an event (max %d)" % [_quiet_steps, MAX_QUIET_STEPS])
+
 
 # --- Hjälpare ----------------------------------------------------------
 

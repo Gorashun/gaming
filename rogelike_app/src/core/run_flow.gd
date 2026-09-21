@@ -44,6 +44,60 @@ static func reward_floor_key(node: Dictionary) -> int:
 	return int(node.get("floor", 1))
 
 
+# --- Korridorens fällor (M5) ------------------------------------------------
+
+## Kostnadsslag i [member CorridorMap.TRAPS]. Korridoren äger ingen regel: den
+## säger bara vad priset heter, och den här filen tar ut det.
+const TRAP_COST_HP: String = "hp"
+const TRAP_COST_CRACK: String = "cracked_face"
+## [b]En fälla dödar aldrig.[/b] CORRIDOR_DESIGN §2.6 regel 3 säger att fällan är
+## ett val mellan två priser, inte ett tärningskast om runnen. Att gå in i bossen
+## skadad ska vara spelarens eget fel; att dö i en korridor mellan två rum, utan
+## en enda placering emellan, vore otur – och då är vi Rune Dice.
+const TRAP_HP_FLOOR: int = 1
+
+
+## Betalar en av fällans två prislappar (CORRIDOR_DESIGN §2.6) och returnerar det
+## nya tillståndet. [param option] är posten ur [code]trap.options[/code], alltså
+## exakt det spelaren läste på knappen innan hen tryckte.
+##
+## [b]Samma spricka som SLAGJAWs [code]CRACK_BITE[/code]:[/b] den uppåtvända
+## sidan byts mot [constant Resolver.CRACKED_FACE_ID] med [member Face.base_value]
+## bevarat, och glastärningens [member Die.integrity] sjunker. En annan regel för
+## samma ord ("sprucken") vore två sanningar om samma sak.
+static func pay_trap(state: CombatState, option: Dictionary, rng: Rng) -> CombatState:
+	var next: CombatState = state.copy()
+	var amount: int = maxi(0, int(option.get("amount", 0)))
+	match String(option.get("cost", "")):
+		TRAP_COST_HP:
+			next.player_hp = maxi(TRAP_HP_FLOOR, next.player_hp - amount)
+		TRAP_COST_CRACK:
+			for _i: int in range(amount):
+				_crack_one_face(next, rng)
+	return next
+
+
+## Spräcker den uppåtvända sidan på en slumpad hel tärning. Har varenda tärning
+## redan en sprucken uppsida händer ingenting – priset finns inte att ta ut, och
+## att ta ut det två gånger på samma sida vore att ta betalt utan vara.
+static func _crack_one_face(state: CombatState, rng: Rng) -> void:
+	var candidates: Array[int] = []
+	for i: int in range(state.dice.size()):
+		var face: Face = state.dice[i].showing_face()
+		if face != null and face.id != Resolver.CRACKED_FACE_ID:
+			candidates.append(i)
+	if candidates.is_empty():
+		return
+	var die: Die = state.dice[candidates[rng.next_int(0, candidates.size() - 1)]]
+	var face: Face = die.showing_face()
+	var cracked: Face = Face.new(Resolver.CRACKED_FACE_ID, 0)
+	cracked.base_value = face.base_value
+	die.faces[die.showing] = cracked
+	die.cracks += 1
+	if die.integrity > 0:
+		die.integrity -= 1
+
+
 ## Belöningspoolen minus det spelaren redan tagit. Garanti 3 i §4.7 säger att de
 ## tre alternativen ska ha olika id; att filtrera bort redan tagna id är samma
 ## princip utsträckt över hela runnen.

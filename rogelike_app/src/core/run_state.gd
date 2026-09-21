@@ -5,7 +5,13 @@ extends RefCounted
 ## slumpströmmens exakta position.
 
 ## Höjs när sparformatet ändras på ett sätt som kräver migrering.
-const SAVE_VERSION: int = 1
+##
+## [b]2 (M5):[/b] runnen spelas i korridoren och [code]meta.corridor[/code] bär
+## kartans tillstånd (rutan, vinkeln, besökta rutor, fällans status). En fil
+## från version 1 beskriver en marsch som inte finns längre och kan inte
+## översättas – [method SaveIO.migrate] kasserar den, och spelaren hamnar i
+## staden i stället för i en halv run.
+const SAVE_VERSION: int = 2
 
 var version: int = SAVE_VERSION
 ## Synlig i pausmenyn (GAME_DESIGN §6.10) och nyckeln till dagliga utmaningar.

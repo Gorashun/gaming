@@ -149,16 +149,23 @@ static func load_dict() -> Dictionary:
 
 
 ## Migrerar en sparfil till aktuellt format. Returnerar tom Dictionary för en
-## version vi inte känner igen (t.ex. en fil från en nyare klient).
+## version vi inte känner igen (t.ex. en fil från en nyare klient) eller för en
+## fil som inte går att översätta.
 ##
-## M1 har bara version 1, så funktionen är än så länge en vakt. Varje framtida
-## höjning av [constant RunState.SAVE_VERSION] lägger till ett steg här.
+## [b]1 → 2 (M5):[/b] version 1 sparade en marsch mellan noder. Korridoren finns
+## inte i den filen, och den går inte att räkna fram: kartan är seedad ur
+## [code]rng.fork("corridor")[/code] vid runnens början, och den forken har redan
+## rullat vidare när filen skrevs. Att gissa en ruta vore att flytta spelaren
+## utan att säga det. Filen kasseras därför, och [GameController] går till staden
+## – aldrig en krasch, aldrig en run spelaren inte bad om.
 static func migrate(data: Dictionary) -> Dictionary:
 	var version: int = int(data.get("version", 0))
 	if version <= 0 or version > RunState.SAVE_VERSION:
 		push_warning("SaveIO: sparfilsversion %d kan inte läsas (stöder 1..%d)" % [version, RunState.SAVE_VERSION])
 		return {}
-	# while version < RunState.SAVE_VERSION: ... version += 1
+	if version < 2 or not (data.get("meta", {}) as Dictionary).has("corridor"):
+		push_warning("SaveIO: sparfil v%d saknar korridorläge – ny run i staden" % version)
+		return {}
 	return data
 
 

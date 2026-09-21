@@ -90,7 +90,7 @@ func test_back_never_quits_on_any_screen() -> void:
 	# Kontraktet, i ett test: ingen skärm och inget läge får svara "avsluta".
 	var screens: Array[String] = [
 		GameController.SCREEN_TITLE,
-		GameController.SCREEN_MARCH,
+		GameController.SCREEN_CORRIDOR,
 		GameController.SCREEN_COMBAT,
 		GameController.SCREEN_REWARD,
 		GameController.SCREEN_GAMEOVER,
