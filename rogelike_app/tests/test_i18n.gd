@@ -126,7 +126,7 @@ func test_the_translations_are_registered_and_resolve_in_both_locales() -> void:
 	TranslationServer.set_locale("en")
 	assert_str(String(TranslationServer.translate("ENEMY_RUST_RAT"))).is_equal("Rust Rat")
 	TranslationServer.set_locale("sv")
-	assert_str(String(TranslationServer.translate("ENEMY_RUST_RAT"))).is_equal("Rostråttan")
+	assert_str(String(TranslationServer.translate("ENEMY_RUST_RAT"))).is_equal("Rostråtta")
 	TranslationServer.set_locale(before)
 
 
