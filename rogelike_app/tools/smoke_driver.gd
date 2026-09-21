@@ -31,6 +31,13 @@ var _idle_ms: PackedFloat32Array = PackedFloat32Array()
 var _last_frame_us: int = 0
 var _last_idle_us: int = 0
 var _controller: Node = null
+## Antal gånger staden visats. Första gången är efter Grundstigen, andra efter
+## runnen – och båda ska dumpas.
+var _town_visits: int = 0
+## Vilken titelknapp rökprovet trycker på. Sätts när titeln lästs.
+var _title_action: String = "tutorial"
+## Slingan är sluten (staden besökt andra gången). Avslutar rökprovet.
+var _done: bool = false
 
 func _ready() -> void:
 	await _run()
@@ -84,8 +91,14 @@ func _run() -> void:
 		juice.log_calls = true
 	Haptics.log_calls = true
 
-	# Ren start. Sparfilen ligger i user:// och överlever mellan körningar.
+	# Ren start. Sparfilen OCH profilen ligger i user:// och överlever mellan
+	# körningar; rökprovet ska spela en förstagångsspelares väg in i spelet:
+	# kroppsval → Grundstigen → staden → en run → staden.
 	SaveIO.clear()
+	SaveIO.meta_path = "user://smoke_meta.json"
+	SaveIO.clear_meta()
+	if settings != null:
+		settings.call("set_value", &"smith_variant", "", false)
 
 	var packed: PackedScene = ResourceLoader.load(MAIN_SCENE) as PackedScene
 	if packed == null:
@@ -108,7 +121,7 @@ func _run() -> void:
 	var rooms_seen: Dictionary = {}
 	var running: bool = true
 
-	while running:
+	while running and not _done:
 		if Time.get_ticks_msec() - started_ms > int(max_seconds * 1000.0):
 			_fail("time limit %.0f s reached on screen %s" % [max_seconds, controller.current_screen_name()])
 			break
@@ -118,6 +131,10 @@ func _run() -> void:
 			continue
 
 		match controller.current_screen_name():
+			GameController.SCREEN_SMITH:
+				await _play_smith(screen as ChooseSmithScreen)
+			GameController.SCREEN_TOWN:
+				await _play_town(screen as TownScreen)
 			GameController.SCREEN_TITLE:
 				await _play_title(controller)
 			GameController.SCREEN_MARCH:
@@ -142,7 +159,13 @@ func _run() -> void:
 				await _play_reward(screen as RewardScreen)
 			GameController.SCREEN_GAMEOVER:
 				await _report(screen as GameOverScreen, rounds_played, rooms_seen.size())
-				running = false
+				# Knappen leder till staden, inte till en ny run: "en run till"
+				# är ett tapp DÄRIFRÅN (§A.4 regel 2). Vi följer med tillbaka
+				# så att hela slingan bevisas i ett svep.
+				var over: GameOverScreen = screen as GameOverScreen
+				if is_instance_valid(over):
+					over.play_again()
+				await _frames(2)
 			_:
 				await _frames(1)
 
@@ -190,11 +213,56 @@ func _play_title(controller: GameController) -> void:
 	if title == null:
 		_fail("the title screen vanished while the settings modal was open")
 		return
+	_title_action = "tutorial" if not controller.meta.tutorial_done else "town"
 	# Alltid NEW RUN: rökprovet ska spela en känd seed från rum 1, och en
 	# sparfil som ligger kvar från förra körningen skulle annars göra både
 	# körningen och skärmdumparna beroende av vad som hände sist.
-	title.press("new")
+	title.press(_title_action)
 	await _frames(2)
+
+## Kroppsvalet: dumpa båda porträtten, välj variant B (så att en icke-standard
+## variant faktiskt körs genom hela rökprovet) och gå vidare.
+func _play_smith(smith: ChooseSmithScreen) -> void:
+	await _frames(6)
+	if not is_instance_valid(smith):
+		return
+	await _shot("00a_choose_smith")
+	smith.select("b")
+	await _frames(2)
+	if is_instance_valid(smith):
+		smith.confirm_choice()
+	await _frames(2)
+
+
+## Staden. Öppnar varje plats för en skärmdump och går sedan ned – GO DOWN är
+## ett tapp, vilket är hela §A.4 regel 2.
+func _play_town(town: TownScreen) -> void:
+	await _frames(8)
+	if not is_instance_valid(town):
+		return
+	_town_visits += 1
+	await _shot("10_town" if _town_visits == 1 else "14_town_after_run")
+	if _town_visits >= 2:
+		# Tutorial → staden → en run → tillbaka till staden. Slingan är sluten
+		# och rökprovet är klart; går vi ned igen snurrar det för evigt.
+		_done = true
+		return
+	for place: String in [TownScreen.PLACE_PIT, TownScreen.PLACE_MARKET,
+			TownScreen.PLACE_WALL, TownScreen.PLACE_FORGE]:
+		if not is_instance_valid(town):
+			return
+		town.open_place(place)
+		await _frames(4)
+		if is_instance_valid(town) and town.current_place() == place:
+			await _shot("11_town_%s" % place.to_lower())
+	if not is_instance_valid(town):
+		return
+	town.close_place()
+	await _frames(2)
+	if is_instance_valid(town):
+		town.descend()
+	await _frames(2)
+
 
 func _play_march(march: MarchScreen) -> void:
 	await _frames(8)
@@ -210,6 +278,13 @@ func _play_march(march: MarchScreen) -> void:
 	await _frames(1)
 
 func _play_round(combat: CombatScreen) -> bool:
+	# Tutorialens tips och kritpil försvinner vid första handling (§B.2), så
+	# rummets skärmdump måste tas INNAN tärningarna placeras.
+	var room: int = int(_controller.get("_tutorial_room")) if _controller != null else -1
+	if room >= 0:
+		await _frames(4)
+		await _shot("0%d_tutorial_room_%d" % [room + 1, room + 1])
+
 	var placement: PackedInt32Array = _placement_for(combat)
 	for slot: int in range(placement.size()):
 		if placement[slot] < 0:
@@ -217,7 +292,17 @@ func _play_round(combat: CombatScreen) -> bool:
 		if not combat.place(placement[slot], slot):
 			_fail("could not place die %d in slot %d" % [placement[slot], slot])
 	await _frames(3)
-	await _shot("03_combat_before_confirm")
+	if room < 0:
+		await _shot("03_combat_before_confirm")
+		# Hjälp-lagret: sex callouts samtidigt, allt tänt på en gång (§6).
+		if not _taken.has("03b_combat_help"):
+			combat.open_help()
+			await _frames(6)
+			await _shot("03b_combat_help")
+			var layer: Node = combat.get_node_or_null("HelpLayer")
+			if layer != null:
+				layer.call("close")
+			await _frames(2)
 
 	combat.confirm()
 	# Mitt i kedjan, och medvetet SENT i den: number pops och träffblixtar

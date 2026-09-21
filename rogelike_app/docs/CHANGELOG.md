@@ -2,6 +2,80 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M2.5 – Begriplighet: stridsskärm v2, våning 0, Chalkrim, smedjan, kroppsval (2026-09-21)
+
+Utlöst av speltest 1: *"det är svårt att fatta mekaniken"*. **Ingen regel är
+ändrad.** `src/core/resolver.gd` är orörd; allt nedan är presentation, data och
+profil.
+
+**A. Stridsskärm v2** (`docs/design/COMBAT_READABILITY.md`)
+
+- `src/game/combat/chain_receipt.gd` – ny, ren läsmodell över händelseloggen.
+  Ger meningen (`2 + 10 + 10 + 6 + 12 = 40`), rustningsraden
+  (`40 − 12 rustning (2 per träff × 6 träffar) = 28`), en leveransrad per
+  skadeinstans med numrerad fiende, dödsmarkering och spill, bågarnas orsak och
+  per-slot-orsakskoder. Inga Node-beroenden, ingen prosa.
+- `receipt_panel.gd`, `arc_row.gd`, `route_strip.gd`, `help_layer.gd` – nya vyer.
+  Bågen bär sitt varför (`×2 PAR · BÅDA 5`), `?` tänder sex callouts samtidigt.
+- `slot_view.gd`: namn + **regel** + räkning (`5 ×2 = 10`) + varför
+  (`par med 3`). `slot_modifier_failed` syns som `för lågt`. Spegelns tärning
+  ritas på 55 % och räkningen skrivs `←5 ×2 = 10`.
+- `die_view.gd`: brickan är en sann modell – en placerad tärning lämnar en tom
+  sockel med slotnummer; vald tärning lyfts; tomma slots pulsar fasförskjutet.
+- `enemy_panel.gd`: `🛡 Rustning 2` och `⚔ Slår 3` som ord + ikon, prognosfält
+  (diagonalskraffering) i HP-stapeln, numrerade dubbletter.
+- Knappen och kvittot visar **samma** tal: `BEKRÄFTA · 28 SKADA`.
+
+**B. Progressiv avslöjning** – `src/core/reveal.gd`
+
+Åtta flaggor, sparade i profilen. Ett element som inte lärts ut är *frånvarande*,
+inte nedtonat – och får bara döljas när det är tomt eller overksamt
+(`Reveal.may_hide`), så att UI aldrig ljuger om tillståndet.
+
+**C. Tutorialvåning 0** – `src/data/tutorial.gd`
+
+Sju rum som ren data (bräde, fasta tärningsvärden, fiender, tvingade intents).
+Spelas en gång, hoppbar från titeln. Man kan inte dö: HP 0 ger 1 HP kvar och
+kärrans replik. Varje rum tänder sin `Reveal`-flagga; hela våningen spelas
+igenom headless av `Policy.lookahead` i testet.
+
+**D. Chalkrim** – `src/core/meta.gd` + `src/game/town/`
+
+Pips, Skrotmarknaden (fast prislista, köper **innehåll** till belöningspoolen,
+aldrig en statsiffra), Kritväggen (kodex, rekord, ett kritstreck per död som
+suddas vid vinst), Marrows 20 dödsrepliker, `GO DOWN` alltid i tumzonen.
+Profilen ligger i `user://meta.json`, skild från sparfilen: "Reset save" suddar
+aldrig kritväggen. **Presentationen är en tillfällig meny** – sidoscroll-remsan
+utgick när riktningen bytte till first person (PM 2026-09-21).
+
+**E. Smedjan** – `src/core/forge.gd`
+
+`swap_faces()` och `reorder_slots()`, byte och omordning, **aldrig tillägg**.
+Invarianten (multimängden av sidor respektive slot-typer är oförändrad) är
+testad, liksom att en ogiltig ordning lämnar brädet orört.
+
+**F. Kroppsval** – `src/game/smith/choose_smith_screen.tscn`
+
+Två porträtt sida vid sida, inga könsord i texten, valet sparas i `Settings` och
+kan bytas i staden. `HeroFigure` fick lagret `hair` under all gear;
+`smith_body_<a|b>` + `smith_hair_<a|b>` byts som ett par. Porträttramen är
+byggd för att återanvändas i ett character sheet.
+
+**G. Språk** (PM/Anders 2026-09-21)
+
+`Settings.locale` defaultar till `"en"` och `GameController.boot()` sätter det
+före första skärmen. Godot valde annars OS-språket, och en svensk telefon
+startade spelet på svenska. Svenska är ett val, inte ett utfall.
+
+**Mätvärden vid leverans** (Godot 4.6.stable):
+
+| Mätning | Resultat |
+|---|---|
+| gdUnit4 | **339/339 gröna**, 0 fel, 0 orphans |
+| Rökprov en/sv | SMOKE OK, 24 skärmdumpar vardera, kroppsval → våning 0 → staden → run → staden |
+| Kvittots invariant | 50 seedade lägen: `RÅ = skada + rustning + ward + laddning + spill` |
+| Kolumnhöjd, stridsskärm | 1 797 av 1 848 px (testad grind, `tests/test_combat_layout.gd`) |
+
 ## M4 – Android: APK ur CI, sidoladdning, mobil-livscykel (2026-09-21)
 
 Milstolpen som gör spelet till en app. Ingenting i spelreglerna ändras.

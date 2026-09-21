@@ -1,6 +1,6 @@
 # Arkitektur – PIPWRECK
 
-*Uppdaterad 2026-09-21 (M2). Normativ källa för reglerna är `GAME_DESIGN.md`;
+*Uppdaterad 2026-09-21 (M2.5). Normativ källa för reglerna är `GAME_DESIGN.md`;
 det här dokumentet beskriver hur koden är organiserad och hur man kör den.*
 
 ## Lagerregeln: core → game, aldrig tvärtom
@@ -118,6 +118,8 @@ känna till den andras layout.
 | Strid | `src/game/combat/combat_screen.tscn` | `combat_world.tscn`: parallaxband, golv, Smeden, en `EnemyActor` per fiende |
 | Belöning | `src/game/reward/reward_screen.tscn` | – |
 | Död/vinst | `src/game/gameover/gameover_screen.tscn` | – |
+| Kroppsval | `src/game/smith/choose_smith_screen.tscn` | – |
+| Staden | `src/game/town/town_screen.tscn` | – (tillfällig meny, se M2.5) |
 
 `ChalkUI/UiRoot/ModalRoot` ligger ovanpå `ScreenRoot` och bär
 `settings_screen.tscn`. Inställningarna är en **modal, inte en skärm**: de ska
@@ -238,6 +240,144 @@ Figuren visar kropp, glödkappa, järnhjälm och smideshammare.
 
 Tidsbudgeten är orörd: kedjan (P0–P3) ≤ 2 500 ms, hela rundan ≤ 3 200 ms.
 
+## M2.5: kvittot, avslöjandet och profilen
+
+### `ChainReceipt` är en läsmodell, inte en andra resolver
+
+`src/game/combat/chain_receipt.gd` läser `ResolveResult.events` och returnerar
+**siffror, id:n och orsakskoder** – aldrig prosa, aldrig en omräkning. Varje tal
+i kvittot kommer ordagrant ur loggen; `src/core/resolver.gd` är orörd, vilket
+var hela premissen i `COMBAT_READABILITY.md`.
+
+Den ligger i `src/game/` och inte i `src/core/` därför att den är presentation:
+core vet inget om att kedjan ska gå att räkna efter för hand. Den har ändå inga
+Node-beroenden, så `tests/test_chain_receipt.gd` kör den headless.
+
+**Invarianten som testas på 50 seedade lägen** (§2.1b):
+
+```
+RÅ = skada + rustning + ward + laddning + spill utan mål
+```
+
+Två fällor som invarianten redan har fångat: `DOMINO` slår utan ett eget
+`strike`-event (relikens extra belopp räknas in i `raw` separat), och
+`overflow_wasted` följs av ett `charge_stored{source:"OVERFLOW"}` som är en
+*omvandling* av spillet, inte en andra sänka – räknas båda dubbelbokförs de.
+
+`ChainReceipt.total_damage()` är talet på BEKRÄFTA-knappen: summan av
+`damage_dealt.amount`. Brand- och gifttickar i P4 ligger i `status_tick` och
+visas som en egen rad, så att additionen på skärmen går ihop.
+`MetaScore.chain_damage()` (som räknar med tickarna) är fortfarande måttet för
+runnens "största kedja" – två olika frågor, två olika tal, med flit.
+
+### Höjdbudgeten är en testad grind
+
+En `BoxContainer` som inte får plats **krymper sina barn under deras minsta
+storlek** i stället för att klaga. Det blir inget fel i loggen – bara ett
+toppfält ovanför skärmkanten och en bekräfta-knapp under den. Exakt det hände
+när kvittot, bågarna och leveransremsan lades till.
+
+`tests/test_combat_layout.gd` mäter därför summan av radernas minsta höjder mot
+viewporten för tre rum, och kräver att tumzonen (brickan och knappraden) aldrig
+krymps. Prioriteringen när något inte får plats är normativ
+(COMBAT_READABILITY §8): *räknestycket behåller full höjd, arenan betalar,
+tumzonen aldrig.*
+
+Två närbesläktade fällor som kostade tid och nu står i koden:
+
+- **En `Label` med `clip_text = true` har minsta bredd noll.** I en
+  `HBoxContainer` betyder det att den blir noll pixlar bred. Räknestyckets
+  mening och stadens Pips-siffra försvann helt på det sättet; båda är därför
+  uttryckligen `clip_text = false`.
+- **En `Label` med `autowrap` rapporterar EN rads höjd som minsta storlek.**
+  Höjden beror på bredden, och bredden sätts av föräldern. `HelpLayer` mäter
+  därför sin text själv med `Font.get_multiline_string_size()` och lagrar
+  höjden på kortet; annars staplas sex callouts ovanpå varandra.
+
+### `Reveal`: UI ljuger aldrig
+
+`src/core/reveal.gd` har åtta flaggor. Regeln är två delar och båda är testade:
+
+1. Ett element som inte lärts ut är **frånvarande**, inte nedtonat.
+2. Ett element får bara döljas när det är **tomt eller overksamt i tillståndet**
+   (`Reveal.may_hide(flag, facts)`). En laddningsmätare som står på 7 måste
+   synas även för en spelare som inte fått lektionen än.
+
+Skärmen skickar in tillståndets siffror (`CombatScreen._reveal_facts()`) och
+frågar `reveal.shows(flag, facts)`. Det är enda vägen in.
+
+Att omkastet inte finns i tutorialens första fem rum är därför **data**, inte en
+lögn: `Tutorial.apply_limits()` sätter `rerolls_left = 0`, och då är knappen
+genuint overksam.
+
+### Tutorialvåning 0 är data, inte en kodväg
+
+`src/data/tutorial.gd` innehåller sju rum: bräde, fasta uppåtvända
+tärningsvärden, fiender och tvingade intents per runda. `Resolver` är orörd –
+dummyns tysta första runda och portens två blockrundor sätts genom att skriva
+över `enemy.intent` efter `begin_combat`/`advance`, inte genom en ny special.
+
+Tärningarna skrivs över **efter** kastet (`force_dice`). Strömmen rullas inte
+tillbaka; vi låter kastet ske och ersätter resultatet. Det är den enda platsen i
+spelet där det är tillåtet, och det är ofarligt eftersom värdena är fasta och
+inte seedberoende.
+
+`GameController` håller `_tutorial_room`. Är den ≥ 0 går rundan samma väg som en
+vanlig strid, men `CombatScreen` återupplivar på 1 HP i stället för att avsluta
+runnen (§B.2: man kan inte dö där uppe, och vi säger det rakt ut).
+
+### Två sparfiler, med flit
+
+| Fil | Innehåll | Rensas av |
+|---|---|---|
+| `user://save.json` | `RunState` – den pågående runnen | `SaveIO.clear()`, varje ny run |
+| `user://meta.json` | `Meta` – Pips, Kodex, kritstreck, `Reveal`, smedjans laddning | bara `SaveIO.clear_meta()` |
+| `user://settings.cfg` | `Settings` – språk, ljud, haptik, kroppsvariant | bara "Reset" i modalen |
+
+En run som tar slut, och "Reset save" i inställningarna, får **aldrig** sudda
+kritväggen (TOWN_AND_ONBOARDING §A.1). Profilen har samma trasig-fil-kontrakt
+som runnen, med en skillnad: `SaveIO.load_meta()` returnerar en **färsk profil**
+i stället för `null`, eftersom den efterfrågas innan titelskärmen finns och det
+inte går att visa ett fel någonstans.
+
+`Meta.loadout` tvättas med `int()` vid inläsning av samma skäl som `RunState` –
+JSON-tal är float64, och `[2, 0, 1, 3, 4]` kommer annars tillbaka som floats.
+
+### Metans heliga regel, som kod
+
+`Meta` kan bara två saker med Pips: räkna dem och lägga **id:n** i
+`Meta.unlocked`. Det finns ingen väg från profilen till en siffra i
+`CombatState`. `tests/test_meta.gd` kontrollerar att varje marknadsvara bär
+enbart `face_id`/`relic_id`/`slot_type` – bryts det blir vi Archero, och
+`CLAUDE.md` säger nej.
+
+### Smedjan: byte och omordning, aldrig tillägg
+
+`src/core/forge.gd` är två rena funktioner plus en laddning som data.
+`reorder_slots()` tar en **permutation**; är den inte det returneras brädet
+oförändrat, så att en trasig sparfil inte kan duplicera en AMBOSS.
+Invarianten (`face_signature` / `slot_signature` oförändrad) är det testet
+bevakar.
+
+### Kroppsvarianter
+
+`Art.HERO_LAYERS` innehåller inte längre `body`. Kropp och hår ligger i
+`Art.SMITH_BODY_LAYERS` och slås upp per variant (`smith_layer()`); resten av
+garderoben är kroppsoberoende och delas av båda (PAPERDOLL §1). `hair` ligger i
+`HeroFigure.LAYERS` mellan `body` och `torso`, så att en hjälm kan täcka det.
+
+Varianten bor i `Settings`, inte i sparfilen: den ska överleva att en run tar
+slut. `tests/test_smith.gd` instansierar båda varianterna med samtliga
+reliklager.
+
+### Saknade assets ger platshållare, aldrig en krasch
+
+`Art.ui_icon(name)` provar flera kandidatfilnamn, returnerar `null` om ingen
+finns och varnar **en gång per ikon**; anroparen ritar då reservglyfen ur
+`Art.UI_ICON_GLYPHS`. `Art.ENEMY_ART_ALIASES` låter tutorialens pedagogiska
+fiender låna våning 1:s ark, och `tests/test_art.gd` fäller bygget om ett alias
+pekar på ett ark som inte finns.
+
 ## Spelartext: engelska i källan, svenska i CSV
 
 CLAUDE.md: **all spelartext är engelska i källan och går via `tr()`.** Svenskan
@@ -348,11 +488,18 @@ aldrig en halvläst uppsättning (samma kontrakt som `SaveIO`).
 
 | Fält | Standard | Effekt |
 |---|---|---|
-| `locale` | `""` (rör inte språket) | `TranslationServer.set_locale` |
+| `locale` | `"en"` (**aldrig enhetens språk**) | `TranslationServer.set_locale` |
 | `sfx_volume` | 80 | `Juice.sfx` volym, 0 = tyst |
 | `haptics` | true | `Haptics.enabled` |
 | `reduced_motion` | false | skak av, hit-stop halverad, blixt → kontur, ingen overshoot |
 | `high_contrast` | false | `Tokens.apply_high_contrast()` – hela tokentabellen (UI_GUIDE §2.11) |
+
+**Engelska är standard oavsett enhet** (DECISIONS 2026-09-21). Godot väljer
+annars operativsystemets språk, och en svensk telefon startade spelet på
+svenska utan att någon valt det. `Settings.apply()` sätter därför alltid
+`TranslationServer.set_locale(effective_locale())`, och `GameController.boot()`
+gör det en gång till före första skärmen. Svenska är ett val i inställningarna,
+inte ett utfall av var telefonen råkar vara köpt.
 
 **Hög kontrast+ är en token-override, inte ett andra tema.** Färgerna i `Tokens`
 är därför `static var` och inte `const`: tabellen byts på ett ställe och inget
@@ -424,13 +571,23 @@ eller överlappet ändrats.
 ## Run-loopen
 
 ```
+boot()
+  → SMITH   (bara första gången: Settings.smith_variant == "")
+  → TITLE   (Grundstigen om meta.tutorial_done är false, annars staden)
+  → TUTORIAL  sju rum ur src/data/tutorial.gd, REWARD emellan
+  → TOWN    Chalkrim. GO DOWN startar runnen.
 start_new_run(seed)
+  → Forge.apply_loadout(meta.loadout)    smedjans byte/omordning
   → RunGraph.generate_floor(1, rng)      4 rum, förgrening i rum 3
   → MARCH  (går åt höger; vid förgrening två knappar)
   → COMBAT (RunFlow.start_room → rundor → RunFlow.finish_room)
   → REWARD (Rewards.generate → RewardApply.apply)
-  → MARCH → … → BOSS → GAMEOVER (MetaScore)
+  → MARCH → … → BOSS → GAMEOVER (MetaScore + Meta.award_run)
+  → TOWN   ("BACK TO CHALKRIM"; GO DOWN ligger redan i tumzonen)
 ```
+
+`MARCH` står kvar som datamodell (`RunGraph`) men dess remsa ersätts av
+korridorvyn i M5 (PM 2026-09-21); förgreningarna blir vänster/rakt/höger.
 
 Ingen av pilarna innehåller en regel. Möten, Andrum, belöningsnyckel,
 belöningstillämpning och meta-poäng ligger i `src/core/run_flow.gd`,
@@ -497,6 +654,11 @@ kedja p50 26,3 ms / p95 33,5 ms mot tomgång p50 26,2 ms / p95 37,1 ms. Headless
 utan rendering: 6,90 ms i båda fallen, 0,1 % av bildrutorna över 16,6 ms.
 **Slutsats: kostnaden är programvarurasterisering av en 1080×1920-yta, inte
 uppspelningen.** En riktig GPU- och mobilmätning görs i M4 enligt planen.
+
+M2.5 lade till kroppsval, hela våning 0, staden och hjälp-lagret i samma
+körning: rökprovet går nu `SMITH → TITLE → tutorial 0.1–0.7 → TOWN → run →
+TOWN` och avslutar när staden setts andra gången. Skärmdumparna ligger i
+`docs/screenshots/m2_5/` (plus `sv/`).
 
 Skärmdumparna hamnar i `docs/screenshots/m2/` (plus `sv/`, `reduced/` och
 `death/` för de andra körningarna). `docs/screenshots/` har en `.gdignore` så
