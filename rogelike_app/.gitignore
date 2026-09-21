@@ -13,9 +13,12 @@
 *.zip
 
 # Godot export templates / credentials
+# export_presets.cfg ar INTE ignorerad: den ar handskriven och granskas i diff.
+# Nycklar ar det aldrig; docs/ANDROID.md section 3.
 export_credentials.cfg
 *.keystore
 *.jks
+debug.keystore
 
 # gdUnit4 test reports
 /reports/
