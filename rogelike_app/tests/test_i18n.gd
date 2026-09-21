@@ -20,10 +20,18 @@ const CSV_PATH: String = "res://assets/i18n/translations.csv"
 const COLUMNS: Array[String] = ["keys", "en", "sv"]
 ## Katalogerna som skannas efter nyckeluppslag.
 const SOURCE_DIRS: Array[String] = ["res://src/game", "res://src/data", "res://src/core"]
-## Fångar tr("KEY"), Tokens.translate("KEY"), TranslationServer.translate("KEY")
-## och reward_apply._t("KEY"). Bara literala nycklar – dynamiska nycklar
-## (tr(Content.enemy_key(id))) täcks i stället av innehållstestet nedan.
-const KEY_PATTERN: String = "\\b(?:tr|translate|_t)\\(\\s*\"([A-Z][A-Z0-9_]*)\"\\s*\\)"
+## Fångar tr("KEY"), Tokens.translate("KEY"), TranslationServer.translate("KEY"),
+## [b]Tokens.translate_or("KEY", "fallback")[/b] och reward_apply._t("KEY").
+##
+## [b]M5: translate_or är med, och avslutningen är inte längre [code])[/code].[/b]
+## Fram till nu var reservvägen osynlig för skannern – hela M2:s titel- och
+## inställningstext och hela korridoren gick via [method Tokens.translate_or] och
+## kunde därför aldrig fälla bygget. Priset var att en nyckel utan rad tyst
+## visade engelska för en svensk spelare. Nu gäller regeln alla nycklar.
+##
+## Bara literala nycklar – dynamiska (tr(Content.enemy_key(id))) täcks av
+## innehållstesterna nedan.
+const KEY_PATTERN: String = "\\b(?:tr|translate|translate_or|_t)\\(\\s*\"([A-Z][A-Z0-9_]*)\""
 
 
 # --- 1. CSV:ns form --------------------------------------------------------
@@ -104,6 +112,64 @@ func test_every_content_id_has_a_translation_key() -> void:
 			missing.append(key)
 	assert_array(Array(missing)).override_failure_message(
 		"innehålls-id utan CSV-rad: %s" % ", ".join(missing)).is_empty()
+
+
+## BACKLOG: Marrows tjugo dödsrepliker är "den viktigaste texten i spelet"
+## (TOWN_AND_ONBOARDING §A.1) och slås upp genom en variabel, inte genom en
+## literal. Utan det här testet kan en replik läggas till utan svensk rad och
+## ingen märker det förrän en svensk spelare dör.
+func test_every_death_line_has_a_row() -> void:
+	var table: Dictionary = _csv_table()
+	var missing: PackedStringArray = PackedStringArray()
+	for line: Dictionary in Content.DEATH_LINES:
+		var key: String = String(line.get("key", ""))
+		if key == "" or not table.has(key):
+			missing.append(key)
+	assert_array(Array(missing)).override_failure_message(
+		"dödsrepliker utan CSV-rad: %s" % ", ".join(missing)).is_empty()
+	assert_int(Content.DEATH_LINES.size()).override_failure_message(
+		"§A.1 kräver tjugo repliker").is_greater_equal(20)
+
+
+## Tutorialens tips, belöningskort och kärrans rad. Samma sak: nycklarna bor i
+## data och når aldrig en literal [code]tr()[/code].
+func test_every_tutorial_key_has_a_row() -> void:
+	var table: Dictionary = _csv_table()
+	var missing: PackedStringArray = PackedStringArray()
+	for index: int in range(Tutorial.room_count()):
+		var tip: Dictionary = Tutorial.tip_for(index)
+		if not tip.is_empty() and not table.has(String(tip["key"])):
+			missing.append(String(tip["key"]))
+		var reward: Dictionary = Tutorial.reward_for(index)
+		if not reward.is_empty() and not table.has(String(reward["name_key"])):
+			missing.append(String(reward["name_key"]))
+	var cart: Array[String] = Tutorial.cart_line()
+	if not table.has(cart[0]):
+		missing.append(cart[0])
+	assert_array(Array(missing)).override_failure_message(
+		"tutorialnycklar utan CSV-rad: %s" % ", ".join(missing)).is_empty()
+
+
+## Korridorens datadrivna nycklar: skyltar, fälltyper och fällornas två
+## prislappar (CORRIDOR_DESIGN §2.3 och §2.6). De slås upp ur [CorridorMap]:s
+## konstanter och syns därför aldrig som literaler i src/game/.
+func test_every_corridor_data_key_has_a_row() -> void:
+	var table: Dictionary = _csv_table()
+	var expected: PackedStringArray = PackedStringArray()
+	for key: String in CorridorMap.SIGN_KEYS:
+		expected.append("CORRIDOR_SIGN_%s" % key.to_upper())
+	for trap: Dictionary in CorridorMap.TRAPS:
+		expected.append(String(trap["id"]))
+		for option: Variant in trap["options"] as Array:
+			expected.append(String((option as Dictionary)["id"]))
+	for slot: Variant in Content.SHEET_SLOTS:
+		expected.append(Content.sheet_slot_key(String(slot)))
+	var missing: PackedStringArray = PackedStringArray()
+	for key: String in expected:
+		if not table.has(key):
+			missing.append(key)
+	assert_array(Array(missing)).override_failure_message(
+		"korridornycklar utan CSV-rad: %s" % ", ".join(missing)).is_empty()
 
 
 func test_every_slot_type_and_rarity_has_a_key() -> void:

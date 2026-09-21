@@ -350,3 +350,50 @@ DEATH_LINE_ANY_05,The order was wrong. It is almost always the order.,Ordningen 
 DEATH_LINE_ANY_06,You got further than the last one. The last one is still down there.,Du kom längre än den förra. Den förra ligger kvar där nere.
 DEATH_LINE_ANY_07,Chalk's cheap. That is the only kind thing about the wall.,Kritan är billig. Det är det enda snälla med väggen.
 DEATH_LINE_ANY_08,"Keep the seed. The pit does not change its mind, only you do.","Behåll seeden. Gropen ändrar sig aldrig, det är bara du som gör det."
+CORRIDOR_LEFT,LEFT,VÄNSTER
+CORRIDOR_FORWARD,FORWARD,FRAM
+CORRIDOR_RIGHT,RIGHT,HÖGER
+CORRIDOR_SIGN_FIGHT,fight,strid
+CORRIDOR_SIGN_ELITE,elite,elit
+CORRIDOR_SIGN_REST,rest,vila
+CORRIDOR_SIGN_MARKET,market,marknad
+CORRIDOR_SIGN_FATE,fate roll,ödeskast
+CORRIDOR_SIGN_UNKNOWN,unknown,okänt
+CORRIDOR_SIGN_BOSS,boss,boss
+CORRIDOR_BOSS_DOOR,THE DOOR BREATHES,DÖRREN ANDAS
+CORRIDOR_OPEN_DOOR,OPEN,ÖPPNA
+CORRIDOR_WAY_BACK,THE WAY BACK IS GONE,VÄGEN TILLBAKA ÄR BORTA
+CORRIDOR_TRAP_BODY,No free way past. Pick what it costs you.,Ingen gratis väg förbi. Välj vad det kostar dig.
+CORRIDOR_COST_HP,%d HP,%d HP
+CORRIDOR_COST_CRACK,%d cracked face,%d sprucken sida
+CORRIDOR_ALTAR,"AN ALTAR, AND ONE THING ON IT",ETT ALTARE MED EN ENDA SAK PÅ
+CORRIDOR_TAKE_IT,TAKE IT,TA DEN
+CORRIDOR_TREASURE_FORGE_FACE,"A face, still warm.","En sida, fortfarande varm."
+CORRIDOR_TREASURE_PIPS,%d pips in the dust.,%d ögon i dammet.
+CORRIDOR_TREASURE_RELIC,Something worth carrying.,Något värt att bära.
+CORRIDOR_TREASURE_CODEX,A page for the codex.,Ett blad till kodexen.
+CORRIDOR_TREASURE_NONE,"Dust, and nothing in it.","Damm, och inget i det."
+CORRIDOR_REWARD_TITLE,THE ROOM LEAVES YOU SOMETHING,RUMMET LÄMNAR DIG NÅGOT
+CORRIDOR_REWARD_BREATHER,TORCH FLARES · +%d HP,FACKLAN FLAMMAR · +%d HP
+TRAP_WEB,The Web,Spindelväven
+TRAP_EMBERS,The Embers,Glödbädden
+TRAP_COLLAPSE,The Collapse,Raset
+PUSH_THROUGH,Push through,Tryck igenom
+CUT_FREE,Cut free,Skär dig loss
+RUN_ACROSS,Run across,Spring över
+SMOTHER,Smother it,Kväv den
+SQUEEZE,Squeeze past,Pressa dig förbi
+DIG_OUT,Dig out,Gräv dig ut
+TOWN_SIGN_MARKET,MARKET,MARKNAD
+TOWN_SIGN_PIT,THE PIT,GROPEN
+TOWN_SIGN_WALL,THE WALL,VÄGGEN
+CHARSHEET_SUBTITLE,%s · run %d,%s · run %d
+CHARSHEET_DIE,DIE,TÄRNING
+CHARSHEET_CRACKED,CRACKED,SPRUCKEN
+CHARSHEET_LOOK,LOOK,BYT
+DIE_MATERIAL_IRON,Iron,Järn
+DIE_MATERIAL_BONE,Bone,Ben
+DIE_MATERIAL_GLASS,Glass,Glas
+COMBAT_ENEMY_HP,HP %d / %d,HP %d / %d
+COMBAT_ENEMY_BURN_SHORT,b%d,b%d
+COMBAT_ENEMY_POISON_SHORT,p%d,p%d
