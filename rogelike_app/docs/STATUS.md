@@ -7,11 +7,15 @@
 - Research: engagemangsmekanik, tech stack, koncept + community
 - PROPOSAL.md med rekommendation
 
-**Pågår**
-- Inget. Väntar på beslut.
+- Anders beslut: koncept B, Godot, titel PIPWRECK
+
+**Pågår (M0)**
+- dev: Godot-projekt, gdUnit4, CI, core-skelett (rng, run_state, resolve, rewards), run-simulator
+- rollspelsnörd: GAME_DESIGN.md v1 med formell regelspec för resolve() och innehåll för vertical slice
+- UI: designriktningar, UI_GUIDE.md v1, wireframe stridsskärm
 
 **Blockerat**
-- M0 Setup väntar på Anders beslut om koncept och stack (PROPOSAL.md §7)
+- Play-konto (25 USD) och 12-testare-listan: kräver Anders manuellt
 
 **Nästa**
-- Vid "kör": PM briefar dev (M0: projekt, gdUnit4, CI, core-skelett), UI (designriktningar 2–3 st), rollspelsnörd (GAME_DESIGN.md v1 från research 03)
+- M1 vertical slice när M0 är grön

@@ -1,6 +1,6 @@
-# Förslag: "Kastgropen" – tärningsroguelike för mobil
+# Förslag: PIPWRECK (arbetsnamn "Kastgropen") – tärningsroguelike för mobil
 
-*PM-syntes av research 01–03 · 2026-09-21 · Status: väntar på Anders beslut (se sektion 7)*
+*PM-syntes av research 01–03 · 2026-09-21 · Status: **beslutat av Anders 2026-09-21** (koncept + stack). Titel: PIPWRECK.*
 
 ## 1. Förslaget i tre meningar
 Bygg **Kastgropen**: en portrait-roguelike där ditt lag är sex tärningar. Varje runda rullar du, placerar tärningarna i fem slots med egenskaper, och ser en kedjereaktion spela upp sig vänster→höger med stigande siffror, skak och ljud. Mellan striderna smider du om enskilda tärningssidor, så tärningarna *är* din build.
