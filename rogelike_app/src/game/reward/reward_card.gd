@@ -157,7 +157,7 @@ func bind(p_index: int, p_option: Dictionary, p_target: Dictionary, description:
 
 
 func _on_pressed() -> void:
-	Juice.sfx("reward_pick", 1.2)
+	Juice.sfx(&"reward_pick", 1.0, -5.0)
 	Juice.haptic(Haptics.Level.MEDIUM)
 	Juice.pulse(self, 1.04, Tokens.MOTION_QUICK)
 	chosen.emit(index)

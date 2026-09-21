@@ -241,7 +241,7 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 	if not is_available():
 		return null
 	Juice.haptic(Haptics.Level.LIGHT)
-	Juice.sfx("die_lift", 1.0)
+	Juice.ui_tap(1.1)
 
 	var preview: Panel = Panel.new()
 	preview.custom_minimum_size = size

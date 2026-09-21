@@ -66,12 +66,22 @@ var _preview: ResolveResult = null
 var _resolving: bool = false
 var _chain_step: int = 0
 var _pending_result: ResolveResult = null
+## Runnens största kedja hittills. Kommer från [GameController] och avgör när
+## "NEW BEST" visas.
+var _best_chain: int = 0
+## Bossintron körs. Skärmen tar ingen input under tiden.
+var _intro_active: bool = false
+var _intro_tween: Tween = null
+var _intro_nodes: Array[Node] = []
+## Röd skärmkantsblixt (skapas i [method _style], lever i FxLayer).
+var _edge: Panel = null
 
 
 func enter(ctx: Dictionary) -> void:
 	state = ctx.get("state", null) as CombatState
 	_rng = ctx.get("rng", null) as Rng
 	_node = ctx.get("node", {}) as Dictionary
+	_best_chain = int(ctx.get("best_chain", 0))
 	_style()
 	_undo_button.pressed.connect(undo)
 	_reroll_button.pressed.connect(reroll)
@@ -81,6 +91,8 @@ func enter(ctx: Dictionary) -> void:
 	_player.finished.connect(_on_playback_finished)
 	_build_room()
 	begin_round()
+	if RunFlow.is_boss(_node) and state.round_number <= 1:
+		play_boss_intro()
 
 
 func _style() -> void:
@@ -130,6 +142,44 @@ func _style() -> void:
 	_confirm_button.add_theme_stylebox_override("normal", primary)
 	_confirm_button.add_theme_stylebox_override("hover", primary)
 	_confirm_button.add_theme_stylebox_override("pressed", primary)
+
+	# Krit-UI (UI_GUIDE §1A, riktning A): panelen, knapparna och den stora
+	# siffran ritas genom chalk.gdshader. Pixelkonsten inuti sloten och brickan
+	# rörs aldrig – shadern ligger på Control-noden, inte på dess barn (§8.4).
+	ChalkFx.apply(_preview_panel, ChalkFx.PANEL)
+	ChalkFx.apply(_total_label, ChalkFx.DISPLAY)
+	for button: Button in [_undo_button, _reroll_button, _confirm_button]:
+		ChalkFx.apply(button, ChalkFx.BUTTON)
+
+	_edge = Panel.new()
+	_edge.name = "EdgeFlash"
+	_edge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_edge.visible = false
+	var edge_style: StyleBoxFlat = StyleBoxFlat.new()
+	edge_style.bg_color = Color(0, 0, 0, 0)
+	var edge_width: int = int(round(Tokens.dp(10)))
+	edge_style.border_width_left = edge_width
+	edge_style.border_width_right = edge_width
+	edge_style.border_width_top = edge_width
+	edge_style.border_width_bottom = edge_width
+	edge_style.border_color = Tokens.SEM_BLOOD
+	edge_style.border_blend = true
+	_edge.add_theme_stylebox_override("panel", edge_style)
+	_fx_layer.add_child(_edge)
+	_edge.set_anchors_preset(Control.PRESET_FULL_RECT)
+
+	# Paus: enda vägen till inställningarna mitt i en run (UI_GUIDE §2.9,
+	# ikonknapp 48 dp). Modalen läggs ovanpå av GameController, så rundan och
+	# placeringen står kvar orörda bakom den.
+	var pause_button: Button = Button.new()
+	pause_button.name = "PauseButton"
+	pause_button.text = "⚙"
+	_style_button(pause_button, Tokens.TYPE_BODY, Tokens.CHALK_300, Tokens.TOUCH_MIN)
+	pause_button.custom_minimum_size = Vector2(Tokens.dp(Tokens.TOUCH_MIN), Tokens.dp(Tokens.TOUCH_MIN))
+	pause_button.tooltip_text = Tokens.translate_or("SETTINGS_TITLE", "Settings")
+	pause_button.pressed.connect(_open_settings)
+	ChalkFx.apply(pause_button, ChalkFx.BUTTON)
+	$Margin/Column/TopBar.add_child(pause_button)
 
 
 static func _apply_label(label: Label, font_size: int, color: Color, clip: bool = true) -> void:
@@ -314,6 +364,9 @@ func _refresh_preview() -> void:
 	_total_label.text = str(total)
 	_total_label.add_theme_color_override("font_color", Tokens.CHALK_100 if total > 0 else Tokens.CHALK_500)
 	_chain_label.text = chain_text(_preview.events, state.enemies)
+	# Förhandsvisningen står färdigskriven; det är UPPSPELNINGEN som drar
+	# strecken (se _draw_chain_text).
+	_chain_label.visible_ratio = 1.0
 
 	var placed: int = 0
 	for i: int in range(_placement.size()):
@@ -391,7 +444,7 @@ func place(die_index: int, slot_index: int) -> bool:
 		_placement[previous_slot] = _placement[slot_index]
 	_placement[slot_index] = die_index
 	_after_placement_changed()
-	Juice.sfx("die_place", Juice.chain_pitch(slot_index))
+	Juice.ui_tap(Juice.chain_pitch(slot_index))
 	Juice.haptic(Haptics.Level.LIGHT)
 	return true
 
@@ -418,7 +471,7 @@ func undo() -> void:
 	_placement = _history.pop_back()
 	_selected_die = -1
 	_refresh_all()
-	Juice.sfx("undo", 0.8)
+	Juice.ui_tap(0.8)
 
 
 func reroll() -> void:
@@ -427,7 +480,7 @@ func reroll() -> void:
 	state = Reroll.apply(state, _placement, _rng, _locked_ids)
 	_view = EventPlayer.view_from_state(state)
 	_refresh_all()
-	Juice.sfx("reroll", 1.0)
+	Juice.ui_tap(1.25)
 	Juice.haptic(Haptics.Level.MEDIUM)
 
 
@@ -476,15 +529,30 @@ func confirm() -> void:
 	_confirm_button.disabled = true
 	_undo_button.disabled = true
 	_reroll_button.disabled = true
-	Juice.sfx("confirm", 1.0)
+	Juice.ui_tap(0.9)
 	Juice.haptic(Haptics.Level.MEDIUM)
 	_pending_result = result
-	_player.play(result.events)
+	_draw_chain_text(_player.play(result.events))
+
+
+## Kedjetexten "dras" med kritan vänster→höger medan kedjan spelas upp
+## (UI_GUIDE §1A: strecken ritas ut i realtid, designprincip 2 – synlig
+## kausalitet). [param timeline_ms] är uppspelningens längd, så texten är
+## färdigdragen ungefär när sista slaget landar.
+func _draw_chain_text(timeline_ms: int) -> void:
+	var seconds: float = clampf(float(timeline_ms) / 1000.0 * 0.6, 0.2, 1.2)
+	_chain_label.visible_ratio = 0.0
+	var tween: Tween = _chain_label.create_tween()
+	tween.tween_property(_chain_label, "visible_ratio", 1.0, seconds)
 
 
 func _on_tap_during_playback(event: InputEvent) -> void:
-	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
-		_player.nudge()
+	if not (event is InputEventMouseButton and (event as InputEventMouseButton).pressed):
+		return
+	if _intro_active:
+		skip_boss_intro()
+		return
+	_player.nudge()
 
 
 ## Hoppar direkt till slutläget. Används av smoke-testet och av dubbeltapp.
@@ -493,10 +561,102 @@ func skip_playback() -> void:
 		_player.skip_to_end()
 
 
+## True medan skärmen inte tar emot spelbeslut: under uppspelning ELLER under
+## bossintrot. Rökprovet väntar på den här.
 func is_resolving() -> bool:
-	return _resolving
+	return _resolving or _intro_active
 
 
+func is_intro_active() -> bool:
+	return _intro_active
+
+
+func _open_settings() -> void:
+	Juice.ui_tap(1.0)
+	if controller != null and controller.has_method("open_settings"):
+		controller.call("open_settings")
+
+
+# ---------------------------------------------------------------------------
+# Bossintro (UI_GUIDE §3: "ögonblicket innan")
+# ---------------------------------------------------------------------------
+
+## Namnskylt + kort mörkläggning, högst [constant BOSS_INTRO_MS] ms, och den
+## går alltid att tappa bort. Intron ändrar ingenting i striden: den är helt och
+## hållet presentation och kan hoppas över utan att ett event går förlorat.
+const BOSS_INTRO_MS: int = 1200
+
+
+func play_boss_intro() -> void:
+	if _intro_active or _panels.is_empty():
+		return
+	_intro_active = true
+	_tap_catcher.visible = true
+
+	var scrim: ColorRect = ColorRect.new()
+	scrim.color = Tokens.SURFACE_SCRIM
+	scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_fx_layer.add_child(scrim)
+	scrim.set_anchors_preset(Control.PRESET_FULL_RECT)
+
+	var plate: Label = Label.new()
+	plate.text = _boss_name()
+	plate.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	plate.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_apply_label(plate, Tokens.TYPE_DISPLAY_L, Tokens.CHALK_100, false)
+	plate.add_theme_color_override("font_outline_color", Tokens.SURFACE_PIT)
+	plate.add_theme_constant_override("outline_size", Tokens.dpi(3))
+	ChalkFx.apply(plate, ChalkFx.DISPLAY)
+	_fx_layer.add_child(plate)
+	plate.set_anchors_preset(Control.PRESET_FULL_RECT)
+
+	Juice.sfx(&"boss_intro", 1.0, -6.0)
+	Juice.haptic(Haptics.Level.HEAVY)
+
+	var seconds: float = float(BOSS_INTRO_MS) / 1000.0
+	var tween: Tween = create_tween()
+	tween.tween_interval(seconds * 0.55)
+	tween.tween_property(scrim, "color:a", 0.0, seconds * 0.45)
+	tween.parallel().tween_property(plate, "modulate:a", 0.0, seconds * 0.45)
+	tween.tween_callback(_end_boss_intro)
+	_intro_tween = tween
+	_intro_nodes = [scrim, plate]
+
+
+func _end_boss_intro() -> void:
+	if _intro_tween != null and _intro_tween.is_valid():
+		_intro_tween.kill()
+	_intro_tween = null
+	for node: Node in _intro_nodes:
+		if is_instance_valid(node):
+			node.queue_free()
+	_intro_nodes.clear()
+	if not _intro_active:
+		return
+	_intro_active = false
+	if not _resolving:
+		_tap_catcher.visible = false
+	_refresh_all()
+
+
+## Tapp under intron hoppar direkt till striden (UI_GUIDE §5.9-principen:
+## ett tapp ska alltid göra spelet snabbare, aldrig ingenting).
+func skip_boss_intro() -> void:
+	if _intro_active:
+		_end_boss_intro()
+
+
+func _boss_name() -> String:
+	var enemy: Enemy = state.enemies[0] if not state.enemies.is_empty() else null
+	if enemy == null:
+		return Tokens.translate_or("COMBAT_BOSS", "BOSS")
+	return Tokens.translate_or(Content.enemy_key(enemy.id), enemy.display_name).to_upper()
+
+
+## Det VISUELLA för ett event. Ljud, haptik, hit-stop och skärmskak spelas av
+## [EventPlayer] själv ur [method EventPlayer.feedback] – den delen av specen är
+## nodoberoende och hör inte hemma i en skärm.
 func _on_event(event: Dictionary, duration: float) -> void:
 	EventPlayer.apply_event(_view, event)
 	_apply_view_to_panels()
@@ -512,8 +672,6 @@ func _on_event(event: Dictionary, duration: float) -> void:
 			if die_index >= 0 and die_index < _die_views.size():
 				_die_views[die_index].pulse_art(maxf(0.08, duration))
 			_swing_hero()
-			Juice.sfx("die_activate", Juice.chain_pitch(_chain_step))
-			Juice.haptic(Haptics.Level.LIGHT)
 			_chain_step += 1
 		"combo_formed":
 			var multiplier: int = int(event.get("multiplier", 1))
@@ -521,14 +679,12 @@ func _on_event(event: Dictionary, duration: float) -> void:
 				var index: int = int(slot_value)
 				if index < _slot_views.size():
 					Juice.blink(_slot_views[index], Tokens.multiplier_color(multiplier), 0.26)
+			# Badgen växer med multiplikatorn (UI_GUIDE §2.5: 24/28/34/40 dp) och
+			# siffran står alltid utskriven, så färgen är dekor (§6.2).
 			_pop(_preview_panel, "×%d %s" % [multiplier, String(event.get("kind", ""))],
 				Tokens.multiplier_color(multiplier), Tokens.multiplier_size(multiplier))
-			Juice.sfx("combo", Juice.chain_pitch(_chain_step, multiplier))
-			Juice.haptic(Haptics.Level.MEDIUM if multiplier < 8 else Haptics.Level.HEAVY)
 		"house_bonus":
 			_pop(_preview_panel, tr("COMBAT_HOUSE") % int(event.get("factor", 2)), Tokens.SEM_CHARGE, Tokens.TYPE_DISPLAY_L)
-			Juice.sfx("house", 1.5)
-			Juice.haptic(Haptics.Level.HEAVY)
 		"damage_dealt":
 			_on_damage(event)
 		"enemy_killed":
@@ -539,31 +695,84 @@ func _on_event(event: Dictionary, duration: float) -> void:
 					var actor: EnemyActor = world.call("actor_at", killed, String(event.get("target", ""))) as EnemyActor
 					if actor != null:
 						actor.death_reaction()
-			Juice.sfx("enemy_killed", 0.8)
-			Juice.haptic(Haptics.Level.HEAVY)
 		"ward_gained":
 			_pop(_ward_label, "+%d ⬟" % int(event.get("amount", 0)), Tokens.SEM_SHIELD, Tokens.TYPE_TITLE)
 		"charge_stored":
 			_pop(_charge_label, "+%d ⬤" % int(event.get("amount", 0)), Tokens.SEM_CHARGE, Tokens.TYPE_HEADING)
-			Juice.sfx("charge", 1.2)
+			_charge_glow()
 		"charge_applied":
 			_pop(_charge_label, tr("COMBAT_CHARGE_SPENT") % int(event.get("amount", 0)), Tokens.SEM_CHARGE, Tokens.TYPE_TITLE)
+			_charge_glow()
 		"enemy_attacks", "enemy_thorns", "player_damaged":
 			var damage: int = int(event.get("amount", 0))
 			if damage > 0:
 				_pop(_hp_label, "-%d" % damage, Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_L)
-				Juice.shake(self, 4.0, 0.16)
-				Juice.haptic(Haptics.Level.MEDIUM)
+				_edge_flash(Tokens.SEM_BLOOD)
+				Juice.shake_node(_hp_bar, 4.0, 0.18)
 				_stagger_hero()
 		"heal":
 			_pop(_hp_label, "+%d" % int(event.get("amount", 0)), Tokens.SEM_HEAL, Tokens.TYPE_TITLE)
 		"die_cracked":
-			_pop(_preview_panel, tr("COMBAT_DIE_CRACKED"), Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_L)
-			Juice.haptic(Haptics.Level.HEAVY)
+			_on_die_cracked(event)
 		"player_died":
 			_pop(_hp_label, tr("COMBAT_PLAYER_DEAD"), Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_XL)
+			_edge_flash(Tokens.SEM_BLOOD)
 		"round_end":
 			_refresh_hud()
+			_check_record()
+
+
+## Sprickan, UI_GUIDE §5.6: ett medvetet mönsterbrott. Ordet ligger kvar,
+## sloten blixtrar och [EventPlayer] har redan lagt hit-stop och skak på den.
+func _on_die_cracked(event: Dictionary) -> void:
+	_pop(_preview_panel, tr("COMBAT_DIE_CRACKED"), Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_L)
+	var die_id: String = String(event.get("die_id", ""))
+	for i: int in range(_placement.size()):
+		var die_index: int = _placement[i]
+		if die_index < 0 or die_index >= state.dice.size():
+			continue
+		if state.dice[die_index].id != die_id:
+			continue
+		if i < _slot_views.size():
+			Juice.outline(_slot_views[i], Tokens.SEM_BLOOD, 520)
+			_slot_views[i].pulse_die(0.3)
+		if die_index < _die_views.size():
+			_die_views[die_index].pulse_art(0.3)
+
+
+## Skärmkantens röda blixt när spelaren tar skada (UI_GUIDE §5: fiendens svar
+## ska kännas på kroppen även om man inte tittar på HP-siffran).
+func _edge_flash(color: Color) -> void:
+	if _edge == null:
+		return
+	_edge.modulate = Color(color, 1.0)
+	_edge.visible = true
+	var tween: Tween = _edge.create_tween()
+	tween.tween_property(_edge, "modulate:a", 0.0, Tokens.MOTION_BASE)
+	tween.tween_callback(func() -> void: _edge.visible = false)
+
+
+## Laddningsräknaren lyser upp när ögon bankas (UI_GUIDE §5.4).
+func _charge_glow() -> void:
+	Juice.blink(_charge_label, Tokens.SEM_CHARGE, Tokens.MOTION_BASE)
+	Juice.pulse(_charge_label, 1.2, Tokens.MOTION_QUICK)
+
+
+## "NEW BEST" när rundans kedja slår runnens rekord. Rekordet kommer från
+## [GameController] (det gäller hela runnen, inte striden) och uppdateras här
+## lokalt så att två rekordrundor i rad inte båda firas.
+func _check_record() -> void:
+	if _pending_result == null:
+		return
+	var chain: int = MetaScore.chain_damage(_pending_result.events)
+	if chain <= 0 or chain <= _best_chain:
+		return
+	_best_chain = chain
+	_pop(_total_label, Tokens.translate_or("COMBAT_NEW_BEST", "NEW BEST"), Tokens.SEM_CHARGE, Tokens.TYPE_DISPLAY_L)
+	# Extra tonhöjd: rekordet ska höras över kedjans egen stegring.
+	# Ingen egen rekord-cue i registret: kåkens klang en kvint över kedjans tak.
+	Juice.sfx(EventPlayer.SFX_COMBO_HOUSE, 1.6)
+	Juice.haptic(Haptics.Level.HEAVY)
 
 
 ## Smeden svingar när en tärning aktiveras. [method HeroFigure.strike] lägger
@@ -607,8 +816,24 @@ func _on_damage(event: Dictionary) -> void:
 			var actor: EnemyActor = world.call("actor_at", index, target_id) as EnemyActor
 			if actor != null:
 				actor.hit_reaction()
-	Juice.sfx("hit", clampf(1.2 - float(amount) / 200.0, 0.65, 1.2))
-	Juice.haptic(Haptics.Level.MEDIUM)
+	if overflow > 0:
+		_overflow_arrow(index, overflow)
+
+
+## Överflödet, UI_GUIDE §5.3: en pil från det fulla målet till nästa levande,
+## med det KVARVARANDE värdet i överflödsfärgen. Pilen förklarar sig själv
+## första gången (§7: "överflöd lärs ut av kritpilen").
+func _overflow_arrow(from_index: int, amount: int) -> void:
+	var next_index: int = -1
+	var enemies: Array = _view.get("enemies", []) as Array
+	for i: int in range(enemies.size()):
+		if i <= from_index:
+			continue
+		if int((enemies[i] as Dictionary).get("hp", 0)) > 0:
+			next_index = i
+			break
+	var anchor: Control = _panels[next_index] if next_index >= 0 and next_index < _panels.size() else _preview_panel
+	_pop(anchor, "↳ %d" % amount, Tokens.SEM_OVERFLOW, Tokens.TYPE_TITLE)
 
 
 ## Panelindex för ett fiende-id. [param already_dead] väljer den första döda i

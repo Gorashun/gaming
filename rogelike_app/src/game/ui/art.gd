@@ -26,22 +26,31 @@ const WORLD_SCALE: int = 4
 ## 16 px-ikoner (relik, slot, nod) i krit-UI:t.
 const ICON_SCALE: int = 4
 
-## Fiendeark. Alla är fyra idle-frames på en rad och tittar åt vänster.
-## [b]M1-assets saknar death-frames[/b] – [EnemyActor] tonar ut i stället.
+## Fiendeark. Rad 0 är fyra idle-frames, rad 1 är dödsanimationen
+## (assets/sprites/README.md §1, ändrat i M2: [code]hframes = 4, vframes = 2[/code]).
+## [code]death[/code] har tre authorade frames; den fjärde kolumnen upprepar
+## den sista och skärs därför inte ut.
 const ENEMIES: Dictionary = {
-	"RUST_RAT": {"file": "enemies/rust_rat.png", "cell": 32, "frames": 4},
-	"SLAG_MOTH": {"file": "enemies/slag_moth.png", "cell": 32, "frames": 4},
-	"THORN_IMP": {"file": "enemies/thorn_imp.png", "cell": 32, "frames": 4},
-	"PIP_THIEF": {"file": "enemies/pip_thief.png", "cell": 32, "frames": 4},
-	"IRON_TICK": {"file": "enemies/iron_tick.png", "cell": 32, "frames": 4},
-	"GRAVE_HAND": {"file": "enemies/grave_hand.png", "cell": 32, "frames": 4},
-	"SLAGJAW": {"file": "enemies/slagjaw.png", "cell": 48, "frames": 4},
+	"RUST_RAT": {"file": "enemies/rust_rat.png", "cell": 32, "frames": 4, "rows": 2, "death_frames": 3},
+	"SLAG_MOTH": {"file": "enemies/slag_moth.png", "cell": 32, "frames": 4, "rows": 2, "death_frames": 3},
+	"THORN_IMP": {"file": "enemies/thorn_imp.png", "cell": 32, "frames": 4, "rows": 2, "death_frames": 3},
+	"PIP_THIEF": {"file": "enemies/pip_thief.png", "cell": 32, "frames": 4, "rows": 2, "death_frames": 3},
+	"IRON_TICK": {"file": "enemies/iron_tick.png", "cell": 32, "frames": 4, "rows": 2, "death_frames": 3},
+	"GRAVE_HAND": {"file": "enemies/grave_hand.png", "cell": 32, "frames": 4, "rows": 2, "death_frames": 3},
+	"SLAGJAW": {"file": "enemies/slagjaw.png", "cell": 48, "frames": 4, "rows": 2, "death_frames": 3},
 }
 
-## Paperdoll-lagerark, se assets/sprites/hero/PAPERDOLL.md §5. Lagren som inte
-## står här är specificerade men inte ritade i M1 (legs, torso, head, offhand, fx).
+## Dödsanimationens takt. Tre frames på 10 fps ≈ 300 ms, vilket ryms i
+## [code]enemy_killed[/code]-budgeten på 360 ms (UI_GUIDE §5.5).
+const DEATH_FPS: float = 10.0
+
+## Paperdoll-lagerark för UTRUSTNING, se assets/sprites/hero/PAPERDOLL.md §5.
+## Reliklagren ligger inte här: de slås upp per relik-id i
+## [method HeroFigure.apply_relics] enligt namnkontraktet
+## [code]smith_<lager>_<id>.png[/code]. [code]legs[/code] tillkom i M2.
 const HERO_LAYERS: Dictionary = {
 	&"cape": "hero/smith_cape_ember.png",
+	&"legs": "hero/smith_legs_iron.png",
 	&"body": "hero/smith_body.png",
 	&"helm": "hero/smith_helm_iron.png",
 	&"weapon": "hero/smith_weapon_hammer.png",
@@ -51,6 +60,8 @@ const HERO_WEAPON_TONGS: String = "hero/smith_weapon_tongs.png"
 
 ## PAPERDOLL.md §3. Reliken tänder sitt primärlager; är det upptaget flyttar den
 ## till reservlagret. [code]fx[/code] stackar och avslutar därför alltid kedjan.
+## Arken heter [code]hero/smith_<lager>_<id i gemener>.png[/code] och slås upp av
+## [method HeroFigure.apply_relics]; samtliga levererades i M2.
 const RELIC_LAYERS: Dictionary = {
 	"BLOOD_PRICE": [&"fx"],
 	"BROKEN_SCALE": [&"torso", &"offhand"],
@@ -147,18 +158,29 @@ static func enemy_frames(enemy_id: String, fps: float = 6.0) -> SpriteFrames:
 	var result: SpriteFrames = null
 	if sheet != null:
 		var cell: int = int(entry.get("cell", 32))
-		var count: int = int(entry.get("frames", 1))
 		result = SpriteFrames.new()
-		result.set_animation_speed(&"default", fps)
-		result.set_animation_loop(&"default", true)
-		for i: int in range(count):
-			var slice: AtlasTexture = AtlasTexture.new()
-			slice.atlas = sheet
-			slice.region = Rect2(float(i * cell), 0.0, float(cell), float(cell))
-			slice.filter_clip = true
-			result.add_frame(&"default", slice)
+		_add_row(result, &"default", sheet, cell, 0, int(entry.get("frames", 1)), fps, true)
+		var death_frames: int = int(entry.get("death_frames", 0))
+		if death_frames > 0 and int(entry.get("rows", 1)) > 1:
+			_add_row(result, &"death", sheet, cell, 1, death_frames, DEATH_FPS, false)
 	_frames[enemy_id] = result
 	return result
+
+
+## Skär ut [param count] celler ur rad [param row]. [AtlasTexture] delar
+## källbilden, så ett ark med två rader kostar inte mer minne än ett med en.
+static func _add_row(frames: SpriteFrames, anim: StringName, sheet: Texture2D,
+		cell: int, row: int, count: int, fps: float, loop: bool) -> void:
+	if not frames.has_animation(anim):
+		frames.add_animation(anim)
+	frames.set_animation_speed(anim, fps)
+	frames.set_animation_loop(anim, loop)
+	for i: int in range(count):
+		var slice: AtlasTexture = AtlasTexture.new()
+		slice.atlas = sheet
+		slice.region = Rect2(float(i * cell), float(row * cell), float(cell), float(cell))
+		slice.filter_clip = true
+		frames.add_frame(anim, slice)
 
 
 ## Tärningskroppen för ett material.

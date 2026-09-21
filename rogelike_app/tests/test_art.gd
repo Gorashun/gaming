@@ -24,9 +24,10 @@ func test_every_enemy_sheet_matches_its_declared_grid() -> void:
 		assert_int(sheet.get_width()).override_failure_message(
 			"%s: bredden %d är inte %d frames × %d px" % [enemy_id, sheet.get_width(), frames, cell]
 		).is_equal(cell * frames)
+		var rows: int = int(entry.get("rows", 1))
 		assert_int(sheet.get_height()).override_failure_message(
-			"%s: höjden %d är inte cellstorleken %d" % [enemy_id, sheet.get_height(), cell]
-		).is_equal(cell)
+			"%s: höjden %d är inte %d rader × %d px" % [enemy_id, sheet.get_height(), rows, cell]
+		).is_equal(cell * rows)
 
 
 func test_the_boss_is_a_48_px_cell_and_the_rest_are_32() -> void:
@@ -57,6 +58,30 @@ func test_enemy_frames_slice_the_sheet_into_an_idle_loop() -> void:
 	var first: Texture2D = frames.get_frame_texture(&"default", 0)
 	assert_int(first.get_width()).is_equal(32)
 	assert_int(first.get_height()).is_equal(32)
+
+
+func test_every_enemy_has_a_death_animation_that_does_not_loop() -> void:
+	# M2: rad 1 i arket. EnemyActor.death_reaction() spelar den automatiskt,
+	# så en fiende utan rad 1 skulle tyst falla tillbaka på M1:s uttoning.
+	for enemy_id: String in Art.ENEMIES:
+		var frames: SpriteFrames = Art.enemy_frames(enemy_id)
+		assert_bool(frames.has_animation(&"death")).override_failure_message(
+			"%s saknar dödsanimation" % enemy_id).is_true()
+		assert_int(frames.get_frame_count(&"death")).override_failure_message(
+			"%s har fel antal dödsframes" % enemy_id).is_equal(3)
+		assert_bool(frames.get_animation_loop(&"death")).override_failure_message(
+			"%s loopar sin död" % enemy_id).is_false()
+		# Döden måste rymmas i enemy_killed-budgeten (UI_GUIDE §5.5: 360 ms).
+		var length_ms: float = 3.0 / frames.get_animation_speed(&"death") * 1000.0
+		assert_float(length_ms).override_failure_message(
+			"%s dör på %.0f ms, budgeten är 360" % [enemy_id, length_ms]).is_less_equal(360.0)
+
+
+func test_the_death_row_is_cut_from_the_second_row_of_the_sheet() -> void:
+	var frames: SpriteFrames = Art.enemy_frames("SLAGJAW")
+	var slice: AtlasTexture = frames.get_frame_texture(&"death", 0) as AtlasTexture
+	assert_object(slice).is_not_null()
+	assert_float(slice.region.position.y).is_equal(48.0)
 
 
 func test_enemy_frames_are_cached_per_id() -> void:
@@ -108,6 +133,14 @@ func test_every_relic_in_the_pool_has_a_paperdoll_layer_and_an_icon() -> void:
 		).is_true()
 		assert_object(Art.relic_icon(relic_id)).override_failure_message(
 			"reliken %s saknar ikon" % relic_id).is_not_null()
+		# M2: lagren är ritade. Minst ETT av relikens lager måste finnas som
+		# ark, annars syns reliken bara i brickan (M1.5-snittet).
+		var drawn: bool = false
+		for layer_name: Variant in Art.RELIC_LAYERS[relic_id] as Array:
+			if Art.has("hero/smith_%s_%s.png" % [String(layer_name), relic_id.to_lower()]):
+				drawn = true
+		assert_bool(drawn).override_failure_message(
+			"reliken %s har ingen ritad paperdoll-sprite" % relic_id).is_true()
 
 
 # --- Tärningar -------------------------------------------------------------

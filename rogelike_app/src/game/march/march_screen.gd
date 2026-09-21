@@ -88,7 +88,7 @@ func arrive() -> void:
 	set_process(false)
 	if world != null and is_instance_valid(world):
 		world.call("set_marching", false)
-	Juice.sfx("march_arrive", 1.0)
+	Juice.ui_tap(0.95)
 
 	if _options.size() <= 1:
 		choose(0)
@@ -168,7 +168,7 @@ static func preview_text(node: Dictionary) -> String:
 func choose(index: int) -> void:
 	if index < 0 or index >= _options.size():
 		return
-	Juice.sfx("march_choose", 1.2)
+	Juice.ui_tap(1.15)
 	Juice.haptic(Haptics.Level.MEDIUM)
 	screen_done.emit({"node_id": _options[index]})
 

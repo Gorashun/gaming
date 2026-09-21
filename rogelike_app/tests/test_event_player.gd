@@ -234,3 +234,175 @@ func _state_before(seed_value: int) -> CombatState:
 	var state: CombatState = Content.smith_state()
 	state.enemies = Content.encounter(2, 0)
 	return Resolver.begin_combat(state, Rng.new(seed_value))
+
+
+# ---------------------------------------------------------------------------
+# Feedback-specen (UI_GUIDE §5 + assets/sfx/README.md §2–3)
+# ---------------------------------------------------------------------------
+
+func test_every_chain_step_raises_the_pitch_one_semitone() -> void:
+	var previous: float = 0.0
+	for step: int in range(6):
+		var fb: Dictionary = EventPlayer.feedback({"t": "die_activated"}, step)
+		assert_str(String(fb["sfx"])).is_equal("die_activate")
+		var pitch: float = float(fb["pitch"])
+		assert_float(pitch).is_equal_approx(pow(2.0, float(step) / 12.0), 0.0001)
+		assert_float(pitch).is_greater(previous)
+		previous = pitch
+
+
+func test_the_pitch_is_capped_at_twelve_steps() -> void:
+	# PM:s M2-brief: pow(2, min(step, 12) / 12). Utan tak låter en lång kedja
+	# med tre combos som en telefonsignal (assets/sfx/README.md §3.1).
+	assert_float(float(EventPlayer.feedback({"t": "die_activated"}, 12)["pitch"])).is_equal_approx(2.0, 0.0001)
+	assert_float(float(EventPlayer.feedback({"t": "die_activated"}, 99)["pitch"])).is_equal_approx(2.0, 0.0001)
+
+
+func test_a_combo_picks_its_cue_and_its_haptic_by_multiplier() -> void:
+	var pair: Dictionary = EventPlayer.feedback({"t": "combo_formed", "multiplier": 2}, 0)
+	var triple: Dictionary = EventPlayer.feedback({"t": "combo_formed", "multiplier": 4}, 0)
+	var house: Dictionary = EventPlayer.feedback({"t": "combo_formed", "multiplier": 8}, 0)
+	assert_str(String(pair["sfx"])).is_equal("combo_pair")
+	assert_str(String(triple["sfx"])).is_equal("combo_triple")
+	assert_str(String(house["sfx"])).is_equal("combo_house")
+	assert_int(int(pair["haptic"])).is_equal(Haptics.Level.MEDIUM)
+	assert_int(int(house["haptic"])).is_equal(Haptics.Level.HEAVY)
+	# Tonhöjden hoppar extra per combo (UI_GUIDE §5: bonus 2 / 4 / 7).
+	assert_float(float(triple["pitch"])).is_greater(float(pair["pitch"]))
+	assert_float(float(house["pitch"])).is_greater(float(triple["pitch"]))
+
+
+func test_only_four_and_up_gets_a_hit_stop() -> void:
+	# PM:s M2-brief: "kort hit-stop på ×4+". Ett par bildas nästan varje runda
+	# med Smedens MIRROR; en frysning där skulle göra kedjan hackig.
+	assert_int(int(EventPlayer.feedback({"t": "combo_formed", "multiplier": 2}, 0)["hit_stop_ms"])).is_equal(0)
+	assert_int(int(EventPlayer.feedback({"t": "combo_formed", "multiplier": 4}, 0)["hit_stop_ms"])).is_greater(0)
+	assert_int(int(EventPlayer.feedback({"t": "combo_formed", "multiplier": 8}, 0)["hit_stop_ms"])).is_greater(0)
+
+
+func test_a_bigger_hit_sounds_heavier_and_shakes_harder() -> void:
+	var small: Dictionary = EventPlayer.feedback({"t": "damage_dealt", "amount": 6}, 0)
+	var big: Dictionary = EventPlayer.feedback({"t": "damage_dealt", "amount": 90}, 0)
+	assert_float(float(big["pitch"])).is_less(float(small["pitch"]))
+	assert_float(float(big["shake"])).is_greater(float(small["shake"]))
+	# Skaket har ett tak: en kedja på 300 ska inte kasta ut skärmen ur fönstret.
+	var huge: Dictionary = EventPlayer.feedback({"t": "damage_dealt", "amount": 300}, 0)
+	assert_float(float(huge["shake"])).is_equal(EventPlayer.DAMAGE_SHAKE_MAX)
+	assert_float(float(huge["pitch"])).is_greater_equal(0.65)
+
+
+func test_an_overflow_hop_replaces_the_hit_cue_and_rises() -> void:
+	# assets/sfx/README.md §2: "Ersätter damage_hit på hoppet, staplas inte".
+	var first: Dictionary = EventPlayer.feedback({"t": "damage_dealt", "amount": 20, "overflow": 8}, 2, 0)
+	var hop: Dictionary = EventPlayer.feedback({"t": "damage_dealt", "amount": 8}, 2, 1)
+	var hop2: Dictionary = EventPlayer.feedback({"t": "damage_dealt", "amount": 4}, 2, 2)
+	assert_str(String(first["sfx"])).is_equal("damage_hit")
+	assert_str(String(hop["sfx"])).is_equal("damage_overflow")
+	assert_float(float(hop2["pitch"])).is_greater(float(hop["pitch"]))
+
+
+func test_death_is_a_full_stop_and_not_another_rise() -> void:
+	# UI_GUIDE §5.5: pitch SÄNKS två halvtoner mot kedjans aktuella ton.
+	var step: int = 4
+	var killed: Dictionary = EventPlayer.feedback({"t": "enemy_killed"}, step)
+	var activated: Dictionary = EventPlayer.feedback({"t": "die_activated"}, step)
+	assert_float(float(killed["pitch"])).is_less(float(activated["pitch"]))
+	assert_int(int(killed["haptic"])).is_equal(Haptics.Level.HEAVY)
+
+
+func test_a_cracked_die_breaks_the_rising_pattern() -> void:
+	# §5.6: ingen tonhöjdsstegring alls, tyngsta haptiken, största skaket.
+	var cracked: Dictionary = EventPlayer.feedback({"t": "die_cracked"}, 5)
+	assert_float(float(cracked["pitch"])).is_equal(float(EventPlayer.feedback({"t": "die_cracked"}, 0)["pitch"]))
+	assert_int(int(cracked["haptic"])).is_equal(Haptics.Level.HEAVY)
+	assert_float(float(cracked["shake"])).is_greater(
+		float(EventPlayer.feedback({"t": "enemy_killed"}, 0)["shake"]))
+
+
+func test_the_side_channels_are_mixed_below_the_hits() -> void:
+	# §5.4: charge_stored är en sidokanal, inte huvudhändelsen.
+	var charge: Dictionary = EventPlayer.feedback({"t": "charge_stored", "amount": 3}, 0)
+	var hit: Dictionary = EventPlayer.feedback({"t": "damage_dealt", "amount": 10}, 0)
+	assert_float(float(charge["volume_db"])).is_less(float(hit["volume_db"]))
+	assert_int(int(charge["haptic"])).is_equal(Haptics.Level.NONE)
+
+
+func test_every_cue_the_feedback_table_names_exists_as_a_file() -> void:
+	# Kontraktet mot assets/sfx/README.md §2. En cue som inte är levererad ska
+	# upptäckas här och inte som tystnad i en kedja.
+	var events: Array[Dictionary] = [
+		{"t": "die_activated"}, {"t": "combo_formed", "multiplier": 2},
+		{"t": "combo_formed", "multiplier": 4}, {"t": "combo_formed", "multiplier": 8},
+		{"t": "house_bonus"}, {"t": "damage_dealt", "amount": 5},
+		{"t": "enemy_killed"}, {"t": "die_cracked"}, {"t": "charge_stored"},
+		{"t": "ward_gained"}, {"t": "heal"}, {"t": "enemy_attacks", "amount": 4},
+		{"t": "enemy_thorns"}, {"t": "player_damaged"}, {"t": "status_ticked"},
+		{"t": "round_end"},
+	]
+	var missing: PackedStringArray = PackedStringArray()
+	for event: Dictionary in events:
+		for key: String in ["sfx", "extra_sfx"]:
+			var sound: String = String(EventPlayer.feedback(event, 0, 1 if key == "extra_sfx" else 0)[key])
+			if sound == "":
+				continue
+			if not ResourceLoader.exists("%s/%s.wav" % [Juice.SFX_DIR, sound]):
+				missing.append("%s → %s" % [String(event["t"]), sound])
+	assert_array(Array(missing)).override_failure_message(
+		"feedbacktabellen pekar på ljud som inte finns: %s" % ", ".join(missing)).is_empty()
+
+
+func test_an_unknown_event_is_silent_rather_than_wrong() -> void:
+	var fb: Dictionary = EventPlayer.feedback({"t": "something_from_m3"}, 3)
+	assert_str(String(fb["sfx"])).is_empty()
+	assert_int(int(fb["haptic"])).is_equal(Haptics.Level.NONE)
+	assert_int(int(fb["hit_stop_ms"])).is_equal(0)
+
+
+# ---------------------------------------------------------------------------
+# Reducerad rörelse (UI_GUIDE §6.1)
+# ---------------------------------------------------------------------------
+
+func test_reduced_motion_shortens_the_playback_but_not_the_event_track() -> void:
+	# En runda med en ×4 och en död fiende: de två enda händelserna i M2 som
+	# lägger hit-stop. En runda utan dem har inget att korta, och testet ska
+	# mäta regeln, inte tärningsturen.
+	var events: Array[Dictionary] = [
+		{"t": "round_start", "seq": 0, "ms_hint": 120},
+		{"t": "die_activated", "seq": 1, "ms_hint": 220},
+		{"t": "die_activated", "seq": 2, "ms_hint": 220},
+		{"t": "combo_formed", "seq": 3, "ms_hint": 340, "multiplier": 4},
+		{"t": "damage_dealt", "seq": 4, "ms_hint": 300, "amount": 30},
+		{"t": "enemy_killed", "seq": 5, "ms_hint": 380},
+		{"t": "round_end", "seq": 6, "ms_hint": 600},
+	]
+	var normal: int = EventPlayer.wall_ms(events, 1.0, false)
+	var reduced: int = EventPlayer.wall_ms(events, 1.0, true)
+	# Själva tidslinjen är IDENTISK – §6.1 säger "timing bevaras" – det är
+	# hit-stoppen som halveras, och det är därför uppspelningen blir kortare.
+	assert_int(EventPlayer.total_ms(EventPlayer.build_timeline(events, 1.0))).is_equal(
+		EventPlayer.total_ms(EventPlayer.build_timeline(events, 1.0)))
+	assert_int(EventPlayer.hit_stop_ms(events, false)).is_greater(0)
+	assert_int(reduced).is_less(normal)
+
+
+func test_reduced_motion_reaches_the_same_final_state() -> void:
+	# Det viktigaste löftet i hela uppspelaren: presentation ändrar aldrig utfall.
+	var result: ResolveResult = _full_round_with_enemy_turn()
+	var before: CombatState = _state_before(31)
+	var normal: Dictionary = EventPlayer.apply_all(EventPlayer.view_from_state(before), result.events)
+	var reduced: Dictionary = EventPlayer.apply_all(EventPlayer.view_from_state(before), result.events)
+	assert_str(JSON.stringify(reduced)).is_equal(JSON.stringify(normal))
+
+
+func test_the_hit_stops_fit_inside_the_round_budget() -> void:
+	# Hit-stoppen ligger UTANFÖR tidslinjen och kan därför spräcka känslan av
+	# budgeten även när tidslinjen håller den. Taket här är dev-satt: en runda
+	# får inte kännas som mer än ROUND_BUDGET + 400 ms.
+	for seed_value: int in range(10):
+		var state: CombatState = Content.smith_state()
+		state.enemies = Content.encounter(3, seed_value % 2)
+		state = Resolver.begin_combat(state, Rng.new(seed_value))
+		var result: ResolveResult = Resolver.resolve(state, Policy.lookahead(state))
+		assert_int(EventPlayer.wall_ms(result.events)).override_failure_message(
+			"seed %d: uppspelningen tar %d ms inklusive hit-stop" % [seed_value, EventPlayer.wall_ms(result.events)]
+		).is_less_equal(EventPlayer.ROUND_BUDGET_MS + 400)

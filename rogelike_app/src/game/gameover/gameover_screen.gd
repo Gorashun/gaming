@@ -105,7 +105,7 @@ func _add_divider() -> void:
 
 ## Startar en ny seedad run direkt. UI_GUIDE §3: ett tryck, ingen mellanmeny.
 func play_again() -> void:
-	Juice.sfx("run_again", 1.0)
+	Juice.ui_tap(1.0)
 	Juice.haptic(Haptics.Level.MEDIUM)
 	screen_done.emit({"again": true})
 
