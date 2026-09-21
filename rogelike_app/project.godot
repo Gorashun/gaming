@@ -7,10 +7,20 @@ config_version=5
 
 config/name="PIPWRECK"
 config/description="Dice roguelike for mobile. Six dice, five slots, a chain resolved left to right."
-config/version="0.0.1"
+config/version="0.1.0"
 run/main_scene="res://src/game/main.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://assets/icon.svg"
+; Startskärmen innan första bildrutan. show_image=false tar bort Godot-loggan
+; helt (docs/ANDROID.md §1); bg_color är surface/pit ur UI_GUIDE §2.1 (#0E1216)
+; så att appstarten inte blinkar grått innan Backdrop-noden ritas.
+boot_splash/bg_color=Color(0.054902, 0.070588, 0.086275, 1)
+boot_splash/show_image=false
+boot_splash/fullsize=true
+boot_splash/use_filter=false
+; En kort spärr mot "vit ruta i 80 ms" på långsamma telefoner: splashen ligger
+; kvar minst så här länge även när projektet hunnit ladda snabbare.
+boot_splash/minimum_display_time=200
 
 [audio]
 
@@ -29,6 +39,8 @@ window/size/viewport_width=1080
 window/size/viewport_height=1920
 window/size/window_width_override=360
 window/size/window_height_override=640
+; 1 = PORTRAIT. Måste stå kvar: spelbrädan är ritad för 1080×1920 och en
+; liggande telefon klipper tärningsbrickan (UI_GUIDE §2.9).
 window/handheld/orientation=1
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
@@ -37,6 +49,18 @@ window/stretch/scale_mode="fractional"
 [dotnet]
 
 project/assembly_name="PIPWRECK"
+
+[input_devices]
+
+; Hela UI:t är Control-noder som lyssnar på musknappar (Button.pressed,
+; gui_input). Utan den här översättningen gör ett finger på en Android-skärm
+; ingenting alls. Default är true; den står explicit här för att ingen ska
+; stänga av den av misstag när iOS-exporten kommer.
+pointing/emulate_mouse_from_touch=true
+; Motsatt riktning ska vara AV. Med den på skickar en musklick på skrivbordet
+; både ett InputEventMouseButton och ett InputEventScreenTouch, och
+; tap-catchern i combat_screen.gd skulle hoppa över kedjan dubbelt.
+pointing/emulate_touch_from_mouse=false
 
 [internationalization]
 
