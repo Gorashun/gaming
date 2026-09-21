@@ -137,3 +137,165 @@ COMBAT_NEW_BEST,NEW BEST,NYTT REKORD
 COMBAT_BOSS,BOSS,BOSS
 GAMEOVER_YOUR_CALL,It was your call.,Det var ditt val.
 GAMEOVER_KILLED_BY,Killed by %s.,Dödad av %s.
+COMBAT_SLOT_RULE_PLAIN,no effect,ingen effekt
+COMBAT_SLOT_RULE_FIRE,burn 2 on hit,brand 2 vid träff
+COMBAT_SLOT_RULE_MIRROR,copies left,kopierar vänster
+COMBAT_SLOT_RULE_ANVIL,×2 if 5+,×2 om 5+
+COMBAT_SLOT_RULE_CHARGE,"charge, no dmg","laddning, ej skada"
+COMBAT_SLOT_RULE_VOID,"ward, no dmg","ward, ej skada"
+COMBAT_SLOT_RULE_BLOCKED,blocked 1 round,blockerad 1 runda
+COMBAT_SLOT_RULE_EMPTY,empty,tom
+COMBAT_SLOT_CAPTION,slot %d,slot %d
+COMBAT_SLOT_MATH,%d ×%d = %d,%d ×%d = %d
+COMBAT_SLOT_MATH_PLAIN,= %d,= %d
+COMBAT_SLOT_MATH_MIRROR,←%d ×%d = %d,←%d ×%d = %d
+COMBAT_WHY_PAIR_WITH,pair with %d,par med %d
+COMBAT_WHY_COPY_OF,copy of %d,kopia av %d
+COMBAT_WHY_NO_LEFT,no neighbour,ingen granne
+COMBAT_WHY_LEFT_EMPTY,left is empty,tom till vänster
+COMBAT_WHY_ANVIL_OK,%d is 5+,%d är 5+
+COMBAT_WHY_ANVIL_LOW,too low,för lågt
+COMBAT_WHY_BURN,+ burn %d,+ brand %d
+COMBAT_WHY_TO_WARD,→ ward,→ ward
+COMBAT_WHY_TO_CHARGE,→ charge,→ laddning
+COMBAT_WHY_CHARGE_PLUS,charge +%d,laddning +%d
+COMBAT_OUT_EMPTY,empty,tom
+COMBAT_OUT_BLOCKED,blocked,blockerad
+COMBAT_OUT_WARD,ward,ward
+COMBAT_OUT_CHARGE,charge,laddning
+COMBAT_OUT_FIZZLE,stopped,stoppad
+COMBAT_RECEIPT_TOTAL,%d DAMAGE,%d SKADA
+COMBAT_RECEIPT_SUMMARY,%d rolled − %d armor,%d slaget − %d rustning
+COMBAT_RECEIPT_ARMOR_NOTE,%d per hit × %d hits,%d per träff × %d träffar
+COMBAT_RECEIPT_LINE,%d − %d = %d,%d − %d = %d
+COMBAT_RECEIPT_TARGET,→ %s   %d → %d,→ %s   %d → %d
+COMBAT_RECEIPT_KILL,%s dies,%s dör
+COMBAT_RECEIPT_OVERFLOW,↳ %d spill → %s,↳ %d spill → %s
+COMBAT_RECEIPT_STOPPED,stopped by the armor,stoppas av rustningen
+COMBAT_RECEIPT_STATUS,+ %s %d,+ %s %d
+COMBAT_RECEIPT_TO_WARD,→ %d ward,→ %d ward
+COMBAT_RECEIPT_TO_CHARGE,→ %d charge,→ %d laddning
+COMBAT_RECEIPT_TOTAL_ROW,TOTAL,TOTALT
+COMBAT_RECEIPT_EXPAND,tap for every hit,tryck för varje träff
+COMBAT_RECEIPT_COLLAPSE,tap to fold,tryck för att fälla ihop
+COMBAT_ENEMY_NUMBERED,%s %d,%s %d
+COMBAT_ARC_PAIR,×%d PAIR · BOTH %d,×%d PAR · BÅDA %d
+COMBAT_ARC_TRIPLE,×%d TRIPLE · ALL %d,×%d TRISS · ALLA %d
+COMBAT_ARC_QUAD,×%d QUAD · ALL %d,×%d FYRTAL · ALLA %d
+COMBAT_ARC_PENTA,×%d PENTA · ALL %d,×%d FEMTAL · ALLA %d
+COMBAT_ARC_HOUSE,HOUSE ×%d · TRIPLE + PAIR,KÅK ×%d · TRISS + PAR
+COMBAT_ARC_OCTOPUS,OCTOPUS · SLOT 1 + 3,BLÄCKFISKEN · SLOT 1 + 3
+COMBAT_ENEMY_ARMOR,Armor %d,Rustning %d
+COMBAT_ENEMY_INTENT_ATTACK,Attacks %d,Slår %d
+COMBAT_ENEMY_INTENT_BLOCK,Hardens +%d,Härdar +%d
+COMBAT_ENEMY_INTENT_SPECIAL,%s,%s
+COMBAT_ENEMY_THORNS,Thorns %d,Taggar %d
+COMBAT_ENEMY_BURN,Burn %d,Brand %d
+COMBAT_ENEMY_POISON,Poison %d,Gift %d
+COMBAT_ENEMY_TAKES,takes %d,tar %d
+COMBAT_ENEMY_DIES,DIES,DÖR
+COMBAT_ENEMY_SPILL,SPILL,SPILL
+COMBAT_TRAY_TITLE,THE TRAY,BRICKAN
+COMBAT_TRAY_LEFT,%d left = +%d charge,%d kvar = +%d laddning
+COMBAT_TRAY_SELECTED,TAP A SLOT,VÄLJ SLOT
+COMBAT_TRAY_PLACED,SLOT %d,SLOT %d
+COMBAT_TRAY_LOCKED,LOCKED,LÅST
+COMBAT_TRAY_STOLEN,STOLEN,STULEN
+COMBAT_TRAY_CRACKED,CRACKED,SPRUCKEN
+COMBAT_DICE_LEFT,%d dice left,%d tärningar kvar
+COMBAT_CONFIRM_DAMAGE,CONFIRM · %d DAMAGE,BEKRÄFTA · %d SKADA
+COMBAT_HELP_CLOSE,tap anywhere to close,tryck var som helst för att stänga
+COMBAT_HELP_CHARGE_TITLE,Charge,Laddning
+COMBAT_HELP_CHARGE,Dice you don't place become Charge. Next round it is added to your leftmost die.,Tärningar du inte lägger ut blir laddning. Nästa runda läggs den på din vänstraste tärning.
+COMBAT_HELP_MATH_TITLE,The sum,Räknestycket
+COMBAT_HELP_MATH,"Left to right, slot by slot. This is exactly what happens when you press Confirm. No luck left.","Vänster till höger, slot för slot. Exakt det här händer när du trycker Bekräfta. Ingen slump kvar."
+COMBAT_HELP_ENEMY_TITLE,The enemy,Fienden
+COMBAT_HELP_ENEMY,"Armor is subtracted from every hit. ""Attacks 3"" is what it does to you once your chain is done.","Rustning dras av från varje träff. ""Slår 3"" är vad den gör mot dig när din kedja är klar."
+COMBAT_HELP_BOARD_TITLE,The board,Brädet
+COMBAT_HELP_BOARD,The arc means two equal values side by side double. Three in a row give ×4. The line under the slot name is the whole rule.,Bågen betyder att två lika värden bredvid varandra dubblas. Tre i rad ger ×4. Raden under slotens namn är hela regeln.
+COMBAT_HELP_TRAY_TITLE,The tray,Brickan
+COMBAT_HELP_TRAY,"Empty sockets are dice that are already on the board. Tap a die, then tap a slot.",Tomma socklar är tärningar som redan ligger på brädet. Tryck på en tärning och sedan på en slot.
+COMBAT_HELP_CONFIRM_TITLE,Confirm,Bekräfta
+COMBAT_HELP_CONFIRM,The number on the button is the damage you deal. Then the enemies hit back.,Siffran på knappen är skadan du gör. Sedan slår fienderna tillbaka.
+COMBAT_HELP_SLOT_PLAIN,No effect. The value counts as it is. A 4 deals 4.,Ingen effekt. Värdet räknas som det är. En 4:a gör 4.
+COMBAT_HELP_SLOT_MIRROR,"Copies the value on its left; its own pips are ignored. Left slot shows 5, so this counts as 5 too — and that's a pair: ×2.","Kopierar värdet till vänster; dess egna ögon ignoreras. Vänstra sloten visar 5, alltså räknas den här också som 5 — och det är ett par: ×2."
+COMBAT_HELP_SLOT_ANVIL,Doubles a value of 5 or more. A 6 becomes 12 — which no longer pairs with a 6.,Dubblar ett värde på 5 eller mer. En 6:a blir 12 — som inte längre parar sig med en 6:a.
+COMBAT_HELP_SLOT_FIRE,"Every hit from here adds Burn 2. Burn deals its number at the end of each round, then drops by 1.",Varje träff härifrån lägger på Brand 2. Brand gör sitt tal i slutet av varje runda och sjunker sedan med 1.
+COMBAT_HELP_SLOT_CHARGE,Damage from here goes to the bank instead of the enemy. 8 damage becomes 8 in the bank.,Skada härifrån går till banken i stället för till fienden. 8 skada blir 8 i banken.
+COMBAT_HELP_SLOT_VOID,"Damage from here becomes Ward. Ward soaks the enemy attack this round, then it's gone.",Skada härifrån blir Ward. Ward suger upp fiendens attack den här rundan och försvinner sedan.
+COMBAT_HELP_ARMOR,Subtracted from each hit separately. Four hits of 5 against armor 2 deal 12. One hit of 20 deals 18.,Dras av från varje träff för sig. Fyra träffar på 5 mot rustning 2 gör 12. En träff på 20 gör 18.
+COMBAT_HELP_CHARGE_POOL,Dice you don't place go in the bank. Next round the whole bank is added to your leftmost die.,Tärningar du inte lägger ut hamnar i banken. Nästa runda läggs hela banken på din vänstraste tärning.
+COMBAT_HELP_WARD,Soaks damage this round only. It does not carry over.,Suger upp skada bara den här rundan. Den sparas inte.
+COMBAT_HELP_INTENT,What the enemy will do after your chain. It never changes after you see it.,Vad fienden gör efter din kedja. Den ändras aldrig efter att du sett den.
+TUT_FLOOR_NAME,THE SHALLOW CUT,GRUNDSTIGEN
+TUT_ROOM_LABEL,ROOM 0.%d,RUM 0.%d
+TUT_01_PLACE,Drag a die into a slot. The button shows the damage.,Dra en tärning till en ruta. Knappen visar skadan.
+TUT_02_OVERFLOW,Damage left over rolls on to the next enemy.,Skada som blir över rullar vidare till nästa fiende.
+TUT_03_PAIR,Equal values side by side: ×2. Three in a row: ×4.,Lika värden bredvid varandra: ×2. Tre i rad: ×4.
+TUT_04_ARMOR,Armor is subtracted from every hit. One big hit beats four small.,Rustning dras av från varje träff. En stor träff slår fyra små.
+TUT_05_MIRROR,Mirror copies the value on its left. Its own pips do nothing.,Spegeln kopierar värdet till vänster. Dess egna ögon gör inget.
+TUT_06_CHARGE,Dice you don't place go in the bank.,Tärningar du inte placerar hamnar i banken.
+TUT_07_ANVIL,Anvil doubles 5 or more. A doubled 6 no longer pairs with a 6.,Ambossen dubblar 5 eller mer. En dubblad 6:a parar sig inte längre med en 6:a.
+TUT_TRY_MIRROR,Put any die here. Watch what it copies.,Lägg vilken tärning som helst här. Se vad den kopierar.
+TUT_ANVIL_BREAKS,12 and 6 are not a pair.,12 och 6 är inte ett par.
+TUT_CART_LINE,"The cart still comes for you down here. After this, it doesn't.",Här uppe kommer kärran fortfarande. Efter det här gör den inte det.
+TUT_NO_DEATH,You cannot die on this floor.,Du kan inte dö på den här våningen.
+TUT_DONE_TITLE,THE SHALLOW CUT IS BEHIND YOU,GRUNDSTIGEN ÄR AVKLARAD
+TUT_DONE_BODY,"Eight rules, one floor. Nobody is going to explain the next one.","Åtta regler, en våning. Ingen kommer att förklara nästa."
+TUT_SKIP,SKIP THE LESSON,HOPPA ÖVER LEKTIONEN
+TUT_POINTER_LABEL,here,här
+SMITH_CHOOSE_TITLE,CHOOSE YOUR SMITH,VÄLJ DIN SMED
+SMITH_CHOOSE_SUB,Looks only. Both swing the same hammer.,Bara utseende. Båda svingar samma hammare.
+SMITH_VARIANT_A,Broad,Bredvuxen
+SMITH_VARIANT_B,Lean,Smalvuxen
+SMITH_VARIANT_A_NOTE,"Wide stance, full beard","Bred hållning, fullt skägg"
+SMITH_VARIANT_B_NOTE,"Tall stance, braided hair","Smal hållning, flätat hår"
+SMITH_CHOOSE_CONFIRM,THAT'S ME,DET ÄR JAG
+SMITH_CHANGE_LATER,You can change this whenever you like.,Du kan ändra det här när du vill.
+SMITH_SHEET_TITLE,THE SMITH,SMEDEN
+SMITH_SHEET_GEAR,GEAR,UTRUSTNING
+SMITH_SHEET_DICE,YOUR SIX DICE,DINA SEX TÄRNINGAR
+SMITH_SHEET_RELICS,RELICS,RELIKER
+SMITH_SHEET_CLOSE,CLOSE,STÄNG
+SMITH_SHEET_HINT,Tap a slot to read what it does.,Tryck på en slot för att läsa vad den gör.
+SMITH_SHEET_CHANGE_LOOK,CHANGE LOOK,BYT UTSEENDE
+SMITH_SLOT_HEAD,HEAD,HUVUD
+SMITH_SLOT_CHEST,CHEST,BRÖST
+SMITH_SLOT_HANDS,HANDS,HÄNDER
+SMITH_SLOT_WEAPON,WEAPON,VAPEN
+SMITH_SLOT_AMULET,AMULET,AMULETT
+SMITH_SLOT_BACK,BACK,RYGG
+SMITH_SLOT_LEGS,LEGS,BEN
+SMITH_SLOT_EMPTY,empty,tom
+SMITH_HP,%d / %d HP,%d / %d HP
+FORGE_TITLE,THE FORGE,SMEDJAN
+FORGE_SUB,Swap and reorder. Never add.,Byt och ordna om. Aldrig lägga till.
+FORGE_TAB_FACES,FACES,SIDOR
+FORGE_TAB_SLOTS,SLOT ORDER,SLOTORDNING
+FORGE_SWAP_HINT,"Pick a face you carry, then the face that replaces it.","Välj en sida du bär, sedan sidan som ersätter den."
+FORGE_SWAP_PAIR,%s becomes %s,%s blir %s
+FORGE_REORDER_HINT,"Drag a slot to a new place. Same slots, new order.","Dra en slot till en ny plats. Samma slots, ny ordning."
+FORGE_REORDER_WARN,Mirror on slot 1 has nothing to copy.,Spegeln på slot 1 har inget att kopiera.
+FORGE_APPLY,FORGE IT,SMID DET
+FORGE_REVERT,PUT IT BACK,LÄGG TILLBAKA
+FORGE_NO_ADD,The forge never adds power. It moves it.,Smedjan lägger aldrig till kraft. Den flyttar den.
+FORGE_LOCKED,Unlocked after run %d.,Låses upp efter run %d.
+TOWN_NAME,CHALKRIM,KRITKANTEN
+TOWN_GO_DOWN,GO DOWN,GÅ NER
+TOWN_CURRENCY_PIPS,Pips,Ögon
+TOWN_PIPS_GAINED,+%d PIPS,+%d ÖGON
+TOWN_PRICE,%d pips,%d ögon
+TOWN_CANT_AFFORD,Not enough pips.,För få ögon.
+TOWN_PLACE_PIT_MOUTH,The Pit Mouth,Gropens mun
+TOWN_PLACE_MARKET,The Scrap Market,Skrotmarknaden
+TOWN_PLACE_TALLY_WALL,The Tally Wall,Kritväggen
+TOWN_PLACE_FORGE,The Forge,Smedjan
+TOWN_BUY_FACE,New face in the pool,Ny sida i poolen
+TOWN_BUY_RELIC,New relic in the pool,Ny relik i poolen
+TOWN_BUY_SLOT,New slot type in the pool,Ny slottyp i poolen
+TOWN_MARROW_NAME,Marrow,Marrow
+TOWN_MARROW_SLAGJAW,Slagjaw again. It has all the time in the world and you had eleven minutes.,Slaggkäften igen. Den har all tid i världen och du hade elva minuter.
+TOWN_MARROW_THORNS,You hit a thorn imp four times. It hit you back four times. That is what four means.,Du slog en taggimp fyra gånger. Den slog tillbaka fyra gånger. Det är vad fyra betyder.
+TOWN_MARROW_GENERIC,Room %d. The wall keeps its own count.,Rum %d. Väggen för sin egen räkning.
+TOWN_TALLY_ADDED,One more stroke on the wall.,Ett streck till på väggen.
+TOWN_TALLY_ERASED,You rubbed out your own stroke.,Du suddade ditt eget streck.
