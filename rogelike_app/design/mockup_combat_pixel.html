@@ -102,13 +102,18 @@ body::after{
    har: BLOOD_PRICE pa fx, CHEAT_CUBE pa offhand, BROKEN_SCALE pa torso. */
 .hero .cape{background-image:url('../assets/sprites/hero/smith_cape_ember.png');z-index:0}
 .hero .legs{background-image:url('../assets/sprites/hero/smith_legs_iron.png');z-index:1}
-.hero .body{background-image:url('../assets/sprites/hero/smith_body.png');z-index:2}
-.hero .torso{background-image:url('../assets/sprites/hero/smith_torso_broken_scale.png');z-index:3}
-.hero .head{background-image:url('../assets/sprites/hero/smith_head_domino.png');z-index:4}
-.hero .helm{background-image:url('../assets/sprites/hero/smith_helm_iron.png');z-index:5}
-.hero .offh{background-image:url('../assets/sprites/hero/smith_offhand_cheat_cube.png');z-index:6}
-.hero .weap{background-image:url('../assets/sprites/hero/smith_weapon_hammer.png');z-index:7}
-.hero .fx{background-image:url('../assets/sprites/hero/smith_fx_blood_price.png');z-index:8}
+.hero .body{background-image:url('../assets/sprites/hero/smith_body_a.png');z-index:2}
+.hero .hair{background-image:url('../assets/sprites/hero/smith_hair_a.png');z-index:3}
+.hero .torso{background-image:url('../assets/sprites/hero/smith_torso_broken_scale.png');z-index:4}
+.hero .head{background-image:url('../assets/sprites/hero/smith_head_domino.png');z-index:5}
+.hero .helm{background-image:url('../assets/sprites/hero/smith_helm_iron.png');z-index:6}
+.hero .offh{background-image:url('../assets/sprites/hero/smith_offhand_cheat_cube.png');z-index:7}
+.hero .weap{background-image:url('../assets/sprites/hero/smith_weapon_hammer.png');z-index:8}
+.hero .fx{background-image:url('../assets/sprites/hero/smith_fx_blood_price.png');z-index:9}
+/* M2.5: kroppsvariant B med SAMMA gear- och reliklager. Ligger bredvid A i
+   arenan enbart som visuellt test av kroppsoberoendet (PAPERDOLL §1.1). */
+.hero.vb .body{background-image:url('../assets/sprites/hero/smith_body_b.png')}
+.hero.vb .hair{background-image:url('../assets/sprites/hero/smith_hair_b.png')}
 .hero .tag{position:absolute;left:50%;transform:translateX(-50%);top:-15px;
   font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--chalk300)}
 
@@ -239,13 +244,28 @@ body::after{
       <div class="lyr cape px"></div>
       <div class="lyr legs px"></div>
       <div class="lyr body px"></div>
+      <div class="lyr hair px"></div>
       <div class="lyr torso px"></div>
       <div class="lyr head px"></div>
       <div class="lyr helm px"></div>
       <div class="lyr offh px"></div>
       <div class="lyr weap px"></div>
       <div class="lyr fx px"></div>
-      <div class="tag">SMEDEN</div>
+      <div class="tag">SMEDEN · A</div>
+    </div>
+
+    <div class="hero vb">
+      <div class="lyr cape px"></div>
+      <div class="lyr legs px"></div>
+      <div class="lyr body px"></div>
+      <div class="lyr hair px"></div>
+      <div class="lyr torso px"></div>
+      <div class="lyr head px"></div>
+      <div class="lyr helm px"></div>
+      <div class="lyr offh px"></div>
+      <div class="lyr weap px"></div>
+      <div class="lyr fx px"></div>
+      <div class="tag">SMEDEN · B</div>
     </div>
 
     <div class="foes">

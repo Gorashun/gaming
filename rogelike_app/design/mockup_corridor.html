@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PIPWRECK – Korridor, förstaperson</title>
+<style>
+@font-face{font-family:'Anton';src:url('fonts/anton-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Caveat Brush';src:url('fonts/caveatbrush-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Familjen Grotesk';src:url('fonts/familjengrotesk-var.woff2') format('woff2');font-weight:400 700;font-display:swap}
+</style>
+<style>
+/* ===== Designtokens, UI_GUIDE §2 ===== */
+:root{
+  --pit:#0E1216; --slate:#161B21; --raised:#1F262E; --line:#2C353F;
+  --chalk100:#F2EDE3; --chalk300:#CFC7B8; --chalk500:#9A9486;
+  --bone:#E8E0CF; --pip:#12161A;
+  --fire:#FF6A2C; --poison:#B77FFF; --frost:#6ED2F5; --blood:#FF556F;
+  --charge:#FFD447; --shield:#D7DEE6;
+  --s-vanlig:#CFC7B8; --s-eld:#FF6A2C; --s-spegel:#6ED2F5; --s-amboss:#D7DEE6;
+  --x2:#FFD447;
+  --r-chip:4px; --r-btn:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:#05070A;color:var(--chalk100);
+  font-family:'Familjen Grotesk','Segoe UI',system-ui,sans-serif;display:flex;justify-content:center}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.15;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.55'/></svg>");
+  mix-blend-mode:overlay}
+.app{width:100%;max-width:430px;height:100dvh;position:relative;display:flex;flex-direction:column;
+  background:var(--pit);overflow:hidden}
+.px{image-rendering:pixelated;image-rendering:crisp-edges;background-repeat:repeat;display:block}
+
+/* ===== 1. Korridoren: CSS-perspektiv, 100 px = 1 m ===== */
+/* Rutan är 3 m bred och 3,2 m hög (research 05 §1). Texturerna kaklas en
+   gång per 1,5 m, exakt som atlas-UV:n i CorridorMesh._quad(). */
+.scene{position:relative;flex:0 0 auto;overflow:hidden;background:#05070A;
+  perspective:254px;perspective-origin:50% 50%}
+#viewExplore .scene{height:calc(100dvh - 176px)}
+#viewFight .scene{height:45dvh}
+.world{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.plane{position:absolute;left:0;top:0;transform-origin:50% 50%;
+  background-image:url('../assets/sprites/env/corridor/wall_stone.png');background-size:150px 150px}
+.floor{background-image:url('../assets/sprites/env/corridor/floor_stone.png')}
+.ceil{background-image:url('../assets/sprites/env/corridor/ceiling_stone.png')}
+/* Ögonhöjd 1,7 m i en 3,2 m hög gång: golvet ligger 170 px ned, taket 150 px
+   upp, väggen 320 px hög med mitten 10 px under ögonlinjen. */
+/* Nära segment: z +1,5 m → −4,5 m (walls 600 px långa, centrum −150) */
+.wL{width:600px;height:320px;transform:translate(-50%,-50%) translateZ(-150px) translateX(-150px) translateY(10px) rotateY(90deg)}
+.wR{width:600px;height:320px;transform:translate(-50%,-50%) translateZ(-150px) translateX(150px) translateY(10px) rotateY(-90deg)}
+/* Golv och tak går hela vägen, +1,5 m → −9 m */
+.fl{width:300px;height:1050px;transform:translate(-50%,-50%) translateZ(-375px) translateY(170px) rotateX(90deg)}
+.ce{width:300px;height:1050px;transform:translate(-50%,-50%) translateZ(-375px) translateY(-150px) rotateX(-90deg)}
+/* Korsningen: mynningarna är hål i väggen mellan −4,5 och −6 m.
+   Sidogångens bortre vägg syns genom hålet, plus dess golv och tak. */
+.sL{width:150px;height:320px;transform:translate(-50%,-50%) translateZ(-525px) translateX(-300px) translateY(10px) rotateY(90deg)}
+.sR{width:150px;height:320px;transform:translate(-50%,-50%) translateZ(-525px) translateX(300px) translateY(-10px) rotateY(-90deg)}
+.sfL{width:150px;height:150px;transform:translate(-50%,-50%) translateZ(-525px) translateX(-225px) translateY(170px) rotateX(90deg)}
+.sfR{width:150px;height:150px;transform:translate(-50%,-50%) translateZ(-525px) translateX(225px) translateY(170px) rotateX(90deg)}
+.scL{width:150px;height:150px;transform:translate(-50%,-50%) translateZ(-525px) translateX(-225px) translateY(-150px) rotateX(-90deg)}
+.scR{width:150px;height:150px;transform:translate(-50%,-50%) translateZ(-525px) translateX(225px) translateY(-150px) rotateX(-90deg)}
+/* Bortre segment −6 m → −9 m, och fonden med dörren (ödeskastets dörr,
+   research 05 §2: "Ödeskast = dörr"; bossdörren är samma textur som andas). */
+.wL2{width:300px;height:320px;transform:translate(-50%,-50%) translateZ(-750px) translateX(-150px) translateY(10px) rotateY(90deg)}
+.wR2{width:300px;height:320px;transform:translate(-50%,-50%) translateZ(-750px) translateX(150px) translateY(10px) rotateY(-90deg)}
+.endw{width:300px;height:320px;transform:translate(-50%,-50%) translateZ(-900px) translateY(10px)}
+.door{width:150px;height:280px;transform:translate(-50%,-50%) translateZ(-899px) translateY(30px);
+  background-image:url('../assets/sprites/env/corridor/door_boss.png');background-size:150px 280px;
+  background-repeat:no-repeat;animation:breathe 1.4s ease-in-out infinite alternate}
+@keyframes breathe{from{transform:translate(-50%,-50%) translateZ(-899px) translateY(30px) scale(1)}
+                   to{transform:translate(-50%,-50%) translateZ(-899px) translateY(30px) scale(1.04)}}
+/* Facklor på väggen strax före korsningen */
+.torch{width:48px;height:96px;background-image:url('../assets/sprites/env/corridor/torch.png');
+  background-size:96px 96px;background-repeat:no-repeat;background-position:0 0;
+  animation:flick .28s steps(1) infinite alternate}
+@keyframes flick{from{background-position:0 0}to{background-position:-48px 0}}
+.tL{transform:translate(-50%,-50%) translateZ(-330px) translateX(-146px) translateY(-46px) rotateY(90deg)}
+.tR{transform:translate(-50%,-50%) translateZ(-330px) translateX(146px) translateY(-46px) rotateY(-90deg)}
+/* Facklans ljus på stenen, additivt */
+.glow{position:absolute;inset:0;pointer-events:none;z-index:4;mix-blend-mode:screen;
+  background:radial-gradient(150px 190px at 12% 50%, rgba(255,106,44,.30), transparent 70%),
+             radial-gradient(150px 190px at 88% 50%, rgba(255,106,44,.24), transparent 70%)}
+/* Djupdimma: samma svarta som krit-UI:ts botten, så lagren smälter ihop */
+.fog{position:absolute;inset:0;pointer-events:none;z-index:5;
+  background:radial-gradient(46% 44% at 50% 50%, rgba(14,18,22,0) 0%, rgba(14,18,22,.18) 52%, rgba(14,18,22,.72) 80%, rgba(14,18,22,.95) 100%)}
+.vig{position:absolute;inset:0;pointer-events:none;z-index:6;
+  background:linear-gradient(180deg, rgba(5,7,10,.55), transparent 14%, transparent 86%, rgba(5,7,10,.6))}
+/* Kritlyktan: den enda ljuskällan som följer med kameran. En mjuk additiv
+   närzon, så att stenen två steg bort går att läsa utan att djupet dör. */
+.lamp{position:absolute;inset:0;pointer-events:none;z-index:4;mix-blend-mode:screen;
+  background:radial-gradient(78% 62% at 50% 54%, rgba(207,199,184,.16), rgba(207,199,184,.05) 55%, transparent 78%)}
+
+/* ===== 2. Skyltarna över mynningarna (krita = verb, UI_GUIDE §8) ===== */
+.anch{position:absolute;left:0;top:0;width:2px;height:2px}
+#aL{transform:translate(-50%,-50%) translateZ(-452px) translateX(-148px) translateY(-108px)}
+#aC{transform:translate(-50%,-50%) translateZ(-640px) translateY(-118px)}
+#aR{transform:translate(-50%,-50%) translateZ(-452px) translateX(148px) translateY(-108px)}
+.signs{position:absolute;inset:0;z-index:7;pointer-events:none}
+.sign{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;
+  pointer-events:auto;cursor:pointer}
+.sign .plate{width:44px;height:44px;border:2px solid var(--chalk300);border-radius:6px;
+  background:rgba(10,14,18,.82);display:grid;place-items:center;filter:url(#jitter)}
+.sign .ico{width:28px;height:28px;background-size:28px 28px}
+.sign .die{position:relative;width:28px;height:28px}
+.sign .die .l{position:absolute;inset:0;background-size:28px 28px}
+.sign b{font-family:'Anton',sans-serif;font-size:10px;letter-spacing:.1em;color:var(--chalk300)}
+.sign.dim{opacity:.55}
+.sign .lead{display:block;width:2px;height:22px;background:var(--chalk500);opacity:.7;filter:url(#jitter)}
+.sign[data-dx="-58"] .lead{transform:translateX(26px) rotate(-26deg)}
+.sign[data-dx="58"] .lead{transform:translateX(-26px) rotate(26deg)}
+
+/* ===== 3. Kritstråket (kartkänsla utan kartritning, CORRIDOR §2.7) ===== */
+.trail{position:absolute;left:0;right:0;top:44px;height:16px;z-index:8;pointer-events:none;
+  display:flex;align-items:center;gap:3px;padding:0 12px;opacity:.85}
+.trail i{display:block;width:9px;height:2px;background:var(--chalk300);filter:url(#jitter)}
+.trail i.now{background:var(--chalk100);width:13px;height:3px}
+.trail b{font-size:9px;color:var(--chalk500);font-weight:700;letter-spacing:.08em;margin-left:4px}
+
+/* ===== 4. HUD ===== */
+.hud{position:absolute;left:0;right:0;top:0;height:44px;z-index:9;display:flex;align-items:center;
+  gap:7px;padding:0 12px;white-space:nowrap}
+.hp{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700}
+.hp .g{color:var(--blood)}
+.hpbar{width:44px;height:8px;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:#0B0F13}
+.hpbar i{display:block;height:100%;width:74%;background:var(--blood)}
+.room{font-family:'Anton',sans-serif;font-size:11px;letter-spacing:.05em;color:var(--chalk300);
+  border:1.5px solid var(--line);border-radius:var(--r-chip);padding:1px 5px;background:rgba(14,18,22,.7)}
+.pips{font-size:11px;font-weight:700;color:var(--charge)}
+.hudbtns{margin-left:auto;display:flex;gap:5px}
+.hudbtns button{width:34px;height:34px;border-radius:var(--r-btn);border:1.5px solid var(--line);
+  background:rgba(31,38,46,.85);color:var(--chalk300);font:700 14px/1 'Familjen Grotesk',sans-serif;
+  display:grid;place-items:center}
+.hudbtns .help{border-color:var(--charge);color:var(--charge);font-family:'Anton',sans-serif;font-size:16px}
+.hudbtns .sheet .ico{width:24px;height:24px;background-size:24px 24px;border-radius:3px}
+
+/* ===== 5. Tumzonen: tre riktningsknappar ===== */
+.steer{flex:0 0 auto;display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));z-index:10}
+.steer button{flex:1 1 0;height:64px;border-radius:var(--r-btn);border:2px solid var(--line);
+  background:linear-gradient(180deg,#1C232B,#141A20);color:var(--chalk100);
+  font-family:'Anton',sans-serif;font-size:13px;letter-spacing:.06em;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.steer button .ar{font-size:19px;line-height:1}
+.steer button.fwd{flex:1.35 1 0;border-color:var(--chalk500)}
+.steer button:disabled{opacity:.38}
+.steer button small{font-size:9px;color:var(--chalk500);font-family:'Familjen Grotesk',sans-serif;font-weight:700}
+
+/* ===== 6. Fiender som billboards + HP-chips i ChalkUI ===== */
+.foe{position:absolute;left:0;top:0;transform-origin:50% 100%;background-repeat:no-repeat}
+.rat{width:176px;height:176px;background-image:url('../assets/sprites/enemies/rust_rat.png');background-size:704px 352px}
+.moth{width:176px;height:176px;background-image:url('../assets/sprites/enemies/slag_moth.png');background-size:704px 352px}
+.f1{transform:translate(-50%,-50%) translateZ(-300px) translateX(-75px) translateY(72px)}
+.f2{transform:translate(-50%,-50%) translateZ(-300px) translateX(75px) translateY(72px)}
+.f3{transform:translate(-50%,-50%) translateZ(-450px) translateX(-40px) translateY(72px)}
+.chips{position:absolute;inset:0;z-index:8;pointer-events:none}
+.chip{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;gap:1px}
+.chip .nm{font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--chalk300);text-transform:uppercase}
+.chip .row{display:flex;align-items:center;gap:3px;background:rgba(10,14,18,.86);border:1.5px solid var(--line);
+  border-radius:var(--r-chip);padding:2px 4px}
+.chip .bar{position:relative;width:40px;height:8px;border:1.5px solid var(--chalk500);border-radius:2px;background:#0B0F13;overflow:hidden}
+.chip .bar i{position:absolute;inset:0;background:var(--blood);transform-origin:left}
+/* prognosfält: det här försvinner om du bekräftar (COMBAT_READABILITY §2.2) */
+.chip .bar u{position:absolute;top:0;bottom:0;right:0;background:
+  repeating-linear-gradient(45deg, rgba(242,237,227,.85) 0 2px, rgba(242,237,227,.25) 2px 4px)}
+.chip .n{font-size:9px;font-weight:700;color:var(--chalk100)}
+.chip .arm{display:flex;align-items:center;gap:2px;font-size:9px;font-weight:700;color:var(--shield)}
+.chip .arm .i{width:11px;height:11px;background-size:11px 11px;
+  background-image:url('../assets/sprites/ui/icon_armor.png')}
+.chip .int{display:flex;align-items:center;gap:2px;font-size:9px;font-weight:700;color:var(--fire)}
+.chip .int .i{width:11px;height:11px;background-size:11px 11px;
+  background-image:url('../assets/sprites/ui/icon_attack.png')}
+.chip .lead{width:2px;height:18px;background:var(--chalk500);opacity:.75;filter:url(#jitter)}
+.chip[data-dx="-84"] .lead{transform:translateX(34px) rotate(-30deg)}
+.chip[data-dx="84"] .lead{transform:translateX(-34px) rotate(30deg)}
+.chip.dies .n{color:var(--blood)}
+
+/* ===== 7. Stridsskärm v2 i nedre 55 % ===== */
+.combat{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:5px;
+  padding:6px 12px calc(8px + env(safe-area-inset-bottom));border-top:2px solid var(--line);
+  background:linear-gradient(180deg,#12171D,var(--pit) 40%)}
+.sum{text-align:center}
+.sum .sent{font-family:'Anton',sans-serif;font-size:17px;letter-spacing:.02em;display:flex;
+  justify-content:center;align-items:baseline;gap:5px}
+.sum .sent span{color:var(--chalk100)}
+.sum .sent .m{color:var(--x2)}
+.sum .sent .op{color:var(--chalk500);font-size:13px}
+.sum .caps{display:flex;justify-content:center;gap:5px;font-size:7px;letter-spacing:.08em;color:var(--chalk500);margin-top:1px}
+.sum .caps i{width:30px;text-align:center;font-style:normal}
+.armrow{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:4px;font-size:11px;
+  font-weight:700;color:var(--chalk300);margin-top:3px;line-height:1.25}
+.armrow em{font-style:normal;color:var(--shield)}
+.armrow b{font-family:'Anton',sans-serif;font-size:14px;color:var(--chalk100)}
+.expand{text-align:center;font-family:'Caveat Brush',cursive;font-size:11px;color:var(--chalk500)}
+.arc{position:relative;height:15px}
+.arc .band{position:absolute;left:20%;width:40%;top:6px;height:9px;border:2px solid var(--x2);
+  border-bottom:none;border-radius:8px 8px 0 0;filter:url(#jitter)}
+.arc .lbl{position:absolute;left:40%;top:0;transform:translateX(-50%);background:var(--pit);
+  padding:0 4px;font-size:9px;font-weight:700;color:var(--x2);letter-spacing:.04em}
+.board{display:flex;gap:4px}
+.slot{flex:1 1 0;min-width:0;border:2px solid var(--line);border-radius:6px;background:#12171D;
+  padding:3px 2px 4px;display:flex;flex-direction:column;align-items:center;gap:1px}
+.slot .ico{width:14px;height:14px;background-size:14px 14px}
+.slot .nm{font-size:7px;font-weight:700;letter-spacing:.06em}
+.slot .rule{font-size:8px;color:var(--chalk500);text-align:center;line-height:1.05}
+.slot .die{position:relative;width:34px;height:34px;margin-top:1px}
+.slot .die .l{position:absolute;inset:0;background-size:34px 34px}
+.slot .math{font-size:9px;font-weight:700;color:var(--chalk100)}
+.slot .why{font-size:8px;color:var(--chalk500)}
+.slot.n1{border-color:rgba(207,199,184,.5)} .slot.n1 .nm{color:var(--s-vanlig)}
+.slot.n2{border-color:rgba(207,199,184,.5)} .slot.n2 .nm{color:var(--s-vanlig)}
+.slot.n3{border-color:rgba(110,210,245,.5)} .slot.n3 .nm{color:var(--s-spegel)}
+.slot.n4{border-color:rgba(255,106,44,.5)}  .slot.n4 .nm{color:var(--s-eld)}
+.slot.n5{border-color:rgba(215,222,230,.5)} .slot.n5 .nm{color:var(--s-amboss)}
+.slot .die.mirror .l.glyph{opacity:.55}
+.tray{display:flex;align-items:center;gap:4px}
+.tray .t{font-size:7px;font-weight:700;letter-spacing:.1em;color:var(--chalk500);writing-mode:vertical-rl;
+  transform:rotate(180deg);height:40px}
+.tray .cells{flex:1 1 auto;display:flex;gap:4px;justify-content:space-between}
+.cell{position:relative;width:44px;height:44px;display:grid;place-items:center}
+.cell .l{position:absolute;width:38px;height:38px;background-size:38px 38px}
+.cell.sock{border:2px dashed var(--line);border-radius:6px}
+.cell.sock .ghost{opacity:.16}
+.cell.sock .up{position:absolute;bottom:2px;font-size:11px;color:var(--chalk500)}
+.cell .lab{position:absolute;bottom:-10px;white-space:nowrap;font-size:7px;font-weight:700;color:var(--chalk500)}
+.cell.sel{transform:translateY(-4px)}
+.cell.sel::after{content:"";position:absolute;inset:-3px;border:2px solid var(--charge);border-radius:7px}
+.trayhead{display:flex;justify-content:space-between;font-size:8px;font-weight:700;letter-spacing:.08em;color:var(--chalk500)}
+.btns{display:flex;gap:6px;margin-top:auto;padding-top:4px}
+.btns button{height:52px;border-radius:var(--r-btn);border:2px solid var(--line);background:var(--raised);
+  color:var(--chalk300);font-family:'Anton',sans-serif;font-size:12px;letter-spacing:.05em;padding:0 10px}
+.btns .confirm{flex:1 1 auto;border:none;background:var(--charge);color:#12161A;font-size:16px}
+
+/* ===== Lägesväxlare ===== */
+.toggle{position:absolute;right:10px;bottom:96px;z-index:30;border:2px solid var(--charge);
+  border-radius:999px;background:rgba(14,18,22,.9);color:var(--charge);
+  font:700 10px/1 'Familjen Grotesk',sans-serif;padding:8px 12px;letter-spacing:.06em}
+#viewExplore{display:flex;flex-direction:column;height:100%}
+#viewFight{display:none}
+body.fight #viewFight{display:flex;flex-direction:column;height:100%}
+body.fight #viewExplore{display:none}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="jitter"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n"/>
+  <feDisplacementMap in="SourceGraphic" in2="n" scale="2" xChannelSelector="R" yChannelSelector="G"/></filter>
+</svg>
+
+<div class="app">
+
+<!-- ================= VY A: UTFORSKNING ================= -->
+<div id="viewExplore">
+
+  <div class="scene" id="sceneA">
+    <div class="world">
+      <div class="plane ceil ce px"></div>
+      <div class="plane floor fl px"></div>
+      <div class="plane wL px"></div>
+      <div class="plane wR px"></div>
+      <div class="plane sL px"></div>
+      <div class="plane sR px"></div>
+      <div class="plane floor sfL px"></div>
+      <div class="plane floor sfR px"></div>
+      <div class="plane ceil scL px"></div>
+      <div class="plane ceil scR px"></div>
+      <div class="plane wL2 px"></div>
+      <div class="plane wR2 px"></div>
+      <div class="plane endw px"></div>
+      <div class="plane door px"></div>
+      <div class="plane torch tL px"></div>
+      <div class="plane torch tR px"></div>
+      <!-- Ankare i 3D för kritskyltarna; själva skyltarna ritas i ChalkUI
+           ovanpå dimman och positioneras mot ankarens projicerade läge. -->
+      <div class="anch" id="aL"></div>
+      <div class="anch" id="aC"></div>
+      <div class="anch" id="aR"></div>
+    </div>
+    <div class="lamp"></div>
+    <div class="glow"></div>
+    <div class="fog"></div>
+    <div class="vig"></div>
+
+    <!-- Skyltar: svärd = strid, tärning = ödeskast, eld = vila (CORRIDOR §2.3) -->
+    <div class="signs">
+      <div class="sign" data-at="aL" data-dx="-58" data-dy="-6">
+        <div class="plate"><div class="ico px" style="background-image:url('../assets/sprites/ui/node_combat.png')"></div></div>
+        <b>STRID</b><span class="lead"></span>
+      </div>
+      <div class="sign" data-at="aC" data-dy="-54">
+        <div class="plate"><div class="die">
+          <div class="l px" style="background-image:url('../assets/sprites/dice/die_body_bone.png')"></div>
+          <div class="l px" style="background-image:url('../assets/sprites/dice/pips_6.png')"></div>
+        </div></div>
+        <b>ÖDESKAST</b><span class="lead"></span>
+      </div>
+      <div class="sign" data-at="aR" data-dx="58" data-dy="-6">
+        <div class="plate"><div class="ico px" style="background-image:url('../assets/sprites/ui/node_rest.png')"></div></div>
+        <b>VILA</b><span class="lead"></span>
+      </div>
+    </div>
+
+    <!-- Kritstråket: en linje per gången ruta, ritar sig bakom dig -->
+    <div class="trail">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="now"></i><b>VÅNING 1 · 9 RUTOR</b>
+    </div>
+
+    <div class="hud">
+      <span class="hp"><span class="g">◖</span>74/100<span class="hpbar"><i></i></span></span>
+      <span class="room">RUM 3</span>
+      <span class="pips">◉ 12</span>
+      <span class="hudbtns">
+        <button class="sheet" title="Character sheet"><span class="ico px" style="background-image:url('../assets/sprites/hero/smith_portrait_a.png')"></span></button>
+        <button class="help">?</button>
+        <button>⚙</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="steer">
+    <button><span class="ar">◀</span>VÄND<small>strid</small></button>
+    <button class="fwd"><span class="ar">▲</span>FRAM<small>ödeskast</small></button>
+    <button><span class="ar">▶</span>VÄND<small>vila</small></button>
+  </div>
+
+  <button class="toggle" onclick="document.body.classList.add('fight')">VISA STRID ▸</button>
+</div>
+
+<!-- ================= VY B: STRID ================= -->
+<div id="viewFight">
+
+  <div class="scene" id="sceneB">
+    <div class="world">
+      <div class="plane ceil ce px"></div>
+      <div class="plane floor fl px"></div>
+      <div class="plane wL px"></div>
+      <div class="plane wR px"></div>
+      <div class="plane sL px"></div>
+      <div class="plane sR px"></div>
+      <div class="plane floor sfL px"></div>
+      <div class="plane floor sfR px"></div>
+      <div class="plane ceil scL px"></div>
+      <div class="plane ceil scR px"></div>
+      <div class="plane wL2 px"></div>
+      <div class="plane wR2 px"></div>
+      <div class="plane endw px"></div>
+      <div class="plane torch tL px"></div>
+      <div class="plane torch tR px"></div>
+      <!-- Wizardry-formering: 2 fram på 3 m, 1 bak på 4,5 m (research 05 §3) -->
+      <div class="foe rat f1 px" id="e1"></div>
+      <div class="foe rat f2 px" id="e2"></div>
+      <div class="foe moth f3 px" id="e3"></div>
+    </div>
+    <div class="lamp"></div>
+    <div class="glow"></div>
+    <div class="fog"></div>
+    <div class="vig"></div>
+
+    <!-- HP-chipsen ligger i ChalkUI och ankras via unproject_position() -->
+    <div class="chips" id="chips">
+      <div class="chip dies" data-for="e1" data-dx="-84" data-dy="-6">
+        <div class="nm">Rostråtta 1</div>
+        <div class="row">
+          <span class="bar"><i style="transform:scaleX(1)"></i><u style="width:100%"></u></span>
+          <span class="n">28/28</span>
+          <span class="arm"><span class="i px"></span>2</span>
+          <span class="int"><span class="i px"></span>3</span>
+        </div>
+        <div class="lead"></div>
+      </div>
+      <div class="chip" data-for="e2" data-dx="84" data-dy="-6">
+        <div class="nm">Rostråtta 2</div>
+        <div class="row">
+          <span class="bar"><i style="transform:scaleX(1)"></i><u style="width:8%"></u></span>
+          <span class="n">28/28</span>
+          <span class="arm"><span class="i px"></span>2</span>
+          <span class="int"><span class="i px"></span>3</span>
+        </div>
+        <div class="lead"></div>
+      </div>
+      <div class="chip" data-for="e3" data-dy="-46">
+        <div class="nm">Slaggmal</div>
+        <div class="row">
+          <span class="bar"><i style="transform:scaleX(1)"></i></span>
+          <span class="n">34/34</span>
+          <span class="arm"><span class="i px"></span>1</span>
+          <span class="int"><span class="i px"></span>4</span>
+        </div>
+        <div class="lead"></div>
+      </div>
+    </div>
+
+    <div class="hud">
+      <span class="hp"><span class="g">◖</span>74/100<span class="hpbar"><i></i></span></span>
+      <span class="room">RUM 3 · R1</span>
+      <span class="pips">◉ 12</span>
+      <span class="hudbtns">
+        <button class="help">?</button>
+        <button>⚙</button>
+      </span>
+    </div>
+  </div>
+
+  <!-- ===== Stridsskärm v2, oförändrad från COMBAT_READABILITY ===== -->
+  <div class="combat">
+    <div class="sum">
+      <div class="sent">
+        <span>2</span><span class="op">+</span><span class="m">10</span><span class="op">+</span>
+        <span class="m">10</span><span class="op">+</span><span>6</span><span class="op">+</span>
+        <span style="color:var(--s-amboss)">12</span><span class="op">=</span><span>40</span>
+      </div>
+      <div class="caps"><i>slot 1</i><i>slot 2</i><i>slot 3</i><i>slot 4</i><i>slot 5</i></div>
+      <div class="armrow">40 slaget <em>− 12 rustning</em> <span style="color:var(--chalk500)">(2 per träff × 6 träffar)</span></div>
+      <div class="armrow" style="margin-top:1px">= <b>28 SKADA</b></div>
+      <div class="expand">tryck för varje träff</div>
+    </div>
+
+    <div class="arc"><div class="band"></div><div class="lbl">×2 PAR · BÅDA 5</div></div>
+
+    <div class="board">
+      <div class="slot n1">
+        <div class="ico px" style="background-image:url('../assets/sprites/ui/slot_plain.png')"></div>
+        <div class="nm">VANLIG</div><div class="rule">ingen effekt</div>
+        <div class="die"><div class="l px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div>
+          <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_2.png')"></div></div>
+        <div class="math">= 2</div><div class="why">stoppas</div>
+      </div>
+      <div class="slot n2">
+        <div class="ico px" style="background-image:url('../assets/sprites/ui/slot_plain.png')"></div>
+        <div class="nm">VANLIG</div><div class="rule">ingen effekt</div>
+        <div class="die"><div class="l px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div>
+          <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_5.png')"></div></div>
+        <div class="math" style="color:var(--x2)">5 ×2 = 10</div><div class="why">par med 3</div>
+      </div>
+      <div class="slot n3">
+        <div class="ico px" style="background-image:url('../assets/sprites/ui/slot_mirror.png')"></div>
+        <div class="nm">SPEGEL</div><div class="rule">kopierar vänster</div>
+        <div class="die mirror"><div class="l px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div>
+          <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_1.png')"></div></div>
+        <div class="math" style="color:var(--x2)">←5 ×2 = 10</div><div class="why">kopia av 2</div>
+      </div>
+      <div class="slot n4">
+        <div class="ico px" style="background-image:url('../assets/sprites/ui/slot_fire.png')"></div>
+        <div class="nm">ELD</div><div class="rule">brand 2 vid träff</div>
+        <div class="die"><div class="l px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div>
+          <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_6.png')"></div></div>
+        <div class="math">= 6</div><div class="why" style="color:var(--fire)">+ brand 2</div>
+      </div>
+      <div class="slot n5">
+        <div class="ico px" style="background-image:url('../assets/sprites/ui/slot_anvil.png')"></div>
+        <div class="nm">AMBOSS</div><div class="rule">×2 om 5+</div>
+        <div class="die"><div class="l px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div>
+          <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_6.png')"></div></div>
+        <div class="math" style="color:var(--s-amboss)">6 ×2 = 12</div><div class="why">6 är 5+</div>
+      </div>
+    </div>
+
+    <div class="trayhead"><span>BRICKAN</span><span style="color:var(--charge)">1 KVAR = +4 LADDNING</span></div>
+    <div class="tray">
+      <div class="cells">
+        <div class="cell sock"><div class="l ghost px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div>
+          <span class="up">↑</span><span class="lab">SLOT 1</span></div>
+        <div class="cell sock"><div class="l ghost px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div>
+          <span class="up">↑</span><span class="lab">SLOT 2</span></div>
+        <div class="cell sock"><div class="l ghost px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div>
+          <span class="up">↑</span><span class="lab">SLOT 3</span></div>
+        <div class="cell sock"><div class="l ghost px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div>
+          <span class="up">↑</span><span class="lab">SLOT 4</span></div>
+        <div class="cell sock"><div class="l ghost px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div>
+          <span class="up">↑</span><span class="lab">SLOT 5</span></div>
+        <div class="cell sel"><div class="l px" style="background-image:url('../assets/sprites/dice/die_body_bone.png')"></div>
+          <div class="l px" style="background-image:url('../assets/sprites/dice/pips_4.png')"></div>
+          <span class="lab" style="color:var(--charge)">VÄLJ SLOT</span></div>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button>OMKAST 1</button>
+      <button>↩ ÅNGRA</button>
+      <button class="confirm">BEKRÄFTA · 28 SKADA</button>
+    </div>
+  </div>
+
+  <button class="toggle" style="bottom:auto;top:calc(45dvh - 46px);left:10px;right:auto" onclick="document.body.classList.remove('fight')">◂ VISA KORRIDOR</button>
+</div>
+
+</div>
+
+<script>
+// HP-chipsen är krit-UI, inte 3D. De ankras varje frame mot billboardens
+// projicerade position - i Godot via Camera3D.unproject_position(), här via
+// getBoundingClientRect() på samma transformerade element. Samma kontrakt.
+function anchorSigns(){
+  const scene = document.getElementById('sceneA');
+  if (!scene) return;
+  const base = scene.getBoundingClientRect();
+  document.querySelectorAll('.sign').forEach(sign => {
+    const a = document.getElementById(sign.dataset.at).getBoundingClientRect();
+    // Ankaret ger mynningens läge; skylten skjuts ut från det med en fast
+    // offset så att tre skyltar aldrig kan trängas på 360 dp. Ledarlinjen
+    // håller ihop skylt och mynning (samma grepp som HP-chipsen).
+    const dx = parseFloat(sign.dataset.dx || '0');
+    const dy = parseFloat(sign.dataset.dy || '0');
+    sign.style.left = (a.left + a.width / 2 - base.left + dx) + 'px';
+    sign.style.top  = (a.top + a.height / 2 - base.top + dy) + 'px';
+  });
+}
+addEventListener('load', anchorSigns);
+addEventListener('resize', anchorSigns);
+
+function anchorChips(){
+  const scene = document.getElementById('sceneB');
+  if (!scene) return;
+  const base = scene.getBoundingClientRect();
+  document.querySelectorAll('#chips .chip').forEach(chip => {
+    const foe = document.getElementById(chip.dataset.for);
+    const r = foe.getBoundingClientRect();
+    // Fast sidoförskjutning per plats i formeringen, så tre chips aldrig
+    // kan lägga sig på varandra på 360 dp. Ledarlinjen håller ihop paret.
+    const dx = parseFloat(chip.dataset.dx || '0');
+    const dy = parseFloat(chip.dataset.dy || '0');
+    chip.style.left = (r.left + r.width / 2 - base.left + dx) + 'px';
+    chip.style.top  = (r.top - base.top + 6 + dy) + 'px';
+    // chipet skalar med djupet, men aldrig under läsbarhet
+    const k = Math.max(0.8, Math.min(1, r.width / 176));
+    chip.style.transform = 'translate(-50%,-100%) scale(' + k.toFixed(3) + ')';
+  });
+}
+addEventListener('load', anchorChips);
+addEventListener('resize', anchorChips);
+new MutationObserver(anchorChips).observe(document.body, {attributes:true, attributeFilter:['class']});
+</script>
+</body>
+</html>

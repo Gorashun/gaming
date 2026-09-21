@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PIPWRECK – Välj din smed</title>
+<style>
+@font-face{font-family:'Anton';src:url('fonts/anton-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Caveat Brush';src:url('fonts/caveatbrush-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Familjen Grotesk';src:url('fonts/familjengrotesk-var.woff2') format('woff2');font-weight:400 700;font-display:swap}
+</style>
+<style>
+/* ===== Designtokens, UI_GUIDE §2 ===== */
+:root{
+  --pit:#0E1216; --slate:#161B21; --raised:#1F262E; --line:#2C353F;
+  --chalk100:#F2EDE3; --chalk300:#CFC7B8; --chalk500:#9A9486;
+  --bone:#E8E0CF; --charge:#FFD447; --blood:#FF556F; --shield:#D7DEE6;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --r-chip:4px; --r-btn:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--pit);color:var(--chalk100);
+  font-family:'Familjen Grotesk','Segoe UI',system-ui,sans-serif;display:flex;justify-content:center}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.15;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.55'/></svg>");
+  mix-blend-mode:overlay}
+.app{width:100%;max-width:430px;height:100dvh;position:relative;display:flex;flex-direction:column;
+  padding:0 14px 10px;background:radial-gradient(120% 55% at 50% 0%, #171D24 0%, var(--pit) 72%)}
+.px{image-rendering:pixelated;image-rendering:crisp-edges;background-repeat:no-repeat;display:block}
+
+/* ===== Rubrik ===== */
+.head{flex:0 0 auto;padding:14px 0 6px;text-align:center}
+.head h1{font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.05em;line-height:1}
+.head p{font-family:'Caveat Brush',cursive;font-size:14px;color:var(--chalk300);margin-top:4px}
+
+/* ===== Två kort sida vid sida ===== */
+.pick{flex:1 1 auto;display:flex;gap:10px;align-items:flex-start;justify-content:center;min-height:0;padding:6px 0}
+.card{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;
+  border:2px solid var(--line);border-radius:10px;background:linear-gradient(180deg,#151A20,#10151A);
+  padding:8px 6px 10px;position:relative;cursor:pointer}
+.card.sel{border-color:var(--charge);box-shadow:0 0 0 1px rgba(255,212,71,.35),0 6px 18px rgba(0,0,0,.5)}
+/* porträtt 96 px i ×1,5 CSS = ×3 på 2x-skärm, heltal på enhetspixelnivå */
+.port{width:144px;height:144px;background-size:144px 144px;flex:0 0 auto}
+@media (max-width:379px){.port{width:120px;height:120px;background-size:120px 120px}}
+.pa{background-image:url('../assets/sprites/hero/smith_portrait_a.png')}
+.pb{background-image:url('../assets/sprites/hero/smith_portrait_b.png')}
+/* helfigur 48 px-cell i ×2 CSS, frame idle 0 */
+.fig{position:relative;width:96px;height:96px;flex:0 0 auto}
+.fig .lyr{position:absolute;inset:0;width:96px;height:96px;background-size:768px 384px;background-position:0 0}
+.fig .cape{background-image:url('../assets/sprites/hero/smith_cape_ember.png');z-index:0}
+.fig .legs{background-image:url('../assets/sprites/hero/smith_legs_iron.png');z-index:1}
+.fig .hair{z-index:3}
+.fig .helm{background-image:url('../assets/sprites/hero/smith_helm_iron.png');z-index:6}
+.fig .weap{background-image:url('../assets/sprites/hero/smith_weapon_hammer.png');z-index:8}
+.va .body{background-image:url('../assets/sprites/hero/smith_body_a.png');z-index:2}
+.va .hair{background-image:url('../assets/sprites/hero/smith_hair_a.png')}
+.vb .body{background-image:url('../assets/sprites/hero/smith_body_b.png');z-index:2}
+.vb .hair{background-image:url('../assets/sprites/hero/smith_hair_b.png')}
+.name{font-family:'Anton',sans-serif;font-size:17px;letter-spacing:.06em;margin-top:2px}
+.note{font-family:'Caveat Brush',cursive;font-size:13px;line-height:1.15;color:var(--chalk500);text-align:center}
+.card.sel .name{color:var(--charge)}
+.tick{position:absolute;top:6px;right:8px;font-family:'Anton',sans-serif;font-size:16px;color:var(--charge);opacity:0}
+.card.sel .tick{opacity:1}
+
+/* ===== Tumzon ===== */
+.foot{flex:0 0 auto;display:flex;flex-direction:column;gap:6px;padding-top:4px}
+.confirm{height:56px;border:none;border-radius:var(--r-btn);background:var(--charge);color:#12161A;
+  font-family:'Anton',sans-serif;font-size:19px;letter-spacing:.06em;width:100%}
+.hint{font-family:'Caveat Brush',cursive;font-size:13px;color:var(--chalk500);text-align:center}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="head">
+    <h1>VÄLJ DIN SMED</h1>
+    <p>Bara utseende. Båda svingar samma hammare.</p>
+  </div>
+
+  <!-- Två porträtt sida vid sida. Tapp på kortet = välj. -->
+  <div class="pick">
+    <div class="card sel" id="ca">
+      <div class="tick">✓</div>
+      <div class="port pa px"></div>
+      <div class="fig va">
+        <div class="lyr cape px"></div><div class="lyr legs px"></div>
+        <div class="lyr body px"></div><div class="lyr hair px"></div>
+        <div class="lyr helm px"></div><div class="lyr weap px"></div>
+      </div>
+      <div class="name">BREDVUXEN</div>
+      <div class="note">Bred hållning,<br>fullt skägg</div>
+    </div>
+
+    <div class="card" id="cb">
+      <div class="tick">✓</div>
+      <div class="port pb px"></div>
+      <div class="fig vb">
+        <div class="lyr cape px"></div><div class="lyr legs px"></div>
+        <div class="lyr body px"></div><div class="lyr hair px"></div>
+        <div class="lyr helm px"></div><div class="lyr weap px"></div>
+      </div>
+      <div class="name">SMALVUXEN</div>
+      <div class="note">Smal hållning,<br>flätat hår</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <button class="confirm">DET ÄR JAG</button>
+    <div class="hint">Du kan ändra det här när du vill.</div>
+  </div>
+
+</div>
+<script>
+// Tapp = välj. Inget mellansteg, ingen karusell, inget "nästa".
+const cards=[document.getElementById('ca'),document.getElementById('cb')];
+cards.forEach(c=>c.addEventListener('click',()=>{cards.forEach(o=>o.classList.remove('sel'));c.classList.add('sel')}));
+</script>
+</body>
+</html>

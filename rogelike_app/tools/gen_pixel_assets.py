@@ -1912,6 +1912,175 @@ def floor_tile() -> Canvas:
     return cv
 
 
+# --- Corridor: first person tile textures (M2.5 presentation shift) --------
+# docs/research/05_fps_korridor.md section 1: the whole floor is ONE ArrayMesh
+# with ONE material, so the corridor needs 4-5 tileable 64x64 textures and
+# nothing else. Every texture below wraps on both axes (all coordinates go
+# through % 64), which is the hard requirement - a seam is visible on every
+# single wall quad at once.
+
+CORRIDOR_TILE: int = 64
+
+
+def _grit(cv: Canvas, seed: int, amount: int, tokens: tuple[str, ...]) -> None:
+    """Deterministic speckle that wraps: coordinates are taken modulo the tile."""
+    for i in range(amount):
+        x = int(_hash01(i, seed, 11) * cv.width) % cv.width
+        y = int(_hash01(seed, i, 23) * cv.height) % cv.height
+        token = tokens[i % len(tokens)]
+        cv.set(x, y, color(token))
+
+
+def corridor_wall() -> Canvas:
+    """64x64 tileable wall: two courses of slag brick, lit from the upper left.
+
+    Brick size 32x16 with a half-brick offset on every other course, so the
+    tile repeats at 64 without the eye catching the grid. Mortar is the pit
+    colour, which is also the fog colour - a wall that fades out never shows a
+    seam against the darkness.
+    """
+    cv = Canvas(CORRIDOR_TILE, CORRIDOR_TILE)
+    cv.rect(0, 0, CORRIDOR_TILE, CORRIDOR_TILE, color("iron1"))
+    for course in range(4):
+        y = course * 16
+        offset = 0 if course % 2 == 0 else 16
+        for brick in range(2):
+            x = (brick * 32 + offset) % CORRIDOR_TILE
+            for yy in range(1, 15):
+                for xx in range(1, 31):
+                    px = (x + xx) % CORRIDOR_TILE
+                    py = y + yy
+                    n = _hash01(px, py, 7 + course)
+                    token = "iron2"
+                    if n > 0.86:
+                        token = "iron3"
+                    elif n < 0.12:
+                        token = "iron1"
+                    cv.set(px, py, color(token))
+            # lit top edge and dark bottom edge: the only shading a wall needs
+            for xx in range(1, 31):
+                px = (x + xx) % CORRIDOR_TILE
+                cv.set(px, y + 1, color("iron3"))
+                cv.set(px, y + 14, color("iron1"))
+            cv.set((x + 1) % CORRIDOR_TILE, y + 1, color("iron4"))
+    # damp streaks: three vertical runs, so the wall has a "down" direction
+    for sx, sh in ((9, 40), (37, 26), (54, 34)):
+        for i in range(sh):
+            y = (i + sx) % CORRIDOR_TILE
+            cv.set(sx, y, color("iron1"))
+            if i % 3 == 0:
+                cv.set(sx + 1, y, color("iron2"))
+    _grit(cv, 3, 90, ("iron1", "iron3", "chalk500@0.25"))
+    return cv
+
+
+def corridor_floor() -> Canvas:
+    """64x64 tileable floor: four flagstones with cracks and pit grit."""
+    cv = Canvas(CORRIDOR_TILE, CORRIDOR_TILE)
+    cv.rect(0, 0, CORRIDOR_TILE, CORRIDOR_TILE, color("iron1"))
+    for qy in range(2):
+        for qx in range(2):
+            ox, oy = qx * 32, qy * 32
+            for yy in range(1, 31):
+                for xx in range(1, 31):
+                    n = _hash01(ox + xx, oy + yy, 17)
+                    token = "iron2" if n > 0.2 else "iron1"
+                    if n > 0.93:
+                        token = "iron3"
+                    cv.set(ox + xx, oy + yy, color(token))
+            for xx in range(1, 31):
+                cv.set(ox + xx, oy + 1, color("iron3"))
+            # a crack that never reaches the tile edge, so it cannot make a seam
+            cx = ox + 8 + qx * 6
+            for i in range(14):
+                cv.set(cx + (i % 3), oy + 6 + i, color("iron1"))
+    _grit(cv, 5, 120, ("iron1", "iron3", "chalk500@0.2"))
+    return cv
+
+
+def corridor_ceiling() -> Canvas:
+    """64x64 tileable ceiling: rough rock, darker than the wall, no structure.
+
+    The ceiling is the first surface to disappear into the fog, so it is the
+    cheapest place to save contrast: no bricks, no edges, only noise.
+    """
+    cv = Canvas(CORRIDOR_TILE, CORRIDOR_TILE)
+    for y in range(CORRIDOR_TILE):
+        for x in range(CORRIDOR_TILE):
+            n = _hash01(x, y, 29) * 0.6 + _hash01(x // 4, y // 4, 31) * 0.4
+            token = "iron1"
+            if n > 0.78:
+                token = "iron2"
+            elif n < 0.18:
+                token = "out"
+            cv.set(x, y, color(token))
+    # two rusted tie rods across the ceiling, the only readable structure
+    for ry in (14, 46):
+        for x in range(CORRIDOR_TILE):
+            cv.set(x, ry, color("rust1"))
+            cv.set(x, ry + 1, color("iron1"))
+            if x % 16 == 3:
+                cv.set(x, ry, color("rust2"))
+    return cv
+
+
+def corridor_door() -> Canvas:
+    """64x64 boss door. Not tileable - one quad, one door (CORRIDOR_DESIGN 3.3).
+
+    Slagjaw's door bulges: the art is drawn so the centre plates read as a
+    chest, and the engine breathes it with a 1.4 s scale tween. No animation
+    frames, because the breath has to be slow enough that frames would be waste.
+    """
+    cv = Canvas(CORRIDOR_TILE, CORRIDOR_TILE)
+    # frame
+    cv.rect(0, 0, CORRIDOR_TILE, CORRIDOR_TILE, color("iron1"))
+    cv.rect(4, 2, 56, 62, color("iron2"))
+    for i in range(3):
+        cv.hline(4 + i, 2 + i, 56 - i * 2, color("iron3"))
+    # two leaves with a seam down the middle
+    cv.vline(31, 4, 60, color("out"))
+    cv.vline(32, 4, 60, color("iron1"))
+    for plate_y in (8, 26, 44):
+        for leaf_x in (7, 34):
+            plate(cv, leaf_x, plate_y, 23, 14, IRON)
+            for rx in range(leaf_x + 2, leaf_x + 22, 6):
+                cv.set(rx, plate_y + 2, color("shield"))
+                cv.set(rx, plate_y + 11, color("iron1"))
+    # jaw handles: two rings that read as teeth at a distance
+    for hx in (24, 39):
+        ellipse(cv, hx, 34, 4.0, 4.0, ("iron1", "iron3", "iron4"))
+        ellipse(cv, hx, 34, 2.0, 2.0, ("out", "out", "out"), flat=True)
+    # chalk: somebody counted the ones who opened it
+    for i, mx in enumerate((10, 13, 16, 19)):
+        cv.vline(mx, 52 - (i % 2), 7, color("chalk300"))
+    for i in range(10):
+        cv.set(9 + i, 58 - int(i * 0.5), color("chalk100"))
+    return cv
+
+
+def corridor_torch() -> Canvas:
+    """16x32 wall sconce, two frames side by side (32x32): the only warm light.
+
+    Used on chamber walls and as the elite's early warning (CORRIDOR_DESIGN
+    3.2). Billboarded in 3D, so it needs no perspective versions.
+    """
+    out = Canvas(32, 32)
+    for f in range(2):
+        cv = Canvas(16, 32)
+        cv.rect(6, 18, 4, 12, color("iron2"))          # bracket
+        cv.rect(5, 16, 6, 3, color("iron3"))
+        cv.hline(5, 16, 6, color("iron4"))
+        flare = 0 if f == 0 else 1
+        for i, w in enumerate((5, 5, 4, 3, 2, 1)):
+            y = 15 - i - flare
+            cv.rect(8 - w // 2, y, w, 1, color("rust4" if i < 2 else "rust5"))
+        cv.rect(6, 12 - flare, 4, 4, color("rust3"))
+        cv.set(8, 13 - flare, color("charge"))
+        cv.set(7 + f, 8 - flare, color("rust5"))       # a spark
+        out.blit(cv.outline(color("out")), f * 16, 0)
+    return out
+
+
 # --- Main ------------------------------------------------------------------
 
 
@@ -1965,6 +2134,18 @@ def generate(root: Path) -> list[tuple[str, str]]:
         ("floor_tile", floor_tile, "golvtile marschremsa, 32x32 kaklingsbar"),
     ):
         path = ART / "env" / f"floor1_{name}.png" if name != "floor_tile" else ART / "env" / "floor1_tile.png"
+        write_png(root / path, fn())
+        made.append((path.as_posix(), note))
+
+    # corridor (first person): tileable 64x64 textures + door + torch
+    for filename, fn, note in (
+        ("wall_stone.png", corridor_wall, "korridorvagg 64x64 kaklingsbar, slaggtegel"),
+        ("floor_stone.png", corridor_floor, "korridorgolv 64x64 kaklingsbart, flisor"),
+        ("ceiling_stone.png", corridor_ceiling, "korridortak 64x64 kaklingsbart, raberg + dragstag"),
+        ("door_boss.png", corridor_door, "bossdorr 64x64, en kvad (ej kaklingsbar)"),
+        ("torch.png", corridor_torch, "vaggfackla 16x32, 2 frames (32x32), enda varma ljuset"),
+    ):
+        path = ART / "env" / "corridor" / filename
         write_png(root / path, fn())
         made.append((path.as_posix(), note))
 
