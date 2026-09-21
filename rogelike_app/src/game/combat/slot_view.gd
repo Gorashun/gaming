@@ -1,5 +1,5 @@
 class_name SlotView
-extends Control
+extends PanelContainer
 ## En av brädets fem slots. UI_GUIDE §2.4 och §2.9: 64×76 dp visuellt,
 ## 72×84 dp träffyta, färg [b]och[/b] ramstil [b]och[/b] ikon [b]och[/b] ord –
 ## en färgblind spelare ska kunna skilja alla fem typer utan att se färgen.
@@ -19,7 +19,6 @@ var slot_index: int = -1
 
 var _slot: Slot = null
 var _die: Die = null
-var _panel: Panel = null
 var _art: Control = null
 var _type_label: Label = null
 var _die_label: Label = null
@@ -30,23 +29,19 @@ var _highlight: bool = false
 
 
 func _init() -> void:
-	custom_minimum_size = Vector2(Tokens.dp(Tokens.SLOT_WIDTH), Tokens.dp(Tokens.SLOT_HEIGHT + 20))
+	# Som i DieView: minsta bredd = träffytans krav (48 dp), resten fördelas.
+	# PanelContainer: minsta höjd följer etiketterna, så raden kan aldrig
+	# svämma ut över tumzonen.
+	custom_minimum_size = Vector2(Tokens.dp(Tokens.TOUCH_MIN), Tokens.dp(Tokens.TOUCH_MIN))
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
-	_panel = Panel.new()
-	_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_panel)
-
 	_art = Control.new()
 	_art.name = "Art"
-	_art.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_art)
 
 	var column: VBoxContainer = VBoxContainer.new()
-	column.set_anchors_preset(Control.PRESET_FULL_RECT)
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 	add_child(column)
@@ -54,15 +49,17 @@ func _init() -> void:
 	_type_label = _make_label(Tokens.TYPE_CAPTION, Tokens.CHALK_300)
 	column.add_child(_type_label)
 
-	_die_label = _make_label(Tokens.TYPE_TITLE, Tokens.CHALK_100)
+	_die_label = _make_label(Tokens.TYPE_HEADING, Tokens.CHALK_100)
 	_die_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_die_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	column.add_child(_die_label)
 
+	# Värde och multiplikator på SAMMA rad: fem slots plus tumzon ryms annars
+	# inte på 640 dp höjd.
 	_preview_label = _make_label(Tokens.TYPE_LABEL, Tokens.SEM_DAMAGE)
 	column.add_child(_preview_label)
 
-	_multiplier_label = _make_label(Tokens.TYPE_LABEL, Tokens.SEM_CHARGE)
+	_multiplier_label = _make_label(Tokens.TYPE_CAPTION, Tokens.SEM_CHARGE)
 	column.add_child(_multiplier_label)
 
 	_index_label = _make_label(Tokens.TYPE_CAPTION, Tokens.CHALK_500)
@@ -74,10 +71,14 @@ static func _make_label(font_size: int, color: Color) -> Label:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
 	label.add_theme_color_override("font_color", color)
+	# clip_text: utan detta blir etikettens textbredd containerns minsta bredd,
+	# och fem slots med texten "AMBOSS" tvingar raden bredare än skärmen.
+	label.clip_text = true
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return label
 
 
+## Noden där en pixelram för sloten ska läggas in. Tom i M1.
 func art_root() -> Control:
 	return _art
 
@@ -86,7 +87,7 @@ func bind(index: int, slot: Slot, die: Die) -> void:
 	slot_index = index
 	_slot = slot
 	_die = die
-	_index_label.text = "SLOT %d" % (index + 1)
+	_index_label.text = "%d" % (index + 1)
 	_type_label.text = "%s %s" % [Tokens.slot_icon(slot.type), Tokens.slot_label(slot.type)]
 	_type_label.add_theme_color_override("font_color", Tokens.slot_color(slot.type))
 
@@ -111,13 +112,13 @@ func set_preview(effective_value: int, multiplier: int, occupied: bool) -> void:
 		_preview_label.text = ""
 		_multiplier_label.text = ""
 		return
-	_preview_label.text = "= %d" % effective_value
 	if multiplier > 1:
-		_multiplier_label.text = "×%d" % multiplier
-		_multiplier_label.add_theme_color_override("font_color", Tokens.multiplier_color(multiplier))
-		_multiplier_label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_LABEL))
+		_preview_label.text = "%d ×%d" % [effective_value, multiplier]
+		_preview_label.add_theme_color_override("font_color", Tokens.multiplier_color(multiplier))
 	else:
-		_multiplier_label.text = ""
+		_preview_label.text = "= %d" % effective_value
+		_preview_label.add_theme_color_override("font_color", Tokens.SEM_DAMAGE)
+	_multiplier_label.text = ""
 
 
 ## Pulserar konturen när en tärning bärs runt (UI_GUIDE §4.1.2).
@@ -140,7 +141,7 @@ func _apply_style() -> void:
 		width = Tokens.STROKE_HEAVY
 	var style: StyleBoxFlat = Tokens.box(color, true, width, Tokens.RADIUS_BUTTON)
 	style.bg_color = Tokens.SURFACE_SLATE if _slot.blocked else Tokens.SURFACE_RAISED
-	_panel.add_theme_stylebox_override("panel", style)
+	add_theme_stylebox_override("panel", style)
 	modulate.a = 0.45 if _slot.blocked else 1.0
 
 

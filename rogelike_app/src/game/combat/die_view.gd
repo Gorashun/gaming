@@ -31,7 +31,10 @@ var _state_label: Label = null
 
 
 func _init() -> void:
-	custom_minimum_size = Vector2(Tokens.dp(Tokens.DIE_HIT), Tokens.dp(Tokens.DIE_HIT + 14))
+	# Minsta bredd, inte önskad bredd: sex tärningar ska rymmas på 360 dp
+	# (UI_GUIDE §8 mätte 49,7 dp på den smalaste målskärmen). Bredden fördelas
+	# sedan av HBoxContainer via SIZE_EXPAND_FILL.
+	custom_minimum_size = Vector2(Tokens.dp(Tokens.DIE_MIN_WIDTH), Tokens.dp(Tokens.DIE_SIZE + 8))
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
@@ -54,6 +57,7 @@ func _init() -> void:
 	_value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_value_label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_TITLE))
 	_value_label.add_theme_color_override("font_color", Tokens.BONE_PIP)
+	_value_label.clip_text = true
 	_value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_value_label)
 
@@ -63,15 +67,21 @@ func _init() -> void:
 	_effect_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_effect_label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_CAPTION))
 	_effect_label.add_theme_color_override("font_color", Tokens.BONE_PIP)
+	_effect_label.clip_text = true
 	_effect_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_effect_label)
 
 	_state_label = Label.new()
 	_state_label.name = "State"
+	# PRESET_BOTTOM_WIDE ger en rect med höjd 0 vid underkanten, så texten ritas
+	# NEDANFÖR tärningen. GROW_DIRECTION_BEGIN låter den växa uppåt i stället.
 	_state_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	_state_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_state_label.custom_minimum_size = Vector2(0.0, Tokens.dp(Tokens.TYPE_CAPTION + 4))
 	_state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_state_label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_CAPTION))
 	_state_label.add_theme_color_override("font_color", Tokens.CHALK_500)
+	_state_label.clip_text = true
 	_state_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_state_label)
 

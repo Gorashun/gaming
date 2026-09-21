@@ -1,5 +1,5 @@
 class_name EnemyPanel
-extends Control
+extends VBoxContainer
 ## En fiende i fiendezonen. UI_GUIDE §2.9: zonen är [b]läs-endast[/b] – inget
 ## spelbeslut sitter där, allt interaktivt ligger under 58 % av skärmhöjden.
 ##
@@ -13,7 +13,7 @@ extends Control
 
 var enemy_id: String = ""
 
-var _panel: Panel = null
+var _flash: ColorRect = null
 var _name_label: Label = null
 var _hp_bar: ProgressBar = null
 var _hp_label: Label = null
@@ -25,36 +25,46 @@ var _art_slot: Control = null
 
 
 func _init() -> void:
-	custom_minimum_size = Vector2(Tokens.dp(88), Tokens.dp(180))
+	# VBox och inte en enda panel: [member _art_slot] måste vara ett GENOMSKINLIGT
+	# hål så att fiendens silhuett i World-lagret syns. En opak panel ovanpå
+	# skulle dölja exakt det pixelgrafiken ska visa.
+	custom_minimum_size = Vector2(Tokens.dp(Tokens.TOUCH_MIN), 0.0)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	size_flags_vertical = Control.SIZE_EXPAND_FILL
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 
-	_panel = Panel.new()
-	_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_panel.add_theme_stylebox_override("panel", Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR))
-	add_child(_panel)
+	_art_slot = Control.new()
+	_art_slot.name = "ArtSlot"
+	_art_slot.custom_minimum_size = Vector2(0.0, Tokens.dp(40))
+	_art_slot.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_art_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_art_slot)
+
+	var panel: PanelContainer = PanelContainer.new()
+	panel.name = "Plate"
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR))
+	add_child(panel)
+
+	_flash = ColorRect.new()
+	_flash.name = "Flash"
+	_flash.color = Color(Tokens.CHALK_100, 0.0)
+	_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(_flash)
 
 	var margin: MarginContainer = MarginContainer.new()
-	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for side: String in ["left", "right", "top", "bottom"]:
 		margin.add_theme_constant_override("margin_" + side, Tokens.dpi(Tokens.SPACE_2))
-	add_child(margin)
+	panel.add_child(margin)
 
 	var column: VBoxContainer = VBoxContainer.new()
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 	margin.add_child(column)
 
-	_art_slot = Control.new()
-	_art_slot.name = "ArtSlot"
-	_art_slot.custom_minimum_size = Vector2(0.0, Tokens.dp(64))
-	_art_slot.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_art_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_child(_art_slot)
-
-	_name_label = _label(Tokens.TYPE_LABEL, Tokens.CHALK_100)
+	_name_label = _label(Tokens.TYPE_CAPTION, Tokens.CHALK_100)
 	column.add_child(_name_label)
 
 	_hp_bar = ProgressBar.new()
@@ -78,7 +88,8 @@ func _init() -> void:
 	_status_label = _label(Tokens.TYPE_CAPTION, Tokens.SEM_POISON)
 	column.add_child(_status_label)
 
-	_intent_label = _label(Tokens.TYPE_LABEL, Tokens.SEM_FIRE)
+	_intent_label = _label(Tokens.TYPE_CAPTION, Tokens.SEM_FIRE)
+	_intent_label.clip_text = false
 	_intent_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(_intent_label)
 
@@ -88,6 +99,7 @@ static func _label(font_size: int, color: Color) -> Label:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
 	label.add_theme_color_override("font_color", color)
+	label.clip_text = true
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return label
 
@@ -113,7 +125,7 @@ func bind(enemy: Enemy) -> void:
 func update_vitals(hp: int, armor: int, burn: int, poison: int) -> void:
 	_hp_bar.value = clampi(hp, 0, int(_hp_bar.max_value))
 	_hp_label.text = "%d / %d" % [maxi(0, hp), int(_hp_bar.max_value)]
-	_armor_label.text = ("⬟ %d rustning" % armor) if armor > 0 else ""
+	_armor_label.text = ("⬟ %d rust." % armor) if armor > 0 else ""
 	var statuses: PackedStringArray = PackedStringArray()
 	if burn > 0:
 		statuses.append("▲ %d brand" % burn)
@@ -124,14 +136,24 @@ func update_vitals(hp: int, armor: int, burn: int, poison: int) -> void:
 	modulate.a = 0.35 if dead else 1.0
 
 
+## Vitblixt enligt UI_GUIDE §5.3. Ligger som ett eget lager i stället för på
+## panelens modulate, eftersom modulate också skulle tona texten.
 func flash_hit() -> void:
-	Juice.blink(_panel, Tokens.CHALK_100, 0.14)
+	_flash_with(Tokens.CHALK_100, 0.45, 0.14)
 	Juice.shake(self, 6.0, 0.18)
 
 
 func flash_death() -> void:
-	Juice.blink(_panel, Tokens.SEM_BLOOD, 0.26)
+	_flash_with(Tokens.SEM_BLOOD, 0.6, 0.26)
 	Juice.shake(self, 5.0, 0.2)
+
+
+func _flash_with(color: Color, alpha: float, duration: float) -> void:
+	if _flash == null or not _flash.is_inside_tree():
+		return
+	_flash.color = Color(color, alpha)
+	var tween: Tween = _flash.create_tween()
+	tween.tween_property(_flash, "color:a", 0.0, duration)
 
 
 static func _intent_text(enemy: Enemy) -> String:

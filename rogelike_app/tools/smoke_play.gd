@@ -138,11 +138,14 @@ class Driver:
 	func _play_march(march: MarchScreen) -> void:
 		await _frames(8)
 		await _shot("04_marsch")
+		if not is_instance_valid(march):
+			return
 		march.arrive()
-		if march.option_count() > 1:
+		if is_instance_valid(march) and march.option_count() > 1:
 			await _frames(4)
 			await _shot("04b_marsch_forgrening")
-			march.choose(0)
+			if is_instance_valid(march):
+				march.choose(0)
 		await _frames(1)
 
 	func _play_round(combat: CombatScreen) -> bool:
@@ -158,11 +161,15 @@ class Driver:
 		combat.confirm()
 		# Mitt i kedjan: uppspelningen är igång men inte klar.
 		await _seconds(0.5)
-		if combat.is_resolving():
+		if is_instance_valid(combat) and combat.is_resolving():
 			await _shot("02_strid_mitt_i_kedjan")
 
+		# is_instance_valid: vinner rummet sin sista runda friar controllern
+		# stridsskärmen medan vi väntar. En statiskt typad Node-referens
+		# kontrolleras inte av GDScript, så ett anrop på den frigjorda noden
+		# ger segfault i stället för ett fel.
 		var started_ms: int = Time.get_ticks_msec()
-		while combat.is_resolving():
+		while is_instance_valid(combat) and combat.is_resolving():
 			if Time.get_ticks_msec() - started_ms > PLAYBACK_TIMEOUT_MS:
 				_fail("uppspelningen blev aldrig klar (%d ms)" % PLAYBACK_TIMEOUT_MS)
 				return false
@@ -173,6 +180,8 @@ class Driver:
 	func _play_reward(reward: RewardScreen) -> void:
 		await _frames(8)
 		await _shot("03_beloning")
+		if not is_instance_valid(reward):
+			return
 		if reward.option_count() > 0:
 			reward.choose(0)
 		else:
@@ -181,6 +190,9 @@ class Driver:
 
 	func _report(over: GameOverScreen, rounds_played: int, rooms_seen: int) -> void:
 		await _frames(8)
+		if not is_instance_valid(over):
+			_fail("död/vinst-skärmen försvann innan den lästes")
+			return
 		var summary: Dictionary = over.summary()
 		var won: bool = bool(summary.get("won", false))
 		await _shot("05_vinst" if won else "05_dod")

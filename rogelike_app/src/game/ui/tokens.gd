@@ -75,6 +75,9 @@ const TYPE_CAPTION: int = 12
 const TOUCH_MIN: int = 48
 const DIE_SIZE: int = 64
 const DIE_HIT: int = 72
+## Minsta bredd per tärning i brickan. UI_GUIDE §8 mätte 49,7 dp på 360 dp
+## bredd: sex 72 dp-tärningar ryms helt enkelt inte i portrait.
+const DIE_MIN_WIDTH: int = 48
 const SLOT_WIDTH: int = 64
 const SLOT_HEIGHT: int = 76
 const BUTTON_PRIMARY_HEIGHT: int = 56

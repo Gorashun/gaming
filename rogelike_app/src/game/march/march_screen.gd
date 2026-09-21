@@ -35,7 +35,7 @@ func enter(ctx: Dictionary) -> void:
 
 	_style()
 	var rooms_cleared: int = int(ctx.get("rooms_cleared", 0))
-	_heading.text = "VÅNING %d · %d RUM RENSADE" % [
+	_heading.text = "VÅNING %d · %d RENSADE" % [
 		int(_graph.floor_index) if _graph != null else 1,
 		rooms_cleared,
 	]
@@ -55,15 +55,19 @@ func _build_world() -> void:
 
 
 func _style() -> void:
-	$Background.color = Tokens.SURFACE_PIT
+	# Ingen egen bakgrund: marschens parallaxlager ligger i World-lagret under
+	# krit-UI:t och måste synas igenom. Bakgrundsfärgen kommer från Backdrop i
+	# main.tscn (CanvasLayer -10).
 	for side: String in ["left", "right", "top", "bottom"]:
 		$Margin.add_theme_constant_override("margin_" + side, Tokens.dpi(Tokens.SCREEN_MARGIN))
 	$Margin/Column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_6))
 	_choices.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_4))
-	_heading.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_TITLE))
+	_heading.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_HEADING))
 	_heading.add_theme_color_override("font_color", Tokens.CHALK_100)
+	_heading.clip_text = true
 	_prompt.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY_L))
 	_prompt.add_theme_color_override("font_color", Tokens.CHALK_300)
+	_prompt.clip_text = true
 
 
 func _process(delta: float) -> void:
@@ -99,6 +103,7 @@ func _make_choice_button(index: int, node_id: String) -> Button:
 	button.custom_minimum_size = Vector2(0.0, Tokens.dp(96))
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	button.clip_text = true
 	button.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY_L))
 	button.add_theme_color_override("font_color", Tokens.CHALK_100)
 	button.add_theme_color_override("font_hover_color", Tokens.CHALK_100)

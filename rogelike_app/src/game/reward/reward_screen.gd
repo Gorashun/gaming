@@ -52,12 +52,12 @@ func _style() -> void:
 	$Background.color = Tokens.SURFACE_PIT
 	for side: String in ["left", "right", "top", "bottom"]:
 		$Margin.add_theme_constant_override("margin_" + side, Tokens.dpi(Tokens.SCREEN_MARGIN))
-	$Margin/Column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_6))
+	$Margin/Column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_3))
 	$Margin/Column/Header.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
 	_cards.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_4))
 
 	_label(_kicker, Tokens.TYPE_LABEL, Tokens.CHALK_500)
-	_label(_title, Tokens.TYPE_DISPLAY_L, Tokens.CHALK_100)
+	_label(_title, Tokens.TYPE_TITLE, Tokens.CHALK_100)
 	_label(_subtitle, Tokens.TYPE_BODY, Tokens.CHALK_300)
 	_label(_scale_strip, Tokens.TYPE_CAPTION, Tokens.CHALK_500)
 	_scale_strip.text = "▭ VANLIG   ◣ OVANLIG   ▤ SÄLLSYNT   ·   färg + ramform + ord"
@@ -66,6 +66,10 @@ func _style() -> void:
 static func _label(label: Label, font_size: int, color: Color) -> void:
 	label.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
 	label.add_theme_color_override("font_color", color)
+	# Samma regel som i striden: en etikett som inte radbryter måste klippas,
+	# annars blir dess textbredd hela kolumnens minsta bredd.
+	if label.autowrap_mode == TextServer.AUTOWRAP_OFF:
+		label.clip_text = true
 
 
 ## Väljer ett alternativ. Publikt så att smoke-testet kan välja utan indata.

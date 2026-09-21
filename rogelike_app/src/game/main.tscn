@@ -5,6 +5,18 @@
 [node name="Main" type="Node"]
 script = ExtResource("1_controller")
 
+[node name="Backdrop" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="Background" type="ColorRect" parent="Backdrop"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.054902, 0.070588, 0.086275, 1)
+
 [node name="World" type="CanvasLayer" parent="."]
 
 [node name="WorldRoot" type="Node2D" parent="World"]
@@ -22,16 +34,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="Background" type="ColorRect" parent="ChalkUI/UiRoot"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0.054902, 0.070588, 0.086275, 1)
 
 [node name="ScreenRoot" type="Control" parent="ChalkUI/UiRoot"]
 layout_mode = 1

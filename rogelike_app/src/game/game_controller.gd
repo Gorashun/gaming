@@ -148,14 +148,24 @@ func current_screen() -> GameScreen:
 	return _screen
 
 
-## [param connections] kopplas INNAN [method GameScreen.setup] körs, så att en
-## skärm kan emitta redan i sin uppstart utan att signalen tappas.
+## Byter skärm. [b]Alltid uppskjutet ett bildrutesteg.[/b]
+##
+## Skälet är konkret: skärmbytet utlöses av [signal CombatScreen.combat_finished],
+## som emitteras inifrån [method EventPlayer._process]. Att då riva ned hela
+## stridsscenen och bygga upp belöningsskärmen mitt i motorns process-iteration
+## kraschade Godot 4.6 reproducerbart (signal 11 direkt efter rummets sista
+## runda). Den gamla skärmen rivs direkt så att ingen kan nå en halvdöd scen,
+## bygget sker i nästa bildruta.
 func _show(screen_name: String, ctx: Dictionary, connections: Dictionary = {}) -> void:
 	if _screen != null and is_instance_valid(_screen):
 		_screen.teardown()
 		_screen.queue_free()
-		_screen = null
+	_screen = null
+	_screen_name = ""
+	_install_screen.call_deferred(screen_name, ctx, connections)
 
+
+func _install_screen(screen_name: String, ctx: Dictionary, connections: Dictionary) -> void:
 	var path: String = String(SCENE_PATHS.get(screen_name, ""))
 	var packed: PackedScene = ResourceLoader.load(path) as PackedScene
 	if packed == null:

@@ -31,8 +31,15 @@ extends Node
 ## [method apply_all] finns för att kunna visa mellanlägen och för att bevisa i
 ## test att snabbspolning ger samma slutläge.
 
-## Tak per runda i ms (UI_GUIDE §5).
+## Tak för KEDJAN (P0–P3) i ms. Normativt ur UI_GUIDE §5: "en kedja på 6
+## tärningar ... Tak: 2,5 s". Budgettabellen i §5.8 räknar just kedjan och tar
+## inte med fiendens svar.
 const BUDGET_MS: int = 2500
+## Tak för hela rundan, dvs. kedjan plus fiendepassets svar (P4) och round_end.
+## [b]Dev-tolkning, inte spec:[/b] §5 sätter inget tak för P4. 2 500 + 700 ms
+## kommer från §5.3:s egen komprimeringsregel ("hela överflödet stannar under
+## 700 ms") använd som ram för fiendesvaret. Behöver ett UI-godkännande.
+const ROUND_BUDGET_MS: int = 3200
 ## Andel av föregående CHAIN-events längd som nästa får överlappa.
 const CHAIN_OVERLAP: float = 0.4
 ## Stagger mellan parallella sidokanalsevent.
@@ -52,7 +59,6 @@ enum Lane {
 ## okända event ska aldrig kunna spräcka budgeten.
 const LANES: Dictionary = {
 	"die_activated": Lane.CHAIN,
-	"slot_modifier": Lane.CHAIN,
 	"damage_dealt": Lane.CHAIN,
 	"enemy_killed": Lane.CHAIN,
 	"status_ticked": Lane.CHAIN,
@@ -61,6 +67,11 @@ const LANES: Dictionary = {
 	"heal": Lane.CHAIN,
 	"die_stolen": Lane.CHAIN,
 	"die_returned": Lane.CHAIN,
+
+	# slot_modifier ritas PÅ sloten medan dess tärning aktiveras (UI_GUIDE §5.1:
+	# "slotens underline ritas vänster→höger i slotens färg"). Den är alltså
+	# samtidig med die_activated, inte ett eget kedjesteg efter den.
+	"slot_modifier": Lane.SIDE,
 
 	"round_start": Lane.BEAT,
 	"combo_formed": Lane.BEAT,
@@ -198,17 +209,50 @@ static func build_timeline(events: Array[Dictionary], speed: float = 1.0, compre
 		})
 
 	if compress:
-		timeline = _compress(timeline, float(BUDGET_MS))
+		timeline = _compress(timeline)
 	return timeline
 
 
-## Linjär komprimering till [param budget] (UI_GUIDE §5.9). Rör inte ordningen
-## och tappar aldrig ett event – bara tiden.
-static func _compress(timeline: Array[Dictionary], budget: float) -> Array[Dictionary]:
+## Eventtyper som tillhör fiendepasset (P4) och rundans avslut (P5).
+## Allt före det första av dem är "kedjan" i UI_GUIDE §5:s mening.
+const AFTER_CHAIN_TYPES: Array[String] = [
+	"enemy_turn_start",
+	"enemy_attacks",
+	"enemy_special",
+	"enemy_thorns",
+	"status_ticked",
+	"round_end",
+]
+
+
+## Kedjans längd: sista ögonblicket något ur P0–P3 fortfarande spelas.
+## Det är den siffra UI_GUIDE §5 sätter taket [constant BUDGET_MS] för.
+static func chain_ms(timeline: Array[Dictionary]) -> int:
+	var last: float = 0.0
+	for step: Dictionary in timeline:
+		if AFTER_CHAIN_TYPES.has(String(step["t"])):
+			break
+		last = maxf(last, float(step["start_ms"]) + float(step["dur_ms"]))
+	return int(ceil(last))
+
+
+## Linjär komprimering (UI_GUIDE §5.9: "Allt däröver komprimeras automatiskt").
+## Rör inte ordningen och tappar aldrig ett event – bara tiden.
+##
+## Två tak gäller samtidigt: kedjan (P0–P3) mot [constant BUDGET_MS] och hela
+## rundan mot [constant ROUND_BUDGET_MS]. Den hårdaste av dem vinner, och
+## faktorn appliceras EN gång på hela tidslinjen så att de relativa
+## förhållandena mellan stegen bevaras.
+static func _compress(timeline: Array[Dictionary]) -> Array[Dictionary]:
 	var total: float = float(total_ms(timeline))
-	if total <= budget or total <= 0.0:
+	var chain: float = float(chain_ms(timeline))
+	var factor: float = 1.0
+	if total > float(ROUND_BUDGET_MS) and total > 0.0:
+		factor = minf(factor, float(ROUND_BUDGET_MS) / total)
+	if chain > float(BUDGET_MS) and chain > 0.0:
+		factor = minf(factor, float(BUDGET_MS) / chain)
+	if factor >= 1.0:
 		return timeline
-	var factor: float = budget / total
 	for step: Dictionary in timeline:
 		step["start_ms"] = float(step["start_ms"]) * factor
 		step["dur_ms"] = float(step["dur_ms"]) * factor

@@ -20,10 +20,10 @@ var _effect_label: Label = null
 
 
 func _init() -> void:
-	custom_minimum_size = Vector2(0.0, Tokens.dp(150))
+	custom_minimum_size = Vector2(0.0, Tokens.dp(110))
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	size_flags_vertical = Control.SIZE_EXPAND_FILL
-	clip_text = false
+	clip_text = true
 	add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY))
 
 	var margin: MarginContainer = MarginContainer.new()
@@ -41,7 +41,7 @@ func _init() -> void:
 	# Plats för relik-/sidsprite (Kenney 1-Bit enligt DECISIONS). Tom i M1.
 	_art = Control.new()
 	_art.name = "Art"
-	_art.custom_minimum_size = Vector2(Tokens.dp(56), Tokens.dp(56))
+	_art.custom_minimum_size = Vector2(Tokens.dp(40), Tokens.dp(40))
 	_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(_art)
 
@@ -51,11 +51,12 @@ func _init() -> void:
 	column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 	row.add_child(column)
 
-	_rarity_label = _make_label(Tokens.TYPE_LABEL, Tokens.CHALK_300)
+	_rarity_label = _make_label(Tokens.TYPE_CAPTION, Tokens.CHALK_300)
 	column.add_child(_rarity_label)
-	_name_label = _make_label(Tokens.TYPE_HEADING, Tokens.CHALK_100)
+	_name_label = _make_label(Tokens.TYPE_BODY_L, Tokens.CHALK_100)
 	column.add_child(_name_label)
-	_effect_label = _make_label(Tokens.TYPE_BODY_L, Tokens.CHALK_300)
+	_effect_label = _make_label(Tokens.TYPE_BODY, Tokens.CHALK_300)
+	_effect_label.clip_text = false
 	_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_effect_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	column.add_child(_effect_label)
@@ -67,6 +68,7 @@ static func _make_label(font_size: int, color: Color) -> Label:
 	var label: Label = Label.new()
 	label.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
 	label.add_theme_color_override("font_color", color)
+	label.clip_text = true
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return label
 

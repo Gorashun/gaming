@@ -54,14 +54,17 @@ func _style(won: bool) -> void:
 	$Margin/Column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_4))
 	_stats.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
 
-	_title.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_DISPLAY_L))
+	_title.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_TITLE))
 	_title.add_theme_color_override("font_color", Tokens.SEM_HEAL if won else Tokens.SEM_BLOOD)
+	_title.clip_text = true
 	_subtitle.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY))
 	_subtitle.add_theme_color_override("font_color", Tokens.CHALK_300)
 	_seed_label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_CAPTION))
 	_seed_label.add_theme_color_override("font_color", Tokens.CHALK_500)
+	_seed_label.clip_text = true
 
 	_again_button.custom_minimum_size = Vector2(0.0, Tokens.dp(Tokens.BUTTON_PRIMARY_HEIGHT))
+	_again_button.clip_text = true
 	_again_button.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_HEADING))
 	var style: StyleBoxFlat = Tokens.box(Tokens.CHALK_100, true, Tokens.STROKE_REG)
 	style.bg_color = Tokens.CHALK_100
@@ -83,6 +86,10 @@ func _add_stat(label_text: String, value_text: String, emphasise: bool = false) 
 	for label: Label in [name_label, value_label]:
 		label.add_theme_font_size_override("font_size", Tokens.dpi(size))
 		label.add_theme_color_override("font_color", color)
+	# Bara etiketten klipps. Klipps även värdet blir dess minsta bredd noll och
+	# siffran försvinner helt, eftersom etiketten tar hela raden.
+	name_label.clip_text = true
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	row.add_child(name_label)
 	row.add_child(value_label)
 	_stats.add_child(row)

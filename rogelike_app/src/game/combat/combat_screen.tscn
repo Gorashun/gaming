@@ -75,6 +75,7 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "skada · kedjan förhandsvisad"
 horizontal_alignment = 1
+clip_text = true
 
 [node name="ChainLabel" type="Label" parent="Margin/Column/PreviewPanel/PreviewColumn"]
 layout_mode = 2
@@ -86,24 +87,6 @@ autowrap_mode = 3
 layout_mode = 2
 mouse_filter = 1
 
-[node name="Spacer" type="Control" parent="Margin/Column"]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="TrayHeader" type="HBoxContainer" parent="Margin/Column"]
-layout_mode = 2
-mouse_filter = 1
-
-[node name="TrayTitle" type="Label" parent="Margin/Column/TrayHeader"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Din bricka"
-
-[node name="UndoButton" type="Button" parent="Margin/Column/TrayHeader"]
-layout_mode = 2
-text = "↩ ÅNGRA"
-
 [node name="Tray" type="HBoxContainer" parent="Margin/Column"]
 layout_mode = 2
 mouse_filter = 1
@@ -114,7 +97,11 @@ mouse_filter = 1
 
 [node name="RerollButton" type="Button" parent="Margin/Column/Actions"]
 layout_mode = 2
-text = "OMKAST 1/1"
+text = "OMKAST 1"
+
+[node name="UndoButton" type="Button" parent="Margin/Column/Actions"]
+layout_mode = 2
+text = "↩ ÅNGRA"
 
 [node name="ConfirmButton" type="Button" parent="Margin/Column/Actions"]
 layout_mode = 2

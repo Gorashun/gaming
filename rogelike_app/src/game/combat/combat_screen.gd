@@ -34,9 +34,8 @@ const ALLOW_EMPTY_SLOTS: bool = true
 @onready var _total_caption: Label = $Margin/Column/PreviewPanel/PreviewColumn/TotalCaption
 @onready var _chain_label: Label = $Margin/Column/PreviewPanel/PreviewColumn/ChainLabel
 @onready var _slot_row: HBoxContainer = $Margin/Column/SlotRow
-@onready var _tray_title: Label = $Margin/Column/TrayHeader/TrayTitle
-@onready var _undo_button: Button = $Margin/Column/TrayHeader/UndoButton
 @onready var _tray: HBoxContainer = $Margin/Column/Tray
+@onready var _undo_button: Button = $Margin/Column/Actions/UndoButton
 @onready var _reroll_button: Button = $Margin/Column/Actions/RerollButton
 @onready var _confirm_button: Button = $Margin/Column/Actions/ConfirmButton
 @onready var _fx_layer: Control = $FxLayer
@@ -82,7 +81,7 @@ func _style() -> void:
 	$Margin.add_theme_constant_override("margin_right", Tokens.dpi(Tokens.SCREEN_MARGIN))
 	$Margin.add_theme_constant_override("margin_top", Tokens.dpi(Tokens.SCREEN_MARGIN))
 	$Margin.add_theme_constant_override("margin_bottom", Tokens.dpi(Tokens.SCREEN_MARGIN))
-	$Margin/Column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_3))
+	$Margin/Column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 	_enemy_zone.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
 	_slot_row.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
 	_tray.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
@@ -92,16 +91,17 @@ func _style() -> void:
 	_preview_panel.add_theme_stylebox_override("panel", Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR))
 	$Margin/Column/PreviewPanel/PreviewColumn.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 
-	_apply_label(_hp_label, Tokens.TYPE_LABEL, Tokens.SEM_BLOOD)
-	_apply_label(_room_label, Tokens.TYPE_LABEL, Tokens.CHALK_300)
-	_apply_label(_charge_label, Tokens.TYPE_LABEL, Tokens.SEM_CHARGE)
-	_apply_label(_ward_label, Tokens.TYPE_LABEL, Tokens.SEM_SHIELD)
-	_apply_label(_total_label, Tokens.TYPE_DISPLAY_XL, Tokens.CHALK_100)
+	# Toppfältets etiketter får INTE klippas: med clip_text blir deras minsta
+	# bredd noll, HP-baren äter hela raden och siffrorna försvinner.
+	_apply_label(_hp_label, Tokens.TYPE_CAPTION, Tokens.SEM_BLOOD, false)
+	_apply_label(_room_label, Tokens.TYPE_CAPTION, Tokens.CHALK_300, false)
+	_apply_label(_charge_label, Tokens.TYPE_CAPTION, Tokens.SEM_CHARGE, false)
+	_apply_label(_ward_label, Tokens.TYPE_CAPTION, Tokens.SEM_SHIELD, false)
+	_apply_label(_total_label, Tokens.TYPE_DISPLAY_L, Tokens.CHALK_100)
 	_apply_label(_total_caption, Tokens.TYPE_CAPTION, Tokens.CHALK_500)
-	_apply_label(_chain_label, Tokens.TYPE_BODY, Tokens.CHALK_300)
-	_apply_label(_tray_title, Tokens.TYPE_LABEL, Tokens.CHALK_300)
+	_apply_label(_chain_label, Tokens.TYPE_LABEL, Tokens.CHALK_300)
 
-	_hp_bar.custom_minimum_size = Vector2(0.0, Tokens.dp(10))
+	_hp_bar.custom_minimum_size = Vector2(Tokens.dp(48), Tokens.dp(10))
 	var bar_bg: StyleBoxFlat = StyleBoxFlat.new()
 	bar_bg.bg_color = Tokens.SURFACE_RAISED
 	var bar_fill: StyleBoxFlat = StyleBoxFlat.new()
@@ -111,7 +111,10 @@ func _style() -> void:
 
 	_style_button(_undo_button, Tokens.TYPE_LABEL, Tokens.CHALK_300, Tokens.BUTTON_SECONDARY_HEIGHT)
 	_style_button(_reroll_button, Tokens.TYPE_LABEL, Tokens.SEM_FROST, Tokens.BUTTON_SECONDARY_HEIGHT)
-	_style_button(_confirm_button, Tokens.TYPE_HEADING, Tokens.SURFACE_PIT, Tokens.BUTTON_PRIMARY_HEIGHT)
+	_undo_button.custom_minimum_size.x = Tokens.dp(Tokens.TOUCH_MIN + 24)
+	_reroll_button.custom_minimum_size.x = Tokens.dp(Tokens.TOUCH_MIN + 36)
+	_confirm_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_style_button(_confirm_button, Tokens.TYPE_BODY_L, Tokens.SURFACE_PIT, Tokens.BUTTON_PRIMARY_HEIGHT)
 	var primary: StyleBoxFlat = Tokens.box(Tokens.CHALK_100, true, Tokens.STROKE_REG)
 	primary.bg_color = Tokens.CHALK_100
 	_confirm_button.add_theme_stylebox_override("normal", primary)
@@ -119,12 +122,20 @@ func _style() -> void:
 	_confirm_button.add_theme_stylebox_override("pressed", primary)
 
 
-static func _apply_label(label: Label, font_size: int, color: Color) -> void:
+static func _apply_label(label: Label, font_size: int, color: Color, clip: bool = true) -> void:
 	label.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
 	label.add_theme_color_override("font_color", color)
+	# Utan clip_text blir textens bredd containerns minsta bredd och hela
+	# kolumnen växer utanför skärmen. Gäller inte etiketter som radbryter.
+	if clip and label.autowrap_mode == TextServer.AUTOWRAP_OFF:
+		label.clip_text = true
 
 
 static func _style_button(button: Button, font_size: int, color: Color, height: int) -> void:
+	# Samma fälla som med etiketterna: utan clip_text blir knapptextens bredd
+	# knappens minsta bredd, och raden OMKAST + ÅNGRA + BEKRÄFTA KEDJA · 28
+	# tvingar hela kolumnen bredare än skärmen.
+	button.clip_text = true
 	button.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
 	button.add_theme_color_override("font_color", color)
 	button.add_theme_color_override("font_hover_color", color)
@@ -209,11 +220,12 @@ func _refresh_hud() -> void:
 	_hp_bar.max_value = maxi(1, state.player_max_hp)
 	_hp_bar.value = clampi(state.player_hp, 0, state.player_max_hp)
 	var kind: String = "BOSS" if RunFlow.is_boss(_node) else "RUM"
-	_room_label.text = "%s %d · RUNDA %d" % [kind, int(_node.get("room", 1)), state.round_number]
-	_charge_label.text = "⬤ %d/%d" % [state.charge, Rules.CHARGE_CAP]
+	_room_label.text = "%s %d · R%d" % [kind, int(_node.get("room", 1)), state.round_number]
+	_charge_label.text = "⬤%d/%d" % [state.charge, Rules.CHARGE_CAP]
 	_ward_label.text = "⬟ %d" % state.ward
-	_tray_title.text = "Din bricka · %d tärningar" % state.dice.size()
+	_total_caption.text = "skada · %d tärningar i brickan" % state.dice.size()
 	_reroll_button.text = "OMKAST %d" % state.rerolls_left
+	_undo_button.text = "↩ ÅNGRA"
 	_reroll_button.disabled = _resolving or not Reroll.can_afford(state) or Reroll.rerollable_indices(state, _placement, _locked_ids).is_empty()
 	_undo_button.disabled = _resolving or _history.is_empty()
 
@@ -277,9 +289,9 @@ func _refresh_preview() -> void:
 	# bankar Charge. Knappen är därför aktiv även med noll placerade tärningar.
 	_confirm_button.disabled = _resolving
 	if placed == 0 and ALLOW_EMPTY_SLOTS:
-		_confirm_button.text = "BEKRÄFTA TOMT · BANKA LADDNING"
+		_confirm_button.text = "BEKRÄFTA TOMT"
 	else:
-		_confirm_button.text = "BEKRÄFTA KEDJA · %d" % total
+		_confirm_button.text = "BEKRÄFTA · %d" % total
 
 
 ## Kedjetexten under totalen, som i wireframen:
@@ -305,7 +317,7 @@ static func chain_text(events: Array[Dictionary], enemies: Array[Enemy]) -> Stri
 		else:
 			segments.append("%d → %s" % [amount, target])
 		previous_slot = slot
-		if segments.size() >= 4:
+		if segments.size() >= 3:
 			segments.append("…")
 			break
 	if segments.is_empty():
@@ -572,7 +584,7 @@ func _apply_view_to_panels() -> void:
 				actor.set_alive(false)
 	_hp_label.text = "◖ %d/%d" % [int(_view.get("player_hp", 0)), state.player_max_hp]
 	_hp_bar.value = clampi(int(_view.get("player_hp", 0)), 0, state.player_max_hp)
-	_charge_label.text = "⬤ %d/%d" % [int(_view.get("charge", 0)), Rules.CHARGE_CAP]
+	_charge_label.text = "⬤%d/%d" % [int(_view.get("charge", 0)), Rules.CHARGE_CAP]
 	_ward_label.text = "⬟ %d" % int(_view.get("ward", 0))
 
 
