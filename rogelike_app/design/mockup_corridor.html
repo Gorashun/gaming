@@ -231,7 +231,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opa
 .btns .confirm{flex:1 1 auto;border:none;background:var(--charge);color:#12161A;font-size:16px}
 
 /* ===== Lägesväxlare ===== */
-.toggle{position:absolute;right:10px;bottom:96px;z-index:30;border:2px solid var(--charge);
+/* Bara i mockupen: växla mellan vyerna. Finns inte i spelet. */
+.toggle{position:absolute;right:10px;top:74px;z-index:30;border:2px solid var(--charge);
   border-radius:999px;background:rgba(14,18,22,.9);color:var(--charge);
   font:700 10px/1 'Familjen Grotesk',sans-serif;padding:8px 12px;letter-spacing:.06em}
 #viewExplore{display:flex;flex-direction:column;height:100%}
@@ -480,7 +481,7 @@ body.fight #viewExplore{display:none}
     </div>
   </div>
 
-  <button class="toggle" style="bottom:auto;top:calc(45dvh - 46px);left:10px;right:auto" onclick="document.body.classList.remove('fight')">◂ VISA KORRIDOR</button>
+  <button class="toggle" style="top:calc(45dvh - 46px);left:10px;right:auto" onclick="document.body.classList.remove('fight')">◂ VISA KORRIDOR</button>
 </div>
 
 </div>
