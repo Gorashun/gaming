@@ -880,6 +880,9 @@ befintliga sprites och primitiver.
 - `design/shader_preview_palette.tscn`, `design/shader_preview_chalk.tscn` – Godot-scener för de två shadrarna, öppnas direkt i editorn.
 - `design/shader_probe.tscn` + `tools/shader_probe.gd` + `design/probe_ramp.png` – **mätscen**, inte förhandsvisning. Renderar 16 kända färger till en `SubViewport` och läser tillbaka pixlarna. Exit 0 = passthrough, LUT-väg och modulate stämmer på byten. Körs per renderare under `xvfb-run`.
 - `design/fonts/` – lokala latin-subset av Anton, Familjen Grotesk och Caveat Brush. Mockuperna är helt självständiga och gör ingen nätverkstrafik.
+- `design/mockup_choose_smith.html` – **könsvalskärmen** (§14): två porträtt sida vid sida, helfigur under varje, tapp = välj. Skärmdumpar `design/screenshots/choose_smith_{360x640,390x844}.png`.
+- `design/mockup_character_sheet.html` – **character sheetet** (§15) i Diablo-stil: porträtt, paperdoll i ×4, sex utrustningsslots vars ikoner är paperdoll-arken zoomade ×2, slotordning, tärningsrad, relikbricka. `BYT UTSEENDE` växlar kropp + hår + porträtt utan att röra ett gear-lager. Skärmdumpar `character_sheet_{360x640,390x844}.png` och `character_sheet_variant_b_390x844.png`.
+- `design/mockup_corridor.html` – **förstapersonskorridoren** (§17), två vyer i samma fil: utforskning med T-korsning, kritskyltar och tre riktningsknappar, och strid med korridoren i övre 45 % (2 + 1 fiender som billboards med ankrade HP-chips) och stridsskärm v2 i nedre 55 %. Väggarna är CSS-perspektiv med de genererade 64×64-texturerna ur `assets/sprites/env/corridor/`, så texturstilen går att bedöma innan 3D-bygget. Skärmdumpar `corridor_{explore,combat}_{360x640,390x844}.png`.
 - `design/screenshots/` – renderade headless i Chromium.
 
 **Verifierat 2026-09-21 (Chromium headless, deviceScaleFactor 2):**
@@ -892,6 +895,10 @@ befintliga sprites och primitiver.
 | **Strid, hybrid pixel + krita (M2, reliklager tända)** | ingen scroll | ingen scroll | ingen scroll |
 | **Strid v2, läsbarhet (§12b)** | ingen scroll | ingen scroll | ingen scroll |
 | Strid v2 + hjälplager | – | ingen scroll | – |
+| **Könsval (§14)** | ingen scroll | ingen scroll | – |
+| **Character sheet (§15)** | ingen scroll | ingen scroll | – |
+| **Korridor, utforskning (§17)** | ingen scroll | ingen scroll | – |
+| **Korridor, strid (§17)** | ingen scroll | ingen scroll | – |
 
 **M2-uppdatering av `mockup_combat_pixel.html`:** Smeden ritas nu med alla nio
 paperdoll-lagren och fyra tända reliker – `BLOOD_PRICE` (`fx`), `CHEAT_CUBE`
@@ -919,7 +926,191 @@ utan klippning (72 + 3×64 + gap = 288 av 328 tillgängliga).
 - Palett-LUT-shadern kan inte köras i HTML; i mockupen används de förtintade tärningskropparna (`die_body_{iron,bone,glass}.png`) i stället för gråskalemastern.
 - Partiklar, hit-stop, ljud och haptik finns inte i HTML-mockupen – se §5 för specen.
 
-## 14. Öppna frågor till PM
+## 14. Könsvalskärmen ("Choose your Smith")
+
+*Ny i M2.5. Beslut: DECISIONS 2026-09-21 ("Könsval för spelarfiguren").
+Skiss: `design/mockup_choose_smith.html`, skärmdumpar `design/screenshots/choose_smith_{360x640,390x844}.png`.*
+
+Skärmen har **en** uppgift: låta spelaren peka på den figur hen vill vara, och
+sedan komma bort ur vägen. Den visas första gången spelet startas, före
+titelskärmens `NY RUN`, och därefter bara när spelaren själv öppnar den.
+
+### 14.1 Layout
+
+| Zon | Höjd (360 × 640) | Höjd (390 × 844) | Innehåll |
+|---|---|---|---|
+| Rubrik | 58 | 64 | `SMITH_CHOOSE_TITLE` (Anton 22 dp) + `SMITH_CHOOSE_SUB` (krita 14 dp) |
+| **Två kort sida vid sida** | 420 | 440 | Porträtt 96 px ×1,25 (120 dp) / ×1,5 (144 dp), helfigur 48 px ×2 (96 dp) i `idle`, etikett, en rad kroppsbeskrivning |
+| Tumzon | 56 + 20 | 56 + 20 | `SMITH_CHOOSE_CONFIRM` + `SMITH_CHANGE_LATER` |
+
+- **Tapp på kortet = välj.** Ingen karusell, ingen pil, inget "nästa". Valt kort
+  får 2 dp `#FFD447`-kontur, gul etikett och en bock uppe till höger; bocken är
+  formburen redundans så valet inte bara bärs av färg (§6.2).
+- Knappen bekräftar och stänger. Den är aldrig inaktiv – variant A är förvald,
+  så skärmen går att svepa förbi på ett tapp.
+- **Träffytan är hela kortet** (≥ 160 × 300 dp), inte porträttet.
+
+### 14.2 Språk och ton
+
+Etiketterna är **kroppsformer, aldrig könsord**: `Broad` / `Lean`
+(`SMITH_VARIANT_A` / `SMITH_VARIANT_B`, sv "Bredvuxen" / "Smalvuxen"). Spelet
+omtalar figuren som "The Smith" överallt annars. Underrubriken säger rakt ut att
+valet inte påverkar spelet: *"Looks only. Both swing the same hammer."* Det är
+inte artighet, det är ett **läsbarhetskrav** – en spelare som tror att valet är
+en klass kommer att ångra sig och starta om.
+
+### 14.3 Byta senare
+
+`SMITH_SHEET_CHANGE_LOOK` på character sheetet (§15) öppnar samma skärm.
+Bytet är omedelbart och kostnadsfritt, mitt i en run också: det byter bara
+`body`- och `hair`-lagret (PAPERDOLL §1.1) och ingen spellogik känner till det.
+
+---
+
+## 15. Character sheet (Diablo-modellen)
+
+*Ny i M2.5 och nödvändig efter presentationsskiftet: i förstapersonsvyn syns
+figuren aldrig, så hela identiteten bor här. Innehållskrav ägs av
+`docs/design/CORRIDOR_DESIGN.md` §4; den här paragrafen äger layout och skala.
+Skiss: `design/mockup_character_sheet.html`.*
+
+### 15.1 Layout uppifrån och ned
+
+| Zon | Höjd (390 × 844) | Innehåll |
+|---|---|---|
+| Huvud | 88 | Porträtt 72 dp, namn, run-rad, HP-stapel, Pips, stäng-kryss (48 dp) |
+| **Utrustning** | 330 | Paperdoll i mitten, slotkolumn på var sida |
+| Slotordning | 64 | Brädets fem slots som läs-endast remsa (döljs under 380 dp) |
+| Tärningsraden | 80 | Sex tärningar 32 px ×1,5, etikett under |
+| Relikbricka | 40 | 16 px-ikoner ×1,6, läs-endast |
+| Tumzon | 56 + 24 | `GÅ NER` / `STÄNG` + en rad krithjälp |
+
+### 15.2 Paperdollen
+
+* **Samma nio lager som i spelet, ingen ny bild.** `Paperdoll.scale = 4` ⇒
+  48 × 48 blir 192 × 192 dp. Under 390 dp bredd används ×3 (144 dp) så att
+  skalan förblir ett heltal.
+* Rad 0 (`idle`) loopar, 0,16 s/frame. Reducerad rörelse: `frame_index = 0`.
+* Ett separat högupplöst ark är **förbjudet**: då kostar varje ny relik två
+  bilder i stället för en (PAPERDOLL §6.2).
+
+### 15.3 Slotarna
+
+* `CORRIDOR_DESIGN` §4.2 specar sex slots (huvud, bröst, händer, vapen,
+  amulett, reserv). Skissen visar **sju**: de sex plus `rygg` och `ben`, minus
+  `reserv` – eftersom `cape` och `legs` redan är riktiga paperdoll-lager med
+  konst, medan "reserv/bälte" inte har något lager ännu. Fyra i vänsterkolumnen,
+  tre i högerkolumnen + knappen `BYT UTSEENDE`. 58 × 58 dp ram.
+  Slutlig uppsättning är en öppen fråga (§18.12); nyckeln `SMITH_SLOT_SPARE`
+  finns redan i `translations.csv` för den dagen bältet får konst.
+* **Slotens ikon är själva plagget ur paperdoll-arket**, zoomat ×2 och centrerat
+  på pjäsen – inte en egen ikonserie. En ny relik kostar därmed noll extra konst
+  på den här skärmen, och ikonen kan per definition aldrig visa något annat än
+  det figuren faktiskt bär.
+* **Tom slot = streckad kritkontur** i `chalk/500`, aldrig en grå fylld ruta.
+  En grå ruta ser trasig ut; en kritkontur ser tom ut.
+* Etiketten ligger **inuti** sloten på en mörk platta (kontrast ≥ 7:1), inte
+  under ramen – under ramen kolliderar den med nästa slot vid textstorlek 130 %.
+* Tapp på en utrustad slot visar regeltexten **ordagrant samma sträng** som
+  belöningskortet använde.
+
+### 15.4 Byt utseende
+
+Knappen `SMITH_SHEET_CHANGE_LOOK` ligger som sjunde cell i högerkolumnen, i
+`#FFD447`-kontur. Den byter `body` + `hair` + porträtt och **rör inte ett enda
+gear-lager** – det är kroppsoberoendet gjort synligt för spelaren.
+
+---
+
+## 16. Tutorial-pekaren (våning 0)
+
+*Sprite: `assets/sprites/ui/icon_tutorial_pointer.png`, 16 × 16, kritvit.
+Texter: `TUT_*` i `assets/i18n/translations.csv`.*
+
+Pekaren är tutorialvåningens **enda** grafiska tillägg. Den ritas i ChalkUI, i
+`chalk/100`, i ×3 (48 dp) och pekar **nedåt** i sin oroterade form; alla andra
+riktningar är `rotation` i 90°-steg (ingen spegelvänd fil).
+
+| Regel | Värde |
+|---|---|
+| Antal samtidigt | **exakt 1** – aldrig två pekare på skärmen |
+| Position | 8 dp ovanför målets träffyta, centrerad; vid rotation 8 dp från motsvarande kant |
+| Puls | `translateY` 0 → −4 dp → 0, 900 ms, `motion/base`, oändlig loop |
+| Opacitet | 1,0 hela tiden (pulsen är rörelse, inte blink – blink läser som fel) |
+| Slocknar | **vid första handlingen på målet**, inte efter en timer |
+| Kommer tillbaka | efter 6 s utan någon input alls i samma rum, max 2 gånger |
+| Rum utan pekare | 0.7 (fällan lärs av notisen `TUT_ANVIL_BREAKS`, inte av en pil) |
+| Reducerad rörelse | **statisk pil**, ingen puls, i stället 2 dp kritkontur runt målet |
+| Efter våning 0 | pekaren används aldrig igen; hjälp sker via `?`-lagret (§12b) |
+
+Pekaren får **aldrig** peka på något som inte är tryckbart, och aldrig ligga
+kvar under en uppspelning – den döljs medan kedjan spelas och kommer tillbaka
+när brädet är interaktivt igen.
+
+---
+
+## 17. Korridorvyn: krit-UI ovanpå 3D
+
+*Presentationsskiftet 2026-09-21. Teknik: `docs/research/05_fps_korridor.md`.
+Innehåll och känsla: `docs/design/CORRIDOR_DESIGN.md`. Den här paragrafen äger
+bara vad krit-lagret gör ovanpå korridoren. Skiss:
+`design/mockup_corridor.html`, skärmdumpar `design/screenshots/corridor_*.png`.*
+
+**Grundregeln från §8 gäller oförändrad:** korridoren är substantiv (pixlar,
+nu i 3D), allt spelet *säger* om den är krita ovanpå. Inget tal, ingen etikett
+och ingen stapel ritas i 3D-lagret.
+
+### 17.1 Två splitar, samma kamera
+
+| Läge | Korridor | Krit-UI |
+|---|---|---|
+| Utforskning | 100 % av ytan mellan HUD och tumzon | HUD (44 dp), kritstråk (16 dp), skyltar, tre riktningsknappar 64 dp |
+| Strid | **45 %** av höjden | HUD, HP-chips, och stridsskärm v2 oförändrad i nedre 55 % |
+
+`Camera3D.keep_aspect = KEEP_WIDTH` är normativt: utan det byter bildutsnittet
+karaktär när splitten ändras, och samma korridor ser ut som två olika platser.
+
+### 17.2 Saker som ankras mot 3D
+
+Skyltplattor och HP-chips ligger i ChalkUI men följer 3D-punkter via
+`Camera3D.unproject_position()` (mockupen gör samma sak med
+`getBoundingClientRect()` på de transformerade elementen).
+
+* **Chipen skalar med djupet men aldrig under 80 %** – ett chip som är läsbart
+  på 3 m måste vara läsbart på 4,5 m, annars är bakre ledet dekor.
+* **Fast sidoförskjutning per plats i formeringen** (fram vänster −84 dp, fram
+  höger +84 dp, bakre ledet 46 dp högre) + en 2 dp kritledarlinje till
+  silhuetten. Utan förskjutningen lägger sig tre chips på varandra på 360 dp;
+  utan ledarlinjen vet man inte vilket chip som hör till vilken varelse.
+* **Skyltarna vid en korsning** får samma behandling: ankare vid mynningen,
+  plattan förskjuten utåt, ledarlinje emellan. Tre skyltar ska aldrig kunna
+  tryckas ihop, oavsett hur trång korsningen är i perspektivet.
+
+### 17.3 Ljus, dimma och läsbarhet i solljus
+
+* Dimman är `#0E1216` – **samma svarta som krit-UI:ts botten** – så gränsen
+  mellan 3D och UI aldrig syns som en kant.
+* En mjuk additiv närzon ("kritlyktan") lyfter stenen två steg fram. Utan den
+  blir väggarna en enfärgad yta på en telefon i dagsljus; kontrasten mellan
+  fogen (`iron1`) och stenen (`iron2/iron3`) är bara 1,6:1 och klarar sig inte
+  ensam. Dimma + lykta är alltså ett **tillgänglighetskrav**, inte stämning.
+* Facklorna är det enda varma i bilden och markerar därför alltid *något*: en
+  kammare, en korsning eller en elit (`CORRIDOR_DESIGN` §3.2).
+* Ingen kameraskak, någonsin. Träffskak läggs på fiendens billboard
+  (±0,08 m), inte på kameran – kameraskak i förstaperson ger åksjuka.
+
+### 17.4 Tumzonen
+
+Tre knappar, 64 dp höga, full bredd med 8 dp mellanrum, **alltid på samma
+plats** i båda lägena. Mitten (`FRAM`) är 35 % bredare än sidorna eftersom den
+trycks tio gånger oftare. Ogiltig riktning dimmas till 38 % men försvinner
+aldrig – en knapp som flyttar sig är värre än en som är grå.
+Underetiketten på varje knapp upprepar skyltens ord (`strid`, `ödeskast`,
+`vila`), så valet går att göra utan att titta upp på skyltarna.
+
+---
+
+## 18. Öppna frågor till PM
 
 1. ~~Godkänn riktning A~~ – **beslutad**. Hybriden pixel + krita är beslutad av Anders (DECISIONS 2026-09-21).
 2. ~~`chalk.gdshader` är riktningens enda kritiska tekniska beroende~~ – **byggd**, ligger i `src/game/shaders/` med förhandsvisningsscen. Samma sak för `palette_lut.gdshader`.
@@ -935,6 +1126,26 @@ utan klippning (72 + 3×64 + gap = 288 av 328 tillgängliga).
    tärningskroppar, vilket också gör `lut_strength`-tweenen i §9.2 användbar.
 8. **Nytt:** fiendearken är nu `hframes 4 / vframes 2` med en `death`-rad.
    `Art.ENEMIES` och `Art.enemy_frames()` behöver en rad var.
+10. **Nytt (M2.5):** `tools/build_asset_csv.py` importerar bara
+   `gen_pixel_assets`, `gen_dice_sprites` och `gen_sfx` – **inte**
+   `tools/gen_icons.py`, vars `generate()` dessutom har en annan signatur
+   (`generate(out_dir) -> list[Path]`). Kör man skriptet i dag försvinner de
+   fyra Android-ikonernas rader ur `ASSET_LICENSES.csv` och
+   `check_asset_licenses.py` fäller bygget. M2.5:s nya rader lades därför in
+   med en sammanslagning som bevarar övriga rader. **Dev bör fixa
+   `build_asset_csv.py`**; filen är inte min.
+11. **Nytt (M2.5):** `assets/i18n/translations.*.translation` är Godots
+   importartefakter och är nu inaktuella – 162 nya rader ligger i CSV:n men
+   ingen Godot finns i den här miljön, så `godot --headless --import` behöver
+   köras av dev innan strängarna syns i spelet.
+12. **Nytt (M2.5):** character sheetets slotuppsättning skiljer sig mellan
+   `research/05 §4` (vapen/bröst/händer/huvud/amulett/relik) och
+   `CORRIDOR_DESIGN §4.2` (huvud/bröst/händer/vapen/amulett/reserv), och
+   skissen visar en tredje variant med `rygg` och `ben` (§15.3). PM behöver
+   låsa en lista innan dev bygger skärmen.
+13. **Nytt (M2.5):** könsvalets etiketter `Broad`/`Lean` är mitt förslag.
+   Rollspelsnörden äger tonen i spelartext – bekräfta orden innan de låses,
+   och observera att de aldrig får bli könsord (DECISIONS 2026-09-21).
 9. **Nytt:** §2.11 (Hög kontrast+) och §12.6 (reducerad rörelse) är
    specificerade men inte kopplade till någon inställning i koden. Båda är
    M2-krav enligt DECISIONS 2026-09-21.
