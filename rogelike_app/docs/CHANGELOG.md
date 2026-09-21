@@ -2,6 +2,65 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M4 – Android: APK ur CI, sidoladdning, mobil-livscykel (2026-09-21)
+
+Milstolpen som gör spelet till en app. Ingenting i spelreglerna ändras.
+
+**A. Projekt och paket**
+
+- `project.godot`: version 0.1.0, boot splash i `surface/pit` (`#0E1216`) utan
+  Godot-logga, `emulate_mouse_from_touch` på och `emulate_touch_from_mouse` av,
+  och `quit_on_go_back=false` – standardvärdet stänger appen tyst på Androids
+  bakåtknapp.
+- `export_presets.cfg` (handskriven): **Android Debug** (APK, förbyggd mall,
+  arm64-v8a + armeabi-v7a, `se.pipwreck.game`, immersive, enda behörigheten
+  VIBRATE) och **Android Release** (AAB, gradle, min 24 / **target 36**,
+  signerad ur `GODOT_ANDROID_KEYSTORE_RELEASE_*`). Varje icke-självklar rad är
+  motiverad i `docs/ANDROID.md` §3.
+- `tools/gen_icons.py`: adaptive foreground/background 432×432, monokrom layer
+  för Android 13+ och legacy 192×192, PIPWRECK-tärningen i krit-stil ur
+  UI_GUIDE-paletten. Deterministisk SDF-rastrering ovanpå `tools/pixel_png.py`.
+  Utan den monokroma layern skickar Godot med sin egen Godot-logga.
+- `tools/godot_editor_settings.sh`: skapar debug-keystoren med `keytool` och
+  skriver `editor_settings-4.6.tres`. Keystores committas aldrig.
+
+**B. CI (`.github/workflows/android-debug.yml`, `test.yml` orörd)**
+
+- `apk-debug` på varje push som rör `rogelike_app/**`, alla grenar: JDK 17,
+  bara `platform-tools` + `build-tools;35.0.1` (utan gradle-bygge behövs inte
+  mer), cachad Godot-binär och cachade export templates (~1 GB), artefakt
+  `pipwreck-debug-apk` i 30 dagar, storlek/sha256/paketnamn i job summary.
+- `aab-release` bara på `workflow_dispatch`, med NDK 28.1.13356709 och
+  platforms 35/36. Hoppas över med en tydlig notis när signerings-secrets
+  saknas.
+
+**C. Mobilanpassningar i koden**
+
+- `src/platform/safe_area.gd`: skärmurtag räknat från skärmpixlar till
+  viewport-enheter. Ren funktion, takad, nonsenssäker. `GameScreen` lägger
+  insetet på `Margin` efter `enter()`.
+- `GameController.back_action()`: ren funktion för bakåtknappen. Stäng modal >
+  hoppa till kedjans slut > öppna inställningar > tillbaka till titeln.
+  **Ingen gren avslutar appen**, och ett test går igenom alla kombinationer.
+- `NOTIFICATION_APPLICATION_PAUSED` → autosave + `Juice.suspend_audio(true)`.
+  Sparningen hoppas över mitt i en runda: ett omkast har redan rullat
+  slumpströmmen förbi det sparade stridsläget. Pausen släpper också en
+  pågående hit-stop, annars vaknar appen med `time_scale` 0,04.
+
+**D. Verifierat**
+
+- 247 tester gröna (`+20` i `tests/test_android.gd`), 0 fel.
+- Rökprov under Xvfb: `SMOKE OK`, seed 7, WIN, 4 rum, bästa kedja 102.
+- `godot --headless --export-debug "Android Debug"` med templates 4.6.stable
+  installerade faller **bara** på saknad Android SDK (`Missing 'platform-tools'
+  directory`, `Missing 'build-tools' directory`) – inte på preset, mallar,
+  ikoner eller projekt.
+- Licenscheck 93/93.
+- **Inte verifierat här:** att APK:n byggs och signeras, gradle/AAB-vägen,
+  haptik och bildfrekvens på riktig telefon. Kräver runnern respektive Anders
+  telefon.
+
+
 ## M2 – Juice: kedjan ska kännas (2026-09-21)
 
 Milstolpen som avgör dopaminloopen. Ljud, haptik, hit-stop, skak, blixt och

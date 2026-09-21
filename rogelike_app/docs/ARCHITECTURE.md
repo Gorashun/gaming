@@ -9,7 +9,7 @@ det här dokumentet beskriver hur koden är organiserad och hur man kör den.*
 src/core/     ren spellogik. RefCounted/statiska klasser. INGA Node-beroenden.
 src/data/     innehåll som data (sidor, reliker, fiender, möten, belöningspool).
 src/game/     Node-världen. Spelar upp händelseloggen. Läser core, aldrig tvärtom.
-src/platform/ inställningar, haptiknivåer, filsystem, senare butiks-API:er.
+src/platform/ inställningar, haptiknivåer, filsystem, skärmurtag, senare butiks-API:er.
 tools/        headless-verktyg (run_simulator.gd, smoke_play.gd + smoke_driver.gd).
 tests/        gdUnit4-sviter. tests/support/ innehåller testhjälpmedel.
 ```
@@ -552,6 +552,30 @@ Vinner greedy lika ofta som lookahead är placeringen meningslös och spelet är
 Luck be a Landlord. Målet är minst 10 procentenheters skillnad; simulatorn
 skriver ut en varning om den inte nås.
 
+## Android (M4)
+
+Allt som rör paketering, signering, CI-bygget och sidoladdning ligger i
+**`docs/ANDROID.md`** – den är normativ för det. Tre saker hör hemma här
+därför att de är arkitektur och inte bygge:
+
+- **`src/platform/safe_area.gd`.** `DisplayServer.get_display_safe_area()`
+  svarar i skärmpixlar, UI:t ritas i viewport-enheter (1080 brett,
+  `aspect=expand` gör en hög telefon högre än 1920). Omräkningen är en **ren
+  funktion av tre värden** och testas därför utan telefon.
+  `GameScreen.apply_safe_area()` lägger insetet på skärmens `Margin` **efter**
+  `enter()`, eftersom varje skärm sätter sin egen `margin_top` i `_style()`.
+- **`GameController.back_action()`.** Androids bakåtknapp som ren funktion:
+  skärmnamn + modal-läge + uppspelningsläge in, en av fem `BACK_*`-strängar ut.
+  Ingen gren returnerar "avsluta", och `application/config/quit_on_go_back` är
+  avstängd i `project.godot` – annars stänger `SceneTree` appen själv och
+  funktionen blir aldrig anropad.
+- **Paus-autosaven har en spärr.** `NOTIFICATION_APPLICATION_PAUSED` sparar
+  bara när `GameController.can_autosave()` säger ja, och den frågar
+  `CombatScreen.is_safe_to_autosave()`. Sparfilen är stridsläget vid rundans
+  början **plus slumpströmmens position**, och de två måste höra ihop; ett
+  omkast har redan rullat strömmen vidare utan att det sparade läget följt med.
+  Samma regel som GAME_DESIGN §1: aldrig spara mitt i en kedja.
+
 ## CI
 
 `.github/workflows/test.yml` i repo-roten körs på varje push och PR som rör
@@ -559,6 +583,13 @@ skriver ut en varning om den inte nås.
 projektet, kör gdUnit4 med JUnit-output och kör sedan simulatorn för både
 1 000 strider och 200 hela runs per policy. Testrapport och balansstatistik
 laddas upp som artefakter.
+
+`.github/workflows/android-debug.yml` bygger en sidoladdningsbar debug-APK av
+varje push som rör `rogelike_app/**`, på alla grenar, och laddar upp den som
+artefakten `pipwreck-debug-apk`. Ett andra jobb bygger en signerad release-AAB
+på `workflow_dispatch`. Bygget ligger i CI därför att agentmiljön inte når
+`dl.google.com` och alltså inte kan ha en Android SDK (DECISIONS 2026-09-21).
+Detaljerna står i `docs/ANDROID.md` §5.
 
 ## Fallgropar i GDScript som redan bitit oss
 

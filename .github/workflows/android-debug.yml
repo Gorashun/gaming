@@ -149,7 +149,7 @@ jobs:
               echo "| Paket | \`se.pipwreck.game\` |"
               echo "| Commit | \`${GITHUB_SHA}\` |"
               echo
-              echo "Ladda ner artefakten **pipwreck-debug-apk** och se docs/ANDROID.md §6 för sidoladdning."
+              echo "Ladda ner artefakten **pipwreck-debug-apk** och se docs/ANDROID.md §7 för sidoladdning."
             else
               echo "Ingen APK byggdes -- se loggen för exportsteget."
             fi
@@ -195,9 +195,9 @@ jobs:
               echo
               echo "Hemligheterna \`PIPWRECK_KEYSTORE_BASE64\`, \`PIPWRECK_KEYSTORE_USER\`"
               echo "och \`PIPWRECK_KEYSTORE_PASS\` saknas i repots Actions-secrets."
-              echo "Se docs/ANDROID.md §7 för hur keystoren skapas och läggs in."
+              echo "Se docs/ANDROID.md §9 för hur keystoren skapas och läggs in."
             } >> "$GITHUB_STEP_SUMMARY"
-            echo "::notice title=AAB skipped::Signing secrets are not configured; see docs/ANDROID.md section 7"
+            echo "::notice title=AAB skipped::Signing secrets are not configured; see docs/ANDROID.md section 9"
           else
             echo "present=true" >> "$GITHUB_OUTPUT"
           fi
