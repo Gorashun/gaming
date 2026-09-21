@@ -167,7 +167,12 @@ func skip_to_end() -> void:
 func _process(delta: float) -> void:
 	if not _playing:
 		return
-	_elapsed_ms += delta * 1000.0 * _rate
+	# OSKALAD tid. UI_GUIDE §12.2: "hit-stop räknas in i eventets ms_hint, inte
+	# ovanpå". Juice fryser Engine.time_scale, vilket kryper in i delta; utan
+	# den här divisionen skulle varje frysning FÖRLÄNGA tidslinjen i stället
+	# för att ätas ur det pågående eventets egen tid, och tre combos skulle
+	# spräcka budgeten utan att en enda rad i tabellen ändrats.
+	_elapsed_ms += delta / maxf(Engine.time_scale, 0.0001) * 1000.0 * _rate
 	while _cursor < _timeline.size() and float(_timeline[_cursor]["start_ms"]) <= _elapsed_ms:
 		var step: Dictionary = _timeline[_cursor]
 		_cursor += 1
@@ -401,8 +406,12 @@ static func combo_bonus(multiplier: int) -> int:
 	return 0
 
 
-## Summan av alla hit-stops i en logg. Den tid uppspelningen tar UTÖVER
-## tidslinjen, och därmed skillnaden mellan normalt och reducerat rörelse-läge.
+## Summan av alla hit-stops i en logg, dvs. hur länge bilden står still.
+##
+## Ligger [b]inuti[/b] tidslinjen (UI_GUIDE §12.2), så den här siffran
+## förlänger inte uppspelningen – den mäter hur stor del av den som är frysta
+## bildrutor. Reducerat rörelse-läge halverar den (§12.6) utan att flytta ett
+## enda event: timingen bevaras, rörelsen minskar.
 static func hit_stop_ms(events: Array[Dictionary], reduced_motion: bool = false) -> int:
 	var total: int = 0
 	var step: int = 0
@@ -413,13 +422,6 @@ static func hit_stop_ms(events: Array[Dictionary], reduced_motion: bool = false)
 		if String(event.get("t", "")) == "die_activated":
 			step += 1
 	return total
-
-
-## Uppspelningens VÄGGKLOCKA: tidslinjen plus hit-stoppen.
-## Reducerat rörelse-läge halverar hit-stoppen (UI_GUIDE §6.1) och ger därför
-## en kortare uppspelning med exakt samma eventordning och samma slutläge.
-static func wall_ms(events: Array[Dictionary], speed: float = 1.0, reduced_motion: bool = false) -> int:
-	return total_ms(build_timeline(events, speed)) + hit_stop_ms(events, reduced_motion)
 
 
 ## Spelar feedbacken för ett event. Allt här är nodoberoende; det visuella
@@ -475,12 +477,21 @@ static func build_timeline(events: Array[Dictionary], speed: float = 1.0, compre
 	var timeline: Array[Dictionary] = []
 	var cursor: float = 0.0
 	var side_offset: float = 0.0
+	var last_damage_slot: int = -1
 
 	for i: int in range(events.size()):
 		var event: Dictionary = events[i]
 		var event_type: String = String(event.get("t", ""))
 		var duration: float = float(int(event.get("ms_hint", MS_HINT_FALLBACK))) * maxf(0.0, speed)
 		var lane: int = lane_of(event_type)
+		# UI_GUIDE §12.2/§12.3 rad 7: ett ÖVERFLÖDSHOPP är en sidokanal, inte
+		# ett eget kedjesteg. Hoppet känns igen på att skadan kommer från samma
+		# slot som föregående skada (GAME_DESIGN §2.3 P3: spillet går vidare).
+		if event_type == "damage_dealt":
+			var slot: int = int(event.get("slot", -1))
+			if slot >= 0 and slot == last_damage_slot:
+				lane = Lane.SIDE
+			last_damage_slot = slot
 		var start: float = cursor
 
 		match lane:

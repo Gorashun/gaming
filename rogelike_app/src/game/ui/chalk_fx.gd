@@ -29,7 +29,10 @@ const WIPE_DRAWN: float = -0.25
 const PROFILES: Dictionary = {
 	PANEL: {"jitter_amount": 0.003, "jitter_scale": 10.0, "jitter_speed": 0.8, "grain_amount": 0.22, "erosion": 0.10, "edge_bias": 0.5},
 	BUTTON: {"jitter_amount": 0.002, "jitter_scale": 12.0, "jitter_speed": 0.6, "grain_amount": 0.18, "erosion": 0.08, "edge_bias": 0.4},
-	DISPLAY: {"jitter_amount": 0.005, "jitter_scale": 16.0, "jitter_speed": 1.2, "grain_amount": 0.30, "erosion": 0.18, "edge_bias": 0.6},
+	# Jittret måste hållas LÅGT på text: en bokstav är tunn, och en UV-förskjutning
+	# på 0,005 river sönder stammarna i stället för att göra dem handdragna.
+	# Uppmätt på "SETTINGS" i 28 dp: 0,005 ger trasiga glyfer, 0,002 ger krita.
+	DISPLAY: {"jitter_amount": 0.002, "jitter_scale": 16.0, "jitter_speed": 1.0, "grain_amount": 0.26, "erosion": 0.12, "edge_bias": 0.6},
 	LINE: {"jitter_amount": 0.006, "jitter_scale": 14.0, "jitter_speed": 1.4, "grain_amount": 0.35, "erosion": 0.28, "edge_bias": 0.6},
 }
 
@@ -63,7 +66,12 @@ static func material(profile: StringName = PANEL) -> ShaderMaterial:
 	for key: String in values:
 		mat.set_shader_parameter(key, values[key])
 	if Settings.reduced_motion:
+		# UI_GUIDE §12.6: korn och erosion kvar, skakningen borta.
 		mat.set_shader_parameter("jitter_speed", 0.0)
+	if Settings.high_contrast:
+		# §2.11: strecket ska bli täckande utan att tappa handkänslan.
+		mat.set_shader_parameter("erosion", 0.10)
+		mat.set_shader_parameter("grain_amount", 0.12)
 	# −0,25 = "helt uppritad". Vid wipe = 0 ligger svepets mjuka kant precis på
 	# vänsterkanten och tunnar ut den (chalk.gdshader: smoothstep runt UV.x).
 	mat.set_shader_parameter("wipe", WIPE_DRAWN)

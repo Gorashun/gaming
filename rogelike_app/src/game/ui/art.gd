@@ -86,25 +86,20 @@ const LUTS: Dictionary = {
 	Rules.DieMaterial.GLASS: "dice/lut_glass.png",
 }
 
-## Förtintade tärningskroppar, en per material.
-##
-## [b]Avsteg från assets/sprites/README.md §3, uppmätt och rapporterat:[/b]
-## den dokumenterade vägen är gråskalemastern [constant DIE_BODY_GRAY] genom
-## [code]palette_lut.gdshader[/code]. I GL Compatibility skriver den shadern
-## ut sitt resultat utan sRGB-konvertering: en sprite med
-## [code]lut_strength = 0[/code] renderas som [code]srgb_to_linear(källan)[/code]
-## (uppmätt: #C2451D → #941203) och LUT-vägen landar ~24 % för mörkt.
-## Tills shadern är fixad ritas kropparna med sina färdiga färger, som
-## renderas 1:1. Kompositionen (kropp + glyph + kant + spricka) är oförändrad,
-## och [method palette_material] används fortfarande för träffblixten – där
-## gör mörkningen ingenting, eftersom bilden ändå lerpas mot vitt.
+## Förtintade tärningskroppar, en per material. [b]Reserv sedan M2:[/b] den
+## dokumenterade vägen (assets/sprites/README.md §3) är gråskalemastern
+## [constant DIE_BODY_GRAY] genom [code]palette_lut.gdshader[/code] med en
+## 16×1-LUT per material, och den fungerar igen sedan UI-agenten fixade
+## shaderns dubbelmultiplikation mot modulate (DECISIONS 2026-09-21 antog
+## sRGB-tapp; rotorsaken var att fragmentets COLOR redan innehåller modulate).
+## De förtintade kropparna ritas bara om gråskalan eller LUT:en saknas.
 const DIE_BODIES: Dictionary = {
 	Rules.DieMaterial.IRON: "dice/die_body_iron.png",
 	Rules.DieMaterial.BONE: "dice/die_body_bone.png",
 	Rules.DieMaterial.GLASS: "dice/die_body_glass.png",
 }
 
-## Gråskalemastern som LUT-vägen använder. Väntar på shaderfixen.
+## Gråskalemastern som LUT-vägen använder.
 const DIE_BODY_GRAY: String = "dice/die_body_gray.png"
 const DIE_TUMBLE: String = "dice/die_tumble_gray.png"
 const GLASS_RIM: String = "dice/glass_highlight.png"
@@ -183,9 +178,28 @@ static func _add_row(frames: SpriteFrames, anim: StringName, sheet: Texture2D,
 		frames.add_frame(anim, slice)
 
 
-## Tärningskroppen för ett material.
+## Tärningskroppen för ett material. Gråskalemastern när den och materialets
+## LUT finns (då bär [method die_material] färgen), annars den förtintade.
 static func die_body(die_material: int) -> Texture2D:
+	if lut_path_available(die_material):
+		return texture(DIE_BODY_GRAY)
 	return texture(String(DIE_BODIES.get(die_material, DIE_BODIES[Rules.DieMaterial.IRON])))
+
+
+## Går LUT-vägen att använda för det här materialet?
+static func lut_path_available(die_material: int) -> bool:
+	return texture(DIE_BODY_GRAY) != null and die_lut(die_material) != null
+
+
+## Materialet som färgar gråskalekroppen. [b]Ett eget ShaderMaterial per
+## anrop[/b] och inte ett delat: [code]flash[/code] sätts per tärning, och ett
+## delat material hade blixtrat alla sex tärningarna samtidigt.
+## I hög kontrast höjs [code]luma_gamma[/code] till 1,35 (UI_GUIDE §8.5).
+static func die_material(die_material: int) -> ShaderMaterial:
+	var mat: ShaderMaterial = palette_material(die_lut(die_material), 1.0)
+	if mat != null and Tokens.high_contrast:
+		mat.set_shader_parameter("luma_gamma", 1.35)
+	return mat
 
 
 ## 16×1-LUT:en för ett material (assets/sprites/README.md §3).

@@ -362,7 +362,7 @@ func test_an_unknown_event_is_silent_rather_than_wrong() -> void:
 # Reducerad rörelse (UI_GUIDE §6.1)
 # ---------------------------------------------------------------------------
 
-func test_reduced_motion_shortens_the_playback_but_not_the_event_track() -> void:
+func test_reduced_motion_halves_the_frozen_time_but_not_the_event_track() -> void:
 	# En runda med en ×4 och en död fiende: de två enda händelserna i M2 som
 	# lägger hit-stop. En runda utan dem har inget att korta, och testet ska
 	# mäta regeln, inte tärningsturen.
@@ -375,14 +375,13 @@ func test_reduced_motion_shortens_the_playback_but_not_the_event_track() -> void
 		{"t": "enemy_killed", "seq": 5, "ms_hint": 380},
 		{"t": "round_end", "seq": 6, "ms_hint": 600},
 	]
-	var normal: int = EventPlayer.wall_ms(events, 1.0, false)
-	var reduced: int = EventPlayer.wall_ms(events, 1.0, true)
-	# Själva tidslinjen är IDENTISK – §6.1 säger "timing bevaras" – det är
-	# hit-stoppen som halveras, och det är därför uppspelningen blir kortare.
-	assert_int(EventPlayer.total_ms(EventPlayer.build_timeline(events, 1.0))).is_equal(
-		EventPlayer.total_ms(EventPlayer.build_timeline(events, 1.0)))
-	assert_int(EventPlayer.hit_stop_ms(events, false)).is_greater(0)
+	var normal: int = EventPlayer.hit_stop_ms(events, false)
+	var reduced: int = EventPlayer.hit_stop_ms(events, true)
+	# UI_GUIDE §12.6: "timingen ändras inte". Tidslinjen är identisk, och det
+	# som halveras är den tid bilden STÅR STILL inuti den.
+	assert_int(normal).is_greater(0)
 	assert_int(reduced).is_less(normal)
+	assert_int(reduced).is_equal(normal / 2)
 
 
 func test_reduced_motion_reaches_the_same_final_state() -> void:
@@ -394,15 +393,62 @@ func test_reduced_motion_reaches_the_same_final_state() -> void:
 	assert_str(JSON.stringify(reduced)).is_equal(JSON.stringify(normal))
 
 
-func test_the_hit_stops_fit_inside_the_round_budget() -> void:
-	# Hit-stoppen ligger UTANFÖR tidslinjen och kan därför spräcka känslan av
-	# budgeten även när tidslinjen håller den. Taket här är dev-satt: en runda
-	# får inte kännas som mer än ROUND_BUDGET + 400 ms.
+func test_the_frozen_time_never_eats_a_whole_round() -> void:
+	# Hit-stoppen ligger INUTI tidslinjen (§12.2). Den får ändå inte äta mer än
+	# en fjärdedel av rundan, annars blir uppspelningen ett bildspel.
 	for seed_value: int in range(10):
 		var state: CombatState = Content.smith_state()
 		state.enemies = Content.encounter(3, seed_value % 2)
 		state = Resolver.begin_combat(state, Rng.new(seed_value))
 		var result: ResolveResult = Resolver.resolve(state, Policy.lookahead(state))
-		assert_int(EventPlayer.wall_ms(result.events)).override_failure_message(
-			"seed %d: uppspelningen tar %d ms inklusive hit-stop" % [seed_value, EventPlayer.wall_ms(result.events)]
-		).is_less_equal(EventPlayer.ROUND_BUDGET_MS + 400)
+		var frozen: int = EventPlayer.hit_stop_ms(result.events)
+		var total: int = EventPlayer.total_ms(EventPlayer.build_timeline(result.events))
+		assert_int(frozen).override_failure_message(
+			"seed %d: %d ms frysning av %d ms runda" % [seed_value, frozen, total]
+		).is_less_equal(total / 4)
+
+
+func test_an_overflow_hop_is_a_side_channel_and_not_a_chain_step() -> void:
+	# UI_GUIDE §12.3 rad 7: hoppet ritas som en pil PARALLELLT med kedjan och
+	# flyttar inte markören. Två skador från samma slot = ett hopp.
+	var events: Array[Dictionary] = [
+		{"t": "die_activated", "seq": 0, "ms_hint": 220, "slot": 0},
+		{"t": "damage_dealt", "seq": 1, "ms_hint": 260, "slot": 0, "amount": 24, "overflow": 9},
+		{"t": "damage_dealt", "seq": 2, "ms_hint": 260, "slot": 0, "amount": 9},
+		{"t": "damage_dealt", "seq": 3, "ms_hint": 260, "slot": 1, "amount": 7},
+	]
+	var timeline: Array[Dictionary] = EventPlayer.build_timeline(events, 1.0, false)
+	assert_int(int(timeline[1]["lane"])).is_equal(EventPlayer.Lane.CHAIN)
+	assert_int(int(timeline[2]["lane"])).is_equal(EventPlayer.Lane.SIDE)
+	# Nästa slot är ett riktigt kedjesteg igen.
+	assert_int(int(timeline[3]["lane"])).is_equal(EventPlayer.Lane.CHAIN)
+	# Och hoppet får INTE ha flyttat markören.
+	assert_float(float(timeline[3]["start_ms"])).is_equal(
+		float(timeline[1]["start_ms"]) + 260.0 * (1.0 - EventPlayer.CHAIN_OVERLAP))
+
+
+func test_the_ui_guide_reference_round_lands_on_its_documented_budget() -> void:
+	# UI_GUIDE §12.3: scenariot par + överflöd + kill ska sluta på 2 400 ms med
+	# markörens aritmetik i §12.3. Tabellen är normativ – om den här siffran
+	# rör sig har antingen banorna eller överlappet ändrats.
+	var events: Array[Dictionary] = [
+		{"t": "round_start", "seq": 0, "ms_hint": 180},
+		{"t": "die_activated", "seq": 1, "ms_hint": 220, "slot": 0},
+		{"t": "die_activated", "seq": 2, "ms_hint": 220, "slot": 1},
+		{"t": "combo_formed", "seq": 3, "ms_hint": 300, "multiplier": 2, "slots": [0, 1]},
+		{"t": "die_activated", "seq": 4, "ms_hint": 220, "slot": 2},
+		{"t": "damage_dealt", "seq": 5, "ms_hint": 260, "slot": 2, "amount": 24, "overflow": 9},
+		{"t": "damage_dealt", "seq": 6, "ms_hint": 140, "slot": 2, "amount": 9},
+		{"t": "enemy_killed", "seq": 7, "ms_hint": 360},
+		{"t": "die_activated", "seq": 8, "ms_hint": 220, "slot": 3},
+		{"t": "die_activated", "seq": 9, "ms_hint": 220, "slot": 4},
+		{"t": "charge_stored", "seq": 10, "ms_hint": 240},
+		{"t": "die_activated", "seq": 11, "ms_hint": 220, "slot": 5},
+		{"t": "damage_dealt", "seq": 12, "ms_hint": 260, "slot": 5, "amount": 11},
+		{"t": "round_end", "seq": 13, "ms_hint": 600},
+	]
+	var timeline: Array[Dictionary] = EventPlayer.build_timeline(events, 1.0, false)
+	assert_int(EventPlayer.total_ms(timeline)).override_failure_message(
+		"§12.3-rundan blev %d ms, tabellen säger 2 400" % EventPlayer.total_ms(timeline)
+	).is_equal(2400)
+	assert_int(EventPlayer.total_ms(timeline)).is_less_equal(EventPlayer.BUDGET_MS)

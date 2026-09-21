@@ -44,8 +44,8 @@ var sfx_volume: int = int(DEFAULTS["sfx_volume"])
 var haptics: bool = bool(DEFAULTS["haptics"])
 ## UI_GUIDE §6.1. Ingen skak, halverad hit-stop, ingen overshoot i number pops.
 var reduced_motion: bool = bool(DEFAULTS["reduced_motion"])
-## UI_GUIDE §6.3 "Hög kontrast+". M2 levererar den delen som ligger i
-## [Tokens]; hela paletten byts när UI levererat sin (se ARCHITECTURE).
+## UI_GUIDE §2.11 "Hög kontrast+". Byter hela tokentabellen i [Tokens];
+## minsta kontrast i läget är 6,1:1 mot standardtemats 4,9:1.
 var high_contrast: bool = bool(DEFAULTS["high_contrast"])
 ## Kedjetempo, UI_GUIDE §2.10: Lugn 1,25 · Normal 1,0 · Snabb 0,6 · Blixt 0,35.
 var chain_speed: float = float(DEFAULTS["chain_speed"])
@@ -136,7 +136,7 @@ func apply() -> void:
 	if locale != "":
 		TranslationServer.set_locale(locale)
 	Haptics.enabled = haptics
-	Tokens.high_contrast = high_contrast
+	Tokens.apply_high_contrast(high_contrast)
 
 
 ## Volymen som en linjär faktor, 0–1. [Juice] översätter till dB.

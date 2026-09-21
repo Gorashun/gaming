@@ -13,12 +13,14 @@ extends Node
 ## synligt. Slumpströmmens position sparas med, vilket gör återupptagningen
 ## byte-identisk med en run som aldrig kraschade.
 
+const SCREEN_TITLE: String = "TITLE"
 const SCREEN_MARCH: String = "MARCH"
 const SCREEN_COMBAT: String = "COMBAT"
 const SCREEN_REWARD: String = "REWARD"
 const SCREEN_GAMEOVER: String = "GAMEOVER"
 
 const SCENE_PATHS: Dictionary = {
+	SCREEN_TITLE: "res://src/game/title/title_screen.tscn",
 	SCREEN_MARCH: "res://src/game/march/march_screen.tscn",
 	SCREEN_COMBAT: "res://src/game/combat/combat_screen.tscn",
 	SCREEN_REWARD: "res://src/game/reward/reward_screen.tscn",
@@ -27,6 +29,8 @@ const SCENE_PATHS: Dictionary = {
 
 ## M1 spelar bara våning 1 (GAME_DESIGN §1: "M1 använder bara våning 1").
 const M1_FLOOR: int = 1
+## Inställningsmodalen. Ligger ovanpå skärmen, inte i stället för den.
+const SETTINGS_SCENE: String = "res://src/game/settings/settings_screen.tscn"
 
 ## Skärmen har bytts. Smoke-scriptet lyssnar på den här.
 signal screen_changed(screen_name: String)
@@ -37,6 +41,7 @@ signal run_over(won: bool, summary: Dictionary)
 
 @onready var _world_root: Node2D = $World/WorldRoot
 @onready var _screen_root: Control = $ChalkUI/UiRoot/ScreenRoot
+@onready var _modal_root: Control = $ChalkUI/UiRoot/ModalRoot
 
 var run: RunState = null
 var graph: RunGraph = null
@@ -49,16 +54,72 @@ var _rooms_cleared: int = 0
 var _best_chain: int = 0
 var _taken_ids: Array = []
 var _run_won: bool = false
+## Vad som dödade spelaren, ur [code]player_died.killed_by[/code]. Död-skärmen
+## ska kunna svara på frågan "vad var det som tog mig" (UI_GUIDE §3).
+var _killed_by: String = ""
+var _settings_modal: Control = null
 
 
 func _ready() -> void:
+	# Skärmskaket flyttar BÅDA lagren: pixelvärlden och kritan ska skaka
+	# tillsammans, annars glider fienden ifrån sin HP-bar.
+	Juice.register_shake_layer($World)
+	Juice.register_shake_layer($ChalkUI)
+	show_title()
+
+
+## Titelskärmen. Alltid först, även med en tvingad seed: rökprovet och en
+## spelare ska gå exakt samma väg in i spelet.
+func show_title() -> void:
+	_show(SCREEN_TITLE, {"has_save": SaveIO.has_save()}, {"title_action": _on_title_action})
+
+
+func _on_title_action(action: String) -> void:
+	if action == "continue" and resume_run():
+		return
 	var forced_seed: int = _cmdline_seed()
 	if forced_seed != 0:
 		SaveIO.clear()
 		start_new_run(forced_seed)
 		return
-	if not resume_run():
-		start_new_run(_fresh_seed())
+	SaveIO.clear()
+	start_new_run(_fresh_seed())
+
+
+# ---------------------------------------------------------------------------
+# Inställningar som modal
+# ---------------------------------------------------------------------------
+
+## Öppnar inställningarna OVANPÅ den skärm som är igång. Rundan, placeringen och
+## uppspelningen står kvar orörda bakom modalen.
+func open_settings() -> void:
+	if _settings_modal != null and is_instance_valid(_settings_modal):
+		return
+	var packed: PackedScene = ResourceLoader.load(SETTINGS_SCENE) as PackedScene
+	if packed == null:
+		push_error("GameController: kunde inte ladda %s" % SETTINGS_SCENE)
+		return
+	_settings_modal = packed.instantiate() as Control
+	if _settings_modal == null:
+		return
+	_modal_root.add_child(_settings_modal)
+	_settings_modal.connect("closed", _on_settings_closed)
+
+
+func settings_open() -> bool:
+	return _settings_modal != null and is_instance_valid(_settings_modal)
+
+
+func _on_settings_closed() -> void:
+	_settings_modal = null
+	# Sparfilen kan ha nollställts i modalen ("Reset save"). Står vi på
+	# titelskärmen ska CONTINUE försvinna direkt, annars ljuger knappen.
+	# Villkoret jämför mot vad titeln BYGGDES med: att bygga om den varje gång
+	# modalen stängs skulle frigöra skärmen under fötterna på den som öppnade
+	# modalen (rökprovet fastnade på exakt det).
+	var title: TitleScreen = _screen as TitleScreen
+	if _screen_name == SCREEN_TITLE and title != null and title.has_save() != SaveIO.has_save():
+		show_title()
 
 
 # ---------------------------------------------------------------------------
@@ -74,6 +135,7 @@ func start_new_run(seed_value: int) -> void:
 	_best_chain = 0
 	_taken_ids = []
 	_run_won = false
+	_killed_by = ""
 	run.floor_index = M1_FLOOR
 	run.room_index = int(graph.node_at(_node_id).get("room", 1))
 	_autosave()
@@ -193,8 +255,12 @@ func _on_screen_done(payload: Dictionary, from_screen: String) -> void:
 		SCREEN_REWARD:
 			_on_reward_chosen(payload)
 		SCREEN_GAMEOVER:
+			# "EN RUN TILL" startar direkt, utan omvägen över titeln: den
+			# knappen ÄR beslutet (UI_GUIDE §3).
 			SaveIO.clear()
 			start_new_run(_fresh_seed())
+		SCREEN_TITLE:
+			pass
 		SCREEN_COMBAT:
 			pass
 
@@ -226,7 +292,13 @@ func _show_combat() -> void:
 	if run.combat.enemies.is_empty() or run.combat.is_won():
 		run.combat = RunFlow.start_room(run.combat, node, rng)
 		_autosave(SCREEN_COMBAT)
-	_show(SCREEN_COMBAT, {"state": run.combat, "rng": rng, "node": node, "graph": graph}, {
+	_show(SCREEN_COMBAT, {
+		"state": run.combat,
+		"rng": rng,
+		"node": node,
+		"graph": graph,
+		"best_chain": _best_chain,
+	}, {
 		"round_finished": _on_round_finished,
 		"combat_finished": _on_combat_finished,
 	})
@@ -260,6 +332,7 @@ func build_summary() -> Dictionary:
 		"rooms_cleared": _rooms_cleared,
 		"room_reached": int(node.get("room", 1)),
 		"best_chain": _best_chain,
+		"killed_by": _killed_by,
 		"hp_left": maxi(0, hp_left),
 		"seed": run.seed_value,
 		"score": MetaScore.breakdown(_rooms_cleared, _best_chain, _run_won, maxi(0, hp_left)),
@@ -274,6 +347,9 @@ func _on_round_finished(state: CombatState, result: ResolveResult) -> void:
 	run.combat = state
 	var chain: int = MetaScore.chain_damage(result.events)
 	_best_chain = maxi(_best_chain, chain)
+	for event: Dictionary in result.events:
+		if String(event.get("t", "")) == "player_died":
+			_killed_by = String(event.get("killed_by", ""))
 	_autosave(SCREEN_COMBAT)
 	round_autosaved.emit(state.round_number, chain)
 

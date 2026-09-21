@@ -166,7 +166,7 @@ func _style() -> void:
 	edge_style.border_blend = true
 	_edge.add_theme_stylebox_override("panel", edge_style)
 	_fx_layer.add_child(_edge)
-	_edge.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_edge.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	# Paus: enda vägen till inställningarna mitt i en run (UI_GUIDE §2.9,
 	# ikonknapp 48 dp). Modalen läggs ovanpå av GameController, så rundan och
@@ -597,7 +597,7 @@ func play_boss_intro() -> void:
 	scrim.color = Tokens.SURFACE_SCRIM
 	scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_fx_layer.add_child(scrim)
-	scrim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	var plate: Label = Label.new()
 	plate.text = _boss_name()
@@ -609,7 +609,7 @@ func play_boss_intro() -> void:
 	plate.add_theme_constant_override("outline_size", Tokens.dpi(3))
 	ChalkFx.apply(plate, ChalkFx.DISPLAY)
 	_fx_layer.add_child(plate)
-	plate.set_anchors_preset(Control.PRESET_FULL_RECT)
+	plate.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	Juice.sfx(&"boss_intro", 1.0, -6.0)
 	Juice.haptic(Haptics.Level.HEAVY)
@@ -806,12 +806,16 @@ func _on_damage(event: Dictionary) -> void:
 		_panels[index].flash_hit()
 		var text: String = str(amount)
 		var color: Color = Tokens.SEM_DAMAGE
+		# Siffran är display-xl (UI_GUIDE §5.3), men ORD är det inte: "ARMOR 2"
+		# i 56 dp är bredare än skärmen och säger mindre än en siffra.
+		var font_size: int = Tokens.TYPE_DISPLAY_XL
 		if amount == 0 and blocked > 0:
 			text = tr("COMBAT_ARMOR_BLOCKED") % blocked
 			color = Tokens.SEM_SHIELD
+			font_size = Tokens.TYPE_TITLE
 		elif overflow > 0:
 			color = Tokens.SEM_OVERFLOW
-		_pop(_panels[index], text, color, Tokens.TYPE_DISPLAY_XL)
+		_pop(_panels[index], text, color, font_size)
 		if world != null:
 			var actor: EnemyActor = world.call("actor_at", index, target_id) as EnemyActor
 			if actor != null:

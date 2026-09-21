@@ -22,6 +22,15 @@ var _shots_dir: String = ""
 var _shot_index: int = 0
 var _taken: Dictionary = {}
 var _errors: PackedStringArray = PackedStringArray()
+## Bildrutetider (ms) samlade MEDAN en kedja spelas upp. Det är den enda stund
+## spelet gör något tungt, och därför den enda som är värd att mäta.
+var _frame_ms: PackedFloat32Array = PackedFloat32Array()
+## Samma mätning MELLAN kedjorna. Jämförelsen är hela poängen: en kedja som
+## kostar lika mycket som en stillastående skärm är inte kedjan som är dyr.
+var _idle_ms: PackedFloat32Array = PackedFloat32Array()
+var _last_frame_us: int = 0
+var _last_idle_us: int = 0
+var _controller: Node = null
 
 func _ready() -> void:
 	await _run()
@@ -38,15 +47,29 @@ func _run() -> void:
 	if locale != "":
 		TranslationServer.set_locale(locale)
 
+	# Inställningarna ligger i user:// och överlever mellan körningar. Rökprovet
+	# ska mäta ETT läge, inte det som råkade stå kvar från förra gången.
+	var settings: Node = get_node_or_null("/root/Settings")
+	if settings != null:
+		settings.set("config_path", "user://smoke_settings.cfg")
+		settings.call("reset_to_defaults", false)
+		if locale != "":
+			settings.set("locale", locale)
+		if bool(args.get("reduced-motion", false)):
+			settings.set("reduced_motion", true)
+		settings.call("apply")
+
 	print("PIPWRECK smoke play")
 	print("  locale=%s (fallback %s)" % [
 		TranslationServer.get_locale(),
 		ProjectSettings.get_setting("internationalization/locale/fallback", "en"),
 	])
-	print("  seed=%d  shots=%s  display=%s" % [
+	print("  seed=%d  policy=%s  shots=%s  display=%s  reduced_motion=%s" % [
 		seed_value,
+		String(args.get("policy", "lookahead")),
 		_shots_dir if _shots_dir != "" else "(none)",
 		DisplayServer.get_name(),
+		str(bool(args.get("reduced-motion", false))),
 	])
 	if _shots_dir != "":
 		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_shots_dir))
@@ -61,6 +84,9 @@ func _run() -> void:
 		juice.log_calls = true
 	Haptics.log_calls = true
 
+	# Ren start. Sparfilen ligger i user:// och överlever mellan körningar.
+	SaveIO.clear()
+
 	var packed: PackedScene = ResourceLoader.load(MAIN_SCENE) as PackedScene
 	if packed == null:
 		_fail("could not load %s" % MAIN_SCENE)
@@ -73,7 +99,9 @@ func _run() -> void:
 		return
 	# call_deferred: _ready körs medan roten fortfarande sätter upp sina barn.
 	get_tree().root.add_child.call_deferred(controller)
+	_controller = controller
 	await _frames(3)
+	await _play_title(controller)
 
 	var started_ms: int = Time.get_ticks_msec()
 	var rounds_played: int = 0
@@ -90,10 +118,19 @@ func _run() -> void:
 			continue
 
 		match controller.current_screen_name():
+			GameController.SCREEN_TITLE:
+				await _play_title(controller)
 			GameController.SCREEN_MARCH:
 				await _play_march(screen as MarchScreen)
 			GameController.SCREEN_COMBAT:
 				var combat: CombatScreen = screen as CombatScreen
+				if combat.is_intro_active():
+					# Bossintron äger skärmen i högst 1,2 s och räknas som
+					# "resolving", så den måste fångas HÄR och inte i _play_round.
+					await _frames(4)
+					await _shot("05_boss_intro")
+					await _frames(1)
+					continue
 				if combat.is_resolving():
 					await _frames(1)
 					continue
@@ -111,53 +148,105 @@ func _run() -> void:
 
 	_finish()
 
+## Vilken spelare rökprovet är. [code]--policy=none[/code] placerar ingenting
+## och dör därför garanterat – enda sättet att få en deterministisk
+## dödsskärmdump, eftersom Lookahead vinner våning 1 i ~94 % av fallen
+## (DECISIONS 2026-09-21, balanspasset).
+func _placement_for(combat: CombatScreen) -> PackedInt32Array:
+	match String(args.get("policy", "lookahead")):
+		"greedy":
+			return Policy.greedy(combat.state)
+		"none":
+			return CombatState.empty_placement(combat.state.board.size())
+	return Policy.lookahead(combat.state)
+
+
 # --- Skärmdrivning -----------------------------------------------------
+
+## Titelskärmen: skärmdump, ett svep genom inställningarna, sedan in i runnen.
+func _play_title(controller: GameController) -> void:
+	await _frames(6)
+	if controller.current_screen_name() != GameController.SCREEN_TITLE:
+		return
+	var title: TitleScreen = controller.current_screen() as TitleScreen
+	if title == null:
+		return
+	await _shot("00_title")
+
+	controller.open_settings()
+	await _frames(6)
+	await _shot("01_settings")
+	var modal_root: Node = controller.get_node_or_null("ChalkUI/UiRoot/ModalRoot")
+	if modal_root == null:
+		_fail("main.tscn has no ChalkUI/UiRoot/ModalRoot")
+	elif modal_root.get_child_count() == 0:
+		_fail("the settings modal did not open")
+	else:
+		modal_root.get_child(0).call("close")
+	await _frames(3)
+
+	# Titeln kan ha byggts om medan modalen var uppe (sparfilen nollställd).
+	title = controller.current_screen() as TitleScreen
+	if title == null:
+		_fail("the title screen vanished while the settings modal was open")
+		return
+	# Alltid NEW RUN: rökprovet ska spela en känd seed från rum 1, och en
+	# sparfil som ligger kvar från förra körningen skulle annars göra både
+	# körningen och skärmdumparna beroende av vad som hände sist.
+	title.press("new")
+	await _frames(2)
 
 func _play_march(march: MarchScreen) -> void:
 	await _frames(8)
-	await _shot("04_march")
+	await _shot("02_march")
 	if not is_instance_valid(march):
 		return
 	march.arrive()
 	if is_instance_valid(march) and march.option_count() > 1:
 		await _frames(4)
-		await _shot("04b_march_branch")
+		await _shot("02b_march_branch")
 		if is_instance_valid(march):
 			march.choose(0)
 	await _frames(1)
 
 func _play_round(combat: CombatScreen) -> bool:
-	var placement: PackedInt32Array = Policy.lookahead(combat.state)
+	var placement: PackedInt32Array = _placement_for(combat)
 	for slot: int in range(placement.size()):
 		if placement[slot] < 0:
 			continue
 		if not combat.place(placement[slot], slot):
 			_fail("could not place die %d in slot %d" % [placement[slot], slot])
 	await _frames(3)
-	await _shot("01_combat_before_confirm")
+	await _shot("03_combat_before_confirm")
 
 	combat.confirm()
-	# Mitt i kedjan: uppspelningen är igång men inte klar.
-	await _seconds(0.5)
+	# Mitt i kedjan, och medvetet SENT i den: number pops och träffblixtar
+	# kommer av damage_dealt, som ligger efter de första tärningarna
+	# (UI_GUIDE §12.3 rad 6 ligger på 876 ms).
+	await _seconds(1.0)
 	if is_instance_valid(combat) and combat.is_resolving():
-		await _shot("02_combat_mid_chain")
+		await _shot("04_combat_mid_chain")
 
 	# is_instance_valid: vinner rummet sin sista runda friar controllern
 	# stridsskärmen medan vi väntar. En statiskt typad Node-referens
 	# kontrolleras inte av GDScript, så ett anrop på den frigjorda noden
 	# ger segfault i stället för ett fel.
 	var started_ms: int = Time.get_ticks_msec()
+	_last_frame_us = 0
 	while is_instance_valid(combat) and combat.is_resolving():
 		if Time.get_ticks_msec() - started_ms > PLAYBACK_TIMEOUT_MS:
 			_fail("playback never finished (%d ms)" % PLAYBACK_TIMEOUT_MS)
 			return false
+		# Prestandamätningen sker HÄR och ingen annanstans: under kedjan körs
+		# pooler, shaders, partiklar och tweens samtidigt.
+		_sample_frame()
 		await _frames(1)
 	await _frames(1)
 	return true
 
 func _play_reward(reward: RewardScreen) -> void:
 	await _frames(8)
-	await _shot("03_reward")
+	await _shot("06_reward")
 	if not is_instance_valid(reward):
 		return
 	if reward.option_count() > 0:
@@ -173,7 +262,7 @@ func _report(over: GameOverScreen, rounds_played: int, rooms_seen: int) -> void:
 		return
 	var summary: Dictionary = over.summary()
 	var won: bool = bool(summary.get("won", false))
-	await _shot("05_win" if won else "05_death")
+	await _shot("07_win" if won else "07_death")
 	var score: Dictionary = summary.get("score", {}) as Dictionary
 	print("")
 	print("Run over: %s" % ("WIN" if won else "DEATH"))
@@ -186,12 +275,66 @@ func _report(over: GameOverScreen, rounds_played: int, rooms_seen: int) -> void:
 	print("  rooms visited   %d" % rooms_seen)
 	print("  juice calls     %d   haptic calls %d" % [
 		(juice.calls.size() if juice != null else 0), Haptics.calls.size()])
+	if juice != null:
+		var missing: Dictionary = juice.get("missing_sfx") as Dictionary
+		print("  sfx loaded      %d" % int(juice.get("sfx_loaded")))
+		print("  sfx missing     %d%s" % [
+			int(juice.get("sfx_missing")),
+			"" if missing.is_empty() else "  (%s)" % ", ".join(PackedStringArray(missing.keys())),
+		])
+	_report_frame_time()
 	if rounds_played <= 0:
 		_fail("no round was played")
 	if juice != null and juice.calls.is_empty():
 		_fail("the event player made no juice calls")
 
 # --- Hjälpare ----------------------------------------------------------
+
+## En bildrutes längd i ms, mätt som väggklocka mellan två på varandra följande
+## bildrutor.
+##
+## [b]Varför inte [code]Performance.TIME_PROCESS[/code], som briefen bad om:[/b]
+## den monitorn uppdateras inte per bildruta. Uppmätt i den här miljön ger den
+## exakt samma värde 200 bildrutor i rad (156,71 ms på en titelskärm med 67
+## noder), medan ett tomt projekt ger 0,06 ms. Siffran duger till en trend över
+## sekunder, inte till en p95 över en kedja. Monitorn skrivs ändå ut, så att
+## jämförelsen med CI:s historik finns kvar.
+func _sample_frame() -> void:
+	var now: int = Time.get_ticks_usec()
+	if _last_frame_us > 0:
+		_frame_ms.append(float(now - _last_frame_us) / 1000.0)
+	_last_frame_us = now
+
+## p95 i stället för medel: en kedja som är jämn utom på combo-rutan känns
+## hackig, och det är precis det ett medelvärde döljer.
+func _report_frame_time() -> void:
+	if _frame_ms.is_empty():
+		print("  frame time      (no samples)")
+		return
+	var sorted: Array[float] = []
+	for value: float in _frame_ms:
+		sorted.append(value)
+	sorted.sort()
+	var p50: float = sorted[int(sorted.size() * 0.50)]
+	var p95: float = sorted[mini(int(sorted.size() * 0.95), sorted.size() - 1)]
+	var over: int = 0
+	for value: float in sorted:
+		if value > 16.6:
+			over += 1
+	print("  monitor         TIME_PROCESS %.2f ms (updated ~1/s, trend only)" % [
+		float(Performance.get_monitor(Performance.TIME_PROCESS)) * 1000.0])
+	print("  frame time      p50 %.2f ms  p95 %.2f ms  max %.2f ms  (%d samples in chains)" % [
+		p50, p95, sorted[sorted.size() - 1], sorted.size()])
+	print("  over 16.6 ms    %d of %d frames (%.1f %%)" % [over, sorted.size(), 100.0 * float(over) / float(sorted.size())])
+	if not _idle_ms.is_empty():
+		var idle: Array[float] = []
+		for value: float in _idle_ms:
+			idle.append(value)
+		idle.sort()
+		print("  idle frames     p50 %.2f ms  p95 %.2f ms  (%d samples outside chains)" % [
+			idle[int(idle.size() * 0.5)], idle[mini(int(idle.size() * 0.95), idle.size() - 1)], idle.size()])
+	if p95 > 16.6:
+		print("  NOTE: p95 over the 16.6 ms budget for 60 fps on this machine")
 
 func _finish() -> void:
 	print("")
@@ -210,6 +353,10 @@ func _fail(message: String) -> void:
 func _frames(count: int) -> void:
 	for i: int in range(count):
 		await get_tree().process_frame
+		var now: int = Time.get_ticks_usec()
+		if _last_idle_us > 0 and now - _last_idle_us < 1000000:
+			_idle_ms.append(float(now - _last_idle_us) / 1000.0)
+		_last_idle_us = now
 
 func _seconds(duration: float) -> void:
 	var deadline: int = Time.get_ticks_msec() + int(duration * 1000.0)

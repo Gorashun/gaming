@@ -47,6 +47,10 @@ const VARIED_SFX: Array[StringName] = [&"die_activate", &"damage_hit", &"ui_tap"
 const VARIATION: float = 0.02
 ## Mixnivå för UI-tryck (assets/sfx/README.md §2).
 const UI_TAP_DB: float = -14.0
+## Två haptikpulser närmare varandra än så slås ihop till en, med den starkaste
+## nivån (UI_GUIDE §12.5). Skyddar mot SIDE-banan, som kan lägga en light mitt
+## i ett kedjesteg: 13 pulser på 2,4 s läser som en vibrerande telefon.
+const HAPTIC_MERGE_MS: int = 90
 
 ## Skriver varje anrop till konsolen. Sätts av rökprovet.
 var verbose: bool = false
@@ -85,6 +89,9 @@ var _shake_amount: float = 0.0
 var _shake_left: float = 0.0
 var _shake_rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _visual_rng: RandomNumberGenerator = RandomNumberGenerator.new()
+
+var _last_haptic_ms: int = -10000
+var _last_haptic_level: int = 0
 
 var _hit_stop_left: float = 0.0
 var _hit_stop_active: bool = false
@@ -144,7 +151,8 @@ func _build_fx_layer() -> void:
 		panel.visible = false
 		var style: StyleBoxFlat = StyleBoxFlat.new()
 		style.bg_color = Color(0, 0, 0, 0)
-		var width: int = int(round(Tokens.dp(Tokens.STROKE_BOLD)))
+		# UI_GUIDE §12.6: träffblixten ersätts av en 2 dp outline i målets färg.
+		var width: int = int(round(Tokens.dp(Tokens.STROKE_REG)))
 		style.border_width_left = width
 		style.border_width_right = width
 		style.border_width_top = width
@@ -255,6 +263,13 @@ func chain_pitch(step_index: int, multiplier: int = 1) -> float:
 func haptic(level: int) -> void:
 	if not Haptics.allows(level):
 		return
+	var now: int = Time.get_ticks_msec()
+	if now - _last_haptic_ms < HAPTIC_MERGE_MS and level <= _last_haptic_level:
+		# Sammanslagning: den starkaste nivån i fönstret vinner, och den har
+		# redan spelats. En svagare puls ovanpå den känns bara som brus.
+		return
+	_last_haptic_ms = now
+	_last_haptic_level = level
 	var duration: int = Haptics.duration_ms(level)
 	if log_calls:
 		calls.append({"kind": "haptic", "level": level, "ms": duration})
@@ -449,7 +464,14 @@ func number_pop(parent: Control, text: String, color: Color, at: Vector2, font_s
 	label.scale = Vector2.ONE if Settings.reduced_motion else Vector2.ONE * 0.6
 	label.reset_size()
 	label.pivot_offset = label.size * 0.5
-	_pop_from[index] = at - label.size * 0.5
+	# Klamras inom viewporten: en number pop på den vänstra fienden är bredare
+	# än sin panel och skulle annars ritas utanför skärmkanten.
+	var screen: Vector2 = Vector2(_fx.get_viewport().get_visible_rect().size)
+	var margin: float = Tokens.dp(Tokens.SPACE_2)
+	var spot: Vector2 = at - label.size * 0.5
+	spot.x = clampf(spot.x, margin, maxf(margin, screen.x - label.size.x - margin))
+	spot.y = clampf(spot.y, margin, maxf(margin, screen.y - label.size.y - margin))
+	_pop_from[index] = spot
 	label.position = _pop_from[index]
 	_pop_age[index] = 0.0
 	_pop_life[index] = POP_LIFE

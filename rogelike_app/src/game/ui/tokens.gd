@@ -13,40 +13,43 @@ extends RefCounted
 ## Pixlar per dp i 1080×1920-viewporten.
 const DP: float = 3.0
 
-## Läge "Hög kontrast+" (UI_GUIDE §6.3). Speglas hit av [code]Settings[/code].
+## Läge "Hög kontrast+" (UI_GUIDE §2.11). Speglas hit av [code]Settings[/code]
+## via [method apply_high_contrast].
 ##
-## [b]M2-status:[/b] paletten i §6.3 (botten #000000, krita #FFFFFF, semantiska
-## färger till max chroma) är inte levererad av UI-agenten än. Det som finns
-## här är den del som inte kräver en ny palett: alla ramar går till
-## [constant STROKE_BOLD] och panelbotten till [constant SURFACE_PIT], vilket
-## höjer kontrasten mellan ram och yta utan att röra någon semantisk färg.
+## [b]Varför färgerna är [code]static var[/code] och inte [code]const[/code]:[/b]
+## §2.11 är uttryckligen "en token-override, inte ett andra tema – samma
+## tokennamn, andra värden". Med statiska variabler byter [Tokens] tabell och
+## [b]inget anropsställe ändras[/b]; med konstanter hade varje skärm behövt en
+## egen uppslagning. Priset är att en skärm som redan är byggd behåller sina
+## färger tills den byggs om – modalen bygger om sig själv direkt, övriga
+## skärmar nästa gång de visas.
 static var high_contrast: bool = false
 
 # --- §2.1 Yta --------------------------------------------------------------
-const SURFACE_PIT: Color = Color("#0E1216")
-const SURFACE_SLATE: Color = Color("#161B21")
-const SURFACE_RAISED: Color = Color("#1F262E")
-const SURFACE_LINE: Color = Color("#2C353F")
-const SURFACE_SCRIM: Color = Color(0.055, 0.071, 0.086, 0.72)
+static var SURFACE_PIT: Color = Color("#0E1216")
+static var SURFACE_SLATE: Color = Color("#161B21")
+static var SURFACE_RAISED: Color = Color("#1F262E")
+static var SURFACE_LINE: Color = Color("#2C353F")
+static var SURFACE_SCRIM: Color = Color(0.055, 0.071, 0.086, 0.72)
 
 # --- §2.2 Krita och tärning ------------------------------------------------
-const CHALK_100: Color = Color("#F2EDE3")
-const CHALK_300: Color = Color("#CFC7B8")
-const CHALK_500: Color = Color("#9A9486")
-const BONE_DIE: Color = Color("#E8E0CF")
-const BONE_PIP: Color = Color("#12161A")
+static var CHALK_100: Color = Color("#F2EDE3")
+static var CHALK_300: Color = Color("#CFC7B8")
+static var CHALK_500: Color = Color("#9A9486")
+static var BONE_DIE: Color = Color("#E8E0CF")
+static var BONE_PIP: Color = Color("#12161A")
 
 # --- §2.3 Semantik ---------------------------------------------------------
-const SEM_DAMAGE: Color = Color("#F2EDE3")
-const SEM_FIRE: Color = Color("#FF6A2C")
-const SEM_POISON: Color = Color("#B77FFF")
-const SEM_FROST: Color = Color("#6ED2F5")
-const SEM_HEAL: Color = Color("#4FE3A0")
-const SEM_BLOOD: Color = Color("#FF556F")
-const SEM_CHARGE: Color = Color("#FFD447")
-const SEM_SHIELD: Color = Color("#D7DEE6")
+static var SEM_DAMAGE: Color = Color("#F2EDE3")
+static var SEM_FIRE: Color = Color("#FF6A2C")
+static var SEM_POISON: Color = Color("#B77FFF")
+static var SEM_FROST: Color = Color("#6ED2F5")
+static var SEM_HEAL: Color = Color("#4FE3A0")
+static var SEM_BLOOD: Color = Color("#FF556F")
+static var SEM_CHARGE: Color = Color("#FFD447")
+static var SEM_SHIELD: Color = Color("#D7DEE6")
 ## Överflödspilen, §4.4.
-const SEM_OVERFLOW: Color = Color("#FF8A2C")
+static var SEM_OVERFLOW: Color = Color("#FF8A2C")
 
 # --- §2.6 Spacing (bas 4 dp) -----------------------------------------------
 const SPACE_1: int = 4
@@ -112,6 +115,97 @@ static func dpi(value: int) -> int:
 	return int(round(float(value) * DP))
 
 
+# --- §2.11 Hög kontrast+ ---------------------------------------------------
+
+## Standardpaletten, sparad vid inläsning så att läget går att stänga av igen.
+static var _standard: Dictionary = {}
+
+## Övervärdena ur UI_GUIDE §2.11. Minsta kontrast i läget: 6,1:1
+## ([code]surface/line[/code]); standardtemats minimum är 4,9:1.
+const HIGH_CONTRAST: Dictionary = {
+	"SURFACE_PIT": "#000000",
+	"SURFACE_SLATE": "#000000",
+	"SURFACE_RAISED": "#0A0A0A",
+	"SURFACE_LINE": "#808C99",
+	"CHALK_100": "#FFFFFF",
+	"CHALK_300": "#EDEDED",
+	"CHALK_500": "#B9B9B9",
+	"BONE_DIE": "#FFFFFF",
+	"BONE_PIP": "#000000",
+	"SEM_DAMAGE": "#FFFFFF",
+	"SEM_FIRE": "#FF8A3D",
+	"SEM_POISON": "#C99CFF",
+	"SEM_FROST": "#8FE4FF",
+	"SEM_HEAL": "#6BF7B8",
+	"SEM_BLOOD": "#FF7D90",
+	"SEM_CHARGE": "#FFE270",
+	"SEM_SHIELD": "#E9EEF4",
+}
+
+
+## Slår om paletten. Idempotent, och [b]återställbar[/b]: standardvärdena
+## sparas första gången läget slås på.
+static func apply_high_contrast(enabled: bool) -> void:
+	if enabled == high_contrast and not _standard.is_empty():
+		high_contrast = enabled
+		return
+	if _standard.is_empty():
+		for token: String in HIGH_CONTRAST:
+			_standard[token] = get_color(token)
+	high_contrast = enabled
+	for token: String in HIGH_CONTRAST:
+		set_color(token, Color(String(HIGH_CONTRAST[token])) if enabled else _standard[token] as Color)
+	# Scrim är samma botten med 72 % alfa (§2.1) och följer därför med.
+	SURFACE_SCRIM = Color(SURFACE_PIT, 0.72)
+	SLOT_STYLE = _build_slot_style()
+	RARITY_STYLE = _build_rarity_style()
+
+
+## Färgen bakom ett tokennamn. Reflection i stället för en lång match: tabellen
+## ovan får aldrig kunna glida isär från fälten.
+static func get_color(token: String) -> Color:
+	match token:
+		"SURFACE_PIT": return SURFACE_PIT
+		"SURFACE_SLATE": return SURFACE_SLATE
+		"SURFACE_RAISED": return SURFACE_RAISED
+		"SURFACE_LINE": return SURFACE_LINE
+		"CHALK_100": return CHALK_100
+		"CHALK_300": return CHALK_300
+		"CHALK_500": return CHALK_500
+		"BONE_DIE": return BONE_DIE
+		"BONE_PIP": return BONE_PIP
+		"SEM_DAMAGE": return SEM_DAMAGE
+		"SEM_FIRE": return SEM_FIRE
+		"SEM_POISON": return SEM_POISON
+		"SEM_FROST": return SEM_FROST
+		"SEM_HEAL": return SEM_HEAL
+		"SEM_BLOOD": return SEM_BLOOD
+		"SEM_CHARGE": return SEM_CHARGE
+		"SEM_SHIELD": return SEM_SHIELD
+	return CHALK_100
+
+
+static func set_color(token: String, value: Color) -> void:
+	match token:
+		"SURFACE_PIT": SURFACE_PIT = value
+		"SURFACE_SLATE": SURFACE_SLATE = value
+		"SURFACE_RAISED": SURFACE_RAISED = value
+		"SURFACE_LINE": SURFACE_LINE = value
+		"CHALK_100": CHALK_100 = value
+		"CHALK_300": CHALK_300 = value
+		"CHALK_500": CHALK_500 = value
+		"BONE_DIE": BONE_DIE = value
+		"BONE_PIP": BONE_PIP = value
+		"SEM_DAMAGE": SEM_DAMAGE = value
+		"SEM_FIRE": SEM_FIRE = value
+		"SEM_POISON": SEM_POISON = value
+		"SEM_FROST": SEM_FROST = value
+		"SEM_HEAL": SEM_HEAL = value
+		"SEM_BLOOD": SEM_BLOOD = value
+		"SEM_CHARGE": SEM_CHARGE = value
+		"SEM_SHIELD": SEM_SHIELD = value
+
+
 # --- i18n ------------------------------------------------------------------
 # CLAUDE.md: all spelartext är engelska i källan och går via tr(). Statiska
 # funktioner kan inte anropa Object.tr(), så de går via TranslationServer –
@@ -136,14 +230,32 @@ static func translate_or(key: String, fallback: String) -> String:
 ## skilja alla fem typer på enbart ram + ikon + text.
 ## [code]key[/code] slås upp i assets/i18n/translations.csv; [code]icon[/code] är
 ## reservglyphen när slot-spriten (assets/sprites/ui/slot_*.png) inte laddas.
-const SLOT_STYLE: Dictionary = {
-	Rules.SlotType.PLAIN: {"key": "SLOT_PLAIN", "icon": "·", "color": CHALK_300, "border": "solid", "width": STROKE_REG},
-	Rules.SlotType.FIRE: {"key": "SLOT_FIRE", "icon": "▲", "color": SEM_FIRE, "border": "solid", "width": STROKE_REG},
-	Rules.SlotType.MIRROR: {"key": "SLOT_MIRROR", "icon": "❖", "color": SEM_FROST, "border": "double", "width": STROKE_REG},
-	Rules.SlotType.ANVIL: {"key": "SLOT_ANVIL", "icon": "⬣", "color": SEM_SHIELD, "border": "thick", "width": STROKE_HEAVY},
-	Rules.SlotType.CHARGE: {"key": "SLOT_CHARGE", "icon": "⬤", "color": SEM_CHARGE, "border": "dotted", "width": STROKE_REG},
-	Rules.SlotType.VOID: {"key": "SLOT_VOID", "icon": "⬚", "color": Color("#8A94A6"), "border": "dashed", "width": STROKE_REG},
+## Färgen slås upp per token-NAMN, inte som ett värde, så att tabellen följer
+## med när §2.11 byter palett. Ramstil och ikon är oberoende av färgen – det är
+## hela poängen med §2.4.
+const SLOT_STYLE_SPEC: Dictionary = {
+	Rules.SlotType.PLAIN: {"key": "SLOT_PLAIN", "icon": "·", "token": "CHALK_300", "border": "solid", "width": STROKE_REG},
+	Rules.SlotType.FIRE: {"key": "SLOT_FIRE", "icon": "▲", "token": "SEM_FIRE", "border": "solid", "width": STROKE_REG},
+	Rules.SlotType.MIRROR: {"key": "SLOT_MIRROR", "icon": "❖", "token": "SEM_FROST", "border": "double", "width": STROKE_REG},
+	Rules.SlotType.ANVIL: {"key": "SLOT_ANVIL", "icon": "⬣", "token": "SEM_SHIELD", "border": "thick", "width": STROKE_HEAVY},
+	Rules.SlotType.CHARGE: {"key": "SLOT_CHARGE", "icon": "⬤", "token": "SEM_CHARGE", "border": "dotted", "width": STROKE_REG},
+	Rules.SlotType.VOID: {"key": "SLOT_VOID", "icon": "⬚", "token": "SURFACE_LINE_TEXT", "border": "dashed", "width": STROKE_REG},
 }
+
+static var SLOT_STYLE: Dictionary = _build_slot_style()
+
+
+## Tomrummets grå (§2.4, #8A94A6) har ingen egen token i §2.1–2.3. I hög
+## kontrast följer den [code]chalk/500[/code], som är den ljusaste neutrala.
+static func _build_slot_style() -> Dictionary:
+	var out: Dictionary = {}
+	for slot_type: Variant in SLOT_STYLE_SPEC:
+		var spec: Dictionary = (SLOT_STYLE_SPEC[slot_type] as Dictionary).duplicate()
+		var token: String = String(spec["token"])
+		spec["color"] = CHALK_500 if token == "SURFACE_LINE_TEXT" and high_contrast \
+			else (Color("#8A94A6") if token == "SURFACE_LINE_TEXT" else get_color(token))
+		out[slot_type] = spec
+	return out
 
 
 static func slot_style(slot_type: int) -> Dictionary:
@@ -163,11 +275,22 @@ static func slot_icon(slot_type: int) -> String:
 
 
 # --- §2.5 Sällsynthet: färg + ramform + utskrivet ord ----------------------
-const RARITY_STYLE: Dictionary = {
-	Rules.Rarity.COMMON: {"key": "RARITY_COMMON", "mark": "▭", "color": CHALK_300},
-	Rules.Rarity.UNCOMMON: {"key": "RARITY_UNCOMMON", "mark": "◣", "color": SEM_HEAL},
-	Rules.Rarity.RARE: {"key": "RARITY_RARE", "mark": "▤", "color": SEM_FROST},
+const RARITY_STYLE_SPEC: Dictionary = {
+	Rules.Rarity.COMMON: {"key": "RARITY_COMMON", "mark": "▭", "token": "CHALK_300"},
+	Rules.Rarity.UNCOMMON: {"key": "RARITY_UNCOMMON", "mark": "◣", "token": "SEM_HEAL"},
+	Rules.Rarity.RARE: {"key": "RARITY_RARE", "mark": "▤", "token": "SEM_FROST"},
 }
+
+static var RARITY_STYLE: Dictionary = _build_rarity_style()
+
+
+static func _build_rarity_style() -> Dictionary:
+	var out: Dictionary = {}
+	for rarity: Variant in RARITY_STYLE_SPEC:
+		var spec: Dictionary = (RARITY_STYLE_SPEC[rarity] as Dictionary).duplicate()
+		spec["color"] = get_color(String(spec["token"]))
+		out[rarity] = spec
+	return out
 
 
 static func rarity_style(rarity: int) -> Dictionary:
@@ -187,7 +310,9 @@ static func rarity_label(rarity: int) -> String:
 ## så färgen är dekor (§6.2).
 static func multiplier_color(multiplier: int) -> Color:
 	if multiplier >= 16:
-		return Color("#FF5CA8")
+		# §2.5 mytisk rosa. Har ingen egen rad i §2.11; i hög kontrast lånar den
+		# sem/charge, som är den ljusaste accenten och redan mäter 16,4:1.
+		return SEM_CHARGE if high_contrast else Color("#FF5CA8")
 	if multiplier >= 8:
 		return SEM_BLOOD
 	if multiplier >= 4:
@@ -226,11 +351,9 @@ static func box(border: Color, filled: bool = true, width: float = STROKE_REG, r
 	style.bg_color = SURFACE_RAISED if filled else Color(0, 0, 0, 0)
 	style.border_color = border
 	if high_contrast:
-		# §6.3: "alla ramar till stroke/bold" och en mörkare botten, så att ram
-		# mot yta separerar även i solljus.
+		# §2.11: "alla ramar går upp till stroke/bold". Botten sköts av
+		# tokenbytet (surface/raised → #0A0A0A) och ska inte dubbleras här.
 		width = maxf(width, STROKE_BOLD)
-		if filled:
-			style.bg_color = SURFACE_PIT
 	var w: int = int(round(dp(width)))
 	style.border_width_left = w
 	style.border_width_right = w

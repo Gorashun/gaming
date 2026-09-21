@@ -27,6 +27,9 @@ var _glyph: Sprite2D = null
 var _rim: Sprite2D = null
 var _crack: Sprite2D = null
 var _material: ShaderMaterial = null
+## Materialet som [member _material] byggdes för. Byter tärningen material
+## (smedjan i M3) måste LUT:en bytas med den.
+var _material_for: int = -1
 var _art_scale: int = 1
 ## Sant när kompositionen faktiskt hittade sina texturer. Är den falsk ska
 ## anroparen behålla sin [Label]-platshållare.
@@ -79,6 +82,17 @@ func show_die(die: Die, variant_seed: int = 0) -> void:
 		return
 	visible = true
 	_body.texture = body
+	# LUT-vägen: EN gråskalekropp + en 16×1-LUT per material i stället för tre
+	# förtintade kroppar (assets/sprites/README.md §3). Materialet ligger kvar
+	# på noden – det är kroppens färg, inte en effekt – och samma material bär
+	# blixtens flash-uniform.
+	if Art.lut_path_available(die_material):
+		if _material == null or _material_for != die_material:
+			_material = Art.die_material(die_material)
+			_material_for = die_material
+		_body.material = _material
+	else:
+		_body.material = null
 
 	var face: Face = die.showing_face() if die != null else null
 	var overlay: Dictionary = Art.face_overlay(face)
@@ -118,12 +132,13 @@ func flash(amount: float = 0.85, duration: float = 0.18) -> void:
 	if not _ready_to_draw:
 		return
 	if _material == null:
+		# Ingen LUT (förtintad kropp): då behövs ett material bara för blixten.
 		_material = Art.flash_material()
+		_body.material = _material
+		_glyph.material = _material
 	if _material == null:
 		return
 	_material.set_shader_parameter("flash", amount)
-	_body.material = _material
-	_glyph.material = _material
 	var tween: Tween = create_tween()
 	tween.tween_method(_set_flash, amount, 0.0, duration)
 	tween.tween_callback(_clear_flash)
@@ -134,9 +149,14 @@ func _set_flash(value: float) -> void:
 		_material.set_shader_parameter("flash", value)
 
 
+## Nollställer bara blixten. Materialet ligger kvar när det bär LUT:en – tas
+## det bort tappar tärningen sin färg mitt i kedjan.
 func _clear_flash() -> void:
-	_body.material = null
-	_glyph.material = null
+	_set_flash(0.0)
+	if _material_for < 0:
+		_body.material = null
+		_glyph.material = null
+		_material = null
 
 
 func _layout() -> void:
