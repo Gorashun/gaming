@@ -12,10 +12,11 @@
 - **M1 godkänd**: våning 1 spelbar (marsch → strid → belöning → boss → vinst/död → ny run), autosave, 160 tester, smoke-run med skärmdumpar
 - **M1.5 godkänd**: engelska källsträngar + svensk översättning, sprites integrerade, 188 tester, skärmdumpar i docs/screenshots/m1_5/
 - **M2 godkänd**: juice-motor, chalk-UI, ljud (17 own-work WAV), haptik, boss-intro, vinst/död, inställningar, titelskärm, reliklager och dödsframes, färgblindsäkra former. 227 tester
-- Asset-pipeline: 89 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
+- **M4 godkänd**: Android-workflow grön, signerad debug-APK (61 MB) som artefakt, bakåtknapp/paus/safe area, docs/ANDROID.md. Webbversion publicerad som artefakt i chatten (Web-preset + gzip-loader i tools/web/)
+- Asset-pipeline: 93 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- **M4 Android** startad: export-preset, ikoner, debug-keystore i CI, GitHub Actions-workflow som bygger APK som artefakt (Android SDK är blockerat i containern), bakåtknapp/paus/safe area i kod, docs/ANDROID.md
+- Väntar på Anders speltest (webb + APK) innan M3
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt

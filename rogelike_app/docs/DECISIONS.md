@@ -50,3 +50,5 @@ Format: datum · beslut · varför · alternativ som valdes bort · beslutad av
 | 2026-09-21 | Shader-rotorsak var dubblerad modulate (COLOR × modulate två gånger), inte sRGB. Fixad i båda shaders, 0/16 fel i båda renderers | Tidigare DECISIONS-rad om sRGB är ersatt | – | UI, PM |
 | 2026-09-21 | Android-APK byggs i GitHub Actions (artefakt), inte i containern | dl.google.com (Android SDK) blockeras av miljöns proxy; Godot-templates och JDK finns | Lokal build | PM. Anders kan bygga lokalt enligt docs/ANDROID.md |
 | 2026-09-21 | M4 före M3: telefontest av loopen innan mer innehåll | Ljud, haptik och prestanda kan inte bedömas i Xvfb | M3 först | Anders |
+| 2026-09-21 | M4 godkänd: Android-workflow bygger signerad debug-APK (target SDK 35 utan gradle, release-AAB 36 med gradle). Grinden är apksigner verify, inte Godots exit-kod (känd krasch vid adb-shutdown) | – | – | PM |
+| 2026-09-21 | Webbversion publiceras som artefakt för snabb speltest (Web-preset, gzip-loader). Kompletterar, ersätter inte, APK:n | Anders vill testa direkt i chatten | – | Anders |
