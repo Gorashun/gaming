@@ -84,3 +84,25 @@
 - **iOS.** Presetfilen har bara Android. iOS kräver Xcode och moln-Mac
   (research/02 §"Plattformskrav").
 - tests/test_i18n.gd: utöka KEY_PATTERN till `(?:tr|translate|translate_or|_t)\(\s*"KEY"` och lägg innehållstest för DEATH_LINES/Tutorial-nycklar (UI hittade 53 luckor som sviten missade). Dev, i nästa pass som rör tests/.
+
+## M5 Korridoren – noterat, inte byggt
+
+- **"Titta bakåt" i korridoren.** CORRIDOR_DESIGN §3.4 lovar att en tom, tyst
+  korridor bakom en ska vara lugnande. Ett tapp åt vänster/höger vrider och går
+  i ett svep, så vändningen utan steg finns inte. Det är en ren vy-funktion
+  (`CorridorCamera.turn_to` + en knapp); kartan behöver inte ändras.
+- **Hemliga dörrar och tellet** (§2.5: facklan fladdrar åt fel håll, kritstreck
+  in i väggen, råttan som springer in i stenen). Kräver en tapbar yta i 3D
+  (`Area3D` + `input_event`) som vyn inte har i dag.
+- **De sex korridorljuden** (§7.2) är varken genererade eller kopplade.
+  `tools/gen_sfx.py` ägs av UI.
+- **Kritstråket** ritar ett streck per ruta men saknar glyf vid passerade
+  korsningar och kryss där man vände (§2.7).
+- **`palette_lut` i 3D-variant** för våningsvarianter. I dag är det ett
+  `albedo_color` per våning, vilket räcker för tre våningar.
+- **Mipmaps i `.import`.** `wall_stone`, `floor_stone` och `ceiling_stone`
+  behöver `mipmaps/generate=true`; tills dess genereras de vid inläsning.
+  Filerna ligger under `assets/` och ägs av UI-agenten.
+- **Altar-, kist- och belöningspresentation i rummet** (§3.5) är inte byggd;
+  korridoren emitterar bara `treasure_found`.
+

@@ -2,6 +2,40 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M5 – Korridoren, dag 1–2: kartmodell, 3D-vy, rökprov (2026-09-21)
+
+Presentationsskiftet till förstaperson (DECISIONS 2026-09-21). **Ingen regel är
+ändrad**; `src/core/resolver.gd`, `run_graph.gd` och stridsspecen är orörda.
+Korridoren är ett lager ovanpå grafen och instansieras som en scen — ingen ny
+autoload, `project.godot` orörd.
+
+- `src/core/corridor_map.gd` – ny. Översätter en `RunGraph` till ett rutnät:
+  kammare på noderna, 2–3 stegs kanter, T-korsning med en skyltnyckel per
+  utgång, en fälla som ett val med två prislappar, en sällsynt återvändsgränd
+  med skatt, en tyst sträcka och en bossdörr. Seedad, deterministisk, går rakt
+  in i sparfilen. Rörelsen är framåtlåst: `available_actions()` erbjuder aldrig
+  vägen tillbaka, och hörn vrids när man kommer fram.
+- `src/game/corridor/` – ny. Våningen som EN `ArrayMesh` med tre ytor, unlit,
+  depth fog i krit-UI:ts egen bottenfärg. Kameran är den enda rörliga noden:
+  180 ms steg, 160 ms vridning, absolut yaw, ingen head-bob, ingen kameraskak,
+  reducerad rörelse = omedelbar vy. Skyltar som `Sprite3D` av `node_*.png`,
+  fiender som `AnimatedSprite3D` i 2+2-formering, silhuett på två rutors håll.
+  Tre riktningsknappar i tumzonen och krit-HUD med HP, rum, Pips och kritstråk.
+- `tools/gen_tileable.py` – ny. Sömkontroll av de kakelbara texturerna (alla tre
+  godkända) + `assets/sprites/env/corridor/sign_plate.png`.
+- `tools/smoke_corridor.gd` – ny. Går våning 1 till bossdörren, dumpar sex
+  bilder per renderare till `docs/screenshots/m5/` och fäller körningen om
+  korridortiden eller "steg utan händelse" spricker.
+- **Stoppregelns siffror (seed 7):** 17 steg, 5,0–5,5 s per våning ⇒ **15,5–16,7 s
+  per run** mot budgeten 90 s; **max 3 steg utan händelse** mot taket 3.
+- **Renderarunderlag:** depth fog fungerar i både Forward Mobile och
+  Compatibility, bilderna är i praktiken identiska (medelavvikelse 1,4/255).
+  Siffrorna i `docs/CORRIDOR_DEV_NOTES.md` §7 är mätta på `llvmpipe` och är
+  inte enhetsrepresentativa.
+- Tester: `tests/test_corridor_map.gd` (17 fall) och `tests/test_corridor_view.gd`
+  (14 fall). Hela sviten **353 fall, 0 fel, 0 fallerade**.
+- Integrationspunkter, i18n-nycklar och avvikelser: `docs/CORRIDOR_DEV_NOTES.md`.
+
 ## M2.5 – Begriplighet: stridsskärm v2, våning 0, Chalkrim, smedjan, kroppsval (2026-09-21)
 
 Utlöst av speltest 1: *"det är svårt att fatta mekaniken"*. **Ingen regel är
