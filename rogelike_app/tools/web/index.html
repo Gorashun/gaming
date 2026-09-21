@@ -30,6 +30,11 @@
   const notice = document.getElementById('notice');
   const status = document.getElementById('status');
   function fail(msg) { notice.textContent = msg; fill.style.background = 'var(--accent)'; }
+  // Surface anything the engine loader drops on the floor, so a phone without
+  // devtools still shows why it stopped.
+  window.addEventListener('unhandledrejection', (e) => fail(String(e.reason && e.reason.message || e.reason)));
+  window.addEventListener('error', (e) => fail(String(e.message || e.error || 'Unknown error')));
+  setTimeout(() => { if (document.getElementById('status') && !notice.textContent) hint.textContent = 'Still compiling the engine (38 MB). On phones this can take up to a minute.'; }, 15000);
 
   // The artifact host caps binaries at 15 MB, so the 38 MB Godot wasm and the
   // asset pack ship gzip-compressed and are inflated here in the browser.
