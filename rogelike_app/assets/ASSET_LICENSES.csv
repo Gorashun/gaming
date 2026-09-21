@@ -56,6 +56,7 @@ assets/sprites/enemies/thorn_imp.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-w
 assets/sprites/env/corridor/ceiling_stone.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"korridortak 64x64 kaklingsbart, raberg + dragstag"
 assets/sprites/env/corridor/door_boss.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"bossdorr 64x64, en kvad (ej kaklingsbar)"
 assets/sprites/env/corridor/floor_stone.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"korridorgolv 64x64 kaklingsbart, flisor"
+assets/sprites/env/corridor/sign_plate.png,tools/gen_tileable.py,PIPWRECK dev,own-work,,2026-09-21,"skyltplatta 64x64 vid T-korsning, stenslab med kritram; nodikonen laggs ovanpa som eget quad"
 assets/sprites/env/corridor/torch.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"vaggfackla 16x32, 2 frames (32x32), enda varma ljuset"
 assets/sprites/env/corridor/wall_stone.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"korridorvagg 64x64 kaklingsbar, slaggtegel"
 assets/sprites/env/floor1_parallax_far.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"parallaxlager 0, hastighet 0,15, 320x120 kaklingsbar"
