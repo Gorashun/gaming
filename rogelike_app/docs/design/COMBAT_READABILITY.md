@@ -261,20 +261,20 @@ Sloten visar tre rader: **namn** (12 dp, slotfärg), **regel** (11 dp,
 `chalk/500`), **räkning** (§2.4). Regelraden är normativ och får aldrig
 utelämnas – det är den som ersätter tutorialen.
 
-| Slot | Namn (källa) | Mikrotext, EN (≤ 14 tecken) | Mikrotext, SV | Långtryck (en mening, EN) |
+| Slot | Namn (källa) | Mikrotext, EN (≤ 14 tecken) | Mikrotext, SV (≤ 14) | Långtryck (en mening, EN) |
 |---|---|---|---|---|
-| `PLAIN` | PLAIN | `no effect` (9) | `ingen effekt` | *"Nothing changes here: the die's value goes straight into the chain."* |
-| `FIRE` | FIRE | `burn 2 on hit` (13) | `brand 2 vid träff` | *"Every hit from this slot also sets Burn 2 on the target."* |
-| `MIRROR` | MIRROR | `copies left` (11) | `kopierar vänster` | *"This slot ignores its own die and copies the value of the slot to its left."* |
-| `ANVIL` | ANVIL | `×2 if ≥5` (8) | `×2 om 5+` | *"If the value here is 5 or more it doubles — which can also break a pair."* |
-| `CHARGE` | CHARGE | `charge, no dmg` (14) | `laddning, ej skada` | *"The damage from this slot is banked as Charge instead of hitting anyone."* |
-| `VOID` | VOID | `ward, no dmg` (12) | `ward, ej skada` | *"The damage from this slot becomes Ward for this round instead of hitting."* |
+| `PLAIN` | PLAIN | `no effect` (9) | `ingen effekt` (12) | *"Nothing changes here: the die's value goes straight into the chain."* |
+| `FIRE` | FIRE | `burn 2 on hit` (13) | `brand 2/träff` (13) | *"Every hit from this slot also sets Burn 2 on the target."* |
+| `MIRROR` | MIRROR | `copies left` (11) | `härmar vänster` (14) | *"This slot ignores its own die and copies the value of the slot to its left."* |
+| `ANVIL` | ANVIL | `×2 if ≥5` (8) | `×2 om 5+` (8) | *"If the value here is 5 or more it doubles — which can also break a pair."* |
+| `CHARGE` | CHARGE | `charge, no dmg` (14) | `skada→laddning` (14) | *"The damage from this slot is banked as Charge instead of hitting anyone."* |
+| `VOID` | VOID | `ward, no dmg` (12) | `skada→ward` (10) | *"The damage from this slot becomes Ward for this round instead of hitting."* |
 
 Tilläggstillstånd:
 
 | Tillstånd | Mikrotext EN | SV | Långtryck |
 |---|---|---|---|
-| `blocked` (GRAB) | `blocked 1 round` | `blockerad 1 runda` | *"A Grave Hand is holding this slot shut for one round."* |
+| `blocked` (GRAB) | `blocked 1 round` | `låst 1 runda` | *"A Grave Hand is holding this slot shut for one round."* |
 | Tom slot | `empty` | `tom` | *"An empty slot is inert: no value, no combo, and it breaks the chain of neighbours."* |
 
 Regler:

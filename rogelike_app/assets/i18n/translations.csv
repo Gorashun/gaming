@@ -138,12 +138,12 @@ COMBAT_BOSS,BOSS,BOSS
 GAMEOVER_YOUR_CALL,It was your call.,Det var ditt val.
 GAMEOVER_KILLED_BY,Killed by %s.,Dödad av %s.
 COMBAT_SLOT_RULE_PLAIN,no effect,ingen effekt
-COMBAT_SLOT_RULE_FIRE,burn 2 on hit,brand 2 vid träff
-COMBAT_SLOT_RULE_MIRROR,copies left,kopierar vänster
+COMBAT_SLOT_RULE_FIRE,burn 2 on hit,brand 2/träff
+COMBAT_SLOT_RULE_MIRROR,copies left,härmar vänster
 COMBAT_SLOT_RULE_ANVIL,×2 if 5+,×2 om 5+
-COMBAT_SLOT_RULE_CHARGE,"charge, no dmg","laddning, ej skada"
-COMBAT_SLOT_RULE_VOID,"ward, no dmg","ward, ej skada"
-COMBAT_SLOT_RULE_BLOCKED,blocked 1 round,blockerad 1 runda
+COMBAT_SLOT_RULE_CHARGE,"charge, no dmg",skada→laddning
+COMBAT_SLOT_RULE_VOID,"ward, no dmg",skada→ward
+COMBAT_SLOT_RULE_BLOCKED,blocked 1 round,låst 1 runda
 COMBAT_SLOT_RULE_EMPTY,empty,tom
 COMBAT_SLOT_CAPTION,slot %d,slot %d
 COMBAT_SLOT_MATH,%d ×%d = %d,%d ×%d = %d
@@ -294,9 +294,59 @@ TOWN_BUY_FACE,New face in the pool,Ny sida i poolen
 TOWN_BUY_RELIC,New relic in the pool,Ny relik i poolen
 TOWN_BUY_SLOT,New slot type in the pool,Ny slottyp i poolen
 TOWN_MARROW_NAME,Marrow,Marrow
-TOWN_MARROW_SLAGJAW,Slagjaw again. It has all the time in the world and you had eleven minutes.,Slaggkäften igen. Den har all tid i världen och du hade elva minuter.
-TOWN_MARROW_THORNS,You hit a thorn imp four times. It hit you back four times. That is what four means.,Du slog en taggimp fyra gånger. Den slog tillbaka fyra gånger. Det är vad fyra betyder.
-TOWN_MARROW_GENERIC,Room %d. The wall keeps its own count.,Rum %d. Väggen för sin egen räkning.
 TOWN_TALLY_ADDED,One more stroke on the wall.,Ett streck till på väggen.
 TOWN_TALLY_ERASED,You rubbed out your own stroke.,Du suddade ditt eget streck.
 SMITH_SLOT_SPARE,SPARE,RESERV
+COMBAT_RECEIPT_HEADER,ROUND %d · THE CHAIN BEFORE YOU CONFIRM,RUNDA %d · KEDJAN INNAN DU BEKRÄFTAR
+COMBAT_NO_RANDOMNESS,NO RANDOMNESS LEFT,INGEN SLUMP KVAR
+COMBAT_TERM_WASTED,%d spilled with no target,%d spilldes utan mål
+COMBAT_TERM_STATUS,+%d at end of round,+%d vid rundans slut
+COMBAT_CHARGE_PILL,Charge %d,Laddning %d
+COMBAT_WARD_PILL,Ward %d,Ward %d
+CORRIDOR_ROOM,ROOM %d,RUM %d
+CORRIDOR_FLOOR_TILES,FLOOR %d · %d TILES,VÅNING %d · %d RUTOR
+TUT_REWARD_SLOT4,A fourth slot. One more die in the chain.,En fjärde slot. En tärning till i kedjan.
+TUT_REWARD_SLOT5,A fifth slot. The board is full size now.,En femte slot. Brädet har full storlek nu.
+TUT_REWARD_MIRROR,A Mirror on slot 3. It copies the value on its left.,En Spegel på slot 3. Den kopierar värdet till vänster.
+TUT_REWARD_REROLL,One reroll per round. Use it before you commit.,Ett omkast per runda. Använd det innan du bekräftar.
+TUT_REWARD_ANVIL,An Anvil on slot 5. It doubles 5 or more.,En Amboss på slot 5. Den dubblar 5 eller mer.
+GAMEOVER_PIPS,Pips earned,Intjänade ögon
+GAMEOVER_BACK_TO_TOWN,BACK TO CHALKRIM,TILLBAKA TILL KRITKANTEN
+TAGLINE,ROLL SIX. PLACE FIVE. THE ORDER IS THE DAMAGE.,KASTA SEX. LÄGG FEM. ORDNINGEN ÄR SKADAN.
+TAGLINE_SUB,Equal neighbours multiply.,Lika grannar multiplicerar.
+TOWN_SEED,Seed %d,Seed %d
+TOWN_NEW_SEED,NEW SEED,NY SEED
+TOWN_TALLY,%d marks on the rim,%d streck på kanten
+TOWN_LOCKED_RUNS,after %d run(s),efter %d run
+MARKET_RULE,"Pips buy variety, never power. Everything here joins the reward pool.","Ögon köper variation, aldrig kraft. Allt här går in i belöningspoolen."
+MARKET_EMPTY,Shelves are bare. Go earn some eyes.,Hyllorna är tomma. Gå och förtjäna några ögon.
+NPC_TALLY,Tallow,Tallow
+NPC_HOB,Hob,Hob
+TALLY_LINE,The wall keeps better books than you do.,Väggen för bättre bok än du.
+WALL_RUNS,Runs,Runs
+WALL_WINS,Runs survived,Överlevda runs
+WALL_DEATHS,Marks earned,Intjänade streck
+WALL_BEST_CHAIN,Best chain,Bästa kedja
+WALL_BEST_SCORE,Best score,Bästa poäng
+WALL_SEEN_ENEMIES,Enemies logged,Loggade fiender
+WALL_SEEN_COMBOS,Chains logged,Loggade kedjor
+DEATH_LINE_SLAGJAW_01,Slagjaw again. It has all the time in the world and you had eleven minutes.,Slaggkäften igen. Den har all tid i världen och du hade elva minuter.
+DEATH_LINE_SLAGJAW_02,It hardens when it is bored. You bored it.,Den hårdnar när den har tråkigt. Du tråkade ut den.
+DEATH_LINE_THORN_IMP_01,You hit a thorn imp four times. It hit you back four times. That is what four means.,Du slog en taggimp fyra gånger. Den slog tillbaka fyra gånger. Det är vad fyra betyder.
+DEATH_LINE_THORN_IMP_02,Little thing. Lot of edges. You knew that going in.,Liten sak. Många eggar. Det visste du när du gick ner.
+DEATH_LINE_RUST_RAT_01,Rats. Plural. That is usually how it reads on the wall.,Råttor. Plural. Så brukar det stå på väggen.
+DEATH_LINE_RUST_RAT_02,Two armour. Two. And you threw fives at it all day.,Två i rustning. Två. Och du kastade femmor på den hela dagen.
+DEATH_LINE_IRON_TICK_01,An iron tick does not dodge. It waits for you to run out of arm.,En järnfästing väjer inte. Den väntar tills armen tar slut på dig.
+DEATH_LINE_IRON_TICK_02,Six armour eats small hits for a living. You fed it well.,Sex i rustning lever på små träffar. Du matade den väl.
+DEATH_LINE_SLAG_MOTH_01,The moth drank your bank and then drank you. Tidy work.,Malen drack din bank och sedan drack den dig. Prydligt jobbat.
+DEATH_LINE_GRAVE_HAND_01,It held one slot shut and that was the whole argument.,"Den höll en slot stängd, och det var hela argumentet."
+DEATH_LINE_PIP_THIEF_01,It took a die first. Everything after that was bookkeeping.,Den tog en tärning först. Allt efter det var bokföring.
+DEATH_LINE_BLOOD_PRICE_01,You paid in blood for a multiplier. The multiplier was fine. You were not.,Du betalade i blod för en multiplikator. Multiplikatorn mådde fint. Det gjorde inte du.
+DEATH_LINE_ANY_01,Cart's warm. Sit down before you say anything clever.,Kärran är varm. Sätt dig innan du säger något kvickt.
+DEATH_LINE_ANY_02,Someone will rub out your mark eventually. Not me.,Någon suddar ut ditt streck till slut. Inte jag.
+DEATH_LINE_ANY_03,Nobody down there was in a hurry. You were.,Ingen där nere hade bråttom. Det hade du.
+DEATH_LINE_ANY_04,I have carried better. I have carried worse. Mostly worse.,Jag har burit bättre. Jag har burit sämre. Mest sämre.
+DEATH_LINE_ANY_05,The order was wrong. It is almost always the order.,Ordningen var fel. Det är nästan alltid ordningen.
+DEATH_LINE_ANY_06,You got further than the last one. The last one is still down there.,Du kom längre än den förra. Den förra ligger kvar där nere.
+DEATH_LINE_ANY_07,Chalk's cheap. That is the only kind thing about the wall.,Kritan är billig. Det är det enda snälla med väggen.
+DEATH_LINE_ANY_08,"Keep the seed. The pit does not change its mind, only you do.","Behåll seeden. Gropen ändrar sig aldrig, det är bara du som gör det."
