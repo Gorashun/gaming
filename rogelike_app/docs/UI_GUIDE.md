@@ -833,6 +833,7 @@ stängs av ovan har en ersättare som bär samma information på samma tid.
 - `design/wireframe_reward.html` – belöningsval 1 av 3 med sällsynthetsfärg + ramform + utskrivet ord, samt referensremsa över hela skalan.
 - `design/mockup_combat_pixel.html` – **hybriden med riktiga sprite-PNG:er**: Smeden som paperdoll-stapel (kappa → kropp → hjälm → vapen), tre fiender från rum 2 (`IRON_TICK`, `SLAG_MOTH`, `RUST_RAT`), tärningar komponerade som i Godot (kropp + pip/glyph + glaskant + spricka), tre parallaxlager + golvtile, allt under samma krit-UI.
 - `design/shader_preview_palette.tscn`, `design/shader_preview_chalk.tscn` – Godot-scener för de två shadrarna, öppnas direkt i editorn.
+- `design/shader_probe.tscn` + `tools/shader_probe.gd` + `design/probe_ramp.png` – **mätscen**, inte förhandsvisning. Renderar 16 kända färger till en `SubViewport` och läser tillbaka pixlarna. Exit 0 = passthrough, LUT-väg och modulate stämmer på byten. Körs per renderare under `xvfb-run`.
 - `design/fonts/` – lokala latin-subset av Anton, Familjen Grotesk och Caveat Brush. Mockuperna är helt självständiga och gör ingen nätverkstrafik.
 - `design/screenshots/` – renderade headless i Chromium.
 
@@ -843,7 +844,18 @@ stängs av ovan har en ersättare som bär samma information på samma tid.
 | Strid (wireframe) | ingen scroll | ingen scroll | ingen scroll |
 | Strid, kedja spelas upp | ingen scroll | ingen scroll | ingen scroll |
 | Belöning | ingen scroll | ingen scroll | ingen scroll |
-| **Strid, hybrid pixel + krita** | ingen scroll | ingen scroll | ingen scroll |
+| **Strid, hybrid pixel + krita (M2, reliklager tända)** | ingen scroll | ingen scroll | ingen scroll |
+
+**M2-uppdatering av `mockup_combat_pixel.html`:** Smeden ritas nu med alla nio
+paperdoll-lagren och fyra tända reliker – `BLOOD_PRICE` (`fx`), `CHEAT_CUBE`
+(`offhand`), `BROKEN_SCALE` (`torso`), `DOMINO` (`head`) – plus
+utrustningslagret `legs`. Fiendearken läses som `hframes 4 / vframes 2` med
+rad 0 synlig. Slot-ikonerna är de nya formerna ur §2.4.
+
+Relikbrickan i toppfältet gick från 26 till 20 px per ikon, och på ≤ 380 dp
+faller etiketten `LADDA` bort (prickarna bär redan informationen, §2.3). Utan
+det klipptes Ladda-mätaren på 360 dp när fyra reliker låg i brickan. Brickan är
+**läs-endast**, så 48 dp-regeln gäller inte där.
 
 Ingen horisontell scroll och ingen vertikal scroll på någon storlek; allt ryms inom viewporten.
 Tärningsstorleken i brickan är `clamp(46px, (100vw − 62px)/6, 58px)` vilket ger **49,7 dp på 360 dp bredd** – över 48 dp-kravet även på den smalaste målskärmen.

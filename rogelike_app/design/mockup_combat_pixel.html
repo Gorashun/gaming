@@ -49,18 +49,30 @@ body::after{
 }
 
 /* ===== Toppfält (krita) ===== */
-.top{flex:0 0 auto;display:flex;align-items:center;gap:9px;height:44px;white-space:nowrap}
+.top{flex:0 0 auto;display:flex;align-items:center;gap:8px;height:44px;white-space:nowrap}
 .hp{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;letter-spacing:.04em}
 .hp .glyph{color:var(--blood);font-size:15px}
 .hpbar{width:54px;height:9px;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:#0B0F13}
 .hpbar i{display:block;height:100%;width:74%;background:var(--blood)}
-.floor{font-family:'Anton',sans-serif;font-size:16px;letter-spacing:.06em;color:var(--chalk300);
+.floor{font-family:'Anton',sans-serif;font-size:15px;letter-spacing:.04em;color:var(--chalk300);flex:0 0 auto;
   border:1.5px solid var(--line);border-radius:var(--r-chip);padding:1px 6px}
-.relics{margin-left:auto;display:flex;gap:5px;align-items:center}
-.relics .px{width:26px;height:26px;background-size:26px 26px;opacity:.95}
-.charge{display:flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--charge)}
+.relics{margin-left:auto;display:flex;gap:4px;align-items:center;min-width:0}
+/* 16 px-ikon i x1,25. Fyra reliker + Ladda-matarens etikett ska rymmas pa
+   360 dp utan att nagot klipps - darfor 20 px, inte 26. Relikbrickan ar
+   las-endast (ingen traffyta), sa 48 dp-regeln galler inte har. */
+.relics .px{width:20px;height:20px;background-size:20px 20px;opacity:.95;flex:0 0 auto}
+.charge{display:flex;align-items:center;gap:3px;font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--charge);flex:0 0 auto}
 .charge b{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--charge);display:block}
 .charge b.on{background:var(--charge)}
+/* Liten skarm (360 dp): etiketten LADDA tas bort och relikikonerna gar ned
+   till 18 px. Ingen information forsvinner - de gula prickarna ar redan
+   sem/charge:s formkod (fylld cirkel, UI_GUIDE 2.3) och matarens antal star
+   kvar. Relikbrickan ar las-endast, sa 48 dp-regeln galler inte har. */
+@media (max-width:380px){
+  .charge .lbl{display:none}
+  .relics .px{width:18px;height:18px;background-size:18px 18px}
+  .floor{font-size:14px}
+}
 
 /* ===== Stridszon: pixelvarld (parallax + golv + figurer) pa kritgrop ===== */
 .arena{
@@ -86,18 +98,27 @@ body::after{
 .hero{position:relative;width:72px;height:72px;flex:0 0 auto;z-index:5}
 /* 48 px cell i x3 (x6 pa 2x-skarm) -> heltalsskala, inga halva pixlar */
 .hero .lyr{position:absolute;inset:0;width:72px;height:72px;background-size:576px 288px;background-position:0 0}
+/* Lagerordningen ar exakt PAPERDOLL.md sect 2. Reliklagren (M2) ligger tanda
+   har: BLOOD_PRICE pa fx, CHEAT_CUBE pa offhand, BROKEN_SCALE pa torso. */
 .hero .cape{background-image:url('../assets/sprites/hero/smith_cape_ember.png');z-index:0}
+.hero .legs{background-image:url('../assets/sprites/hero/smith_legs_iron.png');z-index:1}
 .hero .body{background-image:url('../assets/sprites/hero/smith_body.png');z-index:2}
+.hero .torso{background-image:url('../assets/sprites/hero/smith_torso_broken_scale.png');z-index:3}
+.hero .head{background-image:url('../assets/sprites/hero/smith_head_domino.png');z-index:4}
 .hero .helm{background-image:url('../assets/sprites/hero/smith_helm_iron.png');z-index:5}
+.hero .offh{background-image:url('../assets/sprites/hero/smith_offhand_cheat_cube.png');z-index:6}
 .hero .weap{background-image:url('../assets/sprites/hero/smith_weapon_hammer.png');z-index:7}
+.hero .fx{background-image:url('../assets/sprites/hero/smith_fx_blood_price.png');z-index:8}
 .hero .tag{position:absolute;left:50%;transform:translateX(-50%);top:-15px;
   font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--chalk300)}
 
 .foes{display:flex;align-items:flex-end;gap:var(--s2);flex:1 1 auto;justify-content:flex-end;z-index:5}
 /* Krit-data ligger OVANFOR pixelvarelsen; varelsen star pa golvet. */
 .foe{display:flex;flex-direction:column;align-items:center;gap:2px;width:64px;position:relative}
-.foe .spr{width:64px;height:64px;background-size:256px 64px;background-position:0 0}
-.foe.boss .spr{width:72px;height:72px;background-size:288px 72px}
+/* Arket ar nu hframes 4 / vframes 2 (rad 1 = death), sa bakgrunden ar
+   dubbelt sa hog och background-position halls pa rad 0. */
+.foe .spr{width:64px;height:64px;background-size:256px 128px;background-position:0 0}
+.foe.boss .spr{width:72px;height:72px;background-size:288px 144px}
 .foe .nm{font-size:8px;font-weight:700;letter-spacing:.02em;color:var(--chalk300);text-transform:uppercase}
 .ehp{width:100%;height:9px;border:1.5px solid var(--chalk500);border-radius:2px;background:#0B0F13;position:relative;overflow:hidden}
 .ehp i{position:absolute;inset:0;background:var(--blood);transform-origin:left}
@@ -199,9 +220,11 @@ body::after{
     </div>
     <div class="floor">V1 · RUM 2</div>
     <div class="relics">
-      <div class="px" style="background-image:url('../assets/sprites/items/relic_blood_price.png')" title="BLOOD_PRICE"></div>
-      <div class="px" style="background-image:url('../assets/sprites/items/relic_cheat_cube.png')" title="CHEAT_CUBE"></div>
-      <div class="charge">LADDA<b class="on"></b><b class="on"></b><b></b></div>
+      <div class="px" style="background-image:url('../assets/sprites/items/relic_blood_price.png')" title="BLOOD_PRICE - fx"></div>
+      <div class="px" style="background-image:url('../assets/sprites/items/relic_cheat_cube.png')" title="CHEAT_CUBE - offhand"></div>
+      <div class="px" style="background-image:url('../assets/sprites/items/relic_broken_scale.png')" title="BROKEN_SCALE - torso"></div>
+      <div class="px" style="background-image:url('../assets/sprites/items/relic_domino.png')" title="DOMINO - head"></div>
+      <div class="charge"><span class="lbl">LADDA</span><b class="on"></b><b class="on"></b><b></b></div>
     </div>
   </div>
 
@@ -214,9 +237,14 @@ body::after{
 
     <div class="hero">
       <div class="lyr cape px"></div>
+      <div class="lyr legs px"></div>
       <div class="lyr body px"></div>
+      <div class="lyr torso px"></div>
+      <div class="lyr head px"></div>
       <div class="lyr helm px"></div>
+      <div class="lyr offh px"></div>
       <div class="lyr weap px"></div>
+      <div class="lyr fx px"></div>
       <div class="tag">SMEDEN</div>
     </div>
 
