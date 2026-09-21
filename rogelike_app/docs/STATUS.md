@@ -15,7 +15,7 @@
 - Asset-pipeline: 89 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- Inget aktivt. Nästa: M3 innehåll eller M4 Android-export (Anders väljer)
+- **M4 Android** startad: export-preset, ikoner, debug-keystore i CI, GitHub Actions-workflow som bygger APK som artefakt (Android SDK är blockerat i containern), bakåtknapp/paus/safe area i kod, docs/ANDROID.md
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt

@@ -48,3 +48,5 @@ Format: datum · beslut · varför · alternativ som valdes bort · beslutad av
 | 2026-09-21 | Reducerad rörelse ändrar inte tidslinjen, bara frysttid/skak/flash (UI_GUIDE §12.6 normativ) | Samma spelkänsla i tempo för alla | Kortare tidslinje | PM |
 | 2026-09-21 | Kedjetempo-inställning (Lugn/Normal/Snabb/Blixt) finns i Settings men får kontroll i inställningsskärmen först i M4 | Vänta med UI tills telefontest visar behov | – | PM |
 | 2026-09-21 | Shader-rotorsak var dubblerad modulate (COLOR × modulate två gånger), inte sRGB. Fixad i båda shaders, 0/16 fel i båda renderers | Tidigare DECISIONS-rad om sRGB är ersatt | – | UI, PM |
+| 2026-09-21 | Android-APK byggs i GitHub Actions (artefakt), inte i containern | dl.google.com (Android SDK) blockeras av miljöns proxy; Godot-templates och JDK finns | Lokal build | PM. Anders kan bygga lokalt enligt docs/ANDROID.md |
+| 2026-09-21 | M4 före M3: telefontest av loopen innan mer innehåll | Ljud, haptik och prestanda kan inte bedömas i Xvfb | M3 först | Anders |
