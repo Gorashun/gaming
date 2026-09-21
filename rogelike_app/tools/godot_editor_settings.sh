@@ -83,6 +83,11 @@ mkdir -p "${CONFIG_DIR}"
   echo "export/android/debug_keystore = \"${KEYSTORE}\""
   echo 'export/android/debug_keystore_user = "androiddebugkey"'
   echo 'export/android/debug_keystore_pass = "android"'
+  # Godot 4.6 kraschar (SIGSEGV i pthread_mutex_lock) vid avslut av en
+  # headless-export när den försöker stänga en adb-daemon som inte finns.
+  # Exporten är då redan klar och signerad; den här raden stoppar avslutet
+  # från att röra adb över huvud taget.
+  echo 'export/android/shutdown_adb_on_exit = false'
   if [[ -n "${SDK_PATH}" ]]; then
     echo "export/android/android_sdk_path = \"${SDK_PATH}\""
   fi
