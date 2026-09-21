@@ -154,12 +154,12 @@ func update_vitals(hp: int, armor: int, burn: int, poison: int) -> void:
 ## panelens modulate, eftersom modulate också skulle tona texten.
 func flash_hit() -> void:
 	_flash_with(Tokens.CHALK_100, 0.45, 0.14)
-	Juice.shake(self, 6.0, 0.18)
+	Juice.shake_node(self, 6.0, 0.18)
 
 
 func flash_death() -> void:
 	_flash_with(Tokens.SEM_BLOOD, 0.6, 0.26)
-	Juice.shake(self, 5.0, 0.2)
+	Juice.shake_node(self, 5.0, 0.2)
 
 
 func _flash_with(color: Color, alpha: float, duration: float) -> void:

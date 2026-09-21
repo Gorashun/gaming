@@ -16,6 +16,13 @@ config/icon="res://assets/icon.svg"
 
 driver/enable_input=false
 
+[autoload]
+
+; Settings först: Juice läser den vid varje anrop (volym, haptik, reducerad
+; rörelse) och måste kunna göra det redan i sin egen _ready.
+Settings="*res://src/platform/settings.gd"
+Juice="*res://src/game/juice/juice.gd"
+
 [display]
 
 window/size/viewport_width=1080

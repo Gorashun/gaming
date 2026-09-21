@@ -13,6 +13,15 @@ extends RefCounted
 ## Pixlar per dp i 1080×1920-viewporten.
 const DP: float = 3.0
 
+## Läge "Hög kontrast+" (UI_GUIDE §6.3). Speglas hit av [code]Settings[/code].
+##
+## [b]M2-status:[/b] paletten i §6.3 (botten #000000, krita #FFFFFF, semantiska
+## färger till max chroma) är inte levererad av UI-agenten än. Det som finns
+## här är den del som inte kräver en ny palett: alla ramar går till
+## [constant STROKE_BOLD] och panelbotten till [constant SURFACE_PIT], vilket
+## höjer kontrasten mellan ram och yta utan att röra någon semantisk färg.
+static var high_contrast: bool = false
+
 # --- §2.1 Yta --------------------------------------------------------------
 const SURFACE_PIT: Color = Color("#0E1216")
 const SURFACE_SLATE: Color = Color("#161B21")
@@ -216,6 +225,12 @@ static func box(border: Color, filled: bool = true, width: float = STROKE_REG, r
 	var style: StyleBoxFlat = StyleBoxFlat.new()
 	style.bg_color = SURFACE_RAISED if filled else Color(0, 0, 0, 0)
 	style.border_color = border
+	if high_contrast:
+		# §6.3: "alla ramar till stroke/bold" och en mörkare botten, så att ram
+		# mot yta separerar även i solljus.
+		width = maxf(width, STROKE_BOLD)
+		if filled:
+			style.bg_color = SURFACE_PIT
 	var w: int = int(round(dp(width)))
 	style.border_width_left = w
 	style.border_width_right = w
