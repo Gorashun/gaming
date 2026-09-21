@@ -83,3 +83,4 @@
   när meta-progression finns.
 - **iOS.** Presetfilen har bara Android. iOS kräver Xcode och moln-Mac
   (research/02 §"Plattformskrav").
+- tests/test_i18n.gd: utöka KEY_PATTERN till `(?:tr|translate|translate_or|_t)\(\s*"KEY"` och lägg innehållstest för DEATH_LINES/Tutorial-nycklar (UI hittade 53 luckor som sviten missade). Dev, i nästa pass som rör tests/.
