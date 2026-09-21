@@ -30,3 +30,7 @@ Thumbs.db
 .idea/
 .vscode/
 /tmp/
+
+# Python bytecode from tools/
+__pycache__/
+*.pyc

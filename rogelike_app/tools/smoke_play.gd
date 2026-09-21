@@ -93,9 +93,9 @@ class Driver:
 			_fail("main.tscn har inte GameController som rot")
 			_finish()
 			return
-		get_tree().root.add_child(controller)
-
-		await _frames(2)
+		# call_deferred: _ready körs medan roten fortfarande sätter upp sina barn.
+		get_tree().root.add_child.call_deferred(controller)
+		await _frames(3)
 
 		var started_ms: int = Time.get_ticks_msec()
 		var rounds_played: int = 0
