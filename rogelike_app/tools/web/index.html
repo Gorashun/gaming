@@ -1,0 +1,83 @@
+<title>PIPWRECK</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<style>
+  :root { --bg:#0e1116; --ink:#ece6d8; --muted:#8a93a0; --accent:#ff5c6c; --chalk:#f2eee4; }
+  html, body { height:100%; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:"Familjen Grotesk","Segoe UI",system-ui,sans-serif; overflow:hidden; }
+  #canvas { display:block; width:100%; height:100%; outline:none; background:var(--bg); }
+  #canvas:focus { outline:none; }
+  #status { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; background:var(--bg); padding-inline:24px; text-align:center; visibility:visible; }
+  #status h1 { font-family:Anton,Impact,"Arial Narrow",sans-serif; font-size:clamp(40px,10vw,72px); letter-spacing:.04em; margin:0; color:var(--accent); text-transform:uppercase; }
+  #status p { margin:0; color:var(--muted); font-size:15px; max-width:34ch; text-wrap:balance; }
+  #bar { width:min(320px,80vw); height:6px; background:#1d232c; border-radius:3px; overflow:hidden; }
+  #bar i { display:block; height:100%; width:0%; background:var(--chalk); transition:width .2s ease; }
+  #notice { color:var(--accent); white-space:pre-line; font-size:14px; }
+  @media (prefers-reduced-motion: reduce) { #bar i { transition:none; } }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Familjen+Grotesk:wght@400;600&display=swap">
+<canvas id="canvas" tabindex="0">Your browser does not support the canvas element.</canvas>
+<div id="status">
+  <h1>Pipwreck</h1>
+  <p id="hint">Six dice. Five slots. One chain. Loading the engine, about 15 MB.</p>
+  <div id="bar"><i id="fill"></i></div>
+  <div id="notice"></div>
+</div>
+<script src="pipwreck.js"></script>
+<script>
+(async function () {
+  const fill = document.getElementById('fill');
+  const hint = document.getElementById('hint');
+  const notice = document.getElementById('notice');
+  const status = document.getElementById('status');
+  function fail(msg) { notice.textContent = msg; fill.style.background = 'var(--accent)'; }
+
+  // The artifact host caps binaries at 15 MB, so the 38 MB Godot wasm and the
+  // asset pack ship gzip-compressed and are inflated here in the browser.
+  const FILES = { 'pipwreck.wasm': { src: 'pipwreck.z.wasm', type: 'application/wasm', size: 37686550 },
+                  'pipwreck.pck':  { src: 'pipwreck.pck.z.wasm',  type: 'application/octet-stream', size: 6493616 } };
+  if (typeof DecompressionStream === 'undefined') {
+    fail('This browser cannot inflate the game files. Use a current Chrome, Edge, Firefox or Safari.');
+    return;
+  }
+  const blobUrls = {};
+  let done = 0;
+  const total = Object.values(FILES).reduce((a, f) => a + f.size, 0);
+  try {
+    for (const [name, f] of Object.entries(FILES)) {
+      const res = await fetch(f.src);
+      if (!res.ok) throw new Error('Could not download ' + f.src + ' (' + res.status + ')');
+      const inflated = res.body.pipeThrough(new DecompressionStream('gzip'));
+      const reader = inflated.getReader();
+      const chunks = [];
+      for (;;) {
+        const { value, done: end } = await reader.read();
+        if (end) break;
+        chunks.push(value); done += value.length;
+        fill.style.width = Math.min(100, Math.round(100 * done / total)) + '%';
+      }
+      blobUrls[name] = URL.createObjectURL(new Blob(chunks, { type: f.type }));
+    }
+  } catch (e) { fail(String(e && e.message || e)); return; }
+
+  // Godot's loader asks for pipwreck.wasm and pipwreck.pck by name; hand it the
+  // inflated blobs instead, whichever transport it picks.
+  const remap = (u) => { const s = String(u); for (const n in blobUrls) if (s.endsWith(n)) return blobUrls[n]; return u; };
+  const realFetch = window.fetch.bind(window);
+  window.fetch = (u, o) => realFetch(u instanceof Request ? u : remap(u), o);
+  const realOpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function (m, u, ...rest) { return realOpen.call(this, m, remap(u), ...rest); };
+
+  hint.textContent = 'Starting the engine.';
+  const config = { args: [], canvasResizePolicy: 2, emscriptenPoolSize: 8, ensureCrossOriginIsolationHeaders: false,
+                   executable: 'pipwreck', experimentalVK: false, fileSizes: { 'pipwreck.pck': 6493616, 'pipwreck.wasm': 37686550 },
+                   focusCanvas: true, gdextensionLibs: [], godotPoolSize: 4,
+                   onProgress: (cur, tot) => { if (tot > 0) fill.style.width = Math.round(100 * cur / tot) + '%'; } };
+  const missing = Engine.getMissingFeatures({ threads: false });
+  if (missing.length) { fail('Missing browser features:\n' + missing.join('\n')); return; }
+  try {
+    const engine = new Engine(config);
+    await engine.startGame({});
+    status.remove();
+  } catch (e) { fail(String(e && e.message || e)); }
+})();
+</script>
