@@ -1,0 +1,57 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpipwrecktownview0"]
+
+[ext_resource type="Script" path="res://src/game/town/town_view.gd" id="1_view"]
+
+[node name="TownView" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_view")
+
+[node name="ViewportBox" type="SubViewportContainer" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+stretch_shrink = 2
+
+[node name="SubViewport" type="SubViewport" parent="ViewportBox"]
+own_world_3d = true
+transparent_bg = false
+handle_input_locally = false
+msaa_2d = 0
+msaa_3d = 0
+screen_space_aa = 0
+use_taa = false
+use_debanding = false
+size = Vector2i(540, 480)
+render_target_update_mode = 4
+
+[node name="World" type="Node3D" parent="ViewportBox/SubViewport"]
+
+[node name="Environment" type="WorldEnvironment" parent="ViewportBox/SubViewport/World"]
+
+[node name="Geometry" type="MeshInstance3D" parent="ViewportBox/SubViewport/World"]
+
+[node name="Props" type="Node3D" parent="ViewportBox/SubViewport/World"]
+
+[node name="Camera" type="Camera3D" parent="ViewportBox/SubViewport/World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 4)
+
+[node name="Signs" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1

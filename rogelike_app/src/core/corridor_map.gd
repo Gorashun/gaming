@@ -291,6 +291,55 @@ static func build(graph: RunGraph, rng: Rng, p_allow_fate: bool = false) -> Corr
 	return map
 
 
+## Torget i Chalkrim som rutnät (CORRIDOR_DESIGN §5.1, research 05 §6).
+##
+## [b]Ingen graf, ingen seed, ingen regel[/b] – bara geometri: en 3×2-kammare med
+## tre upplysta mynningar i den bortre väggen. Poängen är att staden byggs med
+## exakt samma [CorridorMesh] och samma kamera som Gropen, vilket enligt research
+## 05 §6 kostar "noll ny kod" och gör att spelaren lär sig dungeon-inputen på
+## torget utan att det kallas tutorial.
+##
+## Mynningarna ligger i ordningen vänster, mitt, höger; anroparen binder dem till
+## Skrotmarknaden, Gropens mun och Kritväggen.
+const TOWN_EXIT_OFFSETS: Array[int] = [-1, 0, 1]
+## Torgets djup i rutor. Två: då hamnar sidomynningarna på ±29° i ett
+## 37,5°-halvfält, alltså tydligt åt vänster och höger men fortfarande hela i
+## bild. Tre rutor drar ihop dem mot mitten och torget blir en korridor till.
+const TOWN_DEPTH: int = 2
+
+
+static func town_square() -> CorridorMap:
+	var map: CorridorMap = CorridorMap.new()
+	for y: int in range(0, TOWN_DEPTH):
+		for x: int in TOWN_EXIT_OFFSETS:
+			var cell: Dictionary = map._ensure(Vector2i(x, y), KIND_CHAMBER)
+			cell["visited"] = true
+	# Golvet hänger ihop i båda led, annars emitterar meshen väggar mitt i torget.
+	for y: int in range(0, TOWN_DEPTH):
+		for x: int in [-1, 0]:
+			map._link(Vector2i(x, y), FACING_EAST, Vector2i(x + 1, y))
+	for y: int in range(1, TOWN_DEPTH):
+		for x: int in TOWN_EXIT_OFFSETS:
+			map._link(Vector2i(x, y), FACING_NORTH, Vector2i(x, y - 1))
+	for x: int in TOWN_EXIT_OFFSETS:
+		# Mynningen är en egen ruta: en nisch med en fackla i, inte ett hål i en
+		# vägg. KIND_ALCOVE gör att CorridorMesh sätter facklan där av sig själv.
+		var mouth: Dictionary = map._ensure(Vector2i(x, -1), KIND_ALCOVE)
+		mouth["torch"] = true
+		map._link(Vector2i(x, 0), FACING_NORTH, Vector2i(x, -1))
+	map.position = Vector2i(0, TOWN_DEPTH - 1)
+	map.facing = FACING_NORTH
+	map._trail = [_key(map.position)]
+	map._events.clear()
+	return map
+
+
+## Rutan en av torgets tre mynningar ligger i. [param index] är 0 = vänster,
+## 1 = mitt, 2 = höger.
+static func town_exit_tile(index: int) -> Vector2i:
+	return Vector2i(TOWN_EXIT_OFFSETS[clampi(index, 0, TOWN_EXIT_OFFSETS.size() - 1)], -1)
+
+
 ## Rum-index → nod-id:n, i grenordning. Kartan läser grafen, aldrig tvärtom.
 func _rooms_by_index(graph: RunGraph) -> Dictionary:
 	var rooms: Dictionary = {}

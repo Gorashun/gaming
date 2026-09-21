@@ -2,12 +2,16 @@ class_name TownScreen
 extends GameScreen
 ## Chalkrim (sv Kritkanten). TOWN_AND_ONBOARDING del A.
 ##
-## [b]Statusnot (PM 2026-09-21):[/b] riktningen bytte till first person dungeon
-## crawler, och stadens sidoscroll-remsa utgick. Den här skärmen är därför en
-## [b]tillfällig menyversion[/b]: all logik – Pips, Skrotmarknaden, Kritväggen,
-## Marrows dödsrepliker och GO DOWN-flödet – ligger färdig i [Meta] och
-## [Content], och bara presentationen är en lista med knappar. Byts listan mot
-## en korridorvy senare rörs ingen regel.
+## [b]M5: torget är en statisk förstapersonsvy[/b] (CORRIDOR_DESIGN §5.1). Den
+## tillfälliga knapplistan är borta; [TownView] ritar samma stenrum som Gropen
+## med tre upplysta mynningar – vänster Skrotmarknaden, mitt Gropens mun med
+## trappan ner, höger Kritväggen. Smedjan är en knapp i tumzonen och inte en
+## fjärde mynning: research 05 §6 är emot att lägga en vridning mellan spelaren
+## och en meny hen besöker efter varje run.
+##
+## [b]Ingen regel rördes när presentationen byttes.[/b] Pips, marknaden,
+## kritväggen, Marrows dödsrepliker och GO DOWN-flödet ligger kvar i [Meta] och
+## [Content], och panelerna är samma som i M2.5.
 ##
 ## [b]Sex normativa regler för stadens UI[/b] (§A.4), alla uppfyllda här:
 ## [br]1. [code]GO DOWN[/code] är alltid synlig, 56 dp, full bredd, i tumzonen,
@@ -21,6 +25,9 @@ extends GameScreen
 
 ## Spelaren vill ned i Gropen. [param seed] är den seed runnen ska köras med.
 signal go_down(seed_value: int)
+## HUD-knappen (paperdoll-ikonen). Samma signal som korridorens, §4.4.
+signal character_sheet_requested()
+signal settings_requested()
 
 const PLACE_PIT: String = "PIT_MOUTH"
 const PLACE_MARKET: String = "MARKET"
@@ -36,7 +43,20 @@ const PLACES: Array[Dictionary] = [
 	{"id": PLACE_FORGE, "key": "TOWN_PLACE_FORGE", "en": "The Forge", "unlock_runs": 1},
 ]
 
+## Mynningarna i bild, i ordningen vänster, mitt, höger (§5.1). Smedjan står
+## inte här: den är en knapp, inte en dörröppning.
+const MOUTHS: Array[String] = [PLACE_MARKET, PLACE_PIT, PLACE_WALL]
+## Skylten i mynningen bär ett [b]kort[/b] namn. Hela namnet står i panelens
+## rubrik; en skylt som klipps mitt i ordet säger mindre än ett ord som ryms.
+const MOUTH_SIGNS: Dictionary = {
+	PLACE_MARKET: ["TOWN_SIGN_MARKET", "MARKET"],
+	PLACE_PIT: ["TOWN_SIGN_PIT", "THE PIT"],
+	PLACE_WALL: ["TOWN_SIGN_WALL", "THE WALL"],
+}
+
 @onready var _column: VBoxContainer = $Margin/Column
+@onready var _view: TownView = $View
+@onready var _hud: Control = $Hud
 
 var meta: Meta = null
 
@@ -66,39 +86,16 @@ func _build() -> void:
 	$Background.color = Tokens.SURFACE_PIT
 	for side: String in ["left", "right", "top", "bottom"]:
 		$Margin.add_theme_constant_override("margin_" + side, Tokens.dpi(Tokens.SCREEN_MARGIN))
-	_column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_3))
+	_column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
 
-	var header: HBoxContainer = HBoxContainer.new()
-	header.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_4))
-	_column.add_child(header)
-
-	var title: Label = _label(Tokens.TYPE_TITLE, Tokens.CHALK_100)
-	title.text = Tokens.translate_or("TOWN_NAME", "CHALKRIM")
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	ChalkFx.apply(title, ChalkFx.DISPLAY)
-	header.add_child(title)
-
-	_pips_label = _label(Tokens.TYPE_BODY_L, Tokens.SEM_CHARGE)
-	# Rubriken tar all bredd med SIZE_EXPAND_FILL; en klippt Pips-etikett får då
-	# minsta bredd noll och siffran försvinner helt.
-	_pips_label.clip_text = false
-	header.add_child(_pips_label)
-
-	# Kritmärkena: ett streck per person som gått ner. Kommer du upp suddar du
-	# ditt eget streck med tummen (§A.1). Spelets enda monument.
-	_tally_label = _label(Tokens.TYPE_BODY, Tokens.CHALK_500)
-	_tally_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_column.add_child(_tally_label)
+	_build_hud()
+	_build_view()
 
 	# Marrow möter dig när du dör och säger EN rad om HUR du dog (§A.1).
 	_marrow_label = _label(Tokens.TYPE_BODY, Tokens.CHALK_300)
 	_marrow_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_marrow_label.clip_text = false
 	_column.add_child(_marrow_label)
-
-	_places_box = VBoxContainer.new()
-	_places_box.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
-	_column.add_child(_places_box)
 
 	# Panelen får ALDRIG trycka ut GO DOWN. §A.4 regel 1 är normativ: knappen
 	# är synlig från första bildrutan, aldrig bakom en dialog. En lång panel
@@ -116,7 +113,7 @@ func _build() -> void:
 	_panel_scroll.custom_minimum_size = Vector2(0.0, Tokens.dp(120))
 	_panel_host.add_child(_panel_scroll)
 
-	# Luften mellan platserna och GO DOWN. Panelen får tre gånger så mycket av
+	# Luften mellan panelen och GO DOWN. Panelen får tre gånger så mycket av
 	# det lediga utrymmet, men knappen ligger alltid kvar i tumzonen.
 	_panel_host.size_flags_stretch_ratio = 3.0
 	var spacer: Control = Control.new()
@@ -124,6 +121,12 @@ func _build() -> void:
 	spacer.size_flags_stretch_ratio = 1.0
 	spacer.custom_minimum_size = Vector2(0.0, Tokens.dp(Tokens.SPACE_2))
 	_column.add_child(spacer)
+
+	# Smedjan är en knapp och inte en fjärde mynning (research 05 §6).
+	_places_box = VBoxContainer.new()
+	_places_box.name = "SideDoors"
+	_places_box.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
+	_column.add_child(_places_box)
 
 	# Regel 1: alltid synlig, alltid tryckbar, alltid längst ned.
 	_go_down = Button.new()
@@ -147,32 +150,120 @@ func _build() -> void:
 	_show_arrival()
 
 
+## Krit-raden över torget: namn, Pips, kritstreck och de två HUD-knapparna.
+## Samma ordning och samma glyfer som korridorens HUD – staden lär ut
+## dungeon-gränssnittet utan att kalla det tutorial (§5.1).
+func _build_hud() -> void:
+	var bar: HBoxContainer = HBoxContainer.new()
+	bar.name = "Bar"
+	bar.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	bar.offset_left = Tokens.dpi(Tokens.SCREEN_MARGIN)
+	bar.offset_right = -Tokens.dpi(Tokens.SCREEN_MARGIN)
+	bar.offset_bottom = Tokens.dp(48)
+	bar.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
+	_hud.add_child(bar)
+
+	var title: Label = _label(Tokens.TYPE_TITLE, Tokens.CHALK_100)
+	title.text = Tokens.translate_or("TOWN_NAME", "CHALKRIM")
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ChalkFx.apply(title, ChalkFx.DISPLAY)
+	bar.add_child(title)
+
+	_pips_label = _label(Tokens.TYPE_BODY_L, Tokens.SEM_CHARGE)
+	# Rubriken tar all bredd med SIZE_EXPAND_FILL; en klippt Pips-etikett får då
+	# minsta bredd noll och siffran försvinner helt.
+	_pips_label.clip_text = false
+	_pips_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	bar.add_child(_pips_label)
+
+	bar.add_child(_hud_button("◫", func() -> void: character_sheet_requested.emit()))
+	bar.add_child(_hud_button("⚙", func() -> void: settings_requested.emit()))
+
+	# Kritmärkena: ett streck per person som gått ner. Kommer du upp suddar du
+	# ditt eget streck med tummen (§A.1). Spelets enda monument.
+	_tally_label = _label(Tokens.TYPE_CAPTION, Tokens.CHALK_500)
+	_tally_label.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	_tally_label.offset_left = Tokens.dpi(Tokens.SCREEN_MARGIN)
+	_tally_label.offset_right = -Tokens.dpi(Tokens.SCREEN_MARGIN)
+	_tally_label.offset_top = Tokens.dp(48)
+	_tally_label.offset_bottom = Tokens.dp(68)
+	_tally_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_tally_label.clip_text = false
+	_hud.add_child(_tally_label)
+
+
+func _hud_button(glyph: String, action: Callable) -> Button:
+	var button: Button = Button.new()
+	button.text = glyph
+	button.focus_mode = Control.FOCUS_NONE
+	button.custom_minimum_size = Vector2(Tokens.dp(34), Tokens.dp(34))
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY))
+	button.add_theme_color_override("font_color", Tokens.CHALK_300)
+	var style: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR)
+	style.bg_color = Color(Tokens.SURFACE_RAISED, 0.85)
+	for state: String in ["normal", "hover", "pressed", "focus"]:
+		button.add_theme_stylebox_override(state, style)
+	button.pressed.connect(action)
+	return button
+
+
+## Tre mynningar med varsin skylt. Låsta platser visas ändå: Balatro-modellen
+## (§A.2) säger att du alltid ser vad som finns kvar och exakt hur du får det.
+func _build_view() -> void:
+	var specs: Array = []
+	for place_id: String in MOUTHS:
+		var spec: Dictionary = _place_spec(place_id)
+		var row: Array = MOUTH_SIGNS[place_id] as Array
+		specs.append({
+			"id": place_id,
+			"label": Tokens.translate_or(String(row[0]), String(row[1])),
+			"unlocked": meta.runs >= int(spec.get("unlock_runs", 0)),
+		})
+	_view.setup(specs)
+	_view.place_tapped.connect(open_place)
+
+
+static func _place_spec(place_id: String) -> Dictionary:
+	for spec: Dictionary in PLACES:
+		if String(spec["id"]) == place_id:
+			return spec
+	return {}
+
+
+func _place_label(spec: Dictionary) -> String:
+	var text: String = Tokens.translate_or(String(spec.get("key", "")), String(spec.get("en", "")))
+	if meta.runs >= int(spec.get("unlock_runs", 0)):
+		return text
+	return "%s — %s" % [text, Tokens.translate_or(
+		"TOWN_LOCKED_RUNS", "after %d run(s)") % int(spec.get("unlock_runs", 0))]
+
+
+## Smedjan, som knapp i tumzonen. De tre platserna i bild byggs i
+## [method _build_view].
 func _build_places() -> void:
 	for child: Node in _places_box.get_children():
 		child.queue_free()
 	_place_buttons.clear()
-	for spec: Dictionary in PLACES:
-		var unlocked: bool = meta.runs >= int(spec["unlock_runs"])
-		var button: Button = Button.new()
-		button.text = Tokens.translate_or(String(spec["key"]), String(spec["en"]))
-		if not unlocked:
-			# Balatro-modellen (§A.2): du ser alltid vad som finns kvar och
-			# exakt hur du får det. En låst plats är en kritsilhuett med villkor.
-			button.text = "%s — %s" % [button.text, Tokens.translate_or(
-				"TOWN_LOCKED_RUNS", "after %d run(s)") % int(spec["unlock_runs"])]
-		button.disabled = not unlocked
-		button.clip_text = true
-		button.custom_minimum_size = Vector2(0.0, Tokens.dp(Tokens.BUTTON_SECONDARY_HEIGHT))
-		button.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY_L))
-		button.add_theme_color_override("font_color", Tokens.CHALK_100)
-		button.add_theme_color_override("font_disabled_color", Tokens.CHALK_500)
-		var style: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_REG)
-		for state_name: String in ["normal", "hover", "pressed", "focus", "disabled"]:
-			button.add_theme_stylebox_override(state_name, style)
-		ChalkFx.apply(button, ChalkFx.BUTTON)
-		button.pressed.connect(open_place.bind(String(spec["id"])))
-		_places_box.add_child(button)
-		_place_buttons[String(spec["id"])] = button
+	var spec: Dictionary = _place_spec(PLACE_FORGE)
+	var unlocked: bool = meta.runs >= int(spec["unlock_runs"])
+	var button: Button = Button.new()
+	button.name = "ForgeButton"
+	button.text = _place_label(spec)
+	button.disabled = not unlocked
+	button.clip_text = true
+	button.focus_mode = Control.FOCUS_NONE
+	button.custom_minimum_size = Vector2(0.0, Tokens.dp(Tokens.BUTTON_SECONDARY_HEIGHT))
+	button.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY_L))
+	button.add_theme_color_override("font_color", Tokens.CHALK_100)
+	button.add_theme_color_override("font_disabled_color", Tokens.CHALK_500)
+	var style: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_REG)
+	for state_name: String in ["normal", "hover", "pressed", "focus", "disabled"]:
+		button.add_theme_stylebox_override(state_name, style)
+	ChalkFx.apply(button, ChalkFx.BUTTON)
+	button.pressed.connect(open_place.bind(PLACE_FORGE))
+	_places_box.add_child(button)
+	_place_buttons[PLACE_FORGE] = button
 
 
 func _refresh_header() -> void:
@@ -381,8 +472,11 @@ func _build_forge(body: VBoxContainer) -> void:
 
 	_action(body, Tokens.translate_or("FORGE_REVERT", "PUT IT BACK"), _reset_order)
 	_action(body, Tokens.translate_or("FORGE_TAB_FACES", "FACES"), _swap_faces)
-	# Könsvalet kan bytas i staden (DECISIONS 2026-09-21). Inga könsord i texten.
-	_action(body, Tokens.translate_or("SMITH_SHEET_CHANGE_LOOK", "CHANGE LOOK"), _change_smith)
+	# Kroppsvarianten bytas på character sheetet, där figuren faktiskt syns
+	# (CORRIDOR_DESIGN §4.1). Att byta utseende utan att se figuren var M2.5:s
+	# enda riktigt blinda knapp.
+	_action(body, Tokens.translate_or("SMITH_SHEET_TITLE", "THE SMITH"),
+		func() -> void: character_sheet_requested.emit())
 
 
 func _slot_order() -> PackedInt32Array:
@@ -429,14 +523,6 @@ func _swap_faces() -> void:
 	meta.loadout[Forge.KEY_FACE_SWAPS] = swaps
 	Juice.ui_tap(1.2)
 	_save_meta()
-	open_place(PLACE_FORGE)
-	open_place(PLACE_FORGE)
-
-
-func _change_smith() -> void:
-	var next: String = "b" if Art.smith_variant(Settings.smith_variant) == "a" else "a"
-	Settings.set_value(&"smith_variant", next)
-	Juice.ui_tap(1.0)
 	open_place(PLACE_FORGE)
 	open_place(PLACE_FORGE)
 
