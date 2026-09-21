@@ -107,8 +107,9 @@ class Context:
 			"seq": seq,
 			"ms_hint": int(MS_HINTS.get(t, MS_HINT_DEFAULT)),
 		}
-		for key: Variant in fields:
-			event[key] = fields[key]
+		# merge() är ett enda motoranrop; en GDScript-loop här kostade mätbart
+		# i run-simulatorn, som gör hundratusentals emit per körning.
+		event.merge(fields)
 		events.append(event)
 		seq += 1
 
@@ -309,8 +310,16 @@ static func _phase_combo_pass(ctx: Context) -> void:
 			"size": slots.size(),
 			"multiplier": Rules.multiplier_for_size(slots.size()),
 		})
-	groups.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		return int((a["slots"] as Array[int])[0]) < int((b["slots"] as Array[int])[0]))
+	# Insertionssortering på lägsta slotindex. Grupperna är som mest två stycken,
+	# och att slippa en lambda per runda syns i simulatorns körtid.
+	for i: int in range(1, groups.size()):
+		var current: Dictionary = groups[i] as Dictionary
+		var key: int = ((current["slots"] as Array[int])[0])
+		var j: int = i - 1
+		while j >= 0 and int(((groups[j] as Dictionary)["slots"] as Array[int])[0]) > key:
+			groups[j + 1] = groups[j]
+			j -= 1
+		groups[j + 1] = current
 	ctx.groups = groups
 
 	for group: Variant in groups:
@@ -701,6 +710,7 @@ static func _phase_round_end(ctx: Context) -> void:
 		var die: Die = state.dice[index]
 		var face: Face = die.showing_face()
 		if face != null and face.effect == Rules.FaceEffectKind.GROW:
+			face = die.mutable_face(die.showing)  # copy-on-write, se Die.copy()
 			face.value = mini(Rules.MAX_FACE_VALUE, face.value + face.magnitude)
 			ctx.emit("face_grew", {
 				"die_id": die.id, "face_index": die.showing, "new_value": face.value,
@@ -716,6 +726,7 @@ static func _phase_round_end(ctx: Context) -> void:
 			var face: Face = die.showing_face()
 			if face == null or face.value >= Rules.MAX_FACE_VALUE:
 				continue
+			face = die.mutable_face(die.showing)  # copy-on-write, se Die.copy()
 			face.value += 1
 			ctx.emit("relic_triggered", {
 				"relic": RELIC_ANVIL_BLESSING,
@@ -806,7 +817,7 @@ static func end_combat(state: CombatState) -> CombatState:
 	next.stolen.clear()
 	for die: Die in next.dice:
 		for i: int in range(die.faces.size()):
-			var face: Face = die.faces[i]
+			var face: Face = die.mutable_face(i)  # copy-on-write, se Die.copy()
 			if face.id == CRACKED_FACE_ID:
 				face.id = "PIP_%d" % face.base_value
 			face.reset_value()

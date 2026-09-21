@@ -130,7 +130,10 @@ static func encounter(room: int, variant: int = 0) -> Array[Enemy]:
 		2:
 			ids = ["SLAG_MOTH", "RUST_RAT", "RUST_RAT"]
 		3:
-			ids = ["THORN_IMP", "IRON_TICK"] if variant == 0 else ["PIP_THIEF", "GRAVE_HAND"]
+			if variant == 0:
+				ids = ["THORN_IMP", "IRON_TICK"]
+			else:
+				ids = ["PIP_THIEF", "GRAVE_HAND"]
 		4:
 			ids = ["SLAGJAW"]
 		_:

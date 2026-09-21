@@ -61,7 +61,24 @@ func is_destroyed() -> bool:
 	return integrity == 0
 
 
+## Kopia med COPY-ON-WRITE-sidor: [member faces]-arrayen är ny, men [Face]-
+## objekten delas med originalet. Det halverar kostnaden för
+## [method CombatState.copy], som körs en gång per [method Resolver.resolve]
+## och därmed tiotusentals gånger i run-simulatorn.
+##
+## Kontraktet: ändra ALDRIG en [Face] på plats efter en [method copy]. Hämta en
+## egen instans med [method mutable_face] först. [method deep_copy] finns för
+## anropare som vill ha full isolering.
 func copy() -> Die:
+	var other: Die = Die.new(id, faces, material)
+	other.integrity = integrity
+	other.cracks = cracks
+	other.showing = showing
+	return other
+
+
+## Full kopia där även varje [Face] är ny.
+func deep_copy() -> Die:
 	var copied_faces: Array[Face] = []
 	for face: Face in faces:
 		copied_faces.append(face.copy())
@@ -70,6 +87,16 @@ func copy() -> Die:
 	other.cracks = cracks
 	other.showing = showing
 	return other
+
+
+## Byter ut sidan på [param index] mot en egen kopia och returnerar den.
+## Enda tillåtna vägen till att mutera en sida efter [method copy].
+func mutable_face(index: int) -> Face:
+	if index < 0 or index >= faces.size():
+		return null
+	var fresh: Face = faces[index].copy()
+	faces[index] = fresh
+	return fresh
 
 
 func to_dict() -> Dictionary:

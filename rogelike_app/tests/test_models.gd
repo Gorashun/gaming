@@ -110,11 +110,47 @@ func test_combat_state_copy_is_deep() -> void:
 	state.enemies = Content.encounter(1)
 	var copy: CombatState = state.copy()
 	copy.enemies[0].hp = 1
-	copy.dice[0].faces[0].value = 99
 	copy.board.slots[0].blocked = true
+	copy.placement[0] = 3
+	copy.relics.clear()
 	assert_int(state.enemies[0].hp).is_equal(14)
-	assert_int(state.dice[0].faces[0].value).is_equal(1)
 	assert_bool(state.board.slots[0].blocked).is_false()
+	assert_int(state.placement[0]).is_equal(-1)
+	assert_int(state.relics.size()).is_equal(1)
+
+
+func test_die_copy_uses_copy_on_write_faces() -> void:
+	# Sidorna delas tills mutable_face() anropas. Det halverar kostnaden för
+	# CombatState.copy() i simulatorn, men kräver att alla muteringar går
+	# genom mutable_face().
+	var original: Die = Die.standard("die_0")
+	var copy: Die = original.copy()
+	copy.faces[0] = Face.new("REPLACED", 9)
+	assert_str(original.faces[0].id).is_equal("PIP_1")
+
+	var fresh: Face = copy.mutable_face(2)
+	fresh.value = 99
+	assert_int(original.faces[2].value).is_equal(3)
+
+
+func test_die_deep_copy_isolates_every_face() -> void:
+	var original: Die = Die.standard("die_0")
+	var copy: Die = original.deep_copy()
+	copy.faces[1].value = 42
+	assert_int(original.faces[1].value).is_equal(2)
+
+
+func test_resolve_never_mutates_input_faces_via_grow() -> void:
+	var snowball: Face = Face.new("SNOWBALL", 1, Rules.FaceEffectKind.GROW, 1)
+	var fixture: Dictionary = CombatFixture.build(
+		[Rules.SlotType.PLAIN, Rules.SlotType.PLAIN, Rules.SlotType.PLAIN, Rules.SlotType.PLAIN, Rules.SlotType.PLAIN],
+		[null, null, null, null, null], [snowball],
+		[CombatFixture.dummy_enemy("DUMMY", 100)])
+	var state: CombatState = fixture["state"]
+	var before: String = JSON.stringify(state.to_dict())
+	var result: ResolveResult = Resolver.resolve(state, fixture["placement"])
+	assert_int(result.state_after.dice[0].showing_face().value).is_equal(2)
+	assert_str(JSON.stringify(state.to_dict())).is_equal(before)
 
 
 func test_unplaced_die_indices_ignores_placed_and_stolen() -> void:
