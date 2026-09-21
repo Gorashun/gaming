@@ -12,10 +12,15 @@ extends RefCounted
 ## finns den gamla sparfilen kvar orörd, eller den nya kompletta. Aldrig en halv.
 
 const SAVE_PATH: String = "user://save.json"
+## Profilen mellan runs ([Meta]). [b]Separat fil med flit:[/b] en run som tar
+## slut, och "Reset save" i inställningarna, får inte sudda kritväggen, Pips
+## eller det spelaren lärt sig (TOWN_AND_ONBOARDING §A.1).
+const META_PATH: String = "user://meta.json"
 const TEMP_SUFFIX: String = ".part"
 
 ## Går att peka om i tester. Rör aldrig i speldrift.
 static var save_path: String = SAVE_PATH
+static var meta_path: String = META_PATH
 
 
 ## Skriver hela runnen. [param extra] läggs in under [code]meta[/code] och är
@@ -32,7 +37,13 @@ static func save_run(run: RunState, extra: Dictionary = {}) -> bool:
 		data["meta"] = meta
 	data["saved_at"] = Time.get_datetime_string_from_system(true)
 
-	var temp_path: String = save_path + TEMP_SUFFIX
+	return _write_atomic(save_path, data)
+
+
+## Skriver via en temporärfil som byter namn sist: antingen finns den gamla
+## filen kvar orörd, eller den nya kompletta. Aldrig en halv.
+static func _write_atomic(path: String, data: Dictionary) -> bool:
+	var temp_path: String = path + TEMP_SUFFIX
 	var file: FileAccess = FileAccess.open(temp_path, FileAccess.WRITE)
 	if file == null:
 		push_warning("SaveIO: kunde inte öppna %s (%d)" % [temp_path, FileAccess.get_open_error()])
@@ -40,17 +51,64 @@ static func save_run(run: RunState, extra: Dictionary = {}) -> bool:
 	file.store_string(JSON.stringify(data))
 	file.close()
 
-	var dir: DirAccess = DirAccess.open(save_path.get_base_dir())
+	var dir: DirAccess = DirAccess.open(path.get_base_dir())
 	if dir == null:
-		push_warning("SaveIO: kunde inte öppna katalogen %s" % save_path.get_base_dir())
+		push_warning("SaveIO: kunde inte öppna katalogen %s" % path.get_base_dir())
 		return false
-	if dir.file_exists(save_path.get_file()):
-		dir.remove(save_path.get_file())
-	var err: Error = dir.rename(temp_path.get_file(), save_path.get_file())
+	if dir.file_exists(path.get_file()):
+		dir.remove(path.get_file())
+	var err: Error = dir.rename(temp_path.get_file(), path.get_file())
 	if err != OK:
 		push_warning("SaveIO: kunde inte byta namn på %s (%d)" % [temp_path, err])
 		return false
 	return true
+
+
+# --- Profilen mellan runs ---------------------------------------------------
+
+## Skriver [Meta] till [constant META_PATH]. Samma atomiska skrivning som
+## runnen, och samma kontrakt: en halvskriven fil får aldrig uppstå.
+static func save_meta(meta: Meta) -> bool:
+	if meta == null:
+		return false
+	var data: Dictionary = meta.to_dict()
+	data["saved_at"] = Time.get_datetime_string_from_system(true)
+	return _write_atomic(meta_path, data)
+
+
+## Läser profilen. En saknad, trasig eller framtida fil ger en [b]färsk[/b]
+## profil – aldrig null och aldrig en krasch. Skälet: profilen efterfrågas
+## innan titelskärmen ritas, och det finns ingen skärm att visa ett fel på.
+static func load_meta() -> Meta:
+	if not FileAccess.file_exists(meta_path):
+		return Meta.fresh()
+	var file: FileAccess = FileAccess.open(meta_path, FileAccess.READ)
+	if file == null:
+		push_warning("SaveIO: kunde inte läsa %s (%d)" % [meta_path, FileAccess.get_open_error()])
+		return Meta.fresh()
+	var text: String = file.get_as_text()
+	file.close()
+	var parsed: Variant = JSON.parse_string(text)
+	if not (parsed is Dictionary):
+		push_warning("SaveIO: %s är inte giltig JSON – ny profil" % meta_path)
+		return Meta.fresh()
+	var data: Dictionary = parsed as Dictionary
+	var version: int = int(data.get("version", 0))
+	if version <= 0 or version > Meta.SAVE_VERSION:
+		push_warning("SaveIO: profilversion %d kan inte läsas (stöder 1..%d)" % [version, Meta.SAVE_VERSION])
+		return Meta.fresh()
+	return Meta.from_dict(data)
+
+
+static func has_meta_profile() -> bool:
+	return FileAccess.file_exists(meta_path)
+
+
+## Nollställer profilen. Anropas bara av ett uttryckligt val i inställningarna,
+## aldrig av [method clear].
+static func clear_meta() -> void:
+	_remove(meta_path)
+	_remove(meta_path + TEMP_SUFFIX)
 
 
 static func has_save() -> bool:
@@ -104,9 +162,15 @@ static func migrate(data: Dictionary) -> Dictionary:
 	return data
 
 
+## Tar bort runnen. [b]Rör inte profilen[/b] – se [method clear_meta].
 static func clear() -> void:
-	for path: String in [save_path, save_path + TEMP_SUFFIX]:
-		if FileAccess.file_exists(path):
-			var dir: DirAccess = DirAccess.open(path.get_base_dir())
-			if dir != null:
-				dir.remove(path.get_file())
+	_remove(save_path)
+	_remove(save_path + TEMP_SUFFIX)
+
+
+static func _remove(path: String) -> void:
+	if not FileAccess.file_exists(path):
+		return
+	var dir: DirAccess = DirAccess.open(path.get_base_dir())
+	if dir != null:
+		dir.remove(path.get_file())
