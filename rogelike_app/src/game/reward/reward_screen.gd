@@ -40,12 +40,23 @@ func enter(ctx: Dictionary) -> void:
 		_targets.append(target)
 		var card: RewardCard = RewardCard.new()
 		_cards.add_child(card)
-		card.bind(i, option, target, RewardApply.describe(_state, option, target))
+		card.bind(i, option, target, _describe(option, target))
 		card.chosen.connect(_on_chosen)
 
 	if _options.is_empty():
 		# Poolen är slut: hoppa vidare i stället för att visa en tom skärm.
 		call_deferred("_skip")
+
+
+## Beskrivningen på kortet. Normalt bygger [method RewardApply.describe] den av
+## översättningsnycklar; tutorialens fasta kort (som inte ändrar tillståndet
+## utan berättar vad nästa rum ger) bär i stället sin egen nyckel, så att core
+## slipper känna till Grundstigen.
+func _describe(option: Dictionary, target: Dictionary) -> String:
+	var key: String = String(option.get("desc_key", ""))
+	if key != "":
+		return Tokens.translate_or(key, String(option.get("desc_en", option.get("name", ""))))
+	return RewardApply.describe(_state, option, target)
 
 
 func _style() -> void:

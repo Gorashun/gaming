@@ -18,6 +18,12 @@ const OPTION_COUNT: int = 3
 const CATEGORY_FORGE_FACE: String = "FORGE_FACE"
 const CATEGORY_RELIC: String = "RELIC"
 const CATEGORY_SLOT_SWAP: String = "SLOT_SWAP"
+## Tutorialens fasta kort (TOWN_AND_ONBOARDING §B.2). [b]Ingår aldrig i
+## dragningen[/b] – den har vikt 0 och finns inte i [method Content.reward_pool].
+## Kortet är berättande: den faktiska förändringen (fler slots, en Spegel, ett
+## omkast) ligger i [Tutorial]:s rumsdata, så att kortet och rummet inte kan
+## säga olika saker. [method RewardApply.apply] lämnar tillståndet orört.
+const CATEGORY_TUTORIAL: String = "TUTORIAL"
 
 ## Kategorivikter (GAME_DESIGN §4.7).
 const CATEGORY_WEIGHTS: Dictionary = {

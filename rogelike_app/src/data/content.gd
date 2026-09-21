@@ -191,6 +191,124 @@ static func rooms_per_floor() -> int:
 	return 4
 
 
+# --- §A.3 Skrotmarknaden ---------------------------------------------------
+
+## Poolposter som [b]inte[/b] ingår i en färsk spelares belöningspool utan måste
+## köpas loss på Skrotmarknaden. TOWN_AND_ONBOARDING §A.3: startpoolen ska vara
+## liten från början och växa i paket som byter spelstil, inte droppa enstaka
+## skräp ("awkward middle"-varningen i research/01 §A).
+##
+## Notera att detta [b]aldrig[/b] är en siffra: varje post är ett id som läggs
+## till i [method Content.reward_pool]. Ingen +HP, ingen +skada.
+const LOCKED_BY_DEFAULT: Array[String] = [
+	"FORGE_SNOWBALL",
+	"FORGE_VAMP_FANG",
+	"FORGE_TWIN_EYE",
+	"FORGE_HAMMER_FACE",
+	"FORGE_LEAD_SIX",
+	"RELIC_OCTOPUS",
+	"RELIC_ECHO_MIRROR",
+	"RELIC_CHEAT_CUBE",
+	"RELIC_DOMINO",
+	"SWAP_FIRE",
+	"SWAP_ANVIL",
+	"SWAP_MIRROR",
+]
+
+
+## Marknadens hyllor: exakt de poolposter som ligger bakom [Meta.pips].
+## Priset kommer ur [constant Meta.PRICE] och är fast – ingen rabatt, ingen
+## pity-timer, inget som ändrar sig när spelaren tittar bort.
+static func market_catalogue() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for entry: Dictionary in reward_pool():
+		if LOCKED_BY_DEFAULT.has(String(entry.get("id", ""))):
+			result.append(entry)
+	return result
+
+
+## Poolen en spelare faktiskt drar ur, givet vad som köpts loss.
+static func unlocked_pool(unlocked: Array) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for entry: Dictionary in reward_pool():
+		var id: String = String(entry.get("id", ""))
+		if LOCKED_BY_DEFAULT.has(id) and not unlocked.has(id):
+			continue
+		result.append(entry)
+	return result
+
+
+## Antal fiender Kodexen kan innehålla. Tutorialvåningens pedagogiska varianter
+## räknas inte: Kodexen handlar om Gropen, inte om Grundstigen.
+static func codex_enemy_count() -> int:
+	return 7
+
+
+# --- §A.1 Marrows dödsrepliker ---------------------------------------------
+# "Marrows dödsrepliker är den viktigaste texten i spelet" (TOWN_AND_ONBOARDING
+# §A.1). Regeln: varje replik namnger DÖDSORSAKEN – vi har den redan i
+# player_died{killed_by} – och lägger till en rad värld. Aldrig samma två
+# gånger i rad.
+#
+# Källsträngen är engelska (CLAUDE.md); nyckeln får sin svenska rad i
+# assets/i18n/translations.csv. Tills raden finns visas den engelska via
+# Tokens.translate_or, aldrig en rå nyckel.
+
+## [code]{key, en, killer}[/code]. Tom [code]killer[/code] = passar alla dödar.
+const DEATH_LINES: Array[Dictionary] = [
+	{"key": "DEATH_LINE_SLAGJAW_01", "killer": "SLAGJAW", "en": "Slagjaw again. It has all the time in the world and you had eleven minutes."},
+	{"key": "DEATH_LINE_SLAGJAW_02", "killer": "SLAGJAW", "en": "It hardens when it is bored. You bored it."},
+	{"key": "DEATH_LINE_THORN_IMP_01", "killer": "THORN_IMP", "en": "You hit a thorn imp four times. It hit you back four times. That is what four means."},
+	{"key": "DEATH_LINE_THORN_IMP_02", "killer": "THORN_IMP", "en": "Little thing. Lot of edges. You knew that going in."},
+	{"key": "DEATH_LINE_RUST_RAT_01", "killer": "RUST_RAT", "en": "Rats. Plural. That is usually how it reads on the wall."},
+	{"key": "DEATH_LINE_RUST_RAT_02", "killer": "RUST_RAT", "en": "Two armour. Two. And you threw fives at it all day."},
+	{"key": "DEATH_LINE_IRON_TICK_01", "killer": "IRON_TICK", "en": "An iron tick does not dodge. It waits for you to run out of arm."},
+	{"key": "DEATH_LINE_IRON_TICK_02", "killer": "IRON_TICK", "en": "Six armour eats small hits for a living. You fed it well."},
+	{"key": "DEATH_LINE_SLAG_MOTH_01", "killer": "SLAG_MOTH", "en": "The moth drank your bank and then drank you. Tidy work."},
+	{"key": "DEATH_LINE_GRAVE_HAND_01", "killer": "GRAVE_HAND", "en": "It held one slot shut and that was the whole argument."},
+	{"key": "DEATH_LINE_PIP_THIEF_01", "killer": "PIP_THIEF", "en": "It took a die first. Everything after that was bookkeeping."},
+	{"key": "DEATH_LINE_BLOOD_PRICE_01", "killer": "BLOOD_PRICE", "en": "You paid in blood for a multiplier. The multiplier was fine. You were not."},
+	{"key": "DEATH_LINE_ANY_01", "killer": "", "en": "Cart's warm. Sit down before you say anything clever."},
+	{"key": "DEATH_LINE_ANY_02", "killer": "", "en": "Someone will rub out your mark eventually. Not me."},
+	{"key": "DEATH_LINE_ANY_03", "killer": "", "en": "Nobody down there was in a hurry. You were."},
+	{"key": "DEATH_LINE_ANY_04", "killer": "", "en": "I have carried better. I have carried worse. Mostly worse."},
+	{"key": "DEATH_LINE_ANY_05", "killer": "", "en": "The order was wrong. It is almost always the order."},
+	{"key": "DEATH_LINE_ANY_06", "killer": "", "en": "You got further than the last one. The last one is still down there."},
+	{"key": "DEATH_LINE_ANY_07", "killer": "", "en": "Chalk's cheap. That is the only kind thing about the wall."},
+	{"key": "DEATH_LINE_ANY_08", "killer": "", "en": "Keep the seed. The pit does not change its mind, only you do."},
+]
+
+
+## En replik som passar [param killed_by], aldrig samma som [param avoid_index].
+## Returnerar [code]{index, key, en}[/code]. Tom [code]key[/code] betyder att
+## katalogen är tom, vilket bara kan hända om någon tömt konstanten.
+static func death_line_for(killed_by: String, avoid_index: int = -1, spin: int = 0) -> Dictionary:
+	var specific: Array[int] = []
+	var generic: Array[int] = []
+	for i: int in range(DEATH_LINES.size()):
+		var line: Dictionary = DEATH_LINES[i]
+		if String(line["killer"]) == killed_by and killed_by != "":
+			specific.append(i)
+		elif String(line["killer"]) == "":
+			generic.append(i)
+	var pool: Array[int] = specific if not specific.is_empty() else generic
+	if pool.is_empty():
+		pool = generic if not generic.is_empty() else [0]
+	# Aldrig samma två gånger i rad (§A.1). Finns bara en passande replik får
+	# den upprepas – det är bättre än en generisk rad som inte nämner dödsorsaken.
+	# [param spin] är runnens seed: variationen blir deterministisk, så en
+	# buggrapport med samma seed får samma replik.
+	var start: int = posmod(spin, pool.size())
+	var pick: int = pool[start]
+	for step: int in range(pool.size()):
+		var candidate: int = pool[(start + step) % pool.size()]
+		if candidate != avoid_index:
+			pick = candidate
+			break
+	var chosen: Dictionary = DEATH_LINES[pick]
+	return {"index": pick, "key": String(chosen["key"]), "en": String(chosen["en"])}
+
+
 # --- §4.1 Klass: Smeden (SMITH) ----------------------------------------------------
 
 ## Ett färskt CombatState för Smeden, utan fiender. Anroparen sätter enemies.
