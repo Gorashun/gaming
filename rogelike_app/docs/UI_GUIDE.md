@@ -1,6 +1,6 @@
 # UI_GUIDE.md – PIPWRECK
 
-*Version 1 · 2026-09-21 · Ägare: UI/UX · Status: **riktning A rekommenderad, väntar PM-beslut***
+*Version 2 · 2026-09-21 · Ägare: UI/UX · Status: **riktning A beslutad. Hybrid pixel + krita beslutad av Anders (DECISIONS 2026-09-21)***
 
 Gäller för Godot 4.6, portrait 1080×1920 (≈ 360×640 dp referens, testas även 430×932 dp).
 Allt UI läser en händelselogg från `src/core/` och spelar upp den. **UI-lagret innehåller ingen spellogik.**
@@ -49,6 +49,18 @@ Typografi: **Oswald** / **Saira Condensed** (UI), **Bebas Neue** (siffror).
 5. **Semantisk färgrymd finns kvar.** Färgad krita ger åtta distinkta statusfärger som alla klarar kontrastkravet mot mörk botten – det klarar inte B.
 
 B sparas som upplåsningsbart "Zine-tema" i Kodex (billig horisontell meta). C avfärdas.
+
+### Beslut 2026-09-21: hybriden
+
+Anders har beslutat att **karaktärer, monster och tärningar ritas som
+pixelgrafik med paperdoll-lager** så att reliker och utrustning syns på
+figuren, medan **krit-UI:t (riktning A) behålls för UI, siffror och
+kedjeeffekter**. Navigeringen presenteras som en **sidoscrollande marsch** där
+figuren går åt höger.
+
+Riktning A är alltså inte ersatt – den har fått en värld under sig. Kritan är
+fortfarande den som *pratar* (kausalitet, siffror, val); pixlarna är det som
+*finns* (kropp, utrustning, fiender, tärningar). Var gränsen går står i §8.
 
 ---
 
@@ -370,10 +382,253 @@ Om tooltip 3 aldrig triggas under strid 1 visas den i stället första gången e
 
 ---
 
-## 8. Skisser och verifiering
+## 8. Hybriden: pixelvärld och kritgrop i samma viewport
+
+Regeln i en mening: **pixlar är substantiv, krita är verb.**
+Det som existerar i världen ritas i pixlar. Det som spelet *säger* om världen –
+orsak, verkan, siffror, val – ritas i krita.
+
+### 8.1 Vad som är vad
+
+| Pixel (World-lagret) | Krita (ChalkUI-lagret) |
+|---|---|
+| Smeden och hans utrustningslager | Kedjepilar mellan slots |
+| De sex fienderna och SLAGJAW | Alla siffror (Anton) |
+| Tärningskroppar, ögon, glypher, sprickor | Multiplikator-badges och klammrar |
+| Relik-, slot- och nodikoner (16×16) | Slot-ramar, pulserande konturer, dimning |
+| Parallaxlager och golv i marschen | HP-barer, Ladda-mätaren, intent-text |
+| Träffblixt på en fiende (vit modulate) | Kritdamm, skärvor, number pops, tally-streck |
+| – | Tooltips, knappar, paneler, modaler |
+
+Två gränsfall, avgjorda:
+
+* **Kritdamm när en tärning aktiveras** är krita, inte pixlar. Partiklarna hör
+  till händelsen, inte till objektet.
+* **Fiendens HP-bar** är krita och ritas ovanför pixelsilhuetten, aldrig som en
+  pixelsprite. Annars måste varje fiende ha ett barark.
+
+### 8.2 Två CanvasLayers, olika filter
+
+| Lager | `layer` | `texture_filter` | Innehåll |
+|---|---|---|---|
+| `World` | 0 | `TEXTURE_FILTER_NEAREST` | All pixelgrafik |
+| `ChalkUI` | 10 | `TEXTURE_FILTER_LINEAR` | `chalk.gdshader`, `Line2D`, partiklar, fonter |
+
+Filtret ärvs nedåt, så det sätts en gång på respektive rotnod.
+Viewporten är `canvas_items` på 1080×1920 med `scale_mode = fractional` –
+**inte** integer scale. Integer scale skulle tvinga ned kritan i låg upplösning
+och döda exakt den handdragna mjukhet som *är* riktning A.
+
+### 8.3 Skala och snapping
+
+| Konsttyp | Källstorlek | Skala | Skärmstorlek |
+|---|---|---|---|
+| Tärning | 32 × 32 | **×5** | 160 px (6 i rad = 960 px + marginal på 1080) |
+| Karaktär / fiende | 48 × 48 (32 × 32 för de små) | **×4** | 192 px (128 px) |
+| Ikon (relik, slot, nod) | 16 × 16 | **×4** eller **×3** | 64 px / 48 px |
+| Parallax | 320 × 120 | **×4** | 1280 px bred kakling |
+
+Positionera alltid i heltalsmultipler av `ART_SCALE`. De globala `snap_2d_*`-
+flaggorna snappar mot viewportpixlar (1080-rutnätet), inte mot konstrutnätet,
+och hjälper därför inte. Kameror och tweens på pixelnoder måste kvantiseras
+likadant, annars kryper kanterna under marschen.
+
+### 8.4 Två shaders, två lager – aldrig korsvis
+
+* `src/game/shaders/palette_lut.gdshader` ligger **bara** på World-noder.
+  Den gör två jobb: tärningsmaterial (en gråskalekropp + LUT per material) och
+  stilenhetlighet (varje importerad sprite tvingas genom `lut_world.png`).
+  Utan den regeln spretar tre CC0-källor isär – det är den enskilt största
+  risken i hela grafikpipen enligt research 04.
+* `src/game/shaders/chalk.gdshader` ligger **bara** på ChalkUI-noder.
+  Lägger man kritshadern på pixelkonst suddas pixelrutnätet; lägger man
+  palett-LUT:en på kritan tappar kritan sina mellantoner. Båda misstagen är
+  lätta att göra och svåra att se på en telefon i solljus.
+* Förhandsvisningsscener för dev: `design/shader_preview_palette.tscn` och
+  `design/shader_preview_chalk.tscn`.
+
+### 8.5 Tillgänglighet i hybriden
+
+* **Reducerad rörelse:** parallaxhastigheterna nollställs (marschen blir en
+  hård övergång mellan rum), `chalk.gdshader` körs med `jitter_speed = 0.0`
+  så kornet och erosionen finns kvar men skakningen försvinner, och tärningarnas
+  tumbling ersätts av en 90 ms cross-fade till landningssidan.
+* **Färgblindhet:** varje tärningssida har en formkod (pipmönster eller glyph
+  från §2.3), varje fiende har en formburen tell (§9.4 i
+  `assets/sprites/README.md`). Ingen pixel bär information via färg ensam.
+* **Hög kontrast+:** World-lagret körs genom `lut_world.png` med förhöjd
+  `luma_gamma`, vilket separerar silhuett från botten utan att rita om något.
+
+---
+
+## 9. Tärningarnas visuella spec
+
+Tärningen är spelets enda "fysiska" objekt och ska alltid vara det öga dras
+till (§1A). Den är därför den enda pixelsaken som får ligga i tumzonen.
+
+### 9.1 Komposition, inte färdiga bilder
+
+En tärning är fyra staplade `Sprite2D` i z-ordning:
+
+| z | Nod | Textur | Not |
+|---|---|---|---|
+| 0 | `Body` | `dice/die_body_gray.png` | `palette_lut.gdshader` + `lut_<material>.png` |
+| 1 | `Glyph` | `dice/pips_<0-6>.png` eller `dice/glyph_<namn>.png` | `modulate` = semantisk token (§2.3) |
+| 2 | `Rim` | `dice/glass_highlight.png` | endast glas, blend Add |
+| 3 | `Crack` | `dice/crack_<1-3>.png` | endast sprucken, variant seedad per tärning |
+
+45 kombinationer täcks av 25 filer. En ny smidbar sida i M2 kostar **en glyph**.
+
+### 9.2 Material
+
+| Material | LUT | Läsning |
+|---|---|---|
+| `IRON` | `lut_iron.png` | Kall grå, tung. Smedens startuppsättning. |
+| `BONE` | `lut_bone.png` | Varm elfenben (`bone/die #E8E0CF`). Standardläsning "tärning". |
+| `GLASS` | `lut_glass.png` | Iskall cyan + additiv kant. **Glas ser ömtåligt ut med flit** – spelaren ska känna sprickrisken innan den inträffar. |
+
+Materialbyte animeras med `lut_strength` 0 → 1 över 220 ms (`motion/base`),
+aldrig med en texturväxling.
+
+### 9.3 Sidor
+
+| Sida i `content.gd` | Overlay | Modulate |
+|---|---|---|
+| `PIP_1` … `PIP_6` | `pips_1` … `pips_6` | `bone/pip` |
+| `CRACKED`, värde 0 | `pips_0` (ihålig ring) + `crack_*` | `bone/pip` |
+| `POISON_DROP` | `glyph_gift` | `sem/poison` |
+| `EMBER` | `glyph_eld` | `sem/fire` |
+| `VAMP_FANG` | `glyph_blod` | `sem/blood` |
+| `HOLLOW` | `glyph_tomrum` | `sem/shield` |
+| `SNOWBALL`, `TWIN_EYE`, `HAMMER_FACE`, `LEAD_SIX` | `pips_<värde>` + krit-badge | `bone/pip` |
+
+De fyra sista får egna glypher i M2. Skälet att inte tvinga fram dem nu: på
+32 px tål ytan **en** form. Hellre en ärlig siffra med en kritbadge än två
+otydliga symboler ovanpå varandra.
+
+### 9.4 Rullning (`die_rolled`) — 420 ms
+
+* **Visuellt:** `Body.texture = dice/die_tumble_gray.png` (`hframes = 6`),
+  6 frames à 50 ms, `Glyph.visible = false`. På landningsframen poppar rätt
+  glyph in med squash 1,00 → 1,14 → 1,00 över 80 ms. **Glyphen animeras aldrig.**
+* **Ljud:** tre träklick med fallande täthet, sedan ett torrt anslag på landningen.
+* **Haptik:** `light` endast på landningen, en gång för hela kastet – inte per tärning.
+* **Reducerad rörelse:** ingen tumbling, cross-fade 90 ms till landningssidan.
+
+### 9.5 Storlek och träffyta
+
+64 dp visuellt i brickan (§2.9), 72 dp träffyta. Vid ×5 på 1080-viewporten är
+32 px-tärningen 160 px = 53 dp på en 360 dp-skärm; brickan skalar därför
+tärningen till `clamp(46, (100vw − 62)/6, 58)` dp precis som i wireframen, och
+pixelrutnätet hålls heltaligt genom att skalan låses till ×4 eller ×5 och
+avståndet mellan tärningarna bär resten av justeringen.
+
+---
+
+## 10. Marschremsan (sidescroll) i portrait
+
+Nod-grafen är fortfarande datamodellen (StS-struktur). Marschen är hur den
+*visas*: figuren går åt höger, och vid en förgrening stannar den och spelaren
+tappar sitt val i tumzonen.
+
+### 10.1 Layout
+
+| Zon | Höjd (360 × 640 dp) | Höjd (430 × 932 dp) | Innehåll |
+|---|---|---|---|
+| Safe area topp | 16 | 20 | – |
+| HUD | 56 | 56 | HP, Ladda-mätare, relikbricka, våningsindikator |
+| **Marschremsa** | **268** | **392** | Parallax + figur + kommande noder |
+| Nodkort ("nästa: STRID · 3 fiender") | 96 | 104 | Krita, läs-endast |
+| Tumzon: vägval | 148 | 300 | 2–3 knappar, 56 dp höga, 12 dp gap |
+| Safe area botten | 24 | 24 | – |
+
+Marschremsan slutar alltså vid **52 %** av skärmhöjden på liten skärm, vilket
+håller tumzonsregeln (allt interaktivt under 58 %).
+
+### 10.2 Parallaxhastigheter
+
+| Lager | Fil | `motion_scale.x` | Roll |
+|---|---|---|---|
+| Fjärran | `env/floor1_parallax_far.png` | **0,15** | Silhuett, ingen detalj |
+| Mitt | `env/floor1_parallax_mid.png` | **0,45** | Pelare och rör, ger djup |
+| Golv | `env/floor1_tile.png` | **1,00** | Figurens plan |
+| Förgrund | `env/floor1_parallax_near.png` | **1,20** | Skräp som sveper förbi, mörkt så figuren poppar |
+
+Alla lager är horisontellt kaklingsbara; `motion_mirroring.x = 320 * ART_SCALE`.
+Marschhastighet 40 konstpixlar/s (= 160 px/s vid ×4), vilket ger ~4 s mellan
+två noder. Figuren står still på skärmens **38 %-linje** – vänster om mitten,
+så spelaren ser mer av vad som kommer än av vad som passerat.
+
+### 10.3 Förgreningar
+
+1. Figuren saktar in över 300 ms och går till `idle`.
+2. Krit-UI:t ritar 2–3 streck framåt från figuren (`Line2D` + `chalk.gdshader`,
+   140 ms per streck, vänster→höger – samma kausalitetsspråk som kedjan).
+3. Varje streck slutar i en nodikon (`ui/node_*.png`, 16 px ×3 = 48 dp) med
+   krit-ram och **utskriven etikett** (`STRID`, `ELIT`, `SMEDJA`, `VILA`,
+   `BOSS`, `MYSTERIUM`). Ikonerna i remsan är **läs-endast**.
+4. Valet görs på knapparna i tumzonen, 56 dp höga, full bredd − 2×16 dp,
+   12 dp mellan. Knappen upprepar ikon + etikett + en rad förhandsinfo.
+5. Vid tryck: knapparna tonar ut (140 ms), strecket till vald nod fylls i
+   (`motion/base`), figuren går vidare. Övriga streck suddas med `wipe`-
+   uniformen i `chalk.gdshader`.
+
+**Ingen joystick, ingen fri gång.** Spelaren har noll rörelseinput – marschen
+är pacing och utrustningsskyltning, inte utforskning.
+
+### 10.4 Reducerat rörelse-läge
+
+Parallaxen står still, figuren spelar `idle`, och nodvalet presenteras direkt
+som en kortlista. Marschen blir då en 300 ms cross-fade i stället för 4 s gång.
+Ingen information går förlorad – allt som marschen visar finns också i
+nodkortet och på knapparna.
+
+---
+
+## 11. Asset-checklista för nytt innehåll
+
+Kör den här listan **innan** en ny sprite committas. Punkt 1–3 är designval,
+4–8 är kvalitet, 9–12 är regelefterlevnad och CI.
+
+1. **Vilket id?** Sprite-namnet ska gå att mappa till ett id i
+   `src/data/content.gd` (fiende, relik, sida, slot, nod). Finns inget id –
+   varför finns spriten?
+2. **Vilken tell?** Vad i silhuetten berättar regeln? En fiende utan synlig
+   tell är en HP-stapel med hatt.
+3. **Pixel eller krita?** Se §8.1. Vid tveksamhet: bär den information om
+   orsak/verkan är den krita.
+4. **Rätt cell:** 16×16 ikon · 32×32 fiende/tärning · 48×48 karaktär (paperdoll
+   kräver exakt 384×192 per lagerark, se `assets/sprites/hero/PAPERDOLL.md`).
+5. **Palett:** enbart tokens ur §2, eller körd genom `lut_world.png`.
+   Inga främmande hexvärden i World-lagret.
+6. **Ljus uppifrån vänster.** Gäller varenda sprite, annars ser scenen
+   hopplockad ut även med rätt palett.
+7. **Silhuett-test:** fyll spriten svart och titta på den i ×1. Går den att
+   känna igen? Om inte, ändra formen – inte färgen.
+8. **Kontrast:** minst 4,5:1 mot `surface/pit` för allt spelkritiskt.
+   Formkod ska alltid finnas utöver färg (§2.3).
+9. **Licensrad:** rad i `assets/ASSET_LICENSES.csv` med `path,source,author,
+   license,url,retrieved,notes`. Licensen måste vara `CC0-1.0`, `OGA-BY-3.0`,
+   `CC-BY-4.0`, `OFL-1.1`, `proprietary-purchased` eller `own-work`.
+   **CC-BY-SA och GPL är förbjudna** (DECISIONS 2026-09-21).
+10. **Ingen AI-genererad rå asset.** AI får användas som skiss och för
+    mellanframes av sprites vi redan äger, aldrig som slutgiltig art.
+11. **Import:** Lossless, Nearest, ingen mipmap, `fix_alpha_border = true`,
+    `detect_3d/compress_to = 0` (`assets/sprites/README.md` §6).
+12. **Kör `python3 tools/check_asset_licenses.py`.** Grönt eller inget commit.
+    CI kör samma steg och failar bygget.
+
+Extra för animerade lager: samma `hframes`/`vframes` som kontraktet, samma
+origo, sista authorade framen upprepas i resten av raden.
+
+---
+
+## 12. Skisser och verifiering
 
 - `design/wireframe_combat.html` – stridsskärm. Tryck **BEKRÄFTA KEDJA** för att spela upp händelseloggen vänster→höger (`die_activated` ×4 → `combo_formed` ×4 → `damage_dealt` med överflöd → `round_end`). Tapp under uppspelning = snabbspolning, andra tappet = hoppa till slutet.
 - `design/wireframe_reward.html` – belöningsval 1 av 3 med sällsynthetsfärg + ramform + utskrivet ord, samt referensremsa över hela skalan.
+- `design/mockup_combat_pixel.html` – **hybriden med riktiga sprite-PNG:er**: Smeden som paperdoll-stapel (kappa → kropp → hjälm → vapen), tre fiender från rum 2 (`IRON_TICK`, `SLAG_MOTH`, `RUST_RAT`), tärningar komponerade som i Godot (kropp + pip/glyph + glaskant + spricka), tre parallaxlager + golvtile, allt under samma krit-UI.
+- `design/shader_preview_palette.tscn`, `design/shader_preview_chalk.tscn` – Godot-scener för de två shadrarna, öppnas direkt i editorn.
 - `design/fonts/` – lokala latin-subset av Anton, Familjen Grotesk och Caveat Brush. Mockuperna är helt självständiga och gör ingen nätverkstrafik.
 - `design/screenshots/` – renderade headless i Chromium.
 
@@ -381,20 +636,31 @@ Om tooltip 3 aldrig triggas under strid 1 visas den i stället första gången e
 
 | Vy | 360×640 | 390×844 | 430×932 |
 |---|---|---|---|
-| Strid | ingen scroll | ingen scroll | ingen scroll |
+| Strid (wireframe) | ingen scroll | ingen scroll | ingen scroll |
 | Strid, kedja spelas upp | ingen scroll | ingen scroll | ingen scroll |
 | Belöning | ingen scroll | ingen scroll | ingen scroll |
+| **Strid, hybrid pixel + krita** | ingen scroll | ingen scroll | ingen scroll |
 
 Ingen horisontell scroll och ingen vertikal scroll på någon storlek; allt ryms inom viewporten.
 Tärningsstorleken i brickan är `clamp(46px, (100vw − 62px)/6, 58px)` vilket ger **49,7 dp på 360 dp bredd** – över 48 dp-kravet även på den smalaste målskärmen.
 
+Pixelskalorna i hybridmockupen är **heltal på enhetspixelnivå** (deviceScaleFactor 2):
+hjälte 48 px-cell i 72 CSS px = ×6, fiender 32 px i 64 CSS px = ×4, tärningar 32 px i
+48 CSS px = ×3, ikoner 16 px i 26–32 CSS px. På 360 dp bredd ryms hjälte + tre fiender
+utan klippning (72 + 3×64 + gap = 288 av 328 tillgängliga).
+
 **Kända avvikelser mellan mockup och spec (medvetna):**
 - Kritjittret är här ett SVG `feDisplacementMap`-filter. I Godot blir det `chalk.gdshader` på samma princip (noise-UV-offset + grain + alpha-erosion).
-- Fiendesilhuetterna är placeholder-SVG:er. I spelet ritas de som `Polygon2D` per fiendetyp.
+- `wireframe_combat.html` använder fortfarande placeholder-SVG:er för fiender. `mockup_combat_pixel.html` använder de riktiga PNG:erna och är den som gäller för hybriden.
+- Parallaxen i mockupen står still. I spelet rör sig lagren med hastigheterna i §10.2.
+- Palett-LUT-shadern kan inte köras i HTML; i mockupen används de förtintade tärningskropparna (`die_body_{iron,bone,glass}.png`) i stället för gråskalemastern.
 - Partiklar, hit-stop, ljud och haptik finns inte i HTML-mockupen – se §5 för specen.
 
-## 9. Öppna frågor till PM
+## 13. Öppna frågor till PM
 
-1. Godkänn riktning A (KRITGROPEN). B sparas som upplåsningsbart tema, C avfärdas.
-2. `chalk.gdshader` är riktningens enda kritiska tekniska beroende – bör läggas som eget backlog-ärende i M2.
-3. Reducerat rörelse-läge och färgblindspalett ligger i BACKLOG som "M2 om tid finns". Rekommendation: flytta in i M2 hårt – båda är billiga om de byggs in från start och dyra att retrofitta.
+1. ~~Godkänn riktning A~~ – **beslutad**. Hybriden pixel + krita är beslutad av Anders (DECISIONS 2026-09-21).
+2. ~~`chalk.gdshader` är riktningens enda kritiska tekniska beroende~~ – **byggd**, ligger i `src/game/shaders/` med förhandsvisningsscen. Samma sak för `palette_lut.gdshader`.
+3. ~~Reducerat rörelse-läge och färgblindspalett~~ – **flyttade in i M2 hårt** (DECISIONS 2026-09-21).
+4. **Nytt:** de CC0-källor DECISIONS pekar ut (0x72, Kenney, Pixel Frog, Szadi art) är blockerade av egress-policyn i den här miljön. M1 går därför vidare på egengjorda sprites i rätt palett och rätt rutnät, med en dokumenterad utbytesplan (`assets/sprites/README.md` §0). PM avgör om hämtningen ska göras i en miljö med öppnare nät, eller om Oryx Mega Pack (≈25 USD) ska köpas i M2 i stället.
+5. **Nytt:** fyra smidbara sidor (`SNOWBALL`, `TWIN_EYE`, `HAMMER_FACE`, `LEAD_SIX`) saknar egen glyph i M1 och visas som pip + krit-badge (§9.3). Bör få glypher i M2.
+6. **Nytt:** reliklagren i paperdollen är specificerade men inte ritade (`assets/sprites/hero/PAPERDOLL.md` §5). Tills de finns syns reliker bara i relikbrickan. Det är M1-snittet, inte slutläget.

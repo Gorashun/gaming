@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PIPWRECK – Stridsskärm, hybrid pixel + krita</title>
+<style>
+/* Lokala Google Fonts-subset (latin) – mockupen gör ingen nätverkstrafik */
+@font-face{font-family:'Anton';src:url('fonts/anton-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Caveat Brush';src:url('fonts/caveatbrush-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Familjen Grotesk';src:url('fonts/familjengrotesk-var.woff2') format('woff2');font-weight:400 700;font-display:swap}
+</style>
+<style>
+/* ===== Designtokens, UI_GUIDE §2 ===== */
+:root{
+  --pit:#0E1216; --slate:#161B21; --raised:#1F262E; --line:#2C353F;
+  --chalk100:#F2EDE3; --chalk300:#CFC7B8; --chalk500:#9A9486;
+  --bone:#E8E0CF; --pip:#12161A;
+  --fire:#FF6A2C; --poison:#B77FFF; --frost:#6ED2F5; --heal:#4FE3A0;
+  --blood:#FF556F; --charge:#FFD447; --shield:#D7DEE6;
+  --s-eld:#FF6A2C; --s-spegel:#6ED2F5; --s-amboss:#D7DEE6; --s-ladda:#FFD447; --s-tomrum:#8A94A6;
+  --x2:#FFD447; --x4:#FF8A2C;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px;
+  --r-chip:4px; --r-btn:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow-x:hidden}
+body{
+  background:var(--pit);color:var(--chalk100);
+  font-family:'Familjen Grotesk','Segoe UI',system-ui,sans-serif;
+  display:flex;justify-content:center;
+}
+/* kritkorn, motsvarar grain-steget i chalk.gdshader */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.15;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.55'/></svg>");
+  mix-blend-mode:overlay;
+}
+.app{
+  width:100%;max-width:430px;height:100dvh;min-height:100%;
+  display:flex;flex-direction:column;padding:0 var(--s4) var(--s3);
+  background:radial-gradient(120% 60% at 50% 0%, #171D24 0%, var(--pit) 72%);
+}
+
+/* ===== World-lagret: allt med .px är pixelgrafik (Nearest) ===== */
+.px{
+  image-rendering:pixelated;image-rendering:crisp-edges;
+  background-repeat:no-repeat;display:block;
+}
+
+/* ===== Toppfält (krita) ===== */
+.top{flex:0 0 auto;display:flex;align-items:center;gap:9px;height:44px;white-space:nowrap}
+.hp{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;letter-spacing:.04em}
+.hp .glyph{color:var(--blood);font-size:15px}
+.hpbar{width:54px;height:9px;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:#0B0F13}
+.hpbar i{display:block;height:100%;width:74%;background:var(--blood)}
+.floor{font-family:'Anton',sans-serif;font-size:16px;letter-spacing:.06em;color:var(--chalk300);
+  border:1.5px solid var(--line);border-radius:var(--r-chip);padding:1px 6px}
+.relics{margin-left:auto;display:flex;gap:5px;align-items:center}
+.relics .px{width:26px;height:26px;background-size:26px 26px;opacity:.95}
+.charge{display:flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--charge)}
+.charge b{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--charge);display:block}
+.charge b.on{background:var(--charge)}
+
+/* ===== Stridszon: pixelvarld (parallax + golv + figurer) pa kritgrop ===== */
+.arena{
+  flex:1 1 auto;min-height:196px;position:relative;overflow:hidden;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s2);
+  padding:0 0 60px;border-bottom:2px solid var(--line);
+}
+/* parallaxlagren, hastighet 0,15 / 0,45 / 1,20 (UI_GUIDE §10.2) */
+.lay{position:absolute;left:-16px;right:-16px;background-repeat:repeat-x;pointer-events:none}
+.bg-far{bottom:52px;height:200px;background-image:url('../assets/sprites/env/floor1_parallax_far.png');
+  background-size:640px 240px;background-position:left bottom;opacity:.9;z-index:0}
+.bg-mid{bottom:52px;height:200px;background-image:url('../assets/sprites/env/floor1_parallax_mid.png');
+  background-size:640px 240px;background-position:left bottom;z-index:1}
+.bg-floor{bottom:0;height:56px;background-image:url('../assets/sprites/env/floor1_tile.png');
+  background-size:64px 64px;background-position:left top;z-index:2}
+.fg-near{bottom:-10px;height:128px;background-image:url('../assets/sprites/env/floor1_parallax_near.png');
+  background-size:640px 128px;background-position:left bottom;z-index:9}
+/* kritad golvlinje: gransen dar World slutar och ChalkUI tar vid */
+.floorline{position:absolute;left:-6px;right:-6px;bottom:54px;height:2px;
+  background:var(--chalk500);opacity:.5;filter:url(#jitter);z-index:3}
+
+/* hjalten: paperdoll-lager i z-ordning, 48px cell (x8 pa 2x-skarm) */
+.hero{position:relative;width:72px;height:72px;flex:0 0 auto;z-index:5}
+/* 48 px cell i x3 (x6 pa 2x-skarm) -> heltalsskala, inga halva pixlar */
+.hero .lyr{position:absolute;inset:0;width:72px;height:72px;background-size:576px 288px;background-position:0 0}
+.hero .cape{background-image:url('../assets/sprites/hero/smith_cape_ember.png');z-index:0}
+.hero .body{background-image:url('../assets/sprites/hero/smith_body.png');z-index:2}
+.hero .helm{background-image:url('../assets/sprites/hero/smith_helm_iron.png');z-index:5}
+.hero .weap{background-image:url('../assets/sprites/hero/smith_weapon_hammer.png');z-index:7}
+.hero .tag{position:absolute;left:50%;transform:translateX(-50%);top:-15px;
+  font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--chalk300)}
+
+.foes{display:flex;align-items:flex-end;gap:var(--s2);flex:1 1 auto;justify-content:flex-end;z-index:5}
+/* Krit-data ligger OVANFOR pixelvarelsen; varelsen star pa golvet. */
+.foe{display:flex;flex-direction:column;align-items:center;gap:2px;width:64px;position:relative}
+.foe .spr{width:64px;height:64px;background-size:256px 64px;background-position:0 0}
+.foe.boss .spr{width:72px;height:72px;background-size:288px 72px}
+.foe .nm{font-size:8px;font-weight:700;letter-spacing:.02em;color:var(--chalk300);text-transform:uppercase}
+.ehp{width:100%;height:9px;border:1.5px solid var(--chalk500);border-radius:2px;background:#0B0F13;position:relative;overflow:hidden}
+.ehp i{position:absolute;inset:0;background:var(--blood);transform-origin:left}
+.ehp span{position:absolute;inset:0;display:grid;place-items:center;font-size:8px;font-weight:700;color:var(--chalk100);text-shadow:0 0 3px #000}
+.foe .intent{display:flex;gap:6px;font-size:10px;font-weight:700;color:var(--fire);letter-spacing:.03em}
+.foe .intent em{font-style:normal;color:var(--shield)}
+/* number pop (krita) ovanpa pixelfienden */
+.pop{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:8;
+  font-family:'Anton',sans-serif;font-size:34px;line-height:1;color:var(--chalk100);
+  text-shadow:0 0 10px rgba(242,237,227,.45),0 0 3px #000}
+.pop i{display:block;font-family:'Familjen Grotesk',sans-serif;font-style:normal;
+  font-size:8px;font-weight:700;letter-spacing:.18em;margin-top:-2px;color:var(--chalk300)}
+
+/* ===== Kedjeförhandsvisning (krita) ===== */
+.preview{flex:0 0 auto;padding:10px 0 6px}
+.prow{display:flex;align-items:baseline;gap:var(--s2)}
+.ptotal{font-family:'Anton',sans-serif;font-size:40px;line-height:.9}
+.plabel{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--chalk500);text-transform:uppercase}
+.psplit{margin-top:3px;display:flex;flex-wrap:wrap;gap:var(--s2);font-size:11px;color:var(--chalk300)}
+.psplit em{font-style:normal;color:var(--fire);font-weight:700}
+
+/* ===== Slots (krita) med pixelärningar i ===== */
+.slots{display:flex;gap:5px;justify-content:space-between}
+.slot{
+  flex:1 1 0;min-width:0;height:88px;border-radius:var(--r-chip);background:var(--raised);
+  position:relative;display:flex;flex-direction:column;align-items:center;padding-top:4px;gap:2px;
+}
+.slot.vanlig{border:2px solid var(--line)}
+.slot.spegel{border:4px double var(--s-spegel)}
+.slot.eld{border:2px solid var(--s-eld)}
+.slot.amboss{border:4px solid var(--s-amboss)}
+.slot .ico{width:16px;height:16px;background-size:16px 16px}
+.slot .ttl{font-size:7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--chalk500)}
+.slot.spegel .ttl{color:var(--s-spegel)} .slot.eld .ttl{color:var(--s-eld)} .slot.amboss .ttl{color:var(--s-amboss)}
+.slot .empty{margin-top:12px;font-size:8px;color:var(--chalk500);letter-spacing:.06em}
+.slot .idx{position:absolute;bottom:1px;right:3px;font-size:8px;color:var(--chalk500)}
+
+/* ===== Tärning = staplade PNG-lager, exakt som i Godot ===== */
+.die{position:relative;width:48px;height:48px;flex:0 0 auto}
+.die .l{position:absolute;inset:0;width:48px;height:48px;background-size:48px 48px}
+.die .body{z-index:0} .die .glyph{z-index:1} .die .rim{z-index:2} .die .crack{z-index:3}
+.b-iron{background-image:url('../assets/sprites/dice/die_body_iron.png')}
+.b-bone{background-image:url('../assets/sprites/dice/die_body_bone.png')}
+.b-glass{background-image:url('../assets/sprites/dice/die_body_glass.png')}
+.rimg{background-image:url('../assets/sprites/dice/glass_highlight.png')}
+.die .lbl{position:absolute;left:50%;transform:translateX(-50%);bottom:-13px;
+  font-size:8px;font-weight:700;letter-spacing:.06em;color:var(--chalk500);white-space:nowrap}
+
+/* kedjelinje + brace (krita) */
+.chainline{position:relative;height:34px;margin-top:1px}
+.chainline .seg{position:absolute;top:24px;height:2px;background:var(--chalk500);opacity:.55;filter:url(#jitter)}
+.chainline .arrow{position:absolute;top:17px;font-size:11px;color:var(--chalk500)}
+.brace{position:absolute;top:4px;font-family:'Anton',sans-serif;font-size:16px;color:var(--x2);text-align:center}
+.brace>b{background:var(--pit);padding:0 3px;display:inline-block;font-weight:400}
+.brace::before{content:"";position:absolute;left:6%;right:6%;top:-4px;height:8px;
+  border-top:2px solid var(--x2);border-left:2px solid var(--x2);border-right:2px solid var(--x2);
+  border-radius:6px 6px 0 0;opacity:.75}
+.brace small{display:block;background:var(--pit);font-family:'Familjen Grotesk',sans-serif;
+  font-size:7px;letter-spacing:.1em;opacity:.85;margin-top:-3px}
+
+/* ===== Tumzon ===== */
+.tray{flex:0 0 auto;margin-top:6px}
+.trayhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.trayhdr h2{font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--chalk500);text-transform:uppercase}
+.trayhdr .undo{height:30px;padding:0 11px;border:1.5px solid var(--line);border-radius:var(--r-btn);
+  background:none;color:var(--chalk300);font:700 11px/1 'Familjen Grotesk',sans-serif;letter-spacing:.08em}
+.hand{display:flex;gap:6px;justify-content:space-between}
+.hand .die.used{opacity:.24}
+.actions{flex:0 0 auto;display:flex;gap:var(--s2);margin-top:22px}
+.btn-sec{flex:0 0 102px;height:56px;border-radius:var(--r-btn);background:transparent;
+  border:2px solid var(--chalk500);color:var(--chalk100);
+  font:700 12px/1.15 'Familjen Grotesk',sans-serif;letter-spacing:.06em}
+.btn-sec b{display:block;font-size:9px;font-weight:700;color:var(--chalk500);letter-spacing:.1em;margin-top:3px}
+.btn-pri{flex:1 1 auto;height:56px;border-radius:var(--r-btn);border:2px solid var(--chalk100);
+  background:var(--chalk100);color:var(--pit);
+  font:700 15px/1 'Familjen Grotesk',sans-serif;letter-spacing:.06em;
+  display:flex;align-items:center;justify-content:center;gap:9px}
+.btn-pri .sum{font-family:'Anton',sans-serif;font-size:23px}
+.scrawl{position:absolute;font-family:'Caveat Brush',cursive;font-size:16px;color:var(--charge);
+  pointer-events:none;line-height:1.05}
+</style>
+</head>
+<body>
+
+<!-- Simulerar chalk.gdshader: UV-jitter på kritstreck -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="jitter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<div class="app">
+
+  <!-- ===== HUD (krita) ===== -->
+  <div class="top">
+    <div class="hp"><span class="glyph">◖</span><span>74/100</span>
+      <div class="hpbar"><i></i></div>
+    </div>
+    <div class="floor">V1 · RUM 2</div>
+    <div class="relics">
+      <div class="px" style="background-image:url('../assets/sprites/items/relic_blood_price.png')" title="BLOOD_PRICE"></div>
+      <div class="px" style="background-image:url('../assets/sprites/items/relic_cheat_cube.png')" title="CHEAT_CUBE"></div>
+      <div class="charge">LADDA<b class="on"></b><b class="on"></b><b></b></div>
+    </div>
+  </div>
+
+  <!-- ===== Arena: pixelvärld, kritgolv, kritsiffror ===== -->
+  <div class="arena">
+    <div class="lay bg-far px"></div>
+    <div class="lay bg-mid px"></div>
+    <div class="lay bg-floor px"></div>
+    <div class="floorline"></div>
+
+    <div class="hero">
+      <div class="lyr cape px"></div>
+      <div class="lyr body px"></div>
+      <div class="lyr helm px"></div>
+      <div class="lyr weap px"></div>
+      <div class="tag">SMEDEN</div>
+    </div>
+
+    <div class="foes">
+      <div class="foe">
+                <div class="pop">21<i>ÖVERFLÖD</i></div>
+                <div class="nm">Järnfästing</div>
+        <div class="ehp"><i style="transform:scaleX(.62)"></i><span>29/46</span></div>
+        <div class="intent"><em>⬟6</em><span>⚔ 5</span></div>
+      <div class="spr px" style="background-image:url('../assets/sprites/enemies/iron_tick.png')"></div>
+      </div>
+      <div class="foe">
+                        <div class="nm">Slaggmal</div>
+        <div class="ehp"><i style="transform:scaleX(1)"></i><span>34/34</span></div>
+        <div class="intent"><em>⬟1</em><span>⬤ −3</span></div>
+      <div class="spr px" style="background-image:url('../assets/sprites/enemies/slag_moth.png')"></div>
+      </div>
+      <div class="foe">
+                        <div class="nm">Rostråtta</div>
+        <div class="ehp"><i style="transform:scaleX(.43)"></i><span>12/28</span></div>
+        <div class="intent"><em>⬟2</em><span>⚔ 3</span></div>
+      <div class="spr px" style="background-image:url('../assets/sprites/enemies/rust_rat.png')"></div>
+      </div>
+    </div>
+    <div class="lay fg-near px"></div>
+  </div>
+
+  <!-- ===== Förhandsvisning (krita) ===== -->
+  <div class="preview">
+    <div class="prow">
+      <div class="ptotal">48</div>
+      <div class="plabel">Kedjan · förhandsvisad</div>
+    </div>
+    <div class="psplit"><span>27 → JÄRNFÄSTING</span><span class="ovf"><em>↳ 21 → SLAGGMAL (överflöd)</em></span></div>
+  </div>
+
+  <!-- ===== Slots (krita) med pixelärningar ===== -->
+  <div class="board">
+    <div class="slots">
+      <div class="slot vanlig">
+        <div class="ico px" style="background-image:url('../assets/sprites/ui/slot_plain.png')"></div>
+        <div class="ttl">Vanlig</div>
+        <div class="die"><div class="l body px b-iron"></div>
+          <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_5.png')"></div></div>
+        <div class="idx">1</div>
+      </div>
+      <div class="slot vanlig">
+        <div class="ico px" style="background-image:url('../assets/sprites/ui/slot_plain.png')"></div>
+        <div class="ttl">Vanlig</div>
+        <div class="die"><div class="l body px b-iron"></div>
+          <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_5.png')"></div></div>
+        <div class="idx">2</div>
+      </div>
+      <div class="slot spegel">
+        <div class="ico px" style="background-image:url('../assets/sprites/ui/slot_mirror.png')"></div>
+        <div class="ttl">Spegel</div>
+        <div class="die"><div class="l body px b-bone"></div>
+          <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_0.png')"></div></div>
+        <div class="idx">3</div>
+      </div>
+      <div class="slot eld">
+        <div class="ico px" style="background-image:url('../assets/sprites/ui/slot_fire.png')"></div>
+        <div class="ttl">Eld</div>
+        <div class="die"><div class="l body px b-glass"></div>
+          <div class="l glyph px" style="background-image:url('../assets/sprites/dice/glyph_eld.png');filter:none;opacity:1"></div>
+          <div class="l rim px rimg"></div></div>
+        <div class="idx">4</div>
+      </div>
+      <div class="slot amboss">
+        <div class="ico px" style="background-image:url('../assets/sprites/ui/slot_anvil.png')"></div>
+        <div class="ttl">Amboss</div>
+        <div class="empty">TOM</div>
+        <div class="idx">5</div>
+      </div>
+    </div>
+
+    <div class="chainline">
+      <div class="seg" style="left:12%;width:16%"></div><div class="arrow" style="left:27%">›</div>
+      <div class="seg" style="left:32%;width:16%"></div><div class="arrow" style="left:47%">›</div>
+      <div class="seg" style="left:52%;width:16%"></div><div class="arrow" style="left:67%">›</div>
+      <div class="brace" style="left:4%;width:38%"><b>×2</b><small>PAR</small></div>
+    </div>
+  </div>
+
+  <!-- ===== Tumzon: brickan ===== -->
+  <div class="tray">
+    <div class="trayhdr">
+      <h2>Brickan · 6 tärningar</h2>
+      <button class="undo">ÅNGRA</button>
+    </div>
+    <div class="hand">
+      <div class="die used"><div class="l body px b-iron"></div>
+        <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_5.png')"></div>
+        <div class="lbl">PLACERAD</div></div>
+      <div class="die used"><div class="l body px b-iron"></div>
+        <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_5.png')"></div>
+        <div class="lbl">PLACERAD</div></div>
+      <div class="die used"><div class="l body px b-bone"></div>
+        <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_0.png')"></div>
+        <div class="lbl">PLACERAD</div></div>
+      <div class="die"><div class="l body px b-iron"></div>
+        <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_3.png')"></div>
+        <div class="lbl">3</div></div>
+      <div class="die"><div class="l body px b-bone"></div>
+        <div class="l glyph px" style="background-image:url('../assets/sprites/dice/glyph_gift.png')"></div>
+        <div class="lbl">GIFT 2</div></div>
+      <div class="die"><div class="l body px b-glass"></div>
+        <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_2.png')"></div>
+        <div class="l rim px rimg"></div>
+        <div class="l crack px" style="background-image:url('../assets/sprites/dice/crack_2.png')"></div>
+        <div class="lbl">SPRUCKEN</div></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-sec">OMKAST<b>1 / 1</b></button>
+    <button class="btn-pri">BEKRÄFTA KEDJA <span class="sum">48</span></button>
+  </div>
+
+</div>
+</body>
+</html>
