@@ -321,6 +321,12 @@ Titel → Klassval → [ Strid → Belöningsval → (Smedja) → Karta ]×12 �
 
 ## 5. Feedback-spec ("juice")
 
+> **Ljudfilerna finns.** Varje cue nedan är levererad i `assets/sfx/`
+> (17 st, `own-work`, genererade av `tools/gen_sfx.py`). Event → fil →
+> mix-dB → pitch-regel står i `assets/sfx/README.md`.
+> **Den exakta tidslinjen för en hel runda ligger i §12** – §5 är *vad* varje
+> event gör, §12 är *när*.
+
 Tidsbudget: en kedja på 6 tärningar utan kombinationer = **6 × 260 ms ≈ 1,56 s**. Med två kombinationer och en död fiende ≈ **2,3 s**. Tak: **2,5 s**. Allt däröver komprimeras automatiskt (se §5.9).
 
 **Global tonhöjdsregel:**
@@ -391,6 +397,8 @@ där `step_index` = 0…5 (nollställs varje runda) och `combo_bonus` = 0 / 2 / 
 ## 6. Tillgänglighet
 
 ### 6.1 Reducerat rörelse-läge (`reduced_motion`)
+
+**Fullständig tabell i §12.6.** Sammanfattning:
 - Ingen skärmskak, ingen zoom-punch, ingen kamerarörelse.
 - Partiklar ersätts av en statisk burst-sprite som tonar ut.
 - Hit-stop halveras.
@@ -683,7 +691,143 @@ origo, sista authorade framen upprepas i resten av raden.
 
 ---
 
-## 12. Skisser och verifiering
+## 12. Juice-tidslinje: en komplett runda, millisekund för millisekund
+
+Det här är **den normativa uppspelningen** av ett kedjefall. Dev ska kunna
+koda rakt av från tabellen: varje rad har bana, starttid, längd, visuell
+effekt, ljudfil, `pitch_scale` och haptiknivå.
+
+### 12.1 Scenariot
+
+Sex tärningar, värden **3 · 3 · 5 · 2 · 6 · 4**. Tärning 0 och 1 är lika och
+bredvid varandra ⇒ **par (×2)**. Kedjesteg 2 dödar Rostråtta A och **överflödar**
+till Rostråtta B. Kedjesteg 5 avslutar mot B. En oanvänd tärning ger
+**Laddning**. Det är alltså par + överflöd + kill i samma runda – det
+tätaste normalfallet, inte ett rekordfall.
+
+### 12.2 Banorna (ARCHITECTURE, `event_player.gd`)
+
+| Bana | Vad som ligger här | Hur markören flyttas |
+|---|---|---|
+| `CHAIN` | `die_activated`, `damage_dealt`, `enemy_killed`, `enemy_attack` | `ms_hint × 0,6` – **40 % överlapp**, nästa steg startar innan det förra är klart |
+| `BEAT` | `round_started`, `combo_formed`, `die_cracked`, `round_end` | `ms_hint` – ett taktslag äger sin tid ensamt |
+| `SIDE` | överflödshopp, `charge_stored`, statusar, `slot_modifier` | **0** – spelas parallellt, 60 ms stagger inbördes |
+
+**Hit-stop räknas in i eventets `ms_hint`, inte ovanpå.** En `combo_formed` ×2
+är 300 ms *inklusive* sin 40 ms frysning. Annars spräcker tre combos budgeten
+utan att en enda rad i tabellen ändras.
+
+### 12.3 Tidslinjen
+
+`pitch` följer §5:s globala regel `pow(2, (step + combo_bonus)/12)`, tak 2,0.
+`combo_bonus` = 0 fram till paret, 2 efter. Ljudfilerna och deras mix-dB står
+i `assets/sfx/README.md`.
+
+| # | Start | Bana | Event | Längd | Visuellt | Ljudfil | `pitch` | Haptik |
+|---|---|---|---|---|---|---|---|---|
+| 1 | **0** | BEAT | `round_started` | 180 | Sex tärningar landar i brickan (squash 1,14, 80 ms, 30 ms stagger). Slot-ramar tänds. | `die_activate.wav` ×6, 30 ms isär | 0,90 | `light` ×1 på sista landningen |
+| 2 | **180** | CHAIN | `die_activated` slot 0 | 220 | Skala 1,00→1,18→1,00. Kritring 32→72 dp. Slot-underline ritas v→h. 8 dammpartiklar. | `die_activate.wav` | **1,000** | `light` |
+| 3 | **312** | CHAIN | `die_activated` slot 1 | 220 | Samma, i slot 1:s färg | `die_activate.wav` | **1,059** | `light` |
+| 4 | **444** | BEAT | `combo_formed` ×2 | 300 | Tärning 0+1 dras ihop 4 dp. Kritklammer under dem (140 ms). Badge `×2` poppar 0,40→1,25→1,00, rot −6°→0°. Zoom-punch 1,03. Skak **2 dp** ×3. 12 partiklar. **Hit-stop 40 ms inuti.** | `combo_pair.wav` | **1,189** | `light` |
+| 5 | **744** | CHAIN | `die_activated` slot 2 | 220 | Som #2, men multiplikatorn syns i förhandsvisningen | `die_activate.wav` | **1,260** | `light` |
+| 6 | **876** | CHAIN | `damage_dealt` → Råtta A (24) | 260 | Number pop `24` i `display-xl`, stiger 24 dp, 0,60→1,30→1,00. A blixtrar vitt 60 ms, skakar 6 dp ×3. HP-bar dränerar efter 120 ms, spökspår i `sem/blood` 400 ms. | `damage_hit.wav` | **1,080** (skadeberoende, §3.2 i sfx-README) | `medium` |
+| 7 | **1 016** | SIDE | överflödshopp A→B | 140 | Kritpil ritas A→B (140 ms). Siffran flyttar med, byter till `#FF8A2C`, visar **kvarvarande 9**. | `damage_overflow.wav` | **1,414** | `light` |
+| 8 | **1 032** | CHAIN | `enemy_killed` A | 360 | Silhuetten spricker i 22 skärvor (utåtimpuls + gravitation). Helvit bildruta 33 ms. **Hit-stop 90 ms inuti.** Skak 5 dp. HP-baren kollapsar inåt. Death-frames 0→1→2 à 100 ms. | `enemy_killed.wav` | **1,122** (−2 halvtoner) | `heavy` |
+| 9 | **1 248** | CHAIN | `die_activated` slot 3 | 220 | Som #2 | `die_activate.wav` | **1,335** | `light` |
+| 10 | **1 380** | CHAIN | `die_activated` slot 4 | 220 | Som #2 | `die_activate.wav` | **1,414** | `light` |
+| 11 | **1 512** | SIDE | `charge_stored` (3 ögon) | 240 | Tre gula kritprickar lossnar och åker i bezierbåge till Ladda-mätaren, 60 ms stagger. Mätaren fyller med `ease_out` och pulserar en gång. | `charge_store.wav` ×3 | **1,414 / 1,498 / 1,587** | `light` **endast** på sista pricken |
+| 12 | **1 512** | CHAIN | `die_activated` slot 5 | 220 | Som #2 | `die_activate.wav` | **1,498** | `light` |
+| 13 | **1 644** | CHAIN | `damage_dealt` → Råtta B (11) | 260 | Number pop `11`. B blixtrar och rycker. | `damage_hit.wav` | **1,145** | `medium` |
+| 14 | **1 800** | BEAT | `round_end` | 600 | Totalsiffran rullar upp (240 ms). Brädet sveps av en squeegee-gradient v→h (300 ms) och lämnar smetrester. Tally-streck ristas in i kanten i `type/scrawl`. | `round_end.wav` | 1,000 | `medium` när totalen landar |
+
+**Markörens aritmetik** (så dev kan verifiera radernas starttider):
+
+```
+0    + 180 (BEAT)            = 180
+180  + 220*0.6 = 132 (CHAIN) = 312
+312  + 132                   = 444
+444  + 300 (BEAT)            = 744
+744  + 132                   = 876
+876  + 260*0.6 = 156 (CHAIN) = 1032
+1032 + 360*0.6 = 216 (CHAIN) = 1248
+1248 + 132                   = 1380
+1380 + 132                   = 1512
+1512 + 132                   = 1644
+1644 + 156                   = 1800
+1800 + 600 (BEAT)            = 2400
+```
+
+`SIDE`-raderna (#7, #11) flyttar inte markören; deras starttid är markörens
+läge när eventet kom, plus stagger.
+
+### 12.4 Budget
+
+| Post | ms |
+|---|---|
+| Kedjan P0–P3, `round_started` → sista `damage_dealt` klart | **1 904** |
+| `round_end` (P3-avslutning) | 600, startar 1 800 |
+| **Sista pixeln slutar röra sig** | **2 400** |
+| Tak (DECISIONS 2026-09-21) | 2 500 |
+| **Marginal** | **100 ms (4 %)** |
+
+Marginalen är liten med flit. Blir ett event längre ska ett annat kortas,
+inte taket höjas. Överskrids taket skalar `EventPlayer` hela tidslinjen
+linjärt **en gång** – aldrig genom att hoppa över ett event, eftersom ett
+uteblivet event är ett uteblivet orsakssamband.
+
+Vid `chain_speed`: Lugn ×1,25 = 3 000 ms (över taket, men det är spelarens
+egna val och rundtaket 3 200 ms håller), Normal ×1,0 = 2 400, Snabb ×0,6 =
+1 440, Blixt ×0,35 = 840.
+
+### 12.5 Haptik: sammanslagningsregel
+
+Tabellen ger 13 pulser på 2,4 s. Det är över gränsen för vad som känns som
+feedback och under gränsen för vad som känns som en vibrerande telefon.
+**Regel:** två haptikanrop närmare än **90 ms** slås ihop till ett enda med
+den starkaste nivån. Med tidslinjen ovan är minsta avstånd 132 ms, så inget
+slås ihop i normalfallet – men regeln skyddar mot `SIDE`-banan, som kan lägga
+en `light` mitt i ett `CHAIN`-steg.
+
+`light` 10 ms · `medium` 20 ms · `heavy` 30 ms. Inställningen "endast kritiska
+händelser" behåller bara `enemy_killed` och `die_cracked` (§6.4).
+
+### 12.6 Reducerad rörelse (`reduced_motion`)
+
+**Timingen ändras inte.** Alla starttider och längder i §12.3 gäller oförändrat,
+så ljudet, haptiken och kausaliteten lär fortfarande ut kedjan. Det som ändras
+är vad som ritas.
+
+| Effekt | Standard | `reduced_motion` |
+|---|---|---|
+| Skärmskak | 2 / 5 / 7 dp | **Av helt** |
+| Zoom-punch | 1,03–1,05 | **Av helt** |
+| Kamerarörelse / parallax | §10.2 | **Av** (marschen blir 300 ms cross-fade) |
+| Hit-stop | 40 / 90 / 110 / 180 ms | **Halveras** (20 / 45 / 55 / 90 ms) |
+| Number pop | 0,60→1,30→1,00 + rörelse uppåt | **Behålls**, men utan overshoot: 1,00→1,00, bara fade + 24 dp uppåt |
+| Träffblixt (vit `modulate` 60 ms) | vit blixt | **Ersätts av en 2 dp outline** i `sem/damage` runt målet, samma 60 ms |
+| Helvit bildruta vid `enemy_killed` | 33 ms | **Ersätts av outline-puls**, 33 ms |
+| Partiklar (kritdamm, skärvor) | 8–40 st med fysik | **En statisk burst-sprite** som tonar ut över samma tid |
+| Tärningens tumbling | 6 frames à 50 ms | **90 ms cross-fade** till landningssidan |
+| Badge-rotation −6°→0° | rotation | **Av**, badgen fadear in på plats |
+| Squeegee-svep vid `round_end` | svep v→h | **Cross-fade** över samma 300 ms |
+| `chalk.gdshader` | `jitter_speed = 1.4` | **`jitter_speed = 0.0`** – korn och erosion kvar, skakningen borta |
+| Ljud och haptik | enligt §12.3 | **Oförändrade** |
+
+Regeln i en mening: **rörelse tas bort, information aldrig.** Varje sak som
+stängs av ovan har en ersättare som bär samma information på samma tid.
+
+### 12.7 Vad som händer vid tapp
+
+* **Första tappet:** resterande rader körs på 35 % längd, alla hit-stops = 0,
+  all kvarvarande haptik slås ihop till ett `medium` vid slutet.
+* **Andra tappet:** händelseloggen appliceras direkt, ingen animation.
+* Utfallet ändras aldrig – varje event bär absoluta eftervärden
+  (`target_hp_after`, `pool_after`), vilket är precis varför snabbspolning är
+  bevisbart säker (ARCHITECTURE, `tests/test_event_player.gd`).
+
+---
+
+## 13. Skisser och verifiering
 
 - `design/wireframe_combat.html` – stridsskärm. Tryck **BEKRÄFTA KEDJA** för att spela upp händelseloggen vänster→höger (`die_activated` ×4 → `combo_formed` ×4 → `damage_dealt` med överflöd → `round_end`). Tapp under uppspelning = snabbspolning, andra tappet = hoppa till slutet.
 - `design/wireframe_reward.html` – belöningsval 1 av 3 med sällsynthetsfärg + ramform + utskrivet ord, samt referensremsa över hela skalan.
@@ -716,11 +860,22 @@ utan klippning (72 + 3×64 + gap = 288 av 328 tillgängliga).
 - Palett-LUT-shadern kan inte köras i HTML; i mockupen används de förtintade tärningskropparna (`die_body_{iron,bone,glass}.png`) i stället för gråskalemastern.
 - Partiklar, hit-stop, ljud och haptik finns inte i HTML-mockupen – se §5 för specen.
 
-## 13. Öppna frågor till PM
+## 14. Öppna frågor till PM
 
 1. ~~Godkänn riktning A~~ – **beslutad**. Hybriden pixel + krita är beslutad av Anders (DECISIONS 2026-09-21).
 2. ~~`chalk.gdshader` är riktningens enda kritiska tekniska beroende~~ – **byggd**, ligger i `src/game/shaders/` med förhandsvisningsscen. Samma sak för `palette_lut.gdshader`.
 3. ~~Reducerat rörelse-läge och färgblindspalett~~ – **flyttade in i M2 hårt** (DECISIONS 2026-09-21).
 4. **Nytt:** de CC0-källor DECISIONS pekar ut (0x72, Kenney, Pixel Frog, Szadi art) är blockerade av egress-policyn i den här miljön. M1 går därför vidare på egengjorda sprites i rätt palett och rätt rutnät, med en dokumenterad utbytesplan (`assets/sprites/README.md` §0). PM avgör om hämtningen ska göras i en miljö med öppnare nät, eller om Oryx Mega Pack (≈25 USD) ska köpas i M2 i stället.
 5. **Nytt:** fyra smidbara sidor (`SNOWBALL`, `TWIN_EYE`, `HAMMER_FACE`, `LEAD_SIX`) saknar egen glyph i M1 och visas som pip + krit-badge (§9.3). Bör få glypher i M2.
-6. **Nytt:** reliklagren i paperdollen är specificerade men inte ritade (`assets/sprites/hero/PAPERDOLL.md` §5). Tills de finns syns reliker bara i relikbrickan. Det är M1-snittet, inte slutläget.
+6. ~~reliklagren i paperdollen är specificerade men inte ritade~~ – **ritade i
+   M2.** Alla sex reliker har konst på både primär- och reservlager
+   (`assets/sprites/hero/PAPERDOLL.md` §3 och §5). Dev behöver ett uppslag
+   `(lager, relik-id) → fil`, kodskiss finns i PAPERDOLL §5.
+7. **Nytt:** `palette_lut.gdshader` är fixad och mätt i båda renderarna
+   (`design/shader_probe.tscn`). Dev kan gå tillbaka till gråskala + LUT för
+   tärningskroppar, vilket också gör `lut_strength`-tweenen i §9.2 användbar.
+8. **Nytt:** fiendearken är nu `hframes 4 / vframes 2` med en `death`-rad.
+   `Art.ENEMIES` och `Art.enemy_frames()` behöver en rad var.
+9. **Nytt:** §2.11 (Hög kontrast+) och §12.6 (reducerad rörelse) är
+   specificerade men inte kopplade till någon inställning i koden. Båda är
+   M2-krav enligt DECISIONS 2026-09-21.
