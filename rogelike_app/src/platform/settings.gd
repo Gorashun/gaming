@@ -17,17 +17,27 @@ extends Node
 
 const PATH: String = "user://settings.cfg"
 const SECTION: String = "pipwreck"
+## Spelets standardspråk. [b]Aldrig enhetens.[/b]
+const DEFAULT_LOCALE: String = "en"
 
-## Standardvärden. [code]locale[/code] tomt betyder "rör inte språket": då
-## gäller projektets eget val, vilket är det som [code]--locale=sv[/code] i
-## rökprovet och systemspråket på en telefon sätter.
+## Standardvärden.
+##
+## [b]DECISIONS 2026-09-21: [code]locale[/code] är "en", inte "".[/b] Godot
+## väljer annars operativsystemets språk automatiskt, och Anders svenska telefon
+## visade därför svenska utan att någon bett om det. Engelska är källspråket
+## (CLAUDE.md) och ska vara standard oavsett enhet; svenska bara om spelaren
+## själv väljer det i inställningarna.
+##
+## Tom sträng betyder fortfarande "rör inte språket" och är tillåten i filen –
+## en äldre sparad inställning ska inte krascha – men den skrivs aldrig av oss.
 const DEFAULTS: Dictionary = {
-	"locale": "",
+	"locale": DEFAULT_LOCALE,
 	"sfx_volume": 80,
 	"haptics": true,
 	"reduced_motion": false,
 	"high_contrast": false,
 	"chain_speed": 1.0,
+	"smith_variant": "",
 }
 
 ## Någon inställning har ändrats. [param key] är fältnamnet.
@@ -36,7 +46,8 @@ signal changed(key: StringName)
 ## Går att peka om i tester. Rör aldrig i speldrift.
 var config_path: String = PATH
 
-## "en" / "sv" / "" (= projektets standard).
+## "en" / "sv". Tom sträng accepteras från en äldre fil och betyder "rör inte
+## språket"; nya filer får alltid ett uttryckligt språk.
 var locale: String = String(DEFAULTS["locale"])
 ## 0–100. 0 är helt tyst och spelet ska fortfarande gå att spela (UI_GUIDE §6.4:
 ## "all pitch-information dubbleras visuellt av multiplikator-badgen").
@@ -49,6 +60,11 @@ var reduced_motion: bool = bool(DEFAULTS["reduced_motion"])
 var high_contrast: bool = bool(DEFAULTS["high_contrast"])
 ## Kedjetempo, UI_GUIDE §2.10: Lugn 1,25 · Normal 1,0 · Snabb 0,6 · Blixt 0,35.
 var chain_speed: float = float(DEFAULTS["chain_speed"])
+## Smedens kroppsvariant, "a" eller "b". Tom sträng = inte valt ännu, vilket är
+## det som utlöser könsvalsskärmen vid första start (DECISIONS 2026-09-21).
+## [b]Ligger här och inte i sparfilen[/b]: valet ska överleva att en run tar
+## slut och att sparfilen nollställs.
+var smith_variant: String = String(DEFAULTS["smith_variant"])
 
 
 func _ready() -> void:
@@ -125,6 +141,10 @@ func _assign(key: String, value: Variant) -> void:
 			high_contrast = bool(value)
 		"chain_speed":
 			chain_speed = clampf(float(value), 0.2, 2.0)
+		"smith_variant":
+			# "" är ett giltigt värde ("inte valt"); allt annat måste vara a/b.
+			var raw: String = String(value)
+			smith_variant = "" if raw == "" else Art.smith_variant(raw)
 
 
 # ---------------------------------------------------------------------------
@@ -133,10 +153,17 @@ func _assign(key: String, value: Variant) -> void:
 
 ## Speglar inställningarna ut i motorn. Idempotent: kan köras hur ofta som helst.
 func apply() -> void:
-	if locale != "":
-		TranslationServer.set_locale(locale)
+	# Alltid, inte "om satt": det är just tystnaden här som lät OS-språket
+	# slå igenom. En tom sparad sträng tolkas som standardspråket.
+	TranslationServer.set_locale(effective_locale())
 	Haptics.enabled = haptics
 	Tokens.apply_high_contrast(high_contrast)
+
+
+## Språket som faktiskt ska gälla. Enda stället som känner till att en tom
+## sträng betyder [constant DEFAULT_LOCALE].
+func effective_locale() -> String:
+	return DEFAULT_LOCALE if locale == "" else locale
 
 
 ## Volymen som en linjär faktor, 0–1. [Juice] översätter till dB.
