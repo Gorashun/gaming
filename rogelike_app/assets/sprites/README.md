@@ -106,10 +106,45 @@ Die (Node2D, scale = 5, position = heltal * 5)
 * `pips_0.png` är en ihålig ring, inte en tom bild – `HOLLOW` och `TWIN_EYE`
   har värde 0 och ska se avsiktliga ut.
 
+### Shaderfixen 2026-09-21: gråskala + LUT är den vägen som gäller igen
+
+`palette_lut.gdshader` var trasig i M1/M1.5 och tvingade fram de **förtintade**
+kropparna (`die_body_{iron,bone,glass}.png`). Felet är fixat och uppmätt:
+
+| Väg | Före fixen | Efter fixen |
+|---|---|---|
+| `lut_strength = 0` (passthrough) | `#C2451D` → `#941303`, 14/16 svatcher fel | byte-identisk, 0/16 fel |
+| `lut_strength = 1` (LUT) | `#C2451D` → `#210E07`, 15/16 fel | `#C2451D` → `#2C353F`, 0/16 fel |
+| `modulate` ovanpå shadern | 14/16 fel (dubbelmultiplicerad) | 0/16 fel |
+
+Samma siffror i **båda** renderarna (`mobile`/Vulkan och `gl_compatibility`/
+OpenGL3), så DECISIONS-noten "tappar sRGB i GL Compatibility" var en
+feldiagnos: den gamla raden `COLOR = vec4(rgb, a) * COLOR;` multiplicerade in
+källfärgen en andra gång (kvadrering ser ut som en gammakurva). Modulate
+plockas nu i vertex-steget i stället.
+
+**Dev kan alltså gå tillbaka till gråskala + LUT för tärningskroppar.**
+Det är en rad i `Art.die_body()`: byt `DIE_BODIES[material]` mot
+[`DIE_BODY_GRAY`](../../src/game/ui/art.gd) och sätt
+`Art.palette_material(Art.die_lut(material), 1.0)` på `Body`-noden.
+Då fungerar även `lut_strength`-tweenen vid materialbyte (UI_GUIDE §9.2),
+som är hela poängen med att kroppen är gråskala. De förtintade kropparna
+behålls för HTML-mockupen och editorförhandsvisningen.
+
+**Regressionstest:** `design/shader_probe.tscn` + `tools/shader_probe.gd`
+renderar en 16-färgers ramp till en `SubViewport` och läser tillbaka pixlarna.
+Exit 0 = alla rader stämmer.
+
+```
+xvfb-run -a godot --path . design/shader_probe.tscn --rendering-method mobile
+xvfb-run -a godot --path . design/shader_probe.tscn --rendering-driver opengl3 \
+    --rendering-method gl_compatibility
+```
+
 | Fil | Innehåll |
 |---|---|
-| `dice/die_body_gray.png` | Gråskalemaster 32×32. Körs genom `palette_lut.gdshader`. |
-| `dice/die_body_{iron,bone,glass}.png` | Förtintade kroppar (mockup, editorförhandsvisning) |
+| `dice/die_body_gray.png` | Gråskalemaster 32×32. Körs genom `palette_lut.gdshader`. **Standardvägen igen efter shaderfixen.** |
+| `dice/die_body_{iron,bone,glass}.png` | Förtintade kroppar (HTML-mockup, editorförhandsvisning) |
 | `dice/die_tumble_gray.png` | 192×32, 6 frames, tom kropp |
 | `dice/lut_{iron,bone,glass}.png` | 16×1 palett-LUT per material (`Rules.DieMaterial`) |
 | `dice/lut_world.png` | 16×1 LUT som tvingar **importerade** sprites till paletten |

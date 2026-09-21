@@ -15,6 +15,18 @@ render_mode blend_mix, unshaded;
 // Used by: assets/sprites/dice/lut_{iron,bone,glass}.png, lut_world.png
 // Preview: design/shader_preview_palette.tscn
 
+// CanvasItem-modulate (node.modulate * self_modulate) plockas i vertex-steget.
+//
+// VARFOR: i ett canvas_item-shader ar fragmentets inbyggda COLOR redan
+// "texture(TEXTURE, UV) * modulate". Den gamla raden `COLOR = vec4(rgb, a) *
+// COLOR;` multiplicerade alltsa in kallans farg en andra gang, dvs. kvadrerade
+// den: #C2451D blev #941303 (uppmatt i BADA renderarna, inte bara i
+// GL Compatibility som DECISIONS 2026-09-21 antog). Kvadrering ser ut som en
+// gammakurva, darav feldiagnosen "sRGB tappas". Vertex-COLOR daremot ar ren
+// modulate och far multipliceras in exakt en gang.
+// Regressionstest: design/shader_probe.tscn (tools/shader_probe.gd).
+varying vec4 v_modulate;
+
 uniform sampler2D palette_lut : filter_nearest, repeat_disable, source_color;
 
 // 0.0 = original sprite, 1.0 = fully remapped. Tween this for a material
@@ -40,6 +52,10 @@ float luma(vec3 c) {
 	return dot(c, vec3(0.2126, 0.7152, 0.0722));
 }
 
+void vertex() {
+	v_modulate = COLOR;
+}
+
 void fragment() {
 	vec4 src = texture(TEXTURE, UV);
 
@@ -59,5 +75,7 @@ void fragment() {
 	vec3 rgb = mix(src.rgb, mapped, lut_strength) * material_tint.rgb;
 	rgb = mix(rgb, flash_color.rgb, flash);
 
-	COLOR = vec4(rgb, src.a * material_tint.a) * COLOR;
+	// Exakt en modulate-multiplikation. Med lut_strength = 0, material_tint
+	// vit och flash 0 ar detta en byte-identisk passthrough i bada renderarna.
+	COLOR = vec4(rgb, src.a * material_tint.a) * v_modulate;
 }

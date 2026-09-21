@@ -17,6 +17,16 @@ render_mode blend_mix, unshaded;
 //
 // Preview: design/shader_preview_chalk.tscn
 
+// Samma modulate-regel som palette_lut.gdshader: fragmentets inbyggda COLOR ar
+// redan "texture(TEXTURE, UV) * modulate", sa `... * COLOR` pa sista raden
+// multiplicerade in bade fargen och alfan en andra gang. Vertex-COLOR ar ren
+// modulate. Matt med design/shader_probe.tscn.
+varying vec4 v_modulate;
+
+void vertex() {
+	v_modulate = COLOR;
+}
+
 // --- Jitter ---------------------------------------------------------------
 // Offset in UV units. 0.006 on a 400 px wide line is about 2.4 px of wobble.
 uniform float jitter_amount : hint_range(0.0, 0.05) = 0.006;
@@ -89,5 +99,5 @@ void fragment() {
 
 	vec3 rgb = mix(src.rgb, chalk_color.rgb, tint_strength) * tooth;
 
-	COLOR = vec4(rgb, alpha) * COLOR;
+	COLOR = vec4(rgb, alpha) * v_modulate;
 }
