@@ -26,6 +26,13 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
+      # Asset license rule (DECISIONS section 2026-09-21): every image, sound
+      # and font under assets/ must have a row in assets/ASSET_LICENSES.csv
+      # with an allowed license. CC-BY-SA and GPL fail the build.
+      - name: Check asset licenses
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: python3 tools/check_asset_licenses.py
+
       - name: Cache Godot binary
         id: godot-cache
         uses: actions/cache@v4
