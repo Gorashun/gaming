@@ -68,6 +68,104 @@ func _ready() -> void:
 	show_title()
 
 
+# ---------------------------------------------------------------------------
+# Androids livscykel (M4, docs/ANDROID.md §6)
+# ---------------------------------------------------------------------------
+
+## Bakåtknappens svar per skärm. Sträng i stället för enum så att den går att
+## logga och jämföra i ett test utan att dra in hela controllern.
+const BACK_IGNORE: String = "ignore"
+const BACK_CLOSE_SETTINGS: String = "close_settings"
+const BACK_SKIP_PLAYBACK: String = "skip_playback"
+const BACK_OPEN_SETTINGS: String = "open_settings"
+const BACK_TO_TITLE: String = "to_title"
+
+
+## [b]Ren funktion.[/b] Vad Androids bakåtknapp ska göra.
+##
+## [b]Regeln som inte får brytas:[/b] ingen gren returnerar "avsluta". Godots
+## [code]application/config/quit_on_go_back[/code] är avstängd i project.godot
+## just därför – standardbeteendet är att appen tyst stänger sig mitt i en run,
+## vilket är det värsta en mobilapp kan göra med ett obekräftat val.
+##
+## [param screen_name] är en av [code]SCREEN_*[/code]. [param settings_open]
+## och [param resolving] är skärmens läge.
+static func back_action(screen_name: String, settings_open: bool, resolving: bool) -> String:
+	# Modalen ligger överst och äger därför bakåtknappen.
+	if settings_open:
+		return BACK_CLOSE_SETTINGS
+	match screen_name:
+		SCREEN_COMBAT:
+			# Mitt i kedjan betyder bakåt samma sak som en tapp på skärmen:
+			# hoppa till slutet. Att öppna en modal ovanpå en pågående
+			# uppspelning skulle frysa juicen bakom ett halvgenomskinligt lager.
+			return BACK_SKIP_PLAYBACK if resolving else BACK_OPEN_SETTINGS
+		SCREEN_MARCH, SCREEN_REWARD:
+			# Det finns inget "tillbaka" i en roguelike-marsch. Pausmenyn är
+			# det ärliga svaret: den har språk, ljud och nollställning.
+			return BACK_OPEN_SETTINGS
+		SCREEN_GAMEOVER:
+			return BACK_TO_TITLE
+		_:
+			# Titeln är rotskärmen. Bakåt därifrån gör ingenting alls.
+			return BACK_IGNORE
+
+
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_WM_GO_BACK_REQUEST:
+			handle_back_request()
+		NOTIFICATION_APPLICATION_PAUSED:
+			# Android kan döda processen utan ett andra varsel. Allt som ska
+			# överleva måste ligga på disk när den här returnerar.
+			on_application_paused()
+		NOTIFICATION_APPLICATION_RESUMED:
+			on_application_resumed()
+
+
+## Kör bakåtknappens beslut. Returnerar vad som gjordes, för rökprov och test.
+func handle_back_request() -> String:
+	var combat: CombatScreen = _screen as CombatScreen
+	var action: String = back_action(_screen_name, settings_open(), combat != null and combat.is_resolving())
+	match action:
+		BACK_CLOSE_SETTINGS:
+			if _settings_modal != null and is_instance_valid(_settings_modal) and _settings_modal.has_method("close"):
+				_settings_modal.call("close")
+		BACK_SKIP_PLAYBACK:
+			combat.skip_playback()
+		BACK_OPEN_SETTINGS:
+			open_settings()
+		BACK_TO_TITLE:
+			show_title()
+	return action
+
+
+## Appen går i bakgrunden: spara och tysta ljudet.
+##
+## Sparningen hoppas över mitt i en runda (se [method can_autosave]). Det är
+## inte lathet: ett sparfilsskrivande mitt i en kedja skulle lägga en
+## slumpström som redan rullat vidare bredvid ett stridsläge från rundans
+## början, och den runnen skulle inte gå att återuppta identiskt.
+func on_application_paused() -> void:
+	if can_autosave():
+		_autosave()
+	Juice.suspend_audio(true)
+
+
+func on_application_resumed() -> void:
+	Juice.suspend_audio(false)
+
+
+## Får sparfilen skrivas just nu? Allt utom en påbörjad stridsrunda.
+func can_autosave() -> bool:
+	if run == null or graph == null:
+		return false
+	if _screen_name != SCREEN_COMBAT:
+		return true
+	var combat: CombatScreen = _screen as CombatScreen
+	return combat == null or combat.is_safe_to_autosave()
+
+
 ## Titelskärmen. Alltid först, även med en tvingad seed: rökprovet och en
 ## spelare ska gå exakt samma väg in i spelet.
 func show_title() -> void:

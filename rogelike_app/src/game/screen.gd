@@ -33,6 +33,27 @@ func setup(p_controller: Node, world_root: Node2D, ctx: Dictionary) -> void:
 		world = world_scene.instantiate() as Node2D
 		world_root.add_child(world)
 	enter(ctx)
+	apply_safe_area()
+
+
+## Skjuter ner skärmens toppmarginal förbi kameraurtaget (M4, docs/ANDROID.md
+## §6). Körs EFTER [method enter], därför att varje skärm sätter sin egen
+## [code]margin_top[/code] i sin [code]_style()[/code] och skulle skriva över
+## insetet om det lades på före.
+##
+## Alla fem skärmar har en [MarginContainer] som heter [code]Margin[/code].
+## Saknas den händer ingenting; det är inte ett fel, bara en skärm utan
+## toppinnehåll.
+func apply_safe_area() -> void:
+	var margin: MarginContainer = get_node_or_null(^"Margin") as MarginContainer
+	if margin == null:
+		return
+	# Bastalet sparas i metadata första gången. Utan det skulle ett andra anrop
+	# addera insetet ovanpå ett redan justerat värde.
+	if not margin.has_meta(&"safe_area_base"):
+		margin.set_meta(&"safe_area_base", margin.get_theme_constant(&"margin_top"))
+	var base: int = int(margin.get_meta(&"safe_area_base"))
+	SafeArea.apply_top_margin(margin, base, SafeArea.top_inset(get_viewport()))
 
 
 ## Skärmspecifik uppstart. Överskugga denna, inte [method setup].

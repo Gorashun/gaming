@@ -64,6 +64,9 @@ var _die_views: Array[DieView] = []
 var _view: Dictionary = {}
 var _preview: ResolveResult = null
 var _resolving: bool = false
+## Har rundan dragit ur den seedade strömmen sedan den startade? Sätts av
+## [method reroll]. Se [method is_safe_to_autosave].
+var _rng_moved: bool = false
 var _chain_step: int = 0
 var _pending_result: ResolveResult = null
 ## Runnens största kedja hittills. Kommer från [GameController] och avgör när
@@ -287,6 +290,7 @@ func begin_round() -> void:
 	_selected_die = -1
 	_chain_step = 0
 	_resolving = false
+	_rng_moved = false
 	_tap_catcher.visible = false
 	_view = EventPlayer.view_from_state(state)
 	_refresh_all()
@@ -478,6 +482,7 @@ func reroll() -> void:
 	if _resolving or not Reroll.can_afford(state):
 		return
 	state = Reroll.apply(state, _placement, _rng, _locked_ids)
+	_rng_moved = true
 	_view = EventPlayer.view_from_state(state)
 	_refresh_all()
 	Juice.ui_tap(1.25)
@@ -565,6 +570,21 @@ func skip_playback() -> void:
 ## bossintrot. Rökprovet väntar på den här.
 func is_resolving() -> bool:
 	return _resolving or _intro_active
+
+
+## Får [GameController] skriva sparfilen medan den HÄR skärmen står framme?
+##
+## Sparfilen innehåller stridsläget [member state] som det såg ut när rundan
+## började, plus slumpströmmens position. De två måste höra ihop. Så fort
+## rundan har dragit ett omkast, eller är mitt i sin uppspelning, har strömmen
+## rullat vidare utan att det sparade läget följt med – en återupptagning
+## skulle då få ett annat kast än den som pausades (GAME_DESIGN §1: aldrig
+## spara mitt i en kedja).
+##
+## Placeringar räknas inte: de rör inte strömmen, och att tappa dem när appen
+## dödas i bakgrunden är det förväntade priset.
+func is_safe_to_autosave() -> bool:
+	return not _resolving and not _rng_moved
 
 
 func is_intro_active() -> bool:

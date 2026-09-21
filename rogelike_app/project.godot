@@ -21,6 +21,10 @@ boot_splash/use_filter=false
 ; En kort spärr mot "vit ruta i 80 ms" på långsamma telefoner: splashen ligger
 ; kvar minst så här länge även när projektet hunnit ladda snabbare.
 boot_splash/minimum_display_time=200
+; Androids bakåtknapp. Standard är att SceneTree avslutar appen på
+; NOTIFICATION_WM_GO_BACK_REQUEST – alltså att spelet tyst stänger sig mitt i
+; en run. GameController.back_action() svarar i stället (docs/ANDROID.md §6).
+config/quit_on_go_back=false
 
 [audio]
 

@@ -96,6 +96,9 @@ var _last_haptic_level: int = 0
 var _hit_stop_left: float = 0.0
 var _hit_stop_active: bool = false
 
+## Appen ligger i bakgrunden (Android NOTIFICATION_APPLICATION_PAUSED).
+var _audio_suspended: bool = false
+
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -181,6 +184,8 @@ func sfx(sound_name: StringName, pitch: float = 1.0, volume_db: float = 0.0) -> 
 		calls.append({"kind": "sfx", "name": String(sound_name), "pitch": pitch, "volume_db": volume_db})
 	if verbose:
 		print("[juice] sfx %s pitch=%.3f" % [sound_name, pitch])
+	if _audio_suspended:
+		return
 	var stream: AudioStream = _stream(sound_name)
 	if stream == null:
 		return
@@ -252,6 +257,40 @@ func chain_pitch(step_index: int, multiplier: int = 1) -> float:
 		8, 16:
 			combo_bonus = 7
 	return minf(2.0, pow(2.0, float(mini(step_index + combo_bonus, 12)) / 12.0))
+
+
+## Master-bussens index. Allt spelet spelar ligger på den.
+const MASTER_BUS: int = 0
+
+
+## Tystar allt ljud medan appen ligger i bakgrunden, och släpper på igen.
+##
+## Anropas av [GameController] på Androids
+## [code]NOTIFICATION_APPLICATION_PAUSED[/code]/[code]_RESUMED[/code]. Godot
+## suspenderar ljuddrivrutinen själv på Android, men inte kanalerna: utan det
+## här fortsätter ett halvspelat träffljud när appen kommer tillbaka, flera
+## minuter efter att träffen hände.
+##
+## [b]Hit-stoppen släpps samtidigt.[/b] En paus mitt i en hit-stop lämnar
+## annars [member Engine.time_scale] på 0,04, och spelet är obrukbart när
+## användaren kommer tillbaka.
+func suspend_audio(suspended: bool) -> void:
+	if suspended == _audio_suspended:
+		return
+	_audio_suspended = suspended
+	if log_calls:
+		calls.append({"kind": "suspend_audio", "suspended": suspended})
+	if suspended:
+		for player: AudioStreamPlayer in _players:
+			if player.playing:
+				player.stop()
+		if _hit_stop_active:
+			_end_hit_stop()
+	AudioServer.set_bus_mute(MASTER_BUS, suspended)
+
+
+func is_audio_suspended() -> bool:
+	return _audio_suspended
 
 
 # ---------------------------------------------------------------------------
