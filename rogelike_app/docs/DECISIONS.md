@@ -41,3 +41,5 @@ Format: datum · beslut · varför · alternativ som valdes bort · beslutad av
 | 2026-09-21 | Tärningar ~50 dp i brickan (inte 72 dp), fiendezon dimensioneras för 4 fiender | Sex tärningar ryms inte på 360 dp annars | 72 dp | PM. UI uppdaterar §2.9 |
 | 2026-09-21 | Ingen belöning efter våningsboss och inget Ödeskast förrän M3 | Scope | – | PM |
 | 2026-09-21 | Processregel: agenter committar bara egna filer (`git add <paths>`), aldrig `git add -A` | UI-agentens svep tog med dev:s halvfärdiga filer | – | PM |
+| 2026-09-21 | M1.5 godkänd: engelska källsträngar via tr() med sv-CSV (test skannar alla nycklar), sprites integrerade (paperdoll, fiender, komponerade tärningar, parallax). 188 tester gröna, smoke OK i en och sv | – | – | PM |
+| 2026-09-21 | `palette_lut.gdshader` tappar sRGB i GL Compatibility (LUT-vägen ~24 % för mörk). Tärningar ritas med förtintade kroppar tills UI fixar shadern i M2 | Dev får inte ändra assets/shaders | – | PM. UI-agentens första M2-uppgift |
