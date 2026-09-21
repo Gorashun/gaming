@@ -17,7 +17,7 @@
 
 **Pågår**
 - **M2.5 bygge (omstyrt)**: dev bygger stridsskärm v2, tutorialvåning 0, stadslogik, smedja, könsval. UI levererar kroppsvarianter, ikoner, i18n, character sheet-mockup. Sidescroll struken
-- **M5 FPS-korridor (design)**: R&D utreder teknik (Godot 3D vs 2D-lager), UI gör visuell riktning för korridor + character sheet, rollspelsnörd mappar nod-grafen till korridorer och möten
+- **M5 Korridoren (bygge)**: utseende godkänt av Anders. Dev 2 bygger corridor_map (core), korridorvy i Godot 3D, texturer, rörelse, riktningsknappar, autosave per ruta, i nya filer. Integration med strid v2 och character sheet efter att M2.5 landat
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt
