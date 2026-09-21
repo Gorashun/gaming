@@ -1,7 +1,8 @@
 class_name EnemyPanel
-extends VBoxContainer
-## En fiende i fiendezonen. UI_GUIDE §2.9: zonen är [b]läs-endast[/b] – inget
-## spelbeslut sitter där, allt interaktivt ligger under 58 % av skärmhöjden.
+extends EnemyReadout
+## En fiende i fiendezonen, i den [b]platta[/b] stridsskärmen (tutorialens
+## källare). UI_GUIDE §2.9: zonen är [b]läs-endast[/b] – inget spelbeslut sitter
+## där, allt interaktivt ligger under 58 % av skärmhöjden.
 ##
 ## Visar det GAME_DESIGN §6.5 och §6.7 kräver ska vara synligt före varje
 ## bekräftelse: HP, rustning, statusar och intent i klartext med siffra. Det
@@ -10,6 +11,8 @@ extends VBoxContainer
 ## Pixelgrafik: silhuetten ritas i World-lagret av [EnemyActor]; den här panelen
 ## är krit-UI och ska förbli vektor. [method anchor_point] ger World-lagret var
 ## sprajten ska stå.
+##
+## I korridoren används [EnemyChip] i stället – samma kontrakt, annan layout.
 
 ## Höjden på det genomskinliga hålet där fiendens sprite står, i dp.
 ##
@@ -19,52 +22,6 @@ extends VBoxContainer
 ## det är det som lär ut spelet."[/i] Aldrig tumzonen, alltid arenan.
 const ART_HOLE_HEIGHT: int = 30
 
-
-## Prognosfältet i HP-stapeln (COMBAT_READABILITY §2.2 punkt 2). Diagonal
-## skraffering ovanpå den röda delen: "det här kommer att försvinna". Är hela
-## stapeln skrafferad dör fienden.
-##
-## Ritas som [Control._draw] och inte som en shader eller en sprite: mönstret
-## måste följa stapelns bredd, och en rent geometrisk skraffering kan inte
-## tappa kontrast när paletten byts i hög kontrast-läget (UI_GUIDE §2.11).
-class ForecastOverlay:
-	extends Control
-
-	## Andel av stapeln som ska skrafferas, 0..1.
-	var fraction: float = 0.0
-	## Avståndet mellan skrafferingslinjerna i px.
-	const STEP: float = 7.0
-
-	func set_fraction(value: float) -> void:
-		var clamped: float = clampf(value, 0.0, 1.0)
-		if is_equal_approx(clamped, fraction):
-			return
-		fraction = clamped
-		queue_redraw()
-
-	func _draw() -> void:
-		if fraction <= 0.0 or size.x <= 0.0:
-			return
-		var width: float = size.x * fraction
-		# Fältet ligger vid stapelns HÖGRA kant: HP töms från höger.
-		var left: float = size.x - width
-		var band: Color = Color(Tokens.CHALK_100, 0.20)
-		draw_rect(Rect2(left, 0.0, width, size.y), band, true)
-		var line: Color = Color(Tokens.CHALK_100, 0.85)
-		var x: float = left - size.y
-		while x < size.x:
-			var a: Vector2 = Vector2(maxf(x, left), size.y if x >= left else size.y - (left - x))
-			var b: Vector2 = Vector2(minf(x + size.y, size.x), maxf(0.0, size.y - (minf(x + size.y, size.x) - x)))
-			if b.x > a.x:
-				draw_line(a, b, line, 1.5, false)
-			x += STEP
-		draw_line(Vector2(left, 0.0), Vector2(left, size.y), line, 1.5, false)
-
-
-var enemy_id: String = ""
-## Numret i ett rum med flera av samma sort ("Rostråtta 1 … 4"). 0 = ensam.
-var ordinal: int = 0
-
 var _flash: ColorRect = null
 var _name_label: Label = null
 var _hp_bar: ProgressBar = null
@@ -73,7 +30,6 @@ var _armor_label: Label = null
 var _status_label: Label = null
 var _intent_label: Label = null
 var _forecast: ForecastOverlay = null
-var _show_armor: bool = true
 ## Plats för fiendens sprite. Fylls av World-lagret, inte av panelen.
 var _art_slot: Control = null
 
@@ -120,7 +76,7 @@ func _init() -> void:
 	column.add_theme_constant_override("separation", 0)
 	margin.add_child(column)
 
-	_name_label = _label(Tokens.TYPE_CAPTION - 1, Tokens.CHALK_100)
+	_name_label = make_label(Tokens.TYPE_CAPTION - 1, Tokens.CHALK_100)
 	column.add_child(_name_label)
 
 	# HP-stapeln med PROGNOSFÄLT: den del som kommer att försvinna ritas som
@@ -149,31 +105,21 @@ func _init() -> void:
 	bar_stack.add_child(_forecast)
 	_forecast.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
-	_hp_label = _label(Tokens.TYPE_CAPTION - 1, Tokens.CHALK_300)
+	_hp_label = make_label(Tokens.TYPE_CAPTION - 1, Tokens.CHALK_300)
 	column.add_child(_hp_label)
 
 	# Rustning ÖVER intent: rustning påverkar det spelaren gör härnäst, intent
 	# det som händer sedan. Läsordningen följer tidsordningen (§5).
-	_armor_label = _label(Tokens.TYPE_CAPTION - 2, Tokens.SEM_SHIELD)
+	_armor_label = make_label(Tokens.TYPE_CAPTION - 2, Tokens.SEM_SHIELD)
 	column.add_child(_armor_label)
 
-	_status_label = _label(Tokens.TYPE_CAPTION, Tokens.SEM_POISON)
+	_status_label = make_label(Tokens.TYPE_CAPTION, Tokens.SEM_POISON)
 	column.add_child(_status_label)
 
 	# En rad, klippt. "Attacks 3" är kort, och ett radbrytande intent äter två
 	# rader i FYRA kolumner samtidigt – det är 24 dp av arenan för ingenting.
-	_intent_label = _label(Tokens.TYPE_CAPTION - 2, Tokens.SEM_FIRE)
+	_intent_label = make_label(Tokens.TYPE_CAPTION - 2, Tokens.SEM_FIRE)
 	column.add_child(_intent_label)
-
-
-static func _label(font_size: int, color: Color) -> Label:
-	var label: Label = Label.new()
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
-	label.add_theme_color_override("font_color", color)
-	label.clip_text = true
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return label
 
 
 ## Där fiendens sprite ska stå i World-lagret.
@@ -196,24 +142,9 @@ func bind(enemy: Enemy, p_ordinal: int = 0) -> void:
 	ordinal = p_ordinal
 	_name_label.text = display_name_of(enemy, p_ordinal)
 	_hp_bar.max_value = maxi(1, enemy.max_hp)
-	_intent_label.text = _intent_text(enemy)
-	_intent_label.add_theme_color_override("font_color", _intent_color(enemy))
+	_intent_label.text = intent_text(enemy)
+	_intent_label.add_theme_color_override("font_color", intent_color(enemy))
 	update_vitals(enemy.hp, enemy.armor, enemy.burn, enemy.poison)
-
-
-## Namnet som visas. Flera fiender med samma namn numreras från fronten (§5),
-## och samma nummer används i kvittots leveransrad.
-static func display_name_of(enemy: Enemy, p_ordinal: int) -> String:
-	var name: String = Tokens.translate_or(Content.enemy_key(enemy.id), enemy.display_name)
-	if p_ordinal <= 0:
-		return name
-	return Tokens.translate_or("COMBAT_ENEMY_NUMBERED", "%s %d") % [name, p_ordinal]
-
-
-## Döljer rustningsraden tills lektionen är given (Reveal). Panelen döljer den
-## bara när rustningen är 0 – se [method Reveal.may_hide].
-func set_show_armor(value: bool) -> void:
-	_show_armor = value
 
 
 ## Uppdaterar bara siffrorna. Uppspelaren anropar den per event, så den får inte
@@ -228,7 +159,7 @@ func update_vitals(hp: int, armor: int, burn: int, poison: int) -> void:
 	var parts: PackedStringArray = PackedStringArray()
 	if armor > 0 and _show_armor:
 		parts.append("%s %s" % [
-			_icon_glyph(&"armor"),
+			icon_glyph(&"armor"),
 			Tokens.translate_or("COMBAT_ENEMY_ARMOR", "Armor %d") % armor,
 		])
 	if burn > 0:
@@ -244,20 +175,11 @@ func update_vitals(hp: int, armor: int, burn: int, poison: int) -> void:
 		set_forecast(0)
 
 
-## Hur mycket av stapeln som kommer att försvinna när spelaren bekräftar.
-## Siffran kommer ur [ChainReceipt] och därmed ur [code]_preview.events[/code];
-## panelen räknar ingenting själv.
 func set_forecast(incoming: int) -> void:
 	if _forecast == null:
 		return
 	var maximum: float = maxf(1.0, float(_hp_bar.max_value))
 	_forecast.set_fraction(clampf(float(incoming) / maximum, 0.0, float(_hp_bar.value) / maximum))
-
-
-## Ikonen som text. 16×16-sprajtarna ligger i UI-agentens katalog; saknas de
-## ritas reservglyfen, aldrig ett hål (Art.ui_icon varnar en gång per ikon).
-static func _icon_glyph(icon_name: StringName) -> String:
-	return Art.ui_icon_glyph(icon_name)
 
 
 ## Vitblixt enligt UI_GUIDE §5.3. Ligger som ett eget lager i stället för på
@@ -278,44 +200,3 @@ func _flash_with(color: Color, alpha: float, duration: float) -> void:
 	_flash.color = Color(color, alpha)
 	var tween: Tween = _flash.create_tween()
 	tween.tween_property(_flash, "color:a", 0.0, duration)
-
-
-## Intent-texten. [member Intent.note] är en ÖVERSÄTTNINGSNYCKEL, inte prosa:
-## core får aldrig innehålla spelartext (CLAUDE.md). Nyckeln formateras med
-## [member Intent.note_args].
-## [b]Ett verb, så att riktningen framgår[/b] (§5): "⚔ Attacks 3" och inte
-## "▲ 3 dmg", som inte säger om skadan går mot spelaren eller mot fienden.
-static func _intent_text(enemy: Enemy) -> String:
-	if enemy.intent == null:
-		return Tokens.translate("INTENT_NONE")
-	match enemy.intent.kind:
-		Rules.IntentKind.ATTACK:
-			return "%s %s" % [
-				Art.ui_icon_glyph(&"attack"),
-				Tokens.translate_or("COMBAT_ENEMY_INTENT_ATTACK", "Attacks %d") % enemy.intent.value,
-			]
-		Rules.IntentKind.BLOCK:
-			return Tokens.translate_or("COMBAT_ENEMY_INTENT_BLOCK", "Hardens +%d") % enemy.intent.value
-		Rules.IntentKind.SPECIAL:
-			return Tokens.translate("INTENT_SPECIAL") % _note_text(enemy.intent)
-	return _note_text(enemy.intent)
-
-
-static func _note_text(intent: Intent) -> String:
-	if intent == null or intent.note == "":
-		return ""
-	var text: String = Tokens.translate(intent.note)
-	if intent.note_args.is_empty():
-		return text
-	return text % intent.note_args
-
-
-static func _intent_color(enemy: Enemy) -> Color:
-	if enemy.intent == null:
-		return Tokens.CHALK_500
-	match enemy.intent.kind:
-		Rules.IntentKind.ATTACK:
-			return Tokens.SEM_FIRE
-		Rules.IntentKind.BLOCK:
-			return Tokens.SEM_SHIELD
-	return Tokens.SEM_POISON

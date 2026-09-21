@@ -26,6 +26,17 @@ extends GameScreen
 signal round_finished(state: CombatState, result: ResolveResult)
 ## Striden är slut. [param won] är false när spelaren dog.
 signal combat_finished(won: bool, state: CombatState)
+## En fiende träffades eller dog. [b]Skärmen ritar ingen varelse själv[/b] – i
+## korridoren står de som billboards i 3D och i källaren som [EnemyActor] i
+## World-lagret. Signalen är kontraktet mot båda.
+signal enemy_reaction(index: int, kind: String)
+## Så här hög måste skärmen vara för att inget ska klippas. [b]Arenan betalar[/b]
+## (COMBAT_READABILITY §8): i korridoren ÄR arenan korridorbilden, och
+## [CorridorScreen] krymper den tills räknestycket och tumzonen får plats.
+signal layout_pressure(needed: float)
+
+const REACTION_HIT: String = "hit"
+const REACTION_DEATH: String = "death"
 
 ## Tärningsplaceringar som lämnar slots tomma är tillåtna och ibland korrekta
 ## (GAME_DESIGN §7 fråga 4: Charge-banken kräver det).
@@ -56,6 +67,13 @@ const HELP_PULSE_ROUND: int = 3
 
 var state: CombatState = null
 var reveal: Reveal = null
+## Sant när skärmen är monterad i de nedre 55 % av [CorridorScreen]. Då äger
+## korridorens HUD HP och rum, och fienderna läses av som chip ovanför sina
+## billboards i stället för som kort i fiendezonen (COMBAT_READABILITY §8).
+var in_corridor: bool = false
+## Den som bygger fiendeavläsningarna. Null ⇒ [EnemyPanel] i fiendezonen.
+## Sätts före [method GameScreen.setup] av [method CorridorScreen.mount_combat].
+var readout_host: Node = null
 
 var _rng: Rng = null
 var _node: Dictionary = {}
@@ -68,7 +86,7 @@ var _locked_ids: Array = []
 ## Tom kolumn längst till vänster i fiendezonen. Där står Smeden i
 ## World-lagret; krit-UI:t reserverar bara platsen (UI_GUIDE §8.1).
 var _hero_slot: Control = null
-var _panels: Array[EnemyPanel] = []
+var _panels: Array[EnemyReadout] = []
 var _slot_views: Array[SlotView] = []
 var _die_views: Array[DieView] = []
 var _view: Dictionary = {}
@@ -110,6 +128,7 @@ func enter(ctx: Dictionary) -> void:
 	if reveal == null:
 		reveal = Reveal.all_on()
 	_tutorial_room = int(ctx.get("tutorial_room", -1))
+	in_corridor = bool(ctx.get("in_corridor", false))
 	_style()
 	_undo_button.pressed.connect(undo)
 	_reroll_button.pressed.connect(reroll)
@@ -211,6 +230,46 @@ func _style() -> void:
 	ChalkFx.apply(pause_button, ChalkFx.BUTTON)
 	$Margin/Column/TopBar.add_child(pause_button)
 
+	_apply_corridor_mode()
+
+
+## I korridoren äger [CorridorHud] HP, rum och Pips – de står redan högst upp
+## över korridorbilden (se design/screenshots/corridor_combat_390x844.png). Att
+## rita dem en gång till i stridens toppfält vore två sanningskällor för samma
+## siffra, och det är dessutom 44 dp av höjdbudgeten som §8 hellre ger kvittot.
+## Laddning, Ward, "?" och ⚙ står kvar: de finns ingen annanstans.
+func _apply_corridor_mode() -> void:
+	if not in_corridor:
+		return
+	_hp_label.visible = false
+	_hp_bar.visible = false
+	_room_label.visible = false
+	_enemy_zone.visible = false
+	# Fiendezonen expanderar vertikalt; en osynlig container gör det fortfarande.
+	_enemy_zone.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	_enemy_zone.custom_minimum_size = Vector2.ZERO
+	# "?" och ⚙ flyttar upp i korridorens krit-rad. Knapparna är 48 dp höga och
+	# sätter därmed hela toppfältets höjd; utan dem är raden två pillertexter.
+	_help_button.visible = false
+	var pause: Button = $Margin/Column/TopBar.get_node_or_null(^"PauseButton") as Button
+	if pause != null:
+		pause.visible = false
+	# Leveransremsan blir överflödig när fienderna står i bild: siffran "↑ 28 ·
+	# DIES" ritas på fiendens eget chip i stället, där varelsen faktiskt är
+	# (COMBAT_READABILITY §8 – arenan betalar, och här ÄR arenan bilden).
+	_route_strip.visible = false
+	# Brickans rubrikrad kostar 14 dp för ordet "THE TRAY". Laddningstipset
+	# ("1 left = +4 charge") är det enda av de två som lär ut något, och det
+	# flyttar upp till pillerraden. Rubriken har brickan rakt under sig.
+	_tray_hint.reparent($Margin/Column/TopBar)
+	_tray_hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	$Margin/Column/TrayHeader.visible = false
+	# 1 dp mellan raderna i stället för 2: åtta rader ger 8 dp tillbaka, och
+	# kvittot är viktigare än luften mellan dem (§8).
+	_column.add_theme_constant_override("separation", Tokens.dpi(1))
+	$Margin.add_theme_constant_override("margin_top", Tokens.dpi(Tokens.SPACE_2))
+	$Margin.add_theme_constant_override("margin_bottom", Tokens.dpi(Tokens.SPACE_1))
+
 
 ## Kvittot ersätter M2:s PreviewPanel: en stor siffra utan härkomst.
 func _build_receipt() -> void:
@@ -282,9 +341,12 @@ static func _style_button(button: Button, font_size: int, color: Color, height: 
 # ---------------------------------------------------------------------------
 
 func _build_room() -> void:
-	for panel: EnemyPanel in _panels:
-		panel.queue_free()
+	for panel: EnemyReadout in _panels:
+		if is_instance_valid(panel):
+			panel.queue_free()
 	_panels.clear()
+	if readout_host != null and is_instance_valid(readout_host):
+		readout_host.call("reset_readouts")
 	if _hero_slot != null:
 		_hero_slot.queue_free()
 	_hero_slot = Control.new()
@@ -299,14 +361,15 @@ func _build_room() -> void:
 	var facts: Dictionary = _reveal_facts()
 	for i: int in range(state.enemies.size()):
 		var enemy: Enemy = state.enemies[i]
-		_enemy_names.append(EnemyPanel.display_name_of(enemy, _ordinals[i]))
-		var panel: EnemyPanel = EnemyPanel.new()
-		_enemy_zone.add_child(panel)
+		_enemy_names.append(EnemyReadout.display_name_of(enemy, _ordinals[i]))
+		var panel: EnemyReadout = _make_readout(i)
+		panel.index = i
 		panel.set_show_armor(reveal.shows("armor", facts))
 		panel.bind(enemy, _ordinals[i])
+		panel.tapped.connect(_on_enemy_tapped)
 		_panels.append(panel)
 	_route_strip.build(state.enemies.size(), Tokens.dp(HERO_SLOT_WIDTH))
-	_route_strip.visible = reveal.shows("overflow", facts)
+	_route_strip.visible = reveal.shows("overflow", facts) and not in_corridor
 
 	for slot_view: SlotView in _slot_views:
 		slot_view.queue_free()
@@ -335,6 +398,27 @@ func _build_room() -> void:
 	# Positionerna kan först läsas när containrarna har gjort sin layout.
 	call_deferred("_sync_world")
 	call_deferred("_sync_arcs")
+
+
+## En avläsning per fiende: chip i korridoren, panel i fiendezonen.
+func _make_readout(index: int) -> EnemyReadout:
+	if readout_host != null and is_instance_valid(readout_host):
+		var made: EnemyReadout = readout_host.call("make_readout", index) as EnemyReadout
+		if made != null:
+			return made
+	var panel: EnemyPanel = EnemyPanel.new()
+	_enemy_zone.add_child(panel)
+	return panel
+
+
+## Ett tapp på en fiende (eller på dess chip i korridoren) svarar med hela
+## avläsningen i ord – samma siffror som redan står där, men som en mening
+## (COMBAT_READABILITY §5).
+func _on_enemy_tapped(index: int) -> void:
+	if index < 0 or index >= state.enemies.size() or index >= _panels.size():
+		return
+	var ordinal: int = _ordinals[index] if index < _ordinals.size() else 0
+	_show_popover(_panels[index], EnemyReadout.detail_text(state.enemies[index], ordinal))
 
 
 func _sync_world() -> void:
@@ -492,6 +576,10 @@ func _refresh_preview() -> void:
 
 	if _route_strip.visible:
 		_route_strip.show_routes(_receipt["routes"] as Array)
+	elif in_corridor:
+		var chip_routes: Array = _receipt["routes"] as Array
+		for i: int in range(mini(_panels.size(), chip_routes.size())):
+			_panels[i].show_route(chip_routes[i] as Dictionary)
 	# Prognosfältet i HP-stapeln: den enda "vem dör"-signalen som fungerar utan
 	# färgseende (§2.2 punkt 2).
 	var routes: Array = _receipt["routes"] as Array
@@ -499,6 +587,7 @@ func _refresh_preview() -> void:
 		_panels[i].set_forecast(int((routes[i] as Dictionary)["damage"]))
 
 	_sync_arcs()
+	call_deferred("_report_layout_pressure")
 
 	var total: int = int(_receipt["damage"])
 	var placed: int = 0
@@ -513,6 +602,32 @@ func _refresh_preview() -> void:
 	else:
 		# Siffran på knappen och TOTAL i kvittot är samma tal, alltid (§B.3).
 		_confirm_button.text = Tokens.translate_or("COMBAT_CONFIRM_DAMAGE", "CONFIRM · %d DAMAGE") % total
+
+
+## Kolumnens minsta höjd plus marginalerna. Mäts efter layouten, aldrig före:
+## en [Label] med [code]autowrap[/code] rapporterar EN rads höjd innan den fått
+## sin bredd (se noten i ARCHITECTURE om höjdbudgeten).
+func _report_layout_pressure() -> void:
+	if not is_inside_tree() or _column == null:
+		return
+	await get_tree().process_frame
+	if not is_instance_valid(_column) or not _column.is_inside_tree():
+		return
+	var margin: MarginContainer = $Margin
+	var needed: float = _column.get_combined_minimum_size().y \
+		+ float(margin.get_theme_constant(&"margin_top")) \
+		+ float(margin.get_theme_constant(&"margin_bottom"))
+	layout_pressure.emit(needed)
+
+
+## Höjden skärmen behöver just nu. Publik för [code]tests/test_combat_layout.gd[/code].
+func required_height() -> float:
+	if _column == null:
+		return 0.0
+	var margin: MarginContainer = $Margin
+	return _column.get_combined_minimum_size().y \
+		+ float(margin.get_theme_constant(&"margin_top")) \
+		+ float(margin.get_theme_constant(&"margin_bottom"))
 
 
 ## [code]bas ×mult = resultat[/code]. Aldrig [code]= x[/code] utan härkomst och
@@ -636,9 +751,14 @@ func _show_popover(anchor: Control, text: String) -> void:
 		return
 	var card_size: Vector2 = card.get_combined_minimum_size()
 	var rect: Rect2 = anchor.get_global_rect()
-	card.position = Vector2(
+	# [b]Global → lokal.[/b] I korridoren ligger FxLayer i de nedre 55 % medan
+	# ankaret (ett HP-chip) sitter i den övre 45 %. Utan omräkningen hamnar
+	# popovern en halv skärm för långt ned.
+	var origin: Vector2 = _fx_layer.get_global_rect().position
+	var target: Vector2 = Vector2(
 		clampf(rect.get_center().x - card_size.x * 0.5, Tokens.dp(8), size.x - card_size.x - Tokens.dp(8)),
 		maxf(Tokens.dp(8), rect.position.y - card_size.y - Tokens.dp(8)))
+	card.position = target - origin
 	card.size = card_size
 
 
@@ -1013,6 +1133,7 @@ func _on_event(event: Dictionary, duration: float) -> void:
 			var killed: int = _panel_index_for(String(event.get("target", "")), true)
 			if killed >= 0:
 				_panels[killed].flash_death()
+				enemy_reaction.emit(killed, REACTION_DEATH)
 				if world != null:
 					var actor: EnemyActor = world.call("actor_at", killed, String(event.get("target", ""))) as EnemyActor
 					if actor != null:
@@ -1115,6 +1236,7 @@ func _on_damage(event: Dictionary) -> void:
 	var overflow: int = int(event.get("overflow", 0))
 	if index >= 0:
 		_panels[index].flash_hit()
+		enemy_reaction.emit(index, REACTION_HIT)
 		if Settings.reduced_motion:
 			Juice.outline(_panels[index], Tokens.SEM_DAMAGE, 60)
 		var text: String = str(amount)

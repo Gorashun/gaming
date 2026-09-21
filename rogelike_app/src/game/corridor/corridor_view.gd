@@ -27,14 +27,32 @@ signal fate_door_reached()
 signal floor_cleared(floor_index: int)
 signal character_sheet_requested()
 signal settings_requested()
+## "?" i HUD:en. Under strid i korridoren äger krit-raden hjälpknappen, eftersom
+## stridsskärmen bara har 352 dp och inte har råd med ett eget toppfält.
+signal help_requested()
+## Korridorrutans höjd har ändrats. Stridsskärmen hänger i den underkanten.
+signal split_changed(height: float)
 
 # --- Splitar (UI_GUIDE §17.1) ----------------------------------------------
 ## Utforskning: korridoren fyller ytan mellan HUD och tumzon.
 const SPLIT_EXPLORE: float = 1.0
 ## Strid: 45 % av höjden. Stridsskärm v2 tar de nedre 55 %.
 const SPLIT_COMBAT: float = 0.45
+## [b]Golvet när räknestycket inte får plats på 55 %[/b] (research 05 §3: "Faller
+## strid v2 inte inom 352 dp vid textstorlek 130 %, sänk korridoren till 40 %").
+##
+## [b]Avvikelse, mätt:[/b] research gissade 40 %. Ett FULLT kvitto – sex
+## leveransrader plus rustningsraden, alltså precis när spelaren har mest att
+## läsa – behöver 395 dp även efter att toppfältet, leveransremsan och brickans
+## rubrik lyfts bort. Golvet är därför 36 %. Det slår in bara med fem placerade
+## tärningar och ett överflöde; resten av tiden står korridoren på 45 %.
+## Tumzonen betalar aldrig (COMBAT_READABILITY §8).
+const SPLIT_COMBAT_MIN: float = 0.36
 ## Tumzonens höjd inklusive luft, i dp.
 const STEER_BLOCK_DP: int = 84
+## Hur länge korridoren krymper ner i stridssplitten. 200 ms är UI_GUIDE §5:s
+## "skärmen byter läge"-längd; reducerad rörelse hoppar rakt dit.
+const SPLIT_MS: int = 200
 
 ## [b]Ståplatsen i en korsning och framför en dörr[/b] är inte rutans mitt.
 ## En 3 m gång med 75° horisontellt visar bara 2,3 m på 1,5 m avstånd, så en
@@ -63,6 +81,14 @@ const ENEMY_PIXEL_SIZE: float = 0.055
 const SILHOUETTE: Color = Color(0.055, 0.071, 0.086, 0.92)
 const REVEAL_MS: int = 180
 const APPROACH_MS: int = 400
+## Träffblixten på billboarden: samma 60 ms som den platta skärmens vitblixt
+## (UI_GUIDE §5.3), här som överexponerad modulate i stället för ett ColorRect.
+const HIT_FLASH: Color = Color(3.0, 3.0, 3.0, 1.0)
+const HIT_FLASH_MS: int = 60
+## Ryck i sidled, i meter. Aldrig kameran – se [method enemy_hit].
+const HIT_SHAKE_M: float = 0.08
+const DEATH_MS: int = 300
+const DEATH_SINK_M: float = 0.3
 
 ## Dimman är samma svarta som krit-UI:ts botten (#0E1216) så att gränsen mellan
 ## 3D och UI aldrig syns som en kant (UI_GUIDE §17.3).
@@ -96,12 +122,29 @@ var reduced_motion: bool = false
 ## (CORRIDOR_DESIGN §7.3).
 var speed_scale: float = 1.0
 
-var _split: float = SPLIT_EXPLORE
+## Andelen av höjden korridoren tar. Tweenas av [method animate_split], därför
+## en egendomsuppsättare och inte en vanlig variabel: [Tween] kan bara röra
+## namngivna egenskaper.
+var split_ratio: float = SPLIT_EXPLORE:
+	set(value):
+		split_ratio = clampf(value, 0.2, 1.0)
+		_layout()
+
+var _split_tween: Tween = null
 var _busy: bool = false
 var _status: Dictionary = {"hp": 100, "max_hp": 100, "room": 1, "pips": 0}
 var _pending_enemies: Array[String] = []
 var _enemy_nodes: Array[AnimatedSprite3D] = []
 var _door_nodes: Dictionary = {}
+## Sant från det att mötet avslöjats tills striden är slut. [b]Spärr:[/b]
+## [method CorridorMap._look_ahead] kör EFTER att mötet nåtts i samma
+## händelselogg och skulle annars skjuta formeringen två rutor bort – mitt i
+## striden, med chipen kvar i luften (den buggen kostade en eftermiddag).
+var _encounter_active: bool = false
+## Krypningen i takt 3 (§3.1). Måste gå att döda: den är 400 ms lång och ett steg
+## är 180 ms, så den var fortfarande igång när mötet avslöjades och skrev
+## tillbaka formeringen till platsen den kröp FRÅN.
+var _approach_tween: Tween = null
 ## Steg sedan senaste händelse. CORRIDOR_DESIGN §1.2: max 3, mäts i rökprovet.
 var _quiet_steps: int = 0
 var _max_quiet_steps: int = 0
@@ -115,6 +158,7 @@ func _ready() -> void:
 	_steer.direction_pressed.connect(_on_direction_pressed)
 	_hud.character_sheet_pressed.connect(func() -> void: character_sheet_requested.emit())
 	_hud.settings_pressed.connect(func() -> void: settings_requested.emit())
+	_hud.help_pressed.connect(func() -> void: help_requested.emit())
 	resized.connect(_layout)
 	_layout()
 
@@ -156,19 +200,51 @@ func set_status(hp: int, max_hp: int, room: int, pips: int) -> void:
 ## 100 % korridor (utforskning) eller 45 % (strid). Samma kamera, samma
 ## horisontella utsnitt – det är vad KEEP_WIDTH är till för.
 func set_split(ratio: float) -> void:
-	_split = clampf(ratio, 0.2, 1.0)
-	_layout()
+	_kill_split_tween()
+	split_ratio = ratio
 
 
-func show_combat_split() -> void:
-	set_split(SPLIT_COMBAT)
+## Samma sak, men animerat. [b]Reducerad rörelse hoppar rakt dit[/b]
+## (DECISIONS 2026-09-21): tidslinjen ändras inte, bara interpolationen.
+func animate_split(ratio: float) -> void:
+	_kill_split_tween()
+	var target: float = clampf(ratio, 0.2, 1.0)
+	if reduced_motion or is_equal_approx(split_ratio, target) or not is_inside_tree():
+		split_ratio = target
+		return
+	_split_tween = create_tween()
+	_split_tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_split_tween.tween_property(self, "split_ratio", target, float(SPLIT_MS) / 1000.0)
+
+
+func _kill_split_tween() -> void:
+	if _split_tween != null and _split_tween.is_valid():
+		_split_tween.kill()
+	_split_tween = null
+
+
+func show_combat_split(animate: bool = false) -> void:
 	_steer.visible = false
+	if animate:
+		animate_split(SPLIT_COMBAT)
+	else:
+		set_split(SPLIT_COMBAT)
 
 
-func show_explore_split() -> void:
-	set_split(SPLIT_EXPLORE)
+func show_explore_split(animate: bool = false) -> void:
 	_steer.visible = true
+	if animate:
+		animate_split(SPLIT_EXPLORE)
+	else:
+		set_split(SPLIT_EXPLORE)
 	_refresh()
+
+
+## Korridorrutans höjd i pixlar. Stridsskärmen monteras direkt under den.
+func split_height() -> float:
+	var steer_block: float = Tokens.dp(STEER_BLOCK_DP)
+	var full: float = maxf(size.y - steer_block, 1.0)
+	return size.y * split_ratio if split_ratio < SPLIT_EXPLORE else full
 
 
 func _layout() -> void:
@@ -177,9 +253,7 @@ func _layout() -> void:
 	# Anchor_right = 1 sköter bredden; offseten är bara marginalen. Att skriva
 	# size.x här skulle göra containern dubbelt så bred som skärmen och kameran
 	# skulle zooma in i väggen (KEEP_WIDTH mäter mot containerns bredd).
-	var steer_block: float = Tokens.dp(STEER_BLOCK_DP)
-	var full: float = maxf(size.y - steer_block, 1.0)
-	var height: float = size.y * _split if _split < SPLIT_EXPLORE else full
+	var height: float = split_height()
 	_box.offset_left = 0.0
 	_box.offset_right = 0.0
 	_box.offset_top = 0.0
@@ -188,6 +262,7 @@ func _layout() -> void:
 	_steer.offset_bottom = -Tokens.dp(10)
 	_steer.offset_left = Tokens.dp(Tokens.SPACE_3)
 	_steer.offset_right = -Tokens.dp(Tokens.SPACE_3)
+	split_changed.emit(height)
 
 
 ## Depth fog, ingen lampa. [b]Verifieras i båda renderarna[/b] (research 05 §7);
@@ -427,9 +502,30 @@ func _stand_position() -> Vector3:
 	return eye - CorridorMesh.dir_vector(map.facing) * back
 
 
+## Låser eller släpper tumzonen. En fälla, en dörr eller ett belöningsval äger
+## skärmen tills spelaren svarat; knapparna dimmas då men försvinner aldrig
+## (UI_GUIDE §17.4 regel 3).
+func set_steering_enabled(value: bool) -> void:
+	if value:
+		_refresh()
+	else:
+		_steer.set_all_disabled(true)
+
+
+## HUD-knappens kritring: något har ändrats och inte setts (§4.4).
+func set_sheet_badge(pending: bool) -> void:
+	_hud.set_sheet_badge(pending)
+
+
+## "?" syns bara medan en strid pågår – utanför striden finns inget att förklara
+## i korridoren, och en knapp som inte gör något är värre än ingen knapp.
+func set_help_visible(value: bool) -> void:
+	_hud.set_help_visible(value)
+
+
 func _refresh() -> void:
 	_refresh_hud()
-	if map != null:
+	if map != null and not _busy:
 		_steer.set_actions(map.available_actions())
 
 
@@ -473,6 +569,9 @@ func open_door() -> void:
 ## Vilka fiender som står i nästa kammare. Sätts av [GameController] ur
 ## [method Content.encounter] innan spelaren når fram.
 func set_next_enemies(enemy_ids: Array) -> void:
+	if _encounter_active:
+		# Striden pågår. Nästa rums monster får vänta tills det här är avgjort.
+		return
 	var ids: Array[String] = []
 	for id: Variant in enemy_ids:
 		ids.append(String(id))
@@ -492,33 +591,44 @@ func clear_encounter() -> void:
 
 
 func _clear_encounter() -> void:
+	_kill_approach()
 	for child: Node in _encounter.get_children():
 		child.queue_free()
 	_enemy_nodes.clear()
+	_encounter_active = false
 
 
 ## Takt 1 och 3 i CORRIDOR_DESIGN §3.1: silhuett i mörkret på två rutor, sedan
 ## ett steg fram. Formen mot en aning ljusare vägg är hela genrens lockelse och
 ## kostar noll nya sprites.
 func _show_silhouettes(distance: int) -> void:
-	if _pending_enemies.is_empty():
+	if _pending_enemies.is_empty() or _encounter_active:
 		return
 	if _enemy_nodes.is_empty():
 		_spawn_enemies()
+	_kill_approach()
 	var target: Vector3 = _formation_origin(distance)
 	if reduced_motion or distance >= 2:
 		_encounter.position = target
 		return
-	var tween: Tween = create_tween()
-	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.tween_property(_encounter, "position", target, float(APPROACH_MS) / 1000.0)
+	_approach_tween = create_tween()
+	_approach_tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_approach_tween.tween_property(_encounter, "position", target, float(APPROACH_MS) / 1000.0)
+
+
+func _kill_approach() -> void:
+	if _approach_tween != null and _approach_tween.is_valid():
+		_approach_tween.kill()
+	_approach_tween = null
 
 
 ## Takt 3 forts.: silhuetten fylls med färg och pixlar på 180 ms.
 func _reveal_encounter(_node_id: String) -> void:
+	_kill_approach()
 	if _enemy_nodes.is_empty():
 		_spawn_enemies()
 	_encounter.position = _formation_origin(0)
+	_encounter_active = true
 	if reduced_motion:
 		for sprite: AnimatedSprite3D in _enemy_nodes:
 			sprite.modulate = Color.WHITE
@@ -565,11 +675,60 @@ func _spawn_enemies() -> void:
 		_enemy_nodes.append(sprite)
 
 
+## Antalet billboards som står i formeringen just nu.
+func enemy_count() -> int:
+	return _enemy_nodes.size()
+
+
+## Träffblixt och ryck på billboarden (research 05 §3).
+##
+## [b]Skaket ligger på sprajten, aldrig på kameran.[/b] Kameraskak i
+## förstaperson är åksjuka, och korridorkameran har med flit ingen skakfunktion
+## alls ([CorridorCamera] regel 2).
+func enemy_hit(index: int) -> void:
+	if index < 0 or index >= _enemy_nodes.size():
+		return
+	var sprite: AnimatedSprite3D = _enemy_nodes[index]
+	sprite.modulate = HIT_FLASH
+	var tween: Tween = create_tween()
+	tween.tween_property(sprite, "modulate", Color.WHITE, float(HIT_FLASH_MS) / 1000.0)
+	if reduced_motion:
+		return
+	var home: float = sprite.position.x
+	var shake: Tween = create_tween()
+	shake.set_trans(Tween.TRANS_SINE)
+	shake.tween_property(sprite, "position:x", home + HIT_SHAKE_M, 0.05)
+	shake.tween_property(sprite, "position:x", home - HIT_SHAKE_M, 0.06)
+	shake.tween_property(sprite, "position:x", home, 0.05)
+
+
+## Döden: arkets tre death-frames, sedan uttoning och en halv meter nedåt.
+## Saknar arket raden tonas billboarden bara ut – aldrig en krasch (Art-regeln).
+func enemy_die(index: int) -> void:
+	if index < 0 or index >= _enemy_nodes.size():
+		return
+	var sprite: AnimatedSprite3D = _enemy_nodes[index]
+	if sprite.sprite_frames != null and sprite.sprite_frames.has_animation(&"death"):
+		sprite.animation = &"death"
+		sprite.frame = 0
+		sprite.play()
+	var seconds: float = float(DEATH_MS) / 1000.0
+	if reduced_motion:
+		sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
+		return
+	var tween: Tween = create_tween().set_parallel(true)
+	tween.tween_property(sprite, "modulate:a", 0.0, seconds)
+	tween.tween_property(sprite, "position:y", sprite.position.y - DEATH_SINK_M, seconds)
+
+
 ## Chipens ankarpunkt i krit-lagret. Ren matematik på kameratransformen, alltså
 ## testbar headless (research 05 §7).
 func enemy_anchor(index: int) -> Vector2:
+	# [b](-1, -1) och inte (0, 0) för ett index utan billboard.[/b] Noll är en
+	# giltig skärmpunkt; ett chip för en fiende som inte står i formeringen
+	# hamnade då i skärmens övre vänstra hörn och pekade på ingenting.
 	if index < 0 or index >= _enemy_nodes.size():
-		return Vector2.ZERO
+		return Vector2(-1.0, -1.0)
 	var sprite: AnimatedSprite3D = _enemy_nodes[index]
 	var point: Vector3 = sprite.global_position + Vector3.UP * 1.2
 	if _camera.is_position_behind(point):

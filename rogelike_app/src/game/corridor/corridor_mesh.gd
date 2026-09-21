@@ -58,6 +58,12 @@ static func dir_vector(facing: int) -> Vector3:
 ## den regeln gäller 2D-sprites. Nearest utan mipmaps kokar på golv och tak i
 ## snedvinkel, och den kokningen upprepad 63 steg per run är värre än den lilla
 ## oskärpan (research 05 §7).
+## [b]M5 dag 3:[/b] [code]wall_stone[/code], [code]floor_stone[/code] och
+## [code]ceiling_stone[/code] har [code]mipmaps/generate=true[/code] i sina
+## [code].import[/code]-filer (PM-beslut), så de laddas rakt av. Övriga – dörren,
+## facklan, skyltplattan – är sprites i ögonhöjd och behöver inga; funktionen
+## genererar dem vid behov så att ett byte av en textur aldrig kan ge kokande
+## golv utan att någon märker det.
 static func tile_texture(path: String) -> Texture2D:
 	if _tiles.has(path):
 		return _tiles[path] as Texture2D
@@ -65,7 +71,7 @@ static func tile_texture(path: String) -> Texture2D:
 	var result: Texture2D = source
 	if source != null:
 		var image: Image = source.get_image()
-		if image != null:
+		if image != null and not image.has_mipmaps():
 			image = Image.create_from_data(image.get_width(), image.get_height(), false,
 				image.get_format(), image.get_data())
 			image.generate_mipmaps()

@@ -13,6 +13,10 @@ extends Control
 
 signal character_sheet_pressed()
 signal settings_pressed()
+## "?" – hjälp-lagret i striden. Knappen bor i krit-raden och inte i
+## stridsskärmens toppfält: i korridorsplitten har striden 352 dp, och ett eget
+## toppfält där kostar 48 dp som COMBAT_READABILITY §8 hellre ger kvittot.
+signal help_pressed()
 
 const HUD_HEIGHT_DP: int = 44
 const TRAIL_HEIGHT_DP: int = 16
@@ -27,6 +31,7 @@ var _pips_label: Label = null
 var _trail: HBoxContainer = null
 var _trail_label: Label = null
 var _sheet_button: Button = null
+var _help_button: Button = null
 var _sheet_badge: bool = false
 var _floor_index: int = 1
 
@@ -78,6 +83,11 @@ func _build() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	bar.add_child(spacer)
+
+	_help_button = _icon_button(Art.ui_icon_glyph(&"help"), Tokens.SEM_CHARGE)
+	_help_button.visible = false
+	_help_button.pressed.connect(func() -> void: help_pressed.emit())
+	bar.add_child(_help_button)
 
 	_sheet_button = _icon_button("◫", Tokens.CHALK_300)
 	_sheet_button.pressed.connect(func() -> void: character_sheet_pressed.emit())
@@ -162,6 +172,13 @@ func set_trail(tiles: int, steps: int) -> void:
 		mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_trail.add_child(mark)
 	_trail_label.text = Tokens.translate_or("CORRIDOR_FLOOR_TILES", "FLOOR %d · %d TILES") % [_floor_index, steps]
+
+
+## "?" finns bara medan en strid pågår. En knapp som inte gör något är värre än
+## ingen knapp (UI_GUIDE §7: ett element som inte lärts ut är frånvarande).
+func set_help_visible(value: bool) -> void:
+	_build()
+	_help_button.visible = value
 
 
 ## Kritringen som säger att något ändrats och inte setts (CORRIDOR_DESIGN §4.4).
