@@ -286,6 +286,7 @@ static func build(graph: RunGraph, rng: Rng, p_allow_fate: bool = false) -> Corr
 	map._place_trap(trap_candidates, trap_roll)
 	map._trail = [map._key(Vector2i.ZERO)]
 	map._push({"type": EVENT_CELL_ENTERED, "cell": map._key(Vector2i.ZERO), "kind": KIND_START})
+	map._face_the_only_way_on()
 	map._look_ahead()
 	return map
 
@@ -382,6 +383,11 @@ func _roll_treasure(rng: Rng) -> Dictionary:
 
 static func _key(at: Vector2i) -> String:
 	return "%d,%d" % [at.x, at.y]
+
+
+## Rutnyckeln för en position. Publik: vyn namnger sina noder med den.
+static func cell_key(at: Vector2i) -> String:
+	return _key(at)
 
 
 static func key_to_vec(key: String) -> Vector2i:
@@ -576,6 +582,10 @@ func _action_info(dir: int) -> Dictionary:
 		"sign": sign_key,
 		"distance": int(notable.get("distance", 0)),
 		"leads_to": String(notable.get("kind", "")),
+		# Noden vid den första intressanta rutan, inte bara vid grannrutan:
+		# fienderna måste stå på plats innan spelaren ser silhuetten på två
+		# rutors håll (CORRIDOR_DESIGN §3.1 takt 1).
+		"leads_to_node": String(notable.get("node_id", "")),
 	}
 
 
@@ -690,7 +700,20 @@ func _enter_cell(cell: Dictionary) -> void:
 				})
 			if bool(cell.get("boss", false)):
 				_push({"type": EVENT_FLOOR_CLEARED, "floor": floor_index})
+	_face_the_only_way_on()
 	_look_ahead()
+
+
+## Hörnet vrids i samma stund man kommer fram, inte vid nästa tapp. §2.2 säger
+## att hörn kostar noll steg och all sikt; att lämna spelaren stirrande in i en
+## vägg tills hen trycker FRAM igen är motsatsen till det, och blir dessutom en
+## bild där ingenting går att läsa.
+func _face_the_only_way_on() -> void:
+	if pending_trap_key != "":
+		return
+	var exits: Array[int] = _open_dirs()
+	if exits.size() == 1 and exits[0] != facing:
+		_turn_to(exits[0])
 
 
 ## Återvändsgränden är det enda stället spelaren vänder. Hen backar aldrig:
