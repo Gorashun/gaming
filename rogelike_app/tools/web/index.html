@@ -39,7 +39,7 @@
     fail('This browser cannot inflate the game files. Use a current Chrome, Edge, Firefox or Safari.');
     return;
   }
-  const blobUrls = {};
+  const payloads = {};
   let done = 0;
   const total = Object.values(FILES).reduce((a, f) => a + f.size, 0);
   try {
@@ -55,17 +55,17 @@
         chunks.push(value); done += value.length;
         fill.style.width = Math.min(100, Math.round(100 * done / total)) + '%';
       }
-      blobUrls[name] = URL.createObjectURL(new Blob(chunks, { type: f.type }));
+      payloads[name] = { blob: new Blob(chunks, { type: f.type }), type: f.type };
     }
   } catch (e) { fail(String(e && e.message || e)); return; }
 
-  // Godot's loader asks for pipwreck.wasm and pipwreck.pck by name; hand it the
-  // inflated blobs instead, whichever transport it picks.
-  const remap = (u) => { const s = String(u); for (const n in blobUrls) if (s.endsWith(n)) return blobUrls[n]; return u; };
+  // Godot's loader asks for pipwreck.wasm and pipwreck.pck by name. The page
+  // sandbox does not let fetch reach blob: URLs, so answer those requests
+  // straight from memory with a synthetic Response instead of a network hop.
+  const lookup = (u) => { const s = String(u); for (const n in payloads) if (s.endsWith(n)) return payloads[n]; return null; };
+  const synth = (p) => new Response(p.blob, { status: 200, headers: { 'Content-Type': p.type, 'Content-Length': String(p.blob.size) } });
   const realFetch = window.fetch.bind(window);
-  window.fetch = (u, o) => realFetch(u instanceof Request ? u : remap(u), o);
-  const realOpen = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function (m, u, ...rest) { return realOpen.call(this, m, remap(u), ...rest); };
+  window.fetch = (u, o) => { const p = lookup(u instanceof Request ? u.url : u); return p ? Promise.resolve(synth(p)) : realFetch(u, o); };
 
   hint.textContent = 'Starting the engine.';
   const config = { args: [], canvasResizePolicy: 2, emscriptenPoolSize: 8, ensureCrossOriginIsolationHeaders: false,
