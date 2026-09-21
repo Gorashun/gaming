@@ -21,3 +21,23 @@
 - Balansregression: spara simulatorns JSON till `docs/balance/<datum>.json` och
   jämför automatiskt mellan körningar (§5 "Regressionstest").
 - `avoidable_death_rate` (§5) är inte implementerad i simulatorn.
+
+## Noterat under M1 (dev)
+
+- **Manuell smedja.** `RewardApply.default_target()` väljer plats deterministiskt
+  (lägsta sidan, vänstraste PLAIN-sloten). UI_GUIDE §3 vill ha en smedjeskärm
+  där spelaren väljer tärning → sida → ny sida. `apply()` tar redan ett
+  `target`, så skärmen är allt som saknas.
+- **Låsa tärningar inför omkast** (UI_GUIDE §4.5). `Reroll.apply()` tar
+  `locked_ids`, men stridsskärmen har ingen knapp som fyller listan.
+- **Kedjepilar och multiplikator-klamrar** mellan slots (UI_GUIDE §4.4). M1
+  visar effektivt värde och multiplikator i sloten i stället.
+- **Kedjetempo-inställningen** (Lugn/Normal/Snabb/Blixt). `EventPlayer.speed_scale`
+  finns och fungerar, men inget UI sätter den och den sparas inte.
+- **Reducerad rörelse** (UI_GUIDE §6.1) är inte kopplad till juice-funktionerna.
+- **Ödeskast efter boss** (`FATE_ROLL`, GAME_DESIGN §1). M1 går direkt till
+  vinstskärmen efter våning 1:s boss; ingen belöning ges efter bossen.
+- **`ROUND_BUDGET_MS = 3200`** är dev:s tolkning. UI_GUIDE §5 sätter tak bara
+  för kedjan (2 500 ms) och säger inget om fiendepasset. Behöver UI-beslut.
+- **Fiendezonen rymmer fyra fiender**, inte tre som M1-briefen antog: rum 1 är
+  fyra Rostråttor (§4.4). Panelerna fördelar bredden dynamiskt.

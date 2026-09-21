@@ -2,6 +2,53 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M1 – Vertical slice (2026-09-21)
+
+Våning 1 går att spela igenom i portrait med platshållargrafik: marsch → strid →
+belöning → marsch → boss → död/vinst → ny run.
+
+- **Scenarkitektur:** `src/game/main.tscn` med `Backdrop` (−10), `World`
+  (Nearest, pixelsprites) och `ChalkUI` (Linear, krit-UI) enligt research 04 §5.
+  `GameController` äger `RunState`, byter skärm uppskjutet och autosparar.
+- **Autosave:** `src/platform/save_io.gd` → `user://save.json`, versionerad,
+  skriven via temporärfil + namnbyte. Trasig fil ⇒ ny run, aldrig krasch.
+  Återupptagning sker alltid vid en rundgräns, med RNG-strömmens position.
+- **Ny core (ren, testad):** `run_graph.gd` (nodgraf per våning, seedad,
+  förgrening i rum 3), `run_flow.gd` (rumsstart, Andrum, belöningsnyckel),
+  `reward_apply.gd` (deterministiskt målval + beskrivning + tillämpning),
+  `reroll.gd` (roll-fasen: `LOCKED`, `REFUND_REROLL`, `rerolls_left`),
+  `meta_score.gd` (meta-poäng och kedjeskada per runda).
+- **Stridsskärm:** fiendezon, fem slots med typ/värde/multiplikator, tumzon med
+  sex tärningar, OMKAST · ÅNGRA · BEKRÄFTA. Drag och tapp-tapp likvärdiga, fri
+  ångra, bekräfta med tomma slots tillåtet (§7 fråga 4). Förhandsvisningen körs
+  med en riktig `Resolver.resolve()` på en kopia och asserteras byte-identisk
+  mot utfallet vid bekräftelse (§6.3).
+- **Uppspelare:** `event_player.gd` som överlappande tidslinje i tre banor
+  (CHAIN/BEAT/SIDE), inte en kö. Placeholder-juice: skalpuls, number pop, skak,
+  combo-blink. `Juice.sfx()` och `Juice.haptic()` är stubbar som loggar.
+- **Belöning, marsch, död/vinst:** 1 av 3 med sällsynthetsfärg + ramform + ord;
+  sidoscroll-marsch med två parallaxlager och paperdoll-riggad figur, två stora
+  knappar vid förgrening; slutskärm med rum nått, största kedja, meta-poäng och
+  "EN RUN TILL".
+- **Rökprov:** `tools/smoke_play.gd` spelar en hel run genom UI:t med
+  Lookahead-policyn, tar fem skärmdumpar och avslutar 0.
+- **Dokumentation:** `docs/ARCHITECTURE.md` (scenträd, bytesplatser för
+  pixelgrafik, uppspelarens tidslinje, run-loop, autosave, rökprov).
+
+Mätvärden vid leverans (Godot 4.6.stable, x86_64):
+
+| Mätning | Resultat |
+|---|---|
+| gdUnit4 | 160/160 gröna, 0 fel, 0 orphans, 1 929 ms |
+| Rökprov headless, seed 7 | VINST, 4 rum, 13 rundor, största kedja 102, exit 0 |
+| Rökprov xvfb 1080×1920, seed 7 | 6 skärmdumpar, exit 0, inga fel eller varningar |
+| Kedjan (P0–P3) för sex tärningar, okomprimerad | 2 348 ms (tak 2 500) |
+| Naiv FIFO-kö för samma runda | 6 360 ms |
+
+Buggar som rökprovet hittade och som inget logiktest kunde hitta: skärmbyte
+inifrån `_process` (segfault), `World`-lagret helt dolt bakom krit-bakgrunden,
+och etiketter som tryckte hela kolumnen utanför 1080 px.
+
 ## M0 – Setup (2026-09-21)
 
 Godot 4.6-projekt, seedad och testbar core, headless-CI.

@@ -23,7 +23,6 @@ var _art: Control = null
 var _type_label: Label = null
 var _die_label: Label = null
 var _preview_label: Label = null
-var _multiplier_label: Label = null
 var _index_label: Label = null
 var _highlight: bool = false
 
@@ -58,9 +57,6 @@ func _init() -> void:
 	# inte på 640 dp höjd.
 	_preview_label = _make_label(Tokens.TYPE_LABEL, Tokens.SEM_DAMAGE)
 	column.add_child(_preview_label)
-
-	_multiplier_label = _make_label(Tokens.TYPE_CAPTION, Tokens.SEM_CHARGE)
-	column.add_child(_multiplier_label)
 
 	_index_label = _make_label(Tokens.TYPE_CAPTION, Tokens.CHALK_500)
 	column.add_child(_index_label)
@@ -110,7 +106,6 @@ func bind(index: int, slot: Slot, die: Die) -> void:
 func set_preview(effective_value: int, multiplier: int, occupied: bool) -> void:
 	if not occupied:
 		_preview_label.text = ""
-		_multiplier_label.text = ""
 		return
 	if multiplier > 1:
 		_preview_label.text = "%d ×%d" % [effective_value, multiplier]
@@ -118,7 +113,6 @@ func set_preview(effective_value: int, multiplier: int, occupied: bool) -> void:
 	else:
 		_preview_label.text = "= %d" % effective_value
 		_preview_label.add_theme_color_override("font_color", Tokens.SEM_DAMAGE)
-	_multiplier_label.text = ""
 
 
 ## Pulserar konturen när en tärning bärs runt (UI_GUIDE §4.1.2).
