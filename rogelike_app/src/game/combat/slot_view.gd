@@ -84,18 +84,18 @@ func bind(index: int, slot: Slot, die: Die) -> void:
 	_slot = slot
 	_die = die
 	_index_label.text = "%d" % (index + 1)
-	_type_label.text = "%s %s" % [Tokens.slot_icon(slot.type), Tokens.slot_label(slot.type)]
+	_type_label.text = Tokens.slot_label(slot.type)
 	_type_label.add_theme_color_override("font_color", Tokens.slot_color(slot.type))
 
 	if slot.blocked:
-		_die_label.text = "GRIPEN"
+		_die_label.text = tr("SLOT_STATE_GRABBED")
 		_die_label.add_theme_color_override("font_color", Tokens.SEM_BLOOD)
 	elif die != null:
 		var face: Face = die.showing_face()
 		_die_label.text = str(face.value) if face != null else "?"
 		_die_label.add_theme_color_override("font_color", Tokens.BONE_DIE)
 	else:
-		_die_label.text = "TOM"
+		_die_label.text = tr("SLOT_STATE_EMPTY")
 		_die_label.add_theme_color_override("font_color", Tokens.CHALK_500)
 
 	_apply_style()

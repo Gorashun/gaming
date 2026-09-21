@@ -6,7 +6,7 @@ extends SceneTree
 ## [codeblock]
 ## xvfb-run -a -s "-screen 0 1080x1920x24" "$GODOT_BIN" --resolution 1080x1920 \
 ##   --audio-driver Dummy -s tools/smoke_play.gd -- --pipwreck-seed=7 \
-##   --shots=docs/screenshots/m1
+##   --shots=res://docs/screenshots/m1_5
 ##
 ## # Bara logiken, utan fönster och utan skärmdumpar:
 ## "$GODOT_BIN" --headless -s tools/smoke_play.gd -- --pipwreck-seed=7
@@ -15,6 +15,7 @@ extends SceneTree
 ## Flaggor:
 ##   --pipwreck-seed=N  seed för runnen (läses även av GameController)
 ##   --shots=DIR        katalog för skärmdumpar (tom = inga skärmdumpar)
+##   --locale=xx        tvingar språk (t.ex. sv). Tomt = projektets standard.
 ##   --max-seconds=N    säkerhetsstopp (standard 180)
 ##
 ## Scriptet rör aldrig [Resolver] eller [Rng] direkt annat än genom
@@ -71,10 +72,21 @@ class Driver:
 		_shots_dir = String(args.get("shots", ""))
 		var max_seconds: float = float(args.get("max-seconds", DEFAULT_MAX_SECONDS))
 
+		# --locale=sv kör hela rökprovet på svenska. Godot läser också --locale
+		# som motorflagga, men bara före "--"; den här raden gör flaggan
+		# användbar efter "--" där resten av våra flaggor ligger.
+		var locale: String = String(args.get("locale", ""))
+		if locale != "":
+			TranslationServer.set_locale(locale)
+
 		print("PIPWRECK smoke play")
+		print("  locale=%s (fallback %s)" % [
+			TranslationServer.get_locale(),
+			ProjectSettings.get_setting("internationalization/locale/fallback", "en"),
+		])
 		print("  seed=%d  shots=%s  display=%s" % [
 			seed_value,
-			_shots_dir if _shots_dir != "" else "(inga)",
+			_shots_dir if _shots_dir != "" else "(none)",
 			DisplayServer.get_name(),
 		])
 		if _shots_dir != "":
@@ -85,12 +97,12 @@ class Driver:
 
 		var packed: PackedScene = ResourceLoader.load(MAIN_SCENE) as PackedScene
 		if packed == null:
-			_fail("kunde inte ladda %s" % MAIN_SCENE)
+			_fail("could not load %s" % MAIN_SCENE)
 			_finish()
 			return
 		var controller: GameController = packed.instantiate() as GameController
 		if controller == null:
-			_fail("main.tscn har inte GameController som rot")
+			_fail("main.tscn does not have GameController as its root")
 			_finish()
 			return
 		# call_deferred: _ready körs medan roten fortfarande sätter upp sina barn.
@@ -104,7 +116,7 @@ class Driver:
 
 		while running:
 			if Time.get_ticks_msec() - started_ms > int(max_seconds * 1000.0):
-				_fail("tidsgränsen %.0f s nåddes i skärmen %s" % [max_seconds, controller.current_screen_name()])
+				_fail("time limit %.0f s reached on screen %s" % [max_seconds, controller.current_screen_name()])
 				break
 			var screen: GameScreen = controller.current_screen()
 			if screen == null:
@@ -137,13 +149,13 @@ class Driver:
 
 	func _play_march(march: MarchScreen) -> void:
 		await _frames(8)
-		await _shot("04_marsch")
+		await _shot("04_march")
 		if not is_instance_valid(march):
 			return
 		march.arrive()
 		if is_instance_valid(march) and march.option_count() > 1:
 			await _frames(4)
-			await _shot("04b_marsch_forgrening")
+			await _shot("04b_march_branch")
 			if is_instance_valid(march):
 				march.choose(0)
 		await _frames(1)
@@ -154,15 +166,15 @@ class Driver:
 			if placement[slot] < 0:
 				continue
 			if not combat.place(placement[slot], slot):
-				_fail("kunde inte placera tärning %d i slot %d" % [placement[slot], slot])
+				_fail("could not place die %d in slot %d" % [placement[slot], slot])
 		await _frames(3)
-		await _shot("01_strid_innan_bekraftelse")
+		await _shot("01_combat_before_confirm")
 
 		combat.confirm()
 		# Mitt i kedjan: uppspelningen är igång men inte klar.
 		await _seconds(0.5)
 		if is_instance_valid(combat) and combat.is_resolving():
-			await _shot("02_strid_mitt_i_kedjan")
+			await _shot("02_combat_mid_chain")
 
 		# is_instance_valid: vinner rummet sin sista runda friar controllern
 		# stridsskärmen medan vi väntar. En statiskt typad Node-referens
@@ -171,7 +183,7 @@ class Driver:
 		var started_ms: int = Time.get_ticks_msec()
 		while is_instance_valid(combat) and combat.is_resolving():
 			if Time.get_ticks_msec() - started_ms > PLAYBACK_TIMEOUT_MS:
-				_fail("uppspelningen blev aldrig klar (%d ms)" % PLAYBACK_TIMEOUT_MS)
+				_fail("playback never finished (%d ms)" % PLAYBACK_TIMEOUT_MS)
 				return false
 			await _frames(1)
 		await _frames(1)
@@ -179,50 +191,50 @@ class Driver:
 
 	func _play_reward(reward: RewardScreen) -> void:
 		await _frames(8)
-		await _shot("03_beloning")
+		await _shot("03_reward")
 		if not is_instance_valid(reward):
 			return
 		if reward.option_count() > 0:
 			reward.choose(0)
 		else:
-			_fail("belöningsskärmen fick noll alternativ")
+			_fail("the reward screen got zero options")
 		await _frames(1)
 
 	func _report(over: GameOverScreen, rounds_played: int, rooms_seen: int) -> void:
 		await _frames(8)
 		if not is_instance_valid(over):
-			_fail("död/vinst-skärmen försvann innan den lästes")
+			_fail("the gameover screen vanished before it was read")
 			return
 		var summary: Dictionary = over.summary()
 		var won: bool = bool(summary.get("won", false))
-		await _shot("05_vinst" if won else "05_dod")
+		await _shot("05_win" if won else "05_death")
 		var score: Dictionary = summary.get("score", {}) as Dictionary
 		print("")
-		print("Run slut: %s" % ("VINST" if won else "DÖD"))
-		print("  rum nått        %d" % int(summary.get("room_reached", 0)))
-		print("  rum rensade     %d" % int(summary.get("rooms_cleared", 0)))
-		print("  största kedja   %d" % int(summary.get("best_chain", 0)))
-		print("  HP kvar         %d" % int(summary.get("hp_left", 0)))
-		print("  meta-poäng      %d" % int(score.get("total", 0)))
-		print("  rundor spelade  %d" % rounds_played)
-		print("  rum besökta     %d" % rooms_seen)
-		print("  juice-anrop     %d   haptik-anrop %d" % [Juice.calls.size(), Haptics.calls.size()])
+		print("Run over: %s" % ("WIN" if won else "DEATH"))
+		print("  room reached    %d" % int(summary.get("room_reached", 0)))
+		print("  rooms cleared   %d" % int(summary.get("rooms_cleared", 0)))
+		print("  best chain      %d" % int(summary.get("best_chain", 0)))
+		print("  hp left         %d" % int(summary.get("hp_left", 0)))
+		print("  meta score      %d" % int(score.get("total", 0)))
+		print("  rounds played   %d" % rounds_played)
+		print("  rooms visited   %d" % rooms_seen)
+		print("  juice calls     %d   haptic calls %d" % [Juice.calls.size(), Haptics.calls.size()])
 		if rounds_played <= 0:
-			_fail("ingen runda spelades")
+			_fail("no round was played")
 		if Juice.calls.is_empty():
-			_fail("uppspelaren gjorde inga juice-anrop")
+			_fail("the event player made no juice calls")
 
 	# --- Hjälpare ----------------------------------------------------------
 
 	func _finish() -> void:
 		print("")
 		if _errors.is_empty():
-			print("SMOKE OK  (%d skärmdumpar)" % _shot_index)
+			print("SMOKE OK  (%d screenshots)" % _shot_index)
 			get_tree().quit(0)
 			return
 		for message: String in _errors:
-			printerr("SMOKE FEL: %s" % message)
-		print("SMOKE FEL: %d problem" % _errors.size())
+			printerr("SMOKE FAIL: %s" % message)
+		print("SMOKE FAIL: %d problems" % _errors.size())
 		get_tree().quit(1)
 
 	func _fail(message: String) -> void:
@@ -248,12 +260,12 @@ class Driver:
 		await RenderingServer.frame_post_draw
 		var image: Image = get_tree().root.get_texture().get_image()
 		if image == null:
-			_fail("kunde inte läsa viewporten för %s" % shot_name)
+			_fail("could not read the viewport for %s" % shot_name)
 			return
 		var path: String = "%s/%s.png" % [_shots_dir, shot_name]
 		var err: Error = image.save_png(path)
 		if err != OK:
-			_fail("kunde inte skriva %s (%d)" % [path, err])
+			_fail("could not write %s (%d)" % [path, err])
 			return
 		_shot_index += 1
-		print("  skärmdump %s (%d×%d)" % [path, image.get_width(), image.get_height()])
+		print("  screenshot %s (%d×%d)" % [path, image.get_width(), image.get_height()])

@@ -29,7 +29,7 @@ mouse_filter = 1
 
 [node name="Heading" type="Label" parent="Margin/Column"]
 layout_mode = 2
-text = "VÅNING 1"
+text = "FLOOR 1"
 
 [node name="Strip" type="Control" parent="Margin/Column"]
 layout_mode = 2
@@ -39,7 +39,7 @@ mouse_filter = 2
 
 [node name="Prompt" type="Label" parent="Margin/Column"]
 layout_mode = 2
-text = "Marscherar …"
+text = "Marching …"
 horizontal_alignment = 1
 
 [node name="Choices" type="VBoxContainer" parent="Margin/Column"]

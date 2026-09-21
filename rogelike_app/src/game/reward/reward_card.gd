@@ -85,13 +85,16 @@ func bind(p_index: int, p_option: Dictionary, p_target: Dictionary, description:
 	var style: Dictionary = Tokens.rarity_style(rarity)
 	var color: Color = style["color"] as Color
 
-	_rarity_label.text = "%s %s · %s" % [
+	_rarity_label.text = tr("REWARD_CARD_HEADER") % [
 		String(style["mark"]),
-		String(style["name"]),
+		Tokens.rarity_label(rarity),
 		Tokens.category_label(String(option.get("category", ""))),
 	]
 	_rarity_label.add_theme_color_override("font_color", color)
-	_name_label.text = String(option.get("name", option.get("id", "")))
+	_name_label.text = Tokens.translate_or(
+		String(option.get("name_key", "")),
+		String(option.get("name", option.get("id", ""))),
+	)
 	_effect_label.text = description
 
 	var box: StyleBoxFlat = Tokens.box(color, true, Tokens.STROKE_BOLD, Tokens.RADIUS_CARD)

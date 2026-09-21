@@ -103,16 +103,37 @@ static func dpi(value: int) -> int:
 	return int(round(float(value) * DP))
 
 
+# --- i18n ------------------------------------------------------------------
+# CLAUDE.md: all spelartext är engelska i källan och går via tr(). Statiska
+# funktioner kan inte anropa Object.tr(), så de går via TranslationServer –
+# samma uppslagning, samma CSV, samma fallback (en).
+
+## Översätter [param key]. Saknas nyckeln returnerar Godot nyckeln själv.
+static func translate(key: String) -> String:
+	return String(TranslationServer.translate(key))
+
+
+## Översätter [param key], men faller tillbaka på [param fallback] om nyckeln
+## saknas helt. Används för innehålls-id:n ur [Content] som kan vara okända
+## (en fiende som lagts till i data men inte i CSV:n syns då med sitt engelska
+## källnamn i stället för som en rå nyckel).
+static func translate_or(key: String, fallback: String) -> String:
+	var value: String = String(TranslationServer.translate(key))
+	return fallback if value == key else value
+
+
 # --- §2.4 Slot-typer: färg + form + ramstil --------------------------------
 ## Ramstilen är redundant med färgen (§2.4) så att en färgblind spelare kan
 ## skilja alla fem typer på enbart ram + ikon + text.
+## [code]key[/code] slås upp i assets/i18n/translations.csv; [code]icon[/code] är
+## reservglyphen när slot-spriten (assets/sprites/ui/slot_*.png) inte laddas.
 const SLOT_STYLE: Dictionary = {
-	Rules.SlotType.PLAIN: {"name": "VANLIG", "icon": "·", "color": CHALK_300, "border": "solid", "width": STROKE_REG},
-	Rules.SlotType.FIRE: {"name": "ELD", "icon": "▲", "color": SEM_FIRE, "border": "solid", "width": STROKE_REG},
-	Rules.SlotType.MIRROR: {"name": "SPEGEL", "icon": "❖", "color": SEM_FROST, "border": "double", "width": STROKE_REG},
-	Rules.SlotType.ANVIL: {"name": "AMBOSS", "icon": "⬣", "color": SEM_SHIELD, "border": "thick", "width": STROKE_HEAVY},
-	Rules.SlotType.CHARGE: {"name": "LADDA", "icon": "⬤", "color": SEM_CHARGE, "border": "dotted", "width": STROKE_REG},
-	Rules.SlotType.VOID: {"name": "TOMRUM", "icon": "⬚", "color": Color("#8A94A6"), "border": "dashed", "width": STROKE_REG},
+	Rules.SlotType.PLAIN: {"key": "SLOT_PLAIN", "icon": "·", "color": CHALK_300, "border": "solid", "width": STROKE_REG},
+	Rules.SlotType.FIRE: {"key": "SLOT_FIRE", "icon": "▲", "color": SEM_FIRE, "border": "solid", "width": STROKE_REG},
+	Rules.SlotType.MIRROR: {"key": "SLOT_MIRROR", "icon": "❖", "color": SEM_FROST, "border": "double", "width": STROKE_REG},
+	Rules.SlotType.ANVIL: {"key": "SLOT_ANVIL", "icon": "⬣", "color": SEM_SHIELD, "border": "thick", "width": STROKE_HEAVY},
+	Rules.SlotType.CHARGE: {"key": "SLOT_CHARGE", "icon": "⬤", "color": SEM_CHARGE, "border": "dotted", "width": STROKE_REG},
+	Rules.SlotType.VOID: {"key": "SLOT_VOID", "icon": "⬚", "color": Color("#8A94A6"), "border": "dashed", "width": STROKE_REG},
 }
 
 
@@ -125,7 +146,7 @@ static func slot_color(slot_type: int) -> Color:
 
 
 static func slot_label(slot_type: int) -> String:
-	return String(slot_style(slot_type)["name"])
+	return translate(String(slot_style(slot_type)["key"]))
 
 
 static func slot_icon(slot_type: int) -> String:
@@ -134,9 +155,9 @@ static func slot_icon(slot_type: int) -> String:
 
 # --- §2.5 Sällsynthet: färg + ramform + utskrivet ord ----------------------
 const RARITY_STYLE: Dictionary = {
-	Rules.Rarity.COMMON: {"name": "VANLIG", "mark": "▭", "color": CHALK_300},
-	Rules.Rarity.UNCOMMON: {"name": "OVANLIG", "mark": "◣", "color": SEM_HEAL},
-	Rules.Rarity.RARE: {"name": "SÄLLSYNT", "mark": "▤", "color": SEM_FROST},
+	Rules.Rarity.COMMON: {"key": "RARITY_COMMON", "mark": "▭", "color": CHALK_300},
+	Rules.Rarity.UNCOMMON: {"key": "RARITY_UNCOMMON", "mark": "◣", "color": SEM_HEAL},
+	Rules.Rarity.RARE: {"key": "RARITY_RARE", "mark": "▤", "color": SEM_FROST},
 }
 
 
@@ -149,7 +170,7 @@ static func rarity_color(rarity: int) -> Color:
 
 
 static func rarity_label(rarity: int) -> String:
-	return String(rarity_style(rarity)["name"])
+	return translate(String(rarity_style(rarity)["key"]))
 
 
 # --- §2.5 Multiplikatorbadge ------------------------------------------------
@@ -181,11 +202,11 @@ static func multiplier_size(multiplier: int) -> int:
 static func category_label(category: String) -> String:
 	match category:
 		Rewards.CATEGORY_FORGE_FACE:
-			return "sida"
+			return translate("CATEGORY_FORGE_FACE")
 		Rewards.CATEGORY_RELIC:
-			return "relik"
+			return translate("CATEGORY_RELIC")
 		Rewards.CATEGORY_SLOT_SWAP:
-			return "slot"
+			return translate("CATEGORY_SLOT_SWAP")
 	return category
 
 

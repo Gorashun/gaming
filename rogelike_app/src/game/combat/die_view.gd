@@ -122,7 +122,7 @@ func _refresh(face: Face) -> void:
 	if face == null:
 		_value_label.text = "–"
 		_effect_label.text = ""
-		_state_label.text = "SAKNAS"
+		_state_label.text = tr("DIE_MISSING")
 		_panel.add_theme_stylebox_override("panel", Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR, Tokens.RADIUS_DIE))
 		return
 
@@ -133,18 +133,18 @@ func _refresh(face: Face) -> void:
 	var body: Color = Tokens.BONE_DIE
 	var border: Color = Tokens.CHALK_300
 	if _stolen:
-		_state_label.text = "STULEN"
+		_state_label.text = tr("DIE_STOLEN")
 		body = Tokens.SURFACE_LINE
 		border = Tokens.SEM_BLOOD
 	elif _placed_in_slot >= 0:
-		_state_label.text = "PL. %d" % (_placed_in_slot + 1)
+		_state_label.text = tr("DIE_IN_SLOT") % (_placed_in_slot + 1)
 		body = Tokens.SURFACE_RAISED
 		border = Tokens.CHALK_500
 	elif _locked:
-		_state_label.text = "LÅST"
+		_state_label.text = tr("DIE_LOCKED")
 		border = Tokens.SEM_CHARGE
 	else:
-		_state_label.text = "DRA →"
+		_state_label.text = tr("DIE_DRAG_HINT")
 
 	if _selected:
 		border = Tokens.SEM_CHARGE
@@ -161,21 +161,21 @@ func _refresh(face: Face) -> void:
 static func _effect_glyph(face: Face) -> String:
 	match face.effect:
 		Rules.FaceEffectKind.APPLY_POISON:
-			return "⬬ gift"
+			return Tokens.translate("FACE_EFFECT_POISON")
 		Rules.FaceEffectKind.APPLY_BURN:
-			return "▲ brand"
+			return Tokens.translate("FACE_EFFECT_BURN")
 		Rules.FaceEffectKind.LIFESTEAL:
-			return "✚ sug"
+			return Tokens.translate("FACE_EFFECT_LIFESTEAL")
 		Rules.FaceEffectKind.COPY_LEFT:
-			return "❖ kopia"
+			return Tokens.translate("FACE_EFFECT_COPY_LEFT")
 		Rules.FaceEffectKind.ANVIL_SELF:
-			return "⬣ dubbel"
+			return Tokens.translate("FACE_EFFECT_ANVIL")
 		Rules.FaceEffectKind.GROW:
-			return "↑ växer"
+			return Tokens.translate("FACE_EFFECT_GROW")
 		Rules.FaceEffectKind.REFUND_REROLL:
-			return "↻ omkast"
+			return Tokens.translate("FACE_EFFECT_REFUND")
 		Rules.FaceEffectKind.LOCKED:
-			return "⬤ låst"
+			return Tokens.translate("FACE_EFFECT_LOCKED")
 	return ""
 
 

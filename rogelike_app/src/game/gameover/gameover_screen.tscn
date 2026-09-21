@@ -56,4 +56,4 @@ horizontal_alignment = 1
 
 [node name="AgainButton" type="Button" parent="Margin/Column"]
 layout_mode = 2
-text = "EN RUN TILL"
+text = "ONE MORE RUN"

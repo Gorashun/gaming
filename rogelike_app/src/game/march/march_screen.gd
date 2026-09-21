@@ -35,11 +35,11 @@ func enter(ctx: Dictionary) -> void:
 
 	_style()
 	var rooms_cleared: int = int(ctx.get("rooms_cleared", 0))
-	_heading.text = "VÅNING %d · %d RENSADE" % [
+	_heading.text = tr("MARCH_HEADING") % [
 		int(_graph.floor_index) if _graph != null else 1,
 		rooms_cleared,
 	]
-	_prompt.text = "Marscherar …"
+	_prompt.text = tr("MARCH_WALKING")
 	_choices.visible = false
 	set_process(true)
 	call_deferred("_build_world")
@@ -91,7 +91,7 @@ func arrive() -> void:
 	if _options.size() <= 1:
 		choose(0)
 		return
-	_prompt.text = "Vägen delar sig. Välj."
+	_prompt.text = tr("MARCH_SPLIT")
 	_choices.visible = true
 	for i: int in range(_options.size()):
 		_choices.add_child(_make_choice_button(i, _options[i]))
@@ -127,8 +127,8 @@ static func node_icon(node: Dictionary) -> String:
 
 static func node_title(node: Dictionary) -> String:
 	if RunFlow.is_boss(node):
-		return "BOSS · RUM %d" % int(node.get("room", 1))
-	return "STRID · RUM %d" % int(node.get("room", 1))
+		return Tokens.translate("MARCH_NODE_BOSS") % int(node.get("room", 1))
+	return Tokens.translate("MARCH_NODE_COMBAT") % int(node.get("room", 1))
 
 
 ## Vad som väntar på vägen. Läses ur [Content] så att kortet och mötet aldrig
@@ -138,9 +138,9 @@ static func preview_text(node: Dictionary) -> String:
 	var names: PackedStringArray = PackedStringArray()
 	var total_hp: int = 0
 	for enemy: Enemy in enemies:
-		names.append(enemy.display_name)
+		names.append(Tokens.translate_or(Content.enemy_key(enemy.id), enemy.display_name))
 		total_hp += enemy.max_hp
-	return "%s · %d HP totalt" % [", ".join(names), total_hp]
+	return Tokens.translate("MARCH_PREVIEW") % [", ".join(names), total_hp]
 
 
 ## Väljer väg. Publik så att smoke-testet kan gå vidare utan indata.

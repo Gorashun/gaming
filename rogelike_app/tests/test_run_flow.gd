@@ -167,8 +167,10 @@ func test_the_description_names_the_die_and_the_replaced_value() -> void:
 	var state: CombatState = Content.smith_state()
 	var option: Dictionary = _option("FORGE_HAMMER_FACE")
 	var text: String = RewardApply.describe(state, option, RewardApply.default_target(state, option))
-	assert_str(text).contains("Tärning 1")
-	assert_str(text).contains("Städhammaren")
+	# Källspråket är engelska (CLAUDE.md); CSV:n är laddad i testkörningen, så
+	# det som kommer ut är den engelska raden, inte nyckeln.
+	assert_str(text).contains("Die 1")
+	assert_str(text).contains("Forge Hammer")
 
 
 # --- Reroll ----------------------------------------------------------------

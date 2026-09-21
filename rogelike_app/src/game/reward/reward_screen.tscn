@@ -41,15 +41,15 @@ mouse_filter = 1
 
 [node name="Kicker" type="Label" parent="Margin/Column/Header"]
 layout_mode = 2
-text = "RUM 1 RENSAT"
+text = "ROOM 1 CLEARED"
 
 [node name="Title" type="Label" parent="Margin/Column/Header"]
 layout_mode = 2
-text = "VÄLJ EN BELÖNING"
+text = "CHOOSE ONE REWARD"
 
 [node name="Subtitle" type="Label" parent="Margin/Column/Header"]
 layout_mode = 2
-text = "Du tar med dig exakt en."
+text = "You keep exactly one."
 autowrap_mode = 3
 
 [node name="Cards" type="VBoxContainer" parent="Margin/Column"]

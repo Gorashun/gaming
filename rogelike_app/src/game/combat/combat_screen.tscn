@@ -43,7 +43,7 @@ show_percentage = false
 
 [node name="RoomLabel" type="Label" parent="Margin/Column/TopBar"]
 layout_mode = 2
-text = "RUM 1"
+text = "ROOM 1"
 
 [node name="ChargeLabel" type="Label" parent="Margin/Column/TopBar"]
 layout_mode = 2
@@ -73,7 +73,7 @@ horizontal_alignment = 1
 
 [node name="TotalCaption" type="Label" parent="Margin/Column/PreviewPanel/PreviewColumn"]
 layout_mode = 2
-text = "skada · kedjan förhandsvisad"
+text = "damage · chain previewed"
 horizontal_alignment = 1
 clip_text = true
 
@@ -97,16 +97,16 @@ mouse_filter = 1
 
 [node name="RerollButton" type="Button" parent="Margin/Column/Actions"]
 layout_mode = 2
-text = "OMKAST 1"
+text = "REROLL 1"
 
 [node name="UndoButton" type="Button" parent="Margin/Column/Actions"]
 layout_mode = 2
-text = "↩ ÅNGRA"
+text = "↩ UNDO"
 
 [node name="ConfirmButton" type="Button" parent="Margin/Column/Actions"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "BEKRÄFTA KEDJA"
+text = "CONFIRM CHAIN"
 
 [node name="FxLayer" type="Control" parent="."]
 layout_mode = 1

@@ -113,7 +113,7 @@ func anchor_point() -> Vector2:
 
 func bind(enemy: Enemy) -> void:
 	enemy_id = enemy.id
-	_name_label.text = enemy.display_name
+	_name_label.text = Tokens.translate_or(Content.enemy_key(enemy.id), enemy.display_name)
 	_hp_bar.max_value = maxi(1, enemy.max_hp)
 	_intent_label.text = _intent_text(enemy)
 	_intent_label.add_theme_color_override("font_color", _intent_color(enemy))
@@ -125,12 +125,12 @@ func bind(enemy: Enemy) -> void:
 func update_vitals(hp: int, armor: int, burn: int, poison: int) -> void:
 	_hp_bar.value = clampi(hp, 0, int(_hp_bar.max_value))
 	_hp_label.text = "%d / %d" % [maxi(0, hp), int(_hp_bar.max_value)]
-	_armor_label.text = ("⬟ %d rust." % armor) if armor > 0 else ""
+	_armor_label.text = (tr("ENEMY_ARMOR") % armor) if armor > 0 else ""
 	var statuses: PackedStringArray = PackedStringArray()
 	if burn > 0:
-		statuses.append("▲ %d brand" % burn)
+		statuses.append(tr("STATUS_BURN") % burn)
 	if poison > 0:
-		statuses.append("⬬ %d gift" % poison)
+		statuses.append(tr("STATUS_POISON") % poison)
 	_status_label.text = " · ".join(statuses)
 	var dead: bool = hp <= 0
 	modulate.a = 0.35 if dead else 1.0
@@ -156,17 +156,29 @@ func _flash_with(color: Color, alpha: float, duration: float) -> void:
 	tween.tween_property(_flash, "color:a", 0.0, duration)
 
 
+## Intent-texten. [member Intent.note] är en ÖVERSÄTTNINGSNYCKEL, inte prosa:
+## core får aldrig innehålla spelartext (CLAUDE.md). Nyckeln formateras med
+## [member Intent.note_args].
 static func _intent_text(enemy: Enemy) -> String:
 	if enemy.intent == null:
-		return "–"
+		return Tokens.translate("INTENT_NONE")
 	match enemy.intent.kind:
 		Rules.IntentKind.ATTACK:
-			return "▲ %d skada" % enemy.intent.value
+			return Tokens.translate("INTENT_ATTACK") % enemy.intent.value
 		Rules.IntentKind.BLOCK:
-			return "⬟ +%d rustning" % enemy.intent.value
+			return Tokens.translate("INTENT_BLOCK") % enemy.intent.value
 		Rules.IntentKind.SPECIAL:
-			return "✦ %s" % enemy.intent.note
-	return enemy.intent.note
+			return Tokens.translate("INTENT_SPECIAL") % _note_text(enemy.intent)
+	return _note_text(enemy.intent)
+
+
+static func _note_text(intent: Intent) -> String:
+	if intent == null or intent.note == "":
+		return ""
+	var text: String = Tokens.translate(intent.note)
+	if intent.note_args.is_empty():
+		return text
+	return text % intent.note_args
 
 
 static func _intent_color(enemy: Enemy) -> Color:

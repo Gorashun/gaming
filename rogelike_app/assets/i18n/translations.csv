@@ -1,0 +1,119 @@
+keys,en,sv
+FACE_POISON_DROP,Venom Drop,Giftdroppe
+FACE_EMBER,Ember,Glöd
+FACE_HOLLOW,Hollow Face,Ihålig sida
+FACE_SNOWBALL,Snowball,Snöbollen
+FACE_VAMP_FANG,Vampire Fang,Vampyrtand
+FACE_TWIN_EYE,Twin Eye,Tvillingöga
+FACE_HAMMER_FACE,Forge Hammer,Städhammaren
+FACE_LEAD_SIX,Lead Six,Blysidan
+RELIC_BLOOD_PRICE,Blood Price,Blodpriset
+RELIC_BROKEN_SCALE,Broken Scale,Trasiga vågen
+RELIC_OCTOPUS,The Octopus,Bläckfisken
+RELIC_ECHO_MIRROR,Echo Mirror,Ekospegeln
+RELIC_CHEAT_CUBE,Cheat Cube,Fuskkuben
+RELIC_DOMINO,The Domino,Dominobrickan
+RELIC_ANVIL_BLESSING,Anvil Blessing,Ambossens välsignelse
+SWAP_CHARGE,Charge Slot,Laddaslot
+SWAP_VOID,Void Slot,Tomrumsslot
+SWAP_FIRE,Fire Slot,Eldslot
+SWAP_ANVIL,Anvil Slot,Ambossslot
+SWAP_MIRROR,Mirror Slot,Spegelslot
+ENEMY_RUST_RAT,Rust Rat,Rostråttan
+ENEMY_SLAG_MOTH,Slag Moth,Slaggmalen
+ENEMY_THORN_IMP,Thorn Imp,Taggimpen
+ENEMY_PIP_THIEF,Pip Thief,Ögontjuven
+ENEMY_IRON_TICK,Iron Tick,Järnfästingen
+ENEMY_GRAVE_HAND,Grave Hand,Gravhanden
+ENEMY_SLAGJAW,Slagjaw,Slaggkäften
+CLASS_SMITH,The Smith,Smeden
+SLOT_PLAIN,PLAIN,VANLIG
+SLOT_FIRE,FIRE,ELD
+SLOT_MIRROR,MIRROR,SPEGEL
+SLOT_ANVIL,ANVIL,AMBOSS
+SLOT_CHARGE,CHARGE,LADDA
+SLOT_VOID,VOID,TOMRUM
+SLOT_UNKNOWN,UNKNOWN,OKÄND
+RARITY_COMMON,COMMON,VANLIG
+RARITY_UNCOMMON,UNCOMMON,OVANLIG
+RARITY_RARE,RARE,SÄLLSYNT
+CATEGORY_FORGE_FACE,face,sida
+CATEGORY_RELIC,relic,relik
+CATEGORY_SLOT_SWAP,slot,slot
+COMBAT_ROOM_ROUND,ROOM %d · R%d,RUM %d · R%d
+COMBAT_BOSS_ROUND,BOSS %d · R%d,BOSS %d · R%d
+COMBAT_TOTAL_CAPTION,damage · %d dice in the tray,skada · %d tärningar i brickan
+COMBAT_TOTAL_CAPTION_IDLE,damage · chain previewed,skada · kedjan förhandsvisad
+COMBAT_REROLL,REROLL %d,OMKAST %d
+COMBAT_UNDO,↩ UNDO,↩ ÅNGRA
+COMBAT_CONFIRM_EMPTY,CONFIRM EMPTY,BEKRÄFTA TOMT
+COMBAT_CONFIRM_CHAIN,CONFIRM CHAIN · %d,BEKRÄFTA KEDJA · %d
+COMBAT_CHAIN_HIT,%d → %s,%d → %s
+COMBAT_CHAIN_OVERFLOW,↳ %d overflow → %s,↳ %d överflöd → %s
+COMBAT_CHAIN_EMPTY,No damage yet – place your dice.,Ingen skada ännu – placera tärningar.
+COMBAT_HOUSE,HOUSE ×%d,KÅK ×%d
+COMBAT_ARMOR_BLOCKED,ARMOR %d,RUSTNING %d
+COMBAT_CHARGE_SPENT,CHARGE %d,LADDNING %d
+COMBAT_DIE_CRACKED,CRACKED,SPRUCKEN
+COMBAT_PLAYER_DEAD,DEAD,DÖD
+DIE_MISSING,MISSING,SAKNAS
+DIE_STOLEN,STOLEN,STULEN
+DIE_IN_SLOT,IN %d,PL. %d
+DIE_LOCKED,LOCKED,LÅST
+DIE_DRAG_HINT,DRAG →,DRA →
+FACE_EFFECT_POISON,⬬ poison,⬬ gift
+FACE_EFFECT_BURN,▲ burn,▲ brand
+FACE_EFFECT_LIFESTEAL,✚ drain,✚ sug
+FACE_EFFECT_COPY_LEFT,❖ copy,❖ kopia
+FACE_EFFECT_ANVIL,⬣ double,⬣ dubbel
+FACE_EFFECT_GROW,↑ grows,↑ växer
+FACE_EFFECT_REFUND,↻ reroll,↻ omkast
+FACE_EFFECT_LOCKED,⬤ locked,⬤ låst
+SLOT_STATE_GRABBED,GRABBED,GRIPEN
+SLOT_STATE_EMPTY,EMPTY,TOM
+ENEMY_ARMOR,⬟ %d armor,⬟ %d rust.
+STATUS_BURN,▲ %d burn,▲ %d brand
+STATUS_POISON,⬬ %d poison,⬬ %d gift
+INTENT_ATTACK,▲ %d damage,▲ %d skada
+INTENT_BLOCK,⬟ +%d armor,⬟ +%d rustning
+INTENT_SPECIAL,✦ %s,✦ %s
+INTENT_NONE,–,–
+INTENT_NOTE_HARDEN,Hardens: +%d armor,Härdar: +%d rustning
+INTENT_NOTE_DRAIN_CHARGE,Drains %d Charge,Suger %d Laddning
+INTENT_NOTE_STEAL,Steals an unplaced die,Stjäl en oplacerad tärning
+INTENT_NOTE_GRAB,Grabs slot %d,Griper slot %d
+INTENT_NOTE_ATTACK,Attacks for %d,Attackerar för %d
+MARCH_HEADING,FLOOR %d · %d CLEARED,VÅNING %d · %d RENSADE
+MARCH_WALKING,Marching …,Marscherar …
+MARCH_SPLIT,The path splits. Choose.,Vägen delar sig. Välj.
+MARCH_NODE_COMBAT,COMBAT · ROOM %d,STRID · RUM %d
+MARCH_NODE_BOSS,BOSS · ROOM %d,BOSS · RUM %d
+MARCH_PREVIEW,%s · %d HP total,%s · %d HP totalt
+REWARD_KICKER,ROOM %d CLEARED · FLOOR %d,RUM %d RENSAT · VÅNING %d
+REWARD_TITLE,CHOOSE ONE REWARD,VÄLJ EN BELÖNING
+REWARD_SUBTITLE,You keep exactly one. The other two are gone.%s,Du tar med dig exakt en. De andra två försvinner.%s
+REWARD_BREATHER,  Breather: +%d HP.,  Andrum: +%d HP.
+REWARD_SCALE_STRIP,▭ COMMON   ◣ UNCOMMON   ▤ RARE   ·   colour + border + word,▭ VANLIG   ◣ OVANLIG   ▤ SÄLLSYNT   ·   färg + ramform + ord
+REWARD_CARD_HEADER,%s %s · %s,%s %s · %s
+REWARD_DESC_FORGE_ANY,Reforges a face into %s.,Smider om en sida till %s.
+REWARD_DESC_FORGE,Die %d: face %d becomes %s (value %d%s).,Tärning %d: sidan %d blir %s (värde %d%s).
+REWARD_DESC_RELIC,New relic: %s. Lasts the rest of the run.,Ny relik: %s. Gäller resten av runnen.
+REWARD_DESC_SLOT_SWAP,Slot %d changes from %s to %s.,Slot %d byter från %s till %s.
+REWARD_EFFECT_MAGNITUDE,", effect %d",", effekt %d"
+REWARD_EFFECT_SPECIAL,", special effect",", specialeffekt"
+GAMEOVER_WIN_TITLE,FLOOR CLEARED,VÅNINGEN RENSAD
+GAMEOVER_LOSE_TITLE,PIPWRECK,PIPWRECK
+GAMEOVER_WIN_SUBTITLE,Slagjaw fell. Floor 2 waits in the next milestone.,Slaggkäften föll. Våning 2 väntar i nästa milstolpe.
+GAMEOVER_LOSE_SUBTITLE,"You died in room %d. No continues, no revives.","Du dog i rum %d. Ingen continue, inga revives."
+GAMEOVER_STAT_ROOM_REACHED,ROOM REACHED,RUM NÅTT
+GAMEOVER_STAT_ROOMS_CLEARED,ROOMS CLEARED,RUM RENSADE
+GAMEOVER_STAT_BEST_CHAIN,BEST CHAIN,STÖRSTA KEDJA
+GAMEOVER_STAT_BEST_CHAIN_VALUE,%d damage,%d skada
+GAMEOVER_STAT_HP_LEFT,HP LEFT,HP KVAR
+GAMEOVER_SCORE_ROOMS,Rooms × %d,Rum × %d
+GAMEOVER_SCORE_CHAIN,Chain / %d,Kedja / %d
+GAMEOVER_SCORE_SURVIVAL,Survival / %d HP,Överlevnad / %d HP
+GAMEOVER_SCORE_WIN,Win bonus,Vinstbonus
+GAMEOVER_SCORE_TOTAL,META SCORE,META-POÄNG
+GAMEOVER_SEED,SEED %d,SEED %d
+GAMEOVER_AGAIN,ONE MORE RUN,EN RUN TILL

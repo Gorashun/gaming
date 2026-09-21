@@ -27,12 +27,12 @@ func enter(ctx: Dictionary) -> void:
 		_options.append(raw as Dictionary)
 
 	_style()
-	_kicker.text = "RUM %d RENSAT · VÅNING %d" % [int(node.get("room", 1)), int(node.get("floor", 1))]
-	_title.text = "VÄLJ EN BELÖNING"
+	_kicker.text = tr("REWARD_KICKER") % [int(node.get("room", 1)), int(node.get("floor", 1))]
+	_title.text = tr("REWARD_TITLE")
 	var breather: String = ""
 	if bool(ctx.get("breather", false)):
-		breather = "  Andrum: +%d HP." % Rules.BREATHER_HEAL
-	_subtitle.text = "Du tar med dig exakt en. De andra två försvinner.%s" % breather
+		breather = tr("REWARD_BREATHER") % Rules.BREATHER_HEAL
+	_subtitle.text = tr("REWARD_SUBTITLE") % breather
 
 	for i: int in range(_options.size()):
 		var option: Dictionary = _options[i]
@@ -60,7 +60,7 @@ func _style() -> void:
 	_label(_title, Tokens.TYPE_TITLE, Tokens.CHALK_100)
 	_label(_subtitle, Tokens.TYPE_BODY, Tokens.CHALK_300)
 	_label(_scale_strip, Tokens.TYPE_CAPTION, Tokens.CHALK_500)
-	_scale_strip.text = "▭ VANLIG   ◣ OVANLIG   ▤ SÄLLSYNT   ·   färg + ramform + ord"
+	_scale_strip.text = tr("REWARD_SCALE_STRIP")
 
 
 static func _label(label: Label, font_size: int, color: Color) -> void:

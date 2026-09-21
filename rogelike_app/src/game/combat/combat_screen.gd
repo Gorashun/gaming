@@ -219,13 +219,13 @@ func _refresh_hud() -> void:
 	_hp_label.text = "◖ %d/%d" % [state.player_hp, state.player_max_hp]
 	_hp_bar.max_value = maxi(1, state.player_max_hp)
 	_hp_bar.value = clampi(state.player_hp, 0, state.player_max_hp)
-	var kind: String = "BOSS" if RunFlow.is_boss(_node) else "RUM"
-	_room_label.text = "%s %d · R%d" % [kind, int(_node.get("room", 1)), state.round_number]
+	var room_key: String = "COMBAT_BOSS_ROUND" if RunFlow.is_boss(_node) else "COMBAT_ROOM_ROUND"
+	_room_label.text = tr(room_key) % [int(_node.get("room", 1)), state.round_number]
 	_charge_label.text = "⬤%d/%d" % [state.charge, Rules.CHARGE_CAP]
 	_ward_label.text = "⬟ %d" % state.ward
-	_total_caption.text = "skada · %d tärningar i brickan" % state.dice.size()
-	_reroll_button.text = "OMKAST %d" % state.rerolls_left
-	_undo_button.text = "↩ ÅNGRA"
+	_total_caption.text = tr("COMBAT_TOTAL_CAPTION") % state.dice.size()
+	_reroll_button.text = tr("COMBAT_REROLL") % state.rerolls_left
+	_undo_button.text = tr("COMBAT_UNDO")
 	_reroll_button.disabled = _resolving or not Reroll.can_afford(state) or Reroll.rerollable_indices(state, _placement, _locked_ids).is_empty()
 	_undo_button.disabled = _resolving or _history.is_empty()
 
@@ -289,9 +289,9 @@ func _refresh_preview() -> void:
 	# bankar Charge. Knappen är därför aktiv även med noll placerade tärningar.
 	_confirm_button.disabled = _resolving
 	if placed == 0 and ALLOW_EMPTY_SLOTS:
-		_confirm_button.text = "BEKRÄFTA TOMT"
+		_confirm_button.text = tr("COMBAT_CONFIRM_EMPTY")
 	else:
-		_confirm_button.text = "BEKRÄFTA · %d" % total
+		_confirm_button.text = tr("COMBAT_CONFIRM_CHAIN") % total
 
 
 ## Kedjetexten under totalen, som i wireframen:
@@ -300,7 +300,7 @@ func _refresh_preview() -> void:
 static func chain_text(events: Array[Dictionary], enemies: Array[Enemy]) -> String:
 	var names: Dictionary = {}
 	for enemy: Enemy in enemies:
-		names[enemy.id] = enemy.display_name
+		names[enemy.id] = Tokens.translate_or(Content.enemy_key(enemy.id), enemy.display_name)
 
 	var segments: PackedStringArray = PackedStringArray()
 	var previous_slot: int = -99
@@ -313,15 +313,15 @@ static func chain_text(events: Array[Dictionary], enemies: Array[Enemy]) -> Stri
 		var target: String = String(names.get(String(event.get("target", "")), event.get("target", "")))
 		var slot: int = int(event.get("slot", -1))
 		if slot == previous_slot:
-			segments.append("↳ %d överflöd → %s" % [amount, target])
+			segments.append(Tokens.translate("COMBAT_CHAIN_OVERFLOW") % [amount, target])
 		else:
-			segments.append("%d → %s" % [amount, target])
+			segments.append(Tokens.translate("COMBAT_CHAIN_HIT") % [amount, target])
 		previous_slot = slot
 		if segments.size() >= 3:
 			segments.append("…")
 			break
 	if segments.is_empty():
-		return "Ingen skada ännu – placera tärningar."
+		return Tokens.translate("COMBAT_CHAIN_EMPTY")
 	return " ".join(segments)
 
 
@@ -486,7 +486,7 @@ func _on_event(event: Dictionary, duration: float) -> void:
 			Juice.sfx("combo", Juice.chain_pitch(_chain_step, multiplier))
 			Juice.haptic(Haptics.Level.MEDIUM if multiplier < 8 else Haptics.Level.HEAVY)
 		"house_bonus":
-			_pop(_preview_panel, "KÅK ×%d" % int(event.get("factor", 2)), Tokens.SEM_CHARGE, Tokens.TYPE_DISPLAY_L)
+			_pop(_preview_panel, tr("COMBAT_HOUSE") % int(event.get("factor", 2)), Tokens.SEM_CHARGE, Tokens.TYPE_DISPLAY_L)
 			Juice.sfx("house", 1.5)
 			Juice.haptic(Haptics.Level.HEAVY)
 		"damage_dealt":
@@ -507,7 +507,7 @@ func _on_event(event: Dictionary, duration: float) -> void:
 			_pop(_charge_label, "+%d ⬤" % int(event.get("amount", 0)), Tokens.SEM_CHARGE, Tokens.TYPE_HEADING)
 			Juice.sfx("charge", 1.2)
 		"charge_applied":
-			_pop(_charge_label, "LADDNING %d" % int(event.get("amount", 0)), Tokens.SEM_CHARGE, Tokens.TYPE_TITLE)
+			_pop(_charge_label, tr("COMBAT_CHARGE_SPENT") % int(event.get("amount", 0)), Tokens.SEM_CHARGE, Tokens.TYPE_TITLE)
 		"enemy_attacks", "enemy_thorns", "player_damaged":
 			var damage: int = int(event.get("amount", 0))
 			if damage > 0:
@@ -517,10 +517,10 @@ func _on_event(event: Dictionary, duration: float) -> void:
 		"heal":
 			_pop(_hp_label, "+%d" % int(event.get("amount", 0)), Tokens.SEM_HEAL, Tokens.TYPE_TITLE)
 		"die_cracked":
-			_pop(_preview_panel, "SPRUCKEN", Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_L)
+			_pop(_preview_panel, tr("COMBAT_DIE_CRACKED"), Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_L)
 			Juice.haptic(Haptics.Level.HEAVY)
 		"player_died":
-			_pop(_hp_label, "DÖD", Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_XL)
+			_pop(_hp_label, tr("COMBAT_PLAYER_DEAD"), Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_XL)
 		"round_end":
 			_refresh_hud()
 
@@ -536,7 +536,7 @@ func _on_damage(event: Dictionary) -> void:
 		var text: String = str(amount)
 		var color: Color = Tokens.SEM_DAMAGE
 		if amount == 0 and blocked > 0:
-			text = "RUSTNING %d" % blocked
+			text = tr("COMBAT_ARMOR_BLOCKED") % blocked
 			color = Tokens.SEM_SHIELD
 		elif overflow > 0:
 			color = Tokens.SEM_OVERFLOW

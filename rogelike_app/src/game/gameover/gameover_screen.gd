@@ -21,29 +21,30 @@ func enter(ctx: Dictionary) -> void:
 	var won: bool = bool(ctx.get("won", false))
 	_style(won)
 
-	_title.text = "VÅNINGEN RENSAD" if won else "PIPWRECK"
+	_title.text = tr("GAMEOVER_WIN_TITLE") if won else tr("GAMEOVER_LOSE_TITLE")
 	_subtitle.text = (
-		"Slaggkäften föll. Våning 2 väntar i nästa milstolpe."
+		tr("GAMEOVER_WIN_SUBTITLE")
 		if won
-		else "Du dog i rum %d. Ingen continue, inga revives." % int(ctx.get("room_reached", 1))
+		else tr("GAMEOVER_LOSE_SUBTITLE") % int(ctx.get("room_reached", 1))
 	)
 
 	var score: Dictionary = ctx.get("score", {}) as Dictionary
-	_add_stat("RUM NÅTT", "%d" % int(ctx.get("room_reached", 1)))
-	_add_stat("RUM RENSADE", "%d" % int(ctx.get("rooms_cleared", 0)))
-	_add_stat("STÖRSTA KEDJA", "%d skada" % int(ctx.get("best_chain", 0)))
-	_add_stat("HP KVAR", "%d" % int(ctx.get("hp_left", 0)))
+	_add_stat(tr("GAMEOVER_STAT_ROOM_REACHED"), "%d" % int(ctx.get("room_reached", 1)))
+	_add_stat(tr("GAMEOVER_STAT_ROOMS_CLEARED"), "%d" % int(ctx.get("rooms_cleared", 0)))
+	_add_stat(tr("GAMEOVER_STAT_BEST_CHAIN"), tr("GAMEOVER_STAT_BEST_CHAIN_VALUE") % int(ctx.get("best_chain", 0)))
+	_add_stat(tr("GAMEOVER_STAT_HP_LEFT"), "%d" % int(ctx.get("hp_left", 0)))
 	_add_divider()
-	_add_stat("Rum × %d" % MetaScore.POINTS_PER_ROOM, "+%d" % int(score.get("rooms", 0)))
-	_add_stat("Kedja / %d" % MetaScore.CHAIN_DAMAGE_PER_POINT, "+%d" % int(score.get("chain", 0)))
-	_add_stat("Överlevnad / %d HP" % MetaScore.HP_LEFT_PER_POINT, "+%d" % int(score.get("survival", 0)))
+	_add_stat(tr("GAMEOVER_SCORE_ROOMS") % MetaScore.POINTS_PER_ROOM, "+%d" % int(score.get("rooms", 0)))
+	_add_stat(tr("GAMEOVER_SCORE_CHAIN") % MetaScore.CHAIN_DAMAGE_PER_POINT, "+%d" % int(score.get("chain", 0)))
+	_add_stat(tr("GAMEOVER_SCORE_SURVIVAL") % MetaScore.HP_LEFT_PER_POINT, "+%d" % int(score.get("survival", 0)))
 	if int(score.get("win", 0)) > 0:
-		_add_stat("Vinstbonus", "+%d" % int(score.get("win", 0)))
-	_add_stat("META-POÄNG", "%d" % int(score.get("total", 0)), true)
+		_add_stat(tr("GAMEOVER_SCORE_WIN"), "+%d" % int(score.get("win", 0)))
+	_add_stat(tr("GAMEOVER_SCORE_TOTAL"), "%d" % int(score.get("total", 0)), true)
 
 	# GAME_DESIGN §6.10: seeden är synlig. Det är communityns bevis på att vi
 	# inte fuskar, och förutsättningen för dagliga utmaningar.
-	_seed_label.text = "SEED %d" % int(ctx.get("seed", 0))
+	_seed_label.text = tr("GAMEOVER_SEED") % int(ctx.get("seed", 0))
+	_again_button.text = tr("GAMEOVER_AGAIN")
 	_again_button.pressed.connect(play_again)
 
 

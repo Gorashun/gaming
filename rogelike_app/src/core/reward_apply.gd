@@ -54,33 +54,34 @@ static func default_target(state: CombatState, choice: Dictionary) -> Dictionary
 	return {}
 
 
-## Svensk mening som beskriver exakt vad valet gör. Visas på belöningskortet.
+## Mening som beskriver exakt vad valet gör, på spelarens språk. Visas på
+## belöningskortet. Byggs av översättningsnycklar, se i18n-avsnittet nedan.
 static func describe(state: CombatState, choice: Dictionary, target: Dictionary) -> String:
 	var data: Dictionary = choice.get("data", {}) as Dictionary
-	var name: String = String(choice.get("name", choice.get("id", "")))
+	var name: String = _name_of(choice)
 	match String(choice.get("category", "")):
 		Rewards.CATEGORY_FORGE_FACE:
 			if target.is_empty():
-				return "Smider om en sida till %s." % name
+				return _t("REWARD_DESC_FORGE_ANY") % name
 			var die_index: int = int(target.get("die_index", 0))
 			var face_index: int = int(target.get("face_index", 0))
 			var old_value: int = 0
 			if die_index < state.dice.size() and face_index < state.dice[die_index].faces.size():
 				old_value = state.dice[die_index].faces[face_index].value
 			var face: Face = Content.make_face(String(data.get("face_id", "")))
-			return "Tärning %d: sidan %d blir %s (värde %d%s)." % [
+			return _t("REWARD_DESC_FORGE") % [
 				die_index + 1, old_value, name, face.value, _effect_suffix(face),
 			]
 		Rewards.CATEGORY_RELIC:
-			return "Ny relik: %s. Gäller resten av runnen." % name
+			return _t("REWARD_DESC_RELIC") % name
 		Rewards.CATEGORY_SLOT_SWAP:
 			var slot_index: int = int(target.get("slot_index", 0))
 			var wanted: int = int(data.get("slot_type", Rules.SlotType.PLAIN))
 			var before: String = "?"
 			if slot_index < state.board.size():
-				before = Rules.slot_type_name(state.board.slots[slot_index].type)
-			return "Slot %d byter från %s till %s." % [
-				slot_index + 1, before, Rules.slot_type_name(wanted),
+				before = _slot_label(state.board.slots[slot_index].type)
+			return _t("REWARD_DESC_SLOT_SWAP") % [
+				slot_index + 1, before, _slot_label(wanted),
 			]
 	return name
 
@@ -89,8 +90,33 @@ static func _effect_suffix(face: Face) -> String:
 	if face.effect == Rules.FaceEffectKind.NONE:
 		return ""
 	if face.magnitude > 0:
-		return ", effekt %d" % face.magnitude
-	return ", specialeffekt"
+		return _t("REWARD_EFFECT_MAGNITUDE") % face.magnitude
+	return _t("REWARD_EFFECT_SPECIAL")
+
+
+# --- i18n ------------------------------------------------------------------
+# describe() är den enda funktionen i src/core/ som producerar spelartext.
+# Den bygger den av ÖVERSÄTTNINGSNYCKLAR, aldrig av prosa (CLAUDE.md): strängen
+# slås upp i assets/i18n/translations.csv. TranslationServer är en Engine-
+# singleton, inte en Node, så lagerregeln i ARCHITECTURE.md håller.
+
+static func _t(key: String) -> String:
+	return String(TranslationServer.translate(key))
+
+
+static func _slot_label(slot_type: int) -> String:
+	return _t("SLOT_%s" % Rules.slot_type_name(slot_type))
+
+
+## Belöningens namn på spelarens språk. [code]name_key[/code] sätts av
+## [method Content.reward_pool]; saknas den faller vi tillbaka på källnamnet.
+static func _name_of(choice: Dictionary) -> String:
+	var fallback: String = String(choice.get("name", choice.get("id", "")))
+	var key: String = String(choice.get("name_key", ""))
+	if key == "":
+		return fallback
+	var value: String = _t(key)
+	return fallback if value == key else value
 
 
 ## Returnerar en KOPIA av [param state] med belöningen tillämpad.

@@ -847,20 +847,27 @@ static func _intent_for(state: CombatState, enemy: Enemy, rng: Rng) -> Intent:
 	match enemy.special:
 		"HARDEN":
 			if state.round_number % 3 == 0:
-				return Intent.new(Rules.IntentKind.BLOCK, 4, "Härdar: +4 rustning")
+				return _noted(Intent.new(Rules.IntentKind.BLOCK, 4, "INTENT_NOTE_HARDEN"), [4])
 		"DRAIN_CHARGE":
 			if state.charge > 0:
-				return Intent.new(Rules.IntentKind.SPECIAL, DRAIN_CHARGE_AMOUNT, "Suger 3 Laddning")
+				return _noted(Intent.new(Rules.IntentKind.SPECIAL, DRAIN_CHARGE_AMOUNT, "INTENT_NOTE_DRAIN_CHARGE"), [DRAIN_CHARGE_AMOUNT])
 		"STEAL":
 			var candidates: Array[int] = state.unplaced_die_indices(CombatState.empty_placement(state.board.size()))
 			if not candidates.is_empty():
 				var pick: int = int(rng.pick(candidates))
-				var intent: Intent = Intent.new(Rules.IntentKind.SPECIAL, 0, "Stjäl en oplacerad tärning")
+				var intent: Intent = Intent.new(Rules.IntentKind.SPECIAL, 0, "INTENT_NOTE_STEAL")
 				intent.payload = {"die_id": state.dice[pick].id}
 				return intent
 		"GRAB":
 			var slot_index: int = rng.next_int(0, state.board.size() - 1)
-			var grab: Intent = Intent.new(Rules.IntentKind.SPECIAL, 0, "Griper slot %d" % slot_index)
+			var grab: Intent = _noted(Intent.new(Rules.IntentKind.SPECIAL, 0, "INTENT_NOTE_GRAB"), [slot_index + 1])
 			grab.payload = {"slot": slot_index}
 			return grab
-	return Intent.new(Rules.IntentKind.ATTACK, enemy.attack, "Attackerar för %d" % enemy.attack)
+	return _noted(Intent.new(Rules.IntentKind.ATTACK, enemy.attack, "INTENT_NOTE_ATTACK"), [enemy.attack])
+
+
+## Sätter formatargumenten för [member Intent.note]. Noten är en nyckel, inte
+## prosa – core får inte innehålla spelartext (CLAUDE.md).
+static func _noted(intent: Intent, args: Array) -> Intent:
+	intent.note_args = args
+	return intent

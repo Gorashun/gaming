@@ -6,7 +6,7 @@ config_version=5
 [application]
 
 config/name="PIPWRECK"
-config/description="Tärningsroguelike för mobil. Sex tärningar, fem slots, kedja vänster→höger."
+config/description="Dice roguelike for mobile. Six dice, five slots, a chain resolved left to right."
 config/version="0.0.1"
 run/main_scene="res://src/game/main.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
@@ -30,6 +30,15 @@ window/stretch/scale_mode="fractional"
 [dotnet]
 
 project/assembly_name="PIPWRECK"
+
+[internationalization]
+
+; CLAUDE.md: all spelartext är engelska i källan och går via tr(). Svenskan är
+; en översättning i assets/i18n/translations.csv och får aldrig hårdkodas.
+; Fallback en: en nyckel som saknar svensk rad visas på engelska, aldrig som
+; en rå nyckel. tests/test_i18n.gd bevakar att inget hamnar där.
+locale/translations=PackedStringArray("res://assets/i18n/translations.en.translation", "res://assets/i18n/translations.sv.translation")
+locale/fallback="en"
 
 [editor_plugins]
 
