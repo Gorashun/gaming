@@ -134,7 +134,7 @@ MULT_QUAD            = 8
 MULT_PENTA           = 16
 HOUSE_FACTOR         = 2
 OVERFLOW_TO_CHARGE   = 2      # floor(spilld skada / 2) blir Charge
-BREATHER_HEAL        = 4
+BREATHER_HEAL        = 10     # balanspass 2026-09-21, se §4.9
 ```
 
 ### 2.2 `resolve()` – signatur och renhet
@@ -613,7 +613,7 @@ UI:t spelar upp loggen sekventiellt och får aldrig hoppa över ett event utan a
 | Fält | Värde |
 |---|---|
 | `id` | `SMITH` |
-| HP | 60 |
+| HP | 100 |
 | Tärningar | 6 st `IRON`, alla startar som `1,2,3,4,5,6` (`PIP_1`…`PIP_6`) |
 | `rerolls_per_round` | 1 |
 | Startbräde | `[PLAIN, PLAIN, MIRROR, FIRE, ANVIL]` |
@@ -660,33 +660,37 @@ Smide: belöningen `FORGE_FACE` låter spelaren ersätta **en** sida på **en** 
 
 ### 4.4 Fiender (M1)
 
+*Siffrorna nedan är resultatet av balanspasset 2026-09-21 (§4.9). Rustning är
+den bärande knappen: eftersom `armor` dras av **per skadeinstans** straffar den
+att sprida ut fem små tärningar och belönar combos, Amboss och Charge-dumpar.*
+
 | `id` | Namn | HP | Attack | `armor` | `thorns` | Special |
 |---|---|---|---|---|---|---|
-| `RUST_RAT` | Rostråtta | 14 | 3 | 0 | 0 | – (överflödsfoder) |
-| `SLAG_MOTH` | Slaggmal | 20 | 3 | 0 | 0 | `DRAIN_CHARGE`: vid sin tur, `charge -= 3` (min 0) |
-| `THORN_IMP` | Taggimpen | 22 | 2 | 0 | 3 | Passiv `thorns` |
-| `PIP_THIEF` | Ögontjuven | 26 | 3 | 0 | 0 | `STEAL`: vid `round_end`, stjäl en **oplacerad** tärning (mål valt av `advance()` föregående runda, visas i intent). Tärningen saknas nästa runda. Dör tjuven återlämnas den omedelbart (`die_returned`). |
-| `IRON_TICK` | Järnfästingen | 28 | 5 | 2 | 0 | Passiv `armor` |
-| `GRAVE_HAND` | Gravhanden | 34 | 6 | 0 | 0 | `GRAB`: vid `round_end`, sätter `blocked = true` på en slot nästa runda (valet görs i `advance()` och står i intent-texten) |
+| `RUST_RAT` | Rostråtta | 28 | 3 | 2 | 0 | – (svärmfoder, dör i överflödskedjor) |
+| `SLAG_MOTH` | Slaggmal | 34 | 4 | 1 | 0 | `DRAIN_CHARGE`: vid sin tur, `charge -= 3` (min 0) |
+| `THORN_IMP` | Taggimpen | 40 | 3 | 2 | 2 | Passiv `thorns` |
+| `PIP_THIEF` | Ögontjuven | 46 | 4 | 1 | 0 | `STEAL`: vid `round_end`, stjäl en **oplacerad** tärning (mål valt av `advance()` föregående runda, visas i intent). Tärningen saknas nästa runda. Dör tjuven återlämnas den omedelbart (`die_returned`). |
+| `IRON_TICK` | Järnfästingen | 46 | 5 | 6 | 0 | Passiv `armor`. **Muren:** en oförstärkt tärning (1–6) gör noll och kedjan stannar. |
+| `GRAVE_HAND` | Gravhanden | 60 | 6 | 2 | 0 | `GRAB`: vid `round_end`, sätter `blocked = true` på en slot nästa runda (valet görs i `advance()` och står i intent-texten) |
 
 **Möten (våning 1, M1):**
 
-| Rum | Fiender (front→bak) | Total HP |
-|---|---|---|
-| 1 | `RUST_RAT`, `RUST_RAT` | 28 |
-| 2 | `SLAG_MOTH`, `RUST_RAT`, `RUST_RAT` | 48 |
-| 3 | `THORN_IMP`, `IRON_TICK` *eller* `PIP_THIEF`, `GRAVE_HAND` | 50 / 60 |
-| 4 | Boss | 150 |
+| Rum | Fiender (front→bak) | Total HP | Lär ut |
+|---|---|---|---|
+| 1 | `RUST_RAT` ×4 | 112 | Överflöd. Ett stort slag dödar tre råttor på en gång; fem små dödar ingen. |
+| 2 | `IRON_TICK`, `SLAG_MOTH`, `RUST_RAT` | 108 | Rustningsmuren. `armor 6` framtill gör smådroppar värdelösa — bygg combo eller banka Charge. `DRAIN_CHARGE` gör bankandet till ett *val*, inte en gratislösning. |
+| 3 | `THORN_IMP`, `IRON_TICK`, `RUST_RAT` (114) *eller* `PIP_THIEF`, `GRAVE_HAND` (106) | 114 / 106 | Variant A: taggar straffar antal träffar, muren står bakom. Variant B: `STEAL` + `GRAB` angriper brädet i stället för HP. |
+| 4 | `SLAGJAW` | 210 | Se §4.5 |
 
 ### 4.5 Boss (M1): `SLAGJAW` – Slaggkäften
 
 | Fält | Värde |
 |---|---|
-| HP | 150 |
-| `armor` | 2 (permanent) |
+| HP | 210 |
+| `armor` | 3 (permanent) |
 | Attack | 7 |
 | `HARDEN` | Varje runda delbar med 3 (3, 6, 9 …) använder den `BLOCK 4` i stället för att attackera. Armor stackar och ligger kvar. |
-| `CRACK_BITE` | När `hp < 75` (50 %) och den attackerar: efter attacken spricker den vänstraste placerade tärningens uppåtvända sida → byts mot `CRACKED` (värde 0) för resten av **runden**. Emit `die_cracked`. |
+| `CRACK_BITE` | När `hp < 105` (50 %) och den attackerar: efter attacken spricker den vänstraste placerade tärningens uppåtvända sida → byts mot `CRACKED` (värde 0) för resten av **runden**. Emit `die_cracked`. |
 
 Bossen lär ut hela spelet: `armor` straffar många små träffar (bygg combos), `HARDEN` ger ett fönster att banka Charge i, `CRACK_BITE` straffar att alltid packa slot 0.
 
@@ -738,6 +742,52 @@ Efter varje vunnet `COMBAT`-rum: **3 alternativ**, dragna utan återläggning.
 
 **Låst (kräver beslut i `DECISIONS.md`):** fasordningen P0–P5, definitionerna av angränsande/identisk/oanvänd, multiplikatortabellen, `HOUSE`-regeln, överflödsalgoritmen, alla slot-typers regler, §6.
 
+### 4.9 Balanspass 2026-09-21 (M0 → M1)
+
+M0-mätningen visade att rum 1–3 vanns på **en runda** av båda policyerna: hela
+beslutssignalen låg i bossen. Mötena hade inte tänder nog mot Smedens sex
+tärningar. Passet ändrade bara tuningbara siffror (§4.8).
+
+**Vad som ändrades och varför:**
+
+| Knapp | Före → efter | Varför |
+|---|---|---|
+| Spelarens HP | 60 → 100 | 3–4-rundorsstrider mot fyra fiender gör 60 HP till ett myntkast redan i rum 1. |
+| `BREATHER_HEAL` | 4 → 10 | Andrummet måste betala tillbaka en meningsfull del av en längre strid, annars blir våning 1 ett utmattningslopp utan beslut. |
+| All fiende-HP | ×1,7–2,0 | Ger 3,0–3,4 rundor per `COMBAT` i stället för 1,1–1,8. |
+| `armor` på nästan alla | 0–2 → 1–6 | **Passets viktigaste ändring.** `armor` dras av per skadeinstans, så den beskattar bredd och belönar höjd. Det är exakt den knapp som skiljer en spelare som planerar kedjan från en som dumpar de fem största tärningarna. |
+| Antal fiender i rum 1 och 2 | 2–3 → 3–4 | Fler mål = längre överflödskedjor och tydligare "ett slag, tre lik". |
+| Boss `SLAGJAW` | 150/2/7 → 210/3/7 | 5,6 rundor i stället för 3,7 (§5 kräver 5–8). |
+
+**Uppmätt efter passet** (400 strider per rum och policy, 300 hela runs, seed 1,
+lookahead-bredd 8):
+
+| Rum | Rundor greedy → lookahead | HP kvar greedy → lookahead | Vinst-% g/l |
+|---|---|---|---|
+| 1 | 3,82 → 3,06 | 80,6 → 84,6 | 100 / 100 |
+| 2 | 5,11 → 3,10 | 72,4 → 84,7 | 100 / 100 |
+| 3 | 4,79 → 3,36 | 77,4 → 86,0 | 99,8 / 100 |
+| 4 (boss) | 19,77 → 5,62 | 10,1 → 75,6 | 15 / 100 |
+
+Hel run (våning 1): greedy **48,7 %**, lookahead **94,0 %** → **+45,3 p.e.**
+(före passet: 63 % / 77 %, +14,0 p.e.). Rooms cleared 3,44 → 3,94.
+
+**Läsanvisning för deltat i rum 1–3:** det syns inte i vinstprocenten och ska
+inte göra det. Ett rum på våning 1 som dödar en tredjedel av spelarna är dålig
+design (StS Act 1 clear ≈ 90 %+ för en kompetent spelare). Signalen ligger i
+**rundor och HP kvar**: greedy betalar 1–2 extra rundor och 4–12 HP per rum och
+kommer till bossen med tom tank. Det är samma pedagogik som Slay the Spires
+"you didn't lose to the Guardian, you lost to the three fights before it".
+
+**Kända avvikelser mot §5 efter passet** (mätinstrument, inte innehåll):
+`house_bonus`/run ≈ 0,38 (mål ≥ 0,8), combo-andel 87–100 % (mål 60–80 %) och
+explosionsfrekvens ≈ 12 % (mål ≥ 15 %). De två första är strukturella: Smedens
+`MIRROR` på slot 2 ger ett gratis par varje runda båda slots är fyllda, och
+`LookaheadPolicy` med bredd 8 provar 8 av 720 permutationer och hittar därför
+sällan triss+par. Kontrollmätning rum 2, bredd 48: `house_bonus`/strid 0,08 →
+0,18 och combo-andel 88,9 % → 98,1 %. **§5:s målsiffror måste därför ange
+sökbredd** — allt innehåll ovan är tunat mot bredd 8, som är CI-standard.
+
 ---
 
 ## 5. Balansmål för run-simulatorn
@@ -769,7 +819,12 @@ Alla mål nedan gäller `LookaheadPolicy` om inget annat sägs och ska skrivas s
 
 **Det viktigaste måttet är näst sist.** Om `GreedyPolicy` vinner lika ofta som `LookaheadPolicy` har vi byggt Luck be a Landlord och spelet är inte roligt. Det är stoppregeln.
 
-**Regressionstest:** simulatorns siffror loggas till `docs/balance/<datum>.json`. Varje innehållsändring ska jämföras mot föregående körning.
+**Sökbredd:** alla målsiffror ovan gäller `LookaheadPolicy` med **bredd 8**
+(simulatorns och CI:s standard). Bredden är en del av mätinstrumentet: vid bredd
+48 blir lookahead märkbart starkare (rum 2: 3,10 → 2,58 rundor) och siffrorna
+måste tunas om. Ändras `Policy.DEFAULT_WIDTH` ska hela §4 mätas om.
+
+**Regressionstest:** simulatorns siffror loggas till `docs/balance/<datum>.json`. Varje innehållsändring ska jämföras mot föregående körning. Senaste passet: §4.9.
 
 ---
 

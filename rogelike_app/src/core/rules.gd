@@ -69,7 +69,7 @@ const MULT_PENTA: int = 16
 const HOUSE_FACTOR: int = 2
 ## Spilld skada delas med detta och blir Charge.
 const OVERFLOW_TO_CHARGE: int = 2
-const BREATHER_HEAL: int = 4
+const BREATHER_HEAL: int = 10
 ## Tak på hur mycket LIFESTEAL kan läka per slot.
 const LIFESTEAL_CAP: int = 8
 ## Högsta värde en sida kan växa till via GROW / ANVIL_BLESSING.

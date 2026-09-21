@@ -46,7 +46,10 @@ func test_slot_and_board_roundtrip() -> void:
 
 
 func test_enemy_roundtrip_keeps_status_and_intent() -> void:
+	# Balanssiffrorna är tuningbara (GAME_DESIGN §4.8); testet läser dem ur
+	# Content i stället för att binda sig till en viss version av dem.
 	var enemy: Enemy = Content.make_enemy("IRON_TICK")
+	var template: Enemy = Content.make_enemy("IRON_TICK")
 	enemy.hp = 11
 	enemy.burn = 3
 	enemy.poison = 2
@@ -54,8 +57,8 @@ func test_enemy_roundtrip_keeps_status_and_intent() -> void:
 	enemy.intent.payload = {"slot": 3}
 	var back: Enemy = Enemy.from_dict(_roundtrip(enemy.to_dict()))
 	assert_int(back.hp).is_equal(11)
-	assert_int(back.max_hp).is_equal(28)
-	assert_int(back.armor).is_equal(2)
+	assert_int(back.max_hp).is_equal(template.max_hp)
+	assert_int(back.armor).is_equal(template.armor)
 	assert_int(back.burn).is_equal(3)
 	assert_int(back.poison).is_equal(2)
 	assert_int(back.intent.kind).is_equal(Rules.IntentKind.SPECIAL)
@@ -113,7 +116,7 @@ func test_combat_state_copy_is_deep() -> void:
 	copy.board.slots[0].blocked = true
 	copy.placement[0] = 3
 	copy.relics.clear()
-	assert_int(state.enemies[0].hp).is_equal(14)
+	assert_int(state.enemies[0].hp).is_equal(Content.make_enemy("RUST_RAT").hp)
 	assert_bool(state.board.slots[0].blocked).is_false()
 	assert_int(state.placement[0]).is_equal(-1)
 	assert_int(state.relics.size()).is_equal(1)

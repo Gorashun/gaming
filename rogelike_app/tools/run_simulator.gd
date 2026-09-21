@@ -75,11 +75,13 @@ func _simulate_battles(policy: String, count: int, room: int, base_seed: int, wi
 	var rounds_with_charge: int = 0
 	var house_bonuses: int = 0
 	var explosive_battles: int = 0
+	var hp_left_total: int = 0
 
 	for i: int in range(count):
 		var battle: Dictionary = _simulate_battle(base_seed + i, policy, room, width)
 		if bool(battle["won"]):
 			wins += 1
+		hp_left_total += maxi(0, int((battle["state"] as CombatState).player_hp))
 		rounds_total += int(battle["rounds"])
 		rounds_with_combo += int(battle["rounds_with_combo"])
 		rounds_with_overflow += int(battle["rounds_with_overflow"])
@@ -97,6 +99,7 @@ func _simulate_battles(policy: String, count: int, room: int, base_seed: int, wi
 		"charge_applied_round_rate": _ratio(rounds_with_charge, rounds_total),
 		"house_bonus_per_battle": _ratio(house_bonuses, count),
 		"explosion_rate": _ratio(explosive_battles, count),
+		"hp_left_avg": _ratio(hp_left_total, count),
 	}
 
 
@@ -218,6 +221,9 @@ func _simulate_run(seed_value: int, policy: String, width: int) -> Dictionary:
 		if not bool(outcome["won"]):
 			return {"won": false, "rooms_cleared": rooms_cleared}
 		rooms_cleared += 1
+		# Andrum (GAME_DESIGN §1): laker efter varje vunnen COMBAT, inte efter boss.
+		if room != Content.rooms_per_floor():
+			state.player_hp = mini(state.player_max_hp, state.player_hp + Rules.BREATHER_HEAL)
 
 		var floor_key: int = 0 if room == Content.rooms_per_floor() else 1
 		var available: Array[Dictionary] = []
@@ -273,6 +279,7 @@ func _print_policy(policy: String, stats: Dictionary) -> void:
 		print("  rounds using charge  %.1f %%" % (float(stats["charge_applied_round_rate"]) * 100.0))
 		print("  house bonus/battle   %.2f" % float(stats["house_bonus_per_battle"]))
 		print("  explosion rate       %.1f %%" % (float(stats["explosion_rate"]) * 100.0))
+		print("  hp left avg          %.1f" % float(stats.get("hp_left_avg", 0.0)))
 	if stats.has("run"):
 		var run_stats: Dictionary = stats["run"]
 		print("  full runs            %d" % int(run_stats["runs"]))

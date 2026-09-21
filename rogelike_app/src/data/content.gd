@@ -95,25 +95,30 @@ static func make_enemy(id: String) -> Enemy:
 	var enemy: Enemy = null
 	match id:
 		"RUST_RAT":
-			enemy = Enemy.new(id, 14, 3, "Rostråtta")
+			enemy = Enemy.new(id, 28, 3, "Rostråtta")
+			enemy.armor = 2
 		"SLAG_MOTH":
-			enemy = Enemy.new(id, 20, 3, "Slaggmal")
+			enemy = Enemy.new(id, 34, 4, "Slaggmal")
+			enemy.armor = 1
 			enemy.special = "DRAIN_CHARGE"
 		"THORN_IMP":
-			enemy = Enemy.new(id, 22, 2, "Taggimpen")
-			enemy.thorns = 3
+			enemy = Enemy.new(id, 40, 3, "Taggimpen")
+			enemy.armor = 2
+			enemy.thorns = 2
 		"PIP_THIEF":
-			enemy = Enemy.new(id, 26, 3, "Ögontjuven")
+			enemy = Enemy.new(id, 46, 4, "Ögontjuven")
+			enemy.armor = 1
 			enemy.special = "STEAL"
 		"IRON_TICK":
-			enemy = Enemy.new(id, 28, 5, "Järnfästingen")
-			enemy.armor = 2
+			enemy = Enemy.new(id, 46, 5, "Järnfästingen")
+			enemy.armor = 6
 		"GRAVE_HAND":
-			enemy = Enemy.new(id, 34, 6, "Gravhanden")
+			enemy = Enemy.new(id, 60, 6, "Gravhanden")
+			enemy.armor = 2
 			enemy.special = "GRAB"
 		"SLAGJAW":
-			enemy = Enemy.new(id, 150, 7, "Slaggkäften")
-			enemy.armor = 2
+			enemy = Enemy.new(id, 210, 7, "Slaggkäften")
+			enemy.armor = 3
 			enemy.special = "HARDEN"
 		_:
 			enemy = Enemy.new(id, 10, 1, id)
@@ -126,12 +131,12 @@ static func encounter(room: int, variant: int = 0) -> Array[Enemy]:
 	var ids: Array[String] = []
 	match room:
 		1:
-			ids = ["RUST_RAT", "RUST_RAT"]
+			ids = ["RUST_RAT", "RUST_RAT", "RUST_RAT", "RUST_RAT"]
 		2:
-			ids = ["SLAG_MOTH", "RUST_RAT", "RUST_RAT"]
+			ids = ["IRON_TICK", "SLAG_MOTH", "RUST_RAT"]
 		3:
 			if variant == 0:
-				ids = ["THORN_IMP", "IRON_TICK"]
+				ids = ["THORN_IMP", "IRON_TICK", "RUST_RAT"]
 			else:
 				ids = ["PIP_THIEF", "GRAVE_HAND"]
 		4:
@@ -154,8 +159,8 @@ static func rooms_per_floor() -> int:
 static func smith_state() -> CombatState:
 	var state: CombatState = CombatState.new()
 	state.board = Board.smith_board()
-	state.player_max_hp = 60
-	state.player_hp = 60
+	state.player_max_hp = 100
+	state.player_hp = 100
 	state.rerolls_left = 1
 	var dice: Array[Die] = []
 	for i: int in range(6):

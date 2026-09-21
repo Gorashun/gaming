@@ -1,0 +1,45 @@
+{
+  "base_seed": 1,
+  "battles_per_policy": 400,
+  "godot": "4.6-stable (official)",
+  "lookahead_minus_greedy_pp": 45.3333333333333,
+  "lookahead_width": 8,
+  "policies": {
+    "greedy": {
+      "battles": 400,
+      "charge_applied_round_rate": 0.804209495839452,
+      "combo_round_rate": 1.0,
+      "elapsed_ms": 3546.274,
+      "explosion_rate": 0.2075,
+      "house_bonus_per_battle": 0.1125,
+      "hp_left_avg": 72.355,
+      "overflow_round_rate": 0.40724424865394,
+      "rounds_per_battle": 5.1075,
+      "run": {
+        "rooms_cleared_avg": 3.43666666666667,
+        "runs": 300,
+        "win_rate": 0.486666666666667
+      },
+      "win_rate": 1.0
+    },
+    "lookahead": {
+      "battles": 400,
+      "charge_applied_round_rate": 0.674456083803384,
+      "combo_round_rate": 0.899274778404513,
+      "elapsed_ms": 22536.254,
+      "explosion_rate": 0.1925,
+      "house_bonus_per_battle": 0.0825,
+      "hp_left_avg": 84.67,
+      "overflow_round_rate": 0.608380338436745,
+      "rounds_per_battle": 3.1025,
+      "run": {
+        "rooms_cleared_avg": 3.94,
+        "runs": 300,
+        "win_rate": 0.94
+      },
+      "win_rate": 1.0
+    }
+  },
+  "room": 2,
+  "runs_per_policy": 300
+}
