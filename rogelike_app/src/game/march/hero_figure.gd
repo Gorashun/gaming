@@ -21,8 +21,11 @@ extends Node2D
 ## [/codeblock]
 
 ## Lagerordning bakifrån och fram (PAPERDOLL §2). Barnordningen ÄR z-ordningen.
+## [code]hair[/code] tillkom i M2.5 med könsvalet och ligger [b]under alla
+## gear-lager[/b] (DECISIONS 2026-09-21: utrustningen är kroppsoberoende och
+## passar båda varianterna, så en hjälm ska kunna täcka håret).
 const LAYERS: Array[StringName] = [
-	&"cape", &"legs", &"body", &"torso", &"head", &"helm", &"offhand", &"weapon", &"fx",
+	&"cape", &"legs", &"body", &"hair", &"torso", &"head", &"helm", &"offhand", &"weapon", &"fx",
 ]
 const HFRAMES: int = 8
 const VFRAMES: int = 4
@@ -88,6 +91,11 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	# Kroppsvarianten är en inställning och inte rundata: den ska överleva att
+	# en run tar slut och att sparfilen nollställs (DECISIONS 2026-09-21).
+	var settings: Node = Engine.get_main_loop().get("root").get_node_or_null("Settings") if Engine.get_main_loop() != null else null
+	if settings != null:
+		variant = Art.smith_variant(String(settings.get("smith_variant")))
 	equip_default_gear()
 	play(ANIM_IDLE)
 
@@ -165,12 +173,27 @@ func equip(layer_name: StringName, texture: Texture2D) -> void:
 	_placeholder.visible = not has_any_texture()
 
 
-## Smedens grunduppsättning: kropp, glödkappa, järnhjälm och smideshammare.
+## Vald kroppsvariant, "a" eller "b" ([member Settings.smith_variant]).
+var variant: String = Art.SMITH_VARIANT_DEFAULT
+
+
+## Byter kroppsvariant. Bara [code]body[/code] och [code]hair[/code] berörs –
+## alla gear-lager är kroppsoberoende (PAPERDOLL §1: samma 48×48-rutnät, samma
+## origo), vilket är hela skälet till att två varianter kostar två PNG:er och
+## inte en andra garderob.
+func set_variant(value: String) -> void:
+	variant = Art.smith_variant(value)
+	for layer_name: StringName in Art.SMITH_BODY_LAYERS:
+		equip(layer_name, Art.smith_layer(layer_name, variant))
+
+
+## Smedens grunduppsättning: kropp, hår, glödkappa, järnhjälm och smideshammare.
 ## [b]Utrustning har företräde framför reliker på samma lager[/b] (PAPERDOLL §3):
 ## ett vapenbyte får aldrig döljas av en relik.
 func equip_default_gear() -> void:
 	for layer_name: StringName in Art.HERO_LAYERS:
 		equip(layer_name, Art.texture(String(Art.HERO_LAYERS[layer_name])))
+	set_variant(variant)
 
 
 ## Tänder relikernas lager enligt PAPERDOLL §3.
@@ -185,6 +208,8 @@ func equip_default_gear() -> void:
 ## lager som saknar PNG tänds helt enkelt inte.
 func apply_relics(relics: Array) -> void:
 	var taken: Dictionary = {}
+	for layer_name: StringName in Art.SMITH_BODY_LAYERS:
+		taken[layer_name] = true  # kroppen och håret är inte gear
 	for layer_name: StringName in Art.HERO_LAYERS:
 		taken[layer_name] = true  # utrustning vinner alltid
 

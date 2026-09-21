@@ -21,6 +21,87 @@ extends RefCounted
 const SPRITES: String = "res://assets/sprites"
 const PALETTE_SHADER: String = "res://src/game/shaders/palette_lut.gdshader"
 
+## 16×16-ikoner i krit-UI:t (COMBAT_READABILITY §9). Varje post är en lista med
+## kandidatfilnamn, eftersom UI-agenten levererar dem parallellt och det exakta
+## namnet inte är låst. Första filen som finns vinner; finns ingen returneras
+## null, anroparen ritar sin glyf-reserv och [method missing_icons] räknar upp.
+##
+## [b]Regeln:[/b] en saknad ikon ska ge en varning och en reservglyf, aldrig en
+## krasch och aldrig ett tomt hål där en regel skulle ha stått.
+const UI_ICONS: Dictionary = {
+	&"armor": ["ui/icon_armor.png", "ui/armor.png", "ui/shield.png"],
+	&"attack": ["ui/icon_attack.png", "ui/attack.png", "ui/sword.png"],
+	&"help": ["ui/icon_help.png", "ui/help.png"],
+	&"charge": ["ui/icon_charge.png", "ui/charge.png", "ui/slot_charge.png"],
+	&"overflow": ["ui/icon_overflow.png", "ui/icon_spill.png", "ui/overflow.png"],
+	&"pointer": ["ui/icon_tutorial_pointer.png", "ui/tutorial_pointer.png", "ui/chalk_pointer.png"],
+}
+
+## Reservglyfer när ikonen saknas. Formkoden får aldrig försvinna helt.
+const UI_ICON_GLYPHS: Dictionary = {
+	&"armor": "⛊",
+	&"attack": "⚔",
+	&"help": "?",
+	&"charge": "⬤",
+	&"overflow": "↳",
+	&"pointer": "➤",
+}
+
+static var _missing_icons: Dictionary = {}
+
+
+## En 16×16-ikon ur [constant UI_ICONS], eller null. Varnar en gång per namn.
+static func ui_icon(icon_name: StringName) -> Texture2D:
+	for candidate: Variant in UI_ICONS.get(icon_name, []) as Array:
+		var tex: Texture2D = texture(String(candidate))
+		if tex != null:
+			return tex
+	if not _missing_icons.has(icon_name):
+		_missing_icons[icon_name] = true
+		push_warning("Art: 16×16-ikonen '%s' saknas i assets/sprites/ui/ – ritar reservglyfen '%s'" % [
+			icon_name, UI_ICON_GLYPHS.get(icon_name, "?")])
+	return null
+
+
+static func ui_icon_glyph(icon_name: StringName) -> String:
+	return String(UI_ICON_GLYPHS.get(icon_name, ""))
+
+
+## Ikoner som saknades under körningen. Rökprovet skriver ut listan.
+static func missing_icons() -> PackedStringArray:
+	var names: PackedStringArray = PackedStringArray()
+	for key: Variant in _missing_icons:
+		names.append(String(key))
+	names.sort()
+	return names
+
+
+# --- Smeden: två kroppsvarianter (DECISIONS 2026-09-21) --------------------
+
+## Giltiga kroppsvarianter. Spelet omtalar figuren könsneutralt ("The Smith");
+## varianten är en [b]kroppsform[/b], inte ett könsord i UI-texten.
+const SMITH_VARIANTS: Array[String] = ["a", "b"]
+const SMITH_VARIANT_DEFAULT: String = "a"
+
+
+static func smith_variant(value: String) -> String:
+	return value if SMITH_VARIANTS.has(value) else SMITH_VARIANT_DEFAULT
+
+
+## Kropps- och hårlagret för en variant. Faller tillbaka på det variantlösa
+## M1.5-arket så att figuren aldrig försvinner innan UI-agenten levererat.
+static func smith_layer(layer: StringName, variant: String) -> Texture2D:
+	var v: String = smith_variant(variant)
+	var tex: Texture2D = texture("hero/smith_%s_%s.png" % [layer, v])
+	if tex != null:
+		return tex
+	return texture("hero/smith_%s.png" % layer)
+
+
+## Porträttet i könsvalet och (senare) på character sheetet.
+static func smith_portrait(variant: String) -> Texture2D:
+	return texture("hero/smith_portrait_%s.png" % smith_variant(variant))
+
 ## Karaktärer och fiender i World-lagret: 32/48 px-celler × 4 (UI_GUIDE §8.3).
 const WORLD_SCALE: int = 4
 ## 16 px-ikoner (relik, slot, nod) i krit-UI:t.
@@ -40,6 +121,27 @@ const ENEMIES: Dictionary = {
 	"SLAGJAW": {"file": "enemies/slagjaw.png", "cell": 48, "frames": 4, "rows": 2, "death_frames": 3},
 }
 
+## Tutorialvåningens fiender (TOWN_AND_ONBOARDING §B.2) lånar arken från våning
+## 1. De är [b]pedagogiska varianter[/b], inte nytt innehåll: en Rust Mite är en
+## mindre Rostråtta och ska se ut som en. Får någon av dem en egen PNG räcker
+## det att ta bort raden här och lägga till en i [constant ENEMIES].
+const ENEMY_ART_ALIASES: Dictionary = {
+	"CHALK_DUMMY": "IRON_TICK",
+	"RUST_MITE": "RUST_RAT",
+	"SLAG_PUP": "SLAG_MOTH",
+	"TICK_PUP": "IRON_TICK",
+	"SCRAP_GATE": "GRAVE_HAND",
+	"SLAGJAW_RUNT": "SLAGJAW",
+}
+
+
+## Arkets id för en fiende: sig själv, eller det ark den lånar.
+static func enemy_art_id(enemy_id: String) -> String:
+	if ENEMIES.has(enemy_id):
+		return enemy_id
+	return String(ENEMY_ART_ALIASES.get(enemy_id, enemy_id))
+
+
 ## Dödsanimationens takt. Tre frames på 10 fps ≈ 300 ms, vilket ryms i
 ## [code]enemy_killed[/code]-budgeten på 360 ms (UI_GUIDE §5.5).
 const DEATH_FPS: float = 10.0
@@ -48,13 +150,19 @@ const DEATH_FPS: float = 10.0
 ## Reliklagren ligger inte här: de slås upp per relik-id i
 ## [method HeroFigure.apply_relics] enligt namnkontraktet
 ## [code]smith_<lager>_<id>.png[/code]. [code]legs[/code] tillkom i M2.
+## [b]M2.5:[/b] [code]body[/code] och [code]hair[/code] ligger INTE här längre.
+## De är kroppsvarianter ([constant SMITH_BODY_LAYERS]) och slås upp per variant
+## i [method smith_layer]; resten av garderoben är kroppsoberoende och delas av
+## båda (PAPERDOLL §1, DECISIONS 2026-09-21).
 const HERO_LAYERS: Dictionary = {
 	&"cape": "hero/smith_cape_ember.png",
 	&"legs": "hero/smith_legs_iron.png",
-	&"body": "hero/smith_body.png",
 	&"helm": "hero/smith_helm_iron.png",
 	&"weapon": "hero/smith_weapon_hammer.png",
 }
+
+## Lagren som byts med kroppsvarianten.
+const SMITH_BODY_LAYERS: Array[StringName] = [&"body", &"hair"]
 ## Vapenvariant B, för M2:s utrustningsbyte.
 const HERO_WEAPON_TONGS: String = "hero/smith_weapon_tongs.png"
 
@@ -139,13 +247,14 @@ static func has(relative_path: String) -> bool:
 
 
 static func enemy_cell(enemy_id: String) -> int:
-	var entry: Dictionary = ENEMIES.get(enemy_id, {}) as Dictionary
+	var entry: Dictionary = ENEMIES.get(enemy_art_id(enemy_id), {}) as Dictionary
 	return int(entry.get("cell", 32))
 
 
 ## Idle-loopen för en fiende som [SpriteFrames]. Cachas: rum 1 är fyra
 ## Rostråttor och ska inte skära ut samma atlas fyra gånger.
-static func enemy_frames(enemy_id: String, fps: float = 6.0) -> SpriteFrames:
+static func enemy_frames(p_enemy_id: String, fps: float = 6.0) -> SpriteFrames:
+	var enemy_id: String = enemy_art_id(p_enemy_id)
 	if _frames.has(enemy_id):
 		return _frames[enemy_id] as SpriteFrames
 	var entry: Dictionary = ENEMIES.get(enemy_id, {}) as Dictionary

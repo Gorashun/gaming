@@ -107,6 +107,54 @@ func test_every_hero_layer_sheet_is_384x192() -> void:
 		).is_equal(HeroFigure.CELL_SIZE * HeroFigure.VFRAMES)
 
 
+## M2.5: kroppen och håret finns i två varianter (DECISIONS 2026-09-21).
+## Båda måste ligga på samma 48×48-rutnät som garderoben, annars sitter en
+## hjälm på fel höjd så fort spelaren byter kropp.
+func test_both_smith_variants_share_the_paperdoll_grid() -> void:
+	for variant: String in Art.SMITH_VARIANTS:
+		for layer_name: StringName in Art.SMITH_BODY_LAYERS:
+			var sheet: Texture2D = Art.smith_layer(layer_name, variant)
+			assert_object(sheet).override_failure_message(
+				"hero/smith_%s_%s.png saknas" % [layer_name, variant]).is_not_null()
+			assert_int(sheet.get_width()).override_failure_message(
+				"smith_%s_%s: bredden är %d, inte 8 × 48" % [layer_name, variant, sheet.get_width()]
+			).is_equal(HeroFigure.CELL_SIZE * HeroFigure.HFRAMES)
+			assert_int(sheet.get_height()).override_failure_message(
+				"smith_%s_%s: höjden är %d, inte 4 × 48" % [layer_name, variant, sheet.get_height()]
+			).is_equal(HeroFigure.CELL_SIZE * HeroFigure.VFRAMES)
+
+
+func test_an_unknown_variant_falls_back_instead_of_crashing() -> void:
+	assert_str(Art.smith_variant("zz")).is_equal(Art.SMITH_VARIANT_DEFAULT)
+	assert_str(Art.smith_variant("")).is_equal(Art.SMITH_VARIANT_DEFAULT)
+	assert_object(Art.smith_layer(&"body", "zz")).is_not_null()
+
+
+## Briefen: saknas en ikon ska det bli platshållare + varning, aldrig en krasch.
+func test_every_ui_icon_resolves_or_has_a_glyph() -> void:
+	for icon_name: StringName in Art.UI_ICONS:
+		var texture: Texture2D = Art.ui_icon(icon_name)
+		if texture == null:
+			assert_str(Art.ui_icon_glyph(icon_name)).override_failure_message(
+				"ikonen %s saknar både PNG och reservglyf" % icon_name).is_not_empty()
+			continue
+		assert_int(texture.get_width()).override_failure_message(
+			"%s: 16×16 förväntas, fick %d px" % [icon_name, texture.get_width()]).is_equal(16)
+		assert_int(texture.get_height()).is_equal(16)
+
+
+## Tutorialvåningens fiender lånar ark från våning 1. Varje alias måste peka på
+## ett ark som faktiskt finns, annars blir rum 0.1 ett tomt golv.
+func test_every_tutorial_enemy_has_a_sprite_sheet() -> void:
+	for index: int in range(Tutorial.room_count()):
+		for enemy: Enemy in Tutorial.enemies_for(index):
+			var art_id: String = Art.enemy_art_id(enemy.id)
+			assert_bool(Art.ENEMIES.has(art_id)).override_failure_message(
+				"rum %d: %s saknar ark (alias → %s)" % [index, enemy.id, art_id]).is_true()
+			assert_object(Art.enemy_frames(enemy.id)).override_failure_message(
+				"rum %d: %s gav inga frames" % [index, enemy.id]).is_not_null()
+
+
 func test_the_alternate_weapon_shares_the_paperdoll_grid() -> void:
 	var tongs: Texture2D = Art.texture(Art.HERO_WEAPON_TONGS)
 	assert_object(tongs).is_not_null()
