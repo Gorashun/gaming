@@ -1,6 +1,6 @@
 # UI_GUIDE.md – PIPWRECK
 
-*Version 2 · 2026-09-21 · Ägare: UI/UX · Status: **riktning A beslutad. Hybrid pixel + krita beslutad av Anders (DECISIONS 2026-09-21)***
+*Version 3 · 2026-09-21 · Ägare: UI/UX · Status: **riktning A beslutad. Hybrid pixel + krita beslutad av Anders (DECISIONS 2026-09-21)***
 
 Gäller för Godot 4.6, portrait 1080×1920 (≈ 360×640 dp referens, testas även 430×932 dp).
 Allt UI läser en händelselogg från `src/core/` och spelar upp den. **UI-lagret innehåller ingen spellogik.**
@@ -827,10 +827,55 @@ stängs av ovan har en ersättare som bär samma information på samma tid.
 
 ---
 
+## 12b. Läsbarhet i strid (normativ)
+
+Efter speltest 1 (Anders, 2026-09-21: *"det är svårt att fatta mekaniken"*,
+DECISIONS) gäller en ny normativ regel för stridsskärmen:
+
+> **Kedjan ska gå att räkna efter för hand.** Om spelaren inte kan peka på
+> skärmen och säga *"2 plus 10 plus 10 plus 6 plus 12 blir 40, minus rustning
+> blir 28"* har förhandsvisningen misslyckats.
+
+Full spec: **`docs/design/COMBAT_READABILITY.md`**. Sammanfattning av vad som
+är bindande för implementationen:
+
+1. **Räknestycket** ersätter dagens `28` + `damage · 6 dice in the tray` +
+   `8 → Rust Rat 8 → Rust Rat …`. Tre lager: meningen
+   (`2 + 10 + 10 + 6 + 12 = 40`), rustningsraden
+   (`40 − 12 rustning = 28 skada`) och leveransraden (en rad per skadeinstans
+   med `värde − rustning = skada → mål`). Ingen `…`-klippning.
+2. **Multiplikatorbågar** ovanför slotraden, med multiplikator, gruppnamn och
+   **orsak** (`×2 PAR · BÅDA 5`). Wireframens båge blir spelmekanik-synlig.
+3. **Slot-regeln i 11 dp mikrotext** under slotnamnet, ≤ 14 tecken, plus
+   långtryck för en mening. Får aldrig utelämnas – den ersätter tutorialen.
+   Exakta strängar: COMBAT_READABILITY §3.
+4. **Brickan är en modell av verkligheten:** placerad tärning lämnar en tom
+   sockel (`SLOT 4`), vald tärning lyfts 6 dp, tomma slots pulsar
+   vänster→höger. `IN n` och `DRAG →` utgår.
+5. **Fiendedata som ord + ikon:** `Armor 2`, `Attacks 3`. Inga avhuggna
+   förkortningar. Armor-avdraget syns i förhandsvisningen, inte först i
+   uppspelningen.
+6. **`?`-knapp (48 dp)** tänder alla förklaringar samtidigt, max 6 callouts,
+   stängs vid tapp var som helst, reducerad rörelse = enbart opacitet.
+7. **Progressiv avslöjning** via visningsflaggor (`show_charge`, `show_ward`,
+   `show_reroll`, `show_relics`). Ett element får bara döljas när det är tomt
+   eller overksamt i tillståndet; UI ljuger aldrig om spelets tillstånd och
+   ingen spellogik flyttar in i UI-lagret.
+
+Alla siffror läsbarhetslagret behöver finns redan i `_preview.events`
+(`value_pass_done`, `combo_formed`, `house_bonus`, `strike`, `damage_dealt`,
+`status_applied`, `enemy_killed`, `charge_stored`). **Inget nytt i `src/core/`.**
+
+Nya assets som krävs: två 16×16-ikoner (rustning, attack). Allt annat byggs av
+befintliga sprites och primitiver.
+
+---
+
 ## 13. Skisser och verifiering
 
 - `design/wireframe_combat.html` – stridsskärm. Tryck **BEKRÄFTA KEDJA** för att spela upp händelseloggen vänster→höger (`die_activated` ×4 → `combo_formed` ×4 → `damage_dealt` med överflöd → `round_end`). Tapp under uppspelning = snabbspolning, andra tappet = hoppa till slutet.
 - `design/wireframe_reward.html` – belöningsval 1 av 3 med sällsynthetsfärg + ramform + utskrivet ord, samt referensremsa över hela skalan.
+- `design/mockup_combat_v2.html` – **stridsskärmens läsbarhetsversion (§12b)**: räknestycke med mening + rustningsrad + leveransrad, multiplikatorbåge `×2 PAR · BÅDA 5`, slot-regler i mikrotext, tom sockel i brickan, `Rustning 2` / `Slår 3` som ord, prognosfält i fiendens HP-stapel och `?`-hjälplager. Samma sprites och tokens som `mockup_combat_pixel.html`. Skärmdumpar: `design/screenshots/combat_v2_{360x640,390x844,430x932}.png` och `combat_v2_help_390x844.png`.
 - `design/mockup_combat_pixel.html` – **hybriden med riktiga sprite-PNG:er**: Smeden som paperdoll-stapel (kappa → kropp → hjälm → vapen), tre fiender från rum 2 (`IRON_TICK`, `SLAG_MOTH`, `RUST_RAT`), tärningar komponerade som i Godot (kropp + pip/glyph + glaskant + spricka), tre parallaxlager + golvtile, allt under samma krit-UI.
 - `design/shader_preview_palette.tscn`, `design/shader_preview_chalk.tscn` – Godot-scener för de två shadrarna, öppnas direkt i editorn.
 - `design/shader_probe.tscn` + `tools/shader_probe.gd` + `design/probe_ramp.png` – **mätscen**, inte förhandsvisning. Renderar 16 kända färger till en `SubViewport` och läser tillbaka pixlarna. Exit 0 = passthrough, LUT-väg och modulate stämmer på byten. Körs per renderare under `xvfb-run`.
@@ -845,6 +890,8 @@ stängs av ovan har en ersättare som bär samma information på samma tid.
 | Strid, kedja spelas upp | ingen scroll | ingen scroll | ingen scroll |
 | Belöning | ingen scroll | ingen scroll | ingen scroll |
 | **Strid, hybrid pixel + krita (M2, reliklager tända)** | ingen scroll | ingen scroll | ingen scroll |
+| **Strid v2, läsbarhet (§12b)** | ingen scroll | ingen scroll | ingen scroll |
+| Strid v2 + hjälplager | – | ingen scroll | – |
 
 **M2-uppdatering av `mockup_combat_pixel.html`:** Smeden ritas nu med alla nio
 paperdoll-lagren och fyra tända reliker – `BLOOD_PRICE` (`fx`), `CHEAT_CUBE`

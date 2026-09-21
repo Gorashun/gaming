@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PIPWRECK – Stridsskärm v2, läsbarhet</title>
+<style>
+/* Lokala Google Fonts-subset (latin) – mockupen gör ingen nätverkstrafik */
+@font-face{font-family:'Anton';src:url('fonts/anton-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Caveat Brush';src:url('fonts/caveatbrush-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Familjen Grotesk';src:url('fonts/familjengrotesk-var.woff2') format('woff2');font-weight:400 700;font-display:swap}
+</style>
+<style>
+/* ===== Designtokens, UI_GUIDE §2 ===== */
+:root{
+  --pit:#0E1216; --slate:#161B21; --raised:#1F262E; --line:#2C353F;
+  --chalk100:#F2EDE3; --chalk300:#CFC7B8; --chalk500:#9A9486;
+  --bone:#E8E0CF; --pip:#12161A;
+  --fire:#FF6A2C; --poison:#B77FFF; --frost:#6ED2F5; --heal:#4FE3A0;
+  --blood:#FF556F; --charge:#FFD447; --shield:#D7DEE6;
+  --s-vanlig:#CFC7B8; --s-eld:#FF6A2C; --s-spegel:#6ED2F5; --s-amboss:#D7DEE6;
+  --s-ladda:#FFD447; --s-tomrum:#8A94A6;
+  --x2:#FFD447; --x4:#FF8A2C;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px;
+  --r-chip:4px; --r-btn:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow-x:hidden}
+body{
+  background:var(--pit);color:var(--chalk100);
+  font-family:'Familjen Grotesk','Segoe UI',system-ui,sans-serif;
+  display:flex;justify-content:center;
+}
+/* kritkorn, motsvarar grain-steget i chalk.gdshader */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.15;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.55'/></svg>");
+  mix-blend-mode:overlay;
+}
+.app{
+  width:100%;max-width:430px;height:100dvh;min-height:100%;position:relative;
+  display:flex;flex-direction:column;padding:0 14px 10px;
+  background:radial-gradient(120% 60% at 50% 0%, #171D24 0%, var(--pit) 72%);
+}
+.px{image-rendering:pixelated;image-rendering:crisp-edges;background-repeat:no-repeat;display:block}
+
+/* ===== 1. Toppfält ===== */
+.top{flex:0 0 auto;display:flex;align-items:center;gap:7px;height:40px;white-space:nowrap}
+.hp{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;letter-spacing:.03em}
+.hp .glyph{color:var(--blood);font-size:13px}
+.hpbar{width:46px;height:8px;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:#0B0F13}
+.hpbar i{display:block;height:100%;width:100%;background:var(--blood)}
+.floor{font-family:'Anton',sans-serif;font-size:12px;letter-spacing:.04em;color:var(--chalk300);
+  border:1.5px solid var(--line);border-radius:var(--r-chip);padding:1px 5px}
+/* Laddningsmätaren har nu ORD + prognos, inte bara "0/20" */
+.charge{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--charge);
+  border:1.5px solid rgba(255,212,71,.4);border-radius:var(--r-chip);padding:2px 5px}
+.charge .dot{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--charge);display:block}
+.charge .gain{color:var(--chalk300);font-weight:700}
+.iconbtn{margin-left:auto;display:flex;gap:5px}
+.iconbtn button{width:32px;height:32px;border-radius:var(--r-btn);border:1.5px solid var(--line);
+  background:var(--raised);color:var(--chalk300);font:700 15px/1 'Familjen Grotesk',sans-serif}
+.iconbtn .help{border-color:var(--charge);color:var(--charge);font-family:'Anton',sans-serif;font-size:17px}
+
+/* ===== 2. Arena ===== */
+.arena{flex:1 1 auto;min-height:150px;position:relative;overflow:hidden;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:6px;
+  padding:0 0 4px;border-bottom:2px solid var(--line)}
+.lay{position:absolute;left:-14px;right:-14px;background-repeat:repeat-x;pointer-events:none}
+.bg-far{bottom:34px;top:0;background-image:url('../assets/sprites/env/floor1_parallax_far.png');
+  background-size:640px 240px;background-position:left bottom;opacity:.75;z-index:0}
+.bg-mid{bottom:34px;top:0;background-image:url('../assets/sprites/env/floor1_parallax_mid.png');
+  background-size:640px 240px;background-position:left bottom;opacity:.9;z-index:1}
+.bg-floor{bottom:0;height:36px;background-image:url('../assets/sprites/env/floor1_tile.png');
+  background-size:48px 48px;background-position:left top;z-index:2}
+.floorline{position:absolute;left:-6px;right:-6px;bottom:35px;height:2px;background:var(--chalk500);opacity:.45;filter:url(#jitter);z-index:3}
+
+.hero{position:relative;width:48px;height:48px;flex:0 0 auto;z-index:5;margin-bottom:2px}
+.hero .lyr{position:absolute;inset:0;width:48px;height:48px;background-size:384px 192px;background-position:0 0}
+.hero .cape{background-image:url('../assets/sprites/hero/smith_cape_ember.png');z-index:0}
+.hero .legs{background-image:url('../assets/sprites/hero/smith_legs_iron.png');z-index:1}
+.hero .body{background-image:url('../assets/sprites/hero/smith_body.png');z-index:2}
+.hero .head{background-image:url('../assets/sprites/hero/smith_head_domino.png');z-index:3}
+.hero .helm{background-image:url('../assets/sprites/hero/smith_helm_iron.png');z-index:4}
+.hero .weap{background-image:url('../assets/sprites/hero/smith_weapon_hammer.png');z-index:5}
+.hero .tag{position:absolute;left:50%;transform:translateX(-50%);top:-13px;font-size:8px;font-weight:700;letter-spacing:.1em;color:var(--chalk500)}
+
+.foes{display:flex;align-items:flex-end;gap:5px;flex:1 1 auto;justify-content:flex-end;z-index:5}
+/* Kortet sitter DIREKT ovanför sin varelse och är lika brett – ingen tvekan om vem som är vem */
+.foe{display:flex;flex-direction:column;align-items:center;gap:1px;width:76px;position:relative}
+.foe .spr{width:48px;height:48px;background-size:192px 96px;background-position:0 0}
+.foe .nm{font-size:8px;font-weight:700;letter-spacing:.02em;color:var(--chalk300);text-transform:uppercase}
+.ehp{width:100%;height:11px;border:1.5px solid var(--chalk500);border-radius:2px;background:#0B0F13;position:relative;overflow:hidden}
+.ehp i{position:absolute;left:0;top:0;bottom:0;background:var(--blood);transform-origin:left}
+/* prognosfältet: exakt så mycket som kedjan kommer att ta bort */
+.ehp u{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,rgba(242,237,227,.85) 0 3px,rgba(242,237,227,.35) 3px 6px)}
+.ehp span{position:absolute;inset:0;display:grid;place-items:center;font-size:8px;font-weight:700;color:var(--chalk100);text-shadow:0 0 3px #000,0 0 3px #000}
+/* Ord + ikon, aldrig förkortningar */
+.stat{display:flex;gap:4px;align-items:center;font-size:9px;font-weight:700;letter-spacing:.01em;white-space:nowrap}
+.stat .arm{color:var(--shield)} .stat .atk{color:var(--fire)}
+
+/* Skadepilar: bred = huvudträff, smal = överflöd */
+.deliver{flex:0 0 auto;display:flex;gap:5px;justify-content:flex-end;margin-top:3px}
+.deliver .col{width:76px;display:flex;flex-direction:column;align-items:center;line-height:1}
+.deliver .col.off{visibility:hidden}
+.deliver .ar{font-family:'Anton',sans-serif;font-size:15px;color:var(--chalk500);margin-bottom:-1px}
+.deliver .col.hit .ar{color:var(--chalk100);font-size:19px}
+.deliver .amt{font-family:'Anton',sans-serif;font-size:13px;color:var(--chalk500)}
+.deliver .col.hit .amt{font-size:19px;color:var(--chalk100)}
+.deliver .cap{font-size:7px;font-weight:700;letter-spacing:.06em;color:var(--chalk500);text-transform:uppercase}
+
+/* ===== 3. Räknestycket ===== */
+.calc{flex:0 0 auto;margin-top:6px;border:1.5px solid var(--line);border-radius:var(--r-btn);
+  background:rgba(31,38,46,.55);padding:6px 8px 7px}
+.calc h2{font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--chalk500);text-transform:uppercase;
+  display:flex;justify-content:space-between;align-items:center}
+.calc h2 em{font-style:normal;color:var(--charge);letter-spacing:.06em}
+/* Meningen: 2 + 10 + 10 + 6 + 12 = 40 */
+.eq{display:flex;align-items:center;justify-content:center;gap:3px;margin-top:3px;font-family:'Anton',sans-serif;line-height:1}
+.eq .t{font-size:21px;color:var(--chalk100);position:relative;padding:0 1px}
+.eq .t.m2{color:var(--x2)} .eq .t.anv{color:var(--s-amboss)}
+.eq .op{font-size:14px;color:var(--chalk500)}
+.eq .sum{font-size:28px;color:var(--chalk100)}
+.eq .tag{position:absolute;left:50%;transform:translateX(-50%);bottom:-9px;white-space:nowrap;
+  font-family:'Familjen Grotesk',sans-serif;font-size:7px;font-weight:700;letter-spacing:.04em;color:var(--chalk500)}
+/* Rustningsraden: varför 40 inte är 28 */
+.armorline{margin-top:11px;text-align:center;font-size:10px;color:var(--chalk300)}
+.armorline b{font-family:'Anton',sans-serif;font-size:15px;color:var(--chalk100);vertical-align:-1px;margin:0 1px}
+.armorline s{color:var(--shield);text-decoration:none}
+/* Leveransraden: en rad per skadeinstans */
+.routes{margin-top:5px;display:flex;flex-direction:column;gap:2px}
+.route{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--chalk300);line-height:1.15}
+.route .ix{flex:0 0 auto;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--chalk500);
+  display:grid;place-items:center;font-size:8px;font-weight:700;color:var(--chalk100)}
+.route.s2 .ix,.route.s3 .ix{border-color:var(--x2);color:var(--x2)}
+.route.s4 .ix{border-color:var(--s-eld);color:var(--s-eld)}
+.route.s5 .ix{border-color:var(--s-amboss);color:var(--s-amboss)}
+.route .math{font-variant-numeric:tabular-nums;color:var(--chalk100);font-weight:700;flex:0 0 78px}
+.route .to{color:var(--chalk500)}
+.route .to b{color:var(--chalk300);font-weight:700}
+.route.dead .to b{color:var(--blood)}
+.route.blocked{color:var(--chalk500)}
+.route.blocked .math{color:var(--shield)}
+.route .extra{color:var(--fire);font-weight:700}
+
+/* ===== 4. Multiplikatorbågar ===== */
+.arcs{flex:0 0 auto;position:relative;height:20px;margin-top:6px}
+.arc{position:absolute;bottom:0;height:14px;border:2px solid var(--x2);border-bottom:none;
+  border-radius:7px 7px 0 0;opacity:.85;filter:url(#jitter)}
+.arc b{position:absolute;left:50%;transform:translateX(-50%);top:-9px;background:var(--pit);padding:0 4px;
+  font-size:12px;font-weight:700;letter-spacing:.02em;color:var(--x2);white-space:nowrap}
+.arc b small{font-family:'Familjen Grotesk',sans-serif;font-size:7px;font-weight:700;letter-spacing:.1em}
+
+/* ===== 5. Slots ===== */
+.slots{flex:0 0 auto;display:flex;gap:5px;justify-content:space-between}
+.slot{flex:1 1 0;min-width:0;border-radius:var(--r-chip);background:var(--raised);position:relative;
+  display:flex;flex-direction:column;align-items:center;padding:3px 2px 4px;gap:1px}
+.slot.vanlig{border:2px solid var(--s-vanlig)}
+.slot.spegel{border:4px double var(--s-spegel)}
+.slot.eld{border:2px solid var(--s-eld)}
+.slot.amboss{border:4px solid var(--s-amboss)}
+.slot .hdr{display:flex;align-items:center;justify-content:center;gap:2px;width:100%;padding-left:12px}
+.slot .ico{width:14px;height:14px;background-size:14px 14px}
+.slot .ttl{font-size:7.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--chalk300)}
+.slot.spegel .ttl{color:var(--s-spegel)} .slot.eld .ttl{color:var(--s-eld)} .slot.amboss .ttl{color:var(--s-amboss)}
+/* NYTT: regeln i mikrotext, 11 dp, direkt under namnet */
+.slot .rule{font-size:8px;line-height:1.15;min-height:2.3em;color:var(--chalk500);text-align:center;letter-spacing:-.01em;
+  display:flex;align-items:center;justify-content:center}
+.slot .die{margin:1px 0 0;margin-top:auto}
+/* NYTT: hela räknestycket för sloten, inte bara "5 ×2" */
+.slot .calc2{font-size:10px;font-weight:700;color:var(--chalk100);font-variant-numeric:tabular-nums;white-space:nowrap}
+.slot .calc2 em{font-style:normal;color:var(--x2)}
+.slot .why{font-size:8px;color:var(--chalk500);letter-spacing:.02em;white-space:nowrap}
+.slot .idx{position:absolute;top:2px;left:3px;width:12px;height:12px;border-radius:50%;
+  border:1.5px solid var(--chalk500);display:grid;place-items:center;font-size:7px;font-weight:700;color:var(--chalk500)}
+.slot.spegel .idx{border-color:var(--x2);color:var(--x2)}
+.slot.vanlig:nth-child(2) .idx{border-color:var(--x2);color:var(--x2)}
+.slot.eld .idx{border-color:var(--s-eld);color:var(--s-eld)}
+.slot.amboss .idx{border-color:var(--s-amboss);color:var(--s-amboss)}
+
+/* ===== Tärning = staplade PNG-lager, exakt som i Godot ===== */
+.die{position:relative;width:42px;height:42px;flex:0 0 auto}
+.die .l{position:absolute;inset:0;width:42px;height:42px;background-size:42px 42px}
+.die .body{z-index:0} .die .glyph{z-index:1} .die .rim{z-index:2}
+.b-iron{background-image:url('../assets/sprites/dice/die_body_iron.png')}
+.b-bone{background-image:url('../assets/sprites/dice/die_body_bone.png')}
+.b-glass{background-image:url('../assets/sprites/dice/die_body_glass.png')}
+
+/* ===== 6. Brickan ===== */
+.tray{flex:0 0 auto;margin-top:7px}
+.trayhdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
+.trayhdr h2{font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--chalk500);text-transform:uppercase}
+.trayhdr .hint{font-family:'Caveat Brush',cursive;font-size:13px;color:var(--charge)}
+.hand{display:flex;gap:5px;justify-content:space-between;align-items:flex-end}
+.cell{width:54px;min-width:48px;min-height:48px;display:flex;flex-direction:column;align-items:center;gap:1px}
+/* PLACERAD: tom plats med spökkontur och pil upp till sloten – inte "IN 4" */
+.socket{width:42px;height:42px;border:2px dashed var(--line);border-radius:6px;position:relative;
+  display:grid;place-items:center}
+.socket .ghost{position:absolute;inset:0;width:38px;height:38px;margin:auto;background-size:38px 38px;opacity:.16}
+.socket .up{font-family:'Anton',sans-serif;font-size:15px;color:var(--chalk500);position:relative}
+.cell .lbl{font-size:8px;font-weight:700;letter-spacing:.05em;color:var(--chalk500);white-space:nowrap}
+.cell.placed .lbl{color:var(--chalk500)}
+/* VALD: lyft + gul kontur, och etiketten säger vad man ska göra härnäst */
+.cell.sel .die{transform:translateY(-6px)}
+.cell.sel .die::after{content:"";position:absolute;inset:-4px;border:2px solid var(--charge);border-radius:8px}
+.cell.sel .lbl{color:var(--charge)}
+.cell .val{font-family:'Anton',sans-serif;font-size:12px;color:var(--chalk300);line-height:1}
+
+/* ===== 7. Åtgärder ===== */
+.actions{flex:0 0 auto;display:flex;gap:7px;margin-top:8px}
+.btn-sec{flex:0 0 88px;height:50px;border-radius:var(--r-btn);background:transparent;border:2px solid var(--chalk500);
+  color:var(--chalk100);font:700 11px/1.15 'Familjen Grotesk',sans-serif;letter-spacing:.05em}
+.btn-sec b{display:block;font-size:8px;font-weight:700;color:var(--chalk500);letter-spacing:.08em;margin-top:2px}
+.btn-pri{flex:1 1 auto;height:50px;border-radius:var(--r-btn);border:2px solid var(--chalk100);background:var(--chalk100);
+  color:var(--pit);font:700 13px/1 'Familjen Grotesk',sans-serif;letter-spacing:.04em;
+  display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-pri .sum{font-family:'Anton',sans-serif;font-size:21px}
+.btn-pri i{font-style:normal;font-size:9px;font-weight:700;color:rgba(14,18,22,.62);letter-spacing:.06em}
+
+/* ===== 8. Hjälplagret ===== */
+#help{position:absolute;opacity:0;pointer-events:none}
+.helplayer{position:absolute;inset:0;z-index:40;display:none;background:rgba(9,12,15,.80)}
+#help:checked ~ .app .helplayer{display:block}
+.helplayer .close{position:absolute;inset:0;cursor:pointer}
+.cal{position:absolute;max-width:196px;border:1.5px solid var(--charge);border-radius:var(--r-chip);
+  background:rgba(14,18,22,.96);padding:4px 6px;font-size:9.5px;line-height:1.25;color:var(--chalk100)}
+.cal b{display:block;font-size:8px;font-weight:700;letter-spacing:.1em;color:var(--charge);text-transform:uppercase}
+.cal::before{content:"";position:absolute;width:8px;height:8px;border-left:1.5px solid var(--charge);
+  border-top:1.5px solid var(--charge);background:rgba(14,18,22,.96)}
+.cal.up::before{top:-5px;left:14px;transform:rotate(45deg)}
+.cal.upr::before{top:-5px;right:14px;transform:rotate(45deg)}
+.cal.dn::before{bottom:-5px;left:14px;transform:rotate(225deg)}
+.cal.dnr::before{bottom:-5px;right:14px;transform:rotate(225deg)}
+/* streckad ledarlinje ned/upp till elementet callouten pekar på, längd = --len */
+.cal.dn::after,.cal.dnr::after,.cal.up::after,.cal.upr::after{content:"";position:absolute;width:1.5px;
+  height:var(--len,0px);background:repeating-linear-gradient(to bottom,var(--charge) 0 3px,transparent 3px 6px)}
+.cal.dn::after{bottom:calc(-1 * var(--len,0px));left:17px}
+.cal.dnr::after{bottom:calc(-1 * var(--len,0px));right:17px}
+.cal.up::after{top:calc(-1 * var(--len,0px));left:17px}
+.cal.upr::after{top:calc(-1 * var(--len,0px));right:17px}
+.helphdr{position:absolute;top:44px;left:50%;transform:translateX(-50%);font-family:'Anton',sans-serif;
+  font-size:13px;letter-spacing:.1em;color:var(--charge);white-space:nowrap}
+.helphdr small{display:block;text-align:center;font-family:'Familjen Grotesk',sans-serif;font-size:8px;
+  font-weight:700;letter-spacing:.08em;color:var(--chalk500)}
+
+/* ===== Stor skärm: 430×932 / 390×844 – slacken går till läsbarhet ===== */
+@media (min-height:800px){
+  .eq .t{font-size:24px} .eq .sum{font-size:32px} .eq .tag{font-size:8px}
+  .armorline{font-size:11px;margin-top:13px}
+  .route{font-size:11px;line-height:1.3} .route .math{flex-basis:86px}
+  .route .ix{width:16px;height:16px;font-size:9px}
+  .slot .rule{font-size:9px} .slot .calc2{font-size:11px} .slot .why{font-size:8.5px}
+  .die,.die .l{width:46px;height:46px} .die .l{background-size:46px 46px}
+  .socket{width:46px;height:46px}
+  .btn-pri,.btn-sec{height:56px} .btn-pri .sum{font-size:24px}
+}
+
+/* ===== Liten skärm: 360×640 ===== */
+@media (max-height:700px){
+  .arena{min-height:104px}
+  .hero,.hero .lyr{width:40px;height:40px} .hero .lyr{background-size:320px 160px}
+  .foe .spr{width:40px;height:40px;background-size:160px 80px}
+  .calc{padding:4px 6px 5px}
+  .eq .t{font-size:18px} .eq .sum{font-size:23px}
+  .route{font-size:9px} .route .math{flex-basis:70px}
+  .armorline{margin-top:9px;font-size:9px}
+  .die,.die .l{width:42px;height:42px} .die .l{background-size:42px 42px}
+  .socket{width:42px;height:42px}
+  .actions{margin-top:5px} .btn-pri,.btn-sec{height:46px}
+  .arcs{height:17px}
+}
+@media (max-width:380px){
+  .app{padding:0 10px 8px}
+  .foe{width:70px} .cell{width:50px}
+  .slot .why{font-size:7px}
+}
+</style>
+</head>
+<body>
+
+<!-- chalk.gdshader-jitter, simulerad -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="jitter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.0" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<input type="checkbox" id="help">
+<div class="app">
+
+  <!-- ===== 1. Toppfält ===== -->
+  <div class="top">
+    <div class="hp"><span class="glyph">◖</span><span>100/100</span><div class="hpbar"><i></i></div></div>
+    <div class="floor">RUM 1</div>
+    <div class="charge"><span class="dot"></span>LADDNING 0<span class="gain">→ +4</span></div>
+    <div class="iconbtn">
+      <label class="help" for="help" style="width:32px;height:32px;border-radius:8px;border:1.5px solid var(--charge);
+        color:var(--charge);font-family:'Anton',sans-serif;font-size:17px;display:grid;place-items:center">?</label>
+      <button>⚙</button>
+    </div>
+  </div>
+
+  <!-- ===== 2. Arena ===== -->
+  <div class="arena">
+    <div class="lay bg-far px"></div>
+    <div class="lay bg-mid px"></div>
+    <div class="lay bg-floor px"></div>
+    <div class="floorline"></div>
+
+    <div class="hero">
+      <div class="lyr cape px"></div><div class="lyr legs px"></div><div class="lyr body px"></div>
+      <div class="lyr head px"></div><div class="lyr helm px"></div><div class="lyr weap px"></div>
+      <div class="tag">SMEDEN</div>
+    </div>
+
+    <div class="foes">
+      <div class="foe" id="foe1">
+        <div class="nm">Rostråtta</div>
+        <div class="ehp"><i style="width:100%"></i><u style="right:0;width:100%"></u><span>28 / 28</span></div>
+        <div class="stat"><span class="arm">🛡 Rustning 2</span></div>
+        <div class="stat"><span class="atk">⚔ Slår 3</span></div>
+        <div class="spr px" style="background-image:url('../assets/sprites/enemies/rust_rat.png')"></div>
+      </div>
+      <div class="foe" id="foe2">
+        <div class="nm">Rostråtta</div>
+        <div class="ehp"><i style="width:100%"></i><span>28 / 28</span></div>
+        <div class="stat"><span class="arm">🛡 Rustning 2</span></div>
+        <div class="stat"><span class="atk">⚔ Slår 3</span></div>
+        <div class="spr px" style="background-image:url('../assets/sprites/enemies/rust_rat.png')"></div>
+      </div>
+      <div class="foe">
+        <div class="nm">Rostråtta</div>
+        <div class="ehp"><i style="width:100%"></i><span>28 / 28</span></div>
+        <div class="stat"><span class="arm">🛡 Rustning 2</span></div>
+        <div class="stat"><span class="atk">⚔ Slår 3</span></div>
+        <div class="spr px" style="background-image:url('../assets/sprites/enemies/rust_rat.png')"></div>
+      </div>
+      <div class="foe">
+        <div class="nm">Rostråtta</div>
+        <div class="ehp"><i style="width:100%"></i><span>28 / 28</span></div>
+        <div class="stat"><span class="arm">🛡 Rustning 2</span></div>
+        <div class="stat"><span class="atk">⚔ Slår 3</span></div>
+        <div class="spr px" style="background-image:url('../assets/sprites/enemies/rust_rat.png')"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Leveransremsan: vilken skada som går vart, i kolumn med sin fiende -->
+  <div class="deliver">
+    <div class="col hit"><span class="ar">↑</span><span class="amt">28</span><span class="cap">dödar</span></div>
+    <div class="col"><span class="ar">↑</span><span class="amt">2</span><span class="cap">spill · stoppas</span></div>
+    <div class="col off"><span class="ar">↑</span><span class="amt">–</span><span class="cap">&nbsp;</span></div>
+    <div class="col off"><span class="ar">↑</span><span class="amt">–</span><span class="cap">&nbsp;</span></div>
+  </div>
+
+  <!-- ===== 3. Räknestycket ===== -->
+  <div class="calc">
+    <h2><span>Runda 1 · kedjan innan du bekräftar</span><em>ingen slump kvar</em></h2>
+    <div class="eq">
+      <span class="t">2<span class="tag">slot 1</span></span><span class="op">+</span>
+      <span class="t m2">10<span class="tag">slot 2</span></span><span class="op">+</span>
+      <span class="t m2">10<span class="tag">slot 3</span></span><span class="op">+</span>
+      <span class="t">6<span class="tag">slot 4</span></span><span class="op">+</span>
+      <span class="t anv">12<span class="tag">slot 5</span></span>
+      <span class="op">=</span><span class="sum">40</span>
+    </div>
+    <div class="armorline">40 <s>− 12 rustning (2 per träff × 6 träffar)</s> = <b>28</b> skada</div>
+    <div class="routes">
+      <div class="route blocked s1"><span class="ix">1</span><span class="math">2 − 2 = 0</span>
+        <span class="to">stoppas helt av rustningen</span></div>
+      <div class="route s2"><span class="ix">2</span><span class="math">10 − 2 = 8</span>
+        <span class="to">→ <b>Rostråtta 1</b> 28 → 20</span></div>
+      <div class="route s3"><span class="ix">3</span><span class="math">10 − 2 = 8</span>
+        <span class="to">→ <b>Rostråtta 1</b> 20 → 12</span></div>
+      <div class="route s4"><span class="ix">4</span><span class="math">6 − 2 = 4</span>
+        <span class="to">→ <b>Rostråtta 1</b> 12 → 8 <span class="extra">+ brand 2</span></span></div>
+      <div class="route dead s5"><span class="ix">5</span><span class="math">12 − 2 = 10</span>
+        <span class="to">→ <b>Rostråtta 1 dör</b> · 2 spill → Råtta 2 (stoppas)</span></div>
+    </div>
+  </div>
+
+  <!-- ===== 4. Multiplikatorbågar ===== -->
+  <div class="arcs">
+    <div class="arc" style="left:21.5%;width:36.5%"><b>×2 <small>PAR · BÅDA 5</small></b></div>
+  </div>
+
+  <!-- ===== 5. Slots ===== -->
+  <div class="slots">
+    <div class="slot vanlig">
+      <div class="idx">1</div>
+      <div class="hdr"><div class="ico px" style="background-image:url('../assets/sprites/ui/slot_plain.png')"></div><div class="ttl">Vanlig</div></div>
+      <div class="rule">ingen effekt</div>
+      <div class="die"><div class="l body px b-iron"></div>
+        <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_2.png')"></div></div>
+      <div class="calc2">2 = 2</div>
+      <div class="why">&nbsp;</div>
+    </div>
+    <div class="slot vanlig">
+      <div class="idx">2</div>
+      <div class="hdr"><div class="ico px" style="background-image:url('../assets/sprites/ui/slot_plain.png')"></div><div class="ttl">Vanlig</div></div>
+      <div class="rule">ingen effekt</div>
+      <div class="die"><div class="l body px b-iron"></div>
+        <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_5.png')"></div></div>
+      <div class="calc2">5 <em>×2</em> = 10</div>
+      <div class="why">par med 3</div>
+    </div>
+    <div class="slot spegel">
+      <div class="idx">3</div>
+      <div class="hdr"><div class="ico px" style="background-image:url('../assets/sprites/ui/slot_mirror.png')"></div><div class="ttl">Spegel</div></div>
+      <div class="rule">kopierar vänster</div>
+      <div class="die"><div class="l body px b-bone"></div>
+        <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_1.png')"></div></div>
+      <div class="calc2">5 <em>×2</em> = 10</div>
+      <div class="why">kopia av 2</div>
+    </div>
+    <div class="slot eld">
+      <div class="idx">4</div>
+      <div class="hdr"><div class="ico px" style="background-image:url('../assets/sprites/ui/slot_fire.png')"></div><div class="ttl">Eld</div></div>
+      <div class="rule">brand 2 vid träff</div>
+      <div class="die"><div class="l body px b-iron"></div>
+        <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_6.png')"></div></div>
+      <div class="calc2">6 = 6</div>
+      <div class="why">+ brand 2</div>
+    </div>
+    <div class="slot amboss">
+      <div class="idx">5</div>
+      <div class="hdr"><div class="ico px" style="background-image:url('../assets/sprites/ui/slot_anvil.png')"></div><div class="ttl">Amboss</div></div>
+      <div class="rule">×2 om 5+</div>
+      <div class="die"><div class="l body px b-iron"></div>
+        <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_6.png')"></div></div>
+      <div class="calc2">6 <em>×2</em> = 12</div>
+      <div class="why">6 är 5+</div>
+    </div>
+  </div>
+
+  <!-- ===== 6. Brickan ===== -->
+  <div class="tray">
+    <div class="trayhdr"><h2>Brickan</h2><span class="hint">1 kvar = +4 laddning</span></div>
+    <div class="hand">
+      <div class="cell placed"><div class="socket"><div class="ghost px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div><span class="up">↑</span></div><div class="lbl">SLOT 1</div></div>
+      <div class="cell placed"><div class="socket"><div class="ghost px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div><span class="up">↑</span></div><div class="lbl">SLOT 2</div></div>
+      <div class="cell placed"><div class="socket"><div class="ghost px" style="background-image:url('../assets/sprites/dice/die_body_bone.png')"></div><span class="up">↑</span></div><div class="lbl">SLOT 3</div></div>
+      <div class="cell placed"><div class="socket"><div class="ghost px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div><span class="up">↑</span></div><div class="lbl">SLOT 4</div></div>
+      <div class="cell placed"><div class="socket"><div class="ghost px" style="background-image:url('../assets/sprites/dice/die_body_iron.png')"></div><span class="up">↑</span></div><div class="lbl">SLOT 5</div></div>
+      <div class="cell">
+        <div class="die"><div class="l body px b-iron"></div>
+          <div class="l glyph px" style="background-image:url('../assets/sprites/dice/pips_4.png')"></div></div>
+        <div class="lbl">OPLACERAD</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 7. Åtgärder ===== -->
+  <div class="actions">
+    <button class="btn-sec">OMKAST<b>1 KVAR</b></button>
+    <button class="btn-pri">BEKRÄFTA <span class="sum">28</span> <i>SKADA</i></button>
+  </div>
+
+  <!-- ===== 8. Hjälplagret (tapp var som helst stänger) ===== -->
+  <div class="helplayer">
+    <label class="close" for="help"></label>
+    <div class="helphdr">SÅ LÄSER DU SKÄRMEN<small>tryck var som helst för att stänga</small></div>
+
+    <div class="cal upr" style="top:64px;right:8px;left:auto;--len:8px"><b>Laddning</b>
+      Tärningar du inte lägger ut blir laddning. Nästa runda läggs den ovanpå din vänstraste tärning.</div>
+
+    <div class="cal dn" style="top:112px;left:8px;--len:180px"><b>Räknestycket</b>
+      Vänster till höger, slot för slot. Exakt det här händer när du trycker Bekräfta – ingen slump kvar.</div>
+
+    <div class="cal dn" style="top:228px;right:8px;left:auto;--len:148px"><b>Fienden</b>
+      Rustning dras av varje gång något träffar. "Slår 3" är vad den gör mot dig när din kedja är klar.</div>
+
+    <div class="cal up" style="top:578px;left:8px;--len:26px"><b>Brädet</b>
+      Bågen betyder att två lika värden bredvid varandra dubblas – tre i rad ger ×4. Texten under slotens namn är hela slotens regel.</div>
+
+    <div class="cal dn" style="bottom:118px;left:8px;--len:14px"><b>Brickan</b>
+      Tomma platser = tärningar som redan ligger på brädet. Tryck på en tärning och sedan på en slot.</div>
+
+    <div class="cal dnr" style="bottom:62px;right:8px;left:auto;--len:10px"><b>Bekräfta</b>
+      Siffran på knappen är skadan du får. Sedan slår fienderna tillbaka.</div>
+
+  </div>
+
+</div>
+</body>
+</html>
