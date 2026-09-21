@@ -17,6 +17,7 @@ Agentdefinitionerna ligger i `.claude/agents/` (repo-rot) så att Claude Code ka
 4. PM loggar beslut i DECISIONS.md och uppdaterar STATUS.md.
 
 ## Regler
+- Committa bara egna filer med explicita sökvägar. Aldrig `git add -A` eller `git add .`. Pusha aldrig, PM pushar.
 - Beslut som byter tech stack, kärnloop eller monetisering kräver Anders.
 - Ingen leverans räknas som klar utan körda tester/build och rapport av resultatet.
 - Alla påståenden om "vad spelare vill" ska ha källa eller märkas som uppskattning.
