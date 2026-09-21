@@ -60,3 +60,26 @@
   fortfarande number pops och skalpulser.
 - **Fiendezonen rymmer fyra fiender**, inte tre som M1-briefen antog: rum 1 är
   fyra Rostråttor (§4.4). Panelerna fördelar bredden dynamiskt.
+
+## M4 Android – noterat, inte byggt
+
+- **Debug-APK:n ligger på target SDK 35, inte 36.** Godot tillåter inte att
+  min/target SDK skrivs över utan gradle-bygge, och gradle-vägen kostar ~10 min
+  extra i CI. Play ser bara AAB:n (target 36), så det är inte en spärr. Vill vi
+  ha 36 även i debug: sätt `use_gradle_build=true` i `Android Debug` och lägg
+  NDK + platforms i `apk-debug`-jobbet. `docs/ANDROID.md` §3.
+- **`screen/edge_to_edge` är av.** Androids 15-läge kräver att även botten
+  kompenseras för navigeringsfältet; `SafeArea` räknar bara toppen i dag.
+- **Butiksikon 512×512 och feature graphic 1024×500** är inte gjorda.
+  `tools/gen_icons.py:draw_die()` ritar i valfri storlek, så 512 är en rad;
+  feature graphic behöver komposition och är en UI-uppgift.
+- **Haptiknivåerna 15/30/60 ms är inte kännselprövade** på en riktig telefon.
+  Det var villkoret när de sattes (DECISIONS 2026-09-21) och hör till M4:s
+  telefontest.
+- **Kedjetempo-inställningen** (Lugn/Normal/Snabb/Blixt) finns i `Settings` men
+  har fortfarande ingen kontroll i inställningsskärmen (DECISIONS: M4).
+- **Ingen bekräftelsedialog när bakåtknappen lämnar en run.** I dag svarar
+  bakåt med pausmenyn på march/belöning; en "avsluta run?"-fråga kan behövas
+  när meta-progression finns.
+- **iOS.** Presetfilen har bara Android. iOS kräver Xcode och moln-Mac
+  (research/02 §"Plattformskrav").
