@@ -1,5 +1,9 @@
 path,source,author,license,url,retrieved,notes
 assets/icon.svg,PIPWRECK repo,PIPWRECK UI,own-work,,2026-09-21,App-ikon ritad i projektet. Godots standardikon anvands inte.
+assets/icons/android/icon_background.png,tools/gen_icons.py,PIPWRECK dev,own-work,,2026-09-21,"Adaptive icon bakgrund 432x432, surface/pit med svag mittvask"
+assets/icons/android/icon_foreground.png,tools/gen_icons.py,PIPWRECK dev,own-work,,2026-09-21,"Adaptive icon forgrund 432x432, PIPWRECK-tarning i krit-stil"
+assets/icons/android/icon_legacy.png,tools/gen_icons.py,PIPWRECK dev,own-work,,2026-09-21,"Legacy launcher-ikon 192x192, bakgrund + tarning komponerade"
+assets/icons/android/icon_monochrome.png,tools/gen_icons.py,PIPWRECK dev,own-work,,2026-09-21,"Themed icon 432x432 (Android 13+), vit silhuett"
 assets/sfx/boss_intro.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Boss entre, lagt dan 600 ms"
 assets/sfx/charge_store.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Laddning lagras, mjuk klockton 240 ms"
 assets/sfx/combo_house.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Combo x8/kak, fyrklang + sub 250 ms"
