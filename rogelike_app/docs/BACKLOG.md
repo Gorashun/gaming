@@ -39,5 +39,11 @@
   vinstskärmen efter våning 1:s boss; ingen belöning ges efter bossen.
 - **`ROUND_BUDGET_MS = 3200`** är dev:s tolkning. UI_GUIDE §5 sätter tak bara
   för kedjan (2 500 ms) och säger inget om fiendepasset. Behöver UI-beslut.
+- **M1.5 i18n-pass.** Beslutet "engelska som källspråk, svenska via `tr()`"
+  (DECISIONS 2026-09-21) fattades efter att M1:s skärmar byggts. All spelartext
+  i `src/game/` är därför svenska literaler. Konverteringen är mekanisk och rör
+  fem filer plus `ui/tokens.gd` (slot- och sällsynthetsnamn) — inga strängar är
+  utspridda i logiken, och kedjetexten byggs redan på ett ställe
+  (`CombatScreen.chain_text`).
 - **Fiendezonen rymmer fyra fiender**, inte tre som M1-briefen antog: rum 1 är
   fyra Rostråttor (§4.4). Panelerna fördelar bredden dynamiskt.
