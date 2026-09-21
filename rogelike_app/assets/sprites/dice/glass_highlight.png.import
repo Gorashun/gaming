@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjk616mmwtbf2"
-path="res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"
+uid="uid://bq7isd28yotnn"
+path="res://.godot/imported/glass_highlight.png-d54acd0ad46a0e1bdbef24a33409097c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/screenshots/reward_390x844.png"
-dest_files=["res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"]
+source_file="res://assets/sprites/dice/glass_highlight.png"
+dest_files=["res://.godot/imported/glass_highlight.png-d54acd0ad46a0e1bdbef24a33409097c.ctex"]
 
 [params]
 

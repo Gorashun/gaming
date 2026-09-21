@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjk616mmwtbf2"
-path="res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"
+uid="uid://bbvbwuiyth47r"
+path="res://.godot/imported/smith_weapon_hammer.png-9d4aabc244be594ae56e6708220447a2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/screenshots/reward_390x844.png"
-dest_files=["res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"]
+source_file="res://assets/sprites/hero/smith_weapon_hammer.png"
+dest_files=["res://.godot/imported/smith_weapon_hammer.png-9d4aabc244be594ae56e6708220447a2.ctex"]
 
 [params]
 

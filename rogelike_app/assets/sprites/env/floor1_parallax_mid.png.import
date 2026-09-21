@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjk616mmwtbf2"
-path="res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"
+uid="uid://ddi34atl7uu2m"
+path="res://.godot/imported/floor1_parallax_mid.png-0dcd5599621f6b8f3e5fcedfc603be7d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/screenshots/reward_390x844.png"
-dest_files=["res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"]
+source_file="res://assets/sprites/env/floor1_parallax_mid.png"
+dest_files=["res://.godot/imported/floor1_parallax_mid.png-0dcd5599621f6b8f3e5fcedfc603be7d.ctex"]
 
 [params]
 

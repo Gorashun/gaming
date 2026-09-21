@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjk616mmwtbf2"
-path="res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"
+uid="uid://btgylmjkyosyn"
+path="res://.godot/imported/die_body_bone.png-af573465d3027b02aa5e9d7ae0e46291.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/screenshots/reward_390x844.png"
-dest_files=["res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"]
+source_file="res://assets/sprites/dice/die_body_bone.png"
+dest_files=["res://.godot/imported/die_body_bone.png-af573465d3027b02aa5e9d7ae0e46291.ctex"]
 
 [params]
 

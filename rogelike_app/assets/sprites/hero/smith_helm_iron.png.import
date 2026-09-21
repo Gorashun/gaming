@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjk616mmwtbf2"
-path="res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"
+uid="uid://df50tvpqc68a5"
+path="res://.godot/imported/smith_helm_iron.png-c6c3a75b0714828b0b21ec1bc76dd6b4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/screenshots/reward_390x844.png"
-dest_files=["res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"]
+source_file="res://assets/sprites/hero/smith_helm_iron.png"
+dest_files=["res://.godot/imported/smith_helm_iron.png-c6c3a75b0714828b0b21ec1bc76dd6b4.ctex"]
 
 [params]
 

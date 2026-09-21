@@ -1,0 +1,101 @@
+[gd_scene load_steps=12 format=3]
+
+; Dev-forhandsvisning av src/game/shaders/palette_lut.gdshader.
+; Oppna scenen i editorn och kor den: samma graskalekropp blir jarn, ben och
+; glas genom att bara byta LUT-textur. Bossen till hoger visar world-LUT:en,
+; dvs. det som varje importerad CC0-sprite ska tvingas igenom.
+
+[ext_resource type="Shader" path="res://src/game/shaders/palette_lut.gdshader" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/dice/die_body_gray.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/dice/lut_iron.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/dice/lut_bone.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/dice/lut_glass.png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/dice/lut_world.png" id="6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/slagjaw.png" id="7"]
+
+[sub_resource type="ShaderMaterial" id="MatIron"]
+shader = ExtResource("1")
+shader_parameter/palette_lut = ExtResource("3")
+shader_parameter/lut_strength = 1.0
+shader_parameter/material_tint = Color(1, 1, 1, 1)
+shader_parameter/luma_gamma = 1.0
+shader_parameter/flash = 0.0
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="MatBone"]
+shader = ExtResource("1")
+shader_parameter/palette_lut = ExtResource("4")
+shader_parameter/lut_strength = 1.0
+shader_parameter/material_tint = Color(1, 1, 1, 1)
+shader_parameter/luma_gamma = 1.0
+shader_parameter/flash = 0.0
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="MatGlass"]
+shader = ExtResource("1")
+shader_parameter/palette_lut = ExtResource("5")
+shader_parameter/lut_strength = 1.0
+shader_parameter/material_tint = Color(1, 1, 1, 1)
+shader_parameter/luma_gamma = 1.0
+shader_parameter/flash = 0.0
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="MatWorld"]
+shader = ExtResource("1")
+shader_parameter/palette_lut = ExtResource("6")
+shader_parameter/lut_strength = 1.0
+shader_parameter/material_tint = Color(1, 1, 1, 1)
+shader_parameter/luma_gamma = 1.0
+shader_parameter/flash = 0.0
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+
+[node name="PalettePreview" type="Node2D"]
+
+[node name="Bakgrund" type="ColorRect" parent="."]
+offset_right = 1080.0
+offset_bottom = 640.0
+color = Color(0.054902, 0.070588, 0.086275, 1)
+
+[node name="World" type="CanvasLayer" parent="."]
+
+[node name="Jarn" type="Sprite2D" parent="World"]
+texture_filter = 1
+material = SubResource("MatIron")
+position = Vector2(120, 200)
+scale = Vector2(5, 5)
+texture = ExtResource("2")
+
+[node name="Ben" type="Sprite2D" parent="World"]
+texture_filter = 1
+material = SubResource("MatBone")
+position = Vector2(300, 200)
+scale = Vector2(5, 5)
+texture = ExtResource("2")
+
+[node name="Glas" type="Sprite2D" parent="World"]
+texture_filter = 1
+material = SubResource("MatGlass")
+position = Vector2(480, 200)
+scale = Vector2(5, 5)
+texture = ExtResource("2")
+
+[node name="Otintad" type="Sprite2D" parent="World"]
+texture_filter = 1
+position = Vector2(660, 200)
+scale = Vector2(5, 5)
+texture = ExtResource("2")
+
+[node name="BossWorldLUT" type="Sprite2D" parent="World"]
+texture_filter = 1
+material = SubResource("MatWorld")
+position = Vector2(300, 470)
+scale = Vector2(4, 4)
+texture = ExtResource("7")
+hframes = 4
+
+[node name="BossOtintad" type="Sprite2D" parent="World"]
+texture_filter = 1
+position = Vector2(700, 470)
+scale = Vector2(4, 4)
+texture = ExtResource("7")
+hframes = 4

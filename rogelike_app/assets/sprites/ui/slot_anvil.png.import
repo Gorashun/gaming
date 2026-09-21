@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjk616mmwtbf2"
-path="res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"
+uid="uid://dui6pik48mr66"
+path="res://.godot/imported/slot_anvil.png-05ccb0d75e3bf24748bab0be56e0e86f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/screenshots/reward_390x844.png"
-dest_files=["res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"]
+source_file="res://assets/sprites/ui/slot_anvil.png"
+dest_files=["res://.godot/imported/slot_anvil.png-05ccb0d75e3bf24748bab0be56e0e86f.ctex"]
 
 [params]
 

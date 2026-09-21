@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjk616mmwtbf2"
-path="res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"
+uid="uid://bswua8oiq3f63"
+path="res://.godot/imported/slot_charge.png-3f81161288c1a263937eb0abc9056255.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/screenshots/reward_390x844.png"
-dest_files=["res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"]
+source_file="res://assets/sprites/ui/slot_charge.png"
+dest_files=["res://.godot/imported/slot_charge.png-3f81161288c1a263937eb0abc9056255.ctex"]
 
 [params]
 

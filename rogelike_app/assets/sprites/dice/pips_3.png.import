@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjk616mmwtbf2"
-path="res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"
+uid="uid://eaf1xeqvt83i"
+path="res://.godot/imported/pips_3.png-b50af6f0e6dd5cf3b82e1297b190d83b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/screenshots/reward_390x844.png"
-dest_files=["res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"]
+source_file="res://assets/sprites/dice/pips_3.png"
+dest_files=["res://.godot/imported/pips_3.png-b50af6f0e6dd5cf3b82e1297b190d83b.ctex"]
 
 [params]
 

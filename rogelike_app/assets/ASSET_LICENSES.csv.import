@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dgknpawaui3a"
+
+[deps]
+
+files=["res://assets/ASSET_LICENSES.source.translation", "res://assets/ASSET_LICENSES.author.translation", "res://assets/ASSET_LICENSES.license.translation", "res://assets/ASSET_LICENSES.en.translation", "res://assets/ASSET_LICENSES.retrieved.translation", "res://assets/ASSET_LICENSES.notes.translation"]
+
+source_file="res://assets/ASSET_LICENSES.csv"
+dest_files=["res://assets/ASSET_LICENSES.source.translation", "res://assets/ASSET_LICENSES.author.translation", "res://assets/ASSET_LICENSES.license.translation", "res://assets/ASSET_LICENSES.en.translation", "res://assets/ASSET_LICENSES.retrieved.translation", "res://assets/ASSET_LICENSES.notes.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

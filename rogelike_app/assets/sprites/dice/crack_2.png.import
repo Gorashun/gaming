@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjk616mmwtbf2"
-path="res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"
+uid="uid://ca5rmxdia00d5"
+path="res://.godot/imported/crack_2.png-c07a371677b98daeadb6ba5163f634c1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/screenshots/reward_390x844.png"
-dest_files=["res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"]
+source_file="res://assets/sprites/dice/crack_2.png"
+dest_files=["res://.godot/imported/crack_2.png-c07a371677b98daeadb6ba5163f634c1.ctex"]
 
 [params]
 

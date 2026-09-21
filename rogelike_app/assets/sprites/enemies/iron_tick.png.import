@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjk616mmwtbf2"
-path="res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"
+uid="uid://dsnug6tw0lfsv"
+path="res://.godot/imported/iron_tick.png-01adcd171e2be1aef15f4282a291a263.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/screenshots/reward_390x844.png"
-dest_files=["res://.godot/imported/reward_390x844.png-65ea66022bafe383835d697d630400af.ctex"]
+source_file="res://assets/sprites/enemies/iron_tick.png"
+dest_files=["res://.godot/imported/iron_tick.png-01adcd171e2be1aef15f4282a291a263.ctex"]
 
 [params]
 
