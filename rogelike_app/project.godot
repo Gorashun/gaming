@@ -25,6 +25,7 @@ window/size/window_height_override=640
 window/handheld/orientation=1
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+window/stretch/scale_mode="fractional"
 
 [dotnet]
 
@@ -40,3 +41,4 @@ renderer/rendering_method="mobile"
 renderer/rendering_method.mobile="mobile"
 textures/vram_compression/import_etc2_astc=true
 anti_aliasing/quality/msaa_2d=0
+textures/canvas_textures/default_texture_filter=0
