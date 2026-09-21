@@ -1,2 +1,61 @@
 path,source,author,license,url,retrieved,notes
-assets/icon.svg,PIPWRECK repo,PIPWRECK team,own-work,,2026-09-21,App-ikon ritad i projektet. Godots standardikon anvands inte.
+assets/icon.svg,PIPWRECK repo,PIPWRECK UI,own-work,,2026-09-21,App-ikon ritad i projektet. Godots standardikon anvands inte.
+assets/sprites/dice/crack_1.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Sprickoverlay variant 1
+assets/sprites/dice/crack_2.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Sprickoverlay variant 2
+assets/sprites/dice/crack_3.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Sprickoverlay variant 3
+assets/sprites/dice/die_body_bone.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Tarningskropp bone 32x32 (fortintad; mockup och editorforhandsvisning)
+assets/sprites/dice/die_body_glass.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Tarningskropp glass 32x32 (fortintad; mockup och editorforhandsvisning)
+assets/sprites/dice/die_body_gray.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Tarningskropp graskala 32x32; kors genom palette_lut.gdshader
+assets/sprites/dice/die_body_iron.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Tarningskropp iron 32x32 (fortintad; mockup och editorforhandsvisning)
+assets/sprites/dice/die_tumble_gray.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Rullanimation tom kropp 6 frames 192x32 graskala
+assets/sprites/dice/glass_highlight.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,"Additiv glaskant, endast glasmaterial"
+assets/sprites/dice/glyph_blod.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,"Symbolsida blod, 1-bit, satt modulate till semantisk token"
+assets/sprites/dice/glyph_eld.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,"Symbolsida eld, 1-bit, satt modulate till semantisk token"
+assets/sprites/dice/glyph_frost.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,"Symbolsida frost, 1-bit, satt modulate till semantisk token"
+assets/sprites/dice/glyph_gift.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,"Symbolsida gift, 1-bit, satt modulate till semantisk token"
+assets/sprites/dice/glyph_tomrum.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,"Symbolsida tomrum, 1-bit, satt modulate till semantisk token"
+assets/sprites/dice/lut_bone.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Palett-LUT 16x1 for material bone
+assets/sprites/dice/lut_glass.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Palett-LUT 16x1 for material glass
+assets/sprites/dice/lut_iron.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Palett-LUT 16x1 for material iron
+assets/sprites/dice/lut_world.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Palett-LUT 16x1 som tvingar importerade sprites till UI_GUIDE-paletten
+assets/sprites/dice/pips_0.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,"Pip-overlay varde 0 (ihalig ring, HOLLOW/TWIN_EYE)"
+assets/sprites/dice/pips_1.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Pip-overlay varde 1
+assets/sprites/dice/pips_2.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Pip-overlay varde 2
+assets/sprites/dice/pips_3.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Pip-overlay varde 3
+assets/sprites/dice/pips_4.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Pip-overlay varde 4
+assets/sprites/dice/pips_5.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Pip-overlay varde 5
+assets/sprites/dice/pips_6.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Pip-overlay varde 6
+assets/sprites/enemies/grave_hand.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"GRAVE_HAND idle, 32x32, 4 frames"
+assets/sprites/enemies/iron_tick.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"IRON_TICK idle, 32x32, 4 frames"
+assets/sprites/enemies/pip_thief.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"PIP_THIEF idle, 32x32, 4 frames"
+assets/sprites/enemies/rust_rat.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"RUST_RAT idle, 32x32, 4 frames"
+assets/sprites/enemies/slag_moth.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"SLAG_MOTH idle, 32x32, 4 frames"
+assets/sprites/enemies/slagjaw.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"SLAGJAW idle, 48x48, 4 frames"
+assets/sprites/enemies/thorn_imp.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"THORN_IMP idle, 32x32, 4 frames"
+assets/sprites/env/floor1_parallax_far.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"parallaxlager 0, hastighet 0,15, 320x120 kaklingsbar"
+assets/sprites/env/floor1_parallax_mid.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"parallaxlager 1, hastighet 0,45, 320x120 kaklingsbar"
+assets/sprites/env/floor1_parallax_near.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"parallaxlager 2, hastighet 1,2, 320x64 kaklingsbar"
+assets/sprites/env/floor1_tile.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"golvtile marschremsa, 32x32 kaklingsbar"
+assets/sprites/hero/smith_body.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Smeden paperdoll body (bas-kropp, alltid synlig), 48x48 8x4"
+assets/sprites/hero/smith_cape_ember.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Smeden paperdoll cape_ember (kappa), 48x48 8x4"
+assets/sprites/hero/smith_helm_iron.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Smeden paperdoll helm_iron (hjalm), 48x48 8x4"
+assets/sprites/hero/smith_weapon_hammer.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Smeden paperdoll weapon_hammer (vapen A), 48x48 8x4"
+assets/sprites/hero/smith_weapon_tongs.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Smeden paperdoll weapon_tongs (vapen B), 48x48 8x4"
+assets/sprites/items/relic_blood_price.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Relikikon BLOOD_PRICE, 16x16"
+assets/sprites/items/relic_broken_scale.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Relikikon BROKEN_SCALE, 16x16"
+assets/sprites/items/relic_cheat_cube.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Relikikon CHEAT_CUBE, 16x16"
+assets/sprites/items/relic_domino.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Relikikon DOMINO, 16x16"
+assets/sprites/items/relic_echo_mirror.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Relikikon ECHO_MIRROR, 16x16"
+assets/sprites/items/relic_octopus.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Relikikon OCTOPUS, 16x16"
+assets/sprites/ui/node_boss.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Nodikon BOSS, 16x16"
+assets/sprites/ui/node_combat.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Nodikon COMBAT, 16x16"
+assets/sprites/ui/node_elite.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Nodikon ELITE, 16x16"
+assets/sprites/ui/node_forge.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Nodikon FORGE, 16x16"
+assets/sprites/ui/node_mystery.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Nodikon MYSTERY, 16x16"
+assets/sprites/ui/node_rest.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Nodikon REST, 16x16"
+assets/sprites/ui/slot_anvil.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Slotikon ANVIL, 16x16"
+assets/sprites/ui/slot_charge.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Slotikon CHARGE, 16x16"
+assets/sprites/ui/slot_fire.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Slotikon FIRE, 16x16"
+assets/sprites/ui/slot_mirror.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Slotikon MIRROR, 16x16"
+assets/sprites/ui/slot_plain.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Slotikon PLAIN, 16x16"
+assets/sprites/ui/slot_void.png,tools/gen_pixel_assets.py,PIPWRECK UI,own-work,,2026-09-21,"Slotikon VOID, 16x16"

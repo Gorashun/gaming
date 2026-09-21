@@ -1,0 +1,144 @@
+[gd_scene load_steps=4 format=3 uid="uid://cpipwreckcs0"]
+
+[ext_resource type="Script" path="res://src/game/combat/combat_screen.gd" id="1_screen"]
+[ext_resource type="PackedScene" path="res://src/game/combat/combat_world.tscn" id="2_world"]
+[ext_resource type="Script" path="res://src/game/juice/event_player.gd" id="3_player"]
+
+[node name="CombatScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_screen")
+world_scene = ExtResource("2_world")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Column" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="TopBar" type="HBoxContainer" parent="Margin/Column"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="HpLabel" type="Label" parent="Margin/Column/TopBar"]
+layout_mode = 2
+text = "◖ 100/100"
+
+[node name="HpBar" type="ProgressBar" parent="Margin/Column/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+show_percentage = false
+
+[node name="RoomLabel" type="Label" parent="Margin/Column/TopBar"]
+layout_mode = 2
+text = "RUM 1"
+
+[node name="ChargeLabel" type="Label" parent="Margin/Column/TopBar"]
+layout_mode = 2
+text = "⬤ 0"
+
+[node name="WardLabel" type="Label" parent="Margin/Column/TopBar"]
+layout_mode = 2
+text = "⬟ 0"
+
+[node name="EnemyZone" type="HBoxContainer" parent="Margin/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="PreviewPanel" type="PanelContainer" parent="Margin/Column"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="PreviewColumn" type="VBoxContainer" parent="Margin/Column/PreviewPanel"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="TotalLabel" type="Label" parent="Margin/Column/PreviewPanel/PreviewColumn"]
+layout_mode = 2
+text = "0"
+horizontal_alignment = 1
+
+[node name="TotalCaption" type="Label" parent="Margin/Column/PreviewPanel/PreviewColumn"]
+layout_mode = 2
+text = "skada · kedjan förhandsvisad"
+horizontal_alignment = 1
+
+[node name="ChainLabel" type="Label" parent="Margin/Column/PreviewPanel/PreviewColumn"]
+layout_mode = 2
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="SlotRow" type="HBoxContainer" parent="Margin/Column"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Spacer" type="Control" parent="Margin/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="TrayHeader" type="HBoxContainer" parent="Margin/Column"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="TrayTitle" type="Label" parent="Margin/Column/TrayHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Din bricka"
+
+[node name="UndoButton" type="Button" parent="Margin/Column/TrayHeader"]
+layout_mode = 2
+text = "↩ ÅNGRA"
+
+[node name="Tray" type="HBoxContainer" parent="Margin/Column"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Actions" type="HBoxContainer" parent="Margin/Column"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="RerollButton" type="Button" parent="Margin/Column/Actions"]
+layout_mode = 2
+text = "OMKAST 1/1"
+
+[node name="ConfirmButton" type="Button" parent="Margin/Column/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "BEKRÄFTA KEDJA"
+
+[node name="FxLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TapCatcher" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="EventPlayer" type="Node" parent="."]
+script = ExtResource("3_player")
