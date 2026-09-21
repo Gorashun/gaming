@@ -16,7 +16,7 @@
 - Asset-pipeline: 93 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- **M2.5 Begriplighet + stad (design)**: rollspelsnörd designar stad-hubb och första-run-lärkurva, UI gör läsbarhetspass på stridsskärmen och onboarding-spec. Dev implementerar efter Anders godkännande
+- **M2.5 bygge**: dev bygger stridsskärm v2, tutorialvåning 0, staden Chalkrim (3 platser), smedja mellan runs, könsval. UI levererar kroppsvariant, stadssprites, ikoner, i18n-rader
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt
