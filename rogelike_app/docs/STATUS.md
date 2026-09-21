@@ -11,11 +11,10 @@
 - Balanspass våning 1: +45,3 p.e. Lookahead över Greedy, rum 1–3 tar 3–3,4 rundor
 
 **Pågår**
-- Inget aktivt just nu
+- **M1 vertical slice** startad: dev bygger spelbar strid + run-loop i `src/game/`, UI bygger asset-pipeline (CC0-sprites, LUT-shader, tärningssprites, ASSET_LICENSES.csv)
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt
-- Navigering (hybrid rekommenderad): Anders beslut
 
 **Nästa (M1 vertical slice)**
 - Dev: `src/game/` spelbar strid med rektangel/placeholder-grafik, uppspelare av händelselogg som överlappande tidslinje, autosave
