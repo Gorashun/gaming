@@ -216,6 +216,7 @@ func bind(index: int, slot: Slot, die: Die) -> void:
 		_die_label.visible = true
 		_die_label.text = tr("SLOT_STATE_GRABBED")
 		_die_label.add_theme_color_override("font_color", Tokens.SEM_BLOOD)
+		_word_size()
 	elif die != null:
 		_die_art.show_die(die, hash(die.id))
 		_die_art.visible = _die_art.is_drawing()
@@ -223,6 +224,7 @@ func bind(index: int, slot: Slot, die: Die) -> void:
 		_die_label.visible = not _die_art.shows_value()
 		_die_label.text = str(face.value) if face != null else "?"
 		_die_label.add_theme_color_override("font_color", Tokens.BONE_DIE)
+		_number_size()
 		var alpha: float = MIRROR_DIE_ALPHA if slot.type == Rules.SlotType.MIRROR else 1.0
 		_die_art.modulate.a = alpha
 		_die_label.modulate.a = alpha
@@ -230,8 +232,19 @@ func bind(index: int, slot: Slot, die: Die) -> void:
 		_die_label.visible = true
 		_die_label.text = tr("SLOT_STATE_EMPTY")
 		_die_label.add_theme_color_override("font_color", Tokens.CHALK_500)
+		_word_size()
 
 	_apply_style()
+
+
+## Siffran i sloten får vara stor; ett ORD i samma storlek är bredare än cellen
+## och klipps mitt itu ("EMPTY" blev "MPTY" i fem slots bredvid varandra).
+func _word_size() -> void:
+	_die_label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_CAPTION - 1))
+
+
+func _number_size() -> void:
+	_die_label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_HEADING))
 
 
 ## Regeltexten för en slot-typ. Statisk så att hjälp-lagret kan använda den.
