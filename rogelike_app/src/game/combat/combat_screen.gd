@@ -1,16 +1,24 @@
 class_name CombatScreen
 extends GameScreen
-## Stridsskärmen. Fiendezon överst (läs-endast), fem slots i mitten, tärningar
-## och knappar i tumzonen – UI_GUIDE §2.9 och wireframe_combat.html.
+## Stridsskärmen, [b]v2[/b]. docs/design/COMBAT_READABILITY.md.
 ##
 ## [b]Den heliga regeln (GAME_DESIGN §6) är hela skärmens arkitektur:[/b] varje
 ## gång placeringen ändras kör vi en riktig [method Resolver.resolve] på en KOPIA
 ## och visar dess utfall. Vid bekräftelse körs [method Resolver.resolve] igen med
 ## identiska argument, och i debug asserterar vi att loggen är byte-identisk.
-## Förhandsvisningen är alltså inte en uppskattning – den ÄR utfallet.
 ##
-## Skärmen innehåller ingen regel. Skada, combos, Charge, Ward och omkast räknas
-## av [Resolver] och [Reroll]; här ritas bara resultatet.
+## [b]Vad v2 lägger till[/b] är inte en enda regel, bara uträkningen:
+## [br]• [ReceiptPanel] – meningen, rustningsraden och en rad per skadeinstans.
+## [br]• [ArcRow] – multiplikatorbågen med sin orsak (`×2 PAIR · BOTH 5`).
+## [br]• [RouteStrip] + prognosfält i HP-staplarna – vart skadan tar vägen.
+## [br]• [SlotView] med regel, räkning och varför; [DieView] med tomma socklar.
+## [br]• [HelpLayer] – "?" tänder sex callouts samtidigt.
+##
+## Allt ovan är [b]ren presentation av [code]_preview.events[/code][/b] via
+## [ChainReceipt]. [code]src/core/resolver.gd[/code] är orörd.
+##
+## [Reveal] avgör vad som finns på skärmen. Regeln (§7): ett element får bara
+## döljas när det är tomt eller overksamt i tillståndet – UI ljuger aldrig.
 
 ## En runda är resolvad, uppspelad och tillståndet är redo att sparas.
 ## [param state] är vid rundans BÖRJAN (efter [method Resolver.advance]) när
@@ -22,10 +30,11 @@ signal combat_finished(won: bool, state: CombatState)
 ## Tärningsplaceringar som lämnar slots tomma är tillåtna och ibland korrekta
 ## (GAME_DESIGN §7 fråga 4: Charge-banken kräver det).
 const ALLOW_EMPTY_SLOTS: bool = true
-## Bredden på hjältens kolumn i fiendezonen, i dp. Smulare än cellens 64 dp:
-## figuren är ~24 px bred av sina 48, och resten av cellen får gärna sticka ut
-## över parallaxen. Varje dp här tas från fiendepanelernas textbredd.
+## Bredden på hjältens kolumn i fiendezonen, i dp.
 const HERO_SLOT_WIDTH: int = 40
+## "?" pulsar en gång efter spelarens tredje runda i första striden om ingen
+## kedja ännu bekräftats – därefter aldrig igen (§6).
+const HELP_PULSE_ROUND: int = 3
 
 @onready var _hp_label: Label = $Margin/Column/TopBar/HpLabel
 @onready var _hp_bar: ProgressBar = $Margin/Column/TopBar/HpBar
@@ -33,12 +42,11 @@ const HERO_SLOT_WIDTH: int = 40
 @onready var _charge_label: Label = $Margin/Column/TopBar/ChargeLabel
 @onready var _ward_label: Label = $Margin/Column/TopBar/WardLabel
 @onready var _enemy_zone: HBoxContainer = $Margin/Column/EnemyZone
-@onready var _preview_panel: PanelContainer = $Margin/Column/PreviewPanel
-@onready var _total_label: Label = $Margin/Column/PreviewPanel/PreviewColumn/TotalLabel
-@onready var _total_caption: Label = $Margin/Column/PreviewPanel/PreviewColumn/TotalCaption
-@onready var _chain_label: Label = $Margin/Column/PreviewPanel/PreviewColumn/ChainLabel
+@onready var _column: VBoxContainer = $Margin/Column
 @onready var _slot_row: HBoxContainer = $Margin/Column/SlotRow
 @onready var _tray: HBoxContainer = $Margin/Column/Tray
+@onready var _tray_label: Label = $Margin/Column/TrayHeader/TrayLabel
+@onready var _tray_hint: Label = $Margin/Column/TrayHeader/TrayHint
 @onready var _undo_button: Button = $Margin/Column/Actions/UndoButton
 @onready var _reroll_button: Button = $Margin/Column/Actions/RerollButton
 @onready var _confirm_button: Button = $Margin/Column/Actions/ConfirmButton
@@ -47,6 +55,8 @@ const HERO_SLOT_WIDTH: int = 40
 @onready var _player: EventPlayer = $EventPlayer
 
 var state: CombatState = null
+var reveal: Reveal = null
+
 var _rng: Rng = null
 var _node: Dictionary = {}
 var _placement: PackedInt32Array = PackedInt32Array()
@@ -63,21 +73,32 @@ var _slot_views: Array[SlotView] = []
 var _die_views: Array[DieView] = []
 var _view: Dictionary = {}
 var _preview: ResolveResult = null
+var _receipt: Dictionary = {}
+var _ordinals: PackedInt32Array = PackedInt32Array()
+var _enemy_names: PackedStringArray = PackedStringArray()
 var _resolving: bool = false
-## Har rundan dragit ur den seedade strömmen sedan den startade? Sätts av
-## [method reroll]. Se [method is_safe_to_autosave].
 var _rng_moved: bool = false
 var _chain_step: int = 0
 var _pending_result: ResolveResult = null
-## Runnens största kedja hittills. Kommer från [GameController] och avgör när
-## "NEW BEST" visas.
 var _best_chain: int = 0
-## Bossintron körs. Skärmen tar ingen input under tiden.
 var _intro_active: bool = false
 var _intro_tween: Tween = null
 var _intro_nodes: Array[Node] = []
-## Röd skärmkantsblixt (skapas i [method _style], lever i FxLayer).
 var _edge: Panel = null
+
+var _receipt_panel: ReceiptPanel = null
+var _arc_row: ArcRow = null
+var _route_strip: RouteStrip = null
+var _help_layer: HelpLayer = null
+var _help_button: Button = null
+var _help_pulsed: bool = false
+var _popover: PanelContainer = null
+
+## Tutorialrummets index, eller -1. Sätter pekaren, tipset och träningshjulen.
+var _tutorial_room: int = -1
+var _tip_label: Label = null
+var _pointer: TutorialPointer = null
+var _tip_dismissed: bool = false
 
 
 func enter(ctx: Dictionary) -> void:
@@ -85,6 +106,10 @@ func enter(ctx: Dictionary) -> void:
 	_rng = ctx.get("rng", null) as Rng
 	_node = ctx.get("node", {}) as Dictionary
 	_best_chain = int(ctx.get("best_chain", 0))
+	reveal = ctx.get("reveal", null) as Reveal
+	if reveal == null:
+		reveal = Reveal.all_on()
+	_tutorial_room = int(ctx.get("tutorial_room", -1))
 	_style()
 	_undo_button.pressed.connect(undo)
 	_reroll_button.pressed.connect(reroll)
@@ -93,6 +118,7 @@ func enter(ctx: Dictionary) -> void:
 	_player.event_started.connect(_on_event)
 	_player.finished.connect(_on_playback_finished)
 	_build_room()
+	_setup_tutorial()
 	begin_round()
 	if RunFlow.is_boss(_node) and state.round_number <= 1:
 		play_boss_intro()
@@ -102,28 +128,32 @@ func _style() -> void:
 	$Margin.add_theme_constant_override("margin_left", Tokens.dpi(Tokens.SCREEN_MARGIN))
 	$Margin.add_theme_constant_override("margin_right", Tokens.dpi(Tokens.SCREEN_MARGIN))
 	$Margin.add_theme_constant_override("margin_top", Tokens.dpi(Tokens.SCREEN_MARGIN))
-	$Margin.add_theme_constant_override("margin_bottom", Tokens.dpi(Tokens.SCREEN_MARGIN))
-	$Margin/Column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
+	$Margin.add_theme_constant_override("margin_bottom", Tokens.dpi(Tokens.SPACE_2))
+	# 2 dp och inte 4: nio rader × 2 dp är 18 dp av kolumnen, och kvittot är
+	# viktigare än luften mellan raderna (§8).
+	_column.add_theme_constant_override("separation", Tokens.dpi(2))
 	_enemy_zone.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
-	_slot_row.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
-	_tray.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
+	_slot_row.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
+	_tray.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 	$Margin/Column/Actions.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
 	$Margin/Column/TopBar.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
-
-	_preview_panel.add_theme_stylebox_override("panel", Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR))
-	$Margin/Column/PreviewPanel/PreviewColumn.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
+	$Margin/Column/TrayHeader.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
 
 	# Toppfältets etiketter får INTE klippas: med clip_text blir deras minsta
 	# bredd noll, HP-baren äter hela raden och siffrorna försvinner.
-	_apply_label(_hp_label, Tokens.TYPE_CAPTION, Tokens.SEM_BLOOD, false)
-	_apply_label(_room_label, Tokens.TYPE_CAPTION, Tokens.CHALK_300, false)
-	_apply_label(_charge_label, Tokens.TYPE_CAPTION, Tokens.SEM_CHARGE, false)
-	_apply_label(_ward_label, Tokens.TYPE_CAPTION, Tokens.SEM_SHIELD, false)
-	_apply_label(_total_label, Tokens.TYPE_DISPLAY_L, Tokens.CHALK_100)
-	_apply_label(_total_caption, Tokens.TYPE_CAPTION, Tokens.CHALK_500)
-	_apply_label(_chain_label, Tokens.TYPE_LABEL, Tokens.CHALK_300)
+	# Toppfältets etiketter får INTE klippas: med clip_text blir deras minsta
+	# bredd noll, HP-baren äter hela raden och siffrorna försvinner. Priset är
+	# att deras textbredd ÄR radens minsta bredd, och raden bär nu två knappar
+	# (? och ⚙) till – därför 10 dp och inte 12.
+	_apply_label(_hp_label, Tokens.TYPE_CAPTION - 2, Tokens.SEM_BLOOD, false)
+	_apply_label(_room_label, Tokens.TYPE_CAPTION - 2, Tokens.CHALK_300, false)
+	_apply_label(_charge_label, Tokens.TYPE_CAPTION - 2, Tokens.SEM_CHARGE, false)
+	_apply_label(_ward_label, Tokens.TYPE_CAPTION - 2, Tokens.SEM_SHIELD, false)
+	_apply_label(_tray_label, Tokens.TYPE_CAPTION - 2, Tokens.CHALK_500)
+	_apply_label(_tray_hint, Tokens.TYPE_CAPTION - 2, Tokens.SEM_CHARGE, false)
+	_tray_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
-	_hp_bar.custom_minimum_size = Vector2(Tokens.dp(48), Tokens.dp(10))
+	_hp_bar.custom_minimum_size = Vector2(Tokens.dp(28), Tokens.dp(10))
 	var bar_bg: StyleBoxFlat = StyleBoxFlat.new()
 	bar_bg.bg_color = Tokens.SURFACE_RAISED
 	var bar_fill: StyleBoxFlat = StyleBoxFlat.new()
@@ -131,26 +161,25 @@ func _style() -> void:
 	_hp_bar.add_theme_stylebox_override("background", bar_bg)
 	_hp_bar.add_theme_stylebox_override("fill", bar_fill)
 
-	_style_button(_undo_button, Tokens.TYPE_LABEL, Tokens.CHALK_300, Tokens.BUTTON_SECONDARY_HEIGHT)
-	_style_button(_reroll_button, Tokens.TYPE_LABEL, Tokens.SEM_FROST, Tokens.BUTTON_SECONDARY_HEIGHT)
-	# Sekundärknapparna hålls precis över träffytans 48 dp. Varje dp de tar är
-	# en bokstav mindre på primärknappen, som måste rymma både verbet och
-	# kedjans summa på svenska ("BEKRÄFTA KEDJA · 28").
-	_undo_button.custom_minimum_size.x = Tokens.dp(Tokens.TOUCH_MIN + 20)
-	_reroll_button.custom_minimum_size.x = Tokens.dp(Tokens.TOUCH_MIN + 32)
+	_style_button(_undo_button, Tokens.TYPE_CAPTION - 2, Tokens.CHALK_300, Tokens.BUTTON_SECONDARY_HEIGHT)
+	_style_button(_reroll_button, Tokens.TYPE_CAPTION - 2, Tokens.SEM_FROST, Tokens.BUTTON_SECONDARY_HEIGHT)
+	# Varje dp här är en bokstav mindre på primärknappen, som måste rymma både
+	# verbet och kedjans summa ("CONFIRM · 28 DAMAGE").
+	_undo_button.custom_minimum_size.x = Tokens.dp(Tokens.TOUCH_MIN + 4)
+	_reroll_button.custom_minimum_size.x = Tokens.dp(Tokens.TOUCH_MIN + 16)
 	_confirm_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_style_button(_confirm_button, Tokens.TYPE_BODY, Tokens.SURFACE_PIT, Tokens.BUTTON_PRIMARY_HEIGHT)
+	_style_button(_confirm_button, Tokens.TYPE_LABEL, Tokens.SURFACE_PIT, Tokens.BUTTON_PRIMARY_HEIGHT)
 	var primary: StyleBoxFlat = Tokens.box(Tokens.CHALK_100, true, Tokens.STROKE_REG)
 	primary.bg_color = Tokens.CHALK_100
 	_confirm_button.add_theme_stylebox_override("normal", primary)
 	_confirm_button.add_theme_stylebox_override("hover", primary)
 	_confirm_button.add_theme_stylebox_override("pressed", primary)
 
-	# Krit-UI (UI_GUIDE §1A, riktning A): panelen, knapparna och den stora
-	# siffran ritas genom chalk.gdshader. Pixelkonsten inuti sloten och brickan
-	# rörs aldrig – shadern ligger på Control-noden, inte på dess barn (§8.4).
-	ChalkFx.apply(_preview_panel, ChalkFx.PANEL)
-	ChalkFx.apply(_total_label, ChalkFx.DISPLAY)
+	_build_receipt()
+	_build_arc_row()
+	_build_route_strip()
+	_build_help()
+
 	for button: Button in [_undo_button, _reroll_button, _confirm_button]:
 		ChalkFx.apply(button, ChalkFx.BUTTON)
 
@@ -171,9 +200,7 @@ func _style() -> void:
 	_fx_layer.add_child(_edge)
 	_edge.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
-	# Paus: enda vägen till inställningarna mitt i en run (UI_GUIDE §2.9,
-	# ikonknapp 48 dp). Modalen läggs ovanpå av GameController, så rundan och
-	# placeringen står kvar orörda bakom den.
+	# Paus: enda vägen till inställningarna mitt i en run (UI_GUIDE §2.9).
 	var pause_button: Button = Button.new()
 	pause_button.name = "PauseButton"
 	pause_button.text = "⚙"
@@ -185,19 +212,57 @@ func _style() -> void:
 	$Margin/Column/TopBar.add_child(pause_button)
 
 
+## Kvittot ersätter M2:s PreviewPanel: en stor siffra utan härkomst.
+func _build_receipt() -> void:
+	_receipt_panel = ReceiptPanel.new()
+	_receipt_panel.name = "Receipt"
+	_column.add_child(_receipt_panel)
+	_column.move_child(_receipt_panel, _slot_row.get_index())
+	ChalkFx.apply(_receipt_panel, ChalkFx.PANEL)
+
+
+func _build_arc_row() -> void:
+	_arc_row = ArcRow.new()
+	_arc_row.name = "ArcRow"
+	_column.add_child(_arc_row)
+	_column.move_child(_arc_row, _slot_row.get_index())
+
+
+func _build_route_strip() -> void:
+	_route_strip = RouteStrip.new()
+	_route_strip.name = "RouteStrip"
+	_column.add_child(_route_strip)
+	_column.move_child(_route_strip, _receipt_panel.get_index())
+
+
+func _build_help() -> void:
+	_help_button = Button.new()
+	_help_button.name = "HelpButton"
+	_help_button.text = Art.ui_icon_glyph(&"help")
+	_style_button(_help_button, Tokens.TYPE_BODY, Tokens.SEM_CHARGE, Tokens.TOUCH_MIN)
+	_help_button.custom_minimum_size = Vector2(Tokens.dp(Tokens.TOUCH_MIN), Tokens.dp(Tokens.TOUCH_MIN))
+	var outline: StyleBoxFlat = Tokens.box(Tokens.SEM_CHARGE, true, Tokens.STROKE_REG)
+	for state_name: String in ["normal", "hover", "pressed"]:
+		_help_button.add_theme_stylebox_override(state_name, outline)
+	_help_button.pressed.connect(open_help)
+	ChalkFx.apply(_help_button, ChalkFx.BUTTON)
+	$Margin/Column/TopBar.add_child(_help_button)
+
+	_help_layer = HelpLayer.new()
+	_help_layer.name = "HelpLayer"
+	add_child(_help_layer)
+	_help_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_help_layer.closed.connect(_on_help_closed)
+
+
 static func _apply_label(label: Label, font_size: int, color: Color, clip: bool = true) -> void:
 	label.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
 	label.add_theme_color_override("font_color", color)
-	# Utan clip_text blir textens bredd containerns minsta bredd och hela
-	# kolumnen växer utanför skärmen. Gäller inte etiketter som radbryter.
 	if clip and label.autowrap_mode == TextServer.AUTOWRAP_OFF:
 		label.clip_text = true
 
 
 static func _style_button(button: Button, font_size: int, color: Color, height: int) -> void:
-	# Samma fälla som med etiketterna: utan clip_text blir knapptextens bredd
-	# knappens minsta bredd, och raden OMKAST + ÅNGRA + BEKRÄFTA KEDJA · 28
-	# tvingar hela kolumnen bredare än skärmen.
 	button.clip_text = true
 	button.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
 	button.add_theme_color_override("font_color", color)
@@ -222,20 +287,26 @@ func _build_room() -> void:
 	_panels.clear()
 	if _hero_slot != null:
 		_hero_slot.queue_free()
-	# Smeden står till vänster om fienderna, som i mockupen. Platsen reserveras
-	# i krit-UI:t så att panelerna inte lägger sig ovanpå figuren; själva
-	# paperdollen ritas i World-lagret av CombatWorld.
 	_hero_slot = Control.new()
 	_hero_slot.name = "HeroSlot"
 	_hero_slot.custom_minimum_size = Vector2(Tokens.dp(HERO_SLOT_WIDTH), 0.0)
 	_hero_slot.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	_hero_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_enemy_zone.add_child(_hero_slot)
-	for enemy: Enemy in state.enemies:
+
+	_ordinals = ChainReceipt.ordinals(state.enemies)
+	_enemy_names = PackedStringArray()
+	var facts: Dictionary = _reveal_facts()
+	for i: int in range(state.enemies.size()):
+		var enemy: Enemy = state.enemies[i]
+		_enemy_names.append(EnemyPanel.display_name_of(enemy, _ordinals[i]))
 		var panel: EnemyPanel = EnemyPanel.new()
 		_enemy_zone.add_child(panel)
-		panel.bind(enemy)
+		panel.set_show_armor(reveal.shows("armor", facts))
+		panel.bind(enemy, _ordinals[i])
 		_panels.append(panel)
+	_route_strip.build(state.enemies.size(), Tokens.dp(HERO_SLOT_WIDTH))
+	_route_strip.visible = reveal.shows("overflow", facts)
 
 	for slot_view: SlotView in _slot_views:
 		slot_view.queue_free()
@@ -243,8 +314,10 @@ func _build_room() -> void:
 	for i: int in range(state.board.size()):
 		var slot_view: SlotView = SlotView.new()
 		_slot_row.add_child(slot_view)
+		slot_view.set_show_rules(reveal.shows("slot_types", facts))
 		slot_view.tapped.connect(_on_slot_tapped)
 		slot_view.die_dropped.connect(_on_die_dropped)
+		slot_view.held.connect(_on_slot_held)
 		_slot_views.append(slot_view)
 
 	for die_view: DieView in _die_views:
@@ -253,6 +326,7 @@ func _build_room() -> void:
 	for i: int in range(state.dice.size()):
 		var die_view: DieView = DieView.new()
 		_tray.add_child(die_view)
+		die_view.set_tray_extended(reveal.has("tray_ext"))
 		die_view.tapped.connect(_on_die_tapped)
 		_die_views.append(die_view)
 
@@ -260,6 +334,7 @@ func _build_room() -> void:
 		world.call("build", state.enemies, Tokens.dp(34))
 	# Positionerna kan först läsas när containrarna har gjort sin layout.
 	call_deferred("_sync_world")
+	call_deferred("_sync_arcs")
 
 
 func _sync_world() -> void:
@@ -268,11 +343,6 @@ func _sync_world() -> void:
 	await get_tree().process_frame
 	if world == null or not is_instance_valid(world):
 		return
-	# Bandet (parallax + golv) kan först byggas när containrarna har gjort sin
-	# layout: det är fiendezonens rect som avgör var horisonten ligger.
-	# Golvlinjen är fiendepanelernas konsthåll-underkant, inte bandets botten:
-	# fienderna ska stå PÅ golvet i det genomskinliga hålet, inte bakom
-	# kritplattan under det.
 	var floor_y: float = _enemy_zone.get_global_rect().end.y
 	if not _panels.is_empty():
 		floor_y = _panels[0].art_bottom()
@@ -281,6 +351,22 @@ func _sync_world() -> void:
 		world.call("place_hero", _hero_slot.get_global_rect().get_center())
 	for i: int in range(_panels.size()):
 		world.call("place", i, _panels[i].enemy_id, _panels[i].anchor_point())
+
+
+## Bågarna behöver slotarnas x-intervall, som finns först efter layouten.
+func _sync_arcs() -> void:
+	await get_tree().process_frame
+	if not is_instance_valid(_arc_row) or not _arc_row.is_inside_tree():
+		return
+	var spans: Array[Vector2] = []
+	var origin: float = _arc_row.get_global_rect().position.x
+	for slot_view: SlotView in _slot_views:
+		if not is_instance_valid(slot_view) or not slot_view.is_inside_tree():
+			spans.append(Vector2.ZERO)
+			continue
+		var rect: Rect2 = slot_view.get_global_rect()
+		spans.append(Vector2(rect.position.x - origin, rect.end.x - origin))
+	_arc_row.set_arcs(_receipt.get("arcs", []) as Array, spans)
 
 
 ## Förbereder en runda: tom placering, tom historik, färsk förhandsvisning.
@@ -294,6 +380,25 @@ func begin_round() -> void:
 	_tap_catcher.visible = false
 	_view = EventPlayer.view_from_state(state)
 	_refresh_all()
+	_maybe_pulse_help()
+
+
+## Tillståndets siffror som [method Reveal.may_hide] behöver. Utan dem skulle UI
+## kunna dölja en laddningsmätare som står på 7 – alltså ljuga (§7).
+func _reveal_facts() -> Dictionary:
+	var types: Array[int] = []
+	var max_armor: int = 0
+	for slot: Slot in state.board.slots:
+		types.append(slot.type)
+	for enemy: Enemy in state.enemies:
+		max_armor = maxi(max_armor, enemy.armor)
+	return {
+		"charge": state.charge,
+		"ward": state.ward,
+		"rerolls_left": state.rerolls_left,
+		"max_armor": max_armor,
+		"slot_types": types,
+	}
 
 
 func _refresh_all() -> void:
@@ -304,17 +409,30 @@ func _refresh_all() -> void:
 
 
 func _refresh_hud() -> void:
+	var facts: Dictionary = _reveal_facts()
 	_hp_label.text = "◖ %d/%d" % [state.player_hp, state.player_max_hp]
 	_hp_bar.max_value = maxi(1, state.player_max_hp)
 	_hp_bar.value = clampi(state.player_hp, 0, state.player_max_hp)
 	var room_key: String = "COMBAT_BOSS_ROUND" if RunFlow.is_boss(_node) else "COMBAT_ROOM_ROUND"
 	_room_label.text = tr(room_key) % [int(_node.get("room", 1)), state.round_number]
-	_charge_label.text = "⬤%d/%d" % [state.charge, Rules.CHARGE_CAP]
-	_ward_label.text = "⬟ %d" % state.ward
-	_total_caption.text = tr("COMBAT_TOTAL_CAPTION") % state.dice.size()
+
+	# Laddningen med ORD och enhet. "⬤0/20" var skärmens mest obegripliga
+	# element (§1.1 rad 4, betyg 1/10).
+	_charge_label.visible = reveal.shows("charge", facts)
+	_charge_label.text = "%s %s" % [
+		Art.ui_icon_glyph(&"charge"),
+		Tokens.translate_or("COMBAT_CHARGE_PILL", "Charge %d") % state.charge,
+	]
+	# Ward har ingen egen lärkurveflagga: pillret finns bara när det betyder
+	# något, dvs. när spelaren har Ward eller en VOID-slot som kan ge det (§7).
+	_ward_label.visible = state.ward > 0 or (facts["slot_types"] as Array).has(Rules.SlotType.VOID)
+	_ward_label.text = Tokens.translate_or("COMBAT_WARD_PILL", "Ward %d") % state.ward
+
+	_reroll_button.visible = reveal.shows("reroll", facts)
 	_reroll_button.text = tr("COMBAT_REROLL") % state.rerolls_left
 	_undo_button.text = tr("COMBAT_UNDO")
-	_reroll_button.disabled = _resolving or not Reroll.can_afford(state) or Reroll.rerollable_indices(state, _placement, _locked_ids).is_empty()
+	_reroll_button.disabled = _resolving or not Reroll.can_afford(state) \
+		or Reroll.rerollable_indices(state, _placement, _locked_ids).is_empty()
 	_undo_button.disabled = _resolving or _history.is_empty()
 
 
@@ -324,7 +442,7 @@ func _refresh_slots() -> void:
 		if _placement[i] >= 0:
 			die = state.dice[_placement[i]]
 		_slot_views[i].bind(i, state.board.slots[i], die)
-		_slot_views[i].set_highlight(_selected_die >= 0 and state.board.slots[i].blocked == false)
+		_slot_views[i].set_highlight(_selected_die >= 0 and not state.board.slots[i].blocked)
 
 
 func _refresh_tray() -> void:
@@ -336,42 +454,53 @@ func _refresh_tray() -> void:
 		_die_views[i].bind(i, state.dice[i], slot_of_die, state.stolen.has(state.dice[i].id))
 		_die_views[i].set_selected(i == _selected_die)
 
+	# Brickans rubrik bär den enda kvarvarande siffran som behövde en
+	# förklaring: "1 left = +4 charge" förklarar Laddning första gången
+	# spelaren ser den, utan tooltip (§4).
+	_tray_label.text = Tokens.translate_or("COMBAT_TRAY_TITLE", "THE TRAY")
+	var unplaced: Array[int] = state.unplaced_die_indices(_placement)
+	var banked: int = 0
+	for index: int in unplaced:
+		var face: Face = state.dice[index].showing_face()
+		if face != null:
+			banked += face.value
+	var facts: Dictionary = _reveal_facts()
+	_tray_hint.visible = reveal.shows("charge", facts) and not unplaced.is_empty()
+	_tray_hint.text = Tokens.translate_or("COMBAT_TRAY_LEFT", "%d left = +%d charge") % [unplaced.size(), banked]
+
 
 ## Kör hela resolvern på en kopia och visar dess exakta utfall.
 func _refresh_preview() -> void:
 	_preview = Resolver.resolve(state, _placement)
-	var values: Array = []
-	var occupied: Array = []
-	var multipliers: Array = []
-	multipliers.resize(state.board.size())
-	multipliers.fill(1)
+	_receipt = ChainReceipt.build(_preview.events, state.enemies, state.board)
+	var facts: Dictionary = _reveal_facts()
+	var show_armor: bool = reveal.shows("armor", facts)
 
-	for event: Dictionary in _preview.events:
-		match String(event.get("t", "")):
-			"value_pass_done":
-				values = event.get("values", []) as Array
-				occupied = event.get("occupied", []) as Array
-			"combo_formed":
-				for slot_value: Variant in event.get("slots", []) as Array:
-					multipliers[int(slot_value)] = int(event.get("multiplier", 1))
-			"house_bonus":
-				var after: Array = event.get("multipliers_after", []) as Array
-				for i: int in range(mini(after.size(), multipliers.size())):
-					multipliers[i] = int(after[i])
+	# Per slot: hela räknestycket, inte halva (§2.4).
+	var slots: Array = _receipt["slots"] as Array
+	for i: int in range(mini(_slot_views.size(), slots.size())):
+		var slot: Dictionary = slots[i] as Dictionary
+		_slot_views[i].set_calculation(
+			calc_text(slot),
+			why_text(slot),
+			int(slot["multiplier"]),
+			String(slot["outcome"]) == ChainReceipt.OUT_FIZZLE)
 
-	for i: int in range(_slot_views.size()):
-		var value: int = int(values[i]) if i < values.size() else 0
-		var is_occupied: bool = bool(occupied[i]) if i < occupied.size() else false
-		_slot_views[i].set_preview(value, int(multipliers[i]), is_occupied)
+	_receipt_panel.set_header(Tokens.translate_or("COMBAT_RECEIPT_HEADER",
+		"ROUND %d · THE CHAIN BEFORE YOU CONFIRM") % state.round_number)
+	_receipt_panel.show_receipt(_receipt, _enemy_names, show_armor)
 
-	var total: int = MetaScore.chain_damage(_preview.events)
-	_total_label.text = str(total)
-	_total_label.add_theme_color_override("font_color", Tokens.CHALK_100 if total > 0 else Tokens.CHALK_500)
-	_chain_label.text = chain_text(_preview.events, state.enemies)
-	# Förhandsvisningen står färdigskriven; det är UPPSPELNINGEN som drar
-	# strecken (se _draw_chain_text).
-	_chain_label.visible_ratio = 1.0
+	if _route_strip.visible:
+		_route_strip.show_routes(_receipt["routes"] as Array)
+	# Prognosfältet i HP-stapeln: den enda "vem dör"-signalen som fungerar utan
+	# färgseende (§2.2 punkt 2).
+	var routes: Array = _receipt["routes"] as Array
+	for i: int in range(mini(_panels.size(), routes.size())):
+		_panels[i].set_forecast(int((routes[i] as Dictionary)["damage"]))
 
+	_sync_arcs()
+
+	var total: int = int(_receipt["damage"])
 	var placed: int = 0
 	for i: int in range(_placement.size()):
 		if _placement[i] >= 0:
@@ -382,38 +511,231 @@ func _refresh_preview() -> void:
 	if placed == 0 and ALLOW_EMPTY_SLOTS:
 		_confirm_button.text = tr("COMBAT_CONFIRM_EMPTY")
 	else:
-		_confirm_button.text = tr("COMBAT_CONFIRM_CHAIN") % total
+		# Siffran på knappen och TOTAL i kvittot är samma tal, alltid (§B.3).
+		_confirm_button.text = Tokens.translate_or("COMBAT_CONFIRM_DAMAGE", "CONFIRM · %d DAMAGE") % total
 
 
-## Kedjetexten under totalen, som i wireframen:
-## [code]34 → Grottråtta ↳ 14 överflöd → Vrakvakt[/code].
-## Ett nytt segment per skadeinstans; samma slot två gånger i rad = överflöd.
-static func chain_text(events: Array[Dictionary], enemies: Array[Enemy]) -> String:
-	var names: Dictionary = {}
-	for enemy: Enemy in enemies:
-		names[enemy.id] = Tokens.translate_or(Content.enemy_key(enemy.id), enemy.display_name)
+## [code]bas ×mult = resultat[/code]. Aldrig [code]= x[/code] utan härkomst och
+## aldrig [code]5 ×2[/code] utan produkt (§B.1 punkt 3).
+static func calc_text(slot: Dictionary) -> String:
+	if not bool(slot["occupied"]):
+		return ""
+	var value: int = int(slot["value"])
+	var multiplier: int = int(slot["multiplier"])
+	var amount: int = int(slot["amount"])
+	if slot.has("copies_from"):
+		# Spegeln skriver ut pilen i räkningen också: "←5 ×2 = 10". Utan den
+		# ser talet ut som ett fel när tärningen visar 1 (§B.1 punkt 2).
+		return Tokens.translate_or("COMBAT_SLOT_MATH_MIRROR", "←%d ×%d = %d") % [value, multiplier, amount]
+	if multiplier > 1:
+		return Tokens.translate_or("COMBAT_SLOT_MATH", "%d ×%d = %d") % [value, multiplier, amount]
+	return Tokens.translate_or("COMBAT_SLOT_MATH_PLAIN", "= %d") % amount
 
-	var segments: PackedStringArray = PackedStringArray()
-	var previous_slot: int = -99
-	for event: Dictionary in events:
-		if String(event.get("t", "")) != "damage_dealt":
-			continue
-		var amount: int = int(event.get("amount", 0))
-		if amount <= 0:
-			continue
-		var target: String = String(names.get(String(event.get("target", "")), event.get("target", "")))
-		var slot: int = int(event.get("slot", -1))
-		if slot == previous_slot:
-			segments.append(Tokens.translate("COMBAT_CHAIN_OVERFLOW") % [amount, target])
-		else:
-			segments.append(Tokens.translate("COMBAT_CHAIN_HIT") % [amount, target])
-		previous_slot = slot
-		if segments.size() >= 3:
-			segments.append("…")
-			break
-	if segments.is_empty():
-		return Tokens.translate("COMBAT_CHAIN_EMPTY")
-	return " ".join(segments)
+
+## Slotens "varför"-rad. Orsakskoden kommer ur [ChainReceipt]; prosan bor här.
+static func why_text(slot: Dictionary) -> String:
+	var args: Array = slot["why_args"] as Array
+	match String(slot["why"]):
+		ChainReceipt.WHY_PAIR_WITH:
+			return Tokens.translate_or("COMBAT_WHY_PAIR_WITH", "pair with %d") % int(args[0])
+		ChainReceipt.WHY_COPY_OF:
+			return Tokens.translate_or("COMBAT_WHY_COPY_OF", "copy of %d") % int(args[0])
+		ChainReceipt.WHY_NO_LEFT:
+			return Tokens.translate_or("COMBAT_WHY_NO_LEFT", "no neighbour")
+		ChainReceipt.WHY_LEFT_EMPTY:
+			return Tokens.translate_or("COMBAT_WHY_LEFT_EMPTY", "left is empty")
+		ChainReceipt.WHY_ANVIL_OK:
+			return Tokens.translate_or("COMBAT_WHY_ANVIL_OK", "%d is 5+") % int(args[0])
+		ChainReceipt.WHY_ANVIL_LOW:
+			# slot_modifier_failed SOM SYNLIG TEXT (§2.4). Utan den lär sig
+			# spelaren aldrig Ambossens tröskel.
+			return Tokens.translate_or("COMBAT_WHY_ANVIL_LOW", "too low")
+		ChainReceipt.WHY_BURN:
+			return Tokens.translate_or("COMBAT_WHY_BURN", "+ burn %d") % int(args[0])
+		ChainReceipt.WHY_TO_WARD:
+			return Tokens.translate_or("COMBAT_WHY_TO_WARD", "→ ward")
+		ChainReceipt.WHY_TO_CHARGE:
+			return Tokens.translate_or("COMBAT_WHY_TO_CHARGE", "→ charge")
+		ChainReceipt.WHY_CHARGE_PLUS:
+			return Tokens.translate_or("COMBAT_WHY_CHARGE_PLUS", "charge +%d") % int(args[0])
+	return ""
+
+
+# ---------------------------------------------------------------------------
+# Hjälp-lagret och långtryck
+# ---------------------------------------------------------------------------
+
+## Ankarna som [HelpLayer] pekar på. Ett dolt element hoppas över, så lagret
+## kan aldrig peka på ett tomt hål.
+func pointer_anchors() -> Dictionary:
+	var anchors: Dictionary = {
+		"charge": _charge_label,
+		"receipt": _receipt_panel,
+		"enemies": _enemy_zone,
+		"board": _slot_row,
+		"arcs": _arc_row,
+		"routes": _route_strip,
+		"tray": _tray,
+		"confirm": _confirm_button,
+	}
+	for i: int in range(_slot_views.size()):
+		anchors["slot_%d" % i] = _slot_views[i]
+	return anchors
+
+
+func open_help() -> void:
+	Juice.ui_tap(1.0)
+	if _player.is_playing():
+		# §6: öppnas lagret under uppspelning pausas den på nuvarande event.
+		_player.set_process(false)
+	_help_layer.show_for(pointer_anchors())
+
+
+func _on_help_closed() -> void:
+	if _pending_result != null:
+		_player.set_process(true)
+
+
+func _maybe_pulse_help() -> void:
+	if _help_pulsed or _tutorial_room >= 0:
+		return
+	if state.round_number < HELP_PULSE_ROUND or int(_node.get("room", 1)) != 1:
+		return
+	_help_pulsed = true
+	# Opacitet, inte skala (§6), och exakt en gång.
+	var tween: Tween = create_tween()
+	tween.tween_property(_help_button, "modulate:a", 0.35, 0.3)
+	tween.tween_property(_help_button, "modulate:a", 1.0, 0.3)
+
+
+## Långtryck på en slot: en mening, ett exempel (§3 och §B.4).
+func _on_slot_held(slot_index: int) -> void:
+	if slot_index < 0 or slot_index >= _slot_views.size():
+		return
+	_show_popover(_slot_views[slot_index], SlotView.help_text(_slot_views[slot_index].slot_type()))
+
+
+func _show_popover(anchor: Control, text: String) -> void:
+	_hide_popover()
+	var card: PanelContainer = PanelContainer.new()
+	var style: StyleBoxFlat = Tokens.box(Tokens.SEM_CHARGE, true, Tokens.STROKE_REG)
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.92)
+	card.add_theme_stylebox_override("panel", style)
+	card.mouse_filter = Control.MOUSE_FILTER_STOP
+	var label: Label = Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.custom_minimum_size = Vector2(Tokens.dp(280), 0.0)
+	label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY))
+	label.add_theme_color_override("font_color", Tokens.CHALK_100)
+	card.add_child(label)
+	_fx_layer.add_child(card)
+	_popover = card
+	await get_tree().process_frame
+	if not is_instance_valid(card) or not is_instance_valid(anchor):
+		return
+	var card_size: Vector2 = card.get_combined_minimum_size()
+	var rect: Rect2 = anchor.get_global_rect()
+	card.position = Vector2(
+		clampf(rect.get_center().x - card_size.x * 0.5, Tokens.dp(8), size.x - card_size.x - Tokens.dp(8)),
+		maxf(Tokens.dp(8), rect.position.y - card_size.y - Tokens.dp(8)))
+	card.size = card_size
+
+
+func _hide_popover() -> void:
+	if _popover != null and is_instance_valid(_popover):
+		_popover.queue_free()
+	_popover = null
+
+
+# ---------------------------------------------------------------------------
+# Tutorialens pekare och tips
+# ---------------------------------------------------------------------------
+
+## Kritpilen som pekar på rätt element per rum. Den är en [Sprite2D] när
+## UI-agentens [code]ui/tutorial_pointer.png[/code] finns, annars en ritad
+## triangel – aldrig ett tomt hål (briefen: placeholder + varning, aldrig krasch).
+class TutorialPointer:
+	extends Control
+
+	var target: Control = null
+	var _sprite: Sprite2D = null
+
+	func _init() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var texture: Texture2D = Art.ui_icon(&"pointer")
+		if texture != null:
+			_sprite = Art.pixel_sprite(texture, Art.ICON_SCALE)
+			add_child(_sprite)
+
+	func point_at(node: Control) -> void:
+		target = node
+		set_process(true)
+
+	func _process(_delta: float) -> void:
+		if target == null or not is_instance_valid(target) or not target.is_inside_tree() or not target.visible:
+			visible = false
+			return
+		visible = true
+		var rect: Rect2 = target.get_global_rect()
+		position = Vector2(rect.get_center().x, rect.position.y - Tokens.dp(14))
+		if _sprite == null:
+			queue_redraw()
+
+	func _draw() -> void:
+		if _sprite != null:
+			return
+		var w: float = Tokens.dp(9)
+		var h: float = Tokens.dp(11)
+		draw_colored_polygon(PackedVector2Array([
+			Vector2(0.0, h), Vector2(-w, 0.0), Vector2(w, 0.0),
+		]), Tokens.SEM_CHARGE)
+
+
+func _setup_tutorial() -> void:
+	if _tutorial_room < 0:
+		return
+	var tip: Dictionary = Tutorial.tip_for(_tutorial_room)
+	if tip.is_empty():
+		return
+	_tip_label = Label.new()
+	_tip_label.name = "TutorialTip"
+	_tip_label.text = Tokens.translate_or(String(tip["key"]), String(tip["en"]))
+	_tip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_tip_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_tip_label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY))
+	_tip_label.add_theme_color_override("font_color", Tokens.SEM_CHARGE)
+	_tip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_column.add_child(_tip_label)
+	_column.move_child(_tip_label, _receipt_panel.get_index())
+
+	_pointer = TutorialPointer.new()
+	_pointer.name = "TutorialPointer"
+	_fx_layer.add_child(_pointer)
+	call_deferred("_aim_pointer", String(tip["point_at"]))
+
+
+func _aim_pointer(anchor_name: String) -> void:
+	await get_tree().process_frame
+	if _pointer == null or not is_instance_valid(_pointer):
+		return
+	var anchor: Control = pointer_anchors().get(anchor_name, null) as Control
+	if anchor == null:
+		push_warning("CombatScreen: tutorialen pekar på '%s' som inte finns" % anchor_name)
+		_pointer.visible = false
+		return
+	_pointer.point_at(anchor)
+
+
+## Tipset försvinner vid handling (§B.2: "max en mening, försvinner vid handling").
+func _dismiss_tip() -> void:
+	if _tip_dismissed or _tip_label == null or not is_instance_valid(_tip_label):
+		return
+	_tip_dismissed = true
+	_tip_label.visible = false
+	if _pointer != null and is_instance_valid(_pointer):
+		_pointer.visible = false
+		_pointer.set_process(false)
 
 
 # ---------------------------------------------------------------------------
@@ -465,6 +787,8 @@ func clear_slot(slot_index: int) -> void:
 
 func _after_placement_changed() -> void:
 	_selected_die = -1
+	_dismiss_tip()
+	_hide_popover()
 	_refresh_all()
 
 
@@ -482,6 +806,10 @@ func reroll() -> void:
 	if _resolving or not Reroll.can_afford(state):
 		return
 	state = Reroll.apply(state, _placement, _rng, _locked_ids)
+	# Tutorialens tärningar är fasta: ett omkast får inte bryta lektionen, så
+	# värdena skrivs tillbaka. (Strömmen har ändå rullat; se force_dice.)
+	if _tutorial_room >= 0:
+		Tutorial.force_dice(state, _tutorial_room)
 	_rng_moved = true
 	_view = EventPlayer.view_from_state(state)
 	_refresh_all()
@@ -492,12 +820,14 @@ func reroll() -> void:
 func _on_die_tapped(die_index: int) -> void:
 	if _resolving:
 		return
-	# Tapp på en placerad tärning plockar tillbaka den (UI_GUIDE §4.3).
+	# Tapp på en placerad tärning (eller dess tomma sockel) plockar tillbaka
+	# den (§4: "tapp på sockeln är i dag odefinierat").
 	for i: int in range(_placement.size()):
 		if _placement[i] == die_index:
 			clear_slot(i)
 			return
 	_selected_die = -1 if _selected_die == die_index else die_index
+	_dismiss_tip()
 	_refresh_all()
 
 
@@ -530,6 +860,8 @@ func confirm() -> void:
 	_resolving = true
 	_chain_step = 0
 	_selected_die = -1
+	_dismiss_tip()
+	_hide_popover()
 	_tap_catcher.visible = true
 	_confirm_button.disabled = true
 	_undo_button.disabled = true
@@ -537,18 +869,7 @@ func confirm() -> void:
 	Juice.ui_tap(0.9)
 	Juice.haptic(Haptics.Level.MEDIUM)
 	_pending_result = result
-	_draw_chain_text(_player.play(result.events))
-
-
-## Kedjetexten "dras" med kritan vänster→höger medan kedjan spelas upp
-## (UI_GUIDE §1A: strecken ritas ut i realtid, designprincip 2 – synlig
-## kausalitet). [param timeline_ms] är uppspelningens längd, så texten är
-## färdigdragen ungefär när sista slaget landar.
-func _draw_chain_text(timeline_ms: int) -> void:
-	var seconds: float = clampf(float(timeline_ms) / 1000.0 * 0.6, 0.2, 1.2)
-	_chain_label.visible_ratio = 0.0
-	var tween: Tween = _chain_label.create_tween()
-	tween.tween_property(_chain_label, "visible_ratio", 1.0, seconds)
+	_player.play(result.events)
 
 
 func _on_tap_during_playback(event: InputEvent) -> void:
@@ -566,23 +887,14 @@ func skip_playback() -> void:
 		_player.skip_to_end()
 
 
-## True medan skärmen inte tar emot spelbeslut: under uppspelning ELLER under
-## bossintrot. Rökprovet väntar på den här.
+## True medan skärmen inte tar emot spelbeslut.
 func is_resolving() -> bool:
 	return _resolving or _intro_active
 
 
 ## Får [GameController] skriva sparfilen medan den HÄR skärmen står framme?
-##
-## Sparfilen innehåller stridsläget [member state] som det såg ut när rundan
-## började, plus slumpströmmens position. De två måste höra ihop. Så fort
-## rundan har dragit ett omkast, eller är mitt i sin uppspelning, har strömmen
-## rullat vidare utan att det sparade läget följt med – en återupptagning
-## skulle då få ett annat kast än den som pausades (GAME_DESIGN §1: aldrig
-## spara mitt i en kedja).
-##
-## Placeringar räknas inte: de rör inte strömmen, och att tappa dem när appen
-## dödas i bakgrunden är det förväntade priset.
+## Se den långa noten i ARCHITECTURE: stridsläget och slumpströmmens position
+## måste höra ihop, och ett omkast har redan rullat strömmen vidare.
 func is_safe_to_autosave() -> bool:
 	return not _resolving and not _rng_moved
 
@@ -601,9 +913,6 @@ func _open_settings() -> void:
 # Bossintro (UI_GUIDE §3: "ögonblicket innan")
 # ---------------------------------------------------------------------------
 
-## Namnskylt + kort mörkläggning, högst [constant BOSS_INTRO_MS] ms, och den
-## går alltid att tappa bort. Intron ändrar ingenting i striden: den är helt och
-## hållet presentation och kan hoppas över utan att ett event går förlorat.
 const BOSS_INTRO_MS: int = 1200
 
 
@@ -660,8 +969,6 @@ func _end_boss_intro() -> void:
 	_refresh_all()
 
 
-## Tapp under intron hoppar direkt till striden (UI_GUIDE §5.9-principen:
-## ett tapp ska alltid göra spelet snabbare, aldrig ingenting).
 func skip_boss_intro() -> void:
 	if _intro_active:
 		_end_boss_intro()
@@ -675,8 +982,7 @@ func _boss_name() -> String:
 
 
 ## Det VISUELLA för ett event. Ljud, haptik, hit-stop och skärmskak spelas av
-## [EventPlayer] själv ur [method EventPlayer.feedback] – den delen av specen är
-## nodoberoende och hör inte hemma i en skärm.
+## [EventPlayer] själv ur [method EventPlayer.feedback].
 func _on_event(event: Dictionary, duration: float) -> void:
 	EventPlayer.apply_event(_view, event)
 	_apply_view_to_panels()
@@ -685,8 +991,6 @@ func _on_event(event: Dictionary, duration: float) -> void:
 		"die_activated":
 			var slot: int = int(event.get("slot", 0))
 			if slot < _slot_views.size():
-				# Pulsen ligger på den riktiga tärningssprajten i sloten och i
-				# brickan, inte på en platshållarruta (UI_GUIDE §5.1).
 				_slot_views[slot].pulse_die(maxf(0.08, duration))
 			var die_index: int = _placement[slot] if slot < _placement.size() else -1
 			if die_index >= 0 and die_index < _die_views.size():
@@ -699,12 +1003,10 @@ func _on_event(event: Dictionary, duration: float) -> void:
 				var index: int = int(slot_value)
 				if index < _slot_views.size():
 					Juice.blink(_slot_views[index], Tokens.multiplier_color(multiplier), 0.26)
-			# Badgen växer med multiplikatorn (UI_GUIDE §2.5: 24/28/34/40 dp) och
-			# siffran står alltid utskriven, så färgen är dekor (§6.2).
-			_pop(_preview_panel, "×%d %s" % [multiplier, String(event.get("kind", ""))],
+			_pop(_arc_row, "×%d %s" % [multiplier, String(event.get("kind", ""))],
 				Tokens.multiplier_color(multiplier), Tokens.multiplier_size(multiplier))
 		"house_bonus":
-			_pop(_preview_panel, tr("COMBAT_HOUSE") % int(event.get("factor", 2)), Tokens.SEM_CHARGE, Tokens.TYPE_DISPLAY_L)
+			_pop(_arc_row, tr("COMBAT_HOUSE") % int(event.get("factor", 2)), Tokens.SEM_CHARGE, Tokens.TYPE_DISPLAY_L)
 		"damage_dealt":
 			_on_damage(event)
 		"enemy_killed":
@@ -716,9 +1018,9 @@ func _on_event(event: Dictionary, duration: float) -> void:
 					if actor != null:
 						actor.death_reaction()
 		"ward_gained":
-			_pop(_ward_label, "+%d ⬟" % int(event.get("amount", 0)), Tokens.SEM_SHIELD, Tokens.TYPE_TITLE)
+			_pop(_ward_label, "+%d" % int(event.get("amount", 0)), Tokens.SEM_SHIELD, Tokens.TYPE_TITLE)
 		"charge_stored":
-			_pop(_charge_label, "+%d ⬤" % int(event.get("amount", 0)), Tokens.SEM_CHARGE, Tokens.TYPE_HEADING)
+			_pop(_charge_label, "+%d" % int(event.get("amount", 0)), Tokens.SEM_CHARGE, Tokens.TYPE_HEADING)
 			_charge_glow()
 		"charge_applied":
 			_pop(_charge_label, tr("COMBAT_CHARGE_SPENT") % int(event.get("amount", 0)), Tokens.SEM_CHARGE, Tokens.TYPE_TITLE)
@@ -742,10 +1044,8 @@ func _on_event(event: Dictionary, duration: float) -> void:
 			_check_record()
 
 
-## Sprickan, UI_GUIDE §5.6: ett medvetet mönsterbrott. Ordet ligger kvar,
-## sloten blixtrar och [EventPlayer] har redan lagt hit-stop och skak på den.
 func _on_die_cracked(event: Dictionary) -> void:
-	_pop(_preview_panel, tr("COMBAT_DIE_CRACKED"), Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_L)
+	_pop(_receipt_panel, tr("COMBAT_DIE_CRACKED"), Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_L)
 	var die_id: String = String(event.get("die_id", ""))
 	for i: int in range(_placement.size()):
 		var die_index: int = _placement[i]
@@ -760,8 +1060,6 @@ func _on_die_cracked(event: Dictionary) -> void:
 			_die_views[die_index].pulse_art(0.3)
 
 
-## Skärmkantens röda blixt när spelaren tar skada (UI_GUIDE §5: fiendens svar
-## ska kännas på kroppen även om man inte tittar på HP-siffran).
 func _edge_flash(color: Color) -> void:
 	if _edge == null:
 		return
@@ -772,15 +1070,11 @@ func _edge_flash(color: Color) -> void:
 	tween.tween_callback(func() -> void: _edge.visible = false)
 
 
-## Laddningsräknaren lyser upp när ögon bankas (UI_GUIDE §5.4).
 func _charge_glow() -> void:
 	Juice.blink(_charge_label, Tokens.SEM_CHARGE, Tokens.MOTION_BASE)
 	Juice.pulse(_charge_label, 1.2, Tokens.MOTION_QUICK)
 
 
-## "NEW BEST" när rundans kedja slår runnens rekord. Rekordet kommer från
-## [GameController] (det gäller hela runnen, inte striden) och uppdateras här
-## lokalt så att två rekordrundor i rad inte båda firas.
 func _check_record() -> void:
 	if _pending_result == null:
 		return
@@ -788,16 +1082,11 @@ func _check_record() -> void:
 	if chain <= 0 or chain <= _best_chain:
 		return
 	_best_chain = chain
-	_pop(_total_label, Tokens.translate_or("COMBAT_NEW_BEST", "NEW BEST"), Tokens.SEM_CHARGE, Tokens.TYPE_DISPLAY_L)
-	# Extra tonhöjd: rekordet ska höras över kedjans egen stegring.
-	# Ingen egen rekord-cue i registret: kåkens klang en kvint över kedjans tak.
+	_pop(_receipt_panel, Tokens.translate_or("COMBAT_NEW_BEST", "NEW BEST"), Tokens.SEM_CHARGE, Tokens.TYPE_DISPLAY_L)
 	Juice.sfx(EventPlayer.SFX_COMBO_HOUSE, 1.6)
 	Juice.haptic(Haptics.Level.HEAVY)
 
 
-## Smeden svingar när en tärning aktiveras. [method HeroFigure.strike] lägger
-## kontakten 180 ms in, vilket sammanfaller med kedjestegets damage_dealt
-## (PAPERDOLL §4, "Tidsbudget mot kedjan").
 func _swing_hero() -> void:
 	var figure: HeroFigure = _hero()
 	if figure != null:
@@ -816,6 +1105,8 @@ func _hero() -> HeroFigure:
 	return world.get("hero") as HeroFigure
 
 
+## ARMOR-poppen behålls, men den kommer nu EFTER att räknestycket redan visat
+## samma avdrag: poppen blir en bekräftelse, inte en nyhet (§5).
 func _on_damage(event: Dictionary) -> void:
 	var target_id: String = String(event.get("target", ""))
 	var index: int = _panel_index_for(target_id, false)
@@ -825,12 +1116,9 @@ func _on_damage(event: Dictionary) -> void:
 	if index >= 0:
 		_panels[index].flash_hit()
 		if Settings.reduced_motion:
-			# Ersätter pixelsprajtens vita blixt (UI_GUIDE §12.6), samma 60 ms.
 			Juice.outline(_panels[index], Tokens.SEM_DAMAGE, 60)
 		var text: String = str(amount)
 		var color: Color = Tokens.SEM_DAMAGE
-		# Siffran är display-xl (UI_GUIDE §5.3), men ORD är det inte: "ARMOR 2"
-		# i 56 dp är bredare än skärmen och säger mindre än en siffra.
 		var font_size: int = Tokens.TYPE_DISPLAY_XL
 		if amount == 0 and blocked > 0:
 			text = tr("COMBAT_ARMOR_BLOCKED") % blocked
@@ -847,9 +1135,6 @@ func _on_damage(event: Dictionary) -> void:
 		_overflow_arrow(index, overflow)
 
 
-## Överflödet, UI_GUIDE §5.3: en pil från det fulla målet till nästa levande,
-## med det KVARVARANDE värdet i överflödsfärgen. Pilen förklarar sig själv
-## första gången (§7: "överflöd lärs ut av kritpilen").
 func _overflow_arrow(from_index: int, amount: int) -> void:
 	var next_index: int = -1
 	var enemies: Array = _view.get("enemies", []) as Array
@@ -859,12 +1144,10 @@ func _overflow_arrow(from_index: int, amount: int) -> void:
 		if int((enemies[i] as Dictionary).get("hp", 0)) > 0:
 			next_index = i
 			break
-	var anchor: Control = _panels[next_index] if next_index >= 0 and next_index < _panels.size() else _preview_panel
-	_pop(anchor, "↳ %d" % amount, Tokens.SEM_OVERFLOW, Tokens.TYPE_TITLE)
+	var anchor: Control = _panels[next_index] if next_index >= 0 and next_index < _panels.size() else _receipt_panel
+	_pop(anchor, "%s %d" % [Art.ui_icon_glyph(&"overflow"), amount], Tokens.SEM_OVERFLOW, Tokens.TYPE_TITLE)
 
 
-## Panelindex för ett fiende-id. [param already_dead] väljer den första döda i
-## stället för den första levande – se [method EventPlayer.target_index].
 func _panel_index_for(enemy_id: String, already_dead: bool) -> int:
 	var enemies: Array = _view.get("enemies", []) as Array
 	if already_dead:
@@ -898,8 +1181,11 @@ func _apply_view_to_panels() -> void:
 				actor.set_alive(false)
 	_hp_label.text = "◖ %d/%d" % [int(_view.get("player_hp", 0)), state.player_max_hp]
 	_hp_bar.value = clampi(int(_view.get("player_hp", 0)), 0, state.player_max_hp)
-	_charge_label.text = "⬤%d/%d" % [int(_view.get("charge", 0)), Rules.CHARGE_CAP]
-	_ward_label.text = "⬟ %d" % int(_view.get("ward", 0))
+	_charge_label.text = "%s %s" % [
+		Art.ui_icon_glyph(&"charge"),
+		Tokens.translate_or("COMBAT_CHARGE_PILL", "Charge %d") % int(_view.get("charge", 0)),
+	]
+	_ward_label.text = Tokens.translate_or("COMBAT_WARD_PILL", "Ward %d") % int(_view.get("ward", 0))
 
 
 func _on_playback_finished() -> void:
@@ -910,6 +1196,15 @@ func _on_playback_finished() -> void:
 	_tap_catcher.visible = false
 	state = result.state_after
 
+	# Träningshjulen i våning 0: spelaren kan inte dö, och vi säger det rakt ut
+	# (§B.2). Att ljuga om det vore värre än att dö.
+	if state.player_dead and _tutorial_room >= 0:
+		state.player_dead = false
+		state.player_hp = Tutorial.REVIVE_HP
+		var line: Array[String] = Tutorial.cart_line()
+		_pop(_hp_label, Tokens.translate_or(line[0], line[1]), Tokens.SEM_HEAL, Tokens.TYPE_BODY)
+		_view = EventPlayer.view_from_state(state)
+
 	if state.player_dead:
 		round_finished.emit(state, result)
 		combat_finished.emit(false, state)
@@ -919,8 +1214,19 @@ func _on_playback_finished() -> void:
 		combat_finished.emit(true, state)
 		return
 
-	# All slump för nästa runda dras här, FÖRE nästa bekräftelse (§6.4), och
-	# autosaven skrivs på den nya rundans början.
+	# All slump för nästa runda dras här, FÖRE nästa bekräftelse (§6.4).
 	state = Resolver.advance(state, _rng)
+	if _tutorial_room >= 0:
+		Tutorial.force_dice(state, _tutorial_room)
+		Tutorial.apply_limits(state, _tutorial_room)
+		Tutorial.apply_intents(state, _tutorial_room)
 	round_finished.emit(state, result)
+	_refresh_room_bindings()
 	begin_round()
+
+
+## Fiendepanelerna binds om efter en runda: intents har bytts av
+## [method Resolver.advance] och måste läsas om.
+func _refresh_room_bindings() -> void:
+	for i: int in range(mini(_panels.size(), state.enemies.size())):
+		_panels[i].bind(state.enemies[i], _ordinals[i] if i < _ordinals.size() else 0)

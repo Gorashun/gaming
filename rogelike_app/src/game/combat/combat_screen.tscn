@@ -47,45 +47,33 @@ text = "ROOM 1"
 
 [node name="ChargeLabel" type="Label" parent="Margin/Column/TopBar"]
 layout_mode = 2
-text = "⬤ 0"
+text = "Charge 0"
 
 [node name="WardLabel" type="Label" parent="Margin/Column/TopBar"]
 layout_mode = 2
-text = "⬟ 0"
+text = "Ward 0"
 
 [node name="EnemyZone" type="HBoxContainer" parent="Margin/Column"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 1
 
-[node name="PreviewPanel" type="PanelContainer" parent="Margin/Column"]
-layout_mode = 2
-mouse_filter = 1
-
-[node name="PreviewColumn" type="VBoxContainer" parent="Margin/Column/PreviewPanel"]
-layout_mode = 2
-mouse_filter = 1
-
-[node name="TotalLabel" type="Label" parent="Margin/Column/PreviewPanel/PreviewColumn"]
-layout_mode = 2
-text = "0"
-horizontal_alignment = 1
-
-[node name="TotalCaption" type="Label" parent="Margin/Column/PreviewPanel/PreviewColumn"]
-layout_mode = 2
-text = "damage · chain previewed"
-horizontal_alignment = 1
-clip_text = true
-
-[node name="ChainLabel" type="Label" parent="Margin/Column/PreviewPanel/PreviewColumn"]
-layout_mode = 2
-text = ""
-horizontal_alignment = 1
-autowrap_mode = 3
-
 [node name="SlotRow" type="HBoxContainer" parent="Margin/Column"]
 layout_mode = 2
 mouse_filter = 1
+
+[node name="TrayHeader" type="HBoxContainer" parent="Margin/Column"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="TrayLabel" type="Label" parent="Margin/Column/TrayHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "THE TRAY"
+
+[node name="TrayHint" type="Label" parent="Margin/Column/TrayHeader"]
+layout_mode = 2
+text = ""
 
 [node name="Tray" type="HBoxContainer" parent="Margin/Column"]
 layout_mode = 2

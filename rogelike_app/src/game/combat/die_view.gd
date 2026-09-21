@@ -1,20 +1,39 @@
 class_name DieView
 extends Control
-## En tärning i brickan (tumzonen). UI_GUIDE §2.9: 64 dp visuellt, 72 dp träffyta.
+## En plats i tärningsbrickan. UI_GUIDE §2.9 och [b]COMBAT_READABILITY §4[/b].
 ##
-## M1 ritar tärningen som en [ColorRect] med värdet i klartext. [b]Bytesplatsen
-## för pixelgrafik är noden [code]Art[/code][/b]: lägg en [Sprite2D]-baserad
-## tärning där (research 04 §3: kropp + glyph + palett-LUT + spricka) och ta bort
-## [member _value_label]. Storlek, träffyta, drag-and-drop och markeringslogik
-## ligger i den här klassen och behöver inte röras.
+## [b]M2.5: brickan är en sann modell av verkligheten.[/b] Diagnosen i §1.5 var
+## att samma tärning låg synlig både i sloten och i brickan, med etiketten
+## [code]IN 3[/code] som läses som "om 3 rundor". Nu gäller en tillståndsmaskin
+## där [b]platsen är tom när tärningen ligger på brädet[/b]:
 ##
-## Interaktion (UI_GUIDE §4.1 och §4.2, båda alltid aktiva):
-## [br]• Drag: [method _get_drag_data] lämnar över [code]{die_index}[/code].
-## [br]• Tapp: [signal tapped] – skärmen markerar tärningen och nästa tapp på en
-##   slot placerar den. Aldrig dubbeltapp-krav.
+## [codeblock]
+## READY     full tärning, full opacitet        (ingen etikett – värdet syns)
+## SELECTED  lyft 6 dp, gyllene kontur          "TAP A SLOT"
+## PLACED    tom sockel: streckad ram, uppåtpil "SLOT 4"
+## LOCKED    tärning + kedjeglyf                "LOCKED"
+## STOLEN    trasig sockel, ingen silhuett      "STOLEN"
+## CRACKED   tärning + spricka, värdet 0        "CRACKED"
+## [/codeblock]
+##
+## Interaktion (UI_GUIDE §4.1/§4.2, båda alltid aktiva): drag lämnar över
+## [code]{die_index}[/code]; tapp markerar, och tapp på en tom sockel tar
+## tillbaka tärningen till brickan (§4: "tapp på sockeln är i dag odefinierat").
 
-## Spelaren tappade tärningen.
+## Spelaren tappade platsen.
 signal tapped(die_index: int)
+
+const STATE_READY: int = 0
+const STATE_SELECTED: int = 1
+const STATE_PLACED: int = 2
+const STATE_LOCKED: int = 3
+const STATE_STOLEN: int = 4
+const STATE_CRACKED: int = 5
+
+## Lyftet på en vald tärning, i dp (§4).
+const SELECT_LIFT: int = 6
+## Spöksilhuettens opacitet i en tom sockel (§9: "die_body_*.png med 16 % alpha").
+const GHOST_ALPHA: float = 0.16
 
 var die_index: int = -1
 var _die: Die = null
@@ -22,9 +41,11 @@ var _placed_in_slot: int = -1
 var _selected: bool = false
 var _locked: bool = false
 var _stolen: bool = false
+var _tray_ext: bool = true
 
 var _panel: Panel = null
 var _art: DieArt = null
+var _arrow: Label = null
 var _value_label: Label = null
 var _effect_label: Label = null
 var _state_label: Label = null
@@ -32,9 +53,8 @@ var _state_label: Label = null
 
 func _init() -> void:
 	# Minsta bredd, inte önskad bredd: sex tärningar ska rymmas på 360 dp
-	# (UI_GUIDE §8 mätte 49,7 dp på den smalaste målskärmen). Bredden fördelas
-	# sedan av HBoxContainer via SIZE_EXPAND_FILL.
-	custom_minimum_size = Vector2(Tokens.dp(Tokens.DIE_MIN_WIDTH), Tokens.dp(Tokens.DIE_SIZE + 8))
+	# (UI_GUIDE §8 mätte 49,7 dp på den smalaste målskärmen).
+	custom_minimum_size = Vector2(Tokens.dp(Tokens.DIE_MIN_WIDTH), Tokens.dp(Tokens.DIE_MIN_WIDTH))
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
@@ -43,11 +63,23 @@ func _init() -> void:
 	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_panel)
 
-	# Pixeltärningen: kropp + glyph + palett-LUT + spricka (DieArt).
 	_art = DieArt.new()
 	_art.name = "Art"
 	_art.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(_art)
+
+	# Uppåtpilen i den tomma sockeln. En ren glyf, ingen sprite behövs (§9).
+	_arrow = Label.new()
+	_arrow.name = "Arrow"
+	_arrow.text = "↑"
+	_arrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_arrow.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_arrow.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_TITLE))
+	_arrow.add_theme_color_override("font_color", Tokens.CHALK_500)
+	_arrow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_arrow.visible = false
+	add_child(_arrow)
+	_arrow.set_anchors_preset(Control.PRESET_FULL_RECT)
 
 	_value_label = Label.new()
 	_value_label.name = "Value"
@@ -78,25 +110,29 @@ func _init() -> void:
 	_state_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	_state_label.custom_minimum_size = Vector2(0.0, Tokens.dp(Tokens.TYPE_CAPTION + 4))
 	_state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_state_label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_CAPTION))
+	_state_label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_CAPTION - 2))
 	_state_label.add_theme_color_override("font_color", Tokens.CHALK_500)
 	_state_label.clip_text = true
 	_state_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_state_label)
 
 
-## Den komponerade pixeltärningen. Sedan M1.5 ritar den riktiga sprites;
-## [member _value_label] är kvar som reserv för när en textur saknas.
 func art_root() -> Control:
 	return _art
 
 
-## Aktiveringspuls på den RIKTIGA tärningssprajten (UI_GUIDE §5.1), inte på
-## en platshållarruta. Faller tillbaka på en skalpuls om konsten inte ritas.
+## Aktiveringspuls på den RIKTIGA tärningssprajten (UI_GUIDE §5.1).
 func pulse_art(duration: float = Tokens.MOTION_BASE) -> void:
 	if _art != null and _art.is_drawing():
 		_art.flash(0.75, duration)
 	Juice.pulse(self, 1.14, duration)
+
+
+## Brickans utökade tillstånd (tomma socklar med slotnummer) döljs tills
+## [code]tray_ext[/code] avslöjats; dessförinnan ligger tärningen kvar synlig
+## som i M2, vilket är enklare att förstå i rum 0.1.
+func set_tray_extended(value: bool) -> void:
+	_tray_ext = value
 
 
 func bind(index: int, die: Die, placed_in_slot: int, stolen: bool) -> void:
@@ -126,12 +162,33 @@ func is_available() -> bool:
 	return not _stolen and _placed_in_slot < 0
 
 
+## Tillståndet som en av [code]STATE_*[/code]. Ren funktion av fälten, så att
+## tillståndsmaskinen i §4 går att testa utan en scen.
+func state() -> int:
+	if _stolen:
+		return STATE_STOLEN
+	if _placed_in_slot >= 0:
+		return STATE_PLACED
+	if _die != null and _die.showing_face() != null and _die.showing_face().id == Resolver.CRACKED_FACE_ID:
+		return STATE_CRACKED
+	if _locked:
+		return STATE_LOCKED
+	if _selected:
+		return STATE_SELECTED
+	return STATE_READY
+
+
 func _refresh(face: Face) -> void:
+	var current: int = state()
+	var socket: bool = current == STATE_PLACED and _tray_ext
+
 	if _art != null:
 		# Sprickvarianten seedas på tärningens id: samma tärning har samma
 		# spricka hela runnen, men ingen slump dras ur Rng-strömmen.
 		_art.show_die(_die, hash(_die.id) if _die != null else 0)
-		_art.visible = _die != null
+		_art.visible = _die != null and not (socket and not _art.is_drawing())
+	_arrow.visible = socket
+
 	if face == null:
 		_value_label.text = "–"
 		_effect_label.text = ""
@@ -141,43 +198,57 @@ func _refresh(face: Face) -> void:
 
 	_value_label.text = str(face.value)
 	# Ritas sidan som ögon bär konsten värdet och siffran vore dubbelt. Ritas
-	# den som glyph (gift, eld, blod, tomrum) står värdet i stället i
-	# effektraden, precis som i mockupen ("GIFT 2").
+	# den som glyph (gift, eld, blod, tomrum) står värdet i effektraden.
 	var art_has_value: bool = _art != null and _art.shows_value()
-	_value_label.visible = not art_has_value
+	_value_label.visible = not art_has_value and not socket
 	_effect_label.text = _effect_label_text(face, not art_has_value)
 	_effect_label.add_theme_color_override("font_color", _effect_color(face))
+	_effect_label.visible = not socket
 
 	var body: Color = Tokens.BONE_DIE
 	var border: Color = Tokens.CHALK_300
-	if _stolen:
-		_state_label.text = tr("DIE_STOLEN")
-		body = Tokens.SURFACE_LINE
-		border = Tokens.SEM_BLOOD
-	elif _placed_in_slot >= 0:
-		_state_label.text = tr("DIE_IN_SLOT") % (_placed_in_slot + 1)
-		body = Tokens.SURFACE_RAISED
-		border = Tokens.CHALK_500
-	elif _locked:
-		_state_label.text = tr("DIE_LOCKED")
-		border = Tokens.SEM_CHARGE
-	else:
-		_state_label.text = tr("DIE_DRAG_HINT")
+	var width: float = Tokens.STROKE_REG
+	match current:
+		STATE_STOLEN:
+			_state_label.text = Tokens.translate_or("COMBAT_TRAY_STOLEN", "STOLEN")
+			body = Tokens.SURFACE_LINE
+			border = Tokens.SEM_BLOOD
+		STATE_PLACED:
+			# Tom sockel med SLOTNUMMER: "den här tärningen ligger på slot 4".
+			_state_label.text = Tokens.translate_or("COMBAT_TRAY_PLACED", "SLOT %d") % (_placed_in_slot + 1) \
+				if _tray_ext else tr("DIE_IN_SLOT") % (_placed_in_slot + 1)
+			body = Tokens.SURFACE_SLATE
+			border = Tokens.SURFACE_LINE
+		STATE_LOCKED:
+			_state_label.text = Tokens.translate_or("COMBAT_TRAY_LOCKED", "LOCKED")
+			border = Tokens.SEM_CHARGE
+		STATE_CRACKED:
+			_state_label.text = Tokens.translate_or("COMBAT_TRAY_CRACKED", "CRACKED")
+			border = Tokens.SEM_BLOOD
+		STATE_SELECTED:
+			_state_label.text = Tokens.translate_or("COMBAT_TRAY_SELECTED", "TAP A SLOT")
+			border = Tokens.SEM_CHARGE
+			width = Tokens.STROKE_BOLD
+		_:
+			# READY bär ingen etikett alls: värdet läses på tärningen (§4).
+			_state_label.text = ""
 
-	if _selected:
-		border = Tokens.SEM_CHARGE
-
-	var style: StyleBoxFlat = Tokens.box(border, true, Tokens.STROKE_BOLD if _selected else Tokens.STROKE_REG, Tokens.RADIUS_DIE)
-	# Ritar DieArt tärningen är panelen bara en ram: en benvit botten bakom en
-	# pixeltärning gör silhuetten otydlig (UI_GUIDE §11 punkt 7).
+	var style: StyleBoxFlat = Tokens.box(border, true, width, Tokens.RADIUS_DIE)
 	style.bg_color = Tokens.SURFACE_SLATE if (_art != null and _art.is_drawing()) else body
+	if socket:
+		style.bg_color = Tokens.SURFACE_PIT
 	_panel.add_theme_stylebox_override("panel", style)
 
 	var pip_color: Color = Tokens.BONE_PIP if body == Tokens.BONE_DIE else Tokens.CHALK_500
 	_value_label.add_theme_color_override("font_color", pip_color)
-	_value_label.modulate.a = 0.45 if _placed_in_slot >= 0 or _stolen else 1.0
+	_value_label.modulate.a = 0.45 if current == STATE_PLACED or _stolen else 1.0
 	if _art != null:
-		_art.modulate.a = 0.5 if _placed_in_slot >= 0 or _stolen else 1.0
+		# Spöksilhuett i sockeln, full tärning annars.
+		_art.modulate.a = GHOST_ALPHA if socket else (0.5 if current == STATE_PLACED or _stolen else 1.0)
+
+	# SELECTED lyfts 6 dp. Reducerad rörelse lyfter också – det är ett statiskt
+	# offset, inte en animation, och tillståndet måste synas (UI_GUIDE §6.1).
+	position.y = -Tokens.dp(SELECT_LIFT) if current == STATE_SELECTED else 0.0
 
 
 ## Effektraden ovanför tärningen. [param include_value] lägger till sidans
