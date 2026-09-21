@@ -2,6 +2,74 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M2 – Juice: kedjan ska kännas (2026-09-21)
+
+Milstolpen som avgör dopaminloopen. Ljud, haptik, hit-stop, skak, blixt och
+siffror är inte längre stubbar, och de två skärmar som saknades (titel och
+inställningar) finns.
+
+**A. Juice-motorn (`src/game/juice/juice.gd`, autoload)**
+
+- Enda stället i projektet som rör `AudioStreamPlayer`,
+  `Input.vibrate_handheld` och `Engine.time_scale`. Åtta ljudkanaler, lat
+  laddning ur `assets/sfx/<namn>.wav` med cache, **ett saknat ljud är tyst,
+  räknat och varnar en gång** – aldrig en krasch.
+- `hit_stop(ms)` taket 90 ms, aldrig staplat, halverat i reducerad rörelse.
+  `shake(strength, ms)` på `CanvasLayer.offset` med avklingning, helt av i
+  reducerad rörelse. `flash()` byts mot en 2 dp kontur i samma läge.
+- **Number pops är poolade** (24 etiketter + 8 konturer i ett eget
+  `CanvasLayer`) och animeras i `_process` mot `PackedArray`-fält: noll
+  allokeringar per bildruta i uppspelningen.
+- Tonhöjdsregeln `pow(2, min(step, 12)/12)`, ±2 % variation på de cues som
+  spelas flera gånger per runda (`assets/sfx/README.md` §3.4), ur en visuell
+  slumpström som aldrig rör den seedade `Rng`.
+- Haptik 15/30/60 ms (PM:s M2-brief; UI_GUIDE §5 sa 10/20/30, vilket ligger
+  under vibratorns tröskel). Två pulser inom 90 ms slås ihop (§12.5).
+
+**B. Feedback per event (`event_player.gd`)**
+
+- `EventPlayer.feedback(event, step, hop)` är en **ren statisk funktion** och
+  hela §5/§12-tabellen: ljudfil, tonhöjd, mix-dB, haptiknivå, hit-stop och
+  skak. Uppspelaren spelar den själv; skärmen ritar bara det som kräver en nod.
+- Överflödshopp är en **sidokanal** (§12.2) och byter cue till
+  `damage_overflow`, +2 halvtoner per hopp. Döden sänks två halvtoner.
+  `die_cracked` stiger inte alls – mönsterbrottet i §5.6 är hörbart.
+- Tidslinjen går i **oskalad tid**: hit-stoppen ligger inuti eventets `ms_hint`
+  (§12.2) i stället för ovanpå, annars spräcker tre combos budgeten.
+- Ett test spelar upp referensrundan i §12.3 och kräver **exakt 2 400 ms**.
+
+**C. Krit-UI, ögonblick och tillgänglighet**
+
+- `ChalkFx` lägger `chalk.gdshader` på paneler, knappar och display-siffror.
+  Reducerad rörelse ⇒ `jitter_speed = 0`; hög kontrast ⇒ `erosion = 0.10`.
+- Kedjetexten dras vänster→höger medan kedjan spelas (synlig kausalitet).
+- Bossintro (namnskylt, ≤ 1,2 s, tappbar), vinst (kritkonfetti + uppräkning),
+  död ("It was your call." + vad som dödade dig + meta-poäng + 72 dp
+  EN RUN TILL), och **NEW BEST** när en kedja slår runnens rekord.
+- **Hög kontrast+ är en riktig token-override** (UI_GUIDE §2.11), inte en stubb:
+  `Tokens`-färgerna är statiska variabler, så tabellen byts utan att ett enda
+  anropsställe ändras.
+
+**D. Titel, inställningar och sparat**
+
+- `title_screen.tscn` (CONTINUE / NEW RUN / SETTINGS) och
+  `settings_screen.tscn` som **modal** – den öppnas mitt i en runda utan att
+  placeringen kastas. Språkbytet är live.
+- `src/platform/settings.gd` (autoload `Settings`) skriver `user://settings.cfg`.
+  En trasig fil ger standardvärden, aldrig en halvläst uppsättning.
+
+**E. Assets från UI-agenten, inkopplade**
+
+- Fiendearken har två rader: `Art.enemy_frames()` skär ut en icke-loopande
+  `death`-animation (3 frames, 10 fps = 300 ms, inom §5.5:s 360 ms).
+- Reliklagren i paperdollen tänds (alla sex reliker), `legs` tillkom.
+- Tärningarna ritas åter som **gråskalemaster + 16×1-LUT** sedan shaderns
+  dubbelmultiplikation mot modulate är fixad.
+
+**Verifierat:** 227 gdUnit4-tester gröna. Rökprov under Xvfb i `en`, `sv` och
+med `reduced_motion = true` plus en dödskörning; 14 ljud laddade, 0 saknade;
+skärmdumpar i `docs/screenshots/m2/`.
+
 ## M1.5 – Engelskt källspråk och pixelgrafik (2026-09-21)
 
 Två leveranser i en: all spelartext är engelska i källan och går via `tr()`, och

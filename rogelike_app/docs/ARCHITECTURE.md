@@ -1,6 +1,6 @@
 # Arkitektur – PIPWRECK
 
-*Uppdaterad 2026-09-21 (M1.5). Normativ källa för reglerna är `GAME_DESIGN.md`;
+*Uppdaterad 2026-09-21 (M2). Normativ källa för reglerna är `GAME_DESIGN.md`;
 det här dokumentet beskriver hur koden är organiserad och hur man kör den.*
 
 ## Lagerregeln: core → game, aldrig tvärtom
@@ -9,10 +9,28 @@ det här dokumentet beskriver hur koden är organiserad och hur man kör den.*
 src/core/     ren spellogik. RefCounted/statiska klasser. INGA Node-beroenden.
 src/data/     innehåll som data (sidor, reliker, fiender, möten, belöningspool).
 src/game/     Node-världen. Spelar upp händelseloggen. Läser core, aldrig tvärtom.
-src/platform/ haptik, filsystem, senare butiks-API:er.
-tools/        headless-verktyg (run_simulator.gd, smoke_play.gd).
+src/platform/ inställningar, haptiknivåer, filsystem, senare butiks-API:er.
+tools/        headless-verktyg (run_simulator.gd, smoke_play.gd + smoke_driver.gd).
 tests/        gdUnit4-sviter. tests/support/ innehåller testhjälpmedel.
 ```
+
+## Autoloads (M2)
+
+| Namn | Fil | Ansvar |
+|---|---|---|
+| `Settings` | `src/platform/settings.gd` | `user://settings.cfg`: språk, volym, haptik, reducerad rörelse, hög kontrast |
+| `Juice` | `src/game/juice/juice.gd` | ljud, haptik, hit-stop, skärmskak, blixt, number pops |
+
+`Settings` ligger **först**: `Juice` läser den vid varje anrop.
+
+> **Fallgrop som kostade en halv dag:** ett skript som körs med `-s`
+> (`tools/smoke_play.gd`, `addons/gdUnit4/bin/GdUnitCmdTool.gd`) kompileras
+> **innan motorn registrerat autoloadarna**, och allt det typar mot kompileras
+> med det. En skärm som nämner `Juice` fäller då hela körningen med
+> `Compile Error: Identifier not found: Juice` – ett fel som ser ut som en
+> trasig skärm men är en startordning. Därför är `smoke_play.gd` tunn och
+> laddar `tools/smoke_driver.gd` först på första bildrutan. Testsviterna går
+> fria eftersom gdUnit4 laddar dem i drift, efter att trädet startat.
 
 `src/game/shaders/` och `assets/` ägs av UI-agenten. `src/game/` i övrigt,
 `src/platform/`, `tests/` och det här dokumentet ägs av dev.
@@ -95,10 +113,16 @@ känna till den andras layout.
 
 | Skärm | Scen | World-innehåll |
 |---|---|---|
+| Titel | `src/game/title/title_screen.tscn` | – |
 | Marsch | `src/game/march/march_screen.tscn` | `march_world.tscn`: tre parallaxlager, golvremsa, `HeroFigure` |
 | Strid | `src/game/combat/combat_screen.tscn` | `combat_world.tscn`: parallaxband, golv, Smeden, en `EnemyActor` per fiende |
 | Belöning | `src/game/reward/reward_screen.tscn` | – |
 | Död/vinst | `src/game/gameover/gameover_screen.tscn` | – |
+
+`ChalkUI/UiRoot/ModalRoot` ligger ovanpå `ScreenRoot` och bär
+`settings_screen.tscn`. Inställningarna är en **modal, inte en skärm**: de ska
+gå att öppna mitt i en runda (UI_GUIDE §6.4 – ljudet ska gå att stänga av just
+när det stör), och ett skärmbyte skulle kasta bort spelarens placering.
 
 `GameController` byter skärm **alltid uppskjutet en bildruta**. Skärmbytet
 utlöses av en signal som emitteras inifrån `EventPlayer._process`, och att riva
@@ -129,7 +153,7 @@ i `assets/sprites/README.md` när CC0-paketen går att hämta) ändras en rad d�
 
 | Nod | Lager | Innehåll |
 |---|---|---|
-| `EnemyActor.sprite` | World | `AnimatedSprite2D`, 4 idle-frames, boss 48×48 övriga 32×32, ×4 |
+| `EnemyActor.sprite` | World | `AnimatedSprite2D`, 4 idle-frames + 3 death-frames (ark 4×2), boss 48×48 övriga 32×32, ×4 |
 | `CombatWorld` → `Backdrop` | World | två parallaxremsor + golvkakel bakom fienderna |
 | `HeroFigure` | World | paperdoll, nio `Sprite2D`-lager, 48×48-celler, 8×4 frames |
 | `MarchWorld` | World | tre parallaxlager (0,15 / 0,45 / 1,20) + golv (1,00) + figur |
@@ -165,15 +189,15 @@ sin semantiska token. `Art.face_overlay()` returnerar därför `color_token`
 `"NONE"` för pips. Ritas sidan som ögon döljer `DieView` och `SlotView` sin
 siffra – konsten bär värdet. Glyph-sidor visar värdet i effektraden ("⬬ psn 2").
 
-**Avvikelse från `assets/sprites/README.md` §3, uppmätt:** den dokumenterade
-vägen är gråskalemastern `die_body_gray.png` genom `palette_lut.gdshader` med en
-16×1-LUT per material. I GL Compatibility skriver den shadern ut sitt resultat
-utan sRGB-konvertering: en sprite med `lut_strength = 0` renderas som
-`srgb_to_linear(källan)` (uppmätt `#C2451D` → `#941203`) och LUT-vägen landar
-~24 % för mörkt. Tills shadern är fixad används de förtintade kropparna, som
-renderas 1:1. Shadern används fortfarande för **träffblixten**, där mörkningen
-inte syns eftersom bilden ändå lerpas mot vitt – materialet sätts på noden när
-blixten börjar och tas bort när den slutar.
+**M2: LUT-vägen är tillbaka.** M1.5 ritade förtintade kroppar därför att
+`palette_lut.gdshader` mörkade bilden ~24 %; diagnosen "sRGB tappas i GL
+Compatibility" var fel. Rotorsaken (fixad av UI-agenten) var att fragmentets
+inbyggda `COLOR` redan innehåller `modulate`, så shadern multiplicerade in
+källfärgen en andra gång. `DieArt` ritar nu gråskalemastern med ett eget
+`ShaderMaterial` per tärning – **ett eget**, eftersom `flash`-uniformen är per
+tärning och ett delat material hade blixtrat alla sex samtidigt.
+`Art.die_body()` faller tillbaka på de förtintade kropparna om gråskalan eller
+LUT:en saknas.
 
 ### Paperdoll-riggen
 
@@ -209,7 +233,7 @@ Figuren visar kropp, glödkappa, järnhjälm och smideshammare.
 |---|---|
 | `die_activated` | tärningen i sloten OCH i brickan blixtrar (shaderns `flash`), Smeden svingar |
 | `damage_dealt` | fiendesprajten blixtrar vitt och rycker bakåt |
-| `enemy_killed` | squash + uttoning. **M1.5-assets har ingen death-frame**; finns en `death`-animation i `SpriteFrames` spelas den i stället |
+| `enemy_killed` | `death`-animationen ur arkets rad 1 (3 frames, 10 fps = 300 ms). Saknas raden: squash + uttoning som i M1.5 |
 | `player_damaged` | Smeden spelar `hit` |
 
 Tidsbudgeten är orörd: kedjan (P0–P3) ≤ 2 500 ms, hela rundan ≤ 3 200 ms.
@@ -245,11 +269,96 @@ Tre regler:
    så lagerregeln håller. (`note_args` tvättas med `int()` vid inläsning: JSON-tal
    är float64 och `3` skulle annars komma tillbaka som `3.0`.)
 
+### M2: tjugo nycklar väntar på en CSV-rad
+
+`assets/i18n/translations.csv` ligger under `assets/` och ägs av UI-agenten;
+dev fick inte röra den i M2. Titel-, inställnings- och de nya
+slutskärmssträngarna går därför via `Tokens.translate_or(nyckel, engelsk
+källsträng)`, vilket **inte** fångas av `tr()`-skannern – med flit: en nyckel
+utan rad visas som engelsk text i stället för som en rå nyckel, och blir
+tvåspråkig i samma sekund raden läggs in, utan kodändring.
+
+**Att lägga in (nyckel · engelsk källsträng):**
+
+| Nyckel | `en` |
+|---|---|
+| `TITLE_TAGLINE` | `Six dice. Five slots. One chain.` |
+| `TITLE_CONTINUE` | `CONTINUE` |
+| `TITLE_NEW_RUN` | `NEW RUN` |
+| `TITLE_SETTINGS` | `SETTINGS` |
+| `SETTINGS_TITLE` | `Settings` |
+| `SETTINGS_LANGUAGE` | `Language` |
+| `SETTINGS_SOUND` | `Sound` |
+| `SETTINGS_HAPTICS` | `Haptics` |
+| `SETTINGS_REDUCED_MOTION` | `Reduced motion` |
+| `SETTINGS_HIGH_CONTRAST` | `High contrast` |
+| `SETTINGS_RESET` | `Reset save` |
+| `SETTINGS_RESET_ACTION` | `ERASE` |
+| `SETTINGS_RESET_CONFIRM` | `TAP AGAIN` |
+| `SETTINGS_CLOSE` | `CLOSE` |
+| `SETTINGS_ON` | `ON` |
+| `SETTINGS_OFF` | `OFF` |
+| `COMBAT_NEW_BEST` | `NEW BEST` |
+| `COMBAT_BOSS` | `BOSS` |
+| `GAMEOVER_YOUR_CALL` | `It was your call.` |
+| `GAMEOVER_KILLED_BY` | `Killed by %s.` |
+
 `tests/test_i18n.gd` skannar `src/game/`, `src/data/` och `src/core/` med `RegEx`
 efter `tr("KEY")`, `translate("KEY")` och `_t("KEY")` och fäller bygget på en
 nyckel utan CSV-rad, en tom `en`- eller `sv`-cell eller en dubblett.
 
 Rökprovet kan köras på båda språken: `--locale=sv` efter `--`.
+
+## Juice: motorn som gör kedjan kännbar (M2)
+
+`Juice` är en autoload och medvetet den **enda** noden som rör
+`AudioStreamPlayer`, `Input.vibrate_handheld` och `Engine.time_scale`. Skälet är
+tillgänglighet: UI_GUIDE §6.1/§6.4 kräver att skak, hit-stop och haptik ska gå
+att stänga av, och en avstängning som ligger på tjugo anropsställen är ingen
+avstängning.
+
+| API | Vad | Tillgänglighet |
+|---|---|---|
+| `sfx(name, pitch, volume_db)` | 8 kanaler, lat laddning ur `assets/sfx/<name>.wav`, cachad. Saknad fil ⇒ tyst + räknad + en varning | `Settings.sfx_volume`, 0 = helt tyst men loggad |
+| `ui_tap(pitch)` | UI-tryck på −14 dB (`assets/sfx/README.md` §2) | – |
+| `haptic(level)` | `Input.vibrate_handheld`, 15/30/60 ms | `Settings.haptics`, `Haptics.level_floor`, 90 ms sammanslagning (§12.5) |
+| `hit_stop(ms)` | `Engine.time_scale`, **tak 90 ms, aldrig staplat** | halveras vid reducerad rörelse |
+| `shake(strength, ms)` | `CanvasLayer.offset` med avklingning på World + ChalkUI | **helt av** vid reducerad rörelse |
+| `shake_node(node, dp, s)` | lokal skak av en panel | blir en uttoning vid reducerad rörelse |
+| `flash(node, color, ms)` | `palette_lut`-shaderns `flash`-uniform, annars modulate | blir en 2 dp kontur (§12.6) |
+| `number_pop(parent, text, color, at, size)` | poolad etikett i Juices eget `CanvasLayer` (layer 20) | ingen overshoot vid reducerad rörelse |
+| `chain_pitch(step, multiplier)` | `pow(2, min(step + bonus, 12)/12)` | – |
+
+**Inga allokeringar i uppspelningsloopen.** Number pops (24) och blixtkonturer
+(8) är förinstansierade och animeras i `Juice._process` mot `PackedFloat32Array`
+/ `PackedVector2Array`. Ingen `Tween` och inget `Label.new()` per event. Mätt i
+rökprovet: bildrutetiden under en kedja är **densamma** som på en stillastående
+skärm (p50 26,3 ms mot 26,2 ms under Xvfb/llvmpipe; se "Köra rökprovet").
+
+Ljudnamnen är ett kontrakt mot `assets/sfx/README.md` §2. Tabellen i
+`EventPlayer.feedback()` får bara peka på cues som finns där –
+`tests/test_event_player.gd` kontrollerar det per fil.
+
+### Settings
+
+`src/platform/settings.gd` skriver `user://settings.cfg` med `ConfigFile`, inte
+i sparfilen: inställningar ska överleva att en run tar slut och att sparfilen
+nollställs. En trasig fil, eller en fil utan vår sektion, ger standardvärden –
+aldrig en halvläst uppsättning (samma kontrakt som `SaveIO`).
+
+| Fält | Standard | Effekt |
+|---|---|---|
+| `locale` | `""` (rör inte språket) | `TranslationServer.set_locale` |
+| `sfx_volume` | 80 | `Juice.sfx` volym, 0 = tyst |
+| `haptics` | true | `Haptics.enabled` |
+| `reduced_motion` | false | skak av, hit-stop halverad, blixt → kontur, ingen overshoot |
+| `high_contrast` | false | `Tokens.apply_high_contrast()` – hela tokentabellen (UI_GUIDE §2.11) |
+
+**Hög kontrast+ är en token-override, inte ett andra tema.** Färgerna i `Tokens`
+är därför `static var` och inte `const`: tabellen byts på ett ställe och inget
+anropsställe ändras. Priset är att en redan byggd skärm behåller sina färger
+tills den byggs om – modalen bygger om sig själv direkt, övriga skärmar nästa
+gång de visas.
 
 ## Uppspelaren: en överlappande tidslinje
 
@@ -278,7 +387,39 @@ så vyn efter N event är oberoende av hur snabbt de spelades. Det är därför
 snabbspolning bevisligen ger samma slutläge (`tests/test_event_player.gd`).
 
 Tapp under uppspelning: första tappet kör resten på 35 % av längden, andra tappet
-hoppar till slutet (UI_GUIDE §5.9).
+hoppar till slutet (UI_GUIDE §5.9). Vid tapp nollas dessutom hit-stoppen och all
+kvarvarande haptik slås ihop till ett enda `MEDIUM` i slutet (§12.7).
+
+### Feedback-tabellen är en ren funktion
+
+`EventPlayer.feedback(event, step_index, hop)` returnerar ljudfil, tonhöjd,
+mix-dB, haptiknivå, hit-stop och skak för ETT event. Den är statisk och ren, så
+hela UI_GUIDE §5/§12 går att testa utan ljudkort och utan scenträd. Uppspelaren
+spelar den själv (ljud och haptik behöver ingen nod); skärmen ritar bara det som
+kräver en nod – vilken tärning som pulsar, vilken fiende som blixtrar.
+
+Tre regler ur tabellen som är lätta att råka optimera bort:
+
+1. **`enemy_killed` sänks två halvtoner** mot kedjans aktuella ton. Döden är en
+   punkt, inte ännu en höjning (§5.5).
+2. **`die_cracked` stiger inte alls.** Mönsterbrottet ska höras (§5.6).
+3. **Ett överflödshopp byter cue** till `damage_overflow` och ligger i `SIDE`,
+   inte i `CHAIN` (§12.2/§12.3 rad 7). Hoppet flyttar alltså inte markören.
+
+### Hit-stoppen ligger INUTI eventets ms_hint
+
+UI_GUIDE §12.2 är normativ: *"hit-stop räknas in i eventets `ms_hint`, inte
+ovanpå"*. `Juice.hit_stop` fryser `Engine.time_scale`, vilket kryper in i
+`delta`, så uppspelaren räknar sin tidslinje i **oskalad** tid
+(`delta / Engine.time_scale`). Utan den divisionen skulle varje frysning
+förlänga tidslinjen och tre combos spräcka budgeten utan att en enda rad i
+tabellen ändrats. `EventPlayer.hit_stop_ms(events, reduced_motion)` mäter hur
+stor del av uppspelningen som är frysta bildrutor; reducerad rörelse halverar
+den siffran och flyttar inte ett enda event (§12.6: "timingen ändras inte").
+
+`tests/test_event_player.gd` spelar upp referensrundan i §12.3 (par + överflöd +
+kill) och kräver **exakt 2 400 ms**. Rör sig den siffran har antingen banorna
+eller överlappet ändrats.
 
 ## Run-loopen
 
@@ -320,7 +461,7 @@ cd rogelike_app
 # Med fönster och skärmdumpar (kräver xvfb-run):
 xvfb-run -a -s "-screen 0 1080x1920x24" "$GODOT_BIN" \
   --resolution 1080x1920 --audio-driver Dummy \
-  -s tools/smoke_play.gd -- --pipwreck-seed=7 --shots=res://docs/screenshots/m1_5
+  -s tools/smoke_play.gd -- --pipwreck-seed=7 --shots=res://docs/screenshots/m2
 
 # Bara logiken, ingen rendering:
 "$GODOT_BIN" --headless -s tools/smoke_play.gd -- --pipwreck-seed=7
@@ -328,10 +469,38 @@ xvfb-run -a -s "-screen 0 1080x1920x24" "$GODOT_BIN" \
 
 Flaggor: `--pipwreck-seed=N` (läses även av `GameController` och tvingar en känd
 run), `--shots=DIR` (tomt = inga skärmdumpar), `--max-seconds=N`,
-`--locale=xx` (tvingar språk, t.ex. `sv`).
+`--locale=xx` (tvingar språk, t.ex. `sv`), `--reduced-motion`,
+`--policy=lookahead|greedy|none`.
 
-Skärmdumparna hamnar i `docs/screenshots/m1_5/`. `docs/screenshots/` har en
-`.gdignore` så att Godot inte importerar dem.
+`--policy=none` placerar ingen tärning och dör därför garanterat. Det är enda
+sättet att få en **deterministisk dödsskärmdump**: Lookahead vinner våning 1 i
+~94 % av fallen (DECISIONS 2026-09-21).
+
+Rökprovet börjar på titelskärmen, tar en skärmdump av inställningsmodalen och
+trycker sedan NEW RUN. Sparfilen rensas först, så körningen är oberoende av vad
+som hände förra gången.
+
+### Prestandamätningen
+
+Rökprovet mäter bildrutetid som **väggklocka mellan två på varandra följande
+bildrutor**, både under kedjorna och mellan dem.
+
+> `Performance.get_monitor(Performance.TIME_PROCESS)` **duger inte** som
+> per-bildrutemått: den uppdateras ungefär en gång per sekund. Uppmätt i den här
+> miljön ger den exakt samma värde 200 bildrutor i rad (156,71 ms på en
+> titelskärm med 67 noder) medan ett tomt projekt ger 0,06 ms. Monitorn skrivs
+> ändå ut som trend.
+
+Jämförelsen kedja mot tomgång är hela poängen: är de lika är det inte juicen som
+kostar. Uppmätt 2026-09-21 (Xvfb 1080×1920, llvmpipe, 4 kärnor):
+kedja p50 26,3 ms / p95 33,5 ms mot tomgång p50 26,2 ms / p95 37,1 ms. Headless
+utan rendering: 6,90 ms i båda fallen, 0,1 % av bildrutorna över 16,6 ms.
+**Slutsats: kostnaden är programvarurasterisering av en 1080×1920-yta, inte
+uppspelningen.** En riktig GPU- och mobilmätning görs i M4 enligt planen.
+
+Skärmdumparna hamnar i `docs/screenshots/m2/` (plus `sv/`, `reduced/` och
+`death/` för de andra körningarna). `docs/screenshots/` har en `.gdignore` så
+att Godot inte importerar dem.
 
 ## Köra tester lokalt
 
@@ -415,3 +584,14 @@ laddas upp som artefakter.
   skärmar med `call_deferred`.
 - **`await` i `SceneTree._initialize` återupptas utanför motorns träditeration**
   och kraschade reproducerbart. Lägg drivrutinen i en `Node` i stället.
+- **Ett `-s`-skript kan inte referera en autoload.** Det kompileras före
+  autoload-registreringen, och felet blir `Identifier not found: Juice` i en fil
+  som inte ens nämner rökprovet. Ladda drivrutinen på första bildrutan.
+- **`set_anchors_preset()` sätter inte offsets.** En kodskapad `Control` med
+  `PRESET_FULL_RECT` blir då så stor som sitt innehåll, inte som sin förälder –
+  inställningsmodalen blev 70 % bred och klippte varje etikett. Använd
+  `set_anchors_and_offsets_preset()`.
+- **Ett runtime-fel inuti en `await`-kedja avbryter hela anropsstacken tyst.**
+  Rökprovet snurrade ett varv per bildruta på titelskärmen därför att en
+  ombyggd skärm frigjordes under fötterna på coroutinen som höll den. Vakta med
+  `is_instance_valid()` och hämta om noden efter varje `await`.
