@@ -1,0 +1,101 @@
+name: PIPWRECK tests
+
+on:
+  push:
+    paths:
+      - 'rogelike_app/**'
+      - '.github/workflows/test.yml'
+  pull_request:
+    paths:
+      - 'rogelike_app/**'
+      - '.github/workflows/test.yml'
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: 4.6
+  GODOT_RELEASE: 4.6-stable
+  PROJECT_DIR: rogelike_app
+
+jobs:
+  test:
+    name: gdUnit4 headless
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Cache Godot binary
+        id: godot-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_RELEASE }}-linux-x86_64
+
+      - name: Download Godot ${{ env.GODOT_RELEASE }}
+        if: steps.godot-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/godot
+          url="https://github.com/godotengine/godot/releases/download/${GODOT_RELEASE}/Godot_v${GODOT_RELEASE}_linux.x86_64.zip"
+          curl -fsSL -o /tmp/godot.zip "$url"
+          unzip -o /tmp/godot.zip -d ~/godot
+          mv ~/godot/Godot_v${GODOT_RELEASE}_linux.x86_64 ~/godot/godot
+          chmod +x ~/godot/godot
+
+      - name: Report Godot version
+        run: |
+          echo "GODOT_BIN=$HOME/godot/godot" >> "$GITHUB_ENV"
+          "$HOME/godot/godot" --headless --version
+
+      # Godot needs a first pass to generate .godot/ and register every
+      # class_name before any script can reference them.
+      - name: Import project
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: "$GODOT_BIN --headless --import"
+
+      - name: Run gdUnit4 test suite
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          set -euo pipefail
+          "$GODOT_BIN" --headless \
+            -s addons/gdUnit4/bin/GdUnitCmdTool.gd \
+            --ignoreHeadlessMode \
+            --continue \
+            --report-directory reports \
+            -a tests
+
+      - name: Publish JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdunit4-report
+          path: ${{ env.PROJECT_DIR }}/reports/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      # M0 gate (PROPOSAL section 6): 1000 seeded battles must finish under 5 s
+      # per policy. The simulator prints the elapsed time for each.
+      - name: Run balance simulator (1000 battles per policy)
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          set -euo pipefail
+          "$GODOT_BIN" --headless -s tools/run_simulator.gd -- \
+            --battles=1000 --room=1 --json=reports/balance_battles.json
+
+      - name: Run balance simulator (200 full runs per policy)
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          set -euo pipefail
+          "$GODOT_BIN" --headless -s tools/run_simulator.gd -- \
+            --battles=0 --runs=200 --json=reports/balance_runs.json
+
+      - name: Publish balance statistics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: balance-stats
+          path: ${{ env.PROJECT_DIR }}/reports/balance_*.json
+          if-no-files-found: warn
+          retention-days: 90
