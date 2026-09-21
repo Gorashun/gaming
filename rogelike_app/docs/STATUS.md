@@ -14,7 +14,7 @@
 - Asset-pipeline: 59 egengjorda pixelsprites, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- Inget aktivt. Väntar på Anders innan M2 startar.
+- **M2 Juice** startad: UI fixar LUT-shader, ritar reliklager och dödsframes, genererar ljud (own-work), färgblindsformer. Dev bygger riktig kedjeuppspelning (hit-stop, skak, number pop, pitch-stigande ljud, haptik), chalk-UI, inställningar (reducerad rörelse, språk, ljud)
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt
