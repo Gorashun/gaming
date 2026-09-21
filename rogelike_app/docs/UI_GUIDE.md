@@ -101,17 +101,33 @@ Varje semantisk färg har **alltid** en formkod bredvid sig (ikon eller ram). F�
 | `sem/charge` | `#FFD447` | ⬤ fylld cirkel | 10,7:1 |
 | `sem/shield` | `#D7DEE6` | ⬟ sköldfemhörning | 11,3:1 |
 
-### 2.4 Färg – slot-typer (form + färg)
+### 2.4 Slot-typer: FORM först, färg sedan
 
-| Slot | Färg | Form (kontur + ikon) |
-|---|---|---|
-| Eld | `#FF6A2C` | Triangelikon, **heldragen** ram |
-| Spegel | `#6ED2F5` | Romb delad i två, **dubbel** ram |
-| Amboss | `#D7DEE6` | Hexagon, **tjock (4 dp)** ram |
-| Ladda | `#FFD447` | Cirkel med bågfyllning, **prickad** ram |
-| Tomrum | `#8A94A6` | Kvadrat med kryss, **streckad** ram |
+**Normativ regel:** slot-typerna skiljs på **form**. Färgen är en genväg för
+den som ser den, aldrig den enda bäraren (§6.2). Ikonerna ligger i
+`assets/sprites/ui/slot_<typ>.png`, 16×16 px, genererade av
+`tools/gen_pixel_assets.py`.
 
-Ramstilen är redundant med färgen: en spelare med total färgblindhet kan skilja alla fem slots på enbart ramstil + ikon.
+| Slot | `Rules.SlotType` | Form (16×16-ikon) | Ram | Färg |
+|---|---|---|---|---|
+| Vanlig | `PLAIN` | **Kvadrat**, fylld, liten och centrerad | Tunn (1,5 dp) | `#CFC7B8` |
+| Eld | `FIRE` | **Triangel**, fylld, spets uppåt | **Heldragen** | `#FF6A2C` |
+| Spegel | `MIRROR` | **Romb delad i två** av en vertikal springa | **Dubbel** | `#6ED2F5` |
+| Amboss | `ANVIL` | **Femhörning**, spetsigt tak över raka sidor | **Tjock (4 dp)** | `#D7DEE6` |
+| Ladda | `CHARGE` | **Cirkel**, fylld | **Prickad** | `#FFD447` |
+| Tomrum | `VOID` | **Ring**, tunn och ihålig | **Streckad** | `#8A94A6` |
+
+Två par delar familj med flit (kvadrat/femhörning, cirkel/ring), men skiljs på
+en egenskap som överlever 16 px: **en spets** respektive **ett hål**.
+
+**Mätt distinkthet.** Varje ikon fylldes svart och jämfördes parvis som
+silhuett (IoU, 1,00 = identiska former). Sämsta par: `ANVIL`/`CHARGE` **0,78**
+(femhörning mot cirkel – skiljs på hörn och spets). Alla par med `VOID` ligger
+på 0,25–0,60, alla par med `FIRE` på 0,25–0,76. Gränsen är **0,85**; hamnar ett
+nytt par över den ska formen ritas om, inte färgen.
+
+Ramstilen är en tredje, redundant kodning: en spelare med total färgblindhet
+kan skilja alla sex slots på enbart ikonform, och alla sex på enbart ramstil.
 
 ### 2.5 Färg – sällsynthet och multiplikator
 
@@ -196,6 +212,47 @@ Radavstånd 1,3× för brödtext, 1,0× för Anton. Teckenstorlek skalbar 85/100
 | `motion/panel` | 300 | `ease_in_out_cubic` |
 
 Global tempomultiplikator `chain_speed`: Lugn 1,25× · Normal 1,0× · Snabb 0,6× · Blixt 0,35×.
+
+### 2.11 Tema **Hög kontrast+** (inställning, `high_contrast`)
+
+En **token-override**, inte ett andra tema: samma tokennamn, andra värden.
+UI-koden slår upp tokens via `Tokens`, så läget är ett byte av tabell och
+noll ändringar i skärmarna. Alla värden mätta mot sin bakgrund.
+
+| Token | Standard | Hög kontrast+ | Kontrast mot `surface/pit` |
+|---|---|---|---|
+| `surface/pit` | `#0E1216` | **`#000000`** | – |
+| `surface/slate` | `#161B21` | **`#000000`** | – |
+| `surface/raised` | `#1F262E` | **`#0A0A0A`** | – |
+| `surface/line` | `#2C353F` | **`#808C99`** | 6,1:1 |
+| `chalk/100` | `#F2EDE3` | **`#FFFFFF`** | 21,0:1 |
+| `chalk/300` | `#CFC7B8` | **`#EDEDED`** | 17,9:1 |
+| `chalk/500` | `#9A9486` | **`#B9B9B9`** | 10,7:1 |
+| `bone/die` | `#E8E0CF` | **`#FFFFFF`** | 21,0:1 |
+| `bone/pip` | `#12161A` | **`#000000`** | – (mot `bone/die`: 21,0:1) |
+| `sem/damage` | `#F2EDE3` | **`#FFFFFF`** | 21,0:1 |
+| `sem/fire` | `#FF6A2C` | **`#FF8A3D`** | 9,0:1 |
+| `sem/poison` | `#B77FFF` | **`#C99CFF`** | 9,7:1 |
+| `sem/frost` | `#6ED2F5` | **`#8FE4FF`** | 14,7:1 |
+| `sem/heal` | `#4FE3A0` | **`#6BF7B8`** | 15,6:1 |
+| `sem/blood` | `#FF556F` | **`#FF7D90`** | 8,6:1 |
+| `sem/charge` | `#FFD447` | **`#FFE270`** | 16,4:1 |
+| `sem/shield` | `#D7DEE6` | **`#E9EEF4`** | 18,0:1 |
+
+Utöver färgtabellen gäller i läget:
+
+* Alla ramar går upp till `stroke/bold` (3 dp), slot-ramarna till
+  `stroke/heavy` (4 dp).
+* Kritdammshalon stängs av (den sänker kontrasten mot en helsvart botten).
+* `chalk.gdshader` körs med `erosion = 0.10` och `grain_amount = 0.12`:
+  handkänslan finns kvar men strecket blir täckande.
+* World-lagret körs genom `lut_world.png` med `luma_gamma = 1.35`, vilket
+  separerar silhuett från botten utan att rita om en enda sprite (§8.5).
+* **Minsta kontrast i läget: 6,1:1** (`surface/line`). Standardtemats
+  minimum är 4,9:1.
+
+`high_contrast` och `reduced_motion` är oberoende inställningar och kan vara
+på samtidigt.
 
 ---
 
@@ -342,7 +399,8 @@ där `step_index` = 0…5 (nollställs varje runda) och `combo_bonus` = 0 / 2 / 
 - Skärmövergångar blir cross-fade i stället för svep.
 
 ### 6.2 Färgblindsäkerhet
-- Alla fem slot-typer skiljs på **ramstil + ikonform** utöver färg (§2.4).
+- Alla **sex** slot-typer skiljs på **ikonform + ramstil** utöver färg (§2.4).
+  Formerna är mätta som silhuetter: sämsta par 0,78 IoU, gräns 0,85.
 - Alla statuseffekter har en glyf framför siffran (§2.3).
 - Sällsynthet har ramform + utskrivet ord (§2.5).
 - Multiplikatorer har både storlek och siffra (`×2`, `×4`, `×8`) – färgen är dekor.
@@ -350,7 +408,9 @@ där `step_index` = 0…5 (nollställs varje runda) och `combo_bonus` = 0 / 2 / 
 
 ### 6.3 Text och kontrast
 - Teckenstorlek 85 / 100 / 115 / 130 %. Layout reflowar: slots och tärningar behåller fysisk storlek (de är träffytor), paneler och kort blir scrollbara.
-- Läge **Hög kontrast+**: botten `#000000`, krita `#FFFFFF`, semantiska färger till max chroma, alla ramar till `stroke/bold`.
+- Läge **Hög kontrast+**: full tokentabell i **§2.11**. Botten `#000000`,
+  krita `#FFFFFF`, semantiska färger ljusare, alla ramar till `stroke/bold`.
+  Minsta kontrast i läget 6,1:1.
 - Minsta kontrast i standardtemat: **4,9:1** (`sem/blood` mot `surface/raised`). Primärtext: 13,1:1.
 - All spelkritisk information finns även i text – aldrig enbart ikon, aldrig enbart färg, aldrig enbart animation.
 
