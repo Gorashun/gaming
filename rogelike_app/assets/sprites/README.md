@@ -109,7 +109,7 @@ Namnkontrakt: `smith_<lager>_<id i gemener>.png`. 17 ark i M2.
 
 | Fil | Lager | Alltid synlig |
 |---|---|---|
-| `hero/smith_body.png` | `body` | ja |
+|  `hero/smith_body_a.png` | `body` | ja |
 | `hero/smith_cape_ember.png` | `cape` | nej (utrustning) |
 | `hero/smith_helm_iron.png` | `helm` | nej (utrustning) |
 | `hero/smith_legs_iron.png` | `legs` | nej (utrustning, **ny i M2**) |
@@ -222,6 +222,12 @@ läsbarheten på 32 px tål bara en form åt gången.
 | `items/relic_domino.png` | `DOMINO` | bricka i fall, lager `head` |
 | `ui/slot_{plain,fire,mirror,anvil,charge,void}.png` | `Rules.SlotType` | formkoder enligt UI_GUIDE §2.4 |
 | `ui/node_{combat,elite,forge,rest,boss,mystery}.png` | marschens förgreningar | 16×16 + ram ritas i krita |
+| `ui/icon_armor.png` | fiendens `armor` | 16×16, sköld. Ersätter `⬟` som betyder Ward |
+| `ui/icon_attack.png` | intent `ATTACK` | 16×16, svärd som pekar mot spelaren |
+| `ui/icon_help.png` | `?`-lagret (COMBAT_READABILITY §6) | 16×16, gul |
+| `ui/icon_charge.png` | Laddning i HUD | 16×16, bank som fylls. `slot_charge.png` betyder *sloten*, den här *banken* |
+| `ui/icon_overflow.png` | spill/överflöd | 16×16, knäpil höger–ned |
+| `ui/icon_tutorial_pointer.png` | tutorialvåning 0 | 16×16 kritpil, pekar NED vid 0°, roteras i 90°-steg |
 
 ## 5. Miljö (marschremsan, våning 1)
 

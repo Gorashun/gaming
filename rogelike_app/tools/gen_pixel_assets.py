@@ -547,8 +547,12 @@ def pose(row: int, f: int) -> dict:
     return {"bob": 1, "leg": -0.3, "arm": 0.6, "hand": (30 - back, 30), "lean": -back}
 
 
-def hero_body(row: int, f: int) -> Canvas:
-    """Base layer: legs, apron, torso, arms, head, beard. Faces right."""
+def hero_body_a(row: int, f: int) -> Canvas:
+    """Base layer, variant A "Broad": legs, apron, torso, arms, head, beard.
+
+    Faces right. This is the M1/M2 Smith, unchanged - only the file name moved
+    from smith_body.png to smith_body_a.png when variant B arrived (M2.5).
+    """
     cv = Canvas(CELL, CELL)
     p = pose(row, f)
     bob, lean = p["bob"], p["lean"]
@@ -598,6 +602,152 @@ def hero_body(row: int, f: int) -> Canvas:
     cv.set(27 + lean, 15 + bob, color("pip"))
     # soot smudge on the cheek: a tell that survives x4 downscale
     cv.set(24 + lean, 16 + bob, color("iron2"))
+    return cv.outline(color("out"))
+
+
+def hero_body_b(row: int, f: int) -> Canvas:
+    """Base layer, variant B "Lean". Same rig, different silhouette (M2.5).
+
+    Body variants exist so the player can pick a figure (DECISIONS 2026-09-21).
+    The contract is that EVERY gear and relic layer must fit both bodies, so
+    variant B keeps every anchor the other layers read - foot line 44, hip
+    32+bob, leg columns, torso centre (24, 26), head centre (25, 16), both hand
+    anchors - and differs only where nothing is mounted:
+
+      * torso is narrow and tall (rx 5.5, ry 8) instead of round (rx 7, ry 7);
+      * the full apron is replaced by a belt and a SPLIT smock, so daylight
+        shows between the legs where variant A is one solid wedge;
+      * no beard: the jaw is bare and a wrapped collar carries the neck mass;
+      * forearms are wrapped in bone-coloured cord instead of bare leather.
+
+    Neither body is weaker: A reads as mass (wide wedge, beard), B reads as
+    reach (tall column, open smock). Both are the Smith.
+    """
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    bob, lean = p["bob"], p["lean"]
+    feet = 44
+    hip = 32 + bob
+    swing = p["leg"]
+    lift = max(0.0, swing) * 3.0
+    # identical leg rig to variant A: smith_legs_iron.png must fit both
+    legs = (
+        (22 + lean, 24 + lean + int(round(swing * 4)), feet - int(round(lift)), "leat2", "iron3"),
+        (25 + lean, 24 + lean - int(round(swing * 4)), feet - int(round(max(0.0, -swing) * 3)), "leat1", "iron2"),
+    )
+    for hip_x, foot_x, foot_y, cloth, boot in legs:
+        span = max(foot_y - hip, 1)
+        for i in range(span):
+            t = i / span
+            x = int(round(hip_x + (foot_x - hip_x) * t))
+            cv.rect(x, hip + i, 3, 1, color(cloth))
+            if i % 4 == 2:  # cord wraps down the shin
+                cv.set(x + 1, hip + i, color("bone3"))
+        cv.rect(foot_x - 1, foot_y - 2, 6, 3, color(boot))
+        cv.hline(foot_x - 1, foot_y - 2, 6, color("iron4"))
+    # torso: a tall narrow column, still 11 px wide at the chest so every
+    # `torso` relic (widest is ECHO_MIRROR at cx-4..cx+5) lands on cloth
+    ellipse(cv, 24 + lean, 26 + bob, 5.0, 8.0, ("leat2", "leat3", "leat4"))
+    cv.rect(20 + lean, 23 + bob, 9, 1, color("bone3"))  # chest wrap
+    # narrow belt + SPLIT smock: the waist pinches and daylight shows between
+    # the panels, which is the whole silhouette difference against variant A
+    cv.rect(20 + lean, 30 + bob, 8, 2, color("leat4"))
+    cv.rect(23 + lean, 30 + bob, 2, 2, color("iron4"))  # buckle
+    for i in range(8):
+        drop = 32 + bob + i
+        flare = i // 3
+        cv.rect(19 + lean - flare, drop, 4 + flare, 1, color("leat3"))
+        cv.rect(26 + lean, drop, 4 + flare, 1, color("leat3"))
+        if i == 0:
+            cv.hline(19 + lean, drop, 4, color("leat4"))
+            cv.hline(26 + lean, drop, 4, color("leat4"))
+    cv.hline(17 + lean, 39 + bob, 6, color("leat1"))
+    cv.hline(26 + lean, 39 + bob, 6, color("leat1"))
+    # front arm, wrapped: cord at the forearm, skin at the hand
+    arm = p["arm"]
+    hx, hy = p["hand"]
+    sx, sy = 27 + lean, 24 + bob
+    steps = max(abs(hx - sx), abs(hy - sy), 1)
+    for i in range(steps + 1):
+        ax = sx + (hx - sx) * i // steps
+        ay = sy + (hy - sy) * i // steps
+        if i > steps - 3:
+            token = "skin3"
+        elif i > steps - 7:
+            token = "bone3"
+        else:
+            token = "leat3"
+        cv.rect(ax, ay, 2, 2, color(token))
+    # back arm: thinner than A, same hand position so `offhand` relics fit
+    cv.rect(19 + lean, 26 + bob, 2, 7, color("leat1"))
+    cv.rect(18 + lean, 30 + bob, 2, 3, color("bone3"))
+    cv.rect(17 + lean, 32 + bob, 3, 2, color("skin2"))
+    # collar wrap: the neck mass that variant A carries in its beard
+    cv.rect(21 + lean, 20 + bob, 8, 2, color("rust2"))
+    cv.rect(21 + lean, 20 + bob, 3, 1, color("rust3"))
+    cv.set(20 + lean, 22 + bob, color("rust2"))
+    # head: narrower face, bare jaw
+    ellipse(cv, 25 + lean, 16 + bob, 4.5, 5.5, ("skin1", "skin2", "skin3"))
+    cv.rect(21 + lean, 11 + bob, 8, 2, color("iron2"))      # cropped hair
+    cv.rect(20 + lean, 12 + bob, 3, 4, color("iron2"))      # nape
+    cv.rect(27 + lean, 13 + bob, 3, 1, color("iron2"))      # brow
+    cv.set(28 + lean, 15 + bob, color("chalk100"))          # eye highlight
+    cv.set(27 + lean, 15 + bob, color("pip"))
+    cv.set(28 + lean, 18 + bob, color("skin1"))             # jaw shadow
+    cv.set(24 + lean, 19 + bob, color("skin1"))
+    cv.set(26 + lean, 12 + bob, color("iron2"))             # soot smudge
+    return cv.outline(color("out"))
+
+
+def hero_hair_a(row: int, f: int) -> Canvas:
+    """Optional `hair` layer A: knot at the nape, tied with a rust cord.
+
+    Sits BELOW `helm` in z, and everything it draws is behind the brim line, so
+    it reads with or without a helmet. Works on either body: it only reads
+    _head_anchor.
+    """
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    cx, cy = _head_anchor(p)
+    sway = p["leg"] * 1.2 + (1.0 if row == 2 and f in (2, 3) else 0.0)
+    # crown cover, so the layer is attached even with no helm on
+    for i, w in enumerate((7, 9, 9)):
+        cv.rect(cx - 4, cy - 6 + i, w, 1, color("iron2"))
+    cv.hline(cx - 3, cy - 6, 4, color("iron3"))
+    # the knot itself, at the back of the skull (the hero faces right)
+    ellipse(cv, cx - 6, cy + 1, 2.6, 2.6, ("iron1", "iron2", "iron3"))
+    cv.rect(cx - 8, cy, 5, 1, color("rust3"))  # the cord
+    # two loose strands falling out of the knot
+    for i in range(5):
+        cv.set(cx - 7 - int(round(sway * i * 0.3)), cy + 4 + i, color("iron2"))
+        if i < 3:
+            cv.set(cx - 5, cy + 4 + i, color("iron3"))
+    return cv.outline(color("out"))
+
+
+def hero_hair_b(row: int, f: int) -> Canvas:
+    """Optional `hair` layer B: a long braid down the back that swings.
+
+    The braid is the cheapest motion cue on the figure: it lags the walk cycle
+    by one frame, which makes both bodies feel heavier without new frames.
+    """
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    cx, cy = _head_anchor(p)
+    sway = p["leg"] * 1.8 + (2.0 if row == 2 and f in (2, 3) else 0.0)
+    for i, w in enumerate((7, 9, 9)):
+        cv.rect(cx - 4, cy - 6 + i, w, 1, color("iron2"))
+    cv.hline(cx - 3, cy - 6, 4, color("iron3"))
+    x0, y0 = cx - 6, cy - 1
+    for i in range(16):
+        t = i / 15.0
+        x = int(round(x0 - t * 2.0 - sway * t * t * 2.0))
+        y = y0 + i
+        w = 3 if i < 11 else 2
+        cv.rect(x, y, w, 1, color("iron2" if (i // 2) % 2 else "iron3"))
+        if i % 4 == 3:
+            cv.rect(x, y, w, 1, color("rust3"))  # tie band
+    cv.set(int(round(x0 - 2.0 - sway * 2.0)), y0 + 16, color("iron2"))
     return cv.outline(color("out"))
 
 
@@ -1033,9 +1183,122 @@ def hero_fx_blood_price(row: int, f: int) -> Canvas:
                 cv.rect(hx + 2, 44, 2, 1, color("blod3"))
     return cv
 
+# --- Hero portraits (96x96, the choose-your-Smith screen) ------------------
+
+
+def smith_portrait(variant: str) -> Canvas:
+    """96x96 bust for the variant picker (UI_GUIDE section 16).
+
+    Not an upscale of the 48x48 cell: at x2 the idle frame turns to mush. The
+    bust is authored at portrait resolution and carries the SAME three reads as
+    the body sheet, so the figure the player picks is the figure they get:
+    A = broad shoulders, full beard, knotted hair; B = narrow shoulders, bare
+    jaw, wrapped collar, braid over the shoulder.
+    """
+    broad = variant == "a"
+    size = 96
+    cv = Canvas(size, size)
+    cx = 48
+    # --- shoulders and chest -------------------------------------------
+    half_max = 43 if broad else 29
+    top = 64 if broad else 67
+    for y in range(top, size):
+        t = (y - top) / max(size - top, 1)
+        half = int(round(half_max * (0.68 + 0.32 * math.sqrt(t))))
+        cv.rect(cx - half, y, half * 2, 1, color("leat2"))
+        cv.set(cx - half, y, color("leat3"))
+        cv.set(cx + half - 1, y, color("leat1"))
+    cv.hline(cx - int(half_max * 0.68), top, int(half_max * 0.68) * 2, color("leat3"))
+    if broad:
+        # apron bib with two straps: the working-smith read
+        for y in range(top + 4, size):
+            cv.rect(cx - 16, y, 32, 1, color("leat3"))
+        for dx in (-17, 15):
+            for y in range(top, size):
+                cv.rect(cx + dx, y, 3, 1, color("leat4"))
+        cv.rect(cx - 16, top + 4, 32, 1, color("leat4"))
+        for sx in (cx - 12, cx - 2, cx + 8):
+            cv.rect(sx, top + 7, 2, 2, color("iron4"))  # rivets
+    else:
+        # bandolier across one shoulder, and a rust collar wrap
+        for i in range(34):
+            cv.rect(cx - 20 + i, top + 2 + i, 4, 1, color("iron2"))
+            cv.set(cx - 20 + i, top + 2 + i, color("iron4"))
+        for y in range(top - 6, top + 4):
+            t = (y - (top - 6)) / 10.0
+            w = int(round(9 + t * 9))
+            cv.rect(cx - w, y, w * 2, 1, color("rust2"))
+        cv.hline(cx - 9, top - 6, 18, color("rust3"))
+    # --- neck ----------------------------------------------------------
+    neck_w = 18 if broad else 13
+    cv.rect(cx - neck_w // 2, 52, neck_w, 16, color("skin2"))
+    cv.rect(cx - neck_w // 2, 52, 3, 16, color("skin1"))
+    # --- head ----------------------------------------------------------
+    head_rx = 19.0 if broad else 15.5
+    ellipse(cv, cx + 1, 36, head_rx, 22.0, ("skin1", "skin2", "skin3"))
+    # ear on the shaded side
+    ellipse(cv, cx - head_rx + 2, 38, 3.0, 4.0, ("skin1", "skin2", "skin3"))
+    # --- features, looking slightly right ------------------------------
+    eye_y = 36
+    for ex in (cx - 6, cx + 10):
+        cv.rect(ex - 3, eye_y - 1, 7, 4, color("bone5"))
+        cv.rect(ex, eye_y, 3, 3, color("pip"))
+        cv.set(ex + 1, eye_y, color("chalk100"))
+        cv.rect(ex - 4, eye_y - 5, 9, 2, color("iron2"))  # brow
+    # nose: a 3 px step on the lit side of the face
+    for i in range(6):
+        cv.rect(cx + 12, 40 + i, 4 - i // 3, 1, color("skin2"))
+    cv.rect(cx + 12, 46, 5, 1, color("skin1"))
+    if broad:
+        # --- beard: the A silhouette ----------------------------------
+        cv.rect(cx - 13, 47, 28, 3, color("iron2"))  # moustache
+        for i in range(23):
+            t = i / 22.0
+            w = int(round(30 * (1.0 - t * t * 0.62)))
+            y = 50 + i
+            token = "iron1" if i > 15 else "iron2"
+            cv.rect(cx - w // 2 - 1, y, w, 1, color(token))
+        # two lit strands, upper left light, so the beard is hair and not cloth
+        for i in range(12):
+            cv.set(cx - 12 + i // 4, 50 + i, color("iron3"))
+        cv.set(cx - 9, 53, color("iron3"))
+        cv.rect(cx - 7, 72, 10, 2, color("iron1"))
+        # knotted hair, variant A's hair layer, seen from the front
+        for i, w in enumerate((22, 30, 34, 36)):
+            cv.rect(cx + 1 - w // 2, 12 + i * 2, w, 2, color("iron2"))
+        cv.rect(cx - 19, 18, 6, 14, color("iron2"))   # hair down the temple
+        ellipse(cv, cx - 21, 32, 6.0, 5.5, ("iron1", "iron2", "iron3"))
+        cv.rect(cx - 27, 29, 12, 2, color("rust3"))   # the cord
+        cv.rect(cx - 10, 14, 10, 2, color("iron3"))  # lit crown
+    else:
+        # --- bare jaw: the B silhouette -------------------------------
+        cv.rect(cx - 6, 50, 14, 2, color("skin1"))   # mouth line
+        cv.rect(cx - 13, 44, 3, 8, color("skin1"))   # cheekbone shadow
+        cv.rect(cx - 9, 56, 20, 2, color("skin1"))   # jaw shadow
+        for i, w in enumerate((18, 26, 29, 30)):
+            cv.rect(cx + 1 - w // 2, 14 + i * 2, w, 2, color("iron2"))
+        cv.rect(cx - 8, 15, 9, 2, color("iron3"))
+        # braid over the near shoulder, variant B's hair layer
+        for i in range(26):
+            t = i / 25.0
+            x = cx - 16 - int(round(t * 7))
+            y = 30 + i * 2
+            w = 5 if i < 20 else 3
+            cv.rect(x, y, w, 2, color("iron2" if (i // 2) % 2 else "iron3"))
+            if i % 4 == 3:
+                cv.rect(x, y, w, 1, color("rust3"))
+    # soot, both variants: this is a person who works at a forge
+    cv.rect(cx + 6, 26, 5, 2, color("iron2", 150))
+    cv.rect(cx - 14 if broad else cx - 11, 62, 6, 2, color("iron2", 120))
+    return cv.outline(color("out"))
+
+
 HERO_LAYERS: dict[str, tuple] = {
     # equipment
-    "body": (hero_body, "bas-kropp, alltid synlig"),
+    "body_a": (hero_body_a, "bas-kropp variant A Broad, alltid synlig"),
+    "body_b": (hero_body_b, "bas-kropp variant B Lean, alltid synlig"),
+    "hair_a": (hero_hair_a, "frisyr A, knut i nacken, valfritt lager"),
+    "hair_b": (hero_hair_b, "frisyr B, lang flata, valfritt lager"),
     "weapon_hammer": (hero_weapon_hammer, "vapen A"),
     "weapon_tongs": (hero_weapon_tongs, "vapen B"),
     "helm_iron": (hero_helm, "hjalm"),
@@ -1445,6 +1708,141 @@ SLOT_ICONS: dict[str, list[str]] = {
     ],
 }
 
+# --- UI icons for combat v2 and the tutorial (16x16) -----------------------
+# COMBAT_READABILITY.md section 9 asks for armour and attack; M2.5 adds help,
+# charge, overflow and the tutorial pointer. Same colour blind rule as the slot
+# icons: fill each one black and no two silhouettes are confusable.
+#   ARMOR    shield, flat top, pointed bottom
+#   ATTACK   sword, diagonal, cross guard
+#   HELP     question mark, the only icon with a detached dot
+#   CHARGE   bank pill with a rising stack, flat bottom
+#   OVERFLOW elbow arrow: right, then down into the next target
+#   TUTORIAL_POINTER  hand drawn chalk arrow, points DOWN at 0 deg
+
+UI_ICONS: dict[str, list[str]] = {
+    # Rustning. Shield, not the pentagon - the pentagon means Ward (section 1.1
+    # of COMBAT_READABILITY: one glyph, two meanings, was rated 1/10).
+    "ARMOR": [
+        "................",
+        "..ssssssssssss..",
+        "..ssssssssssss..",
+        "..siiiiiiiiiis..",
+        "..siiiiiiiiiis..",
+        "..siiiiiiiiiis..",
+        "..siiiiiiiiiis..",
+        "..siiiiiiiiiis..",
+        "...siiiiiiiis...",
+        "...siiiiiiiis...",
+        "....siiiiiis....",
+        ".....siiiiis....",
+        "......siiis.....",
+        ".......sis......",
+        "........s.......",
+        "................",
+    ],
+    # Attack, fiendens intent. A sword pointing down-left at the player: the
+    # verb is "Attacks you", so the blade has to point somewhere.
+    "ATTACK": [
+        "..............b.",
+        ".............bb.",
+        "............bbb.",
+        "...........bbb..",
+        "..........bbb...",
+        ".........bbb....",
+        "....j...bbb.....",
+        "....jj.bbb......",
+        "...jjjbbb.......",
+        "..jjjjbb........",
+        "...bbbbb........",
+        "..bbb.jjj.......",
+        ".bb....jjj......",
+        "bb......jjj.....",
+        "b........jj.....",
+        "................",
+    ],
+    # Hjalp. Gold on dark, 48 dp touch target, top bar (section 6).
+    "HELP": [
+        "................",
+        "....gggggg......",
+        "...gggggggg.....",
+        "..ggg....ggg....",
+        "..gg......ggg...",
+        "..........ggg...",
+        ".........ggg....",
+        "........ggg.....",
+        ".......ggg......",
+        "......ggg.......",
+        "......ggg.......",
+        "......ggg.......",
+        "................",
+        "......ggg.......",
+        "......ggg.......",
+        "................",
+    ],
+    # Laddning i HUD:en. A bank pill with a stack rising inside it - reads as
+    # "stored", where slot_charge.png (a filled circle) reads as "this slot".
+    "CHARGE": [
+        "................",
+        "................",
+        ".gg.........gg..",
+        ".gg.........gg..",
+        ".gg.......gg.gg.",
+        ".gg.......gg.gg.",
+        ".gg.......gg.gg.",
+        ".gg....gg.gg.gg.",
+        ".gg....gg.gg.gg.",
+        ".gg....gg.gg.gg.",
+        ".gg.gg.gg.gg.gg.",
+        ".gg.gg.gg.gg.gg.",
+        ".gg.gg.gg.gg.gg.",
+        ".gggggggggggggg.",
+        ".gggggggggggggg.",
+        "................",
+    ],
+    # Spill / overflod. The elbow arrow used between enemy columns: damage that
+    # did not fit rolls on to the next target.
+    "OVERFLOW": [
+        "................",
+        ".cc.............",
+        ".cc.............",
+        ".cc.............",
+        ".cc.............",
+        ".cccccccccc.....",
+        ".cccccccccc.....",
+        "..........cc....",
+        "..........cc....",
+        "......c...cc....",
+        ".....cc...cc....",
+        "....ccccccccc...",
+        ".....ccccccc....",
+        "......ccccc.....",
+        ".......ccc......",
+        "........c.......",
+    ],
+    # Tutorial-pekare, varning 0. Chalk arrow with a deliberate wobble so it
+    # reads as drawn, not as a UI glyph. Points DOWN unrotated; the engine
+    # rotates in 90 deg steps for the other three directions.
+    "TUTORIAL_POINTER": [
+        ".......cc.......",
+        "......cccc......",
+        "......cccc......",
+        "......cccc......",
+        ".......ccc......",
+        ".......ccc......",
+        ".......ccc......",
+        "......cccc......",
+        "..c...cccc...c..",
+        "..cc..cccc..cc..",
+        "...ccccccccccc..",
+        "....ccccccccc...",
+        ".....ccccccc....",
+        "......ccccc.....",
+        ".......ccc......",
+        "........c.......",
+    ],
+}
+
+
 # --- Environment (side-scroll march, floor 1) ------------------------------
 
 
@@ -1548,6 +1946,16 @@ def generate(root: Path) -> list[tuple[str, str]]:
         path = ART / "ui" / f"slot_{slot_id.lower()}.png"
         write_png(root / path, icon(rows))
         made.append((path.as_posix(), f"Slotikon {slot_id}, 16x16"))
+    for icon_id, rows in UI_ICONS.items():
+        path = ART / "ui" / f"icon_{icon_id.lower()}.png"
+        write_png(root / path, icon(rows))
+        made.append((path.as_posix(), f"UI-ikon {icon_id}, 16x16, stridsskarm v2"))
+
+    # hero portraits for the choose-your-Smith screen
+    for variant in ("a", "b"):
+        path = ART / "hero" / f"smith_portrait_{variant}.png"
+        write_png(root / path, smith_portrait(variant))
+        made.append((path.as_posix(), f"Smeden portratt variant {variant.upper()}, 96x96, konsvalskarmen"))
 
     # environment
     for name, fn, note in (
