@@ -18,6 +18,10 @@ const SCREEN_MARCH: String = "MARCH"
 const SCREEN_COMBAT: String = "COMBAT"
 const SCREEN_REWARD: String = "REWARD"
 const SCREEN_GAMEOVER: String = "GAMEOVER"
+## Staden (M2.5). Tillfällig menyversion, se [TownScreen].
+const SCREEN_TOWN: String = "TOWN"
+## Kroppsvalet vid första start (M2.5).
+const SCREEN_SMITH: String = "SMITH"
 
 const SCENE_PATHS: Dictionary = {
 	SCREEN_TITLE: "res://src/game/title/title_screen.tscn",
@@ -25,6 +29,8 @@ const SCENE_PATHS: Dictionary = {
 	SCREEN_COMBAT: "res://src/game/combat/combat_screen.tscn",
 	SCREEN_REWARD: "res://src/game/reward/reward_screen.tscn",
 	SCREEN_GAMEOVER: "res://src/game/gameover/gameover_screen.tscn",
+	SCREEN_TOWN: "res://src/game/town/town_screen.tscn",
+	SCREEN_SMITH: "res://src/game/smith/choose_smith_screen.tscn",
 }
 
 ## M1 spelar bara våning 1 (GAME_DESIGN §1: "M1 använder bara våning 1").
@@ -46,6 +52,16 @@ signal run_over(won: bool, summary: Dictionary)
 var run: RunState = null
 var graph: RunGraph = null
 var rng: Rng = null
+## Profilen mellan runs: Pips, Kodex, kritstreck, [Reveal]. Laddas en gång vid
+## start och skrivs vid varje förändring.
+var meta: Meta = null
+
+## Tutorialvåningens rumsindex, eller -1 när vi spelar en riktig run.
+var _tutorial_room: int = -1
+## "Första gången"-nycklar runden visat, betalas ut vid runnens slut.
+var _run_firsts: Array[String] = []
+## Vad staden ska säga när spelaren kommer tillbaka (Marrows replik, Pips).
+var _arrival: Dictionary = {}
 
 var _screen: GameScreen = null
 var _screen_name: String = ""
@@ -65,6 +81,31 @@ func _ready() -> void:
 	# tillsammans, annars glider fienden ifrån sin HP-bar.
 	Juice.register_shake_layer($World)
 	Juice.register_shake_layer($ChalkUI)
+	meta = SaveIO.load_meta()
+	boot()
+
+
+## Startordningen (M2.5): kroppsval → titel → tutorial → staden → run → staden.
+##
+## Kroppsvalet ligger [b]först[/b] och inte i en inställningsmeny: figuren syns
+## i varje strid, och att välja den är det första beslut spelet ber om
+## (DECISIONS 2026-09-21).
+func boot() -> void:
+	# Språket sätts FÖRE första skärmen. Godot väljer annars OS-språket, och
+	# en svensk telefon fick svenska utan att någon valt det
+	# (DECISIONS 2026-09-21). Engelska är källspråket; svenska är ett val.
+	TranslationServer.set_locale(Settings.effective_locale())
+	if Settings.smith_variant == "":
+		show_smith_choice()
+		return
+	show_title()
+
+
+func show_smith_choice() -> void:
+	_show(SCREEN_SMITH, {"variant": Settings.smith_variant}, {"chosen": _on_smith_chosen})
+
+
+func _on_smith_chosen(_variant: String) -> void:
 	show_title()
 
 
@@ -169,19 +210,138 @@ func can_autosave() -> bool:
 ## Titelskärmen. Alltid först, även med en tvingad seed: rökprovet och en
 ## spelare ska gå exakt samma väg in i spelet.
 func show_title() -> void:
-	_show(SCREEN_TITLE, {"has_save": SaveIO.has_save()}, {"title_action": _on_title_action})
+	_show(SCREEN_TITLE, {
+		"has_save": SaveIO.has_save(),
+		"tutorial_done": meta.tutorial_done,
+	}, {"title_action": _on_title_action})
 
 
 func _on_title_action(action: String) -> void:
-	if action == "continue" and resume_run():
-		return
-	var forced_seed: int = _cmdline_seed()
-	if forced_seed != 0:
-		SaveIO.clear()
-		start_new_run(forced_seed)
-		return
+	match action:
+		"continue":
+			if resume_run():
+				return
+		"tutorial":
+			start_tutorial()
+			return
+		"skip_tutorial":
+			# Hoppbar från titeln och från inställningarna (§B.2). En spelare
+			# som hoppar över har per definition allt avslöjat.
+			meta.tutorial_done = true
+			meta.reveal = Reveal.all_on()
+			SaveIO.save_meta(meta)
+			show_town()
+			return
+		"town":
+			show_town()
+			return
 	SaveIO.clear()
-	start_new_run(_fresh_seed())
+	start_new_run(next_seed())
+
+
+## Seeden nästa run ska köras med. [code]--pipwreck-seed=N[/code] tvingar en
+## känd run; annars är den färsk.
+func next_seed() -> int:
+	var forced: int = _cmdline_seed()
+	return forced if forced != 0 else _fresh_seed()
+
+
+# ---------------------------------------------------------------------------
+# Staden (M2.5)
+# ---------------------------------------------------------------------------
+
+## Staden är navet mellan runs. Död/vinst-skärmens knapp leder hit, och
+## [code]GO DOWN[/code] ligger i tumzonen så att "en run till" är ett tapp.
+func show_town() -> void:
+	_tutorial_room = -1
+	var arrival: Dictionary = _arrival.duplicate()
+	_arrival = {}
+	_show(SCREEN_TOWN, {
+		"meta": meta,
+		"seed": next_seed(),
+		"arrival": arrival,
+	}, {"go_down": _on_go_down})
+
+
+func _on_go_down(seed_value: int) -> void:
+	SaveIO.clear()
+	start_new_run(seed_value)
+
+
+# ---------------------------------------------------------------------------
+# Tutorialvåning 0 (M2.5)
+# ---------------------------------------------------------------------------
+
+## Startar Grundstigen. Sju rum, spelas exakt en gång (TOWN_AND_ONBOARDING §B.2).
+func start_tutorial() -> void:
+	run = RunState.new_run(0)
+	rng = run.make_rng()
+	graph = RunGraph.generate_floor(M1_FLOOR, rng)
+	_rooms_cleared = 0
+	_best_chain = 0
+	_taken_ids = []
+	_run_won = false
+	_killed_by = ""
+	run.floor_index = 0
+	_tutorial_room = 0
+	run.combat = Tutorial.prepare_room(run.combat, 0, rng)
+	Tutorial.apply_reveal(meta.reveal, 0)
+	SaveIO.save_meta(meta)
+	_show_tutorial_room()
+
+
+func _show_tutorial_room() -> void:
+	var node: Dictionary = Tutorial.node_for(_tutorial_room)
+	_node_id = String(node["id"])
+	run.room_index = int(node["room"])
+	_show(SCREEN_COMBAT, {
+		"state": run.combat,
+		"rng": rng,
+		"node": node,
+		"reveal": meta.reveal,
+		"tutorial_room": _tutorial_room,
+		"best_chain": _best_chain,
+	}, {
+		"round_finished": _on_round_finished,
+		"combat_finished": _on_combat_finished,
+	})
+
+
+func _advance_tutorial(state: CombatState) -> void:
+	run.combat = Resolver.end_combat(state)
+	_rooms_cleared += 1
+	var reward: Dictionary = Tutorial.reward_for(_tutorial_room)
+	_tutorial_room += 1
+	if _tutorial_room >= Tutorial.room_count():
+		_finish_tutorial()
+		return
+	Tutorial.apply_reveal(meta.reveal, _tutorial_room)
+	SaveIO.save_meta(meta)
+	run.combat = Tutorial.prepare_room(run.combat, _tutorial_room, rng)
+	if reward.is_empty():
+		_show_tutorial_room()
+		return
+	_show(SCREEN_REWARD, {
+		"state": run.combat,
+		"options": [reward],
+		"node": Tutorial.node_for(_tutorial_room - 1),
+		"breather": false,
+	})
+
+
+func _finish_tutorial() -> void:
+	# En färdig spelare har alla flaggor på. Rummen sätter dem en och en, men
+	# hoppar spelaren ur mitt i ska hen ändå inte hamna i ett halvt UI.
+	meta.tutorial_done = true
+	meta.reveal = Reveal.all_on()
+	# §A.3: "Efter run 1 (tutorialrunen): staden öppnar. Marknad + Kritvägg."
+	# Grundstigen räknas alltså som runnen som låser upp staden, och den betalar
+	# som en vinst – men lägger INGET kritstreck: ingen dog där uppe.
+	meta.runs = maxi(meta.runs, 1)
+	meta.pips += Meta.PIPS_WIN
+	SaveIO.save_meta(meta)
+	_tutorial_room = -1
+	show_town()
 
 
 # ---------------------------------------------------------------------------
@@ -225,7 +385,12 @@ func _on_settings_closed() -> void:
 # ---------------------------------------------------------------------------
 
 func start_new_run(seed_value: int) -> void:
+	_tutorial_room = -1
+	_run_firsts = []
 	run = RunState.new_run(seed_value)
+	# Smedjans laddning ligger i profilen och läggs på det färska tillståndet.
+	# Byte och omordning, aldrig tillägg – [Forge] garanterar det.
+	run.combat = Forge.apply_loadout(run.combat, meta.loadout)
 	rng = run.make_rng()
 	graph = RunGraph.generate_floor(M1_FLOOR, rng)
 	_node_id = graph.start_id
@@ -353,13 +518,11 @@ func _on_screen_done(payload: Dictionary, from_screen: String) -> void:
 		SCREEN_REWARD:
 			_on_reward_chosen(payload)
 		SCREEN_GAMEOVER:
-			# "EN RUN TILL" startar direkt, utan omvägen över titeln: den
-			# knappen ÄR beslutet (UI_GUIDE §3).
+			# "BACK TO CHALKRIM" leder till staden, där GO DOWN redan ligger i
+			# tumzonen: en run till är ett tapp därifrån (§A.4 regel 2).
 			SaveIO.clear()
-			start_new_run(_fresh_seed())
-		SCREEN_TITLE:
-			pass
-		SCREEN_COMBAT:
+			show_town()
+		SCREEN_TITLE, SCREEN_COMBAT, SCREEN_TOWN, SCREEN_SMITH:
 			pass
 
 
@@ -395,6 +558,8 @@ func _show_combat() -> void:
 		"rng": rng,
 		"node": node,
 		"graph": graph,
+		"reveal": meta.reveal,
+		"tutorial_room": -1,
 		"best_chain": _best_chain,
 	}, {
 		"round_finished": _on_round_finished,
@@ -404,7 +569,10 @@ func _show_combat() -> void:
 
 func _show_reward() -> void:
 	var node: Dictionary = graph.node_at(_node_id)
-	var pool: Array[Dictionary] = RunFlow.available_pool(Content.reward_pool(), _taken_ids)
+	# Poolen är startpoolen PLUS det spelaren köpt loss på Skrotmarknaden.
+	# Marknaden lägger till innehåll, aldrig siffror (§A.3).
+	var pool: Array[Dictionary] = RunFlow.available_pool(
+		Content.unlocked_pool(meta.unlocked), _taken_ids)
 	var options: Array[Dictionary] = Rewards.generate(pool, rng, RunFlow.reward_floor_key(node))
 	_show(SCREEN_REWARD, {
 		"state": run.combat,
@@ -417,8 +585,28 @@ func _show_reward() -> void:
 func _show_gameover() -> void:
 	var summary: Dictionary = build_summary()
 	_save_phase(SCREEN_GAMEOVER, true)
+	summary["award"] = _award_run()
 	_show(SCREEN_GAMEOVER, summary)
 	run_over.emit(_run_won, summary)
+
+
+## Betalar ut Pips och sätter kritstrecket (§A.3). Körs [b]en gång per run[/b],
+## precis före död/vinst-skärmen, och lämnar över resultatet till staden så att
+## Marrow kan säga sin rad med rätt siffra bredvid.
+func _award_run() -> Dictionary:
+	var boss_killed: bool = _run_won
+	var award: Dictionary = meta.award_run(
+		_rooms_cleared, boss_killed, _run_won, _run_firsts,
+		_best_chain, int((build_summary()["score"] as Dictionary)["total"]))
+	SaveIO.save_meta(meta)
+	_arrival = {
+		"killed_by": _killed_by,
+		"won": _run_won,
+		"seed": run.seed_value if run != null else 0,
+		"pips_earned": int(award["earned"]),
+	}
+	_run_firsts = []
+	return award
 
 
 ## Allt död/vinst-skärmen visar. Poängen räknas i [MetaScore], inte här.
@@ -446,14 +634,36 @@ func _on_round_finished(state: CombatState, result: ResolveResult) -> void:
 	var chain: int = MetaScore.chain_damage(result.events)
 	_best_chain = maxi(_best_chain, chain)
 	for event: Dictionary in result.events:
-		if String(event.get("t", "")) == "player_died":
-			_killed_by = String(event.get("killed_by", ""))
-	_autosave(SCREEN_COMBAT)
+		match String(event.get("t", "")):
+			"player_died":
+				_killed_by = String(event.get("killed_by", ""))
+			"combo_formed":
+				_note_combo(String(event.get("kind", "")))
+			"house_bonus":
+				_note_combo("HOUSE")
+	if _tutorial_room < 0:
+		_autosave(SCREEN_COMBAT)
 	round_autosaved.emit(state.round_number, chain)
+
+
+## Kodexen och engångsbonusarna (§A.3). Bokförs per runda, betalas ut i
+## [method _award_run] – annars skulle ett omkast kunna betala två gånger.
+func _note_combo(kind: String) -> void:
+	if kind == "" or kind == "NONE":
+		return
+	if meta.see_combo(kind):
+		_run_firsts.append(kind)
+	for enemy: Enemy in run.combat.enemies:
+		meta.see_enemy(enemy.id)
 
 
 func _on_combat_finished(won: bool, state: CombatState) -> void:
 	run.combat = state
+	if _tutorial_room >= 0:
+		# Träningshjulen: i våning 0 kan man inte dö, så "not won" kan bara
+		# betyda att rummet är oavslutat. Vi går vidare oavsett.
+		_advance_tutorial(state)
+		return
 	if not won:
 		_run_won = false
 		_show_gameover()
@@ -475,6 +685,10 @@ func _on_combat_finished(won: bool, state: CombatState) -> void:
 
 
 func _on_reward_chosen(payload: Dictionary) -> void:
+	if _tutorial_room >= 0:
+		# Tutorialens kort är berättande; förändringen ligger i rumsdatan.
+		_show_tutorial_room()
+		return
 	var choice: Dictionary = payload.get("choice", {}) as Dictionary
 	if not choice.is_empty():
 		run.combat = RewardApply.apply(run.combat, choice, payload.get("target", {}) as Dictionary)

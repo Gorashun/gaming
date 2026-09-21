@@ -21,10 +21,14 @@ signal title_action(action: String)
 @onready var _buttons: VBoxContainer = $Margin/Column/Buttons
 
 var _has_save: bool = false
+## Har spelaren gått Grundstigen? Styr om titeln erbjuder tutorialen eller
+## staden (TOWN_AND_ONBOARDING §B.2: våning 0 spelas exakt en gång).
+var _tutorial_done: bool = false
 
 
 func enter(ctx: Dictionary) -> void:
 	_has_save = bool(ctx.get("has_save", SaveIO.has_save()))
+	_tutorial_done = bool(ctx.get("tutorial_done", true))
 	_style()
 	_build_buttons()
 
@@ -61,9 +65,16 @@ func _build_buttons() -> void:
 		child.queue_free()
 	if _has_save:
 		_add_button(Tokens.translate_or("TITLE_CONTINUE", "CONTINUE"), true, func() -> void: _choose("continue"))
-		_add_button(Tokens.translate_or("TITLE_NEW_RUN", "NEW RUN"), false, func() -> void: _choose("new"))
+	if not _tutorial_done:
+		# Första gången är primärknappen Grundstigen, inte en run. Att hoppa
+		# över den är ett eget, utskrivet val – aldrig en gömd inställning.
+		_add_button(Tokens.translate_or("TUT_FLOOR_NAME", "THE SHALLOW CUT"),
+			not _has_save, func() -> void: _choose("tutorial"))
+		_add_button(Tokens.translate_or("TUT_SKIP", "SKIP THE LESSON"),
+			false, func() -> void: _choose("skip_tutorial"))
 	else:
-		_add_button(Tokens.translate_or("TITLE_NEW_RUN", "NEW RUN"), true, func() -> void: _choose("new"))
+		_add_button(Tokens.translate_or("TOWN_NAME", "CHALKRIM"),
+			not _has_save, func() -> void: _choose("town"))
 	_add_button(Tokens.translate_or("TITLE_SETTINGS", "SETTINGS"), false, open_settings)
 
 

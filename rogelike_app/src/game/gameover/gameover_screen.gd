@@ -49,8 +49,19 @@ func enter(ctx: Dictionary) -> void:
 
 	# GAME_DESIGN §6.10: seeden är synlig. Det är communityns bevis på att vi
 	# inte fuskar, och förutsättningen för dagliga utmaningar.
+	# Pips-utbetalningen (§A.3). Förlust betalar alltid, och "första gången"-
+	# bonusarna gör att en spektakulär förlust betalar bättre än en trist
+	# överlevnad. Det är rätt incitament: vi belönar att spelaren försökte.
+	var award: Dictionary = ctx.get("award", {}) as Dictionary
+	if not award.is_empty():
+		_add_divider()
+		_add_count_stat(Tokens.translate_or("GAMEOVER_PIPS", "Pips earned"),
+			int(award.get("earned", 0)), "+%d", true)
+
 	_seed_label.text = tr("GAMEOVER_SEED") % int(ctx.get("seed", 0))
-	_again_button.text = tr("GAMEOVER_AGAIN")
+	# Knappen leder till staden, inte rakt in i en ny run: GO DOWN ligger redan
+	# i tumzonen där, så "en run till" är fortfarande ett tapp (§A.4 regel 2).
+	_again_button.text = Tokens.translate_or("GAMEOVER_BACK_TO_TOWN", "BACK TO CHALKRIM")
 	_again_button.pressed.connect(play_again)
 
 	# Ögonblicket. Ljudet först, sedan siffrorna som räknas upp, sedan – bara
