@@ -19,7 +19,7 @@ SWAP_VOID,Void Slot,Tomrumsslot
 SWAP_FIRE,Fire Slot,Eldslot
 SWAP_ANVIL,Anvil Slot,Ambossslot
 SWAP_MIRROR,Mirror Slot,Spegelslot
-ENEMY_RUST_RAT,Rust Rat,Rostråttan
+ENEMY_RUST_RAT,Rust Rat,Rostråtta
 ENEMY_SLAG_MOTH,Slag Moth,Slaggmalen
 ENEMY_THORN_IMP,Thorn Imp,Taggimpen
 ENEMY_PIP_THIEF,Pip Thief,Ögontjuven
@@ -71,11 +71,11 @@ FACE_EFFECT_REFUND,↻ reroll,↻ omkast
 FACE_EFFECT_LOCKED,⬤ locked,⬤ låst
 SLOT_STATE_GRABBED,GRABBED,GRIPEN
 SLOT_STATE_EMPTY,EMPTY,TOM
-ENEMY_ARMOR,⬟ %d armor,⬟ %d rust.
-STATUS_BURN,▲ %d burn,▲ %d brand
-STATUS_POISON,⬬ %d poison,⬬ %d gift
-INTENT_ATTACK,▲ %d damage,▲ %d skada
-INTENT_BLOCK,⬟ +%d armor,⬟ +%d rustning
+ENEMY_ARMOR,⬟ %d arm,⬟ %d rust
+STATUS_BURN,▲ %d brn,▲ %d brand
+STATUS_POISON,⬬ %d psn,⬬ %d gift
+INTENT_ATTACK,▲ %d dmg,▲ %d skada
+INTENT_BLOCK,⬟ +%d arm,⬟ +%d rust
 INTENT_SPECIAL,✦ %s,✦ %s
 INTENT_NONE,–,–
 INTENT_NOTE_HARDEN,Hardens: +%d armor,Härdar: +%d rustning

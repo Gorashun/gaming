@@ -2,6 +2,67 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M1.5 – Engelskt källspråk och pixelgrafik (2026-09-21)
+
+Två leveranser i en: all spelartext är engelska i källan och går via `tr()`, och
+platshållarna i `World`-lagret är utbytta mot de riktiga sprajterna.
+
+**A. i18n**
+
+- **Källspråk engelska.** Fem skärmar, `ui/tokens.gd`, `src/data/content.gd`,
+  `src/core/reward_apply.gd` och `tools/smoke_play.gd` skriver engelska. Namn är
+  spelengelska, inte ordagrant översatta: Giftdroppe → Venom Drop, Slaggmal →
+  Slag Moth, Ögontjuven → Pip Thief, Smeden → The Smith.
+- **`assets/i18n/translations.csv`** (`keys,en,sv`, 118 rader) registrerad i
+  `project.godot` med `locale/fallback = "en"`.
+- **Innehåll översätts på id.** `Content.enemy_key()` / `face_key()` /
+  `relic_key()` / `slot_swap_key()` / `class_key()` ger nyckeln;
+  `Tokens.translate_or()` faller tillbaka på det engelska källnamnet om raden
+  saknas, så ett nytt innehålls-id aldrig visas som rå nyckel.
+- **Core innehåller inte längre prosa.** `Intent.note` är en nyckel plus
+  `note_args`; `RewardApply.describe()` bygger sin mening av nycklar.
+- **`tests/test_i18n.gd`** skannar `src/` med RegEx och fäller bygget på en
+  `tr()`-nyckel utan CSV-rad, en tom `en`- eller `sv`-cell eller en dubblett.
+
+**B. Sprites**
+
+- **`src/game/ui/art.gd`** är enda stället i `src/game/` som känner ett filnamn:
+  fiendeark, paperdoll-lager, relik→lager-tabellen, tärningskroppar, LUT:ar,
+  slot- och nodikoner, parallax. Plus heltalsmatematiken (`fit_scale`, `snap`).
+- **Strid:** `EnemyActor` är en `AnimatedSprite2D` med fyra idle-frames (boss
+  48×48, övriga 32×32, ×4), parallax och golvkakel bakom, Smeden som paperdoll
+  till vänster. Fienderna står på panelernas konsthåll-underkant, så alla delar
+  golvlinje oavsett cellstorlek.
+- **`DieArt`:** kropp + pips/glyph + glaskant + spricka, heltalsskala, både i
+  brickan och i sloten. `SlotView` och `RewardCard` fick slot-, nod- och
+  relikikoner; belöningskortet komponerar den smidda sidan.
+- **Paperdoll:** `HeroFigure` har nio lager i PAPERDOLL §2:s z-ordning och en
+  `AnimationPlayer` som driver `frame_index` (idle/walk/attack/hit, Discrete).
+  `apply_relics()` implementerar kollisionsregeln i §3 (högst rarity vinner,
+  sedan senast plockad; utrustning slår relik).
+- **Kedjan:** `die_activated` blixtrar den riktiga tärningen i sloten och i
+  brickan och låter Smeden svinga, `damage_dealt` blixtrar fiendesprajten,
+  `enemy_killed` tonar ut. Tidsbudgeten (2 500 / 3 200 ms) är orörd.
+- **Skärmdumpar:** `docs/screenshots/m1_5/`, samma sex vyer, engelska.
+
+Mätvärden vid leverans (Godot 4.6.stable, x86_64):
+
+| Mätning | Resultat |
+|---|---|
+| gdUnit4 | 188 tester, 0 fel, 0 failures |
+| Rökprov (default, en) | SMOKE OK, 6 skärmdumpar, vinst på seed 7 |
+| Rökprov (`--locale=sv`) | SMOKE OK |
+| Licenscheck | 60/60 registrerade, own-work |
+
+**Avvikelse (rapporterad):** `palette_lut.gdshader` skriver i GL Compatibility
+ut sitt resultat utan sRGB-konvertering. En sprite med `lut_strength = 0`
+renderas som `srgb_to_linear(källan)` (uppmätt: `#C2451D` → `#941203`) och
+LUT-vägen landar ~24 % för mörkt. Tärningarna ritas därför med de förtintade
+kropparna (`die_body_{iron,bone,glass}.png`), som renderas 1:1, i stället för
+gråskalemastern + LUT. Shadern används fortfarande för träffblixten, där
+mörkningen inte syns eftersom bilden ändå lerpas mot vitt. Kompositionen och
+filuppsättningen är oförändrade; när shadern är fixad är det en rad i `Art`.
+
 ## M1 – Vertical slice (2026-09-21)
 
 Våning 1 går att spela igenom i portrait med platshållargrafik: marsch → strid →

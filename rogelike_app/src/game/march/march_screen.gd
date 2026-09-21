@@ -16,6 +16,8 @@ extends GameScreen
 
 ## Hur länge marschen tar innan valet visas.
 const MARCH_SECONDS: float = 1.3
+## Nodikonens höjd på förgreningsknappen, i dp (16 px-ikon × 4 = 64 px).
+const ICON_DP: int = 21
 
 @onready var _heading: Label = $Margin/Column/Heading
 @onready var _strip: Control = $Margin/Column/Strip
@@ -114,14 +116,33 @@ func _make_choice_button(index: int, node_id: String) -> Button:
 	button.add_theme_stylebox_override("hover", style)
 	button.add_theme_stylebox_override("pressed", style)
 	button.add_theme_stylebox_override("focus", style)
-	button.text = "%s  %s\n%s" % [node_icon(node), node_title(node), preview_text(node)]
+	var icon: Texture2D = Art.node_icon(node_kind(node))
+	if icon != null:
+		# Ikonen ligger i krit-UI:t och måste sätta Nearest själv: ChalkUI-lagret
+		# ärver Linear och skulle annars sudda 16×16-pixlarna (UI_GUIDE §8.2).
+		button.icon = icon
+		button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		# expand_icon skalar upp 16×16-ikonen till knappens höjd; icon_max_width
+		# kapar den vid en heltalsmultipel (16 × 4 = 64 px) så att pixelrutnätet
+		# förblir helt.
+		button.expand_icon = true
+		button.add_theme_constant_override("icon_max_width", 16 * Art.ICON_SCALE)
+		button.add_theme_constant_override("h_separation", Tokens.dpi(Tokens.SPACE_4))
+		button.text = "%s\n%s" % [node_title(node), preview_text(node)]
+	else:
+		button.text = "%s  %s\n%s" % [node_glyph(node), node_title(node), preview_text(node)]
 	button.pressed.connect(choose.bind(index))
 	return button
 
 
-## Ikonen för en nodtyp. Blir en 32×32-sprite ur Kenney 1-Bit i M2
-## (research 04 §6: COMBAT, ELITE, FORGE, REST, BOSS, MYSTERY).
-static func node_icon(node: Dictionary) -> String:
+## Nodtypen som filnamnsdel: assets/sprites/ui/node_<kind>.png. M1 har bara
+## strid och boss i grafen; elite, forge, rest och mystery väntar på M2.
+static func node_kind(node: Dictionary) -> String:
+	return "boss" if RunFlow.is_boss(node) else "combat"
+
+
+## Reservglyph när nodikonen inte kan laddas.
+static func node_glyph(node: Dictionary) -> String:
 	return "☠" if RunFlow.is_boss(node) else "⚔"
 
 

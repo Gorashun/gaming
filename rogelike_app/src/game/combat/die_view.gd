@@ -24,7 +24,7 @@ var _locked: bool = false
 var _stolen: bool = false
 
 var _panel: Panel = null
-var _art: Control = null
+var _art: DieArt = null
 var _value_label: Label = null
 var _effect_label: Label = null
 var _state_label: Label = null
@@ -43,11 +43,10 @@ func _init() -> void:
 	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_panel)
 
-	# Plats för pixelsprite. Tom i M1.
-	_art = Control.new()
+	# Pixeltärningen: kropp + glyph + palett-LUT + spricka (DieArt).
+	_art = DieArt.new()
 	_art.name = "Art"
 	_art.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_art)
 
 	_value_label = Label.new()
@@ -86,9 +85,18 @@ func _init() -> void:
 	add_child(_state_label)
 
 
-## Noden där en pixeltärning ska läggas in. Tom i M1.
+## Den komponerade pixeltärningen. Sedan M1.5 ritar den riktiga sprites;
+## [member _value_label] är kvar som reserv för när en textur saknas.
 func art_root() -> Control:
 	return _art
+
+
+## Aktiveringspuls på den RIKTIGA tärningssprajten (UI_GUIDE §5.1), inte på
+## en platshållarruta. Faller tillbaka på en skalpuls om konsten inte ritas.
+func pulse_art(duration: float = Tokens.MOTION_BASE) -> void:
+	if _art != null and _art.is_drawing():
+		_art.flash(0.75, duration)
+	Juice.pulse(self, 1.14, duration)
 
 
 func bind(index: int, die: Die, placed_in_slot: int, stolen: bool) -> void:
@@ -119,6 +127,11 @@ func is_available() -> bool:
 
 
 func _refresh(face: Face) -> void:
+	if _art != null:
+		# Sprickvarianten seedas på tärningens id: samma tärning har samma
+		# spricka hela runnen, men ingen slump dras ur Rng-strömmen.
+		_art.show_die(_die, hash(_die.id) if _die != null else 0)
+		_art.visible = _die != null
 	if face == null:
 		_value_label.text = "–"
 		_effect_label.text = ""
@@ -127,7 +140,12 @@ func _refresh(face: Face) -> void:
 		return
 
 	_value_label.text = str(face.value)
-	_effect_label.text = _effect_glyph(face)
+	# Ritas sidan som ögon bär konsten värdet och siffran vore dubbelt. Ritas
+	# den som glyph (gift, eld, blod, tomrum) står värdet i stället i
+	# effektraden, precis som i mockupen ("GIFT 2").
+	var art_has_value: bool = _art != null and _art.shows_value()
+	_value_label.visible = not art_has_value
+	_effect_label.text = _effect_label_text(face, not art_has_value)
 	_effect_label.add_theme_color_override("font_color", _effect_color(face))
 
 	var body: Color = Tokens.BONE_DIE
@@ -150,12 +168,27 @@ func _refresh(face: Face) -> void:
 		border = Tokens.SEM_CHARGE
 
 	var style: StyleBoxFlat = Tokens.box(border, true, Tokens.STROKE_BOLD if _selected else Tokens.STROKE_REG, Tokens.RADIUS_DIE)
-	style.bg_color = body
+	# Ritar DieArt tärningen är panelen bara en ram: en benvit botten bakom en
+	# pixeltärning gör silhuetten otydlig (UI_GUIDE §11 punkt 7).
+	style.bg_color = Tokens.SURFACE_SLATE if (_art != null and _art.is_drawing()) else body
 	_panel.add_theme_stylebox_override("panel", style)
 
 	var pip_color: Color = Tokens.BONE_PIP if body == Tokens.BONE_DIE else Tokens.CHALK_500
 	_value_label.add_theme_color_override("font_color", pip_color)
 	_value_label.modulate.a = 0.45 if _placed_in_slot >= 0 or _stolen else 1.0
+	if _art != null:
+		_art.modulate.a = 0.5 if _placed_in_slot >= 0 or _stolen else 1.0
+
+
+## Effektraden ovanför tärningen. [param include_value] lägger till sidans
+## värde när konsten inte visar det själv.
+static func _effect_label_text(face: Face, include_value: bool) -> String:
+	var text: String = _effect_glyph(face)
+	if not include_value:
+		return text
+	if text == "":
+		return str(face.value)
+	return "%s %d" % [text, face.value]
 
 
 static func _effect_glyph(face: Face) -> String:

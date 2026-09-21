@@ -22,6 +22,10 @@ signal combat_finished(won: bool, state: CombatState)
 ## Tärningsplaceringar som lämnar slots tomma är tillåtna och ibland korrekta
 ## (GAME_DESIGN §7 fråga 4: Charge-banken kräver det).
 const ALLOW_EMPTY_SLOTS: bool = true
+## Bredden på hjältens kolumn i fiendezonen, i dp. Smulare än cellens 64 dp:
+## figuren är ~24 px bred av sina 48, och resten av cellen får gärna sticka ut
+## över parallaxen. Varje dp här tas från fiendepanelernas textbredd.
+const HERO_SLOT_WIDTH: int = 40
 
 @onready var _hp_label: Label = $Margin/Column/TopBar/HpLabel
 @onready var _hp_bar: ProgressBar = $Margin/Column/TopBar/HpBar
@@ -51,6 +55,9 @@ var _history: Array[PackedInt32Array] = []
 var _selected_die: int = -1
 var _locked_ids: Array = []
 
+## Tom kolumn längst till vänster i fiendezonen. Där står Smeden i
+## World-lagret; krit-UI:t reserverar bara platsen (UI_GUIDE §8.1).
+var _hero_slot: Control = null
 var _panels: Array[EnemyPanel] = []
 var _slot_views: Array[SlotView] = []
 var _die_views: Array[DieView] = []
@@ -82,7 +89,7 @@ func _style() -> void:
 	$Margin.add_theme_constant_override("margin_top", Tokens.dpi(Tokens.SCREEN_MARGIN))
 	$Margin.add_theme_constant_override("margin_bottom", Tokens.dpi(Tokens.SCREEN_MARGIN))
 	$Margin/Column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
-	_enemy_zone.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
+	_enemy_zone.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 	_slot_row.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
 	_tray.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
 	$Margin/Column/Actions.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
@@ -111,10 +118,13 @@ func _style() -> void:
 
 	_style_button(_undo_button, Tokens.TYPE_LABEL, Tokens.CHALK_300, Tokens.BUTTON_SECONDARY_HEIGHT)
 	_style_button(_reroll_button, Tokens.TYPE_LABEL, Tokens.SEM_FROST, Tokens.BUTTON_SECONDARY_HEIGHT)
-	_undo_button.custom_minimum_size.x = Tokens.dp(Tokens.TOUCH_MIN + 24)
-	_reroll_button.custom_minimum_size.x = Tokens.dp(Tokens.TOUCH_MIN + 36)
+	# Sekundärknapparna hålls precis över träffytans 48 dp. Varje dp de tar är
+	# en bokstav mindre på primärknappen, som måste rymma både verbet och
+	# kedjans summa på svenska ("BEKRÄFTA KEDJA · 28").
+	_undo_button.custom_minimum_size.x = Tokens.dp(Tokens.TOUCH_MIN + 20)
+	_reroll_button.custom_minimum_size.x = Tokens.dp(Tokens.TOUCH_MIN + 32)
 	_confirm_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_style_button(_confirm_button, Tokens.TYPE_BODY_L, Tokens.SURFACE_PIT, Tokens.BUTTON_PRIMARY_HEIGHT)
+	_style_button(_confirm_button, Tokens.TYPE_BODY, Tokens.SURFACE_PIT, Tokens.BUTTON_PRIMARY_HEIGHT)
 	var primary: StyleBoxFlat = Tokens.box(Tokens.CHALK_100, true, Tokens.STROKE_REG)
 	primary.bg_color = Tokens.CHALK_100
 	_confirm_button.add_theme_stylebox_override("normal", primary)
@@ -157,6 +167,17 @@ func _build_room() -> void:
 	for panel: EnemyPanel in _panels:
 		panel.queue_free()
 	_panels.clear()
+	if _hero_slot != null:
+		_hero_slot.queue_free()
+	# Smeden står till vänster om fienderna, som i mockupen. Platsen reserveras
+	# i krit-UI:t så att panelerna inte lägger sig ovanpå figuren; själva
+	# paperdollen ritas i World-lagret av CombatWorld.
+	_hero_slot = Control.new()
+	_hero_slot.name = "HeroSlot"
+	_hero_slot.custom_minimum_size = Vector2(Tokens.dp(HERO_SLOT_WIDTH), 0.0)
+	_hero_slot.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_hero_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_enemy_zone.add_child(_hero_slot)
 	for enemy: Enemy in state.enemies:
 		var panel: EnemyPanel = EnemyPanel.new()
 		_enemy_zone.add_child(panel)
@@ -192,6 +213,19 @@ func _sync_world() -> void:
 	if world == null:
 		return
 	await get_tree().process_frame
+	if world == null or not is_instance_valid(world):
+		return
+	# Bandet (parallax + golv) kan först byggas när containrarna har gjort sin
+	# layout: det är fiendezonens rect som avgör var horisonten ligger.
+	# Golvlinjen är fiendepanelernas konsthåll-underkant, inte bandets botten:
+	# fienderna ska stå PÅ golvet i det genomskinliga hålet, inte bakom
+	# kritplattan under det.
+	var floor_y: float = _enemy_zone.get_global_rect().end.y
+	if not _panels.is_empty():
+		floor_y = _panels[0].art_bottom()
+	world.call("set_band", _enemy_zone.get_global_rect(), floor_y, state.relics)
+	if _hero_slot != null and _hero_slot.is_inside_tree():
+		world.call("place_hero", _hero_slot.get_global_rect().get_center())
 	for i: int in range(_panels.size()):
 		world.call("place", i, _panels[i].enemy_id, _panels[i].anchor_point())
 
@@ -471,7 +505,13 @@ func _on_event(event: Dictionary, duration: float) -> void:
 		"die_activated":
 			var slot: int = int(event.get("slot", 0))
 			if slot < _slot_views.size():
-				Juice.pulse(_slot_views[slot], 1.18, maxf(0.08, duration))
+				# Pulsen ligger på den riktiga tärningssprajten i sloten och i
+				# brickan, inte på en platshållarruta (UI_GUIDE §5.1).
+				_slot_views[slot].pulse_die(maxf(0.08, duration))
+			var die_index: int = _placement[slot] if slot < _placement.size() else -1
+			if die_index >= 0 and die_index < _die_views.size():
+				_die_views[die_index].pulse_art(maxf(0.08, duration))
+			_swing_hero()
 			Juice.sfx("die_activate", Juice.chain_pitch(_chain_step))
 			Juice.haptic(Haptics.Level.LIGHT)
 			_chain_step += 1
@@ -514,6 +554,7 @@ func _on_event(event: Dictionary, duration: float) -> void:
 				_pop(_hp_label, "-%d" % damage, Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_L)
 				Juice.shake(self, 4.0, 0.16)
 				Juice.haptic(Haptics.Level.MEDIUM)
+				_stagger_hero()
 		"heal":
 			_pop(_hp_label, "+%d" % int(event.get("amount", 0)), Tokens.SEM_HEAL, Tokens.TYPE_TITLE)
 		"die_cracked":
@@ -523,6 +564,27 @@ func _on_event(event: Dictionary, duration: float) -> void:
 			_pop(_hp_label, tr("COMBAT_PLAYER_DEAD"), Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_XL)
 		"round_end":
 			_refresh_hud()
+
+
+## Smeden svingar när en tärning aktiveras. [method HeroFigure.strike] lägger
+## kontakten 180 ms in, vilket sammanfaller med kedjestegets damage_dealt
+## (PAPERDOLL §4, "Tidsbudget mot kedjan").
+func _swing_hero() -> void:
+	var figure: HeroFigure = _hero()
+	if figure != null:
+		figure.strike()
+
+
+func _stagger_hero() -> void:
+	var figure: HeroFigure = _hero()
+	if figure != null:
+		figure.stagger()
+
+
+func _hero() -> HeroFigure:
+	if world == null or not is_instance_valid(world):
+		return null
+	return world.get("hero") as HeroFigure
 
 
 func _on_damage(event: Dictionary) -> void:

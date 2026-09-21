@@ -13,7 +13,12 @@ var index: int = -1
 var option: Dictionary = {}
 var target: Dictionary = {}
 
+## Konstrutans sida i dp.
+const ART_DP: int = 44
+
 var _art: Control = null
+var _icon: Sprite2D = null
+var _die_art: DieArt = null
 var _rarity_label: Label = null
 var _name_label: Label = null
 var _effect_label: Label = null
@@ -38,12 +43,25 @@ func _init() -> void:
 	row.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_4))
 	margin.add_child(row)
 
-	# Plats för relik-/sidsprite (Kenney 1-Bit enligt DECISIONS). Tom i M1.
+	# Relikikon (16×16) eller komponerad tärningssida (32×32), beroende på
+	# belöningens kategori. Ligger i krit-UI:t och sätter därför Nearest själv.
 	_art = Control.new()
 	_art.name = "Art"
-	_art.custom_minimum_size = Vector2(Tokens.dp(40), Tokens.dp(40))
+	_art.custom_minimum_size = Vector2(Tokens.dp(ART_DP), Tokens.dp(ART_DP))
 	_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	row.add_child(_art)
+
+	_icon = Art.pixel_sprite()
+	_icon.name = "Icon"
+	_art.add_child(_icon)
+
+	_die_art = DieArt.new()
+	_die_art.name = "DieArt"
+	_die_art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_die_art.visible = false
+	_art.add_child(_die_art)
+	_art.resized.connect(_layout_art)
 
 	var column: VBoxContainer = VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -77,6 +95,36 @@ func art_root() -> Control:
 	return _art
 
 
+## Fyller konstrutan: relikikon för en relik, komponerad tärningssida för en
+## smidbar sida, slot-ikon för ett slot-byte. Hittas ingen textur lämnas rutan
+## tom – kortet är ändå läsbart, texten bär hela beslutet.
+func _bind_art() -> void:
+	var data: Dictionary = option.get("data", {}) as Dictionary
+	_icon.texture = null
+	_icon.modulate = Color.WHITE
+	_die_art.visible = false
+	match String(option.get("category", "")):
+		Rewards.CATEGORY_RELIC:
+			_icon.texture = Art.relic_icon(String(data.get("relic_id", "")))
+		Rewards.CATEGORY_SLOT_SWAP:
+			var slot_type: int = int(data.get("slot_type", Rules.SlotType.PLAIN))
+			_icon.texture = Art.slot_icon(slot_type)
+			_icon.modulate = Tokens.slot_color(slot_type)
+		Rewards.CATEGORY_FORGE_FACE:
+			var die: Die = Die.new("preview", [Content.make_face(String(data.get("face_id", "")))])
+			_die_art.show_die(die, 0)
+			_die_art.visible = _die_art.is_drawing()
+	_icon.visible = _icon.texture != null
+	_layout_art()
+
+
+func _layout_art() -> void:
+	if _icon == null or _art == null:
+		return
+	_icon.scale = Vector2.ONE * Art.fit_scale(_art.size, 16)
+	_icon.position = Art.snap(_art.size * 0.5, int(_icon.scale.x))
+
+
 func bind(p_index: int, p_option: Dictionary, p_target: Dictionary, description: String) -> void:
 	index = p_index
 	option = p_option
@@ -96,6 +144,7 @@ func bind(p_index: int, p_option: Dictionary, p_target: Dictionary, description:
 		String(option.get("name", option.get("id", ""))),
 	)
 	_effect_label.text = description
+	_bind_art()
 
 	var box: StyleBoxFlat = Tokens.box(color, true, Tokens.STROKE_BOLD, Tokens.RADIUS_CARD)
 	box.bg_color = Tokens.SURFACE_RAISED

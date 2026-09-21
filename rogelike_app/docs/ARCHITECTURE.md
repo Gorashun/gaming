@@ -1,7 +1,7 @@
 # Arkitektur – PIPWRECK
 
-*Uppdaterad 2026-09-21 (M1). Normativ källa för reglerna är `GAME_DESIGN.md`; det
-här dokumentet beskriver hur koden är organiserad och hur man kör den.*
+*Uppdaterad 2026-09-21 (M1.5). Normativ källa för reglerna är `GAME_DESIGN.md`;
+det här dokumentet beskriver hur koden är organiserad och hur man kör den.*
 
 ## Lagerregeln: core → game, aldrig tvärtom
 
@@ -95,8 +95,8 @@ känna till den andras layout.
 
 | Skärm | Scen | World-innehåll |
 |---|---|---|
-| Marsch | `src/game/march/march_screen.tscn` | `march_world.tscn`: två parallaxlager, golvremsa, `HeroFigure` |
-| Strid | `src/game/combat/combat_screen.tscn` | `combat_world.tscn`: en `EnemyActor` per fiende |
+| Marsch | `src/game/march/march_screen.tscn` | `march_world.tscn`: tre parallaxlager, golvremsa, `HeroFigure` |
+| Strid | `src/game/combat/combat_screen.tscn` | `combat_world.tscn`: parallaxband, golv, Smeden, en `EnemyActor` per fiende |
 | Belöning | `src/game/reward/reward_screen.tscn` | – |
 | Död/vinst | `src/game/gameover/gameover_screen.tscn` | – |
 
@@ -105,23 +105,151 @@ utlöses av en signal som emitteras inifrån `EventPlayer._process`, och att riv
 ned stridsscenen mitt i motorns process-iteration kraschade Godot 4.6
 reproducerbart.
 
-### Bytesplatser för pixelgrafik
+## Pixelgrafiken (M1.5)
 
-Allt M1-innehåll är `ColorRect`/`Polygon2D`/`Label`. Dessa noder är avsedda att
-bytas ut utan att röra logiken:
+### `src/game/ui/art.gd` är enda uppslagsplatsen
 
-| Nod | Var | Vad som ska in |
+Ingen annan fil i `src/game/` känner ett filnamn under `assets/sprites/`.
+`Art` håller fiendearken och deras rutnät, paperdoll-lagren, relik→lager-
+tabellen, tärningskroppar och LUT:ar, slot-, nod- och relikikoner samt
+parallaxlagren med sina normativa hastigheter. Byts en sprite ut (utbytesplanen
+i `assets/sprites/README.md` när CC0-paketen går att hämta) ändras en rad där.
+
+`Art` äger också de tre reglerna som hela pipen vilar på:
+
+1. **Nearest, alltid.** `project.godot` sätter `default_texture_filter = 0`, men
+   `ChalkUI` står på Linear och ärver nedåt. Sprites som ligger *inuti* krit-UI:t
+   (tärningsbrickan, slot-ikoner, kortikoner) måste sätta Nearest själva –
+   `Art.pixel_sprite()` gör det.
+2. **Heltalsskala.** `Art.fit_scale(box, cell)` ger största heltal som får plats.
+3. **Heltalspositioner.** `Art.snap(point, scale)`. De globala `snap_2d_*`-
+   flaggorna snappar mot viewportpixlar, inte mot konstrutnätet.
+
+### Var sprajterna sitter
+
+| Nod | Lager | Innehåll |
 |---|---|---|
-| `DieView.art_root()` | tumzonen | kropp + glyph + palett-LUT + spricka (research 04 §3) |
-| `SlotView.art_root()` | brädet | slot-ram per typ |
-| `EnemyPanel` → `ArtSlot` | fiendezonen | genomskinligt hål; sprajten ligger i `EnemyActor` i World |
-| `EnemyActor.sprite` | World | fiendesprite; sätt `silhouette.visible = false` |
-| `HeroFigure` | World | sju `Sprite2D`-lager, 48×48-celler, 8×4 frames |
-| `RewardCard.art_root()` | belöningskort | relik-/sidikon |
+| `EnemyActor.sprite` | World | `AnimatedSprite2D`, 4 idle-frames, boss 48×48 övriga 32×32, ×4 |
+| `CombatWorld` → `Backdrop` | World | två parallaxremsor + golvkakel bakom fienderna |
+| `HeroFigure` | World | paperdoll, nio `Sprite2D`-lager, 48×48-celler, 8×4 frames |
+| `MarchWorld` | World | tre parallaxlager (0,15 / 0,45 / 1,20) + golv (1,00) + figur |
+| `DieView.art_root()` → `DieArt` | ChalkUI | kropp + pips/glyph + glaskant + spricka |
+| `SlotView.art_root()` + `DieArt` | ChalkUI | slot-ikon och den placerade tärningen |
+| `RewardCard.art_root()` | ChalkUI | relikikon, slot-ikon eller komponerad sida |
+| `MarchScreen` förgreningsknapp | ChalkUI | nodikon (`ui/node_*.png`, 16 px × 4) |
 
-`HeroFigure` följer paperdoll-kontraktet i research 04 §2: **ett `Sprite2D` per
-lager och en enda `frame_index`-setter**. Lagren kan alltså bytas mitt i en
-gångcykel utan desync.
+`EnemyPanel` → `ArtSlot` är fortfarande ett **genomskinligt hål**: panelen är
+krit-UI, sprajten ligger i World bakom den. `ArtSlot`:s underkant är dessutom
+**golvlinjen** – `EnemyPanel.art_bottom()` skickas till `CombatWorld.set_band()`
+så att en 48 px-boss och en 32 px-råtta står på samma mark. Smeden får en egen
+tom kolumn längst till vänster i fiendezonen (`HeroSlot`), så att krit-UI:t
+reserverar plats åt en figur som ritas i ett annat lager.
+
+### Tärningen är komponerad, inte målad
+
+3 material × 15 sidmotiv vore ~90 sprites. `DieArt` staplar i stället fyra
+`Sprite2D` och klarar sig på 25 filer:
+
+```
+DieArt (Control, Nearest, heltalsskala ur fit_scale)
+ └─ Die (Node2D)
+     ├─ Body   z 0   die_body_<material>.png
+     ├─ Glyph  z 1   pips_<0-6>.png (egen färg) ELLER glyph_<namn>.png (tintas)
+     ├─ Rim    z 2   glass_highlight.png, endast GLASS
+     └─ Crack  z 3   crack_<1-3>.png, variant seedad på tärningens id
+```
+
+Pip-arken är **redan** tintade i `bone/pip`; ett `modulate` ovanpå skulle
+kvadrera färgen och göra ögonen svarta. Glypherna är vita och **ska** tintas av
+sin semantiska token. `Art.face_overlay()` returnerar därför `color_token`
+`"NONE"` för pips. Ritas sidan som ögon döljer `DieView` och `SlotView` sin
+siffra – konsten bär värdet. Glyph-sidor visar värdet i effektraden ("⬬ psn 2").
+
+**Avvikelse från `assets/sprites/README.md` §3, uppmätt:** den dokumenterade
+vägen är gråskalemastern `die_body_gray.png` genom `palette_lut.gdshader` med en
+16×1-LUT per material. I GL Compatibility skriver den shadern ut sitt resultat
+utan sRGB-konvertering: en sprite med `lut_strength = 0` renderas som
+`srgb_to_linear(källan)` (uppmätt `#C2451D` → `#941203`) och LUT-vägen landar
+~24 % för mörkt. Tills shadern är fixad används de förtintade kropparna, som
+renderas 1:1. Shadern används fortfarande för **träffblixten**, där mörkningen
+inte syns eftersom bilden ändå lerpas mot vitt – materialet sätts på noden när
+blixten börjar och tas bort när den slutar.
+
+### Paperdoll-riggen
+
+`HeroFigure` följer `assets/sprites/hero/PAPERDOLL.md`: **ett `Sprite2D` per
+lager, en `AnimationPlayer` på föräldern, en enda `frame_index` som
+sanningskälla.** Lagerordningen är barnordningen (cape, legs, body, torso, head,
+helm, offhand, weapon, fx). Varje animation har exakt ett spår – ett
+`Value`-spår på `Paperdoll:frame_index` med `UPDATE_DISCRETE`, eftersom
+interpolation mellan heltalsframes ger halva poser.
+
+| Animation | Rad | Frames | s/frame | Loop |
+|---|---|---|---|---|
+| `idle` | 0 | 4 | 0,16 | ja |
+| `walk` | 1 | 8 | 0,08 | ja |
+| `attack` | 2 | 6 | 0,06 | nej |
+| `hit` | 3 | 4 | 0,08 | nej |
+
+`strike()` emitterar `attack_contact` 180 ms in, vilket sammanfaller med
+kedjestegets `damage_dealt` (UI_GUIDE §5.3). `set_chain_speed()` skalar
+`AnimationPlayer.speed_scale` så att Blixt-tempo komprimerar figuren lika mycket
+som siffrorna.
+
+`apply_relics()` implementerar kollisionsregeln i PAPERDOLL §3 som en sortering:
+högst rarity först, vid lika rarity senast plockad först; utrustningslagren är
+upptagna från start eftersom **utrustning slår relik**. `fx` stackar och
+avslutar därför alltid reservkedjan. **M1.5-status:** reliklagren är
+specificerade men inte ritade, så upplösningen körs men inget lager tänds.
+Figuren visar kropp, glödkappa, järnhjälm och smideshammare.
+
+### Kedjan på riktiga sprites
+
+| Event | Vad som händer |
+|---|---|
+| `die_activated` | tärningen i sloten OCH i brickan blixtrar (shaderns `flash`), Smeden svingar |
+| `damage_dealt` | fiendesprajten blixtrar vitt och rycker bakåt |
+| `enemy_killed` | squash + uttoning. **M1.5-assets har ingen death-frame**; finns en `death`-animation i `SpriteFrames` spelas den i stället |
+| `player_damaged` | Smeden spelar `hit` |
+
+Tidsbudgeten är orörd: kedjan (P0–P3) ≤ 2 500 ms, hela rundan ≤ 3 200 ms.
+
+## Spelartext: engelska i källan, svenska i CSV
+
+CLAUDE.md: **all spelartext är engelska i källan och går via `tr()`.** Svenskan
+är en rad i `assets/i18n/translations.csv` (`keys,en,sv`), registrerad i
+`project.godot` under `internationalization/locale/translations` med
+`locale/fallback = "en"`.
+
+```
+Content (engelska källnamn + id)        assets/i18n/translations.csv
+        │                                        │
+        │ Content.enemy_key("RUST_RAT")          │ ENEMY_RUST_RAT,Rust Rat,Rostråttan
+        ▼                                        ▼
+    Tokens.translate_or(key, källnamn) ──► "Rust Rat" / "Rostråttan"
+```
+
+Tre regler:
+
+1. **Nyckeln härleds ur id:t.** `Content.face_key()`, `relic_key()`,
+   `enemy_key()`, `slot_swap_key()`, `class_key()`. Innehåll läggs till som data
+   och kan aldrig glida ifrån sin översättning; `tests/test_i18n.gd` kontrollerar
+   att varje id i `Content` har en rad.
+2. **`Tokens.translate_or(key, fallback)`** faller tillbaka på det engelska
+   källnamnet när raden saknas, så ett nytt innehålls-id syns som text och aldrig
+   som en rå nyckel. Statiska funktioner kan inte anropa `Object.tr()` och går
+   via `TranslationServer.translate()` – samma uppslagning, samma fallback.
+3. **Core innehåller ingen prosa.** `Intent.note` är en översättningsnyckel med
+   `Intent.note_args` som formatargument; `RewardApply.describe()` bygger sin
+   mening av nycklar. `TranslationServer` är en Engine-singleton, inte en Node,
+   så lagerregeln håller. (`note_args` tvättas med `int()` vid inläsning: JSON-tal
+   är float64 och `3` skulle annars komma tillbaka som `3.0`.)
+
+`tests/test_i18n.gd` skannar `src/game/`, `src/data/` och `src/core/` med `RegEx`
+efter `tr("KEY")`, `translate("KEY")` och `_t("KEY")` och fäller bygget på en
+nyckel utan CSV-rad, en tom `en`- eller `sv`-cell eller en dubblett.
+
+Rökprovet kan köras på båda språken: `--locale=sv` efter `--`.
 
 ## Uppspelaren: en överlappande tidslinje
 
@@ -192,17 +320,18 @@ cd rogelike_app
 # Med fönster och skärmdumpar (kräver xvfb-run):
 xvfb-run -a -s "-screen 0 1080x1920x24" "$GODOT_BIN" \
   --resolution 1080x1920 --audio-driver Dummy \
-  -s tools/smoke_play.gd -- --pipwreck-seed=7 --shots=res://docs/screenshots/m1
+  -s tools/smoke_play.gd -- --pipwreck-seed=7 --shots=res://docs/screenshots/m1_5
 
 # Bara logiken, ingen rendering:
 "$GODOT_BIN" --headless -s tools/smoke_play.gd -- --pipwreck-seed=7
 ```
 
 Flaggor: `--pipwreck-seed=N` (läses även av `GameController` och tvingar en känd
-run), `--shots=DIR` (tomt = inga skärmdumpar), `--max-seconds=N`.
+run), `--shots=DIR` (tomt = inga skärmdumpar), `--max-seconds=N`,
+`--locale=xx` (tvingar språk, t.ex. `sv`).
 
-Skärmdumparna hamnar i `docs/screenshots/m1/`. Katalogen har en `.gdignore` så
-att Godot inte importerar dem.
+Skärmdumparna hamnar i `docs/screenshots/m1_5/`. `docs/screenshots/` har en
+`.gdignore` så att Godot inte importerar dem.
 
 ## Köra tester lokalt
 

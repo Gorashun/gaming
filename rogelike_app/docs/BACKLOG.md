@@ -39,11 +39,24 @@
   vinstskärmen efter våning 1:s boss; ingen belöning ges efter bossen.
 - **`ROUND_BUDGET_MS = 3200`** är dev:s tolkning. UI_GUIDE §5 sätter tak bara
   för kedjan (2 500 ms) och säger inget om fiendepasset. Behöver UI-beslut.
-- **M1.5 i18n-pass.** Beslutet "engelska som källspråk, svenska via `tr()`"
-  (DECISIONS 2026-09-21) fattades efter att M1:s skärmar byggts. All spelartext
-  i `src/game/` är därför svenska literaler. Konverteringen är mekanisk och rör
-  fem filer plus `ui/tokens.gd` (slot- och sällsynthetsnamn) — inga strängar är
-  utspridda i logiken, och kedjetexten byggs redan på ett ställe
-  (`CombatScreen.chain_text`).
+- ~~**M1.5 i18n-pass.**~~ Levererat 2026-09-21, se CHANGELOG M1.5.
+- **`palette_lut.gdshader` tappar sRGB-konverteringen i GL Compatibility.**
+  Uppmätt: en sprite med `lut_strength = 0` renderas som
+  `srgb_to_linear(källan)` (`#C2451D` → `#941203`), LUT-vägen ~24 % för mörkt.
+  Tärningarna använder därför de förtintade kropparna i M1.5. Fixas shadern är
+  det en rad i `Art.die_body()` för att gå tillbaka till gråskala + LUT, och då
+  kan även `lut_strength`-tweenen vid materialbyte (UI_GUIDE §9.2) användas.
+  **UI-agenten.**
+- **Reliklagren på paperdollen saknar PNG.** `smith_legs/torso/offhand/fx_*.png`
+  är specificerade i PAPERDOLL §5 men inte ritade, så `HeroFigure.apply_relics()`
+  kör kollisionsregeln utan att tända något lager. Reliker syns bara som ikoner.
+- **Fienderna saknar death-frames.** Arken är fyra idle-frames;
+  `EnemyActor.death_reaction()` tonar ut i stället. Läggs en `death`-animation
+  till i `SpriteFrames` spelas den automatiskt.
+- **Tärningens rullning (`die_rolled`, UI_GUIDE §9.4)** ritas inte:
+  `dice/die_tumble_gray.png` finns och är registrerad i `Art.DIE_TUMBLE`, men
+  `DieArt` byter bara sida direkt.
+- **Krit-effekterna på World-lagret** (kritdamm, kedjepilar, skärvor) är
+  fortfarande number pops och skalpulser.
 - **Fiendezonen rymmer fyra fiender**, inte tre som M1-briefen antog: rum 1 är
   fyra Rostråttor (§4.4). Panelerna fördelar bredden dynamiskt.

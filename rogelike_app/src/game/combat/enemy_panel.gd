@@ -11,6 +11,10 @@ extends VBoxContainer
 ## är krit-UI och ska förbli vektor. [method anchor_point] ger World-lagret var
 ## sprajten ska stå.
 
+## Höjden på det genomskinliga hålet där fiendens sprite står, i dp.
+## 32 px-konst × 4 = 128 px = 42,7 dp; 48 dp ger boss och statusglow marginal.
+const ART_HOLE_HEIGHT: int = 48
+
 var enemy_id: String = ""
 
 var _flash: ColorRect = null
@@ -36,7 +40,7 @@ func _init() -> void:
 
 	_art_slot = Control.new()
 	_art_slot.name = "ArtSlot"
-	_art_slot.custom_minimum_size = Vector2(0.0, Tokens.dp(40))
+	_art_slot.custom_minimum_size = Vector2(0.0, Tokens.dp(ART_HOLE_HEIGHT))
 	_art_slot.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_art_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_art_slot)
@@ -55,8 +59,10 @@ func _init() -> void:
 
 	var margin: MarginContainer = MarginContainer.new()
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# SPACE_1 och inte SPACE_2: med fem kolumner (Smeden + fyra Rostråttor) på
+	# 360 dp är varje dp innermarginal en bokstav mindre av fiendenamnet.
 	for side: String in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, Tokens.dpi(Tokens.SPACE_2))
+		margin.add_theme_constant_override("margin_" + side, Tokens.dpi(Tokens.SPACE_1))
 	panel.add_child(margin)
 
 	var column: VBoxContainer = VBoxContainer.new()
@@ -109,6 +115,14 @@ func anchor_point() -> Vector2:
 	if not _art_slot.is_inside_tree():
 		return Vector2.ZERO
 	return _art_slot.get_global_rect().get_center()
+
+
+## Konsthålets underkant: fiendens fotlinje. Alla paneler i raden är lika höga,
+## så en enda panel räcker för att ge World-lagret hela radens golvlinje.
+func art_bottom() -> float:
+	if not _art_slot.is_inside_tree():
+		return 0.0
+	return _art_slot.get_global_rect().end.y
 
 
 func bind(enemy: Enemy) -> void:

@@ -17,9 +17,17 @@ signal die_dropped(slot_index: int, die_index: int)
 
 var slot_index: int = -1
 
+## Slot-ikonens cellstorlek (assets/sprites/ui/slot_*.png).
+const ICON_CELL: int = 16
+
 var _slot: Slot = null
 var _die: Die = null
+## Heltalsskala för tärningen i sloten. 32 px × 3 = 96 px.
+const DIE_SCALE_IN_SLOT: int = 3
+
 var _art: Control = null
+var _icon: Sprite2D = null
+var _die_art: DieArt = null
 var _type_label: Label = null
 var _die_label: Label = null
 var _preview_label: Label = null
@@ -35,18 +43,35 @@ func _init() -> void:
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
-	_art = Control.new()
-	_art.name = "Art"
-	_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_art)
-
 	var column: VBoxContainer = VBoxContainer.new()
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 	add_child(column)
 
+	# Slot-ikonen ligger ÖVERST i kolumnen, inte som överlägg: formkoden i
+	# UI_GUIDE §2.4 ska läsas tillsammans med ordet, inte bakom det.
+	_art = Control.new()
+	_art.name = "Art"
+	_art.custom_minimum_size = Vector2(0.0, float(ICON_CELL * Art.ICON_SCALE))
+	_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(_art)
+
+	_icon = Art.pixel_sprite(null, Art.ICON_SCALE)
+	_icon.name = "SlotIcon"
+	_art.add_child(_icon)
+	_art.resized.connect(_layout_icon)
+
 	_type_label = _make_label(Tokens.TYPE_CAPTION, Tokens.CHALK_300)
 	column.add_child(_type_label)
+
+	# Den placerade tärningen ritas som riktig pixeltärning i sloten, precis som
+	# i mockupen: kedjan ska gå att läsa på brädet utan att titta ned i brickan.
+	_die_art = DieArt.new()
+	_die_art.name = "DieArt"
+	_die_art.custom_minimum_size = Vector2(0.0, float(DieArt.CELL * DIE_SCALE_IN_SLOT))
+	_die_art.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_die_art.visible = false
+	column.add_child(_die_art)
 
 	_die_label = _make_label(Tokens.TYPE_HEADING, Tokens.CHALK_100)
 	_die_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -74,9 +99,15 @@ static func _make_label(font_size: int, color: Color) -> Label:
 	return label
 
 
-## Noden där en pixelram för sloten ska läggas in. Tom i M1.
+## Noden som bär slot-ikonen (assets/sprites/ui/slot_<typ>.png).
 func art_root() -> Control:
 	return _art
+
+
+func _layout_icon() -> void:
+	if _icon == null or _art == null:
+		return
+	_icon.position = Art.snap(_art.size * 0.5, Art.ICON_SCALE)
 
 
 func bind(index: int, slot: Slot, die: Die) -> void:
@@ -85,16 +116,32 @@ func bind(index: int, slot: Slot, die: Die) -> void:
 	_die = die
 	_index_label.text = "%d" % (index + 1)
 	_type_label.text = Tokens.slot_label(slot.type)
+	_icon.texture = Art.slot_icon(slot.type)
+	_icon.modulate = Tokens.slot_color(slot.type)
+	_icon.visible = _icon.texture != null
+	# Saknas ikonen faller typraden tillbaka på reservglyphen ur UI_GUIDE §2.4,
+	# så formkoden aldrig försvinner helt.
+	if _icon.texture == null:
+		_type_label.text = "%s %s" % [Tokens.slot_icon(slot.type), Tokens.slot_label(slot.type)]
+	_layout_icon()
 	_type_label.add_theme_color_override("font_color", Tokens.slot_color(slot.type))
 
+	_die_art.visible = false
 	if slot.blocked:
+		_die_label.visible = true
 		_die_label.text = tr("SLOT_STATE_GRABBED")
 		_die_label.add_theme_color_override("font_color", Tokens.SEM_BLOOD)
 	elif die != null:
+		_die_art.show_die(die, hash(die.id))
+		_die_art.visible = _die_art.is_drawing()
 		var face: Face = die.showing_face()
+		# Siffran står kvar när konsten inte bär värdet (glyph-sidor) eller när
+		# texturen saknas helt – sloten får aldrig bli tom och oläslig.
+		_die_label.visible = not _die_art.shows_value()
 		_die_label.text = str(face.value) if face != null else "?"
 		_die_label.add_theme_color_override("font_color", Tokens.BONE_DIE)
 	else:
+		_die_label.visible = true
 		_die_label.text = tr("SLOT_STATE_EMPTY")
 		_die_label.add_theme_color_override("font_color", Tokens.CHALK_500)
 
@@ -113,6 +160,14 @@ func set_preview(effective_value: int, multiplier: int, occupied: bool) -> void:
 	else:
 		_preview_label.text = "= %d" % effective_value
 		_preview_label.add_theme_color_override("font_color", Tokens.SEM_DAMAGE)
+
+
+## Aktiveringspulsen i kedjan (UI_GUIDE §5.1). Blixten läggs på den RIKTIGA
+## tärningssprajten via palette_lut-shadern; ramen pulsar med.
+func pulse_die(duration: float = Tokens.MOTION_BASE) -> void:
+	if _die_art != null and _die_art.visible:
+		_die_art.flash(0.8, duration)
+	Juice.pulse(self, 1.18, duration)
 
 
 ## Pulserar konturen när en tärning bärs runt (UI_GUIDE §4.1.2).

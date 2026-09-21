@@ -6,7 +6,7 @@ extends SceneTree
 ## [codeblock]
 ## xvfb-run -a -s "-screen 0 1080x1920x24" "$GODOT_BIN" --resolution 1080x1920 \
 ##   --audio-driver Dummy -s tools/smoke_play.gd -- --pipwreck-seed=7 \
-##   --shots=res://docs/screenshots/m1_5
+##   --shots=res://docs/screenshots/m1_5_5
 ##
 ## # Bara logiken, utan fönster och utan skärmdumpar:
 ## "$GODOT_BIN" --headless -s tools/smoke_play.gd -- --pipwreck-seed=7
