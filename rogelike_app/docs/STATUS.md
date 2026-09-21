@@ -16,7 +16,7 @@
 - Asset-pipeline: 93 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- Väntar på Anders speltest (webb + APK) innan M3
+- **M2.5 Begriplighet + stad (design)**: rollspelsnörd designar stad-hubb och första-run-lärkurva, UI gör läsbarhetspass på stridsskärmen och onboarding-spec. Dev implementerar efter Anders godkännande
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt

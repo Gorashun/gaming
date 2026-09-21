@@ -52,3 +52,4 @@ Format: datum · beslut · varför · alternativ som valdes bort · beslutad av
 | 2026-09-21 | M4 före M3: telefontest av loopen innan mer innehåll | Ljud, haptik och prestanda kan inte bedömas i Xvfb | M3 först | Anders |
 | 2026-09-21 | M4 godkänd: Android-workflow bygger signerad debug-APK (target SDK 35 utan gradle, release-AAB 36 med gradle). Grinden är apksigner verify, inte Godots exit-kod (känd krasch vid adb-shutdown) | – | – | PM |
 | 2026-09-21 | Webbversion publiceras som artefakt för snabb speltest (Web-preset, gzip-loader). Kompletterar, ersätter inte, APK:n | Anders vill testa direkt i chatten | – | Anders |
+| 2026-09-21 | Speltest 1 (Anders, webb): (1) spelet ska ha en stad som hubb att utgå från, (2) mekaniken är svår att förstå | Första riktiga speltestet | – | Anders. Staden designas i M3-brief, begripligheten är blockerande och tas före allt annat innehåll |
