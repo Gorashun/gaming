@@ -1,0 +1,1 @@
+Anton, Caveat Brush och Familjen Grotesk är hämtade från Google Fonts och licensierade under SIL Open Font License 1.1 (https://openfontlicense.org). Subset-filer för wireframes; fullständiga licenstexter följer med respektive familj på fonts.google.com.

@@ -15,3 +15,6 @@ Format: datum · beslut · varför · alternativ som valdes bort · beslutad av
 | 2026-09-21 | Kåk = 3-grupp + 2-grupp med olika värden, brädbonus ×2; två par ger ingen bonus i v1 | Enkelhet, läsbarhet | Yatzy-kåk | Rollspelsnörd, godkänt av PM |
 | 2026-09-21 | Stoppregel: GreedyPolicy ska vinna ≥ 10 procentenheter sämre än LookaheadPolicy i simulatorn. Annars är placeringen meningslös och designen görs om före M2 | Mäter om spelet är ett beslutsspel eller ett slot-spel | – | PM |
 | 2026-09-21 | **VÄNTAR:** Ska sprickor på glastärningar vara run-permanenta? (M3, brutalaste regeln) | Se GAME_DESIGN.md §7 | – | Anders |
+| 2026-09-21 | Visuell riktning A "Kritgropen" (krita på skiffer, en shader bär identiteten). B "Risotryck" parkeras som upplåsningsbart tema, C avfärdas | Högst kontrast (14,8:1 text), kritstreck vänster→höger = synlig kausalitet, billigast utan grafiker, ingen kasino-estetik | B, C (se UI_GUIDE.md) | UI, godkänt av PM. Anders kan veto:a efter att ha sett wireframes |
+| 2026-09-21 | Reducerad rörelse-läge och färgblindspalett flyttas in hårt i M2 (var "om tid finns") | Billigt från start, dyrt att retrofitta | Backlog | PM |
+| 2026-09-21 | Uppspelaren av händelseloggen byggs som överlappande tidslinje, inte FIFO-kö | Naiv summering ger 3,1 s per runda, taket är 2,5 s | FIFO | UI, godkänt av PM |

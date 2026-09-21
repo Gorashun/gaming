@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PIPWRECK – Belöningsval 1 av 3 (KRITGROPEN)</title>
+<style>
+/* Lokala Google Fonts-subset (latin) – mockupen är helt självständig, ingen nätverkstrafik */
+@font-face{font-family:'Anton';src:url('fonts/anton-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Caveat Brush';src:url('fonts/caveatbrush-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Familjen Grotesk';src:url('fonts/familjengrotesk-var.woff2') format('woff2');font-weight:400 700;font-display:swap}
+</style>
+<style>
+:root{
+  --pit:#0E1216; --slate:#161B21; --raised:#1F262E; --line:#2C353F;
+  --chalk100:#F2EDE3; --chalk300:#CFC7B8; --chalk500:#9A9486;
+  --bone:#E8E0CF; --pip:#12161A;
+  --fire:#FF6A2C; --poison:#B77FFF; --frost:#6ED2F5; --heal:#4FE3A0;
+  --blood:#FF556F; --charge:#FFD447; --shield:#D7DEE6;
+  /* sällsynthet */
+  --r-vanlig:#CFC7B8; --r-ovanlig:#4FE3A0; --r-sallsynt:#6ED2F5; --r-mytisk:#FF5CA8; --r-jackpot:#FFD447;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s6:24px;
+  --r-chip:4px;--r-btn:8px;--r-die:14px;--r-card:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{background:var(--pit);color:var(--chalk100);
+  font-family:'Familjen Grotesk','Segoe UI',system-ui,sans-serif;display:flex;justify-content:center}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.16;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.55'/></svg>")}
+.app{width:100%;max-width:430px;height:100dvh;min-height:100%;display:flex;flex-direction:column;
+  padding:0 var(--s4) var(--s3);
+  background:radial-gradient(120% 60% at 50% 0%, #171D24 0%, var(--pit) 70%)}
+
+/* toppen */
+.head{flex:0 0 auto;padding:var(--s4) 0 var(--s2);text-align:center;position:relative}
+.head .kicker{font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--chalk500);text-transform:uppercase}
+.head h1{font-family:'Anton','Arial Narrow',sans-serif;font-size:34px;letter-spacing:.02em;line-height:1;margin-top:5px}
+.head .sub{margin-top:5px;font-size:12px;color:var(--chalk300)}
+.head .scrawl{font-family:'Caveat Brush',cursive;font-size:16px;color:var(--charge);
+  position:absolute;right:-2px;top:8px;transform:rotate(-7deg)}
+.rule{height:2px;background:var(--line);margin:var(--s3) 0 var(--s3);filter:url(#jitter)}
+
+/* korten */
+.cards{flex:1 1 auto;display:flex;flex-direction:column;gap:var(--s3);min-height:0}
+.card{
+  flex:1 1 0;min-height:0;position:relative;background:var(--raised);
+  border-radius:var(--r-card);padding:var(--s3) var(--s4);
+  display:flex;gap:var(--s3);align-items:center;
+  border:2px solid var(--line);
+}
+/* sällsynthet = färg + RAMFORM + utskrivet ord (färgblindsäkert) */
+.card.vanlig  {border:2px solid var(--r-vanlig)}
+.card.ovanlig {border:2px solid var(--r-ovanlig);border-radius:0;
+               clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px)}
+.card.sallsynt{border:5px double var(--r-sallsynt)}
+.card.mytisk  {border:3px solid var(--r-mytisk);
+               clip-path:polygon(0 6px,5% 0,16% 7px,34% 0,52% 8px,70% 0,88% 7px,100% 0,100% calc(100% - 7px),86% 100%,66% calc(100% - 8px),44% 100%,24% calc(100% - 7px),8% 100%,0 calc(100% - 6px))}
+.card.jackpot {border:3px solid var(--r-jackpot);
+               background:linear-gradient(105deg,#1F262E 0%,#2A2416 45%,#1F262E 90%);
+               background-size:260% 100%;animation:shimmer 3.2s linear infinite}
+@keyframes shimmer{0%{background-position:0% 0}100%{background-position:260% 0}}
+
+.card .art{
+  flex:0 0 66px;height:66px;border-radius:var(--r-die);display:grid;place-items:center;
+  background:#12161A;border:2px solid var(--line);position:relative
+}
+.card .art .die{
+  width:50px;height:50px;border-radius:12px;background:var(--bone);
+  display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:7px;
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.14)
+}
+.card .art .die span{width:8px;height:8px;border-radius:50%;background:var(--pip);align-self:center;justify-self:center}
+.card .art .die .a{grid-area:1/1}.card .art .die .b{grid-area:1/3}.card .art .die .c{grid-area:2/2}
+.card .art .die .d{grid-area:3/1}.card .art .die .e{grid-area:3/3}
+.card .art .glyph{font-size:34px;line-height:1}
+
+.card .body{flex:1 1 auto;min-width:0;text-align:left}
+.card .rtag{
+  display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;margin-bottom:3px
+}
+.card .rtag .mark{font-size:10px}
+.card.vanlig .rtag{color:var(--r-vanlig)} .card.ovanlig .rtag{color:var(--r-ovanlig)}
+.card.sallsynt .rtag{color:var(--r-sallsynt)} .card.mytisk .rtag{color:var(--r-mytisk)}
+.card.jackpot .rtag{color:var(--r-jackpot)}
+.card h3{font-size:19px;font-weight:700;letter-spacing:.01em;line-height:1.1}
+.card p{margin-top:4px;font-size:13px;line-height:1.32;color:var(--chalk300)}
+.card p b{color:var(--chalk100);font-weight:700}
+.card p .fire{color:var(--fire);font-weight:700}
+.card p .poison{color:var(--poison);font-weight:700}
+.card p .charge{color:var(--charge);font-weight:700}
+.card .synergy{margin-top:6px;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--chalk500);text-transform:uppercase}
+
+/* markerat kort */
+.card.sel{background:#28313B;transform:translateX(2px)}
+.card.sel::after{
+  content:"VALD";position:absolute;top:-9px;right:14px;background:var(--chalk100);color:var(--pit);
+  font-size:9px;font-weight:700;letter-spacing:.16em;padding:3px 8px;border-radius:var(--r-chip)
+}
+.card:focus-visible{outline:3px solid var(--chalk100);outline-offset:3px}
+
+/* sällsynthetsskala */
+.scale{flex:0 0 auto;display:flex;gap:5px;justify-content:space-between;padding-top:var(--s3)}
+.scale .sc{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:2px;
+  font-size:7.5px;font-weight:700;letter-spacing:.06em;padding:5px 2px;border-radius:var(--r-chip);
+  background:#12161A;border:1.5px solid var(--line)}
+.scale .sc i{font-style:normal;font-size:12px;line-height:1}
+.scale .vanlig{color:var(--r-vanlig);border-color:var(--r-vanlig)}
+.scale .ovanlig{color:var(--r-ovanlig);border-color:var(--r-ovanlig)}
+.scale .sallsynt{color:var(--r-sallsynt);border-color:var(--r-sallsynt)}
+.scale .mytisk{color:var(--r-mytisk);border-color:var(--r-mytisk)}
+.scale .jackpot{color:var(--r-jackpot);border-color:var(--r-jackpot)}
+
+/* tumzon */
+.foot{flex:0 0 auto;padding-top:var(--s3);display:flex;gap:var(--s2)}
+.btn-sec{flex:0 0 108px;height:56px;border-radius:var(--r-btn);background:none;border:2px solid var(--chalk500);
+  color:var(--chalk100);font:700 13px/1.15 'Familjen Grotesk',sans-serif;letter-spacing:.06em}
+.btn-pri{flex:1 1 auto;height:56px;border-radius:var(--r-btn);border:2px solid var(--chalk100);
+  background:var(--chalk100);color:var(--pit);font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:.06em}
+.btn-pri:disabled{background:transparent;color:var(--chalk500);border-color:var(--line)}
+.legend{flex:0 0 auto;margin-top:var(--s2);text-align:center;font-size:9px;color:var(--chalk500)}
+
+@media (max-height:700px){
+  .head h1{font-size:27px}
+  .head{padding-top:var(--s3)}
+  .rule{margin:var(--s2) 0}
+  .cards{gap:var(--s2)}
+  .card{padding:var(--s2) var(--s3);gap:var(--s2)}
+  .card .art{flex:0 0 54px;height:54px}
+  .card .art .die{width:40px;height:40px;padding:5px}
+  .card .art .die span{width:6px;height:6px}
+  .card .art .glyph{font-size:27px}
+  .card h3{font-size:16px}
+  .card p{font-size:11.5px}
+  .card .synergy{display:none}
+}
+@media (prefers-reduced-motion: reduce){.card.jackpot{animation:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="jitter"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" seed="3" result="n"/>
+  <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+</svg>
+
+<div class="app">
+  <header class="head">
+    <div class="kicker">Rum 5 rensat · våning 2</div>
+    <h1>VÄLJ EN BELÖNING</h1>
+    <div class="sub">Du tar med dig exakt en. De andra två försvinner.</div>
+    <div class="scrawl">1 av 3 ↷</div>
+  </header>
+  <div class="rule"></div>
+
+  <main class="cards">
+
+    <button class="card ovanlig" aria-label="Ovanlig: Giftdroppe">
+      <div class="art"><span class="glyph" style="color:var(--poison)">⬬</span></div>
+      <div class="body">
+        <div class="rtag"><span class="mark">◣</span>Ovanlig · sida</div>
+        <h3>Giftdroppe</h3>
+        <p>Smid om en <b>1:a</b> till <span class="poison">3 gift/runda</span> i stället för skada.</p>
+        <div class="synergy">Synergi: överflöd rullar gift vidare</div>
+      </div>
+    </button>
+
+    <button class="card sallsynt sel" aria-label="Sällsynt: Ekospegel">
+      <div class="art"><span class="glyph" style="color:var(--frost)">❖</span></div>
+      <div class="body">
+        <div class="rtag"><span class="mark">▤</span>Sällsynt · relik</div>
+        <h3>Ekospegel</h3>
+        <p>Slot 3 kopierar även <b>effekten</b> hos sin granne, inte bara ögat.</p>
+        <div class="synergy">Synergi: amboss → dubbel dubbling</div>
+      </div>
+    </button>
+
+    <button class="card mytisk" aria-label="Mytisk: Domino">
+      <div class="art"><svg viewBox="0 0 44 44" width="38" height="38" aria-hidden="true">
+        <rect x="2" y="9" width="20" height="26" rx="4" fill="none" stroke="#FF5CA8" stroke-width="2.5"/>
+        <rect x="22" y="9" width="20" height="26" rx="4" fill="none" stroke="#FF5CA8" stroke-width="2.5"/>
+        <circle cx="12" cy="17" r="2.6" fill="#FF5CA8"/><circle cx="12" cy="27" r="2.6" fill="#FF5CA8"/>
+        <circle cx="32" cy="22" r="2.6" fill="#FF5CA8"/></svg></div>
+      <div class="body">
+        <div class="rtag"><span class="mark">✶</span>Mytisk · relik</div>
+        <h3>Domino</h3>
+        <p>När en tärning triggar, triggar <b>grannen till höger</b> en gång till. <span class="fire">Kedjan blir dubbelt så lång.</span></p>
+        <div class="synergy">Varning: även dina nackdelar triggar två gånger</div>
+      </div>
+    </button>
+
+  </main>
+
+  <!-- referensremsa: hela sällsynthetsskalan, färg + ramform + ord -->
+  <div class="scale">
+    <span class="sc vanlig"><i>▭</i>VANLIG</span>
+    <span class="sc ovanlig"><i>◣</i>OVANLIG</span>
+    <span class="sc sallsynt"><i>▤</i>SÄLLSYNT</span>
+    <span class="sc mytisk"><i>✶</i>MYTISK</span>
+    <span class="sc jackpot"><i>✺</i>JACKPOT</span>
+  </div>
+
+  <div class="foot">
+    <button class="btn-sec">HOPPA ÖVER<br><span style="font-size:10px;color:var(--chalk500)">+1 LÄKNING</span></button>
+    <button class="btn-pri">TA EKOSPEGEL</button>
+  </div>
+  <div class="legend">Sällsynthet kodas med färg + ramform + utskrivet ord · alla kort ≥ 48 dp höga</div>
+</div>
+
+<script>
+document.querySelectorAll('.card').forEach(function(c){
+  c.addEventListener('click',function(){
+    document.querySelectorAll('.card').forEach(function(x){x.classList.remove('sel')});
+    c.classList.add('sel');
+    document.querySelector('.btn-pri').textContent='TA '+c.querySelector('h3').textContent.toUpperCase();
+  });
+});
+</script>
+</body>
+</html>

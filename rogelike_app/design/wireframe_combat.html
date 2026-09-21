@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PIPWRECK – Stridsskärm (KRITGROPEN)</title>
+<style>
+/* Lokala Google Fonts-subset (latin) – mockupen är helt självständig, ingen nätverkstrafik */
+@font-face{font-family:'Anton';src:url('fonts/anton-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Caveat Brush';src:url('fonts/caveatbrush-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Familjen Grotesk';src:url('fonts/familjengrotesk-var.woff2') format('woff2');font-weight:400 700;font-display:swap}
+</style>
+<style>
+/* ============ PIPWRECK designtokens – riktning A: KRITGROPEN ============ */
+:root{
+  /* yta */
+  --pit:#0E1216; --slate:#161B21; --raised:#1F262E; --line:#2C353F;
+  /* krita / ben */
+  --chalk100:#F2EDE3; --chalk300:#CFC7B8; --chalk500:#9A9486;
+  --bone:#E8E0CF; --pip:#12161A;
+  /* semantiskt */
+  --damage:#F2EDE3; --fire:#FF6A2C; --poison:#B77FFF; --frost:#6ED2F5;
+  --heal:#4FE3A0; --blood:#FF556F; --charge:#FFD447; --shield:#D7DEE6;
+  /* slots */
+  --s-eld:#FF6A2C; --s-spegel:#6ED2F5; --s-amboss:#D7DEE6; --s-ladda:#FFD447; --s-tomrum:#8A94A6;
+  /* multiplikator */
+  --x2:#FFD447; --x4:#FF8A2C; --x8:#FF556F; --x16:#FF5CA8;
+  /* spacing */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s6:24px; --s8:32px;
+  /* radier */
+  --r-chip:4px; --r-btn:8px; --r-die:14px; --r-card:20px;
+  /* rörelse */
+  --step:260ms;
+  /* härledd tärningsstorlek: passar 6 i bredd även på 360px */
+  --die: clamp(46px, calc((100vw - 62px) / 6), 58px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{
+  background:var(--pit); color:var(--chalk100);
+  font-family:'Familjen Grotesk','Segoe UI',system-ui,sans-serif;
+  display:flex;justify-content:center;
+}
+/* kritkorn över hela skärmen */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.16;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.55'/></svg>");
+  mix-blend-mode:overlay;
+}
+.app{
+  width:100%;max-width:430px;height:100dvh;min-height:100%;
+  display:flex;flex-direction:column;
+  padding:0 var(--s4) var(--s3);
+  background:radial-gradient(120% 70% at 50% 0%, #171D24 0%, var(--pit) 70%);
+}
+
+/* ---------------- toppfält ---------------- */
+.top{flex:0 0 auto;display:flex;align-items:center;gap:10px;height:46px;white-space:nowrap}
+.hp{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;letter-spacing:.04em}
+.hp .glyph{color:var(--blood);font-size:15px}
+.hpbar{width:58px;height:9px;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:#0B0F13}
+.hpbar i{display:block;height:100%;width:72%;background:var(--blood)}
+.floor{font-family:'Anton','Arial Narrow',sans-serif;font-size:17px;letter-spacing:.06em;color:var(--chalk300);
+  border:1.5px solid var(--line);border-radius:var(--r-chip);padding:1px 7px}
+.chargemeter{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;
+  letter-spacing:.1em;color:var(--charge)}
+.chargemeter .dots{display:flex;gap:3px}
+.chargemeter .dots b{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--charge);display:block}
+.chargemeter .dots b.on{background:var(--charge)}
+.iconbtn{width:44px;height:44px;margin-right:-10px;display:grid;place-items:center;color:var(--chalk300);font-size:20px;background:none;border:0}
+
+/* ---------------- fiendezon ---------------- */
+.enemies{
+  flex:1 1 auto;min-height:150px;display:flex;align-items:center;justify-content:space-around;
+  gap:var(--s2);padding-bottom:var(--s3);
+  border-bottom:2px solid var(--line);
+  position:relative;
+}
+.enemies::after{ /* kritgolvlinje */
+  content:"";position:absolute;left:-4px;right:-4px;bottom:-2px;height:2px;
+  background:var(--chalk500);opacity:.5;filter:url(#jitter);
+}
+.enemy{display:flex;flex-direction:column;align-items:center;gap:6px;width:31%;position:relative}
+.enemy svg{position:relative;z-index:1;width:100%;height:auto;max-height:108px;filter:url(#jitter)}
+.enemy .nm{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--chalk300);text-transform:uppercase}
+.ehp{width:100%;height:10px;border:1.5px solid var(--chalk500);border-radius:2px;background:#0B0F13;position:relative;overflow:hidden}
+.ehp i{position:absolute;inset:0;background:var(--blood);transform-origin:left;transition:transform 260ms ease-out}
+.ehp span{position:absolute;inset:0;display:grid;place-items:center;font-size:9px;font-weight:700;color:var(--chalk100);text-shadow:0 0 3px #000}
+.enemy .intent{font-size:11px;font-weight:700;color:var(--fire);letter-spacing:.04em}
+.enemy.dead{opacity:.25;filter:grayscale(1)}
+/* number pop */
+.pop{
+  position:absolute;top:2px;left:50%;transform:translateX(-50%);z-index:6;
+  font-family:'Anton','Arial Narrow',sans-serif;font-size:44px;line-height:1;color:var(--damage);
+  opacity:0;pointer-events:none;text-shadow:0 0 10px rgba(242,237,227,.35)
+}
+.pop{white-space:nowrap}
+.pop.of{color:var(--fire);font-size:32px}
+.pop i{display:block;font-family:'Familjen Grotesk',sans-serif;font-style:normal;
+  font-size:9px;font-weight:700;letter-spacing:.18em;margin-top:-2px}
+
+/* ---------------- kedjeförhandsvisning ---------------- */
+.preview{flex:0 0 auto;padding:var(--s3) 0 var(--s2)}
+.prow{display:flex;align-items:baseline;gap:var(--s2)}
+.ptotal{font-family:'Anton','Arial Narrow',sans-serif;font-size:42px;line-height:.9;letter-spacing:.01em}
+.plabel{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--chalk500);text-transform:uppercase}
+.psplit{margin-top:4px;display:flex;flex-wrap:wrap;gap:var(--s2);font-size:12px;font-weight:500;color:var(--chalk300)}
+.psplit em{font-style:normal;color:var(--fire);font-weight:700}
+.psplit .ovf{color:var(--fire)}
+
+/* ---------------- slots ---------------- */
+.board{flex:0 0 auto;padding-top:var(--s1)}
+.slots{display:flex;gap:6px;justify-content:space-between}
+.slot{
+  flex:1 1 0;min-width:0;height:82px;border-radius:var(--r-chip);
+  background:var(--raised);position:relative;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding-top:5px;gap:3px;
+}
+/* ramstil = redundant formkod per slot-typ (färgblindsäkerhet) */
+.slot.eld{border:2px solid var(--s-eld)}
+.slot.spegel{border:2px double var(--s-spegel);border-width:4px}
+.slot.amboss{border:4px solid var(--s-amboss)}
+.slot.ladda{border:2px dotted var(--s-ladda)}
+.slot.tomrum{border:2px dashed var(--s-tomrum)}
+.slot .ico{font-size:13px;line-height:1}
+.slot .ttl{font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+.slot.eld .ico,.slot.eld .ttl{color:var(--s-eld)}
+.slot.spegel .ico,.slot.spegel .ttl{color:var(--s-spegel)}
+.slot.amboss .ico,.slot.amboss .ttl{color:var(--s-amboss)}
+.slot.ladda .ico,.slot.ladda .ttl{color:var(--s-ladda)}
+.slot.tomrum .ico,.slot.tomrum .ttl{color:var(--s-tomrum)}
+.slot .empty{margin-top:6px;font-size:9px;color:var(--chalk500);letter-spacing:.06em}
+.slot .idx{position:absolute;bottom:2px;right:4px;font-size:9px;color:var(--chalk500)}
+
+/* tärning */
+.die{
+  width:44px;height:44px;border-radius:10px;background:var(--bone);
+  display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
+  padding:6px;gap:1px;position:relative;
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.14);
+}
+.die .p{width:7px;height:7px;border-radius:50%;background:var(--pip);align-self:center;justify-self:center}
+.die.sym{place-items:center;display:grid;grid-template-columns:1fr;grid-template-rows:1fr;font-size:22px}
+/* pip-positioner */
+.die .a{grid-area:1/1}.die .b{grid-area:1/3}.die .c{grid-area:2/2}
+.die .d{grid-area:3/1}.die .e{grid-area:3/3}.die .f{grid-area:2/1}.die .g{grid-area:2/3}
+.die .h{grid-area:1/2}.die .i{grid-area:3/2}
+.slot .die{width:44px;height:44px}
+
+/* kedjelinje + pilar under slots */
+.chainline{position:relative;height:38px;margin-top:2px}
+.chainline .seg{
+  position:absolute;top:26px;height:2px;background:var(--chalk500);opacity:.55;
+  filter:url(#jitter);transform-origin:left;transform:scaleX(1);
+}
+.chainline .arrow{position:absolute;top:19px;font-size:12px;color:var(--chalk500)}
+/* multiplikator-brace */
+.brace{
+  position:absolute;top:8px;font-family:'Anton','Arial Narrow',sans-serif;font-size:17px;
+  color:var(--x4);text-align:center;transform:scale(1);transform-origin:center bottom;
+}
+.brace>b{background:var(--pit);padding:0 4px;display:inline-block;font-weight:400}
+.brace::before{content:"";position:absolute;left:6%;right:6%;top:-4px;height:8px;
+  border-top:2px solid var(--x4);border-left:2px solid var(--x4);border-right:2px solid var(--x4);
+  border-radius:6px 6px 0 0;opacity:.75}
+.brace small{display:block;background:var(--pit);font-family:'Familjen Grotesk',sans-serif;font-size:8px;letter-spacing:.1em;opacity:.8;margin-top:-3px}
+
+/* ---------------- tumzon: bricka + knappar ---------------- */
+.tray{flex:0 0 auto;margin-top:var(--s3)}
+.trayhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.trayhdr h2{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--chalk500);text-transform:uppercase}
+.trayhdr .undo{
+  height:32px;padding:0 12px;border:1.5px solid var(--line);border-radius:var(--r-btn);
+  background:none;color:var(--chalk300);font:700 12px/1 'Familjen Grotesk',sans-serif;letter-spacing:.08em
+}
+.hand{display:flex;gap:6px;justify-content:space-between}
+.hand .die{width:var(--die);height:var(--die);border-radius:var(--r-die)}
+.hand .slotmark{
+  position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+  font-size:9px;font-weight:700;color:var(--chalk500)
+}
+.hand .wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px}
+.hand .lbl{font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--chalk500)}
+.hand .wrap.placed .die{opacity:.22}
+.hand .wrap.locked .die::after{content:"🔒";position:absolute;top:-2px;right:-2px;font-size:11px}
+
+.actions{flex:0 0 auto;display:flex;gap:var(--s2);margin-top:var(--s3)}
+.btn-sec{
+  flex:0 0 108px;height:56px;border-radius:var(--r-btn);background:transparent;
+  border:2px solid var(--chalk500);color:var(--chalk100);
+  font:700 13px/1.15 'Familjen Grotesk',sans-serif;letter-spacing:.06em
+}
+.btn-sec b{display:block;font-size:10px;font-weight:700;color:var(--chalk500);letter-spacing:.1em;margin-top:3px}
+.btn-pri{
+  flex:1 1 auto;height:56px;border-radius:var(--r-btn);border:2px solid var(--chalk100);
+  background:var(--chalk100);color:var(--pit);
+  font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:.06em;
+  display:flex;align-items:center;justify-content:center;gap:10px
+}
+.btn-pri .sum{font-family:'Anton','Arial Narrow',sans-serif;font-size:24px}
+.btn-pri:disabled{background:transparent;color:var(--chalk500);border-color:var(--line)}
+
+/* onboarding-klotter (tooltip 2 av 3) */
+.scrawl{
+  position:absolute;font-family:'Caveat Brush',cursive;font-size:17px;color:var(--charge);
+  pointer-events:none;line-height:1.05
+}
+
+/* ================= KEDJEUPPSPELNING ================= */
+@keyframes dieAct{0%{transform:scale(1)}46%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes ring{0%{opacity:.9;transform:translate(-50%,-50%) scale(.35)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.6)}}
+@keyframes underline{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+@keyframes popIn{0%{opacity:0;transform:translateX(-50%) translateY(0) scale(.6)}
+  30%{opacity:1;transform:translateX(-50%) translateY(-10px) scale(1.3)}
+  55%{opacity:1;transform:translateX(-50%) translateY(-16px) scale(1)}
+  100%{opacity:0;transform:translateX(-50%) translateY(-30px) scale(1)}}
+@keyframes bracePop{0%{transform:scale(0) rotate(-6deg)}60%{transform:scale(1.25) rotate(0)}100%{transform:scale(1) rotate(0)}}
+@keyframes shakeX{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes punch{0%,100%{transform:scale(1)}40%{transform:scale(1.03)}}
+@keyframes dust{0%{opacity:.85;transform:translate(-50%,0) scale(.4)}100%{opacity:0;transform:translate(-50%,-34px) scale(1.25)}}
+@keyframes totalPop{0%{transform:scale(1)}45%{transform:scale(1.22)}100%{transform:scale(1)}}
+
+.playing .slot.act .die{animation:dieAct 220ms cubic-bezier(.2,1.4,.5,1) both}
+.playing .slot.act::before{
+  content:"";position:absolute;top:50%;left:50%;width:76px;height:76px;border-radius:50%;
+  border:2px solid var(--chalk100);animation:ring 220ms ease-out both;pointer-events:none
+}
+.playing .slot.act::after{
+  content:"";position:absolute;left:4px;right:4px;bottom:3px;height:3px;background:currentColor;
+  transform-origin:left;animation:underline 160ms ease-out both
+}
+.playing .slot.eld.act::after{color:var(--s-eld)} .playing .slot.spegel.act::after{color:var(--s-spegel)}
+.playing .slot.amboss.act::after{color:var(--s-amboss)} .playing .slot.ladda.act::after{color:var(--s-ladda)}
+.playing .pop.go{animation:popIn 420ms ease-out both}
+.playing .brace.go{animation:bracePop 300ms cubic-bezier(.2,1.5,.5,1) both}
+.playing .enemy.hit{animation:shakeX 160ms ease-in-out 3}
+.playing .board.punch{animation:punch 300ms ease-out}
+.playing .ptotal.go{animation:totalPop 320ms ease-out both}
+.dustpuff{position:absolute;left:50%;bottom:34px;width:5px;height:5px;border-radius:50%;background:var(--chalk100);
+  opacity:0;pointer-events:none}
+.playing .slot.act .dustpuff{animation:dust 300ms ease-out both}
+
+/* reducerad rörelse: timing kvar, rörelse bort */
+@media (prefers-reduced-motion: reduce){
+  .playing .enemy.hit,.playing .board.punch{animation:none}
+  .playing .slot.act .die{animation:dieAct 220ms steps(1) both}
+  .playing .pop.go{animation:popIn 420ms linear both}
+}
+
+/* liten skärm 360×640: komprimera fiendezon och siffror */
+@media (max-height:700px){
+  .enemies{min-height:112px}
+  .ptotal{font-size:34px}
+  .slot{height:74px}
+  .slot .die{width:36px;height:36px}
+  .chainline{height:30px}
+  .chainline .seg{top:22px} .chainline .arrow{top:15px}
+  .enemy svg{max-height:74px}
+  .preview{padding-top:var(--s2)}
+  .pop{font-size:36px}
+}
+.legend{flex:0 0 auto;margin-top:var(--s2);font-size:9px;color:var(--chalk500);letter-spacing:.04em;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- SVG-filter: simulerar chalk.gdshader (kantjitter) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="jitter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<div class="app" id="app">
+
+  <!-- toppfält -->
+  <header class="top">
+    <div class="hp"><span class="glyph">◖</span>
+      <span>41/60</span>
+      <span class="hpbar"><i style="width:68%"></i></span>
+    </div>
+    <div class="floor">2–3</div>
+    <div class="chargemeter">⬤ LADDN.
+      <span class="dots"><b class="on"></b><b class="on"></b><b></b><b></b></span>
+    </div>
+    <button class="iconbtn" aria-label="Meny">≡</button>
+  </header>
+
+  <!-- fiendezon -->
+  <section class="enemies" id="enemies">
+    <div class="enemy" id="e0">
+      <div class="pop" id="pop0">34</div>
+      <svg viewBox="0 0 80 80"><path fill="#F2EDE3" d="M40 6c11 0 18 8 18 17 0 6-2 9-5 12 9 4 15 13 16 24 1 8-3 15-9 17l-4-14-4 15H28l-4-15-4 14c-6-2-10-9-9-17 1-11 7-20 16-24-3-3-5-6-5-12 0-9 7-17 18-17z"/><circle cx="33" cy="22" r="3" fill="#0E1216"/><circle cx="47" cy="22" r="3" fill="#0E1216"/></svg>
+      <div class="nm">Grottråtta</div>
+      <div class="ehp"><i id="ehp0"></i><span>28 / 28</span></div>
+      <div class="intent">▲ 6</div>
+    </div>
+    <div class="enemy" id="e1">
+      <div class="pop of" id="pop1">14<i>ÖVERFLÖD</i></div>
+      <svg viewBox="0 0 80 80"><path fill="#F2EDE3" d="M40 4l16 10v14l8 6-6 8 8 28H14l8-28-6-8 8-6V14z"/><circle cx="34" cy="20" r="3" fill="#0E1216"/><circle cx="46" cy="20" r="3" fill="#0E1216"/><rect x="30" y="34" width="20" height="4" fill="#0E1216"/></svg>
+      <div class="nm">Vrakvakt</div>
+      <div class="ehp"><i id="ehp1"></i><span>46 / 46</span></div>
+      <div class="intent" style="color:var(--shield)">⬟ 8</div>
+    </div>
+    <div class="enemy" id="e2">
+      <div class="pop" id="pop2"></div>
+      <svg viewBox="0 0 80 80"><path fill="#F2EDE3" d="M40 8c14 0 24 11 22 25-1 8-6 12-6 18l6 19H18l6-19c0-6-5-10-6-18C16 19 26 8 40 8z"/><circle cx="32" cy="28" r="3.5" fill="#0E1216"/><circle cx="48" cy="28" r="3.5" fill="#0E1216"/><path d="M31 44h18" stroke="#0E1216" stroke-width="3" fill="none"/></svg>
+      <div class="nm">Giftkrypare</div>
+      <div class="ehp"><i id="ehp2"></i><span>19 / 19</span></div>
+      <div class="intent" style="color:var(--poison)">⬬ 4</div>
+    </div>
+  </section>
+
+  <!-- kedjeförhandsvisning -->
+  <section class="preview">
+    <div class="prow">
+      <div class="ptotal" id="ptotal">48</div>
+      <div class="plabel">skada · kedjan förhandsvisad</div>
+    </div>
+    <div class="psplit">
+      <span>34 → Grottråtta</span>
+      <span class="ovf">↳ <em>14 överflöd</em> → Vrakvakt</span>
+    </div>
+  </section>
+
+  <!-- brädet: 5 slots + kedjelinje -->
+  <section class="board" id="board">
+    <div class="slots" id="slots">
+      <div class="slot eld" data-i="0">
+        <span class="ico">▲</span><span class="ttl">Eld</span>
+        <div class="die"><span class="p a"></span><span class="p e"></span><span class="p c"></span></div>
+        <span class="dustpuff"></span><span class="idx">1</span>
+      </div>
+      <div class="slot spegel" data-i="1">
+        <span class="ico">❖</span><span class="ttl">Spegel</span>
+        <div class="die"><span class="p a"></span><span class="p b"></span><span class="p d"></span><span class="p e"></span></div>
+        <span class="dustpuff"></span><span class="idx">2</span>
+      </div>
+      <div class="slot amboss" data-i="2">
+        <span class="ico">⬣</span><span class="ttl">Amboss</span>
+        <div class="die"><span class="p a"></span><span class="p b"></span><span class="p d"></span><span class="p e"></span></div>
+        <span class="dustpuff"></span><span class="idx">3</span>
+      </div>
+      <div class="slot ladda" data-i="3">
+        <span class="ico">⬤</span><span class="ttl">Ladda</span>
+        <div class="die sym" style="color:var(--poison)"><span>⬬</span></div>
+        <span class="dustpuff"></span><span class="idx">4</span>
+      </div>
+      <div class="slot tomrum" data-i="4">
+        <span class="ico">⬚</span><span class="ttl">Tomrum</span>
+        <span class="empty">TOM</span>
+        <span class="dustpuff"></span><span class="idx">5</span>
+      </div>
+    </div>
+
+    <div class="chainline" id="chainline">
+      <span class="seg" style="left:12%;width:16%"></span><span class="arrow" style="left:27%">›</span>
+      <span class="seg" style="left:32%;width:16%"></span><span class="arrow" style="left:47%">›</span>
+      <span class="seg" style="left:52%;width:16%"></span><span class="arrow" style="left:67%">›</span>
+      <span class="brace" id="brace" style="left:20%;width:40%"><b>×4</b><small>TRISS 4</small></span>
+    </div>
+  </section>
+
+  <!-- tumzon -->
+  <section class="tray">
+    <div class="trayhdr">
+      <h2>Din bricka · 6 tärningar</h2>
+      <button class="undo">↩ ÅNGRA</button>
+    </div>
+    <div class="hand">
+      <div class="wrap placed"><div class="die"><span class="p a"></span><span class="p e"></span><span class="p c"></span></div><span class="lbl">PL.1</span></div>
+      <div class="wrap placed"><div class="die"><span class="p a"></span><span class="p b"></span><span class="p d"></span><span class="p e"></span></div><span class="lbl">PL.2</span></div>
+      <div class="wrap placed"><div class="die"><span class="p a"></span><span class="p b"></span><span class="p d"></span><span class="p e"></span></div><span class="lbl">PL.3</span></div>
+      <div class="wrap placed"><div class="die sym" style="color:var(--poison)"><span>⬬</span></div><span class="lbl">PL.4</span></div>
+      <div class="wrap locked"><div class="die"><span class="p c"></span></div><span class="lbl">LÅST</span></div>
+      <div class="wrap"><div class="die"><span class="p a"></span><span class="p b"></span><span class="p f"></span><span class="p g"></span><span class="p d"></span><span class="p e"></span></div><span class="lbl">DRA →</span></div>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="btn-sec">OMKAST<b>2 / 2 KVAR</b></button>
+    <button class="btn-pri" id="confirm">BEKRÄFTA KEDJA <span class="sum">48</span></button>
+  </div>
+
+  <div class="legend">Tryck BEKRÄFTA för att spela upp kedjan · tapp under uppspelning = snabbspola</div>
+</div>
+
+<script>
+/* Demo: spelar upp händelseloggen som core skulle returnera.
+   I Godot kommer denna array från resolve() – UI:t innehåller ingen spellogik. */
+var LOG = [
+  {t:'die_activated', slot:0, ms:260},
+  {t:'die_activated', slot:1, ms:260},
+  {t:'die_activated', slot:2, ms:260},
+  {t:'combo_formed',  mult:4, ms:340},
+  {t:'die_activated', slot:3, ms:260},
+  {t:'damage_dealt',  target:0, value:34, kill:true, ms:300},
+  {t:'damage_dealt',  target:1, value:14, overflow:true, ms:300},
+  {t:'round_end',     total:48, ms:520}
+];
+
+var app=document.getElementById('app'), board=document.getElementById('board');
+var slots=[].slice.call(document.querySelectorAll('.slot'));
+var timers=[], fast=1, running=false;
+
+function clearAll(){
+  timers.forEach(clearTimeout); timers=[];
+  slots.forEach(function(s){s.classList.remove('act')});
+  document.querySelectorAll('.pop').forEach(function(p){p.classList.remove('go')});
+  document.getElementById('brace').classList.remove('go');
+  document.querySelectorAll('.enemy').forEach(function(e){e.classList.remove('hit','dead')});
+  board.classList.remove('punch');
+  document.getElementById('ptotal').classList.remove('go');
+  [0,1,2].forEach(function(i){document.getElementById('ehp'+i).style.transform='scaleX(1)'});
+}
+function at(ms,fn){timers.push(setTimeout(fn,ms/fast))}
+
+function play(){
+  clearAll(); running=true; fast=1; app.classList.add('playing');
+  var t=0;
+  LOG.forEach(function(ev){
+    (function(ev,t0){
+      at(t0,function(){
+        if(ev.t==='die_activated'){
+          var s=slots[ev.slot]; s.classList.add('act');
+          setTimeout(function(){s.classList.remove('act')},240/fast);
+        }
+        if(ev.t==='combo_formed'){
+          var b=document.getElementById('brace'); b.classList.add('go');
+          board.classList.add('punch'); setTimeout(function(){board.classList.remove('punch')},300/fast);
+        }
+        if(ev.t==='damage_dealt'){
+          var p=document.getElementById('pop'+ev.target);
+          p.innerHTML = ev.overflow ? ev.value+'<i>ÖVERFLÖD</i>' : ev.value;
+          p.classList.add('go');
+          var e=document.getElementById('e'+ev.target); e.classList.add('hit');
+          setTimeout(function(){e.classList.remove('hit')},480/fast);
+          document.getElementById('ehp'+ev.target).style.transform =
+            'scaleX('+(ev.kill?0:0.7)+')';
+          if(ev.kill) setTimeout(function(){e.classList.add('dead')},260/fast);
+        }
+        if(ev.t==='round_end'){
+          var tot=document.getElementById('ptotal'); tot.classList.add('go');
+          setTimeout(function(){running=false;app.classList.remove('playing');},700/fast);
+        }
+      });
+    })(ev,t);
+    t+=ev.ms;
+  });
+}
+document.getElementById('confirm').addEventListener('click',function(e){e.stopPropagation();play()});
+/* tapp under uppspelning = snabbspola (35 %), andra tappet = hoppa till slutet */
+document.addEventListener('click',function(){
+  if(!running) return;
+  if(fast===1){fast=2.85;} else {clearAll();running=false;app.classList.remove('playing');}
+});
+</script>
+</body>
+</html>

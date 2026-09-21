@@ -69,7 +69,7 @@ Arkitekturregel från dag 1: `src/core/` importerar aldrig från `src/game/`. Co
 |---|---|---|
 | **M0 Setup** (vecka 1) | Godot-projekt, gdUnit4, CI, `rng.gd`, `run_state.gd`, `resolve()` med tester, Play-konto, 12-testare-listan startad | CI grön, 1 000 headless-runs på < 5 s |
 | **M1 Vertical slice** (vecka 2–3) | 1 klass, 5 slots, 8 tärningssidor, 6 fiender, 1 boss, belöningsval, död → meta-poäng. Rektangelgrafik. | Rollspelsnörd ger Roligt ≥ 6/10 |
-| **M2 Juice** (vecka 4) | Sekventiell kedjeuppspelning, hit-stop, skak, number pop, stigande tonhöjd, haptik | Roligt ≥ 8/10 på telefon |
+| **M2 Juice** (vecka 4) | Sekventiell kedjeuppspelning (överlappande tidslinje), `chalk.gdshader`, hit-stop, skak, number pop, stigande tonhöjd, haptik, reducerad rörelse-läge, färgblindsäkra slot-former | Roligt ≥ 8/10 på telefon |
 | **M3 Innehåll** (vecka 5–7) | 3 klasser, 40 sidor, 20 reliker, 8 slot-typer, Glasvåningar, Ödeskast, Kodex, 15 fiender, 3 bossar | Run-simulatorn visar ingen klass > 60 % vinst |
 | **M4 Android closed test** (vecka 8) | AAB, IARC, Data safety, privacy policy, 12 testare i 14 dagar | Testare rapporterar D1-retention och "en run till" |
 | **M5 iOS** (vecka 10+) | Apple Developer (99 USD), Codemagic iOS-build, TestFlight | Samma build spelbar på iPhone |
