@@ -1,5 +1,22 @@
 path,source,author,license,url,retrieved,notes
 assets/icon.svg,PIPWRECK repo,PIPWRECK UI,own-work,,2026-09-21,App-ikon ritad i projektet. Godots standardikon anvands inte.
+assets/sfx/boss_intro.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Boss entre, lagt dan 600 ms"
+assets/sfx/charge_store.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Laddning lagras, mjuk klockton 240 ms"
+assets/sfx/combo_house.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Combo x8/kak, fyrklang + sub 250 ms"
+assets/sfx/combo_pair.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Combo x2, stigande tvaklang 120 ms"
+assets/sfx/combo_triple.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Combo x4, stigande treklang 180 ms"
+assets/sfx/damage_hit.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Skada, dov small 90 ms"
+assets/sfx/damage_overflow.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Overflod, small + svep uppat 190 ms"
+assets/sfx/defeat.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Forlust, tre fallande toner 900 ms"
+assets/sfx/die_activate.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Kedjesteg, torr tick 60 ms, pitchas per steg"
+assets/sfx/die_cracked.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Tarning spricker, glassplitter 380 ms"
+assets/sfx/enemy_attack.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Fiendeattack, svep nedat + dunk 250 ms"
+assets/sfx/enemy_killed.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Fiende dor, krasch + fallande ton 240 ms"
+assets/sfx/player_hurt.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Spelaren traffas, lag puls 240 ms"
+assets/sfx/reward_pick.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Belonig vald, mjuk bekraftelse 300 ms"
+assets/sfx/round_end.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Rundans slut, kort kadens 560 ms"
+assets/sfx/ui_tap.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"UI-tryck, 5 ms tick"
+assets/sfx/victory.wav,tools/gen_sfx.py,PIPWRECK UI,own-work,,2026-09-21,"Vinst, kort fanfar 800 ms"
 assets/sprites/dice/crack_1.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Sprickoverlay variant 1
 assets/sprites/dice/crack_2.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Sprickoverlay variant 2
 assets/sprites/dice/crack_3.png,tools/gen_dice_sprites.py,PIPWRECK UI,own-work,,2026-09-21,Sprickoverlay variant 3

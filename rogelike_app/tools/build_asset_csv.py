@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import gen_dice_sprites  # noqa: E402
 import gen_pixel_assets  # noqa: E402
+import gen_sfx  # noqa: E402
 
 FIELDS = ("path", "source", "author", "license", "url", "retrieved", "notes")
 
@@ -50,7 +51,7 @@ def main() -> int:
     root = Path(__file__).resolve().parent.parent
     rows: list[dict[str, str]] = list(STATIC_ROWS)
 
-    for module in (gen_pixel_assets, gen_dice_sprites):
+    for module in (gen_pixel_assets, gen_dice_sprites, gen_sfx):
         source = f"tools/{module.__name__}.py"
         for path, note in module.generate(root):
             rows.append({"path": path, "source": source, "notes": note, **OWN_WORK})
