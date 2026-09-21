@@ -11,12 +11,13 @@
 - Balanspass våning 1: +45,3 p.e. Lookahead över Greedy, rum 1–3 tar 3–3,4 rundor
 - **M1 godkänd**: våning 1 spelbar (marsch → strid → belöning → boss → vinst/död → ny run), autosave, 160 tester, smoke-run med skärmdumpar
 - **M1.5 godkänd**: engelska källsträngar + svensk översättning, sprites integrerade, 188 tester, skärmdumpar i docs/screenshots/m1_5/
+- **M2.5 godkänd**: stridsskärm v2 med kvitto, tutorialvåning 0, stad (logik), smedja, könsval, engelska default. 339 tester
 - **M2 godkänd**: juice-motor, chalk-UI, ljud (17 own-work WAV), haptik, boss-intro, vinst/död, inställningar, titelskärm, reliklager och dödsframes, färgblindsäkra former. 227 tester
 - **M4 godkänd**: Android-workflow grön, signerad debug-APK (61 MB) som artefakt, bakåtknapp/paus/safe area, docs/ANDROID.md. Webbversion publicerad som artefakt i chatten (Web-preset + gzip-loader i tools/web/)
 - Asset-pipeline: 93 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- **M2.5 bygge (omstyrt)**: dev bygger stridsskärm v2, tutorialvåning 0, stadslogik, smedja, könsval. UI levererar kroppsvarianter, ikoner, i18n, character sheet-mockup. Sidescroll struken
+- UI: saknade i18n-rader (~45) och kortning av svenska mikrotexter
 - **M5 Korridoren (bygge)**: utseende godkänt av Anders. Dev 2 bygger corridor_map (core), korridorvy i Godot 3D, texturer, rörelse, riktningsknappar, autosave per ruta, i nya filer. Integration med strid v2 och character sheet efter att M2.5 landat
 
 **Blockerat**
