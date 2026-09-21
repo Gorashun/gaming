@@ -31,6 +31,52 @@ const RELICS: Dictionary = {
 	"DOMINO": {"name": "The Domino", "rarity": Rules.Rarity.RARE},
 }
 
+# --- CORRIDOR_DESIGN §4.2: relik → utrustningsslot -------------------------
+# [b]Presentationsdata, inte en regel.[/b] Den ligger i src/data/ och aldrig i
+# src/core/ av exakt det skäl §4.2 anger: core vet inte vad en axel är. Ingen
+# funktion i src/core/ läser tabellen; den finns för character sheetet.
+
+const SLOT_HEAD: String = "HEAD"
+const SLOT_CHEST: String = "CHEST"
+const SLOT_HANDS: String = "HANDS"
+const SLOT_WEAPON: String = "WEAPON"
+const SLOT_LEGS: String = "LEGS"
+const SLOT_BACK: String = "BACK"
+const SLOT_AMULET: String = "AMULET"
+
+## De sju slotsen i den ordning de ritas runt figuren (DECISIONS 2026-09-21,
+## mockupen design/mockup_character_sheet.html): fyra till vänster, tre till
+## höger med "CHANGE LOOK" under.
+const SHEET_SLOTS: Array[String] = [
+	SLOT_HEAD, SLOT_AMULET, SLOT_CHEST, SLOT_BACK,
+	SLOT_WEAPON, SLOT_HANDS, SLOT_LEGS,
+]
+
+## CORRIDOR_DESIGN §4.2, ordagrant, med ett tillägg: designen listar
+## [code]SLOT_SPARE[/code] ("en riggad tärning i en bältespung") medan DECISIONS
+## låste sju slots utan reservplats. Bältespungen ritas därför på [b]ryggen[/b] –
+## samma bild, en plats som finns. Se docs/ARCHITECTURE.md.
+const RELIC_SLOTS: Dictionary = {
+	"ECHO_MIRROR": SLOT_HEAD,
+	"BLOOD_PRICE": SLOT_CHEST,
+	"OCTOPUS": SLOT_HANDS,
+	"DOMINO": SLOT_WEAPON,
+	"BROKEN_SCALE": SLOT_AMULET,
+	"CHEAT_CUBE": SLOT_BACK,
+}
+
+
+## Sloten en relik hänger i, eller tom sträng. [code]ANVIL_BLESSING[/code] är
+## klassreliken och har ingen slot: den är ett brännmärke på underarmen (§4.1).
+static func relic_slot(relic_id: String) -> String:
+	return String(RELIC_SLOTS.get(relic_id, ""))
+
+
+## Översättningsnyckeln för en slotetikett. Nycklarna fanns redan i M2.5:s CSV.
+static func sheet_slot_key(slot: String) -> String:
+	return "SMITH_SLOT_%s" % slot
+
+
 # --- §4.7 SLOT_SWAP-pool ---------------------------------------------------
 
 const SLOT_SWAPS: Dictionary = {
