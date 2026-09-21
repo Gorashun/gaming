@@ -804,6 +804,9 @@ func _on_damage(event: Dictionary) -> void:
 	var overflow: int = int(event.get("overflow", 0))
 	if index >= 0:
 		_panels[index].flash_hit()
+		if Settings.reduced_motion:
+			# Ersätter pixelsprajtens vita blixt (UI_GUIDE §12.6), samma 60 ms.
+			Juice.outline(_panels[index], Tokens.SEM_DAMAGE, 60)
 		var text: String = str(amount)
 		var color: Color = Tokens.SEM_DAMAGE
 		# Siffran är display-xl (UI_GUIDE §5.3), men ORD är det inte: "ARMOR 2"

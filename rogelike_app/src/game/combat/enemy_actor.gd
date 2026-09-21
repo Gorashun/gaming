@@ -127,6 +127,11 @@ func hit_reaction() -> void:
 func flash(amount: float = 0.9, duration: float = 0.14) -> void:
 	if sprite == null or not sprite.visible:
 		return
+	# UI_GUIDE §12.6: den vita blixten ersätts av en kontur i reducerat
+	# rörelse-läge. Konturen ritas av CombatScreen på fiendens kritpanel –
+	# World-lagret har ingen rect att rita den i.
+	if Settings.reduced_motion:
+		return
 	if _material == null:
 		_material = Art.flash_material()
 	if _material == null:
