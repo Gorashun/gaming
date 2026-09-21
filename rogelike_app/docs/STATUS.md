@@ -17,8 +17,7 @@
 - Asset-pipeline: 93 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- UI: saknade i18n-rader (~45) och kortning av svenska mikrotexter
-- **M5 Korridoren (bygge)**: utseende godkänt av Anders. Dev 2 bygger corridor_map (core), korridorvy i Godot 3D, texturer, rörelse, riktningsknappar, autosave per ruta, i nya filer. Integration med strid v2 och character sheet efter att M2.5 landat
+- **M5 dag 3, integration**: stad (förstapersons torg) → korridor → strid 45/55 i korridoren → belöning → bossdörr → stad; character sheet; sidescroll bort; ny webb + APK
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt
