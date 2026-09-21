@@ -1,6 +1,6 @@
 # PAPERDOLL.md – Smeden (`SMITH`)
 
-**Ägare:** UI/UX · **Uppdaterad:** 2026-09-21 · Gäller M1.
+**Ägare:** UI/UX · **Uppdaterad:** 2026-09-21 · Gäller M2.
 Implementationsbeslut: `DECISIONS.md` 2026-09-21 ("Paperdoll = Sprite2D-lager +
 en AnimationPlayer som driver `frame_index`"). Teknisk bakgrund: research 04 §2.
 
@@ -34,21 +34,30 @@ samma `frame` och det finns ingen desync att städa upp.
 
 ## 2. Lagerordning (z-ordning, bakifrån och fram)
 
-| z | Lager | M1-fil | Innehåll |
+| z | Lager | Filer | Innehåll |
 |---|---|---|---|
-| 0 | `cape` | `smith_cape_ember.png` | Kappa, mantel, bläckfiskarmar. Ligger bakom allt. |
-| 1 | `legs` | *(reserverad)* | Benrustning, byxor |
+| 0 | `cape` | `smith_cape_ember.png`, `smith_cape_octopus.png`, `smith_cape_echo_mirror.png` | Kappa, mantel, bläckfiskarmar, spegelskärvor. Ligger bakom allt. |
+| 1 | `legs` | `smith_legs_iron.png` | Benrustning, byxor |
 | 2 | `body` | `smith_body.png` | **Bas-kropp**: ben, bål, armar, huvud, skägg. Alltid synlig. |
-| 3 | `torso` | *(reserverad)* | Bröstharnesk, bandolär, hängande relik |
-| 4 | `head` | *(reserverad)* | Frisyr/ansiktsmarkör ovanpå baskroppen |
-| 5 | `helm` | `smith_helm_iron.png` | Hjälm, huva, krona |
-| 6 | `offhand` | *(reserverad)* | Vänsterhanden: sköld, fuskkub, våg |
+| 3 | `torso` | `smith_torso_broken_scale.png`, `smith_torso_echo_mirror.png`, `smith_torso_cheat_cube.png` | Bröstharnesk, bandolär, hängande relik |
+| 4 | `head` | `smith_head_domino.png` | Markör ovanpå baskroppen men **under** hjälmen |
+| 5 | `helm` | `smith_helm_iron.png`, `smith_helm_domino.png` | Hjälm, huva, krona |
+| 6 | `offhand` | `smith_offhand_cheat_cube.png`, `smith_offhand_broken_scale.png` | Vänsterhanden: sköld, fuskkub, våg |
 | 7 | `weapon` | `smith_weapon_hammer.png`, `smith_weapon_tongs.png` | Högerhanden |
-| 8 | `fx` | *(reserverad)* | Effekter. **Enda lagret som får hålla flera sprites samtidigt.** |
+| 8 | `fx` | `smith_fx_blood_price.png`, `smith_fx_octopus.png` | Effekter. **Enda lagret som får hålla flera sprites samtidigt.** |
 
-I M1 ritas ben, bål och huvud i `body` – `legs`, `torso` och `head` finns som
-tomma slots med samma kontrakt så att M2 kan lägga in rustningsdelar utan att
-röra vare sig noderna eller animationerna.
+Ben, bål och huvud ritas fortfarande i `body`; `legs`, `torso`, `head`,
+`offhand` och `fx` lägger **ovanpå** och ritar aldrig om baskroppen.
+
+**Namnkontrakt:** `smith_<lager>_<id i gemener>.png`, där `<id>` är antingen
+ett relik-id ur `content.gd` eller ett utrustningsnamn (`iron`, `ember`,
+`hammer`, `tongs`). Filnamnet går alltså alltid att räkna ut ur (lager, id)
+och behöver inte en egen uppslagstabell utöver `Art.RELIC_LAYERS`.
+
+**Lager 4 (`head`) ligger under lager 5 (`helm`).** Allt som en relik ritar på
+`head` vid tinningen döljs därför av en hjälm. `smith_head_domino.png` hänger
+brickan i ett snöre nedanför hjälmbrättet i stället – synlig med och utan
+hjälm. Det är regeln för varje framtida `head`-relik.
 
 ```
 Paperdoll (Node2D, texture_filter = Nearest, scale = 4, position = heltal * 4)
@@ -73,14 +82,19 @@ Paperdoll (Node2D, texture_filter = Nearest, scale = 4, position = heltal * 4)
 
 Reliknamnen är exakt de id:n som ligger i `src/data/content.gd` (`RELICS`).
 
-| `relic_id` | Namn | Rarity | Primärlager | Reservlager | Vad man ser |
-|---|---|---|---|---|---|
-| `BLOOD_PRICE` | Blodpriset | common | `fx` | – | Röda droppar faller från figurens händer, 2 per sekund |
-| `BROKEN_SCALE` | Trasiga vågen | uncommon | `torso` | `offhand` | Kluven våg i kedja över bröstet, gungar med bob-frames |
-| `OCTOPUS` | Bläckfisken | uncommon | `cape` | `fx` | Två armar ur ryggen som sträcker sig mot slot 1 och 3 |
-| `ECHO_MIRROR` | Ekospegeln | rare | `cape` | `torso` | Spegelskärvor som svävar bakom axlarna |
-| `CHEAT_CUBE` | Fuskkuben | rare | `offhand` | `torso` | Laddad tärning i vänsterhanden, visar alltid samma sida |
-| `DOMINO` | Dominobrickan | rare | `helm` | `head` | En bricka vid tinningen som tippar när reliken avfyras |
+| `relic_id` | Namn | Rarity | Primärlager | Fil | Reservlager | Fil | Vad man ser |
+|---|---|---|---|---|---|---|---|
+| `BLOOD_PRICE` | Blodpriset | common | `fx` | `smith_fx_blood_price.png` | – | – | Röda droppar faller från båda händerna, 2 per sekund, och stänker på golvlinjen |
+| `BROKEN_SCALE` | Trasiga vågen | uncommon | `torso` | `smith_torso_broken_scale.png` | `offhand` | `smith_offhand_broken_scale.png` | Våg i kedja över bröstet. **Skålarna väger aldrig jämnt** och högra kedjan är av |
+| `OCTOPUS` | Bläckfisken | uncommon | `cape` | `smith_cape_octopus.png` | `fx` | `smith_fx_octopus.png` | Två armar ur ryggen som sträcker sig vänsterut mot slot 1 och 3. Reservlagret är samma armar en pixel tunna |
+| `ECHO_MIRROR` | Ekospegeln | rare | `cape` | `smith_cape_echo_mirror.png` | `torso` | `smith_torso_echo_mirror.png` | En skärva och **samma form i mindre två gånger till** – en sak och dess eko, inte slumpad splitter |
+| `CHEAT_CUBE` | Fuskkuben | rare | `offhand` | `smith_offhand_cheat_cube.png` | `torso` | `smith_torso_cheat_cube.png` | Laddad tärning som visar **exakt samma sida i alla 32 frames**. Allt annat i spelet tumlar; den här gör det aldrig |
+| `DOMINO` | Dominobrickan | rare | `helm` | `smith_helm_domino.png` | `head` | `smith_head_domino.png` | Bricka i snöre vid käken som **tippar över på attackframe 2–3** |
+
+I praktiken tänds alltid `DOMINO`:s **reservlager**: Smeden bär hjälm, och
+utrustning slår relik på delat lager (se nedan). `smith_helm_domino.png` finns
+för att kollisionskedjan ska ha konst i båda ändar och aldrig kunna landa på
+ett tomt lager.
 
 **Kollisionsregel (normativ):** två reliker kan begära samma lager. Då vinner
 **högst rarity**; vid lika rarity vinner den som plockades **senast**. Förloraren
@@ -142,19 +156,47 @@ komprimerar figuren lika mycket som siffrorna.
 
 ## 5. Vad som finns och vad som saknas
 
-| Fil | Status |
-|---|---|
-| `smith_body.png` | **klar** – bas-kropp, läderförkläde, skägg, sotfläck |
-| `smith_weapon_hammer.png` | **klar** – vapenvariant A (smideshammare) |
-| `smith_weapon_tongs.png` | **klar** – vapenvariant B (tång med glödande ämne) |
-| `smith_helm_iron.png` | **klar** – nitad järnhjälm med näsjärn |
-| `smith_cape_ember.png` | **klar** – glödkappa som släpar bakåt |
-| `smith_legs_*.png` | saknas (M2) |
-| `smith_torso_*.png` | saknas (M2) |
-| `smith_offhand_*.png` | saknas (M2, behövs för `CHEAT_CUBE` och `BROKEN_SCALE`) |
-| `smith_fx_*.png` | saknas (M2, behövs för `BLOOD_PRICE`) |
+Alla 17 ark är 384×192 och genereras av `tools/gen_pixel_assets.py`
+(`HERO_LAYERS`). Inget lager saknas längre.
 
-Reliklagren är alltså **specificerade men inte ritade** i M1. Till dess visas
-reliker enbart i relikbrickan (`items/relic_*.png`, 16×16). Det är ett medvetet
-M1-snitt: kontraktet och kollisionsregeln är det som är dyrt att ändra senare,
-sprites är billiga att lägga till.
+| Fil | Lager | Status |
+|---|---|---|
+| `smith_body.png` | `body` | **klar** – bas-kropp, läderförkläde, skägg, sotfläck |
+| `smith_weapon_hammer.png` | `weapon` | **klar** – vapenvariant A (smideshammare) |
+| `smith_weapon_tongs.png` | `weapon` | **klar** – vapenvariant B (tång med glödande ämne) |
+| `smith_helm_iron.png` | `helm` | **klar** – nitad järnhjälm med näsjärn |
+| `smith_cape_ember.png` | `cape` | **klar** – glödkappa som släpar bakåt |
+| `smith_legs_iron.png` | `legs` | **klar (M2)** – benskenor med knäkupor, utrustning |
+| `smith_fx_blood_price.png` | `fx` | **klar (M2)** – `BLOOD_PRICE` |
+| `smith_torso_broken_scale.png` | `torso` | **klar (M2)** – `BROKEN_SCALE` primär |
+| `smith_offhand_broken_scale.png` | `offhand` | **klar (M2)** – `BROKEN_SCALE` reserv |
+| `smith_cape_octopus.png` | `cape` | **klar (M2)** – `OCTOPUS` primär |
+| `smith_fx_octopus.png` | `fx` | **klar (M2)** – `OCTOPUS` reserv |
+| `smith_cape_echo_mirror.png` | `cape` | **klar (M2)** – `ECHO_MIRROR` primär |
+| `smith_torso_echo_mirror.png` | `torso` | **klar (M2)** – `ECHO_MIRROR` reserv |
+| `smith_offhand_cheat_cube.png` | `offhand` | **klar (M2)** – `CHEAT_CUBE` primär |
+| `smith_torso_cheat_cube.png` | `torso` | **klar (M2)** – `CHEAT_CUBE` reserv |
+| `smith_helm_domino.png` | `helm` | **klar (M2)** – `DOMINO` primär |
+| `smith_head_domino.png` | `head` | **klar (M2)** – `DOMINO` reserv (den som faktiskt tänds) |
+
+### Vad dev behöver göra
+
+`Art.RELIC_LAYERS` finns redan och `HeroFigure.apply_relics()` kör
+kollisionsregeln. Det som saknas är uppslaget **(lager, relik-id) → fil**.
+Det är en rad per relik och lager enligt namnkontraktet i §2, t.ex.:
+
+```gdscript
+static func relic_layer_texture(layer: StringName, relic_id: String) -> Texture2D:
+    return texture("hero/smith_%s_%s.png" % [layer, relic_id.to_lower()])
+```
+
+Ingen annan ändring krävs: rutnät, origo, frame-ordning och `frame_index`-
+settern är identiska med de befintliga lagren.
+
+### Verifiering
+
+`tools/gen_pixel_assets.py` skriver alla ark; storlekskontrollen
+(`384×192`) kördes på alla 17 och passerade. Kompositionen granskades i
+×4-förhandsvisning på frames `idle 0–3`, `walk 2`, `attack 2–3` och `hit 1`:
+varje relik syns på figuren i både primär- och reservlager, och inget lager
+döljer en annan reliks tell.

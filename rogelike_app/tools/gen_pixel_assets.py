@@ -332,6 +332,175 @@ ENEMIES: dict[str, tuple] = {
 }
 
 
+
+# --- Enemy death frames ----------------------------------------------------
+# Sheet contract (M2): cell unchanged, hframes 4, vframes 2.
+#   row 0 = idle, 4 authored frames (unchanged from M1)
+#   row 1 = death, 3 authored frames; column 3 repeats the last authored frame
+#           so a wrong frame index gives a frozen pose, never an empty cell
+#           (UI_GUIDE section 11, same rule as the paperdoll).
+#
+# The three beats are the same for every enemy, which is the point: the player
+# has to be able to read "that one is dead" in 120 ms without looking at it.
+#   0  RECOIL    squashed 12 %, widened, the eye light is gone
+#   1  COLLAPSE  half height, a third of the body dissolved, debris thrown up
+#   2  REMAINS   a flat pile on the floor line plus settling dust
+#
+# The frames are derived from the enemy's own idle frame 0 by resampling, so a
+# redrawn enemy gets a matching death for free and no silhouette can drift.
+
+_EYE_TOKENS: tuple[str, ...] = ("charge", "chrg4", "blood", "rust4", "pois5", "frost")
+
+
+def _floor_row(cv: Canvas) -> int:
+    """Lowest row that has an opaque pixel. That is where the body collapses."""
+    for y in range(cv.height - 1, -1, -1):
+        if any(cv.px[y][x][3] != 0 for x in range(cv.width)):
+            return y
+    return cv.height - 1
+
+
+def _hash01(x: int, y: int, seed: int) -> float:
+    h = (x * 73856093) ^ (y * 19349663) ^ (seed * 83492791)
+    h &= 0xFFFFFFFF
+    h = (h ^ (h >> 13)) * 1274126177 & 0xFFFFFFFF
+    return ((h ^ (h >> 16)) & 0xFFFF) / 65535.0
+
+
+def _squash(src: Canvas, floor_y: int, scale_y: float, scale_x: float) -> Canvas:
+    """Nearest neighbour resample around the floor line. Inverse mapped, so a
+    widened body has no comb gaps."""
+    out = Canvas(src.width, src.height)
+    cx = src.width / 2.0
+    for ny in range(src.height):
+        sy = floor_y - (floor_y - ny) / max(scale_y, 0.01)
+        if sy < 0 or sy >= src.height:
+            continue
+        for nx in range(src.width):
+            sx = cx + (nx - cx) / max(scale_x, 0.01)
+            if sx < 0 or sx >= src.width:
+                continue
+            px = src.px[int(sy)][int(sx)]
+            if px[3] != 0:
+                out.px[ny][nx] = px
+    return out
+
+
+def _dissolve(cv: Canvas, amount: float, seed: int) -> Canvas:
+    """Eat `amount` of the opaque pixels, biased toward the top of the body."""
+    floor_y = _floor_row(cv)
+    top = 0
+    for y in range(cv.height):
+        if any(cv.px[y][x][3] != 0 for x in range(cv.width)):
+            top = y
+            break
+    height = max(1, floor_y - top)
+    out = Canvas(cv.width, cv.height)
+    for y in range(cv.height):
+        for x in range(cv.width):
+            px = cv.px[y][x]
+            if px[3] == 0:
+                continue
+            bias = 1.0 - (y - top) / height  # 1 at the head, 0 at the feet
+            if _hash01(x, y, seed) < amount * (0.55 + 0.75 * bias):
+                continue
+            out.px[y][x] = px
+    return out
+
+
+def _kill_eyes(cv: Canvas, max_cluster: int = 8) -> Canvas:
+    """The light goes out.
+
+    Only SMALL clusters of an eye token are killed. Several enemies use the
+    same hot tokens as body shading (RUST_RAT's lit edge is rust4, SLAGJAW's
+    maw is rust3/rust5), and blacking those out would eat the silhouette
+    instead of the eye. An eye is 1-4 px; a shaded flank is dozens.
+    """
+    dead = color("out")
+    eyes = {color(t) for t in _EYE_TOKENS}
+    seen: set[tuple[int, int]] = set()
+    for y in range(cv.height):
+        for x in range(cv.width):
+            if (x, y) in seen or cv.px[y][x] not in eyes:
+                continue
+            target = cv.px[y][x]
+            stack = [(x, y)]
+            cluster: list[tuple[int, int]] = []
+            seen.add((x, y))
+            while stack and len(cluster) <= max_cluster:
+                cx, cy = stack.pop()
+                cluster.append((cx, cy))
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    nx, ny = cx + dx, cy + dy
+                    if (nx, ny) in seen:
+                        continue
+                    if 0 <= nx < cv.width and 0 <= ny < cv.height and cv.px[ny][nx] == target:
+                        seen.add((nx, ny))
+                        stack.append((nx, ny))
+            if len(cluster) <= max_cluster:
+                for cx, cy in cluster:
+                    cv.px[cy][cx] = dead
+    return cv
+
+
+def death_frame(idle0: Canvas, stage: int, debris: str, spark: str, seed: int) -> Canvas:
+    """One death frame. `stage` is 0, 1 or 2."""
+    cell = idle0.width
+    floor_y = _floor_row(idle0)
+    if stage == 0:
+        cv = _kill_eyes(_squash(idle0, floor_y, 0.88, 1.12))
+        # impact dust kicked up along the floor line
+        for i in range(5):
+            dx = int((i - 2) * (cell / 9.0))
+            cv.set(cell // 2 + dx, floor_y - 1 - (i % 2), color(debris))
+        return cv
+    if stage == 1:
+        cv = _dissolve(_kill_eyes(_squash(idle0, floor_y, 0.52, 1.24)), 0.34, seed)
+        # debris thrown up and out, biggest pieces lowest
+        for i in range(9):
+            t = i / 8.0
+            dx = int(round((t - 0.5) * cell * 0.8))
+            dy = int(round(-abs(math.sin(t * math.pi)) * cell * 0.28))
+            token = spark if i % 3 == 0 else debris
+            cv.set(cell // 2 + dx, floor_y + dy - 2, color(token))
+            if i % 2 == 0:
+                cv.set(cell // 2 + dx, floor_y + dy - 1, color(debris))
+        return cv
+    cv = _dissolve(_squash(idle0, floor_y, 0.20, 1.34), 0.66, seed + 7)
+    # settled pile: a flat two row heap, brightest along the lit top edge
+    half = int(cell * 0.30)
+    for x in range(cell // 2 - half, cell // 2 + half):
+        if _hash01(x, floor_y, seed + 19) < 0.78:
+            cv.set(x, floor_y, color(debris))
+        if _hash01(x, floor_y - 1, seed + 23) < 0.42:
+            cv.set(x, floor_y - 1, color(spark if _hash01(x, 3, seed) > 0.8 else debris))
+    # last dust, drifting up out of the pile
+    for i in range(3):
+        cv.set(cell // 2 - 4 + i * 4, floor_y - 4 - i, color(debris))
+    return cv
+
+
+# enemy id -> (debris token, spark token)
+DEATH_TOKENS: dict[str, tuple[str, str]] = {
+    "RUST_RAT": ("rust2", "rust4"),
+    "SLAG_MOTH": ("bone2", "pois4"),
+    "THORN_IMP": ("moss2", "bone4"),
+    "PIP_THIEF": ("leat2", "chrg4"),
+    "IRON_TICK": ("iron2", "shield"),
+    "GRAVE_HAND": ("bone2", "bone4"),
+    "SLAGJAW": ("iron2", "rust4"),
+}
+
+
+def build_enemy_sheet(fn, cell: int, enemy_id: str) -> Canvas:
+    """Row 0 idle (4 frames), row 1 death (3 authored + 1 repeat)."""
+    idle = [fn(f) for f in range(4)]
+    debris, spark = DEATH_TOKENS.get(enemy_id, ("iron2", "shield"))
+    seed = sum(ord(c) for c in enemy_id)
+    death = [death_frame(idle[0], stage, debris, spark, seed) for stage in range(3)]
+    death.append(death[2])
+    return grid_sheet([idle, death], cell, cell, 4)
+
 # --- Hero paperdoll --------------------------------------------------------
 # Contract (research 04 section 2): cell 48x48, hframes 8, vframes 4, shared
 # origin, shared frame order. Every layer sheet below obeys it exactly.
@@ -525,12 +694,367 @@ def hero_cape(row: int, f: int) -> Canvas:
     return cv.outline(color("out"))
 
 
+
+# --- Hero paperdoll: relic and equipment layers (M2) -----------------------
+# PAPERDOLL.md section 3 maps relic -> primary layer -> reserve layer. Every
+# relic in src/data/content.gd needs a sheet for BOTH its layers, otherwise the
+# collision rule in HeroFigure.apply_relics() resolves to a layer with no art
+# and the relic silently disappears from the figure.
+#
+# File name contract: smith_<layer>_<relic_id.lower()>.png
+# Every sheet is the same 48x48 / 8x4 grid with the same origin as smith_body,
+# and every function reads the SAME pose() rig, so a layer can never desync.
+
+def _offhand_anchor(p: dict) -> tuple[int, int]:
+    """Left hand (the one hero_body draws as the back arm), in cell pixels."""
+    return (18 + p["lean"], 33 + p["bob"])
+
+
+def _torso_anchor(p: dict) -> tuple[int, int]:
+    """Centre of the chest ellipse in hero_body."""
+    return (24 + p["lean"], 26 + p["bob"])
+
+
+def _head_anchor(p: dict) -> tuple[int, int]:
+    return (25 + p["lean"], 16 + p["bob"])
+
+
+def _leg_targets(p: dict) -> list[tuple[int, int, int]]:
+    """(hip_x, foot_x, foot_y) for both legs - copied from hero_body's rig."""
+    lean, bob = p["lean"], p["bob"]
+    hip = 32 + bob
+    swing = p["leg"]
+    lift = max(0.0, swing) * 3.0
+    return [
+        (22 + lean, 24 + lean + int(round(swing * 4)), 44 - int(round(lift))),
+        (25 + lean, 24 + lean - int(round(swing * 4)), 44 - int(round(max(0.0, -swing) * 3))),
+    ], hip
+
+
+def hero_legs_iron(row: int, f: int) -> Canvas:
+    """legs layer (equipment, not a relic): riveted greaves and knee cops.
+
+    Drawn so PAPERDOLL section 2's reserved `legs` slot has real art and M2's
+    armour pieces have a template. Iron ramp, lit from the upper left.
+    """
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    legs, hip = _leg_targets(p)
+    for index, (hip_x, foot_x, foot_y) in enumerate(legs):
+        span = max(foot_y - hip, 1)
+        ramp = IRON if index == 0 else ("iron1", "iron2", "iron3")
+        # greave: the lower 60 % of the shin
+        for i in range(span):
+            if i < span * 0.4:
+                continue
+            t = i / span
+            x = int(round(hip_x + (foot_x - hip_x) * t))
+            cv.rect(x, hip + i, 3, 1, color(ramp[1]))
+            cv.set(x, hip + i, color(ramp[2]))          # lit left edge
+            cv.set(x + 2, hip + i, color(ramp[0]))      # shaded right edge
+        # knee cop: a 4x3 plate at 40 % down the leg
+        knee_t = 0.38
+        kx = int(round(hip_x + (foot_x - hip_x) * knee_t))
+        plate(cv, kx - 1, hip + int(span * knee_t), 5, 3, ramp)
+        cv.set(kx + 1, hip + int(span * knee_t) + 1, color("shield"))  # rivet
+    return cv.outline(color("out"))
+
+
+def hero_torso_broken_scale(row: int, f: int) -> Canvas:
+    """BROKEN_SCALE, primary layer `torso`: a split balance on a chain.
+
+    Tell (PAPERDOLL section 3): the two pans never level out. The beam tips a
+    little further on every bob frame, so the relic reads as *broken* even when
+    the figure stands still.
+    """
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    cx, cy = _torso_anchor(p)
+    tip = (0, 1, 1, 0)[f % 4] + (1 if row == 2 and f in (2, 3) else 0)
+    # cord from the neck down to the fulcrum: narrow, so the beam reads wide
+    cv.vline(cx, cy - 7, 4, color("iron3"))
+    beam_y = cy - 3
+    # beam: tilted as one rigid bar, left end down, right end up
+    for i, x in enumerate(range(cx - 5, cx + 6)):
+        t = (i - 5) / 5.0
+        cv.set(x, beam_y + int(round(t * (1 + tip))), color("iron4"))
+    cv.rect(cx - 1, beam_y - 2, 3, 3, color("iron3"))  # fulcrum block
+    cv.set(cx, beam_y - 2, color("shield"))
+    # two pans. Left hangs low and full, right hangs high and empty.
+    left_y = beam_y + 1 + tip
+    right_y = beam_y - 1 - tip
+    cv.vline(cx - 5, left_y, 5, color("iron2"))
+    cv.rect(cx - 8, left_y + 5, 7, 1, color("iron4"))
+    cv.rect(cx - 7, left_y + 6, 5, 1, color("iron2"))
+    cv.rect(cx - 6, left_y + 4, 3, 1, color("blod3"))  # what it weighs: blood
+    # right chain is SNAPPED - the pan hangs from one strand and tilts
+    cv.vline(cx + 5, right_y, 2, color("iron2"))
+    cv.set(cx + 5, right_y + 2, color("blood"))        # the break
+    cv.vline(cx + 6, right_y + 3, 2, color("iron2"))
+    cv.rect(cx + 4, right_y + 5, 6, 1, color("iron4"))
+    cv.rect(cx + 5, right_y + 6, 4, 1, color("iron2"))
+    return cv.outline(color("out"))
+
+
+def hero_offhand_broken_scale(row: int, f: int) -> Canvas:
+    """BROKEN_SCALE, reserve layer `offhand`: the same balance, held."""
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    hx, hy = _offhand_anchor(p)
+    tip = (0, 1, 1, 0)[f % 4]
+    cv.vline(hx, hy, 3, color("iron3"))
+    for i, x in enumerate(range(hx - 4, hx + 5)):
+        cv.set(x, hy + 3 + (tip if i > 4 else -tip), color("iron4"))
+    for pan_x, drop in ((hx - 4, 4 + tip), (hx + 4, 2 - tip)):
+        cv.vline(pan_x, hy + 3, drop, color("iron2"))
+        cv.rect(pan_x - 1, hy + 3 + drop, 3, 1, color("iron4"))
+    cv.set(hx + 4, hy + 4, color("blood"))
+    return cv.outline(color("out"))
+
+
+def hero_cape_octopus(row: int, f: int) -> Canvas:
+    """OCTOPUS, primary layer `cape`: two arms out of the back.
+
+    Tell: the arms reach LEFT, toward slot 1 and slot 3 in the chain - the
+    relic's rule is that it touches non-adjacent slots, so the silhouette has
+    to show reach, not bulk. Suckers are single pois5 pixels so they survive x4.
+    """
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    bob, lean = p["bob"], p["lean"]
+    phase = f * 0.9 + (1.4 if row == 2 else 0.0)
+    for arm, (base_y, length, amp) in enumerate(((23, 17, 2.6), (28, 14, 1.9))):
+        x = 19 + lean
+        y = base_y + bob
+        for i in range(length):
+            wave = math.sin(phase + i * 0.55 + arm * 1.7) * amp * (i / length)
+            px = x - i
+            py = int(round(y + wave))
+            thickness = 2 if i < length * 0.6 else 1
+            cv.rect(px, py, 1, thickness, color("pois3" if i % 3 else "pois4"))
+            if i % 3 == 1:
+                cv.set(px, py + thickness, color("pois5"))  # sucker
+        # shoulder root, so the arm does not float free of the body
+        cv.rect(x - 1, y - 1, 3, 3, color("pois2"))
+    return cv.outline(color("out"))
+
+
+def hero_fx_octopus(row: int, f: int) -> Canvas:
+    """OCTOPUS, reserve layer `fx`: thinner arms, so it still reads when a
+    higher rarity relic owns `cape`. One pixel thick, no shoulder root."""
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    bob, lean = p["bob"], p["lean"]
+    phase = f * 0.9
+    for arm, (base_y, length, amp) in enumerate(((22, 15, 3.0), (30, 12, 2.2))):
+        for i in range(length):
+            wave = math.sin(phase + i * 0.6 + arm * 1.7) * amp * (i / length)
+            cv.set(18 + lean - i, int(round(base_y + bob + wave)), color("pois4" if i % 2 else "pois3"))
+    return cv
+
+
+def hero_cape_echo_mirror(row: int, f: int) -> Canvas:
+    """ECHO_MIRROR, primary layer `cape`: shards floating behind the shoulders.
+
+    Tell: the relic repeats a slot, so there are TWO shards of the same shape
+    at different sizes - a thing and its echo, not a random scatter.
+    """
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    bob, lean = p["bob"], p["lean"]
+    drift = (0, -1, 0, 1)[f % 4]
+    shards = (
+        (12 + lean, 15 + bob + drift, 7, 11),  # the thing
+        (6 + lean, 25 + bob - drift, 5, 8),    # its echo, smaller
+        (13 + lean, 33 + bob + drift, 3, 5),   # second echo, fading out
+    )
+    for index, (sx, sy, w, h) in enumerate(shards):
+        for yy in range(h):
+            # a shard, not a rectangle: the right edge is cut at an angle
+            width = max(1, w - abs(yy - h // 2) // 2)
+            cv.rect(sx, sy + yy, width, 1, color("glass3" if index else "glass4"))
+        cv.vline(sx, sy, h, color("glass5"))            # lit edge, upper left
+        cv.set(sx + 1, sy + 1, color("chalk100"))       # glint
+        cv.vline(sx + max(1, w - 1), sy + 1, max(1, h - 2), color("glass2"))
+    return cv.outline(color("out"))
+
+
+def hero_torso_echo_mirror(row: int, f: int) -> Canvas:
+    """ECHO_MIRROR, reserve layer `torso`: the mirror worn on the chest."""
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    cx, cy = _torso_anchor(p)
+    plate(cv, cx - 3, cy - 3, 7, 9, ("glass2", "glass3", "glass4"))
+    cv.rect(cx - 2, cy - 2, 5, 7, color("glass4"))
+    # the crack that makes it an ECHO and not a shield
+    for i, (dx, dy) in enumerate(((0, -2), (1, -1), (0, 0), (1, 1), (0, 2), (1, 3))):
+        cv.set(cx + dx, cy + dy, color("glass1"))
+    cv.set(cx - 1, cy - 2, color("chalk100"))
+    cv.rect(cx - 4, cy - 4, 9, 1, color("iron3"))  # frame
+    return cv.outline(color("out"))
+
+
+def hero_offhand_cheat_cube(row: int, f: int) -> Canvas:
+    """CHEAT_CUBE, primary layer `offhand`: a loaded die in the left hand.
+
+    Tell: the face NEVER changes across the frames. Every other die in the game
+    tumbles; this one shows the same six on every single frame, which is the
+    whole joke and the whole rule.
+    """
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    hx, hy = _offhand_anchor(p)
+    cv.rect(hx - 3, hy, 6, 6, color("bone4"))
+    cv.hline(hx - 3, hy, 6, color("bone5"))         # lit top
+    cv.vline(hx - 3, hy, 6, color("bone5"))         # lit left
+    cv.hline(hx - 3, hy + 5, 6, color("bone2"))     # shaded bottom
+    cv.vline(hx + 2, hy, 6, color("bone2"))
+    # six pips, identical in every frame
+    for px in (hx - 2, hx + 1):
+        for py in (hy + 1, hy + 2, hy + 3):
+            cv.set(px, py + (1 if py == hy + 3 else 0), color("pip"))
+    # a charge-yellow glint: the die is weighted, and it knows it
+    cv.set(hx - 3, hy, color("charge"))
+    return cv.outline(color("out"))
+
+
+def hero_torso_cheat_cube(row: int, f: int) -> Canvas:
+    """CHEAT_CUBE, reserve layer `torso`: the die strapped to a bandolier."""
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    cx, cy = _torso_anchor(p)
+    # bandolier, upper left to lower right. Iron studs on dark leather: the
+    # apron underneath is already leat2/leat3, so a leather strap would vanish.
+    for i in range(14):
+        cv.set(cx - 6 + i, cy - 6 + i, color("iron2"))
+        cv.set(cx - 5 + i, cy - 6 + i, color("iron4"))
+        if i % 3 == 0:
+            cv.set(cx - 6 + i, cy - 6 + i, color("shield"))
+    dx, dy = cx + 1, cy + 1
+    cv.rect(dx - 2, dy - 2, 5, 5, color("bone4"))
+    cv.hline(dx - 2, dy - 2, 5, color("bone5"))
+    cv.vline(dx - 2, dy - 2, 5, color("bone5"))
+    for px in (dx - 1, dx + 1):
+        for py in (dy - 1, dy + 1):
+            cv.set(px, py, color("pip"))
+    cv.set(dx, dy, color("charge"))
+    return cv.outline(color("out"))
+
+
+def hero_head_domino(row: int, f: int) -> Canvas:
+    """DOMINO, reserve layer `head`: a tile at the temple that tips.
+
+    This is the layer that actually lights up in play: PAPERDOLL section 3 says
+    equipment beats relics on a shared layer, and the Smith always wears a helm,
+    so DOMINO always falls through from `helm` to `head`.
+
+    Tell: the tile stands upright at rest and TIPS on the attack frames - the
+    relic fires on a chain, so the art has to show the first domino going over.
+    """
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    cx, cy = _head_anchor(p)
+    tipping = row == 2 and f >= 2
+    # `head` is z 4 and the helm is z 5, so anything drawn at the temple is
+    # hidden by the helm. The tile therefore hangs on a cord from under the
+    # brim, beside the jaw, where it is visible with OR without a helm.
+    cv.vline(cx + 5, cy - 3, 3, color("iron3"))
+    x, y = cx + 4, cy + 1
+    if tipping:
+        # gone over: the tile lies flat and points forward
+        cv.rect(x - 1, y + 3, 7, 3, color("bone4"))
+        cv.hline(x - 1, y + 3, 7, color("bone5"))
+        cv.vline(x + 2, y + 3, 3, color("bone2"))
+        cv.set(x, y + 4, color("pip"))
+        cv.set(x + 4, y + 4, color("pip"))
+    else:
+        cv.rect(x, y, 4, 8, color("bone4"))
+        cv.vline(x, y, 8, color("bone5"))
+        cv.hline(x, y + 4, 4, color("bone2"))   # the dividing line
+        cv.set(x + 1, y + 1, color("pip"))
+        cv.set(x + 2, y + 2, color("pip"))
+        cv.set(x + 1, y + 6, color("pip"))
+    return cv.outline(color("out"))
+
+
+def hero_helm_domino(row: int, f: int) -> Canvas:
+    """DOMINO, primary layer `helm`: the tile as a crest.
+
+    Only used if the Smith has no helm equipped. Kept so the collision rule in
+    PAPERDOLL section 3 has art on both ends of the chain and never resolves to
+    an empty layer.
+    """
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    cx, cy = _head_anchor(p)
+    lean_tip = 1 if row == 2 and f in (2, 3) else 0
+    cv.rect(cx - 5, cy - 4, 11, 2, color("leat3"))          # headband
+    x, y = cx + lean_tip, cy - 12
+    cv.rect(x - 2, y, 4, 8, color("bone4"))
+    cv.vline(x - 2, y, 8, color("bone5"))
+    cv.hline(x - 2, y + 4, 4, color("bone2"))
+    cv.set(x - 1, y + 1, color("pip"))
+    cv.set(x, y + 2, color("pip"))
+    cv.set(x - 1, y + 6, color("pip"))
+    return cv.outline(color("out"))
+
+
+def hero_fx_blood_price(row: int, f: int) -> Canvas:
+    """BLOOD_PRICE, primary layer `fx`: drops falling from both hands.
+
+    PAPERDOLL section 3 asks for 2 drops per second. idle is 0.64 s over 4
+    frames, so the cycle below drops one bead from each hand per two frames and
+    lands at 2/s. No outline: a 1 px bead with a 1 px outline is a 3 px blob.
+
+    `fx` is the only layer that may stack, so this sheet must stay visually
+    thin - it will often be drawn on top of another relic's fx.
+    """
+    cv = Canvas(CELL, CELL)
+    p = pose(row, f)
+    hands = (p["hand"], _offhand_anchor(p))
+    for index, (hx, hy) in enumerate(hands):
+        # bead forming at the fingertip
+        stage = (f + index * 2) % 4
+        if stage == 0:
+            cv.rect(hx, hy + 2, 2, 2, color("blod4"))
+            cv.set(hx, hy + 2, color("blod5"))
+        elif stage == 1:
+            cv.rect(hx, hy + 3, 2, 3, color("blod4"))
+            cv.set(hx, hy + 3, color("blod5"))
+            cv.rect(hx, hy + 6, 2, 1, color("blod3"))
+        else:
+            fall = 3 + stage * 4
+            cv.rect(hx, hy + fall, 2, 3, color("blod4"))
+            cv.set(hx, hy + fall, color("blod5"))
+            cv.rect(hx, hy + fall + 3, 2, 1, color("blod3"))
+            # splash on the floor once the bead has cleared the boot line
+            if hy + fall + 3 >= 42:
+                cv.rect(hx - 2, 44, 2, 1, color("blod3"))
+                cv.rect(hx + 2, 44, 2, 1, color("blod3"))
+    return cv
+
 HERO_LAYERS: dict[str, tuple] = {
+    # equipment
     "body": (hero_body, "bas-kropp, alltid synlig"),
     "weapon_hammer": (hero_weapon_hammer, "vapen A"),
     "weapon_tongs": (hero_weapon_tongs, "vapen B"),
     "helm_iron": (hero_helm, "hjalm"),
     "cape_ember": (hero_cape, "kappa"),
+    "legs_iron": (hero_legs_iron, "benskenor, utrustningslager legs"),
+    # relics: every relic in content.gd gets BOTH its primary and its reserve
+    # layer (PAPERDOLL.md section 3), so the collision rule can never resolve
+    # to a layer without art.
+    "fx_blood_price": (hero_fx_blood_price, "BLOOD_PRICE, primar fx"),
+    "torso_broken_scale": (hero_torso_broken_scale, "BROKEN_SCALE, primar torso"),
+    "offhand_broken_scale": (hero_offhand_broken_scale, "BROKEN_SCALE, reserv offhand"),
+    "cape_octopus": (hero_cape_octopus, "OCTOPUS, primar cape"),
+    "fx_octopus": (hero_fx_octopus, "OCTOPUS, reserv fx"),
+    "cape_echo_mirror": (hero_cape_echo_mirror, "ECHO_MIRROR, primar cape"),
+    "torso_echo_mirror": (hero_torso_echo_mirror, "ECHO_MIRROR, reserv torso"),
+    "offhand_cheat_cube": (hero_offhand_cheat_cube, "CHEAT_CUBE, primar offhand"),
+    "torso_cheat_cube": (hero_torso_cheat_cube, "CHEAT_CUBE, reserv torso"),
+    "helm_domino": (hero_helm_domino, "DOMINO, primar helm"),
+    "head_domino": (hero_head_domino, "DOMINO, reserv head"),
 }
 
 
@@ -986,13 +1510,12 @@ def generate(root: Path) -> list[tuple[str, str]]:
     """Write every sprite. Returns (path, notes) for the license registry."""
     made: list[tuple[str, str]] = []
 
-    # enemies
+    # enemies: row 0 idle x4, row 1 death x3 (+1 repeat)
     for enemy_id, (fn, cell, filename) in ENEMIES.items():
-        frames = [fn(f) for f in range(4)]
-        out = sheet(frames, cell, cell)
+        out = build_enemy_sheet(fn, cell, enemy_id)
         path = ART / "enemies" / filename
         write_png(root / path, out)
-        made.append((path.as_posix(), f"{enemy_id} idle, {cell}x{cell}, 4 frames"))
+        made.append((path.as_posix(), f"{enemy_id} idle x4 + death x3, {cell}x{cell}, hframes 4 vframes 2"))
 
     # hero paperdoll layers
     for layer, (fn, note) in HERO_LAYERS.items():

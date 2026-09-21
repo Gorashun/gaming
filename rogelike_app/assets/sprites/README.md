@@ -1,6 +1,6 @@
 # assets/sprites – M1-spriteregister
 
-**Ägare:** UI/UX · **Uppdaterad:** 2026-09-21 · Gäller M1 (våning 1).
+**Ägare:** UI/UX · **Uppdaterad:** 2026-09-21 · Gäller M2 (våning 1 + juice).
 
 Alla sprites här är 16 px-baserad pixelgrafik i `docs/UI_GUIDE.md` §2-paletten.
 Varje fil har en rad i `assets/ASSET_LICENSES.csv` och CI failar annars
@@ -49,8 +49,42 @@ paperdoll-kontraktet (§2) och tärningskompositionen (§3) är oförändrade.
 
 ## 1. Fiender – mappning mot `src/data/content.gd`
 
-Alla fiendeark är **4 idle-frames på en rad**, `hframes = 4`, `vframes = 1`,
-och alla figurer **tittar åt vänster** (hjälten marscherar åt höger in i dem).
+Alla fiendeark är **`hframes = 4`, `vframes = 2`** (ändrat i M2):
+
+| Rad | Animation | Authorade frames | Not |
+|---|---|---|---|
+| 0 | `default` (idle) | 4 (kol 0–3) | oförändrad från M1 |
+| 1 | `death` | **3 (kol 0–2)** | kol 3 upprepar sista authorade framen |
+
+Alla figurer **tittar åt vänster** (hjälten marscherar åt höger in i dem).
+
+### Death-animationen (M2)
+
+Tre slag, identiska för varje fiende – poängen är att spelaren ska kunna läsa
+"den där är död" på 120 ms utan att titta:
+
+| Frame | Beat | Vad som händer |
+|---|---|---|
+| 0 | `RECOIL` | kroppen klipps ihop 12 % mot golvlinjen och breddas, **ögonljuset slocknar**, dammpuff längs golvet |
+| 1 | `COLLAPSE` | halv höjd, en tredjedel av kroppen upplöst (biasad mot huvudet), spillror kastas upp och ut |
+| 2 | `REMAINS` | platt hög på golvlinjen + sista dammet som driver uppåt |
+
+Frames härleds ur fiendens **egen idle-frame 0** genom omsampling, så en
+omritad fiende får en matchande död gratis och silhuetten kan aldrig glida
+isär. Spillrornas färg är fiendens egen mörka ramp (`DEATH_TOKENS` i
+`tools/gen_pixel_assets.py`), gnistan dess semantiska accent.
+
+"Ögonljuset slocknar" gäller bara **små kluster** (≤ 8 px) av ett
+ögon-token. Flera fiender använder samma heta tokens som kroppsskuggning
+(Rostråttans ljusa kant är `rust4`, Slaggkäftens ugn `rust3`/`rust5`) och att
+svärta dem hade ätit silhuetten i stället för ögat.
+
+**Vad dev behöver göra:** `Art.ENEMIES` behöver `"rows": 2` (eller
+`"death_frames": 3`) och `Art.enemy_frames()` behöver lägga till animationen
+`&"death"` från rad 1 med `loop = false`. `EnemyActor.death_reaction()` spelar
+den då automatiskt enligt ARCHITECTURE; ingen annan kod berörs.
+Föreslagen frametakt: **10 fps** (3 frames ≈ 300 ms), vilket ligger inom
+`enemy_killed`-budgeten på 360 ms i UI_GUIDE §5.5.
 
 | `content.gd`-id | Namn | Fil | Cell | Visuell tell |
 |---|---|---|---|---|
@@ -71,13 +105,27 @@ bestulen.
 Se `hero/PAPERDOLL.md` för lagerordning, relikmappning och frame-tabell.
 Kontrakt: **48×48 cell, `hframes = 8`, `vframes = 4`, samma origo i alla lager.**
 
+Namnkontrakt: `smith_<lager>_<id i gemener>.png`. 17 ark i M2.
+
 | Fil | Lager | Alltid synlig |
 |---|---|---|
 | `hero/smith_body.png` | `body` | ja |
-| `hero/smith_cape_ember.png` | `cape` | nej (relik/utrustning) |
-| `hero/smith_helm_iron.png` | `head` | nej |
+| `hero/smith_cape_ember.png` | `cape` | nej (utrustning) |
+| `hero/smith_helm_iron.png` | `helm` | nej (utrustning) |
+| `hero/smith_legs_iron.png` | `legs` | nej (utrustning, **ny i M2**) |
 | `hero/smith_weapon_hammer.png` | `weapon` | vapenvariant A |
 | `hero/smith_weapon_tongs.png` | `weapon` | vapenvariant B |
+| `hero/smith_fx_blood_price.png` | `fx` | `BLOOD_PRICE` primär |
+| `hero/smith_torso_broken_scale.png` | `torso` | `BROKEN_SCALE` primär |
+| `hero/smith_offhand_broken_scale.png` | `offhand` | `BROKEN_SCALE` reserv |
+| `hero/smith_cape_octopus.png` | `cape` | `OCTOPUS` primär |
+| `hero/smith_fx_octopus.png` | `fx` | `OCTOPUS` reserv |
+| `hero/smith_cape_echo_mirror.png` | `cape` | `ECHO_MIRROR` primär |
+| `hero/smith_torso_echo_mirror.png` | `torso` | `ECHO_MIRROR` reserv |
+| `hero/smith_offhand_cheat_cube.png` | `offhand` | `CHEAT_CUBE` primär |
+| `hero/smith_torso_cheat_cube.png` | `torso` | `CHEAT_CUBE` reserv |
+| `hero/smith_helm_domino.png` | `helm` | `DOMINO` primär |
+| `hero/smith_head_domino.png` | `head` | `DOMINO` reserv (den som tänds i praktiken) |
 
 ## 3. Tärningar – komposition, inte färdiga bilder
 
