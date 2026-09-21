@@ -1,0 +1,31 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+*.translation
+
+# Exported builds
+/build/
+/export/
+*.apk
+*.aab
+*.ipa
+*.pck
+*.zip
+
+# Godot export templates / credentials
+export_credentials.cfg
+*.keystore
+*.jks
+
+# gdUnit4 test reports
+/reports/
+/test_reports/
+*.junit.xml
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
