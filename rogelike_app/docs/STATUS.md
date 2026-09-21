@@ -16,7 +16,8 @@
 - Asset-pipeline: 93 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- **M2.5 bygge**: dev bygger stridsskärm v2, tutorialvåning 0, staden Chalkrim (3 platser), smedja mellan runs, könsval. UI levererar kroppsvariant, stadssprites, ikoner, i18n-rader
+- **M2.5 bygge (omstyrt)**: dev bygger stridsskärm v2, tutorialvåning 0, stadslogik, smedja, könsval. UI levererar kroppsvarianter, ikoner, i18n, character sheet-mockup. Sidescroll struken
+- **M5 FPS-korridor (design)**: R&D utreder teknik (Godot 3D vs 2D-lager), UI gör visuell riktning för korridor + character sheet, rollspelsnörd mappar nod-grafen till korridorer och möten
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt
