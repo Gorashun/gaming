@@ -106,3 +106,32 @@
 - **Altar-, kist- och belöningspresentation i rummet** (§3.5) är inte byggd;
   korridoren emitterar bara `treasure_found`.
 
+
+## Noterat under M5 dag 3 (dev)
+
+- **Korridorens ljud saknas fortfarande.** De sex cuerna i CORRIDOR_DESIGN §7.2
+  (`step_stone`, `turn_scuff`, `door_open`, `monster_far`, `torch_draft`,
+  `descend_stairs`) är varken genererade eller kopplade. `tools/gen_sfx.py` ägs
+  av UI. Korridoren är just nu helt tyst mellan striderna.
+- **Kritstråket** ritar ett streck per gången ruta men saknar glyf vid passerade
+  korsningar och kryss där man vände (§2.7).
+- **Hemliga dörrar, Sexdörren och "titta bakåt"** (§2.5, §3.4, moment 3) är inte
+  byggda. Alla tre kräver en tapbar yta i 3D (`Area3D` + `input_event`).
+- **Altaret är en kritpanel, inte ett altare.** §3.5 vill ha en kista för eliter
+  och ett föremål som lyfts ur den; M5 visar en panel med ett tapp. Belöningen i
+  en vunnen kammare är däremot tre riktiga kort i rummet, som specat.
+- **Belöningskorten kan inte "sjunka ner och plockas upp"** (§3.5). Kortet väljs
+  med ett tapp, utan handen som tar upp det.
+- **Character sheetets Run-Kodex** (§4.1 punkt 5: rum rensade, största kedjan,
+  högsta multiplikatorn, bästa slot, antal `house_bonus`) är inte byggd, och
+  badge-pulsen (§4.4) tänds men animeras inte.
+- **`FORGE_FACE`- och `SLOT_SWAP`-animationerna** på sheeten (§4.3) saknas; bara
+  ett nytt reliklager kritas på.
+- **Smedjans sidbyte är fortfarande MVP:n från M2.5** (roterar 1↔6 på tärning 1).
+  Sheeten visar alla sex tärningars sidor, men byter dem inte.
+- **Torget har ingen Marrow och ingen kärra.** §5.1 vill ha honom vid trappan,
+  och efter en död ska kärran skramla in bakom honom. M5 visar bara hans replik
+  som text under torget.
+- **Splitgolvet 36 % är mätt mot vår text, inte mot 130 % textstorlek.** Faller
+  kvittot utanför även där behöver [ReceiptPanel] en kompakt variant.
+- **`Engine.max_fps`** sätts fortfarande inte av spelet (PM-fråga från dag 2).

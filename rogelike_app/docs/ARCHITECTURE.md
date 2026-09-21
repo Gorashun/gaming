@@ -1,6 +1,6 @@
 # Arkitektur – PIPWRECK
 
-*Uppdaterad 2026-09-21 (M2.5). Normativ källa för reglerna är `GAME_DESIGN.md`;
+*Uppdaterad 2026-09-21 (M5). Normativ källa för reglerna är `GAME_DESIGN.md`;
 det här dokumentet beskriver hur koden är organiserad och hur man kör den.*
 
 ## Lagerregeln: core → game, aldrig tvärtom
@@ -33,7 +33,9 @@ tests/        gdUnit4-sviter. tests/support/ innehåller testhjälpmedel.
 > fria eftersom gdUnit4 laddar dem i drift, efter att trädet startat.
 
 `src/game/shaders/` och `assets/` ägs av UI-agenten. `src/game/` i övrigt,
-`src/platform/`, `tests/` och det här dokumentet ägs av dev.
+`src/platform/`, `tests/` och det här dokumentet ägs av dev. **Undantag beviljat
+i M5:** dev fick lägga in i18n-rader i `assets/i18n/translations.csv` och sätta
+`mipmaps/generate=true` på korridorens tre kakelbara texturer.
 
 `src/core/` importerar **aldrig** något från `src/game/`. Core tar data in och
 returnerar en händelselogg. Det är regeln som gör både juice och tester möjliga:
@@ -114,12 +116,17 @@ känna till den andras layout.
 | Skärm | Scen | World-innehåll |
 |---|---|---|
 | Titel | `src/game/title/title_screen.tscn` | – |
-| Marsch | `src/game/march/march_screen.tscn` | `march_world.tscn`: tre parallaxlager, golvremsa, `HeroFigure` |
+| Korridor | `src/game/corridor/corridor_screen.tscn` | – (3D i en egen `SubViewport`, se M5) |
 | Strid | `src/game/combat/combat_screen.tscn` | `combat_world.tscn`: parallaxband, golv, Smeden, en `EnemyActor` per fiende |
-| Belöning | `src/game/reward/reward_screen.tscn` | – |
+| Belöning | `src/game/reward/reward_screen.tscn` | – (bara tutorialen; en run visar belöningen i korridoren) |
 | Död/vinst | `src/game/gameover/gameover_screen.tscn` | – |
 | Kroppsval | `src/game/smith/choose_smith_screen.tscn` | – |
-| Staden | `src/game/town/town_screen.tscn` | – (tillfällig meny, se M2.5) |
+| Staden | `src/game/town/town_screen.tscn` | – (förstapersons torg, se M5) |
+
+`ChalkUI/UiRoot/ModalRoot` bär **två** modaler: inställningarna och character
+sheetet (`src/game/sheet/character_sheet.tscn`). Båda är modaler och inte
+skärmar av samma skäl: de ska gå att öppna mitt i en run utan att kasta bort
+kamerans plats i rutnätet eller spelarens placering på brädet.
 
 `ChalkUI/UiRoot/ModalRoot` ligger ovanpå `ScreenRoot` och bär
 `settings_screen.tscn`. Inställningarna är en **modal, inte en skärm**: de ska
@@ -378,6 +385,123 @@ finns och varnar **en gång per ikon**; anroparen ritar då reservglyfen ur
 fiender låna våning 1:s ark, och `tests/test_art.gd` fäller bygget om ett alias
 pekar på ett ark som inte finns.
 
+
+## M5: korridoren är skärmen
+
+```
+CorridorScreen (GameScreen)            src/game/corridor/corridor_screen.tscn
+├── View        CorridorView           3D i en SubViewport + krit-HUD + tumzon
+├── Chips       EnemyChips             HP-chip ankrade i 3D med unproject_position
+├── CombatHost  Control                stridsskärm v2, offset_top = korridorens höjd
+└── Overlay     Control                CorridorPrompt (fälla/dörr/altare) + CorridorReward
+```
+
+### Striden är ett barn i korridoren, inte ett skärmbyte
+
+CORRIDOR_DESIGN §3.1 takt 4: stridsskärmen glider upp underifrån **över**
+korridorbilden, och korridoren ligger kvar synlig i toppen. Ett skärmbyte skulle
+riva ned 3D-världen och kasta bort kamerans ruta och vinkel efter varje strid.
+`CorridorScreen.mount_combat()` instansierar därför `combat_screen.tscn` i
+`CombatHost` och skickar `world_root = null`: **figuren syns aldrig i
+korridoren** (§4) och fienderna är billboards i 3D, inte `EnemyActor` i 2D.
+
+`GameController._screen` är alltså `CorridorScreen` under hela våningen.
+Bakåtknappen och rökprovet frågar `controller.current_combat()` i stället för
+att casta `current_screen()`.
+
+### En fiende, två avläsningar
+
+`EnemyReadout` (`src/game/combat/enemy_readout.gd`) är basen. `EnemyPanel` är
+kortet i fiendezonen (tutorialens källare); `EnemyChip` är chipet ovanför
+billboarden (korridoren). Basen äger det som aldrig får formuleras två gånger:
+visningsnamnet, intent-texten och prognosfältet. `CombatScreen` binder, blixtrar
+och uppdaterar dem genom exakt samma anrop och vet inte vilken sort den har –
+`readout_host` byggs in utifrån.
+
+Skärmen ritar ingen varelse själv. `CombatScreen.enemy_reaction(index, kind)` är
+kontraktet mot båda världarna: `CorridorScreen` gör blixt/ryck/död på
+billboarden, `combat_world` på `EnemyActor`.
+
+### Höjdbudgeten i korridorsplitten: arenan betalar
+
+Stridssplitten är 45/55 (research 05 §3), alltså 352 dp åt striden. Ett **fullt**
+kvitto – sex leveransrader plus rustningsraden, precis när spelaren har mest att
+läsa – får inte plats där. COMBAT_READABILITY §8 är normativ om vem som betalar:
+*räknestycket behåller full höjd, arenan betalar, tumzonen aldrig.* I korridoren
+**är** arenan korridorbilden.
+
+Tre saker lyftes ur stridens kolumn i korridorläge, och en fjärde är dynamisk:
+
+| Flyttat | Vart | Vinst |
+|---|---|---|
+| HP, rum, `?`, `⚙` | korridorens krit-rad | 48 dp |
+| Leveransremsan (`↑ 28 · DIES`) | fiendens eget chip | 35 dp |
+| Brickans rubrikrad | laddningstipset till pillerraden | 14 dp |
+| Resten | korridoren krymper | ner till 36 % |
+
+`CombatScreen.layout_pressure(needed)` mäter kolumnens minsta höjd efter
+layouten och `CorridorScreen` sänker splitten därefter, **bara nedåt** och bara
+inom en strid: en ruta som hoppar upp och ner medan spelaren placerar tärningar
+är värre än en som är lite för liten. Golvet `SPLIT_COMBAT_MIN = 0,36` är mätt,
+inte gissat; research 05 §3:s 40 % räknade inte med ett fullt kvitto.
+
+### Tre fällor i korridoren som kostade tid
+
+1. **Krypningen skrev över avslöjandet.** `_show_silhouettes(1)` tweenar
+   formeringen 400 ms framåt, men ett steg tar 180 ms. Tweenen levde alltså
+   kvar när `_reveal_encounter()` satte formeringen på plats och drog tillbaka
+   den till platsen den kröp från – fienderna stod 6 m bort och båda främre
+   chipen hamnade bakom kameran. `_kill_approach()` körs nu först.
+2. **`_look_ahead()` kör EFTER att mötet nåtts** i samma händelselogg, så nästa
+   rums silhuetter flyttade formeringen mitt i striden. `_encounter_active`
+   spärrar både `set_next_enemies()` och `_show_silhouettes()`.
+3. **Rutan man står på går före rutan man går mot.** `cell_changed` kommer före
+   `encounter_reached`; primade `GameController` blint framåt möttes spelaren av
+   fyra Rostråttor med nästa rums monster i bild.
+
+`enemy_anchor()` returnerar `(-1, -1)` och inte `Vector2.ZERO` för ett index
+utan billboard: noll är en giltig skärmpunkt, och chipen samlades i övre vänstra
+hörnet.
+
+### Staden: samma mesh, ingen vridning
+
+`CorridorMap.town_square()` är ren data: en 3×2-kammare med tre nischer i den
+bortre väggen. `TownView` kör den genom samma `CorridorMesh` och ankrar tre
+kritskyltar med `unproject_position()`. Research 05 §6 är emot att lägga en
+vridning mellan spelaren och en meny hen besöker efter varje run, så kameran
+står still. Smedjan är en knapp i tumzonen, inte en fjärde mynning.
+
+Djupet är två rutor, mätt: med tre rutor hamnar sidomynningarna på 19° och
+torget blir en korridor till; med en ruta hamnar de utanför bildutsnittet.
+
+### Sparfilen: version 2
+
+`RunState.SAVE_VERSION` är 2. `meta.corridor` är hela `CorridorMap.to_dict()` –
+rutan, vinkeln, besökta rutor, fällans status, kritstråket. Utan den kan en run
+inte återupptas, och `SaveIO.migrate()` kasserar därför både en v1-fil och en
+v2-fil utan `corridor`. Kartan går **inte** att räkna fram i efterhand: den är
+seedad ur `rng.fork("corridor")` vid runnens början, och den forken har rullat
+vidare när filen skrivs. Att gissa en ruta vore att flytta spelaren utan att
+säga det.
+
+`GameController` skriver sparfilen på `cell_changed`, alltså en gång per ruta.
+Ett steg i korridoren är alltid en rundgräns, så spärren "aldrig mitt i en
+kedja" (GAME_DESIGN §1) gäller oförändrat.
+
+### Character sheetet
+
+`src/game/sheet/character_sheet.gd` är en modal i `ModalRoot`. `HeroFigure` (som
+flyttade från `src/game/march/` till `src/game/sheet/`) ritas i **dubbel**
+världsskala, alltså 48 px × 8. `Node2D.position` påverkas inte av nodens egen
+`scale` men `HeroFigure.FOOT_OFFSET` räknas i oskalade pixlar, så golvlinjen
+kompenseras explicit – annars står figuren en halv kropp under marken.
+
+Relik → slot ligger i `Content.RELIC_SLOTS` (presentationsdata, aldrig core:
+"core vet inte vad en axel är", CORRIDOR_DESIGN §4.2). Tabellen har sju slots
+och sex reliker; `ANVIL_BLESSING` är klassreliken och har ingen slot.
+**Avvikelse:** §4.2 listar `SLOT_SPARE` för `CHEAT_CUBE`, men DECISIONS låste
+sju slots utan reservplats – bältespungen ritas därför på ryggen.
+
 ## Spelartext: engelska i källan, svenska i CSV
 
 CLAUDE.md: **all spelartext är engelska i källan och går via `tr()`.** Svenskan
@@ -574,20 +698,25 @@ eller överlappet ändrats.
 boot()
   → SMITH   (bara första gången: Settings.smith_variant == "")
   → TITLE   (Grundstigen om meta.tutorial_done är false, annars staden)
-  → TUTORIAL  sju rum ur src/data/tutorial.gd, REWARD emellan
-  → TOWN    Chalkrim. GO DOWN startar runnen.
+  → TUTORIAL  sju rum ur src/data/tutorial.gd, platt COMBAT + REWARD emellan
+  → TOWN    Chalkrim som förstapersons torg. GO DOWN startar runnen.
 start_new_run(seed)
-  → Forge.apply_loadout(meta.loadout)    smedjans byte/omordning
-  → RunGraph.generate_floor(1, rng)      4 rum, förgrening i rum 3
-  → MARCH  (går åt höger; vid förgrening två knappar)
-  → COMBAT (RunFlow.start_room → rundor → RunFlow.finish_room)
-  → REWARD (Rewards.generate → RewardApply.apply)
-  → MARCH → … → BOSS → GAMEOVER (MetaScore + Meta.award_run)
+  → Forge.apply_loadout(meta.loadout)         smedjans byte/omordning
+  → RunGraph.generate_floor(1, rng)           4 rum, förgrening i rum 3
+  → CorridorMap.build(graph, rng.fork(…))     rutnätet, seedat separat
+  → CORRIDOR  ett tapp = ett steg = en ruta
+      ├ cell_changed       → autosave med map_state, prima nästa monster
+      ├ trap_choice        → två prislappar → RunFlow.pay_trap
+      ├ treasure_found     → altaret, en enda sak
+      ├ encounter_reached  → striden monteras i de nedre 55 %
+      │    └ combat_finished(won) → RunFlow.finish_room → tre kort I RUMMET
+      └ boss_door_reached  → ETT tapp → open_door() → bossrummet
+  → GAMEOVER (MetaScore + Meta.award_run)
   → TOWN   ("BACK TO CHALKRIM"; GO DOWN ligger redan i tumzonen)
 ```
 
-`MARCH` står kvar som datamodell (`RunGraph`) men dess remsa ersätts av
-korridorvyn i M5 (PM 2026-09-21); förgreningarna blir vänster/rakt/höger.
+`MARCH` finns inte längre. `RunGraph` står kvar som datamodell – korridoren är
+ett lager ovanpå den, inte en ersättning för den.
 
 Ingen av pilarna innehåller en regel. Möten, Andrum, belöningsnyckel,
 belöningstillämpning och meta-poäng ligger i `src/core/run_flow.gd`,
@@ -617,8 +746,8 @@ cd rogelike_app
 
 # Med fönster och skärmdumpar (kräver xvfb-run):
 xvfb-run -a -s "-screen 0 1080x1920x24" "$GODOT_BIN" \
-  --resolution 1080x1920 --audio-driver Dummy \
-  -s tools/smoke_play.gd -- --pipwreck-seed=7 --shots=res://docs/screenshots/m2
+  --resolution 1080x1920 --rendering-method mobile --audio-driver Dummy \
+  -s tools/smoke_play.gd -- --pipwreck-seed=7 --shots=res://docs/screenshots/m5_int
 
 # Bara logiken, ingen rendering:
 "$GODOT_BIN" --headless -s tools/smoke_play.gd -- --pipwreck-seed=7
@@ -656,9 +785,19 @@ utan rendering: 6,90 ms i båda fallen, 0,1 % av bildrutorna över 16,6 ms.
 uppspelningen.** En riktig GPU- och mobilmätning görs i M4 enligt planen.
 
 M2.5 lade till kroppsval, hela våning 0, staden och hjälp-lagret i samma
-körning: rökprovet går nu `SMITH → TITLE → tutorial 0.1–0.7 → TOWN → run →
-TOWN` och avslutar när staden setts andra gången. Skärmdumparna ligger i
-`docs/screenshots/m2_5/` (plus `sv/`).
+körning. **M5 lade till korridoren:** rökprovet går nu `SMITH → TITLE →
+tutorial 0.1–0.7 → TORGET → korridor → strid → belöning → bossdörr → boss →
+vinst → TORGET` och avslutar när torget setts andra gången. Det spelar
+korridoren med samma "gå mot `fight`"-policy som `tools/smoke_corridor.gd` och
+skriver ut CORRIDOR_DESIGN §8.1:s två siffror – korridortid per run mot budgeten
+90 s, och steg utan händelse mot taket 3. Båda fäller körningen om de spricker.
+
+**Mobilrenderaren måste anges explicit** (DECISIONS 2026-09-21):
+`--rendering-driver vulkan` ensamt ger Forward+, inte Forward Mobile. Alla
+desktopkörningar skickar `--rendering-method mobile`.
+
+Skärmdumparna ligger i `docs/screenshots/m5_int/` (plus `sv/`); M2.5:s i
+`docs/screenshots/m2_5/`.
 
 Skärmdumparna hamnar i `docs/screenshots/m2/` (plus `sv/`, `reduced/` och
 `death/` för de andra körningarna). `docs/screenshots/` har en `.gdignore` så

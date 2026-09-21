@@ -2,6 +2,63 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M5 – Korridoren, dag 3: integrationen (2026-09-21)
+
+Korridoren blev spelet. Flödet är nu **stad → korridor → strid i korridoren →
+belöning på golvet → bossdörr → boss → vinst → stad**, och `src/game/march/` är
+borta. **Ingen regel är ändrad**: `src/core/resolver.gd`, `run_graph.gd` och
+stridsspecen är orörda; det enda nya i core är fällans prislapp
+(`RunFlow.pay_trap`), som DECISIONS 2026-09-21 redan beslutat om.
+
+**1. Flödet**
+- `src/game/corridor/corridor_screen.gd/.tscn` – ny. Korridoren som skärm.
+  Striden monteras som ett **barn** i de nedre 55 % i stället för att byta
+  skärm, så 3D-världen och kamerans plats i rutnätet överlever hela våningen.
+- `src/game/game_controller.gd` – `SCREEN_MARCH` → `SCREEN_CORRIDOR`. Autosave
+  per ruta med hela kartan (`map_state`), återupptagning mitt i korridoren och
+  mitt i en strid, och `--pipwreck-seed` ger fortfarande samma run.
+- `RunState.SAVE_VERSION` **1 → 2**. En v1-fil beskriver en marsch som inte
+  finns och går inte att översätta (korridorens fork har redan rullat), så
+  `SaveIO.migrate` kasserar den och spelaren hamnar i staden. Aldrig en krasch.
+- Tutorialvåning 0 kör oförändrat som platt stridsskärm i källaren.
+
+**2. Striden i korridoren (45/55)**
+- Fienderna står kvar som `AnimatedSprite3D` i 2+2-formering; träffblixt, ryck
+  och död spelas på billboarden, aldrig på kameran.
+- `src/game/combat/enemy_readout.gd` – ny gemensam bas. `EnemyPanel` (källaren)
+  och `EnemyChip` (korridoren) delar namn, intent-text och prognosfält.
+- `src/game/corridor/enemy_chip.gd` + `enemy_chips.gd` – HP-chip ankrade med
+  `Camera3D.unproject_position()`, kritstreck ner till varelsens hjässa, tapp på
+  chipet = tapp på fienden.
+- **Arenan betalar** (COMBAT_READABILITY §8): toppfältets knappar flyttade till
+  krit-raden, leveransremsan till chipen, brickans rubrik till pillerraden. Med
+  ett fullt kvitto faller korridoren till **36 %** i stället för 45 – mätt, se
+  `CorridorView.SPLIT_COMBAT_MIN`.
+- `src/game/corridor/corridor_reward.gd` – belöningen som tre kort **i rummet**,
+  med korridoren synlig bakom.
+
+**3. Character sheet** – `src/game/sheet/character_sheet.gd/.tscn`, ny. Porträtt,
+HP, Pips, paperdoll ×8, sju slots med relikernas slot-mappning
+(`Content.RELIC_SLOTS`), smedjans slotordning (aktiv bara i staden), sex
+tärningar med sidor, reliker, CHANGE LOOK och GO DOWN. Öppnas från HUD-knappen
+och automatiskt efter runnens första belöning.
+
+**4. Staden i förstaperson** – `src/game/town/town_view.gd/.tscn`, ny. Torget är
+`CorridorMap.town_square()` genom samma `CorridorMesh`: tre upplysta mynningar
+med skyltar ankrade i 3D. Smedjan är en knapp, `GO DOWN` ligger kvar i tumzonen.
+
+**5. i18n** – 47 nya rader (en + sv) för `CORRIDOR_*`, `CHARSHEET_*`, `TOWN_*`,
+fälltyperna och deras prislappar. `tests/test_i18n.gd` skannar nu även
+`Tokens.translate_or(...)`, plus innehållstester för Marrows dödsrepliker,
+tutorialens nycklar och korridorens datadrivna nycklar.
+
+**6. Verifiering** – hela sviten **380 fall, 0 fel, 0 fallerade**. Rökprovet
+spelar könsval → tutorial → torget → korridor → strid → belöning → bossdörr →
+boss → vinst → torget i både `en` och `sv`; 28 skärmdumpar per språk i
+`docs/screenshots/m5_int/` (+ `sv/`). **Stoppregeln:** 17 steg och 4,6 s
+korridortid per våning ⇒ **13,8 s per run** mot budgeten 90 s, och **3 steg utan
+händelse** mot taket 3.
+
 ## M5 – Korridoren, dag 1–2: kartmodell, 3D-vy, rökprov (2026-09-21)
 
 Presentationsskiftet till förstaperson (DECISIONS 2026-09-21). **Ingen regel är
