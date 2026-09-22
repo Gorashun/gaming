@@ -19,7 +19,7 @@
 - Asset-pipeline: 93 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- **STOPP.** Research inför omtag: motor (three.js vs Godot), progression (Darkest Dungeon-referens, gear-drops), art direction. Förslag till Anders innan bygge
+- **Omtagsförslag klart:** docs/REBOOT_PROPOSAL.md. Väntar på Anders beslut §6. Dev slutför autosave i källaren + rum 0.6 under tiden
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt
