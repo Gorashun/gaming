@@ -19,7 +19,7 @@
 - Asset-pipeline: 93 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- Väntar på Anders speltest av korridorversionen (webb + APK)
+- **STOPP.** Research inför omtag: motor (three.js vs Godot), progression (Darkest Dungeon-referens, gear-drops), art direction. Förslag till Anders innan bygge
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt
