@@ -61,7 +61,12 @@ func _init() -> void:
 	_heading = Label.new()
 	_heading.name = "Heading"
 	_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_heading.clip_text = true
+	# [b]Bryter rad, klipper inte[/b] (M5.8). Rubriken klipptes i båda kanterna
+	# på en 480 px-skärm: 1080 viewport-enheter minus två 16 dp-marginaler är
+	# 328 dp, och rubriken i TYPE_HEADING är bredare än så på svenska. Att klippa
+	# en rubrik är värre än att sätta den på två rader.
+	_heading.clip_text = false
+	_heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_heading.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_HEADING))
 	_heading.add_theme_color_override("font_color", Tokens.CHALK_100)
 	ChalkFx.apply(_heading, ChalkFx.DISPLAY)
@@ -88,7 +93,7 @@ func show_options(state: CombatState, options: Array, breather: bool,
 	for child: Node in _cards.get_children():
 		child.queue_free()
 
-	var heading: String = Tokens.translate_or("CORRIDOR_REWARD_TITLE", "THE ROOM LEAVES YOU SOMETHING")
+	var heading: String = Tokens.translate_or("CORRIDOR_REWARD_TITLE", "THE ROOM LEAVES SOMETHING")
 	if breather:
 		heading = Tokens.translate_or("CORRIDOR_REWARD_BREATHER",
 			"TORCH FLARES · +%d HP") % Rules.BREATHER_HEAL

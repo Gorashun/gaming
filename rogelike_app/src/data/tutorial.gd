@@ -146,17 +146,26 @@ const ROOMS: Array[Dictionary] = [
 		"idea": "CHARGE",
 		"board": [Rules.SlotType.PLAIN, Rules.SlotType.PLAIN, Rules.SlotType.MIRROR,
 			Rules.SlotType.PLAIN, Rules.SlotType.PLAIN],
-		# Porten har rustning 8 och blockar två rundor: varje enskild tärning
-		# studsar. Det enda vettiga är att inte placera – och då dyker Laddning
-		# upp med en förklaring spelaren redan efterfrågat med sitt eget spel.
+		# Porten har rustning 8: varje enskild tärning studsar. Det enda vettiga
+		# är att banka – och sedan lämna slot 1 tom, så att banken landar i
+		# slot 2 och Spegeln kopierar den till ett par.
 		"dice": [1, 2, 3, 4, 2, 3],
 		"enemies": [{"id": "SCRAP_GATE", "hp": 44, "armor": 8, "attack": 6, "name": "Scrap Gate"}],
 		"reveal": ["reroll", "charge"],
-		"tip": ["TUT_06_CHARGE", "Dice you don't place go in the bank."],
-		"point_at": "charge",
+		# M5.8: pilen pekar på sloten som ska stå tom, inte på laddningsmätaren.
+		# Mätaren säger VAD man samlar; slot 1 säger vad man ska göra med det.
+		"tip": ["TUT_06_CHARGE", "Leave slot 1 empty. The charge goes to the Mirror."],
+		"point_at": "slot_0",
+		# [b]Porten blockar exakt en gång[/b] (M5.8). Fram till dess blockade den
+		# runda 1 OCH 2, och eftersom [method Resolver._phase_enemy_pass] gör
+		# [code]enemy.armor += intent.value[/code] var höjningen permanent: 8 → 16.
+		# En spelare som inte hittade banken kunde då aldrig komma igenom, och
+		# rummet blev en fälla i stället för en lektion. Runda 2 är därför en
+		# uttalad ATTACK, och runda 3 och framåt är portens naturliga attack.
+		# [b]Regeln är orörd[/b] – det här är data, precis som allt annat i §B.2.
 		"intents": {
 			"1": {"kind": Rules.IntentKind.BLOCK, "value": 4},
-			"2": {"kind": Rules.IntentKind.BLOCK, "value": 4},
+			"2": {"kind": Rules.IntentKind.ATTACK, "value": 6},
 		},
 		"reward": {"key": "TUT_REWARD_ANVIL", "en": "An Anvil on slot 5. It doubles 5 or more."},
 	},

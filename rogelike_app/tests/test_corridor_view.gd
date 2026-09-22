@@ -224,3 +224,31 @@ func test_the_hud_shows_hp_room_and_the_chalk_trail() -> void:
 			assert_bool((child as Label).clip_text).is_false()
 	assert_bool("74/100" in texts).is_true()
 	assert_int(hud.get_node("TrailRow/Trail").get_child_count()).is_equal(5)
+
+
+# ---------------------------------------------------------------------------
+# Återupptagen strid (M5.8)
+# ---------------------------------------------------------------------------
+
+## En laddad sparfil får aldrig visa ett stridsbräde mot en tom korridor.
+## Monstren spawnas normalt av [constant CorridorMap.EVENT_ENCOUNTER_REACHED],
+## och den händelsen kommer inte en andra gång.
+func test_a_resumed_fight_puts_the_monsters_back_without_replaying_the_reveal() -> void:
+	var view: CorridorView = _view(_map())
+	view.set_next_enemies(["RUST_MITE", "RUST_MITE"])
+	assert_bool(view.has_encounter()).is_false()
+
+	view.restore_encounter()
+	assert_bool(view.has_encounter()).override_failure_message(
+		"mötet ska stå framme direkt efter en omladdning").is_true()
+
+	# No-op andra gången: den normala vägen avslöjar mötet själv och får inte
+	# störas av den här.
+	view.restore_encounter()
+	assert_bool(view.has_encounter()).is_true()
+
+
+func test_restoring_an_encounter_nobody_primed_does_nothing() -> void:
+	var view: CorridorView = _view(_map())
+	view.restore_encounter()
+	assert_bool(view.has_encounter()).is_false()

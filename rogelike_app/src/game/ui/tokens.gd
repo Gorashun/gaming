@@ -168,6 +168,56 @@ static func apply_type(node: Control, size_token: int) -> void:
 		apply_bold_font(node)
 
 
+## Minsta teckenstorlek en krympt etikett får landa på, i dp. Under det blir
+## texten mindre än [constant TYPE_CAPTION] och slutar vara läsbar på en telefon.
+const TYPE_MIN_SHRINK: int = 12
+
+
+## [b]Ren funktion.[/b] Största teckenstorlek i [b]px[/b] där [param text] ryms
+## på [param width] px med [param font], nedåt begränsad av [param min_px].
+##
+## Godots [Label] kan klippa ([code]clip_text[/code]) eller bryta rad
+## ([code]autowrap_mode[/code]) men aldrig krympa. En rad som varken får klippas
+## eller brytas – ett belöningskorts namn – behöver därför det här.
+## Returnerar [param min_px] när ingen storlek räcker: hellre en aning för liten
+## text än en avhuggen.
+static func fit_font_size(font: Font, text: String, width: float, max_px: int, min_px: int) -> int:
+	if font == null or text == "" or width <= 0.0:
+		return max_px
+	var floor_px: int = maxi(1, mini(min_px, max_px))
+	var size: int = max_px
+	while size > floor_px:
+		if font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x <= width:
+			return size
+		size -= 1
+	return floor_px
+
+
+## Krymper [param label]:s teckenstorlek tills texten ryms på dess bredd, och
+## gör om det varje gång etiketten ändrar storlek. Anropas efter att texten satts.
+static func shrink_to_fit(label: Label, max_token: int, min_token: int = TYPE_MIN_SHRINK) -> void:
+	if label == null:
+		return
+	label.set_meta(&"fit_max", max_token)
+	label.set_meta(&"fit_min", min_token)
+	if not label.resized.is_connected(_refit_label):
+		label.resized.connect(_refit_label.bind(label))
+	_refit_label(label)
+
+
+static func _refit_label(label: Label) -> void:
+	if label == null or not is_instance_valid(label):
+		return
+	var max_px: int = dpi(int(label.get_meta(&"fit_max", TYPE_BODY)))
+	var min_px: int = dpi(int(label.get_meta(&"fit_min", TYPE_MIN_SHRINK)))
+	var width: float = label.size.x
+	if width <= 0.0:
+		return
+	var use: Font = label.get_theme_font(&"font")
+	label.add_theme_font_size_override("font_size",
+		fit_font_size(use, label.text, width, max_px, min_px))
+
+
 # --- §2.9 Touch targets (dp) -----------------------------------------------
 const TOUCH_MIN: int = 48
 const DIE_SIZE: int = 64

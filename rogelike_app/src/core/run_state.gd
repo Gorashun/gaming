@@ -11,7 +11,13 @@ extends RefCounted
 ## från version 1 beskriver en marsch som inte finns längre och kan inte
 ## översättas – [method SaveIO.migrate] kasserar den, och spelaren hamnar i
 ## staden i stället för i en halv run.
-const SAVE_VERSION: int = 2
+##
+## [b]3 (M5.8):[/b] även tutorialvåning 0 sparas. [code]meta.tutorial_room[/code]
+## är rumsindexet i källaren, eller -1 för en riktig run, och
+## [code]meta.tutorial_loot_open[/code] säger om korten på golvet är loot-valet.
+## En fil från version 2 är per definition en riktig run och migreras med
+## [code]tutorial_room = -1[/code] – ingen run går förlorad.
+const SAVE_VERSION: int = 3
 
 var version: int = SAVE_VERSION
 ## Synlig i pausmenyn (GAME_DESIGN §6.10) och nyckeln till dagliga utmaningar.

@@ -2,6 +2,50 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M5.8 – källaren går att återuppta, rum 0.6 är inte längre en fälla (2026-09-22)
+
+Tre riktade fixar ur `docs/BACKLOG.md`, "Noterat under M5.7".
+
+**1. Autosave i källaren.** Våning 0 sparas nu per rum och per runda, precis som
+våning 1. Sparfilen bär `meta.tutorial_room`; tärningar, HP och Laddning låg
+redan i `RunState.combat`, kartans ruta i `meta.corridor` och `Reveal`-flaggorna
+i profilen. Titeln erbjuder därför CONTINUE efter en omladdning, och den leder
+till **rummet man stod i** – inte till 0.1. `_finish_tutorial()` rensar filen, så
+trappan upp lämnar inget kvar. `RunState.SAVE_VERSION` 2 → 3; en v2-fil är per
+definition en riktig run och **migreras** med `tutorial_room = -1` i stället för
+att kasseras. Webbverifierat: spelat till rum 0.4, laddat om sidan, CONTINUE →
+rum 0.4 med samma tärningar, samma 92/100 HP och samma Tick Pup
+(`docs/screenshots/web_tutorial2/`).
+- Sidoeffekt som måste med: en återupptagen strid fick aldrig sitt
+  `EVENT_ENCOUNTER_REACHED`, så korridoren stod tom bakom stridsbrädet.
+  `CorridorView.restore_encounter()` ställer monstren på plats utan att spela om
+  avslöjandet. Felet fanns sedan M5 för riktiga runs; källaren gjorde det synligt.
+
+**2. Rum 0.6 är inte längre en fälla.** Porten blockade runda 1 **och** 2, och
+`Resolver` gör `enemy.armor += intent.value` – höjningen är permanent, så
+rustningen stod på 16 för resten av striden. Nu blockar den **exakt en gång**
+(runda 2 är en uttalad ATTACK). Ren data, regeln är orörd. Tipset och kritpilen
+säger dessutom exakt vad lektionen är: `TUT_06_CHARGE` = *"Leave slot 1 empty.
+The charge goes to the Mirror."* (en + sv) och pilen pekar på `slot_0`.
+- **Pilen pekade fel i hela tutorialen.** `TutorialPointer` satte en global punkt
+  som lokal position; i korridoren ligger FxLayer i de nedre 55 %, så pilen
+  hamnade 864 px under sitt ankare – i rum 0.4 nedanför bekräfta-knappen.
+  Rättad med `global_position`, med ett test som fäller den igen.
+- **Öppen fråga till PM, inte fixad här:** den uppenbara linjen (banka, dumpa
+  banken i slot 1) går nu att spela klart men kostar **12 rundor och 60 HP**;
+  den avsedda linjen är 2 rundor och 0 HP. Se `docs/BACKLOG.md`, "Noterat under
+  M5.8", för mätserien och varför ≤ 4 rundor kräver ett designbeslut.
+
+**3. Klippta texter.** `CORRIDOR_REWARD_TITLE` gick utanför båda kanterna:
+viewporten är alltid 1080 enheter bred, så felet fanns på varje skärm.
+Källsträngen är kortad till `"THE ROOM LEAVES SOMETHING"` (sv: `"RUMMET LÄMNAR
+NÅGOT"`) och rubriken bryter rad i stället för att klippas. Belöningskortets
+namnrad **krymper** i stället för att klippas – `Tokens.fit_font_size()` är en
+ren funktion och `Tokens.shrink_to_fit()` kopplar den till en etikett.
+Verifierat i webbläsaren på 480×900 och 360×640, `?start=corridor` och källaren.
+
+Tester: 427/427 gröna (20 nya). Rökprov en + sv: `SMOKE OK`.
+
 ## M5.7 – riktigt loot i källaren (2026-09-22)
 
 **Anders webbtest av `9b8d569`: (1) "det finns ingen stad", (2) "hittade inget

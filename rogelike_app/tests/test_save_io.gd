@@ -215,3 +215,40 @@ func test_a_current_save_without_map_state_is_refused() -> void:
 	SaveIO.save_run(_run())
 	assert_dict(SaveIO.load_dict()).override_failure_message(
 		"en sparfil utan map_state är inte återupptagbar och ska kasseras").is_empty()
+
+
+# --- M5.8: version 2 → 3 ----------------------------------------------------
+
+## En version 2-fil beskriver en riktig run i korridoren. Version 3 lade bara
+## till källarens fält, så filen ska spelas vidare – inte kasseras.
+func test_a_version_two_save_is_migrated_instead_of_thrown_away() -> void:
+	SaveIO.save_run(_run(1234), _extra({"node_id": "f1r1", "phase": "CORRIDOR"}))
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_PATH)) as Dictionary
+	raw["version"] = 2
+	(raw["meta"] as Dictionary).erase("tutorial_room")
+	_write_raw(JSON.stringify(raw))
+
+	var migrated: Dictionary = SaveIO.load_dict()
+	assert_dict(migrated).override_failure_message(
+		"en v2-fil är en riktig run och ska överleva versionshöjningen").is_not_empty()
+	assert_int(int(migrated["version"])).is_equal(RunState.SAVE_VERSION)
+	assert_int(int((migrated["meta"] as Dictionary)["tutorial_room"])).override_failure_message(
+		"en v2-fil är per definition ingen tutorial").is_equal(-1)
+	assert_int(SaveIO.load_run().seed_value).is_equal(1234)
+
+
+func test_a_version_one_save_is_still_refused() -> void:
+	SaveIO.save_run(_run(), _extra())
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_PATH)) as Dictionary
+	raw["version"] = 1
+	_write_raw(JSON.stringify(raw))
+	assert_object(SaveIO.load_run()).is_null()
+
+
+func test_the_basement_fields_survive_the_save_file() -> void:
+	SaveIO.save_run(_run(), _extra({
+		"tutorial_room": 3, "tutorial_loot_pending": false, "tutorial_loot_open": true,
+	}))
+	var loaded: RunState = SaveIO.load_run()
+	assert_int(int(loaded.meta["tutorial_room"])).is_equal(3)
+	assert_bool(bool(loaded.meta["tutorial_loot_open"])).is_true()

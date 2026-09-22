@@ -446,3 +446,75 @@ func test_the_full_screen_layers_never_stop_a_tap_themselves() -> void:
 		assert_int((screen.get_node(layer_name) as Control).mouse_filter).override_failure_message(
 			"%s måste vara MOUSE_FILTER_IGNORE" % layer_name
 		).is_equal(Control.MOUSE_FILTER_IGNORE)
+
+
+# ---------------------------------------------------------------------------
+# Belöningens text får inte klippas (M5.8)
+# ---------------------------------------------------------------------------
+
+## [b]Ren funktion.[/b] Krympningen är matematik och testas utan skärm.
+func test_a_line_that_is_too_wide_gets_a_smaller_font_not_a_cut() -> void:
+	var font: Font = Tokens.font_ui()
+	assert_object(font).is_not_null()
+	var text: String = "Scrapheap Anvil Blessing"
+	var wide: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 54).x
+	# Full storlek när det ryms.
+	assert_int(Tokens.fit_font_size(font, text, wide + 10.0, 54, 36)).is_equal(54)
+	# Krymper när det inte gör det, och det som kommer ut ryms faktiskt.
+	var fitted: int = Tokens.fit_font_size(font, text, wide * 0.6, 54, 12)
+	assert_int(fitted).is_less(54)
+	assert_float(font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fitted).x
+		).is_less_equal(wide * 0.6)
+	# Golvet hålls hellre än att texten blir oläslig.
+	assert_int(Tokens.fit_font_size(font, text, 1.0, 54, 20)).is_equal(20)
+
+
+## Rubriken klipptes i båda kanterna på en 480 px-skärm. Viewporten är alltid
+## 1080 enheter bred, så felet fanns på varje skärm – det syntes bara först där.
+func test_the_reward_heading_wraps_instead_of_clipping() -> void:
+	var screen: CorridorScreen = _corridor(_map())
+	var options: Array[Dictionary] = Rewards.generate(Content.reward_pool(), Rng.new(4), 1)
+	screen.show_reward(Content.smith_state(), options, false)
+	await await_millis(40)
+
+	var heading: Label = screen.reward().get_node("Margin/Column/Heading") as Label
+	assert_bool(heading.clip_text).override_failure_message(
+		"en klippt rubrik är en trasig rubrik").is_false()
+	assert_int(heading.autowrap_mode).is_not_equal(TextServer.AUTOWRAP_OFF)
+	assert_float(heading.get_global_rect().size.x).is_greater(0.0)
+	# Texten ryms i lådan, på en eller två rader.
+	var line_width: float = heading.get_theme_font(&"font").get_string_size(
+		heading.text, HORIZONTAL_ALIGNMENT_LEFT, -1,
+		heading.get_theme_font_size(&"font_size")).x
+	var fits: bool = line_width <= heading.size.x or heading.get_line_count() > 1
+	assert_bool(fits).override_failure_message(
+		"rubriken '%s' är %.0f px bred i en %.0f px låda och bryter inte rad" % [
+			heading.text, line_width, heading.size.x]).is_true()
+
+
+func test_a_long_reward_name_shrinks_to_fit_its_card() -> void:
+	var screen: CorridorScreen = _corridor(_map())
+	var option: Dictionary = {
+		"id": "LONG", "category": Rewards.CATEGORY_RELIC,
+		"name": "Scrapheap Anvil Blessing of the Long Room",
+		"rarity": Rules.Rarity.RARE, "data": {},
+	}
+	screen.show_reward(Content.smith_state(), [option], false)
+	await await_millis(40)
+
+	var cards: VBoxContainer = screen.reward().get_node("Margin/Column/Cards") as VBoxContainer
+	var card: RewardCard = cards.get_child(0) as RewardCard
+	var name_label: Label = null
+	for node: Node in card.find_children("*", "Label", true, false):
+		if String((node as Label).text) == String(option["name"]):
+			name_label = node as Label
+	assert_object(name_label).override_failure_message("kortets namnrad hittades inte").is_not_null()
+	assert_int(name_label.get_theme_font_size(&"font_size")).override_failure_message(
+		"ett 41 tecken långt namn måste ha krympts under TYPE_BODY_L"
+	).is_less(Tokens.dpi(Tokens.TYPE_BODY_L))
+	var width: float = name_label.get_theme_font(&"font").get_string_size(
+		name_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1,
+		name_label.get_theme_font_size(&"font_size")).x
+	assert_float(width).override_failure_message(
+		"namnraden är %.0f px bred i en %.0f px låda och klipps" % [width, name_label.size.x]
+	).is_less_equal(name_label.size.x + 1.0)

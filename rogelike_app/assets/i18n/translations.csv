@@ -234,7 +234,7 @@ TUT_02_OVERFLOW,Damage left over rolls on to the next enemy.,Skada som blir öve
 TUT_03_PAIR,Equal values side by side: ×2. Three in a row: ×4.,Lika värden bredvid varandra: ×2. Tre i rad: ×4.
 TUT_04_ARMOR,Armor is subtracted from every hit. One big hit beats four small.,Rustning dras av från varje träff. En stor träff slår fyra små.
 TUT_05_MIRROR,Mirror copies the value on its left. Its own pips do nothing.,Spegeln kopierar värdet till vänster. Dess egna ögon gör inget.
-TUT_06_CHARGE,Dice you don't place go in the bank.,Tärningar du inte placerar hamnar i banken.
+TUT_06_CHARGE,Leave slot 1 empty. The charge goes to the Mirror.,Lämna slot 1 tom. Laddningen hamnar i Spegeln.
 TUT_07_ANVIL,Anvil doubles 5 or more. A doubled 6 no longer pairs with a 6.,Ambossen dubblar 5 eller mer. En dubblad 6:a parar sig inte längre med en 6:a.
 TUT_TRY_MIRROR,Put any die here. Watch what it copies.,Lägg vilken tärning som helst här. Se vad den kopierar.
 TUT_ANVIL_BREAKS,12 and 6 are not a pair.,12 och 6 är inte ett par.
@@ -375,7 +375,7 @@ CORRIDOR_TREASURE_PIPS,%d pips in the dust.,%d ögon i dammet.
 CORRIDOR_TREASURE_RELIC,Something worth carrying.,Något värt att bära.
 CORRIDOR_TREASURE_CODEX,A page for the codex.,Ett blad till kodexen.
 CORRIDOR_TREASURE_NONE,"Dust, and nothing in it.","Damm, och inget i det."
-CORRIDOR_REWARD_TITLE,THE ROOM LEAVES YOU SOMETHING,RUMMET LÄMNAR DIG NÅGOT
+CORRIDOR_REWARD_TITLE,THE ROOM LEAVES SOMETHING,RUMMET LÄMNAR NÅGOT
 CORRIDOR_REWARD_BREATHER,TORCH FLARES · +%d HP,FACKLAN FLAMMAR · +%d HP
 TRAP_WEB,The Web,Spindelväven
 TRAP_EMBERS,The Embers,Glödbädden

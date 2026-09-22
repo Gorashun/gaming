@@ -377,3 +377,139 @@ func test_every_room_points_at_an_anchor_the_combat_screen_still_has() -> void:
 		assert_bool(known.has(target)).override_failure_message(
 			"rum %s pekar på '%s' som inte finns" % [
 				String(Tutorial.room(index)["id"]), target]).is_true()
+
+
+# ---------------------------------------------------------------------------
+# Rum 0.6: lektionen får inte vara en fälla (M5.8)
+# ---------------------------------------------------------------------------
+
+## Rummets index i [constant Tutorial.ROOMS].
+const ROOM_CHARGE: int = 5
+## Portens rustning efter dess enda blockrunda. Bryts taket är rummet en fälla
+## igen: [method Resolver._phase_enemy_pass] gör [code]enemy.armor += value[/code],
+## och höjningen är permanent.
+const GATE_ARMOR_CEILING: int = 12
+
+
+## Spelar rum 0.6 med en namngiven "linje" och returnerar rundor, förlorad HP
+## och om porten föll. Ingen [Policy] här med flit: poängen är att mäta hur en
+## MÄNNISKA spelar rummet, inte hur sökningen gör det.
+func _play_room_six(line: String, max_rounds: int = 30) -> Dictionary:
+	var rng: Rng = Rng.new(2026)
+	var state: CombatState = Tutorial.prepare_room(Content.smith_state(), ROOM_CHARGE, rng)
+	var start_hp: int = state.player_hp
+	var armor_peak: int = state.enemies[0].armor
+	var rounds: int = 0
+	while rounds < max_rounds:
+		rounds += 1
+		var placement: PackedInt32Array = _room_six_placement(state, line)
+		var result: ResolveResult = Resolver.resolve(state, placement)
+		state = result.state_after
+		armor_peak = maxi(armor_peak, state.enemies[0].armor)
+		if state.is_won():
+			break
+		if state.player_dead:
+			# Träningshjulen: i våning 0 kan man inte dö (§B.2).
+			state.player_dead = false
+			state.player_hp = Tutorial.REVIVE_HP
+		state = Resolver.advance(state, rng)
+		Tutorial.force_dice(state, ROOM_CHARGE)
+		Tutorial.apply_intents(state, ROOM_CHARGE)
+	return {
+		"rounds": rounds,
+		"hp_lost": start_hp - state.player_hp,
+		"won": state.is_won(),
+		"armor_peak": armor_peak,
+	}
+
+
+func _room_six_placement(state: CombatState, line: String) -> PackedInt32Array:
+	match line:
+		"intended":
+			# Banka först, lämna sedan slot 1 tom så att banken landar i slot 2
+			# och Spegeln kopierar den.
+			return _fill_from(state, 1) if state.charge > 0 else \
+				CombatState.empty_placement(state.board.size())
+		"obvious":
+			# Den uppenbara vägen: fyll brädet från slot 1. Gör det noll skada
+			# bankar spelaren i stället – tipset sa ju att obesatta tärningar
+			# hamnar i banken – och dumpar sedan allt i slot 1 igen.
+			var full: PackedInt32Array = _fill_from(state, 0)
+			if _damage_of(state, full) > 0:
+				return full
+			return CombatState.empty_placement(state.board.size())
+	return CombatState.empty_placement(state.board.size())
+
+
+## Brädet fyllt från [param first_slot] och högsta tärningen först.
+func _fill_from(state: CombatState, first_slot: int) -> PackedInt32Array:
+	var order: Array[int] = []
+	for i: int in range(state.dice.size()):
+		order.append(i)
+	order.sort_custom(func(a: int, b: int) -> bool:
+		return state.dice[a].showing_face().value > state.dice[b].showing_face().value)
+	var placement: PackedInt32Array = CombatState.empty_placement(state.board.size())
+	var next: int = 0
+	for slot: int in range(first_slot, state.board.size()):
+		if next >= order.size():
+			break
+		placement[slot] = order[next]
+		next += 1
+	return placement
+
+
+func _damage_of(state: CombatState, placement: PackedInt32Array) -> int:
+	var before: int = state.enemies[0].hp
+	return before - Resolver.resolve(state, placement).state_after.enemies[0].hp
+
+
+## Porten blockar [b]en gång[/b]. Fram till M5.8 blockade den runda 1 och 2, och
+## eftersom rustningshöjningen är permanent stod den på 16 för resten av striden
+## – en spelare som inte hittade banken kunde då aldrig ta sig igenom.
+func test_room_six_lets_the_gate_harden_exactly_once() -> void:
+	var intents: Dictionary = Tutorial.room(ROOM_CHARGE)["intents"] as Dictionary
+	var blocks: int = 0
+	for key: Variant in intents:
+		if int((intents[key] as Dictionary)["kind"]) == Rules.IntentKind.BLOCK:
+			blocks += 1
+	assert_int(blocks).override_failure_message(
+		"porten får blocka högst en runda, annars växer rustningen permanent").is_equal(1)
+
+	var run: Dictionary = _play_room_six("obvious", 12)
+	assert_int(int(run["armor_peak"])).override_failure_message(
+		"portens rustning nådde %d, taket är %d" % [run["armor_peak"], GATE_ARMOR_CEILING]
+	).is_less_equal(GATE_ARMOR_CEILING)
+
+
+## Den avsedda lektionen, ordagrant: lämna slot 1 tom så hamnar banken i slot 2
+## och Spegeln gör den till ett par.
+func test_room_six_is_won_in_two_rounds_by_leaving_slot_one_empty() -> void:
+	var run: Dictionary = _play_room_six("intended")
+	assert_bool(bool(run["won"])).is_true()
+	assert_int(int(run["rounds"])).is_equal(2)
+	assert_int(int(run["hp_lost"])).is_equal(0)
+
+
+## Pilen och meningen pekar på samma sak: sloten som ska stå tom. Pekade de på
+## laddningsmätaren sa de VAD man samlar men aldrig vad man ska göra med det.
+func test_room_six_points_at_the_slot_it_tells_you_to_leave_empty() -> void:
+	var tip: Dictionary = Tutorial.tip_for(ROOM_CHARGE)
+	assert_str(String(tip["key"])).is_equal("TUT_06_CHARGE")
+	assert_str(String(tip["en"])).is_equal("Leave slot 1 empty. The charge goes to the Mirror.")
+	assert_str(String(tip["point_at"])).override_failure_message(
+		"pilen ska peka på slot 1, som är slot_0 i CombatScreen.pointer_anchors()"
+	).is_equal("slot_0")
+
+
+## [b]Mätpunkt, inte ett mål.[/b] Den uppenbara vägen – dumpa banken i slot 1 –
+## går att spela klart sedan M5.8, men den är fortfarande dyr. Siffrorna står
+## här för att en ändring av portens HP, rustning eller attack ska synas som ett
+## testfall och inte upptäckas av en spelare. PM äger taket (docs/BACKLOG.md,
+## "Noterat under M5.8").
+func test_room_six_the_obvious_line_finishes_but_is_expensive() -> void:
+	var run: Dictionary = _play_room_six("obvious")
+	assert_bool(bool(run["won"])).override_failure_message(
+		"den uppenbara vägen måste gå att spela klart, annars är rummet en fälla"
+	).is_true()
+	assert_int(int(run["rounds"])).is_equal(12)
+	assert_int(int(run["hp_lost"])).is_equal(60)

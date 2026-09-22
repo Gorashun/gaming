@@ -72,7 +72,12 @@ func _init() -> void:
 	_rarity_label = _make_label(Tokens.TYPE_CAPTION, Tokens.CHALK_300)
 	column.add_child(_rarity_label)
 	_name_label = _make_label(Tokens.TYPE_BODY_L, Tokens.CHALK_100)
+	# Namnraden [b]krymper i stället för att klippas[/b] (M5.8). Ett långt
+	# kortnamn – "Scrapheap Anvil Blessing" – klipptes mitt i ordet i
+	# korridorens belöning, där kortet ligger på sin minsta höjd och en extra
+	# rad inte får plats. Se [method Tokens.shrink_to_fit].
 	column.add_child(_name_label)
+	Tokens.shrink_to_fit(_name_label, Tokens.TYPE_BODY_L)
 	_effect_label = _make_label(Tokens.TYPE_BODY, Tokens.CHALK_300)
 	_effect_label.clip_text = false
 	_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -143,6 +148,8 @@ func bind(p_index: int, p_option: Dictionary, p_target: Dictionary, description:
 		String(option.get("name_key", "")),
 		String(option.get("name", option.get("id", ""))),
 	)
+	# Texten är ny, alltså är den uppmätta storleken det inte längre.
+	Tokens.shrink_to_fit(_name_label, Tokens.TYPE_BODY_L)
 	_effect_label.text = description
 	_bind_art()
 

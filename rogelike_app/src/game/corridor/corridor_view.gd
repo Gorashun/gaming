@@ -627,6 +627,30 @@ func _kill_approach() -> void:
 	_approach_tween = null
 
 
+## Ställer mötet på plats [b]utan[/b] avslöjandet (M5.8). En återupptagen run
+## står redan mitt i striden: monstren ska inte krypa fram ur mörkret igen, de
+## ska bara stå där. Utan den här raden mötte en laddad sparfil en tom korridor
+## med ett stridsbräde under – fienderna spawnas annars av
+## [constant CorridorMap.EVENT_ENCOUNTER_REACHED], som aldrig kommer en andra gång.
+##
+## No-op när mötet redan står framme, så den normala vägen är orörd.
+func restore_encounter() -> void:
+	if _encounter_active or _pending_enemies.is_empty():
+		return
+	_kill_approach()
+	if _enemy_nodes.is_empty():
+		_spawn_enemies()
+	_encounter.position = _formation_origin(0)
+	_encounter_active = true
+	for sprite: AnimatedSprite3D in _enemy_nodes:
+		sprite.modulate = Color.WHITE
+
+
+## Står ett möte framme just nu?
+func has_encounter() -> bool:
+	return _encounter_active
+
+
 ## Takt 3 forts.: silhuetten fylls med färg och pixlar på 180 ms.
 func _reveal_encounter(_node_id: String) -> void:
 	_kill_approach()

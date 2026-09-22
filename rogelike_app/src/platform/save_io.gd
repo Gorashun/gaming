@@ -158,6 +158,11 @@ static func load_dict() -> Dictionary:
 ## rullat vidare när filen skrevs. Att gissa en ruta vore att flytta spelaren
 ## utan att säga det. Filen kasseras därför, och [GameController] går till staden
 ## – aldrig en krasch, aldrig en run spelaren inte bad om.
+##
+## [b]2 → 3 (M5.8):[/b] version 3 lade till källarens fält. Tillägget är rent
+## additivt, och en version 2-fil är per definition en riktig run: den stämplas
+## med [code]tutorial_room = -1[/code] och spelas vidare. Att kassera den vore
+## att ta en run ifrån någon för att vi lagt till ett fält.
 static func migrate(data: Dictionary) -> Dictionary:
 	var version: int = int(data.get("version", 0))
 	if version <= 0 or version > RunState.SAVE_VERSION:
@@ -166,6 +171,14 @@ static func migrate(data: Dictionary) -> Dictionary:
 	if version < 2 or not (data.get("meta", {}) as Dictionary).has("corridor"):
 		push_warning("SaveIO: sparfil v%d saknar korridorläge – ny run i staden" % version)
 		return {}
+	if version < 3:
+		var meta: Dictionary = (data.get("meta", {}) as Dictionary).duplicate(true)
+		meta["tutorial_room"] = -1
+		meta["tutorial_loot_pending"] = false
+		meta["tutorial_loot_open"] = false
+		data = data.duplicate(true)
+		data["meta"] = meta
+		data["version"] = RunState.SAVE_VERSION
 	return data
 
 

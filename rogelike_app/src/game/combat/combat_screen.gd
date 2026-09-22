@@ -646,6 +646,11 @@ static func why_text(slot: Dictionary) -> String:
 
 ## Ankarna som [HelpLayer] pekar på. Ett dolt element hoppas över, så lagret
 ## kan aldrig peka på ett tomt hål.
+## Kritpilen medan tutorialtipset står kvar, annars null. Testerna frågar här.
+func tutorial_pointer() -> Control:
+	return _pointer
+
+
 func pointer_anchors() -> Dictionary:
 	var anchors: Dictionary = {
 		"charge": _charge_label,
@@ -761,7 +766,11 @@ class TutorialPointer:
 			return
 		visible = true
 		var rect: Rect2 = target.get_global_rect()
-		position = Vector2(rect.get_center().x, rect.position.y - Tokens.dp(14))
+		# [b]Global → lokal[/b] (M5.8), av exakt samma skäl som popovern nedan:
+		# FxLayer ligger i korridorens nedre 55 %, ankaret kan ligga i den övre
+		# 45 %. Fram till dess sattes en global punkt som lokal position och
+		# pilen hamnade en halv skärm fel – i rum 0.4 under bekräfta-knappen.
+		global_position = Vector2(rect.get_center().x, rect.position.y - Tokens.dp(14))
 		if _sprite == null:
 			queue_redraw()
 

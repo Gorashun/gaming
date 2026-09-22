@@ -426,6 +426,9 @@ func start_tutorial() -> void:
 	run.combat = Tutorial.prepare_room(run.combat, 0, rng)
 	Tutorial.apply_reveal(meta.reveal, 0)
 	SaveIO.save_meta(meta)
+	# M5.8: källaren autosparas som vilken våning som helst. Se
+	# [method _enter_tutorial_room] för varför.
+	_autosave(SCREEN_CORRIDOR)
 	_show_corridor()
 
 
@@ -444,6 +447,10 @@ func _enter_tutorial_room(node_id: String) -> void:
 	SaveIO.save_meta(meta)
 	if index > 0:
 		run.combat = Tutorial.prepare_room(run.combat, index, rng)
+	# [b]Rumsgränsen är en rundgräns[/b] (GAME_DESIGN §1), så sparfilen skrivs
+	# med kastet redan draget och synligt. Utan den här raden startade en
+	# omladdning om källaren på rum 0.1 – billigt på en telefon, vanligt på web.
+	_autosave(SCREEN_COMBAT)
 	_mount_combat()
 
 
@@ -459,6 +466,7 @@ func _advance_tutorial(state: CombatState) -> void:
 	var reward: Dictionary = Tutorial.reward_for(_tutorial_room)
 	_tutorial_loot_pending = Tutorial.has_loot(_tutorial_room)
 	_tutorial_loot_open = false
+	_autosave(SCREEN_REWARD)
 	if _corridor == null or not is_instance_valid(_corridor):
 		return
 	_corridor.unmount_combat()
@@ -485,7 +493,6 @@ func _show_tutorial_loot() -> void:
 	var targets: Array = []
 	for _option: Dictionary in options:
 		targets.append(target)
-	_tutorial_loot_open = true
 	_corridor.show_reward(run.combat, options, false, Tutorial.loot_title(), targets)
 
 
@@ -505,6 +512,9 @@ func _finish_tutorial() -> void:
 	_tutorial_loot_open = false
 	_map = null
 	_corridor_state = {}
+	# Källaren är slut och spelas aldrig igen: sparfilen ska inte ligga kvar och
+	# erbjuda CONTINUE till en våning som inte finns längre.
+	SaveIO.clear()
 	show_town()
 
 
@@ -550,6 +560,8 @@ func _on_settings_closed() -> void:
 
 func start_new_run(seed_value: int) -> void:
 	_tutorial_room = -1
+	_tutorial_loot_pending = false
+	_tutorial_loot_open = false
 	_run_firsts = []
 	run = RunState.new_run(seed_value)
 	# Smedjans laddning ligger i profilen och läggs på det färska tillståndet.
@@ -594,8 +606,17 @@ func resume_run() -> bool:
 	if graph_data.is_empty():
 		return false
 	graph = RunGraph.from_dict(graph_data)
+	# Källaren (M5.8). Rumsindexet avgör allt annat: kartans kammar-id:n är
+	# [code]f0rN[/code] och finns inte i våning 1:s graf, så nodkontrollen nedan
+	# gäller bara en riktig run.
+	_tutorial_room = int(saved.get("tutorial_room", -1))
+	_tutorial_loot_pending = bool(saved.get("tutorial_loot_pending", false))
+	_tutorial_loot_open = bool(saved.get("tutorial_loot_open", false))
 	_node_id = String(saved.get("node_id", graph.start_id))
-	if not graph.has_node(_node_id):
+	if _tutorial_room >= 0:
+		if _tutorial_room >= Tutorial.room_count() or Tutorial.room_index_for(_node_id) < 0:
+			return false
+	elif not graph.has_node(_node_id):
 		return false
 	_rooms_cleared = int(saved.get("rooms_cleared", 0))
 	_best_chain = int(saved.get("best_chain", 0))
@@ -625,8 +646,29 @@ func resume_run() -> bool:
 			and not run.combat.enemies.is_empty() and not run.combat.is_won():
 		_mount_combat.call_deferred()
 	elif phase == SCREEN_REWARD:
-		_show_reward.call_deferred()
+		if _tutorial_room >= 0:
+			_resume_tutorial_reward.call_deferred()
+		else:
+			_show_reward.call_deferred()
 	return true
+
+
+## Lägger tillbaka korten på golvet i källaren efter en omladdning.
+##
+## Det berättande kortet är ren data och kan ritas om hur många gånger som helst.
+## Loot-valet drar ur slumpströmmen, men sparfilen skrevs [b]före[/b] dragningen
+## (se [method _on_corridor_reward_chosen]), så samma tre kort kommer tillbaka.
+func _resume_tutorial_reward() -> void:
+	if _corridor == null or not is_instance_valid(_corridor):
+		return
+	if _tutorial_loot_open:
+		_show_tutorial_loot()
+		return
+	var reward: Dictionary = Tutorial.reward_for(_tutorial_room)
+	if reward.is_empty():
+		_on_corridor_reward_chosen({}, {})
+		return
+	_corridor.show_reward(run.combat, [reward], false)
 
 
 # ---------------------------------------------------------------------------
@@ -711,10 +753,7 @@ func _set_next_enemies(node_id: String) -> bool:
 func _on_cell_changed(_cell: Dictionary, map_state: Dictionary) -> void:
 	_corridor_state = map_state
 	_prime_enemies()
-	# Källaren spelas exakt en gång och har inget "fortsätt" (§B.2), så den
-	# skriver aldrig en sparfil. Det är också det som gör att CONTINUE på
-	# titelskärmen aldrig kan landa mitt i en tutorial.
-	if _tutorial_room < 0 and can_autosave():
+	if can_autosave():
 		_autosave(SCREEN_CORRIDOR)
 
 
@@ -744,6 +783,9 @@ func _mount_combat() -> void:
 	if _corridor == null or not is_instance_valid(_corridor):
 		return
 	_corridor.view().set_steering_enabled(false)
+	# En återupptagen strid har aldrig fått sitt EVENT_ENCOUNTER_REACHED, så
+	# monstren finns inte i 3D-världen. No-op i den normala vägen.
+	_corridor.view().restore_encounter()
 	var node: Dictionary = Tutorial.node_for(_tutorial_room) if _tutorial_room >= 0 \
 		else graph.node_at(_node_id)
 	_combat = _corridor.mount_combat({
@@ -868,8 +910,14 @@ func _on_corridor_reward_chosen(option: Dictionary, target: Dictionary) -> void:
 				_taken_ids.append(String(option.get("id", "")))
 		elif _tutorial_loot_pending:
 			_tutorial_loot_pending = false
+			_tutorial_loot_open = true
+			# [b]Sparas FÖRE dragningen[/b], inte efter. Slumpströmmens position
+			# i filen är då den som [method Tutorial.loot_options] är på väg att
+			# dra ur, så en omladdning här lägger exakt samma tre kort på golvet.
+			_autosave(SCREEN_REWARD)
 			_show_tutorial_loot()
 			return
+		_autosave(SCREEN_CORRIDOR)
 		if _corridor != null and is_instance_valid(_corridor):
 			_corridor.view().clear_encounter()
 			_refresh_corridor_status()
@@ -985,6 +1033,12 @@ func current_combat() -> CombatScreen:
 	if _combat != null and is_instance_valid(_combat):
 		return _combat
 	return null
+
+
+## Källarens rumsindex, eller -1 i en riktig run. Rökprovet och testerna frågar
+## här i stället för att läsa en understruken variabel.
+func tutorial_room() -> int:
+	return _tutorial_room
 
 
 func corridor() -> CorridorScreen:
@@ -1135,8 +1189,7 @@ func _on_round_finished(state: CombatState, result: ResolveResult) -> void:
 				_note_combo(String(event.get("kind", "")))
 			"house_bonus":
 				_note_combo("HOUSE")
-	if _tutorial_room < 0:
-		_autosave(SCREEN_COMBAT)
+	_autosave(SCREEN_COMBAT)
 	round_autosaved.emit(state.round_number, chain)
 
 
@@ -1227,4 +1280,10 @@ func _autosave(phase: String = "") -> void:
 		"run_won": _run_won,
 		"sheet_shown": _sheet_shown_this_run,
 		"cleared_nodes": _cleared_nodes.keys(),
+		# Källaren (M5.8). -1 = riktig run. Rumsindexet räcker: tärningarna,
+		# HP:t och Laddningen ligger redan i [member RunState.combat], och
+		# Reveal-flaggorna i profilen (user://meta.json).
+		"tutorial_room": _tutorial_room,
+		"tutorial_loot_pending": _tutorial_loot_pending,
+		"tutorial_loot_open": _tutorial_loot_open,
 	})

@@ -164,20 +164,58 @@
   sheet-knappen vid 0.6. M5.5 flyttade källaren in i korridoren men visar hela
   HUD:en från rum 0.1. Kräver en `Reveal`-flagga per HUD-element.
 
+## Noterat under M5.8 (dev)
+
+- **Rum 0.6 är fortfarande dyrt för den som inte hittar lektionen.** M5.8 tog
+  bort fällan (porten blockar en gång, inte två, så rustningen stannar på 12),
+  men **≤ 4 rundor för den uppenbara linjen går inte att nå utan ett
+  designbeslut.** Mätserie ur `tests/test_tutorial.gd` och
+  `tools/run_simulator`-liknande körningar, porten är `hp 44 / armor 8 / attack 6`:
+
+  | Variant | Avsedd linje | "Banka, dumpa i slot 1" | "Fyll alltid alla fem" |
+  |---|---|---|---|
+  | M5.7 (BLOCK runda 1+2) | 2 rundor, 0 HP | **vinner aldrig** | vinner aldrig |
+  | **M5.8 (BLOCK runda 1)** | 2 rundor, 0 HP | 12 rundor, 60 HP | vinner aldrig |
+  | hp 24 | 2, 0 | 8, 36 | vinner aldrig |
+  | hp 15 | 2, 0 | **4, 12** | vinner aldrig |
+  | hp 24, armor 4, ingen BLOCK | 2, 6 | 5, 24 | 5, 24 |
+
+  Två saker att besluta, båda rpg-nerd + PM:
+  1. **"Fyll alltid alla fem" kan aldrig vinna** så länge rustningen är ≥ 7.
+     Brädet ger som mest ett par 3:or (6 per slag), och den ende oplacerade
+     tärningen bankar 1 per runda som direkt äts av slot 1. Spelaren blir inte
+     dödad (kärran kommer), hen loopar. Enda utvägen är `armor ≤ 5`, och då
+     behövs inte Laddningen för att komma igenom – lektionen försvinner.
+  2. **Vill vi ha ≤ 4 rundor** för den uppenbara linjen måste portens HP ned till
+     ~15, vilket gör källarens näst sista rum svagare än rum 0.4 (26 HP).
+
+  Dev:s förslag: behåll 44 HP, behåll lektionen, och lös loopen med
+  presentation i stället för balans – tipset kommer tillbaka efter två rundor
+  utan skada. Det är en UI-uppgift och ett PM-beslut, inte en regeländring.
+
+- **Kritpilen har aldrig testats mot sitt ankare förrän nu.** `tests/test_combat_layout.gd`
+  täcker rum 0.6 (`slot_0`). De andra sex rummens ankare (`tray`, `receipt`,
+  `arcs`, `slot_2`, `slot_4`) har bara namnkontrollen i `test_tutorial.gd`.
+
+- **Källaren har ingen "ge upp"-väg.** Nu när våning 0 autosparas kan en spelare
+  ligga kvar i rum 0.6 hur länge som helst. SKIP THE LESSON finns bara på
+  titelskärmen, inte i pausmenyn under källaren.
+
 ## Noterat under M5.7 (dev, från webbtestet av 9b8d569)
 
-- **Källaren är inte återupptagbar.** Våning 0 autosparas med flit
+- ~~**Källaren är inte återupptagbar.**~~ **Löst 2026-09-22 (M5.8).** Våning 0 autosparas med flit
   (`ARCHITECTURE`, "Tre skillnader"), men på web är en omladdning billig och
   vanlig: sker den före trappan startar tutorialen om på rum 0.1 och spelaren
   ser aldrig torget. Kandidat till Anders "det finns ingen stad". Kräver ett
   PM-beslut, eftersom det är samma mekanism som hindrar CONTINUE från att landa
   mitt i en tutorial.
-- **Rum 0.6 straffar den uppenbara linjen hårt.** `LookaheadPolicy` klarar
+- ~~**Rum 0.6 straffar den uppenbara linjen hårt.**~~ **Delvis löst (M5.8),
+  resten är ett designbeslut – se "Noterat under M5.8" ovan.** `LookaheadPolicy` klarar
   porten på två rundor genom att lämna slot 1 tom så att banken hamnar i
   ×4-trippeln. Spelas rummet som en människa spelar det (dumpa banken i slot 1)
   blir det elva rundor och −78 HP, eftersom `BLOCK +4` runda 1–2 höjer portens
   rustning permanent 8 → 16 (`Resolver`: `enemy.armor += intent.value`) och
   `Rules.CHARGE_CAP` är 20. Design + regler, alltså rpg-nerd och PM, inte dev.
-- **`CORRIDOR_REWARD_TITLE` klipps på en 480 px-skärm.** "THE ROOM LEAVES YOU
+- ~~**`CORRIDOR_REWARD_TITLE` klipps på en 480 px-skärm.**~~ **Löst 2026-09-22 (M5.8).** "THE ROOM LEAVES YOU
   SOMETHING" går utanför båda kanterna i webbläsaren (`_heading.clip_text`).
   Belöningskortets namnrad klipps på samma sätt.

@@ -155,3 +155,51 @@ func test_the_action_buttons_keep_their_touch_target() -> void:
 			"%s är %.0f px hög, under träffytans %.0f px" % [
 				button.name, button.size.y, Tokens.dp(Tokens.TOUCH_MIN)]
 		).is_greater_equal(Tokens.dp(Tokens.TOUCH_MIN))
+
+
+# ---------------------------------------------------------------------------
+# Kritpilen i källaren (M5.8)
+# ---------------------------------------------------------------------------
+
+## Pilen satte en [b]global[/b] punkt som [b]lokal[/b] position. I korridoren
+## ligger FxLayer i de nedre 55 %, så pilen hamnade en halv skärm under sitt
+## ankare – i rum 0.4 nedanför bekräfta-knappen. Rum 0.6 pekar på slot 1, och
+## då måste pilen faktiskt stå över slot 1.
+func test_the_tutorial_pointer_stands_above_the_slot_it_points_at() -> void:
+	var state: CombatState = Tutorial.prepare_room(Content.smith_state(), 5, Rng.new(1))
+	var screen: CombatScreen = _tutorial_screen(state, 5)
+	await await_millis(60)
+
+	var pointer: Control = screen.tutorial_pointer()
+	assert_object(pointer).override_failure_message("rum 0.6 ska ha en kritpil").is_not_null()
+	var anchor: Control = screen.pointer_anchors()["slot_0"] as Control
+	var slot: Rect2 = anchor.get_global_rect()
+	assert_float(pointer.global_position.x).override_failure_message(
+		"pilen står på x=%.0f, slot 1 på %.0f–%.0f" % [
+			pointer.global_position.x, slot.position.x, slot.end.x]
+	).is_between(slot.position.x, slot.end.x)
+	assert_float(pointer.global_position.y).override_failure_message(
+		"pilen står på y=%.0f, slot 1 börjar på %.0f" % [pointer.global_position.y, slot.position.y]
+	).is_between(slot.position.y - 100.0, slot.position.y)
+
+
+func _tutorial_screen(state: CombatState, room: int) -> CombatScreen:
+	var packed: PackedScene = ResourceLoader.load(SCENE) as PackedScene
+	var screen: CombatScreen = auto_free(packed.instantiate()) as CombatScreen
+	var chips: EnemyChips = auto_free(EnemyChips.new())
+	add_child(chips)
+	chips.size = Vector2(1080.0, 864.0)
+	screen.readout_host = chips
+	add_child(screen)
+	# Striden ligger i korridorens nedre 55 %: pilens fel syntes bara där.
+	screen.position = Vector2(0.0, 864.0)
+	screen.size = Vector2(1080.0, VIEWPORT_HEIGHT - 864.0)
+	screen.setup(null, null, {
+		"state": state,
+		"rng": Rng.new(7),
+		"node": Tutorial.node_for(room),
+		"reveal": Reveal.all_on(),
+		"tutorial_room": room,
+		"best_chain": 0,
+	})
+	return screen

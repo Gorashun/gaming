@@ -373,16 +373,46 @@ behöver alltså inte veta att den är en tutorial, och tutorialen inte att den 
 en karta. Allt annat är oförändrat: fasta tärningar, tvingade intents,
 `Reveal`-flaggor per rum, kvittot, chipen och träningshjulen.
 
-Tre skillnader mot en riktig run, alla avsiktliga:
+Två skillnader mot en riktig run, båda avsiktliga:
 
-1. **Ingen autosave.** Källaren spelas exakt en gång och har inget "fortsätt"
-   (§B.2), så `_on_cell_changed` och `_on_round_finished` hoppar över den. Det
-   är också det som gör att CONTINUE aldrig kan landa mitt i en tutorial.
-2. **De berättande belöningarna appliceras inte.** Tutorialens kort är
+1. **De berättande belöningarna appliceras inte.** Tutorialens kort är
    berättande; förändringen ligger i nästa rums data. Kortet visas ändå på
    golvet i korridoren, samma väg som en riktig belöning.
-3. **Rökprovets korridorbudget räknar inte källaren.** `CORRIDOR_DESIGN §8.1`
+2. **Rökprovets korridorbudget räknar inte källaren.** `CORRIDOR_DESIGN §8.1`
    mäter våning 1; annars mäter siffran två olika saker.
+
+#### M5.8: källaren är återupptagbar
+
+Fram till M5.8 var den tredje skillnaden "ingen autosave": källaren spelades
+exakt en gång och hade inget "fortsätt". På en telefon var det försvarbart. På
+web är en omladdning gratis och vanlig, och den som råkade ladda om före trappan
+startade om på rum 0.1 och såg aldrig torget.
+
+Källaren autosparas nu **per rum och per runda**, precis som våning 1:
+
+| Var | Fas i filen |
+|---|---|
+| `start_tutorial()` | `CORRIDOR` |
+| `_on_cell_changed` (varje steg) | `CORRIDOR` |
+| `_enter_tutorial_room` (rumsgränsen) | `COMBAT` |
+| `_on_round_finished` (varje runda) | `COMBAT` |
+| `_advance_tutorial` (kortet på golvet) | `REWARD` |
+| `_on_corridor_reward_chosen` | `CORRIDOR` |
+| `_finish_tutorial` | `SaveIO.clear()` |
+
+Sparfilen bär `meta.tutorial_room` (-1 = riktig run). Resten fanns redan:
+tärningar, HP och Laddning ligger i `RunState.combat`, kartans ruta i
+`meta.corridor` och `Reveal`-flaggorna i profilen (`user://meta.json`), som
+skrivs vid varje rumsbyte. Titeln erbjuder därför CONTINUE, och den leder till
+**rummet man stod i**, inte till 0.1.
+
+Loot-valet efter rum 0.3 är det enda som drar ur slumpströmmen när korten läggs
+ut. Sparfilen skrivs därför **före** dragningen, med `tutorial_loot_open = true`;
+en omladdning drar då om exakt samma tre kort ur den återställda strömmen.
+
+`RunState.SAVE_VERSION` är **3**. En version 2-fil är per definition en riktig
+run och migreras med `tutorial_room = -1` i stället för att kasseras –
+`SaveIO.migrate`, testat i `tests/test_save_io.gd`.
 
 #### M5.7: rum 0.3 lämnar riktigt loot
 
