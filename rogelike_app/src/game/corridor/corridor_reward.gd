@@ -76,7 +76,13 @@ func _init() -> void:
 
 ## [param options] kommer ur [method Rewards.generate]. [param breather] tänder
 ## facklan-raden: läkningen får en synlig orsak i rummet (§3.5).
-func show_options(state: CombatState, options: Array, breather: bool) -> void:
+##
+## [param title] är [code][nyckel, engelsk källsträng][/code] och skriver över
+## rubriken; [param targets] är ett färdigt mål per kort. Båda är tomma i en
+## vanlig run – de finns för källaren, där [Tutorial] äger både orden
+## ("Loot. Pick one.") och vilken sida som får bytas ut (§B.2, M5.7).
+func show_options(state: CombatState, options: Array, breather: bool,
+		title: Array = [], targets: Array = []) -> void:
 	_options.clear()
 	_targets.clear()
 	for child: Node in _cards.get_children():
@@ -86,11 +92,16 @@ func show_options(state: CombatState, options: Array, breather: bool) -> void:
 	if breather:
 		heading = Tokens.translate_or("CORRIDOR_REWARD_BREATHER",
 			"TORCH FLARES · +%d HP") % Rules.BREATHER_HEAL
+	if title.size() >= 2:
+		heading = Tokens.translate_or(String(title[0]), String(title[1]))
 	_heading.text = heading
 
 	for raw: Variant in options:
 		var option: Dictionary = raw as Dictionary
+		var index: int = _options.size()
 		var target: Dictionary = RewardApply.default_target(state, option)
+		if index < targets.size() and not (targets[index] as Dictionary).is_empty():
+			target = targets[index] as Dictionary
 		var card: RewardCard = RewardCard.new()
 		# Kortet är på sin minsta höjd här (till skillnad från M1:s belöningsskärm,
 		# där det fick expandera), och en [Label] med autowrap rapporterar EN rads

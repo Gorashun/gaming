@@ -67,6 +67,10 @@ var meta: Meta = null
 
 ## Tutorialvåningens rumsindex, eller -1 när vi spelar en riktig run.
 var _tutorial_room: int = -1
+## Rummet har ett loot-val kvar att visa när det berättande kortet är taget.
+var _tutorial_loot_pending: bool = false
+## Korten som ligger på golvet just nu ÄR loot-valet, inte ett berättande kort.
+var _tutorial_loot_open: bool = false
 ## "Första gången"-nycklar runden visat, betalas ut vid runnens slut.
 var _run_firsts: Array[String] = []
 ## Vad staden ska säga när spelaren kommer tillbaka (Marrows replik, Pips).
@@ -413,6 +417,8 @@ func start_tutorial() -> void:
 	_sheet_shown_this_run = false
 	run.floor_index = 0
 	_tutorial_room = 0
+	_tutorial_loot_pending = false
+	_tutorial_loot_open = false
 	_map = Tutorial.corridor_map()
 	_corridor_state = _map.to_dict()
 	_node_id = String(Tutorial.node_for(0)["id"])
@@ -443,11 +449,16 @@ func _enter_tutorial_room(node_id: String) -> void:
 
 ## Rummet är klart. Belöningen visas på golvet i korridoren, precis som i en
 ## riktig run – tutorialens kort är berättande, så valet är alltid ett kort.
+##
+## [b]Utom efter rum 0.3[/b] (M5.7): där ligger också ett riktigt loot-val, tre
+## sidor ur samma pool som en run, och det visas efter det berättande kortet.
 func _advance_tutorial(state: CombatState) -> void:
 	run.combat = Resolver.end_combat(state)
 	_rooms_cleared += 1
 	_cleared_nodes[_node_id] = true
 	var reward: Dictionary = Tutorial.reward_for(_tutorial_room)
+	_tutorial_loot_pending = Tutorial.has_loot(_tutorial_room)
+	_tutorial_loot_open = false
 	if _corridor == null or not is_instance_valid(_corridor):
 		return
 	_corridor.unmount_combat()
@@ -456,6 +467,26 @@ func _advance_tutorial(state: CombatState) -> void:
 		_on_corridor_reward_chosen({}, {})
 		return
 	_corridor.show_reward(run.combat, [reward], false)
+
+
+## Loot-valet efter rum 0.3. Tre sidor, samma kort och samma ord som senare i
+## spelet; det enda källaren bestämmer är rubriken och vilken sida som byts ut
+## (se [method Tutorial.loot_target]).
+func _show_tutorial_loot() -> void:
+	if _corridor == null or not is_instance_valid(_corridor):
+		return
+	var pool: Array[Dictionary] = RunFlow.available_pool(
+		Content.unlocked_pool(meta.unlocked), _taken_ids)
+	var options: Array[Dictionary] = Tutorial.loot_options(pool, rng)
+	if options.is_empty():
+		_on_corridor_reward_chosen({}, {})
+		return
+	var target: Dictionary = Tutorial.loot_target(run.combat, _tutorial_room)
+	var targets: Array = []
+	for _option: Dictionary in options:
+		targets.append(target)
+	_tutorial_loot_open = true
+	_corridor.show_reward(run.combat, options, false, Tutorial.loot_title(), targets)
 
 
 func _finish_tutorial() -> void:
@@ -470,6 +501,8 @@ func _finish_tutorial() -> void:
 	meta.pips += Meta.PIPS_WIN
 	SaveIO.save_meta(meta)
 	_tutorial_room = -1
+	_tutorial_loot_pending = false
+	_tutorial_loot_open = false
 	_map = null
 	_corridor_state = {}
 	show_town()
@@ -827,6 +860,16 @@ func _on_corridor_reward_chosen(option: Dictionary, target: Dictionary) -> void:
 	# i ett [RewardApply]-anrop. Källaren autosparas inte heller – den spelas en
 	# gång och har inget "fortsätt" (§B.2).
 	if _tutorial_room >= 0:
+		if _tutorial_loot_open:
+			# Loot-kortet är det enda i källaren som FAKTISKT ändrar tillståndet.
+			_tutorial_loot_open = false
+			if not option.is_empty():
+				run.combat = RewardApply.apply(run.combat, option, target)
+				_taken_ids.append(String(option.get("id", "")))
+		elif _tutorial_loot_pending:
+			_tutorial_loot_pending = false
+			_show_tutorial_loot()
+			return
 		if _corridor != null and is_instance_valid(_corridor):
 			_corridor.view().clear_encounter()
 			_refresh_corridor_status()

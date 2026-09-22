@@ -30,6 +30,16 @@ const CORRIDOR_STEPS: int = 2
 ## HP spelaren står kvar med när kärran kommer (§B.2).
 const REVIVE_HP: int = 1
 
+## Loot-valet i källaren (M5.7). Rum 0.3 lämnar [b]tre riktiga belöningskort[/b]
+## ur samma pool som en vanlig run, inte ett berättande kort: en spelare som
+## aldrig sett ett val av tre vet inte att spelet har loot, och Anders letade
+## efter det i webbtestet och hittade inget. Korten är sidor – kategorin
+## [constant Rewards.CATEGORY_FORGE_FACE] – eftersom en sida är den enda
+## belöningen som syns direkt på tärningarna i nästa rum.
+const LOOT_OPTIONS: int = 3
+const LOOT_TITLE_KEY: String = "TUT_LOOT_TITLE"
+const LOOT_TITLE_EN: String = "Loot. Pick one."
+
 ## Kärrans replik. Engelsk källsträng; svenskan är en CSV-rad.
 const CART_LINE_KEY: String = "TUT_CART_LINE"
 const CART_LINE_EN: String = "The cart still comes for you down here. After this, it doesn't."
@@ -94,6 +104,11 @@ const ROOMS: Array[Dictionary] = [
 		"point_at": "arcs",
 		"intents": {},
 		"reward": {"key": "TUT_REWARD_SLOT5", "en": "A fifth slot. The board is full size now."},
+		# M5.7: det första riktiga loot-valet ligger här, efter paret, och inte
+		# senare. Två rum in har spelaren just lärt sig att placeringen betyder
+		# något; då betyder tre kort också något. Kommer valet först i rum 0.5
+		# har halva tutorialen gått utan att spelet visat att det HAR loot.
+		"loot": true,
 	},
 	{
 		"id": "0.4",
@@ -353,6 +368,66 @@ static func reward_for(index: int) -> Dictionary:
 ## Kärrans text när HP nått 0 i våning 0.
 static func cart_line() -> Array[String]:
 	return [CART_LINE_KEY, CART_LINE_EN]
+
+
+# ---------------------------------------------------------------------------
+# Loot (M5.7)
+# ---------------------------------------------------------------------------
+
+## Lämnar rummet ett riktigt val av tre kort efter sitt berättande kort?
+static func has_loot(index: int) -> bool:
+	return bool(room(index).get("loot", false))
+
+
+## Rubriken över loot-korten. Egen rad eftersom den säger något annat än
+## [code]CORRIDOR_REWARD_TITLE[/code]: det här är ett val, inte en gåva.
+static func loot_title() -> Array[String]:
+	return [LOOT_TITLE_KEY, LOOT_TITLE_EN]
+
+
+## Tre sidor ur [param pool], dragna med [param rng] precis som i en run.
+## Filtret på [constant Rewards.CATEGORY_FORGE_FACE] är hela skillnaden: korten,
+## texterna och sällsynthetsvikterna är desamma som senare.
+static func loot_options(pool: Array, rng: Rng) -> Array[Dictionary]:
+	var faces: Array = []
+	for raw: Variant in pool:
+		var entry: Dictionary = raw as Dictionary
+		if String(entry.get("category", "")) == Rewards.CATEGORY_FORGE_FACE:
+			faces.append(entry)
+	return Rewards.generate(faces, rng, 1, LOOT_OPTIONS)
+
+
+## Sidan som loot-kortet byter ut, för ett val efter rum [param index].
+##
+## [b]Inte [method RewardApply.default_target].[/b] Den tar sidan med lägst
+## värde i hela uppsättningen, och det är tärning 1:s etta – som rum 0.5 och 0.6
+## tvingar upp. Byts den bort finns värdet inte längre på tärningen,
+## [method force_dice] hittar ingen sida, och rum 0.5:s lektion ("det finns
+## inget naturligt par") går sönder utan att något felar. Vi väljer därför den
+## lägsta sidan som [b]inget senare rum tvingar upp på just den tärningen[/b].
+## Belöningen är fortfarande verklig och permanent; den kan bara inte ljuga om
+## vilka tärningar spelaren får se.
+static func loot_target(state: CombatState, index: int) -> Dictionary:
+	var reserved: Dictionary = {}
+	for room_index: int in range(index + 1, ROOM_COUNT):
+		var values: Array = room(room_index).get("dice", []) as Array
+		for die_index: int in range(values.size()):
+			reserved["%d:%d" % [die_index, int(values[die_index])]] = true
+	var best_die: int = -1
+	var best_face: int = -1
+	var best_value: int = 1 << 30
+	for d: int in range(state.dice.size()):
+		var die: Die = state.dice[d]
+		for f: int in range(die.faces.size()):
+			var value: int = die.faces[f].value
+			if reserved.has("%d:%d" % [d, value]) or value >= best_value:
+				continue
+			best_value = value
+			best_die = d
+			best_face = f
+	if best_die < 0:
+		return {}
+	return {"die_index": best_die, "face_index": best_face}
 
 
 # ---------------------------------------------------------------------------

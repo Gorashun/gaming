@@ -2,6 +2,37 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M5.7 – riktigt loot i källaren (2026-09-22)
+
+**Anders webbtest av `9b8d569`: (1) "det finns ingen stad", (2) "hittade inget
+loot i tutorial level".**
+
+**(1) gick inte att återskapa.** Hela Grundstigen spelades igenom i Chromium
+mot `build/web/` (rum 0.1–0.7, boss nedlagd, `FORWARD · stairs up`) och torget
+Chalkrim kom upp som det ska – `docs/screenshots/web_tutorial/`. Profilen
+överlever en omladdning (IndexedDB), och titeln visar då `CHALKRIM`. Två saker
+som kan förklara upplevelsen, båda verkliga och båda rapporterade till PM i
+stället för fixade här: källaren autosparas inte (en omladdning före trappan
+startar om på rum 0.1), och rum 0.6 är en fälla för en människa – den optimala
+linjen är att lämna slot 1 tom så att banken hamnar i ×4-trippeln, och spelas
+den uppenbara vägen tar rummet elva rundor och 78 HP.
+
+**(2) fixad.** Rum 0.3 lämnar nu, efter sitt berättande `+1 slot`-kort, **tre
+riktiga belöningskort** ur den vanliga poolen (`FORGE_FACE`, samma kort och
+samma vikter som i en run) under rubriken `TUT_LOOT_TITLE` = `"Loot. Pick one."`
+(en + sv). Rum 0.5 och 0.7 är orörda.
+- `Tutorial.has_loot/loot_options/loot_title/loot_target`, `"loot": true` på rum 0.3.
+- `CorridorReward.show_options()` tar valfri rubrik och färdiga mål; `CorridorScreen.show_reward()` skickar vidare.
+- `GameController._show_tutorial_loot()` + flaggorna `_tutorial_loot_pending` / `_tutorial_loot_open`. Loot-kortet är det enda i våning 0 som går genom `RewardApply.apply()`.
+- **Invarianten:** `loot_target()` pinnar sidan som byts ut till den lägsta som
+  inget senare rum tvingar upp på just den tärningen. `default_target()` hade
+  tagit tärning 1:s etta, som rum 0.5 och 0.6 behöver, och rum 0.5:s lektion
+  ("inget naturligt par") hade gått sönder tyst. Fyra nya tester i
+  `tests/test_tutorial.gd` applicerar varje alternativ och kräver att rum
+  0.4–0.7 fortfarande visar exakt sina fasta värden.
+
+Tester: 407/407 gröna. Rökprov en + sv: `SMOKE OK`.
+
 ## M5.6 – projektet har en egen font (2026-09-22)
 
 **Symbolglyferna var tofu i webbexporten.** Projektet hade ingen egen font.

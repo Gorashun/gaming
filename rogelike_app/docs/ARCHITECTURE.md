@@ -378,11 +378,34 @@ Tre skillnader mot en riktig run, alla avsiktliga:
 1. **Ingen autosave.** Källaren spelas exakt en gång och har inget "fortsätt"
    (§B.2), så `_on_cell_changed` och `_on_round_finished` hoppar över den. Det
    är också det som gör att CONTINUE aldrig kan landa mitt i en tutorial.
-2. **Belöningen appliceras inte.** Tutorialens kort är berättande; förändringen
-   ligger i nästa rums data. Kortet visas ändå på golvet i korridoren, samma väg
-   som en riktig belöning.
+2. **De berättande belöningarna appliceras inte.** Tutorialens kort är
+   berättande; förändringen ligger i nästa rums data. Kortet visas ändå på
+   golvet i korridoren, samma väg som en riktig belöning.
 3. **Rökprovets korridorbudget räknar inte källaren.** `CORRIDOR_DESIGN §8.1`
    mäter våning 1; annars mäter siffran två olika saker.
+
+#### M5.7: rum 0.3 lämnar riktigt loot
+
+Fem berättande kort i rad ser inte ut som loot, för de är inte ett **val** – det
+var Anders andra fynd i webbtestet av `9b8d569`. Efter rum 0.3:s `+1 slot`-kort
+visas därför **tre riktiga belöningskort** ur den vanliga poolen, filtrerade
+till `FORGE_FACE` (`Tutorial.loot_options()`), under rubriken
+`TUT_LOOT_TITLE` = `"Loot. Pick one."`.
+
+`GameController` håller två flaggor, `_tutorial_loot_pending` (rummet har loot
+kvar) och `_tutorial_loot_open` (korten på golvet ÄR lootet). Det är den senare
+som gör undantaget från punkt 2: loot-kortet går genom `RewardApply.apply()`,
+allt annat i våning 0 gör det inte.
+
+Målet pinnas av `Tutorial.loot_target()` i stället för
+`RewardApply.default_target()`. Standardmålet är sidan med lägst värde i hela
+uppsättningen, dvs. tärning 1:s etta – och rum 0.5 och 0.6 tvingar upp just den.
+Byts den bort hittar `force_dice()` ingen sida, tärningen står kvar på förra
+rummets värde och rum 0.5:s lektion ("det finns inget naturligt par") går sönder
+**utan att något felar**. `loot_target()` väljer därför den lägsta sidan som
+inget senare rum tvingar upp på just den tärningen, och
+`tests/test_tutorial.gd` applicerar varje alternativ och kräver att rum 0.4–0.7
+fortfarande visar exakt sina värden.
 
 ### Två sparfiler, med flit
 

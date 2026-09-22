@@ -293,9 +293,10 @@ func prompt() -> CorridorPrompt:
 # Belöningen i korridoren
 # ---------------------------------------------------------------------------
 
-func show_reward(state: CombatState, options: Array, breather: bool) -> void:
+func show_reward(state: CombatState, options: Array, breather: bool,
+		title: Array = [], targets: Array = []) -> void:
 	_view.set_steering_enabled(false)
-	_reward.show_options(state, options, breather)
+	_reward.show_options(state, options, breather, title, targets)
 
 
 func reward() -> CorridorReward:

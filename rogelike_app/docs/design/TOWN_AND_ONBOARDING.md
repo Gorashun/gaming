@@ -227,7 +227,7 @@ Att ljuga om det vore värre än att dö.
 |---|---|---|---|---|---|---|
 | **0.1** | Placera + bekräfta = skada | `3 × PLAIN` | 3 | `CHALK_DUMMY` hp 12, armor 0, intent `ATTACK 0` runda 1, sedan `ATTACK 2` | Slots, bricka, total, `CONFIRM` | – |
 | **0.2** | Överflöd | `3 × PLAIN` | 3 (seed ger 6, 4, 2) | `RUST_MITE` hp 3 fram, `RUST_MITE` hp 9 bak, båda `ATTACK 2` | Överflödspilen mellan fiendekorten + per-mål-raden | **+1 slot** → `4 × PLAIN` |
-| **0.3** | Par = ×2 | `4 × PLAIN` | 4 (seed ger 5, 5, 2, 1) | `SLAG_PUP` hp 24, armor 0, `ATTACK 8` | Multiplikator-klammern under två lika grannar, **live medan man drar** | **+1 slot** → `5 × PLAIN` |
+| **0.3** | Par = ×2 | `4 × PLAIN` | 4 (seed ger 5, 5, 2, 1) | `SLAG_PUP` hp 24, armor 0, `ATTACK 8` | Multiplikator-klammern under två lika grannar, **live medan man drar** | **+1 slot** → `5 × PLAIN`, sedan **1 av 3 sidor** (se notisen nedan) |
 | **0.4** | Rustning per träff | `5 × PLAIN` | 5 (seed ger 3, 3, 5, 5, 1) | `TICK_PUP` hp 26, **armor 3**, `ATTACK 4` | `− arm 3`-kolumnen i kvittot (§B.3) + rustningsikonen på fiendekortet | `SLOT_SWAP` → **MIRROR på slot 3** (enda valet, kortet förklarar) |
 | **0.5** | Spegel | `P, P, MIRROR, P, P` | 5 (seed ger **inget naturligt par**) | `SLAG_MOTH` hp 34, armor 1, `ATTACK 4` | Kopieringspilen från vänstergrannen in i Spegeln | **Omkast** låses upp (`REROLL 1`) |
 | **0.6** | Oplacerade tärningar → Charge | samma | **6** (den sjätte tärningen ges här) | `SCRAP_GATE` hp 44, armor 8, `BLOCK +4` runda 1–2, sedan `ATTACK 6` | Charge-pillret + kritpilen från den oplacerade tärningen till pillret | `SLOT_SWAP` → **ANVIL på slot 5** (enda valet) |
@@ -242,6 +242,25 @@ Att ljuga om det vore värre än att dö.
 - **0.5 låter tärningskastet göra jobbet.** Seeden ger sex olika värden. Det finns inget par att hitta. Spegeln är enda sättet att göra ett, och en kritpil pekar på den med `TUTORIAL_TRY_MIRROR` = `"Put any die here. Watch what it copies."`
 - **0.6 gör bankandet till det rationella draget.** Porten har `armor 8` och blockar två rundor. Varje enskild tärning studsar. Det enda vettiga är att inte placera – och då dyker Charge-pillret upp med en förklaring som spelaren *redan har efterfrågat med sitt eget spel*. Det här är rummet jag är mest nöjd med.
 - **0.7 lär fällan, inte verktyget.** Bossen har `armor 2` så Ambossen är frestande. Första gången spelaren lägger en 6:a i Ambossen bredvid en annan 6:a försvinner klammern **live medan tärningen fortfarande hänger i fingret**, och en kritnotis säger `TUTORIAL_ANVIL_BREAKS` = `"12 and 6 are not a pair."` Spelaren kan ångra utan kostnad. Det är skillnaden mellan Into the Breach och Darkest Dungeon: visa fällan innan den smäller, låt spelaren gå i den ändå.
+
+> **Notis (M5.7, dev): loot-valet flyttades in i rum 0.3.** Tabellens rubrik säger
+> "fast, inte 1 av 3", och det stämde fram till att Anders webbtestade build
+> `9b8d569` och sa *"hittade inget loot i tutorial level"*. Han har rätt: fem
+> berättande kort i rad ser inte ut som loot, för de är inte ett **val**. Rum 0.3
+> lämnar därför, efter sitt berättande `+1 slot`-kort, **tre riktiga
+> belöningskort ur den vanliga poolen** – kategorin `FORGE_FACE`, samma kort,
+> samma ord och samma sällsynthetsvikter som i en run – under rubriken
+> `TUT_LOOT_TITLE` = `"Loot. Pick one."`. Valet ligger efter paret och inte
+> senare: två rum in har spelaren just lärt sig att placeringen betyder något,
+> och då betyder tre kort också något.
+>
+> Rum 0.5 och 0.7 rörs inte. Till skillnad från de berättande korten **ändrar**
+> loot-kortet tillståndet, och det är det enda i våning 0 som gör det. För att
+> rum 0.4–0.7 ska fortsätta visa exakt sina fasta tärningar väljer
+> `Tutorial.loot_target()` den lägsta sidan som inget senare rum tvingar upp på
+> just den tärningen – `RewardApply.default_target()` hade tagit tärning 1:s
+> etta, som rum 0.5 och 0.6 behöver. `tests/test_tutorial.gd` applicerar varje
+> alternativ och kräver att alla senare rum är oförändrade.
 
 **Tooltips: max en per rum, max en mening, försvinner vid handling.** Det ersätter `UI_GUIDE §7` (tre tooltips i första striden) och är förenligt med dess filosofi – det är samma "lightweight, almost invisible" ansats som Balatros titelkort, som är den enda onboarding-modellen i genren som konsekvent hyllas ([GamesHub om Balatro](https://www.gameshub.com/news/features/balatro-roguelike-deckbuilder-2637397/)).
 

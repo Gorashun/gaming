@@ -310,6 +310,7 @@ TUT_REWARD_SLOT5,A fifth slot. The board is full size now.,En femte slot. Bräde
 TUT_REWARD_MIRROR,A Mirror on slot 3. It copies the value on its left.,En Spegel på slot 3. Den kopierar värdet till vänster.
 TUT_REWARD_REROLL,One reroll per round. Use it before you commit.,Ett omkast per runda. Använd det innan du bekräftar.
 TUT_REWARD_ANVIL,An Anvil on slot 5. It doubles 5 or more.,En Amboss på slot 5. Den dubblar 5 eller mer.
+TUT_LOOT_TITLE,Loot. Pick one.,Loot. Välj ett.
 GAMEOVER_PIPS,Pips earned,Intjänade ögon
 GAMEOVER_BACK_TO_TOWN,BACK TO CHALKRIM,TILLBAKA TILL KRITKANTEN
 TAGLINE,ROLL SIX. PLACE FIVE. THE ORDER IS THE DAMAGE.,KASTA SEX. LÄGG FEM. ORDNINGEN ÄR SKADAN.

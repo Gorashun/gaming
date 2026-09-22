@@ -163,3 +163,21 @@
   `◀ VÄND ▶` kommer in först vid rum 0.4, kritstråket vid 0.5 och character
   sheet-knappen vid 0.6. M5.5 flyttade källaren in i korridoren men visar hela
   HUD:en från rum 0.1. Kräver en `Reveal`-flagga per HUD-element.
+
+## Noterat under M5.7 (dev, från webbtestet av 9b8d569)
+
+- **Källaren är inte återupptagbar.** Våning 0 autosparas med flit
+  (`ARCHITECTURE`, "Tre skillnader"), men på web är en omladdning billig och
+  vanlig: sker den före trappan startar tutorialen om på rum 0.1 och spelaren
+  ser aldrig torget. Kandidat till Anders "det finns ingen stad". Kräver ett
+  PM-beslut, eftersom det är samma mekanism som hindrar CONTINUE från att landa
+  mitt i en tutorial.
+- **Rum 0.6 straffar den uppenbara linjen hårt.** `LookaheadPolicy` klarar
+  porten på två rundor genom att lämna slot 1 tom så att banken hamnar i
+  ×4-trippeln. Spelas rummet som en människa spelar det (dumpa banken i slot 1)
+  blir det elva rundor och −78 HP, eftersom `BLOCK +4` runda 1–2 höjer portens
+  rustning permanent 8 → 16 (`Resolver`: `enemy.armor += intent.value`) och
+  `Rules.CHARGE_CAP` är 20. Design + regler, alltså rpg-nerd och PM, inte dev.
+- **`CORRIDOR_REWARD_TITLE` klipps på en 480 px-skärm.** "THE ROOM LEAVES YOU
+  SOMETHING" går utanför båda kanterna i webbläsaren (`_heading.clip_text`).
+  Belöningskortets namnrad klipps på samma sätt.

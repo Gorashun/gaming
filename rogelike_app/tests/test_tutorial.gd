@@ -221,6 +221,87 @@ func test_the_tutorial_rewards_never_change_the_state() -> void:
 		assert_int(after.relics.size()).is_equal(before.relics.size())
 
 
+# ---------------------------------------------------------------------------
+# Loot efter rum 0.3 (M5.7)
+# ---------------------------------------------------------------------------
+
+## Precis ett rum lämnar ett riktigt val av tre, och det är rum 0.3 – efter
+## paret, medan spelaren fortfarande håller på att lära sig att placeringen
+## betyder något.
+func test_exactly_room_three_leaves_real_loot() -> void:
+	for index: int in range(Tutorial.room_count()):
+		assert_bool(Tutorial.has_loot(index)).override_failure_message(
+			"rum %s: has_loot() fel" % String(Tutorial.room(index)["id"])
+		).is_equal(index == 2)
+	var title: Array[String] = Tutorial.loot_title()
+	assert_str(title[0]).is_equal("TUT_LOOT_TITLE")
+	assert_str(title[1]).is_equal("Loot. Pick one.")
+
+
+## Korten är samma kort som senare: tre olika sidor ur den vanliga poolen, inte
+## tutorialens berättande kategori.
+func test_the_loot_is_three_different_faces_from_the_normal_pool() -> void:
+	var pool: Array[Dictionary] = Content.reward_pool()
+	var options: Array[Dictionary] = Tutorial.loot_options(pool, Rng.new(7))
+	assert_int(options.size()).is_equal(Tutorial.LOOT_OPTIONS)
+	var ids: Array[String] = []
+	for option: Dictionary in options:
+		assert_str(String(option["category"])).override_failure_message(
+			"loot ska vara sidor, inte %s" % String(option["category"])
+		).is_equal(Rewards.CATEGORY_FORGE_FACE)
+		assert_bool(ids.has(String(option["id"]))).is_false()
+		ids.append(String(option["id"]))
+
+	# Seedat: samma seed ger samma tre kort, annars kan en buggrapport inte
+	# återskapas och tutorialen slutar vara en tutorial.
+	var again: Array[Dictionary] = Tutorial.loot_options(pool, Rng.new(7))
+	for i: int in range(options.size()):
+		assert_str(String(again[i]["id"])).is_equal(String(options[i]["id"]))
+
+
+## [b]Invarianten som gör lootet ofarligt.[/b] Kortet byter en sida på en
+## tärning, och rum 0.4–0.7 tvingar upp fasta värden. Väljer vi fel sida finns
+## värdet inte längre, [method Tutorial.force_dice] hittar ingen och lektionen
+## går sönder utan att något felar. Testet applicerar VARJE alternativ och
+## kräver att alla senare rum fortfarande visar exakt sina värden.
+func test_taking_any_loot_card_leaves_every_later_room_exactly_as_specified() -> void:
+	var pool: Array[Dictionary] = Content.reward_pool()
+	var options: Array[Dictionary] = Tutorial.loot_options(pool, Rng.new(7))
+	for option: Dictionary in options:
+		var carried: CombatState = Tutorial.prepare_room(
+			Content.smith_state(), 2, Rng.new(3))
+		var target: Dictionary = Tutorial.loot_target(carried, 2)
+		assert_bool(target.is_empty()).override_failure_message(
+			"loot utan mål vore ett kort som inte gör något").is_false()
+		carried = RewardApply.apply(carried, option, target)
+		for index: int in range(3, Tutorial.room_count()):
+			var state: CombatState = Tutorial.prepare_room(carried, index, Rng.new(3))
+			var wanted: Array = Tutorial.room(index)["dice"] as Array
+			for i: int in range(wanted.size()):
+				assert_int(state.dice[i].showing_face().value).override_failure_message(
+					"efter loot '%s' visar rum %s tärning %d %d, inte %d" % [
+						String(option["id"]), String(Tutorial.room(index)["id"]), i,
+						state.dice[i].showing_face().value, int(wanted[i])]
+				).is_equal(int(wanted[i]))
+			carried = state
+
+
+## Rum 0.5 får fortfarande inte ha ett naturligt par efter att lootet tagits –
+## det är hela rummets lektion.
+func test_room_five_still_has_no_natural_pair_after_the_loot() -> void:
+	var pool: Array[Dictionary] = Content.reward_pool()
+	for option: Dictionary in Tutorial.loot_options(pool, Rng.new(7)):
+		var carried: CombatState = Tutorial.prepare_room(
+			Content.smith_state(), 2, Rng.new(3))
+		carried = RewardApply.apply(carried, option, Tutorial.loot_target(carried, 2))
+		var state: CombatState = Tutorial.prepare_room(carried, 4, Rng.new(3))
+		var values: Array[int] = []
+		for die: Die in state.dice:
+			assert_bool(values.has(die.showing_face().value)).override_failure_message(
+				"loot '%s' gav rum 0.5 ett naturligt par" % String(option["id"])).is_false()
+			values.append(die.showing_face().value)
+
+
 func test_the_node_looks_like_a_run_graph_node() -> void:
 	for index: int in range(Tutorial.room_count()):
 		var node: Dictionary = Tutorial.node_for(index)
