@@ -19,6 +19,6 @@ Roguelike-mobilspel, Android först, iOS därefter. Målgrupp 13+. Kärnkrav: t�
 ## Regler
 - Spellogik är deterministisk, seedad och testbar utan UI.
 - Ingen backend för MVP. Offline-first.
-- Inga lootboxar för pengar, inga energi-timers, inga pay-to-win. Belöningsvariation sker inuti spelet, inte i butiken.
+- Affärsmodell: premium engångsköp + DLC + frivilliga belöningsannonser för att rädda föremål. Inga lootboxar för pengar, inga energi-timers, inga pay-to-win, aldrig påtvingade annonser. Belöningsvariation sker inuti spelet, inte i butiken.
 - Svenska i dokumentation, engelska i kod och commits. **All spelartext (namn, knappar, beskrivningar) är engelska i källan** och går via `tr()`; svenska är en översättning i `assets/i18n/translations.csv`, aldrig hårdkodad.
 - Varje leverans: build + tester körda, resultat rapporterat ordagrant.
