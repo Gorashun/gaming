@@ -1,0 +1,8 @@
+Paket:        Fantasy Icon Pack by Ravenmore (RavenmoreIconPack.02.2014.zip)
+Skapare:      Ravenmore
+URL:          https://opengameart.org/content/fantasy-icon-pack-by-ravenmore-0
+Hämtad:       2026-09-22 (av Anders, laddad upp via chatten)
+Licens:       CC-BY 3.0 (enligt OpenGameArt-sidan; verifiera ordagrant mot sidan)
+Attribution krävs:  JA. Enligt sidans instruktion: länk till ravenmore.itch.io i credits.
+Innehåll:     41 handmålade ikoner i 512, 128 och 64 px (armor, axe, bow, dagger, gems, hammer, helmet, potions, scroll, shield, sword, tome, wand, upg_*-varianter m.fl.) + PSD-källa.
+Anteckning:   Stilreferens för art direction v3 (målad, mörk fantasy). Anders: "jag gillar stilen och vill ha sånt".
