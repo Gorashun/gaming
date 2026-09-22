@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PIPWRECK – SOTLJUS, korridorstrid (art direction v2)</title>
+<style>
+@font-face{font-family:'Anton';src:url('fonts/anton-400.woff2') format('woff2');font-weight:400;font-display:block}
+@font-face{font-family:'Caveat Brush';src:url('fonts/caveatbrush-400.woff2') format('woff2');font-weight:400;font-display:block}
+@font-face{font-family:'Familjen Grotesk';src:url('fonts/familjengrotesk-var.woff2') format('woff2');font-weight:400 700;font-display:block}
+
+:root{
+  /* SOTLJUS: tre hue-familjer i varlden. Allt annat ar UI. */
+  --void:#07090B;         /* ny botten, morkare an #0E1216 */
+  --soot-1:#11161B;
+  --soot-2:#1A2128;
+  --bone:#E8E0CF;
+  --bone-dim:#9A9486;
+  --ember:#FF6A2C;
+  --ember-hi:#FFB258;
+  --gold:#FFD447;
+  --blood:#FF556F;
+  --frost:#6ED2F5;
+  --shield:#D7DEE6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden}
+body{display:flex;justify-content:center;align-items:flex-start;
+  font-family:'Familjen Grotesk',system-ui,sans-serif;color:var(--bone)}
+
+.app{position:relative;width:390px;height:844px;overflow:hidden;background:var(--void);
+  display:flex;flex-direction:column}
+@media (max-width:380px){.app{width:360px;height:640px}}
+
+/* ============ VARLDEN ============ */
+.world{position:relative;flex:1 1 auto;min-height:0;overflow:hidden;background:var(--void)}
+
+/* korridor byggd av ytor, inte av en upprepad brustextur */
+.wall{position:absolute;inset:0}
+.wall.left{clip-path:polygon(0 0,32% 30%,32% 70%,0 100%);
+  background:linear-gradient(90deg,#222A32 0%,#161C22 45%,#0B0E12 100%)}
+.wall.right{clip-path:polygon(100% 0,68% 30%,68% 70%,100% 100%);
+  background:linear-gradient(270deg,#2A333C 0%,#1B222A 45%,#0B0E12 100%)}
+.wall::after{content:"";position:absolute;inset:0;opacity:.30;
+  background:repeating-linear-gradient(0deg,transparent 0 13px,rgba(0,0,0,.85) 13px 15px)}
+.ceil{position:absolute;inset:0;clip-path:polygon(0 0,100% 0,68% 30%,32% 30%);
+  background:linear-gradient(180deg,#090C10 0%,#05070A 100%)}
+.floor{position:absolute;inset:0;clip-path:polygon(0 100%,32% 70%,68% 70%,100% 100%);
+  background:linear-gradient(0deg,#242C34 0%,#141A20 55%,#090C0F 100%)}
+.floor::after{content:"";position:absolute;inset:0;opacity:.45;
+  background:repeating-linear-gradient(0deg,transparent 0 22px,rgba(0,0,0,.8) 22px 24px),
+             repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.55) 46px 48px)}
+.backwall{position:absolute;inset:0;background:#05070A}
+
+/* DIS: djup med dis, inte med detalj. Tre djup. */
+.fog{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(46% 30% at 50% 46%,
+    rgba(5,7,10,.98) 0%, rgba(5,7,10,.92) 30%, rgba(5,7,10,.62) 58%, rgba(5,7,10,.10) 100%)}
+
+/* FACKLAN: en ljuskalla, bakom spelarens hogra axel, utanfor bild */
+.pool{position:absolute;inset:0;pointer-events:none;
+  clip-path:polygon(0 100%,32% 70%,68% 70%,100% 100%);mix-blend-mode:screen;
+  background:radial-gradient(64% 46% at 72% 108%,
+    rgba(255,158,78,.40) 0%, rgba(255,110,44,.16) 40%, rgba(0,0,0,0) 76%)}
+.torch{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
+  background:radial-gradient(78% 52% at 78% 104%,
+    rgba(255,150,70,.42) 0%, rgba(255,110,44,.20) 32%,
+    rgba(180,70,25,.07) 58%, rgba(0,0,0,0) 78%)}
+.torch-warm{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.5;
+  background:radial-gradient(70% 46% at 78% 100%, rgba(255,170,90,.55) 0%, rgba(0,0,0,0) 70%)}
+
+/* FIENDEN. Samma 32 px-sprite som i speltestet. Bara ljussatt. */
+.stage{position:absolute;left:0;right:0;top:0;bottom:0}
+.foe{position:absolute;left:43%;top:74%;transform:translate(-50%,-100%) rotate(-2.5deg);
+  width:160px;height:160px}
+.foe .shadow{position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);
+  width:150px;height:26px;border-radius:50%;
+  background:radial-gradient(50% 50% at 50% 50%,rgba(0,0,0,.92) 0%,rgba(0,0,0,0) 72%)}
+.spr{position:absolute;inset:0;
+  background-image:var(--tick);background-repeat:no-repeat;
+  background-size:640px 320px;background-position:0 0; /* frame 0 av 4x2 */
+  image-rendering:pixelated}
+/* lager 1: kantljus fran facklan (hoger/upp) */
+.spr.rim{filter:brightness(0) saturate(100%) invert(72%) sepia(58%) saturate(2400%) hue-rotate(338deg) brightness(104%);
+  transform:translate(5px,-4px);opacity:.95}
+.spr.rim2{filter:brightness(0) saturate(100%) invert(88%) sepia(40%) saturate(900%) hue-rotate(340deg);
+  transform:translate(2px,-2px);opacity:.55}
+/* lager 0: svag kall fyllnad fran vanster sa silhuetten inte foersvinner */
+.spr.fill{filter:brightness(0) saturate(100%) invert(72%) sepia(22%) saturate(700%) hue-rotate(160deg);
+  transform:translate(-4px,2px);opacity:.30}
+/* lager 2: kroppen, nedtryckt mot silhuett */
+.spr.body{filter:brightness(.58) contrast(1.18) saturate(.5)}
+/* lager 3: varm halvton dar ljuset traffar */
+.spr.lit{filter:brightness(.9) sepia(.6) saturate(2.2) hue-rotate(-12deg);
+  -webkit-mask-image:linear-gradient(255deg,rgba(0,0,0,1) 0%,rgba(0,0,0,0) 52%);
+  mask-image:linear-gradient(255deg,rgba(0,0,0,1) 0%,rgba(0,0,0,0) 52%);opacity:.75}
+
+.ph{position:absolute;left:50%;bottom:-26px;transform:translateX(-50%);white-space:nowrap;
+  font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#7A8493;
+  border:1px dashed #3A4553;padding:2px 6px;border-radius:2px;background:rgba(7,9,11,.7)}
+
+/* Namnskylt: ingen lada. Text + en linje. */
+.plate{position:absolute;left:16px;top:58px;text-align:left;width:172px}
+.plate .nm{font-family:'Anton',sans-serif;font-size:19px;letter-spacing:.10em;
+  text-transform:uppercase;color:var(--bone);text-shadow:0 2px 0 #000,0 0 14px rgba(0,0,0,.9)}
+.plate .bar{margin-top:5px;height:3px;background:#161B21;position:relative;overflow:hidden}
+.plate .bar i{position:absolute;inset:0;width:38%;background:var(--blood)}
+.plate .st{margin-top:6px;font-size:11px;letter-spacing:.08em;color:#CFC7B8;text-shadow:0 1px 3px #000}
+.plate .bar i{width:38%}
+.plate .st b{color:var(--shield);font-weight:700}
+
+/* Skadesiffran: spelets dopaminogonblick far 88 px. */
+.hit{position:absolute;right:16px;top:34%;transform:rotate(-4deg);text-align:right;
+  font-family:'Anton',sans-serif;font-size:88px;line-height:.82;color:var(--bone);
+  -webkit-text-stroke:6px #000;paint-order:stroke fill;
+  text-shadow:0 0 26px rgba(255,120,50,.55),0 6px 0 rgba(0,0,0,.85)}
+.hit s{display:block;text-decoration:none;font-size:13px;letter-spacing:.22em;
+  -webkit-text-stroke:3px #000;color:var(--ember);text-align:right;margin-top:4px}
+
+/* Narratorn: DD:s berattarrost utan roestskadespelare. */
+.narr{position:absolute;left:0;right:0;bottom:10px;text-align:center;
+  font-family:'Caveat Brush',cursive;font-size:16px;color:#C8BEAC;opacity:.82;
+  text-shadow:0 2px 6px #000}
+
+/* VINJETT + SMUTS, alltid pa. */
+.motes{position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:
+    radial-gradient(2px 2px at 64% 58%,rgba(255,190,130,.9),transparent),
+    radial-gradient(1.5px 1.5px at 74% 44%,rgba(255,190,130,.7),transparent),
+    radial-gradient(2px 2px at 55% 72%,rgba(255,190,130,.6),transparent),
+    radial-gradient(1.5px 1.5px at 82% 66%,rgba(255,190,130,.8),transparent),
+    radial-gradient(1.5px 1.5px at 47% 50%,rgba(255,190,130,.5),transparent),
+    radial-gradient(2px 2px at 70% 80%,rgba(255,190,130,.7),transparent);
+  filter:blur(.4px)}
+.vig{position:absolute;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 90px 34px rgba(3,4,6,.92), inset 0 0 200px 70px rgba(3,4,6,.6)}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+
+/* ============ TOPPFALT: 4 element, noll lador ============ */
+.top{position:absolute;left:0;right:0;top:0;height:46px;z-index:6;
+  display:flex;align-items:center;gap:10px;padding:0 16px;
+  background:linear-gradient(180deg,rgba(5,7,10,.95) 0%,rgba(5,7,10,0) 100%)}
+.hp{font-family:'Anton',sans-serif;font-size:20px;letter-spacing:.03em;color:var(--bone)}
+.hp em{font-style:normal;font-size:12px;color:var(--bone-dim)}
+.hpline{flex:0 0 72px;height:4px;background:#171C22}
+.hpline i{display:block;height:100%;width:72%;background:var(--blood)}
+.rm{margin-left:auto;font-size:11px;letter-spacing:.18em;color:var(--bone-dim);text-transform:uppercase}
+.menu{width:28px;height:28px;display:grid;place-items:center;color:var(--bone-dim);font-size:16px}
+
+/* ============ SPELPANELEN: brus ned ~60 % ============ */
+.hud{flex:0 0 auto;background:var(--void);padding:14px 16px 16px;
+  border-top:1px solid #151A20;position:relative;z-index:5}
+
+/* Kedjan: bar text pa svart. Ingen panel, ingen ram. */
+.chain{text-align:center;margin-bottom:12px}
+.chain .sum{font-family:'Anton',sans-serif;font-size:40px;line-height:1;color:var(--bone)}
+.chain .sum u{text-decoration:none;color:var(--bone-dim);font-size:26px;margin:0 6px}
+.chain .sum b{color:var(--ember)}
+.chain .why{margin-top:4px;font-size:11px;letter-spacing:.04em;color:var(--bone-dim)}
+
+/* Slots: ikon + fargad underlinje. Ingen lada. */
+.slots{display:flex;gap:8px;margin-bottom:12px}
+.slot{flex:1;text-align:center;padding-bottom:7px;border-bottom:3px solid #222A32}
+.slot .gl{font-size:17px;line-height:1.1;color:#4A5460}
+.slot .lb{font-size:8.5px;letter-spacing:.10em;text-transform:uppercase;color:#5D6874;margin-top:3px}
+.slot .vl{font-family:'Anton',sans-serif;font-size:17px;color:var(--bone);margin-top:2px;min-height:19px}
+.slot.on .gl{color:var(--shield)}
+.slot.on .lb{color:var(--bone-dim)}
+.slot.fire{border-bottom-color:var(--ember)} .slot.fire .gl{color:var(--ember)}
+.slot.mirror{border-bottom-color:var(--frost)} .slot.mirror .gl{color:var(--frost)}
+.slot.anvil{border-bottom-color:var(--shield)}
+.slot.empty .vl{color:#39424D;font-family:'Familjen Grotesk';font-size:11px;letter-spacing:.1em}
+
+/* Tarningarna: enda objekten med egen yta. Dar ar handlingen. */
+.dice{display:flex;gap:9px;margin-bottom:14px}
+.die{flex:1;aspect-ratio:1;border-radius:5px;position:relative;
+  background:linear-gradient(160deg,#F2EDE3 0%,#CFC5B2 62%,#A79C88 100%);
+  box-shadow:0 3px 0 rgba(0,0,0,.65),0 0 18px rgba(255,150,70,.16),
+             inset 0 1px 0 rgba(255,255,255,.6)}
+.die .pips{position:absolute;inset:16%;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr)}
+.die .pips i{width:5px;height:5px;background:#12161A;border-radius:50%;align-self:center;justify-self:center}
+.die.spent{background:linear-gradient(160deg,#39414B 0%,#262D35 100%);box-shadow:0 2px 0 rgba(0,0,0,.6)}
+.die.spent .pips i{background:#12161A;opacity:.55}
+.die.hot{box-shadow:0 3px 0 rgba(0,0,0,.65),0 0 26px rgba(255,120,44,.55),inset 0 1px 0 rgba(255,255,255,.7)}
+
+.cta{display:flex;gap:10px;align-items:stretch}
+.ghost{flex:0 0 96px;min-height:56px;display:grid;place-items:center;
+  font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-dim);
+  border:1px solid #232B34;border-radius:4px}
+.go{flex:1;min-height:56px;display:grid;place-items:center;border-radius:4px;
+  font-family:'Anton',sans-serif;font-size:21px;letter-spacing:.05em;color:#0B0E12;
+  background:linear-gradient(180deg,#FFC98A 0%,#FF8A3C 55%,#E2621C 100%);
+  box-shadow:0 4px 0 #8A3A0E,0 0 30px rgba(255,120,44,.34)}
+
+@media (max-width:380px){
+  .hit{font-size:62px;top:26%}
+  .hit s{font-size:11px;letter-spacing:.16em}
+  .foe{left:38%;top:76%;width:140px;height:140px}
+  .spr{background-size:560px 280px}
+  .chain .sum{font-size:34px}
+  .die .pips i{width:4px;height:4px}
+  .narr{font-size:14px}
+}
+.note{position:absolute;right:8px;top:52px;z-index:9;font-size:8px;letter-spacing:.1em;
+  color:#6C7684;text-transform:uppercase;writing-mode:vertical-rl;opacity:.75}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <div class="world">
+    <div class="backwall"></div>
+    <div class="wall left"></div>
+    <div class="wall right"></div>
+    <div class="ceil"></div>
+    <div class="floor"></div>
+    <div class="fog"></div>
+
+    <div class="stage">
+      <div class="foe">
+        <div class="shadow"></div>
+        <div class="spr fill"></div>
+        <div class="spr rim"></div>
+        <div class="spr rim2"></div>
+        <div class="spr body"></div>
+        <div class="spr lit"></div>
+        <div class="ph">Platshållare · 32 px (befintlig sprite)</div>
+      </div>
+
+      <div class="hit">16<s>KEDJAN BITER</s></div>
+    </div>
+
+    <div class="pool"></div>
+    <div class="torch"></div>
+    <div class="torch-warm"></div>
+    <div class="motes"></div>
+    <div class="vig"></div>
+    <div class="grain"></div>
+      <div class="plate">
+        <div class="nm">Tick Pup</div>
+        <div class="bar"><i></i></div>
+        <div class="st">10 / 26 &nbsp;·&nbsp; <b>&#x2b1f; 3</b> &nbsp;·&nbsp; &#x2694; 4</div>
+      </div>
+
+      <div class="hit">16<s>KEDJAN BITER</s></div>
+    <div class="narr">Facklan håller. Det gör inte muren.</div>
+  </div>
+
+  <div class="top">
+    <div class="hp">92<em>/100</em></div>
+    <div class="hpline"><i></i></div>
+    <div class="rm">Golv 1 · Rum 4</div>
+    <div class="menu">&#9776;</div>
+  </div>
+
+  <div class="hud">
+    <div class="chain">
+      <div class="sum">4<u>+</u>6<u>×2</u><u>=</u><b>16</b></div>
+      <div class="why">16 slaget − 3 rustning &nbsp;·&nbsp; Tick Pup 26 → 10</div>
+    </div>
+
+    <div class="slots">
+      <div class="slot on"><div class="gl">&#9632;</div><div class="lb">Vanlig</div><div class="vl">4</div></div>
+      <div class="slot fire"><div class="gl">&#9650;</div><div class="lb">Eld</div><div class="vl">6</div></div>
+      <div class="slot mirror"><div class="gl">&#9670;</div><div class="lb">Spegel</div><div class="vl">×2</div></div>
+      <div class="slot empty"><div class="gl">&#9633;</div><div class="lb">Vanlig</div><div class="vl">tom</div></div>
+      <div class="slot anvil empty"><div class="gl">&#11040;</div><div class="lb">Amboss</div><div class="vl">tom</div></div>
+    </div>
+
+    <div class="dice">
+      <div class="die spent"><div class="pips"><i style="grid-area:2/2"></i></div></div>
+      <div class="die spent"><div class="pips"><i style="grid-area:1/1"></i><i style="grid-area:3/3"></i></div></div>
+      <div class="die hot"><div class="pips"><i style="grid-area:1/1"></i><i style="grid-area:1/3"></i><i style="grid-area:2/1"></i><i style="grid-area:2/3"></i><i style="grid-area:3/1"></i><i style="grid-area:3/3"></i></div></div>
+      <div class="die"><div class="pips"><i style="grid-area:1/1"></i><i style="grid-area:1/3"></i><i style="grid-area:3/1"></i><i style="grid-area:3/3"></i></div></div>
+      <div class="die"><div class="pips"><i style="grid-area:1/1"></i><i style="grid-area:2/2"></i><i style="grid-area:3/3"></i></div></div>
+      <div class="die"><div class="pips"><i style="grid-area:1/1"></i><i style="grid-area:1/3"></i><i style="grid-area:2/2"></i><i style="grid-area:3/1"></i><i style="grid-area:3/3"></i></div></div>
+    </div>
+
+    <div class="cta">
+      <div class="ghost">Ångra</div>
+      <div class="go">SLÅ TILL · 16</div>
+    </div>
+  </div>
+
+  <div class="note">Mockup · inga nya assets</div>
+</div>
+<script>
+/* Enda spriten i mockupen ar EXAKT filen fran speltestet:
+   assets/sprites/enemies/iron_tick.png (128x64, 4x2 frames, cell 32x32).
+   Inbaddad som base64 sa att mockupen fungerar utan natverk. */
+document.documentElement.style.setProperty('--tick', "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAABACAYAAADS1n9/AAADQElEQVR42u1cS04kMQxlOUJiM4tZcAa2rGfPAbjA7OYIcwJOwNXYsZxrgIIU5Da243y6X1XxnlRSkU7Xs/McV6oL5+qKIAiCIAiCIAiCIAiCICL8uL55i46j83/b8a8E/56eT467+98nf5/LEDQ/WgCY/5JYk8m2h8c/n0dpW2UImh8tANR/7bBngCSvBtTzGSPQ/GgBoP5H0f7y+t8kq+3aqBEj0PxoAaD+W+QZZ6O2HiPQ/GgBYP7LxYwm7yEbNQDNjxYA6n/poC8iyWcNqPfFrfKjBYD6L8lLR3nMGCBTYmQAmh8tANz/asDb37svBow6aznUGgA0P3oCoPz/MEATl+Pnr9uLCYDmRwcg0v+zGZAiPzA/OgCy/n8xohBrco9MPhJ5aTS7AEPxb0EA9Pibv3OPLHiGycH8WxAAPf6plXEm2peQA/i3JgB6/D9nRWRIRLwiAND86AmA9P/EADkrPFLdd9oAw4aIW/dbyY2eAKjxNwXw3oWvFgDNjxbAuoY3BlG/swgw2m/Ghp7V/GpudACuaJsyxDof7TfzXn5Vv71MAI9rtI3Y6QQgCIIgCIIgCIIgCIIgCIIgCIIgCII4M1o7ZPA16MGF96pmL7lNC3FB0VsbJGTLphkQOxff2yAhu0kCg+AgqV6L2lMyxSDY0eIuu0ECKgDK9anaQvEtATMbJPQGwMx/y5bbixUADIZF4luFDisCoGenjhZkVooCgE8inQHglV1lZ3VP0WSPMDITRf2sat0aGOWcSgcB4JU5Zerjl+1SIeyRM10HgBbT4pJ9rHNmhiAIam18tj6+p0Y+CoD6PW/W9wZgvZbXf/UYotch0/zWT7o9C7te8SWHdMC7/UhBtbBWEMmB0XZR8MGng1YAtKpmvUWaJX7JQFpwmd51u5XuR29D31Zw79bQCoTZWv36mfVCSYoaBaDOCtKOmUHMLEBXZpZN8VsVr62Znqldj57vPe5WAOoMUtusTJOZYdaTg+TV/fTi07pWtP5A87uD4pU9e3XyeoeMTMptCSOvYfFatxUtfLUn63cNSiu4rB+l9Of6e9KOrfO7KTrzCOUJMpuJZuzt/b436NZAewErP98bP0EQBHFovANSlhVP/I2RiQAAAABJRU5ErkJggg==')");
+</script>
+</body>
+</html>
