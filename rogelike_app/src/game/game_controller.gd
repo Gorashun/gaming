@@ -17,10 +17,12 @@ const SCREEN_TITLE: String = "TITLE"
 ## Korridoren (M5). Hela våningen: utforskning, strid i de nedre 55 % och
 ## belöningsvalet på golvet. Ersätter M1:s marsch-remsa.
 const SCREEN_CORRIDOR: String = "CORRIDOR"
-## Den platta stridsskärmen. Används bara av tutorialvåning 0 (källaren under
-## smedjan), där det inte finns någon korridor att stå i.
+## Striden. [b]Aldrig en egen skärm sedan M5.5[/b] – striden monteras alltid som
+## ett barn i korridoren. Konstanten lever kvar som [b]sparfilens fas[/b]: den
+## säger att en återupptagen run ska montera om sin strid på samma ruta.
 const SCREEN_COMBAT: String = "COMBAT"
-## Tutorialens belöningskort. En riktig run visar dem i korridoren i stället.
+## Belöningen. Visas i korridoren; konstanten är fas i sparfilen och reservväg
+## om korridoren av någon anledning inte står framme.
 const SCREEN_REWARD: String = "REWARD"
 const SCREEN_GAMEOVER: String = "GAMEOVER"
 ## Staden Chalkrim som förstapersons torg (M5, CORRIDOR_DESIGN §5).
@@ -53,7 +55,6 @@ signal round_autosaved(round_number: int, chain_damage: int)
 ## Runnen är slut. [param won] är false vid död.
 signal run_over(won: bool, summary: Dictionary)
 
-@onready var _world_root: Node2D = $World/WorldRoot
 @onready var _screen_root: Control = $ChalkUI/UiRoot/ScreenRoot
 @onready var _modal_root: Control = $ChalkUI/UiRoot/ModalRoot
 
@@ -76,8 +77,7 @@ var _screen_name: String = ""
 ## Korridorskärmen medan den står framme. Den lever hela våningen igenom –
 ## striden monteras i den, inte i stället för den.
 var _corridor: CorridorScreen = null
-## Stridsskärmen medan en strid pågår, oavsett om den är monterad i korridoren
-## eller står ensam i tutorialens källare.
+## Stridsskärmen medan en strid pågår. Den är alltid monterad i korridoren.
 var _combat: CombatScreen = null
 ## Våningens korridorkarta. [b]Sparas med runnen[/b] (map_state), så att en
 ## återupptagen run hamnar på samma ruta med samma vinkel.
@@ -102,9 +102,9 @@ var _settings_modal: Control = null
 
 
 func _ready() -> void:
-	# Skärmskaket flyttar BÅDA lagren: pixelvärlden och kritan ska skaka
-	# tillsammans, annars glider fienden ifrån sin HP-bar.
-	Juice.register_shake_layer($World)
+	# M5.5: World-lagret är borta. Korridorens 3D ligger i en SubViewport inuti
+	# krit-UI:t, så ett enda skaklager flyttar hela bilden – fienden kan inte
+	# längre glida ifrån sitt chip, de sitter i samma träd.
 	Juice.register_shake_layer($ChalkUI)
 	meta = SaveIO.load_meta()
 	boot()
@@ -131,14 +131,17 @@ func boot() -> void:
 
 
 # ---------------------------------------------------------------------------
-# Felsökningsstart: --pipwreck-start=town|corridor|sheet
+# Felsökningsstart: --pipwreck-start=town|corridor|sheet|tutorial
 # ---------------------------------------------------------------------------
 
 ## Giltiga mål för [code]--pipwreck-start=[/code].
 const START_TOWN: String = "town"
 const START_CORRIDOR: String = "corridor"
 const START_SHEET: String = "sheet"
-const START_TARGETS: Array[String] = [START_TOWN, START_CORRIDOR, START_SHEET]
+## Källaren under smedjan, rum 0.1. Nollställer [member Meta.tutorial_done] så
+## att Grundstigen går att spela om – det är enda målet som gör det.
+const START_TUTORIAL: String = "tutorial"
+const START_TARGETS: Array[String] = [START_TOWN, START_CORRIDOR, START_SHEET, START_TUTORIAL]
 
 const START_PREFIX: String = "--pipwreck-start="
 
@@ -173,6 +176,10 @@ func _cmdline_start() -> String:
 func _boot_debug_start(target: String) -> void:
 	if Settings.smith_variant == "":
 		Settings.set_value(&"smith_variant", Art.SMITH_VARIANT_DEFAULT)
+	if target == START_TUTORIAL:
+		SaveIO.clear()
+		start_tutorial()
+		return
 	if not meta.tutorial_done:
 		meta.tutorial_done = true
 		meta.reveal = Reveal.all_on()
@@ -380,64 +387,75 @@ func _on_go_down(seed_value: int) -> void:
 
 
 # ---------------------------------------------------------------------------
-# Tutorialvåning 0 (M2.5)
+# Tutorialvåning 0: källaren under smedjan (M5.5, CORRIDOR_DESIGN §5.2)
 # ---------------------------------------------------------------------------
 
 ## Startar Grundstigen. Sju rum, spelas exakt en gång (TOWN_AND_ONBOARDING §B.2).
+##
+## [b]M5.5: källaren är en korridor.[/b] Tutorialen hade en egen platt
+## stridsskärm fram till dess, och en spelare som bytte från våning 0 till
+## våning 1 bytte samtidigt hela spelets utseende. Nu är det en rak korridor med
+## sju kammare, två steg emellan, och exakt samma 45/55-strid, samma chip och
+## samma kvitto som en riktig run. Det enda som skiljer är innehållet: fasta
+## tärningar, tvingade intents, [Reveal]-flaggor per rum och träningshjulen.
 func start_tutorial() -> void:
 	run = RunState.new_run(0)
 	rng = run.make_rng()
+	# Grafen är fortfarande våning 1:s: den rörs inte i källaren, men
+	# [method build_summary] och autosparningen typar mot den.
 	graph = RunGraph.generate_floor(M1_FLOOR, rng)
 	_rooms_cleared = 0
 	_best_chain = 0
 	_taken_ids = []
 	_run_won = false
 	_killed_by = ""
+	_cleared_nodes = {}
+	_sheet_shown_this_run = false
 	run.floor_index = 0
 	_tutorial_room = 0
+	_map = Tutorial.corridor_map()
+	_corridor_state = _map.to_dict()
+	_node_id = String(Tutorial.node_for(0)["id"])
+	run.room_index = 1
 	run.combat = Tutorial.prepare_room(run.combat, 0, rng)
 	Tutorial.apply_reveal(meta.reveal, 0)
 	SaveIO.save_meta(meta)
-	_show_tutorial_room()
+	_show_corridor()
 
 
-func _show_tutorial_room() -> void:
-	var node: Dictionary = Tutorial.node_for(_tutorial_room)
-	_node_id = String(node["id"])
-	run.room_index = int(node["room"])
-	_show(SCREEN_COMBAT, {
-		"state": run.combat,
-		"rng": rng,
-		"node": node,
-		"reveal": meta.reveal,
-		"tutorial_room": _tutorial_room,
-		"best_chain": _best_chain,
-	}, {
-		"round_finished": _on_round_finished,
-		"combat_finished": _on_combat_finished,
-	})
+## Rummet korridoren just klev in i. Kammarens nod-id ÄR rumsindexet
+## (se [method Tutorial.room_index_for]), så kartan behöver inte veta att den
+## är en tutorial och tutorialen behöver inte veta att den är en karta.
+func _enter_tutorial_room(node_id: String) -> void:
+	var index: int = Tutorial.room_index_for(node_id)
+	if index < 0:
+		return
+	_tutorial_room = index
+	_node_id = node_id
+	run.room_index = int(Tutorial.node_for(index)["room"])
+	_refresh_corridor_status()
+	Tutorial.apply_reveal(meta.reveal, index)
+	SaveIO.save_meta(meta)
+	if index > 0:
+		run.combat = Tutorial.prepare_room(run.combat, index, rng)
+	_mount_combat()
 
 
+## Rummet är klart. Belöningen visas på golvet i korridoren, precis som i en
+## riktig run – tutorialens kort är berättande, så valet är alltid ett kort.
 func _advance_tutorial(state: CombatState) -> void:
 	run.combat = Resolver.end_combat(state)
 	_rooms_cleared += 1
+	_cleared_nodes[_node_id] = true
 	var reward: Dictionary = Tutorial.reward_for(_tutorial_room)
-	_tutorial_room += 1
-	if _tutorial_room >= Tutorial.room_count():
-		_finish_tutorial()
+	if _corridor == null or not is_instance_valid(_corridor):
 		return
-	Tutorial.apply_reveal(meta.reveal, _tutorial_room)
-	SaveIO.save_meta(meta)
-	run.combat = Tutorial.prepare_room(run.combat, _tutorial_room, rng)
+	_corridor.unmount_combat()
+	_combat = null
 	if reward.is_empty():
-		_show_tutorial_room()
+		_on_corridor_reward_chosen({}, {})
 		return
-	_show(SCREEN_REWARD, {
-		"state": run.combat,
-		"options": [reward],
-		"node": Tutorial.node_for(_tutorial_room - 1),
-		"breather": false,
-	})
+	_corridor.show_reward(run.combat, [reward], false)
 
 
 func _finish_tutorial() -> void:
@@ -452,6 +470,8 @@ func _finish_tutorial() -> void:
 	meta.pips += Meta.PIPS_WIN
 	SaveIO.save_meta(meta)
 	_tutorial_room = -1
+	_map = null
+	_corridor_state = {}
 	show_town()
 
 
@@ -600,6 +620,7 @@ func _show_corridor() -> void:
 		"boss_door_reached": _on_boss_door_reached,
 		"door_opened": _on_door_opened,
 		"floor_cleared": _on_floor_cleared,
+		"stairs_reached": _on_stairs_reached,
 		"reward_chosen": _on_corridor_reward_chosen,
 		"character_sheet_requested": _on_sheet_requested,
 		"settings_requested": open_settings,
@@ -633,10 +654,19 @@ func _prime_enemies() -> void:
 
 
 func _set_next_enemies(node_id: String) -> bool:
+	var ids: Array = []
+	if _tutorial_room >= 0 or Tutorial.room_index_for(node_id) >= 0:
+		# Källaren har handskrivna rum; grafen vet ingenting om dem.
+		var index: int = Tutorial.room_index_for(node_id)
+		if index < 0:
+			return false
+		for enemy: Enemy in Tutorial.enemies_for(index):
+			ids.append(enemy.id)
+		_corridor.view().set_next_enemies(ids)
+		return true
 	var node: Dictionary = graph.node_at(node_id)
 	if node.is_empty():
 		return false
-	var ids: Array = []
 	for enemy: Enemy in Content.encounter(int(node["room"]), int(node["variant"])):
 		ids.append(enemy.id)
 	_corridor.view().set_next_enemies(ids)
@@ -648,16 +678,27 @@ func _set_next_enemies(node_id: String) -> bool:
 func _on_cell_changed(_cell: Dictionary, map_state: Dictionary) -> void:
 	_corridor_state = map_state
 	_prime_enemies()
-	if can_autosave():
+	# Källaren spelas exakt en gång och har inget "fortsätt" (§B.2), så den
+	# skriver aldrig en sparfil. Det är också det som gör att CONTINUE på
+	# titelskärmen aldrig kan landa mitt i en tutorial.
+	if _tutorial_room < 0 and can_autosave():
 		_autosave(SCREEN_CORRIDOR)
 
 
 func _on_encounter_reached(node_id: String, _enemy_ids: Array) -> void:
-	if node_id == "" or not graph.has_node(node_id):
+	if node_id == "":
+		return
+	if _tutorial_room >= 0:
+		_enter_tutorial_room(node_id)
+		return
+	if not graph.has_node(node_id):
 		return
 	_node_id = node_id
 	var node: Dictionary = graph.node_at(node_id)
 	run.room_index = int(node.get("room", 1))
+	# Krit-raden ska säga rätt rum INNAN striden monteras: annars står numret
+	# kvar på rummet man just lämnade under hela striden.
+	_refresh_corridor_status()
 	# Har rummet inte börjat ännu saknar staten fiender; då drar vi mötet och
 	# första kastet här (all slump före bekräftelse, GAME_DESIGN §6.4).
 	if run.combat.enemies.is_empty() or run.combat.is_won():
@@ -670,13 +711,15 @@ func _mount_combat() -> void:
 	if _corridor == null or not is_instance_valid(_corridor):
 		return
 	_corridor.view().set_steering_enabled(false)
+	var node: Dictionary = Tutorial.node_for(_tutorial_room) if _tutorial_room >= 0 \
+		else graph.node_at(_node_id)
 	_combat = _corridor.mount_combat({
 		"state": run.combat,
 		"rng": rng,
-		"node": graph.node_at(_node_id),
+		"node": node,
 		"graph": graph,
 		"reveal": meta.reveal,
-		"tutorial_room": -1,
+		"tutorial_room": _tutorial_room,
 		"best_chain": _best_chain,
 	}, {
 		"round_finished": _on_round_finished,
@@ -764,6 +807,14 @@ func _on_floor_cleared(floor_index: int) -> void:
 	run.floor_index = maxi(run.floor_index, floor_index)
 
 
+## Trappan upp ur källaren (CORRIDOR_DESIGN §5.2 punkt 4). Spelet börjar i
+## mörker och det första man gör är att gå upp ur det; staden öppnar här.
+func _on_stairs_reached() -> void:
+	if _tutorial_room < 0:
+		return
+	_finish_tutorial()
+
+
 func _refresh_corridor_status() -> void:
 	if _corridor == null or not is_instance_valid(_corridor):
 		return
@@ -772,6 +823,17 @@ func _refresh_corridor_status() -> void:
 
 
 func _on_corridor_reward_chosen(option: Dictionary, target: Dictionary) -> void:
+	# Tutorialens kort är berättande: förändringen ligger i nästa rums data, inte
+	# i ett [RewardApply]-anrop. Källaren autosparas inte heller – den spelas en
+	# gång och har inget "fortsätt" (§B.2).
+	if _tutorial_room >= 0:
+		if _corridor != null and is_instance_valid(_corridor):
+			_corridor.view().clear_encounter()
+			_refresh_corridor_status()
+			_corridor.view().show_explore_split(true)
+			_corridor.view().set_steering_enabled(true)
+			_prime_enemies()
+		return
 	if not option.is_empty():
 		run.combat = RewardApply.apply(run.combat, option, target)
 		_taken_ids.append(String(option.get("id", "")))
@@ -923,7 +985,7 @@ func _install_screen(screen_name: String, ctx: Dictionary, connections: Dictiona
 	_screen.screen_done.connect(_on_screen_done.bind(screen_name))
 	for signal_name: String in connections:
 		_screen.connect(signal_name, connections[signal_name] as Callable)
-	_screen.setup(self, _world_root, ctx)
+	_screen.setup(self, null, ctx)
 	if _corridor != null:
 		# Fienderna i nästa kammare ska stå där innan spelaren tar sitt första
 		# steg – annars är silhuetten i mörkret tom (§3.1 takt 1).
@@ -945,8 +1007,8 @@ func _on_screen_done(payload: Dictionary, from_screen: String) -> void:
 
 
 ## Belöningen [b]i rummet du just vann[/b] (CORRIDOR_DESIGN §3.5): tre kort över
-## korridorbilden, inte en egen skärm. Tutorialen har inget rum att stå i och
-## använder [constant SCREEN_REWARD] direkt i [method _advance_tutorial].
+## korridorbilden, inte en egen skärm. Källaren gör likadant sedan M5.5;
+## [method _advance_tutorial] skickar sitt enda berättande kort samma väg.
 func _show_reward() -> void:
 	var node: Dictionary = graph.node_at(_node_id)
 	# Poolen är startpoolen PLUS det spelaren köpt loss på Skrotmarknaden.
@@ -1085,10 +1147,6 @@ func _finish_combat(won: bool, state: CombatState) -> void:
 ## Tutorialens belöningsskärm. Korridorens tre kort går via
 ## [method _on_corridor_reward_chosen] i stället.
 func _on_reward_chosen(payload: Dictionary) -> void:
-	if _tutorial_room >= 0:
-		# Tutorialens kort är berättande; förändringen ligger i rumsdatan.
-		_show_tutorial_room()
-		return
 	_on_corridor_reward_chosen(
 		payload.get("choice", {}) as Dictionary,
 		payload.get("target", {}) as Dictionary)

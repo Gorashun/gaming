@@ -17,11 +17,6 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.054902, 0.070588, 0.086275, 1)
 
-[node name="World" type="CanvasLayer" parent="."]
-
-[node name="WorldRoot" type="Node2D" parent="World"]
-texture_filter = 1
-
 [node name="ChalkUI" type="CanvasLayer" parent="."]
 layer = 10
 

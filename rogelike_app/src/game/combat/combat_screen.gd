@@ -10,7 +10,8 @@ extends GameScreen
 ## [b]Vad v2 lägger till[/b] är inte en enda regel, bara uträkningen:
 ## [br]• [ReceiptPanel] – meningen, rustningsraden och en rad per skadeinstans.
 ## [br]• [ArcRow] – multiplikatorbågen med sin orsak (`×2 PAIR · BOTH 5`).
-## [br]• [RouteStrip] + prognosfält i HP-staplarna – vart skadan tar vägen.
+## [br]• Leveranssiffran och prognosfältet på fiendens eget chip – vart skadan
+##   tar vägen, ritat där varelsen faktiskt står.
 ## [br]• [SlotView] med regel, räkning och varför; [DieView] med tomma socklar.
 ## [br]• [HelpLayer] – "?" tänder sex callouts samtidigt.
 ##
@@ -26,9 +27,12 @@ extends GameScreen
 signal round_finished(state: CombatState, result: ResolveResult)
 ## Striden är slut. [param won] är false när spelaren dog.
 signal combat_finished(won: bool, state: CombatState)
-## En fiende träffades eller dog. [b]Skärmen ritar ingen varelse själv[/b] – i
-## korridoren står de som billboards i 3D och i källaren som [EnemyActor] i
-## World-lagret. Signalen är kontraktet mot båda.
+## En fiende träffades eller dog. [b]Skärmen ritar ingen varelse själv[/b] –
+## varelserna står som [code]AnimatedSprite3D[/code]-billboards i korridorens
+## [SubViewport]. Signalen är kontraktet mot dem. [b]M5.5:[/b] den gamla platta
+## 2D-sidovyn (parallaxband, golv, hjältefigur, [code]EnemyActor[/code]) är
+## borttagen – det finns exakt EN stridspresentation, och figuren syns bara i
+## character sheetet.
 signal enemy_reaction(index: int, kind: String)
 ## Så här hög måste skärmen vara för att inget ska klippas. [b]Arenan betalar[/b]
 ## (COMBAT_READABILITY §8): i korridoren ÄR arenan korridorbilden, och
@@ -41,8 +45,6 @@ const REACTION_DEATH: String = "death"
 ## Tärningsplaceringar som lämnar slots tomma är tillåtna och ibland korrekta
 ## (GAME_DESIGN §7 fråga 4: Charge-banken kräver det).
 const ALLOW_EMPTY_SLOTS: bool = true
-## Bredden på hjältens kolumn i fiendezonen, i dp.
-const HERO_SLOT_WIDTH: int = 40
 ## "?" pulsar en gång efter spelarens tredje runda i första striden om ingen
 ## kedja ännu bekräftats – därefter aldrig igen (§6).
 const HELP_PULSE_ROUND: int = 3
@@ -52,7 +54,6 @@ const HELP_PULSE_ROUND: int = 3
 @onready var _room_label: Label = $Margin/Column/TopBar/RoomLabel
 @onready var _charge_label: Label = $Margin/Column/TopBar/ChargeLabel
 @onready var _ward_label: Label = $Margin/Column/TopBar/WardLabel
-@onready var _enemy_zone: HBoxContainer = $Margin/Column/EnemyZone
 @onready var _column: VBoxContainer = $Margin/Column
 @onready var _slot_row: HBoxContainer = $Margin/Column/SlotRow
 @onready var _tray: HBoxContainer = $Margin/Column/Tray
@@ -70,8 +71,7 @@ var reveal: Reveal = null
 ## Sant när skärmen är monterad i de nedre 55 % av [CorridorScreen]. Då äger
 ## korridorens HUD HP och rum, och fienderna läses av som chip ovanför sina
 ## billboards i stället för som kort i fiendezonen (COMBAT_READABILITY §8).
-var in_corridor: bool = false
-## Den som bygger fiendeavläsningarna. Null ⇒ [EnemyPanel] i fiendezonen.
+## Den som bygger fiendeavläsningarna ([EnemyChips] i korridoren).
 ## Sätts före [method GameScreen.setup] av [method CorridorScreen.mount_combat].
 var readout_host: Node = null
 
@@ -85,7 +85,6 @@ var _locked_ids: Array = []
 
 ## Tom kolumn längst till vänster i fiendezonen. Där står Smeden i
 ## World-lagret; krit-UI:t reserverar bara platsen (UI_GUIDE §8.1).
-var _hero_slot: Control = null
 var _panels: Array[EnemyReadout] = []
 var _slot_views: Array[SlotView] = []
 var _die_views: Array[DieView] = []
@@ -106,7 +105,6 @@ var _edge: Panel = null
 
 var _receipt_panel: ReceiptPanel = null
 var _arc_row: ArcRow = null
-var _route_strip: RouteStrip = null
 var _help_layer: HelpLayer = null
 var _help_button: Button = null
 var _help_pulsed: bool = false
@@ -128,7 +126,6 @@ func enter(ctx: Dictionary) -> void:
 	if reveal == null:
 		reveal = Reveal.all_on()
 	_tutorial_room = int(ctx.get("tutorial_room", -1))
-	in_corridor = bool(ctx.get("in_corridor", false))
 	_style()
 	_undo_button.pressed.connect(undo)
 	_reroll_button.pressed.connect(reroll)
@@ -151,7 +148,6 @@ func _style() -> void:
 	# 2 dp och inte 4: nio rader × 2 dp är 18 dp av kolumnen, och kvittot är
 	# viktigare än luften mellan raderna (§8).
 	_column.add_theme_constant_override("separation", Tokens.dpi(2))
-	_enemy_zone.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 	_slot_row.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 	_tray.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
 	$Margin/Column/Actions.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
@@ -196,7 +192,6 @@ func _style() -> void:
 
 	_build_receipt()
 	_build_arc_row()
-	_build_route_strip()
 	_build_help()
 
 	for button: Button in [_undo_button, _reroll_button, _confirm_button]:
@@ -233,31 +228,21 @@ func _style() -> void:
 	_apply_corridor_mode()
 
 
-## I korridoren äger [CorridorHud] HP, rum och Pips – de står redan högst upp
-## över korridorbilden (se design/screenshots/corridor_combat_390x844.png). Att
-## rita dem en gång till i stridens toppfält vore två sanningskällor för samma
-## siffra, och det är dessutom 44 dp av höjdbudgeten som §8 hellre ger kvittot.
-## Laddning, Ward, "?" och ⚙ står kvar: de finns ingen annanstans.
+## [b]Korridoren är enda stridspresentationen[/b] (M5.5). [CorridorHud] äger HP,
+## rum och Pips – de står redan högst upp över korridorbilden. Att rita dem en
+## gång till i stridens toppfält vore två sanningskällor för samma siffra, och
+## det är dessutom 44 dp av höjdbudgeten som §8 hellre ger kvittot. Laddning,
+## Ward, "?" och ⚙ står kvar: de finns ingen annanstans.
 func _apply_corridor_mode() -> void:
-	if not in_corridor:
-		return
 	_hp_label.visible = false
 	_hp_bar.visible = false
 	_room_label.visible = false
-	_enemy_zone.visible = false
-	# Fiendezonen expanderar vertikalt; en osynlig container gör det fortfarande.
-	_enemy_zone.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	_enemy_zone.custom_minimum_size = Vector2.ZERO
 	# "?" och ⚙ flyttar upp i korridorens krit-rad. Knapparna är 48 dp höga och
 	# sätter därmed hela toppfältets höjd; utan dem är raden två pillertexter.
 	_help_button.visible = false
 	var pause: Button = $Margin/Column/TopBar.get_node_or_null(^"PauseButton") as Button
 	if pause != null:
 		pause.visible = false
-	# Leveransremsan blir överflödig när fienderna står i bild: siffran "↑ 28 ·
-	# DIES" ritas på fiendens eget chip i stället, där varelsen faktiskt är
-	# (COMBAT_READABILITY §8 – arenan betalar, och här ÄR arenan bilden).
-	_route_strip.visible = false
 	# Brickans rubrikrad kostar 14 dp för ordet "THE TRAY". Laddningstipset
 	# ("1 left = +4 charge") är det enda av de två som lär ut något, och det
 	# flyttar upp till pillerraden. Rubriken har brickan rakt under sig.
@@ -285,13 +270,6 @@ func _build_arc_row() -> void:
 	_arc_row.name = "ArcRow"
 	_column.add_child(_arc_row)
 	_column.move_child(_arc_row, _slot_row.get_index())
-
-
-func _build_route_strip() -> void:
-	_route_strip = RouteStrip.new()
-	_route_strip.name = "RouteStrip"
-	_column.add_child(_route_strip)
-	_column.move_child(_route_strip, _receipt_panel.get_index())
 
 
 func _build_help() -> void:
@@ -347,15 +325,6 @@ func _build_room() -> void:
 	_panels.clear()
 	if readout_host != null and is_instance_valid(readout_host):
 		readout_host.call("reset_readouts")
-	if _hero_slot != null:
-		_hero_slot.queue_free()
-	_hero_slot = Control.new()
-	_hero_slot.name = "HeroSlot"
-	_hero_slot.custom_minimum_size = Vector2(Tokens.dp(HERO_SLOT_WIDTH), 0.0)
-	_hero_slot.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	_hero_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_enemy_zone.add_child(_hero_slot)
-
 	_ordinals = ChainReceipt.ordinals(state.enemies)
 	_enemy_names = PackedStringArray()
 	var facts: Dictionary = _reveal_facts()
@@ -368,9 +337,6 @@ func _build_room() -> void:
 		panel.bind(enemy, _ordinals[i])
 		panel.tapped.connect(_on_enemy_tapped)
 		_panels.append(panel)
-	_route_strip.build(state.enemies.size(), Tokens.dp(HERO_SLOT_WIDTH))
-	_route_strip.visible = reveal.shows("overflow", facts) and not in_corridor
-
 	for slot_view: SlotView in _slot_views:
 		slot_view.queue_free()
 	_slot_views.clear()
@@ -393,22 +359,16 @@ func _build_room() -> void:
 		die_view.tapped.connect(_on_die_tapped)
 		_die_views.append(die_view)
 
-	if world != null:
-		world.call("build", state.enemies, Tokens.dp(34))
-	# Positionerna kan först läsas när containrarna har gjort sin layout.
-	call_deferred("_sync_world")
 	call_deferred("_sync_arcs")
 
 
-## En avläsning per fiende: chip i korridoren, panel i fiendezonen.
+## En avläsning per fiende. Det finns bara en sort kvar: chipet i korridoren,
+## ankrat på varelsens egen billboard i 3D (M5.5).
 func _make_readout(index: int) -> EnemyReadout:
-	if readout_host != null and is_instance_valid(readout_host):
-		var made: EnemyReadout = readout_host.call("make_readout", index) as EnemyReadout
-		if made != null:
-			return made
-	var panel: EnemyPanel = EnemyPanel.new()
-	_enemy_zone.add_child(panel)
-	return panel
+	if readout_host == null or not is_instance_valid(readout_host):
+		push_error("CombatScreen: ingen readout_host – striden monteras alltid i korridoren")
+		return null
+	return readout_host.call("make_readout", index) as EnemyReadout
 
 
 ## Ett tapp på en fiende (eller på dess chip i korridoren) svarar med hela
@@ -419,22 +379,6 @@ func _on_enemy_tapped(index: int) -> void:
 		return
 	var ordinal: int = _ordinals[index] if index < _ordinals.size() else 0
 	_show_popover(_panels[index], EnemyReadout.detail_text(state.enemies[index], ordinal))
-
-
-func _sync_world() -> void:
-	if world == null:
-		return
-	await get_tree().process_frame
-	if world == null or not is_instance_valid(world):
-		return
-	var floor_y: float = _enemy_zone.get_global_rect().end.y
-	if not _panels.is_empty():
-		floor_y = _panels[0].art_bottom()
-	world.call("set_band", _enemy_zone.get_global_rect(), floor_y, state.relics)
-	if _hero_slot != null and _hero_slot.is_inside_tree():
-		world.call("place_hero", _hero_slot.get_global_rect().get_center())
-	for i: int in range(_panels.size()):
-		world.call("place", i, _panels[i].enemy_id, _panels[i].anchor_point())
 
 
 ## Bågarna behöver slotarnas x-intervall, som finns först efter layouten.
@@ -574,12 +518,11 @@ func _refresh_preview() -> void:
 		"ROUND %d · THE CHAIN BEFORE YOU CONFIRM") % state.round_number)
 	_receipt_panel.show_receipt(_receipt, _enemy_names, show_armor)
 
-	if _route_strip.visible:
-		_route_strip.show_routes(_receipt["routes"] as Array)
-	elif in_corridor:
-		var chip_routes: Array = _receipt["routes"] as Array
-		for i: int in range(mini(_panels.size(), chip_routes.size())):
-			_panels[i].show_route(chip_routes[i] as Dictionary)
+	# "↑ 28 · DIES" ritas på fiendens eget chip, där varelsen faktiskt är
+	# (COMBAT_READABILITY §8 – arenan betalar, och här ÄR arenan bilden).
+	var chip_routes: Array = _receipt["routes"] as Array
+	for i: int in range(mini(_panels.size(), chip_routes.size())):
+		_panels[i].show_route(chip_routes[i] as Dictionary)
 	# Prognosfältet i HP-stapeln: den enda "vem dör"-signalen som fungerar utan
 	# färgseende (§2.2 punkt 2).
 	var routes: Array = _receipt["routes"] as Array
@@ -686,10 +629,9 @@ func pointer_anchors() -> Dictionary:
 	var anchors: Dictionary = {
 		"charge": _charge_label,
 		"receipt": _receipt_panel,
-		"enemies": _enemy_zone,
+		"enemies": _panels[0] if not _panels.is_empty() else _receipt_panel,
 		"board": _slot_row,
 		"arcs": _arc_row,
-		"routes": _route_strip,
 		"tray": _tray,
 		"confirm": _confirm_button,
 	}
@@ -1115,7 +1057,6 @@ func _on_event(event: Dictionary, duration: float) -> void:
 			var die_index: int = _placement[slot] if slot < _placement.size() else -1
 			if die_index >= 0 and die_index < _die_views.size():
 				_die_views[die_index].pulse_art(maxf(0.08, duration))
-			_swing_hero()
 			_chain_step += 1
 		"combo_formed":
 			var multiplier: int = int(event.get("multiplier", 1))
@@ -1134,10 +1075,6 @@ func _on_event(event: Dictionary, duration: float) -> void:
 			if killed >= 0:
 				_panels[killed].flash_death()
 				enemy_reaction.emit(killed, REACTION_DEATH)
-				if world != null:
-					var actor: EnemyActor = world.call("actor_at", killed, String(event.get("target", ""))) as EnemyActor
-					if actor != null:
-						actor.death_reaction()
 		"ward_gained":
 			_pop(_ward_label, "+%d" % int(event.get("amount", 0)), Tokens.SEM_SHIELD, Tokens.TYPE_TITLE)
 		"charge_stored":
@@ -1152,7 +1089,6 @@ func _on_event(event: Dictionary, duration: float) -> void:
 				_pop(_hp_label, "-%d" % damage, Tokens.SEM_BLOOD, Tokens.TYPE_DISPLAY_L)
 				_edge_flash(Tokens.SEM_BLOOD)
 				Juice.shake_node(_hp_bar, 4.0, 0.18)
-				_stagger_hero()
 		"heal":
 			_pop(_hp_label, "+%d" % int(event.get("amount", 0)), Tokens.SEM_HEAL, Tokens.TYPE_TITLE)
 		"die_cracked":
@@ -1208,24 +1144,6 @@ func _check_record() -> void:
 	Juice.haptic(Haptics.Level.HEAVY)
 
 
-func _swing_hero() -> void:
-	var figure: HeroFigure = _hero()
-	if figure != null:
-		figure.strike()
-
-
-func _stagger_hero() -> void:
-	var figure: HeroFigure = _hero()
-	if figure != null:
-		figure.stagger()
-
-
-func _hero() -> HeroFigure:
-	if world == null or not is_instance_valid(world):
-		return null
-	return world.get("hero") as HeroFigure
-
-
 ## ARMOR-poppen behålls, men den kommer nu EFTER att räknestycket redan visat
 ## samma avdrag: poppen blir en bekräftelse, inte en nyhet (§5).
 func _on_damage(event: Dictionary) -> void:
@@ -1249,10 +1167,6 @@ func _on_damage(event: Dictionary) -> void:
 		elif overflow > 0:
 			color = Tokens.SEM_OVERFLOW
 		_pop(_panels[index], text, color, font_size)
-		if world != null:
-			var actor: EnemyActor = world.call("actor_at", index, target_id) as EnemyActor
-			if actor != null:
-				actor.hit_reaction()
 	if overflow > 0:
 		_overflow_arrow(index, overflow)
 
@@ -1297,10 +1211,6 @@ func _apply_view_to_panels() -> void:
 			int(enemy.get("burn", 0)),
 			int(enemy.get("poison", 0)),
 		)
-		if world != null and int(enemy.get("hp", 0)) <= 0:
-			var actor: EnemyActor = world.call("actor_at", i, String(enemy.get("id", ""))) as EnemyActor
-			if actor != null:
-				actor.set_alive(false)
 	_hp_label.text = "◖ %d/%d" % [int(_view.get("player_hp", 0)), state.player_max_hp]
 	_hp_bar.value = clampi(int(_view.get("player_hp", 0)), 0, state.player_max_hp)
 	_charge_label.text = "%s %s" % [

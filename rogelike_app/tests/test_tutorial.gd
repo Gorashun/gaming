@@ -227,3 +227,72 @@ func test_the_node_looks_like_a_run_graph_node() -> void:
 		assert_int(int(node["floor"])).is_equal(0)
 		assert_int(int(node["room"])).is_equal(index + 1)
 		assert_bool(RunFlow.is_boss(node)).is_equal(index == Tutorial.room_count() - 1)
+
+
+# ---------------------------------------------------------------------------
+# Källaren under smedjan (M5.5, CORRIDOR_DESIGN §5.2)
+# ---------------------------------------------------------------------------
+
+func test_the_basement_is_seven_chambers_on_a_straight_line() -> void:
+	var map: CorridorMap = Tutorial.corridor_map()
+	assert_int(map.floor_index).is_equal(0)
+	var chambers: Array[String] = []
+	for key: String in map.tiles():
+		var cell: Dictionary = map.cell_at(CorridorMap.key_to_vec(key))
+		if String(cell.get("kind", "")) == CorridorMap.KIND_CHAMBER:
+			chambers.append(String(cell["node_id"]))
+	assert_int(chambers.size()).is_equal(Tutorial.room_count())
+	for i: int in range(Tutorial.room_count()):
+		assert_str(chambers[i]).is_equal(String(Tutorial.node_for(i)["id"]))
+		assert_int(Tutorial.room_index_for(chambers[i])).is_equal(i)
+	# §5.2 punkt 2: exakt två steg mellan rummen, och korridoren är helt rak.
+	for key: String in map.tiles():
+		var at: Vector2i = CorridorMap.key_to_vec(key)
+		assert_int(at.x).override_failure_message(
+			"källaren svänger vid %s" % key).is_equal(0)
+
+
+func test_the_basement_ends_in_a_stairway_up_behind_the_boss() -> void:
+	var map: CorridorMap = Tutorial.corridor_map()
+	var boss: Dictionary = map.boss_cell()
+	assert_str(String(boss.get("node_id", ""))).is_equal(
+		String(Tutorial.node_for(Tutorial.room_count() - 1)["id"]))
+	var last_key: String = map.tiles()[map.tiles().size() - 1]
+	var last: Dictionary = map.cell_at(CorridorMap.key_to_vec(last_key))
+	assert_str(String(last.get("kind", ""))).is_equal(CorridorMap.KIND_STAIRS)
+	assert_str(String(last.get("sign", ""))).is_equal(CorridorMap.SIGN_STAIRS)
+
+
+func test_walking_the_basement_meets_every_room_in_order_then_the_stairs() -> void:
+	# Att gå rakt fram hela vägen ÄR tutorialen: varje FRAM leder till nästa
+	# lektion, och den sista leder upp ur gropen (§5.2 punkt 4).
+	var map: CorridorMap = Tutorial.corridor_map()
+	var met: Array[String] = []
+	var stairs: int = 0
+	for _step: int in range(64):
+		if not map.apply(CorridorMap.ACTION_FORWARD):
+			break
+		for event: Dictionary in map.events_since_last():
+			match String(event["type"]):
+				CorridorMap.EVENT_ENCOUNTER_REACHED:
+					met.append(String(event["node_id"]))
+				CorridorMap.EVENT_STAIRS_UP:
+					stairs += 1
+	assert_int(met.size()).is_equal(Tutorial.room_count())
+	for i: int in range(met.size()):
+		assert_str(met[i]).is_equal(String(Tutorial.node_for(i)["id"]))
+	assert_int(stairs).is_equal(1)
+
+
+func test_every_room_points_at_an_anchor_the_combat_screen_still_has() -> void:
+	# Kritpilen får aldrig peka på ett element som togs bort med den platta
+	# skärmen (M5.5). Listan speglar CombatScreen.pointer_anchors().
+	var known: Array[String] = ["charge", "receipt", "enemies", "board", "arcs",
+		"tray", "confirm"]
+	for index: int in range(Tutorial.room_count()):
+		var target: String = String(Tutorial.tip_for(index)["point_at"])
+		if target.begins_with("slot_"):
+			continue
+		assert_bool(known.has(target)).override_failure_message(
+			"rum %s pekar på '%s' som inte finns" % [
+				String(Tutorial.room(index)["id"]), target]).is_true()

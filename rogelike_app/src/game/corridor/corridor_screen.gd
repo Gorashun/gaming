@@ -22,6 +22,8 @@ signal treasure_found(treasure: Dictionary)
 signal boss_door_reached()
 signal fate_door_reached()
 signal floor_cleared(floor_index: int)
+## Trappan upp ur tutorialkällaren.
+signal stairs_reached()
 signal character_sheet_requested()
 signal settings_requested()
 
@@ -68,6 +70,7 @@ func enter(ctx: Dictionary) -> void:
 	_view.boss_door_reached.connect(func() -> void: boss_door_reached.emit())
 	_view.fate_door_reached.connect(func() -> void: fate_door_reached.emit())
 	_view.floor_cleared.connect(func(floor_index: int) -> void: floor_cleared.emit(floor_index))
+	_view.stairs_reached.connect(func() -> void: stairs_reached.emit())
 	_view.character_sheet_requested.connect(func() -> void: character_sheet_requested.emit())
 	_view.settings_requested.connect(func() -> void: settings_requested.emit())
 	_view.help_requested.connect(_on_help_requested)
@@ -150,11 +153,9 @@ func mount_combat(ctx: Dictionary, connections: Dictionary) -> CombatScreen:
 	_combat_host.visible = true
 	_combat_host.add_child(_combat)
 	_combat.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var full: Dictionary = ctx.duplicate()
-	full["in_corridor"] = true
-	# World-lagret är TOMT med flit: figuren syns aldrig i korridoren (§4), och
-	# fienderna är billboards i 3D, inte EnemyActor-sprajtar i 2D.
-	_combat.setup(controller, null, full)
+	# World-lagret är TOMT med flit: figuren syns aldrig i korridoren (§4) utan
+	# bara i character sheetet, och fienderna är billboards i 3D.
+	_combat.setup(controller, null, ctx.duplicate())
 	_view.set_help_visible(true)
 	_view.show_combat_split(true)
 	return _combat

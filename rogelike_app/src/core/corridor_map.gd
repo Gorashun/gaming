@@ -53,6 +53,9 @@ const KIND_ALCOVE: String = "alcove"
 ## Ödeskastets dörr (§2.2). Innehållet ligger i M3; kartan känner bara dörren.
 const KIND_FATE_DOOR: String = "fate_door"
 const KIND_BOSS_DOOR: String = "boss_door"
+## Trappan upp. Används av tutorialkällaren (CORRIDOR_DESIGN §5.2 punkt 4): att
+## kliva på den ÄR att gå upp ur gropen och ut på torget.
+const KIND_STAIRS: String = "stairs"
 
 # --- Skyltnycklar (CORRIDOR_DESIGN §2.3) -----------------------------------
 const SIGN_FIGHT: String = "fight"
@@ -62,10 +65,11 @@ const SIGN_MARKET: String = "market"
 const SIGN_FATE: String = "fate"
 const SIGN_UNKNOWN: String = "unknown"
 const SIGN_BOSS: String = "boss"
+const SIGN_STAIRS: String = "stairs"
 ## Alla nycklar en skylt får ha. Skylten ljuger aldrig (§2.3 regel 2); att stå
 ## på [constant SIGN_UNKNOWN] är att inte ha visat, inte att få byta åsikt.
 const SIGN_KEYS: Array[String] = [SIGN_FIGHT, SIGN_ELITE, SIGN_REST, SIGN_MARKET,
-	SIGN_FATE, SIGN_UNKNOWN, SIGN_BOSS]
+	SIGN_FATE, SIGN_UNKNOWN, SIGN_BOSS, SIGN_STAIRS]
 
 # --- Händelser -------------------------------------------------------------
 const EVENT_CELL_ENTERED: String = "cell_entered"
@@ -83,6 +87,8 @@ const EVENT_FATE_DOOR: String = "fate_door"
 const EVENT_SILENT_STRETCH: String = "silent_stretch"
 const EVENT_BLOCKED: String = "blocked"
 const EVENT_FLOOR_CLEARED: String = "floor_cleared"
+## Spelaren klev på trappan upp. Källaren är slut (CORRIDOR_DESIGN §5.2).
+const EVENT_STAIRS_UP: String = "stairs_up"
 
 # --- Kantlängder (§2.2, seedat inom research 05:s 2–4 steg) ----------------
 ## [b]Stegbudgeten styr intervallen[/b], inte tvärtom. En våning kostar
@@ -286,6 +292,47 @@ static func build(graph: RunGraph, rng: Rng, p_allow_fate: bool = false) -> Corr
 	map._place_trap(trap_candidates, trap_roll)
 	map._trail = [map._key(Vector2i.ZERO)]
 	map._push({"type": EVENT_CELL_ENTERED, "cell": map._key(Vector2i.ZERO), "kind": KIND_START})
+	map._face_the_only_way_on()
+	map._look_ahead()
+	return map
+
+
+## En rak våning med kammare på rad och en trappa upp i slutet.
+##
+## [b]Ingen graf, ingen seed, ingen regel[/b] – precis som [method town_square].
+## Tutorialkällaren (CORRIDOR_DESIGN §5.2) är den enda som använder den, och
+## §5.2 punkt 2 är normativ: "korridoren mellan dem är två steg lång och helt
+## rak – det är den enda platsen i spelet där korridoren får vara mager,
+## eftersom allt uppmärksamhetsutrymme går till brädet".
+##
+## [param node_ids] är en kammare var, i ordning. Den sista är bossen. Efter
+## den ligger en [constant KIND_STAIRS] ett steg bort, och att kliva på den
+## emitterar [constant EVENT_STAIRS_UP].
+static func straight_floor(p_floor_index: int, node_ids: Array[String], steps_between: int = 2) -> CorridorMap:
+	var map: CorridorMap = CorridorMap.new()
+	map.floor_index = p_floor_index
+	var p: Vector2i = Vector2i.ZERO
+	var start_cell: Dictionary = map._ensure(p, KIND_START)
+	start_cell["visited"] = true
+	for i: int in range(node_ids.size()):
+		p = map._carve(p, FACING_NORTH, maxi(steps_between, 1))
+		var chamber: Dictionary = map._cell(p)
+		chamber["kind"] = KIND_CHAMBER
+		chamber["node_id"] = node_ids[i]
+		chamber["encounter"] = true
+		chamber["boss"] = i == node_ids.size() - 1
+		chamber["torch"] = true
+	# Trappan är en egen ruta med en fackla: ljuset stiger, och FRAM pekar på
+	# den redan när bossrummet är rensat (§5.2 punkt 4).
+	p = map._carve(p, FACING_NORTH, 1)
+	var stairs: Dictionary = map._cell(p)
+	stairs["kind"] = KIND_STAIRS
+	stairs["sign"] = SIGN_STAIRS
+	stairs["torch"] = true
+	map.position = Vector2i.ZERO
+	map.facing = FACING_NORTH
+	map._trail = [_key(Vector2i.ZERO)]
+	map._push({"type": EVENT_CELL_ENTERED, "cell": _key(Vector2i.ZERO), "kind": KIND_START})
 	map._face_the_only_way_on()
 	map._look_ahead()
 	return map
@@ -656,6 +703,8 @@ func _first_notable(from: Vector2i, dir: int) -> Dictionary:
 			return {"distance": step, "kind": kind, "sign_key": ""}
 		if kind == KIND_BOSS_DOOR:
 			return {"distance": step, "kind": kind, "sign_key": SIGN_BOSS}
+		if kind == KIND_STAIRS:
+			return {"distance": step, "kind": kind, "sign_key": SIGN_STAIRS}
 		if kind == KIND_FATE_DOOR:
 			return {"distance": step, "kind": kind, "sign_key": SIGN_FATE}
 		if kind == KIND_ALCOVE:
@@ -734,6 +783,8 @@ func _enter_cell(cell: Dictionary) -> void:
 			_push({"type": EVENT_REACHED_JUNCTION, "signs": (cell.get("signs", {}) as Dictionary).duplicate()})
 		KIND_BOSS_DOOR:
 			_push({"type": EVENT_BOSS_DOOR, "cell": String(cell["key"])})
+		KIND_STAIRS:
+			_push({"type": EVENT_STAIRS_UP, "cell": String(cell["key"])})
 		KIND_FATE_DOOR:
 			_push({"type": EVENT_FATE_DOOR, "cell": String(cell["key"])})
 			_turn_around()

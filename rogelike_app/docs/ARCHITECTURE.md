@@ -95,33 +95,34 @@ Muteras en sida måste den först hämtas med `Die.mutable_face(index)`.
 ```
 Main (Node, game_controller.gd)
 ├── Backdrop   CanvasLayer  layer = -10   skifferfärgad ColorRect
-├── World      CanvasLayer  layer = 0
-│   └── WorldRoot (Node2D, texture_filter = Nearest)
-│       └── <skärmens world_scene>   pixelsprites, parallax, paperdoll
 └── ChalkUI    CanvasLayer  layer = 10
     └── UiRoot (Control, texture_filter = Linear)
-        └── ScreenRoot
-            └── <en GameScreen åt gången>
+        ├── ScreenRoot   <en GameScreen åt gången>
+        └── ModalRoot    inställningar + character sheet
 ```
 
-Uppdelningen kommer från `research/04_pixelgrafik_pipeline.md §5`: pixelsprites
-ska renderas `Nearest` i heltalsskala, krit-UI `Linear` så att kurvor och fonter
-förblir mjuka. **Bakgrunden ligger under `World`**, annars döljer den hela
-pixellagret — det var den första buggen rökprovet hittade.
+> **M5.5 tog bort `World`-lagret.** Det bar M1:s platta 2D-sidovy för striden –
+> parallaxband, golvkakel, hjältefiguren och en `EnemyActor` per fiende. Sedan
+> korridoren blev spelet fanns två presentationer av samma strid, och
+> tutorialvåning 0 var den enda som använde den gamla. Nu finns exakt EN:
+> varelserna är `AnimatedSprite3D`-billboards i korridorens `SubViewport`, och
+> figuren syns bara i character sheetet. `GameScreen.world_scene`, `world`,
+> `world_anchor()` och `Art.PARALLAX` / `Art.FLOOR_TILE` är borta med den.
+>
+> Pixelreglerna ur `research/04_pixelgrafik_pipeline.md §5` gäller oförändrat
+> och ägs av `Art`: `Nearest` i heltalsskala för sprajtar, `Linear` för krit-UI.
+> Krit-UI:t står på Linear och ärver nedåt, så varje pixelsprite inuti det
+> sätter `Nearest` själv via `Art.pixel_sprite()`.
 
-Båda lagren delar samma 1080×1920-koordinatrymd. En sprite placeras därför
-bakom sin kritpanel med `GameScreen.world_anchor(panel)`; ingen av dem behöver
-känna till den andras layout.
-
-| Skärm | Scen | World-innehåll |
+| Skärm | Scen | Anmärkning |
 |---|---|---|
 | Titel | `src/game/title/title_screen.tscn` | – |
-| Korridor | `src/game/corridor/corridor_screen.tscn` | – (3D i en egen `SubViewport`, se M5) |
-| Strid | `src/game/combat/combat_screen.tscn` | `combat_world.tscn`: parallaxband, golv, Smeden, en `EnemyActor` per fiende |
-| Belöning | `src/game/reward/reward_screen.tscn` | – (bara tutorialen; en run visar belöningen i korridoren) |
+| Korridor | `src/game/corridor/corridor_screen.tscn` | 3D i en egen `SubViewport`. **Hela runnen, och sedan M5.5 även tutorialkällaren.** |
+| Strid | `src/game/combat/combat_screen.tscn` | Monteras **alltid** som barn i korridoren, aldrig som egen skärm |
+| Belöning | `src/game/reward/reward_screen.tscn` | Reservväg; belöningen visas normalt i korridoren |
 | Död/vinst | `src/game/gameover/gameover_screen.tscn` | – |
 | Kroppsval | `src/game/smith/choose_smith_screen.tscn` | – |
-| Staden | `src/game/town/town_screen.tscn` | – (förstapersons torg, se M5) |
+| Staden | `src/game/town/town_screen.tscn` | förstapersons torg, se M5 |
 
 `ChalkUI/UiRoot/ModalRoot` bär **två** modaler: inställningarna och character
 sheetet (`src/game/sheet/character_sheet.tscn`). Båda är modaler och inte
@@ -162,21 +163,16 @@ i `assets/sprites/README.md` när CC0-paketen går att hämta) ändras en rad d�
 
 | Nod | Lager | Innehåll |
 |---|---|---|
-| `EnemyActor.sprite` | World | `AnimatedSprite2D`, 4 idle-frames + 3 death-frames (ark 4×2), boss 48×48 övriga 32×32, ×4 |
-| `CombatWorld` → `Backdrop` | World | två parallaxremsor + golvkakel bakom fienderna |
-| `HeroFigure` | World | paperdoll, nio `Sprite2D`-lager, 48×48-celler, 8×4 frames |
-| `MarchWorld` | World | tre parallaxlager (0,15 / 0,45 / 1,20) + golv (1,00) + figur |
+| Korridorens `Encounter` | SubViewport (3D) | `AnimatedSprite3D`-billboard per fiende, 4 idle + 3 death (ark 4×2), boss 48×48 övriga 32×32 |
+| `HeroFigure` | ChalkUI (character sheet) | paperdoll, nio `Sprite2D`-lager, 48×48-celler, 8×4 frames. **Enda stället figuren syns** |
 | `DieView.art_root()` → `DieArt` | ChalkUI | kropp + pips/glyph + glaskant + spricka |
 | `SlotView.art_root()` + `DieArt` | ChalkUI | slot-ikon och den placerade tärningen |
 | `RewardCard.art_root()` | ChalkUI | relikikon, slot-ikon eller komponerad sida |
-| `MarchScreen` förgreningsknapp | ChalkUI | nodikon (`ui/node_*.png`, 16 px × 4) |
 
-`EnemyPanel` → `ArtSlot` är fortfarande ett **genomskinligt hål**: panelen är
-krit-UI, sprajten ligger i World bakom den. `ArtSlot`:s underkant är dessutom
-**golvlinjen** – `EnemyPanel.art_bottom()` skickas till `CombatWorld.set_band()`
-så att en 48 px-boss och en 32 px-råtta står på samma mark. Smeden får en egen
-tom kolumn längst till vänster i fiendezonen (`HeroSlot`), så att krit-UI:t
-reserverar plats åt en figur som ritas i ett annat lager.
+`EnemyChip` hänger i `CorridorScreen/Chips` och ankras med
+`Camera3D.unproject_position()` på varelsens egen billboard: siffran står
+ovanför det den beskriver, i ett annat lager, utan att någon av dem känner den
+andras layout.
 
 ### Tärningen är komponerad, inte målad
 
@@ -333,6 +329,36 @@ inte seedberoende.
 vanlig strid, men `CombatScreen` återupplivar på 1 HP i stället för att avsluta
 runnen (§B.2: man kan inte dö där uppe, och vi säger det rakt ut).
 
+#### M5.5: källaren är en korridor
+
+`CORRIDOR_DESIGN §5.2` flyttade våning 0 under jord, och koden följde efter.
+Tutorialen hade fram till dess en **egen platt stridsskärm**, så en spelare som
+gick från våning 0 till våning 1 bytte samtidigt hela spelets utseende – och
+det var den skärmen Anders fick i webbversionen och kallade "sidescroll".
+
+`Tutorial.corridor_map()` bygger våningen med `CorridorMap.straight_floor()`:
+sju kammare på rad, **två steg emellan** (§5.2 punkt 2 är normativ) och en
+`KIND_STAIRS`-ruta bakom bossen. Att kliva på den emitterar `EVENT_STAIRS_UP`,
+vilket är `_finish_tutorial()` → torget: *"spelet börjar i mörker och första
+saken du gör är att gå upp ur det"* (§5.2 punkt 4).
+
+Kopplingen mellan de två världarna är **kammarens `node_id`**: kartan bär
+`"f0r3"`, `Tutorial.room_index_for()` översätter till rumsindex 2. Kartan
+behöver alltså inte veta att den är en tutorial, och tutorialen inte att den är
+en karta. Allt annat är oförändrat: fasta tärningar, tvingade intents,
+`Reveal`-flaggor per rum, kvittot, chipen och träningshjulen.
+
+Tre skillnader mot en riktig run, alla avsiktliga:
+
+1. **Ingen autosave.** Källaren spelas exakt en gång och har inget "fortsätt"
+   (§B.2), så `_on_cell_changed` och `_on_round_finished` hoppar över den. Det
+   är också det som gör att CONTINUE aldrig kan landa mitt i en tutorial.
+2. **Belöningen appliceras inte.** Tutorialens kort är berättande; förändringen
+   ligger i nästa rums data. Kortet visas ändå på golvet i korridoren, samma väg
+   som en riktig belöning.
+3. **Rökprovets korridorbudget räknar inte källaren.** `CORRIDOR_DESIGN §8.1`
+   mäter våning 1; annars mäter siffran två olika saker.
+
 ### Två sparfiler, med flit
 
 | Fil | Innehåll | Rensas av |
@@ -409,18 +435,18 @@ korridoren** (§4) och fienderna är billboards i 3D, inte `EnemyActor` i 2D.
 Bakåtknappen och rökprovet frågar `controller.current_combat()` i stället för
 att casta `current_screen()`.
 
-### En fiende, två avläsningar
+### En fiende, en avläsning
 
-`EnemyReadout` (`src/game/combat/enemy_readout.gd`) är basen. `EnemyPanel` är
-kortet i fiendezonen (tutorialens källare); `EnemyChip` är chipet ovanför
-billboarden (korridoren). Basen äger det som aldrig får formuleras två gånger:
-visningsnamnet, intent-texten och prognosfältet. `CombatScreen` binder, blixtrar
-och uppdaterar dem genom exakt samma anrop och vet inte vilken sort den har –
-`readout_host` byggs in utifrån.
+`EnemyReadout` (`src/game/combat/enemy_readout.gd`) är basen och `EnemyChip`
+är sedan M5.5 dess enda implementation: chipet ovanför billboarden. Basen står
+kvar för att den äger det som aldrig får formuleras två gånger – visningsnamnet,
+intent-texten och prognosfältet – och för att den är kontraktet `CombatScreen`
+talar med. Skärmen bygger aldrig en avläsning själv; `readout_host` byggs in
+utifrån och är alltid `CorridorScreen/Chips`.
 
 Skärmen ritar ingen varelse själv. `CombatScreen.enemy_reaction(index, kind)` är
-kontraktet mot båda världarna: `CorridorScreen` gör blixt/ryck/död på
-billboarden, `combat_world` på `EnemyActor`.
+kontraktet mot 3D-världen: `CorridorScreen` gör blixt, ryck och död på
+billboarden.
 
 ### Höjdbudgeten i korridorsplitten: arenan betalar
 
@@ -712,7 +738,8 @@ eller överlappet ändrats.
 boot()
   → SMITH   (bara första gången: Settings.smith_variant == "")
   → TITLE   (Grundstigen om meta.tutorial_done är false, annars staden)
-  → TUTORIAL  sju rum ur src/data/tutorial.gd, platt COMBAT + REWARD emellan
+  → TUTORIAL  KÄLLAREN: CorridorMap.straight_floor(0, …), sju kammare två steg
+              isär, samma 45/55-strid som en run, trappa upp bakom bossen
   → TOWN    Chalkrim som förstapersons torg. GO DOWN startar runnen.
 start_new_run(seed)
   → Forge.apply_loadout(meta.loadout)         smedjans byte/omordning
@@ -780,7 +807,7 @@ Rökprovet börjar på titelskärmen, tar en skärmdump av inställningsmodalen 
 trycker sedan NEW RUN. Sparfilen rensas först, så körningen är oberoende av vad
 som hände förra gången.
 
-### Felsökningsstart: `--pipwreck-start=town|corridor|sheet`
+### Felsökningsstart: `--pipwreck-start=town|corridor|sheet|tutorial`
 
 `GameController.boot()` läser flaggan **bara** ur `OS.get_cmdline_user_args()`,
 alltså efter `--`, precis som `--pipwreck-seed=N`. En spelare kan därför aldrig
@@ -793,8 +820,11 @@ ignoreras och spelet startar normalt. Parsningen är en ren, testad funktion,
 | `town` | Torget (`SCREEN_TOWN`) |
 | `corridor` | En ny run i korridoren, seed ur `--pipwreck-seed` eller färsk |
 | `sheet` | Samma run, med character sheetet öppet ovanpå |
+| `tutorial` | Källaren under smedjan, rum 0.1. Enda målet som spelar om Grundstigen |
 
-Flaggan **kvitterar** kroppsvalet och tutorialen i stället för att kringgå dem:
+`tutorial` spelar Grundstigen även om profilen redan klarat den – det är hela
+poängen med att kunna verifiera den. De tre andra **kvitterar** kroppsvalet och
+tutorialen i stället för att kringgå dem:
 saknas `smith_variant` sätts standardkroppen, och är tutorialen oklarad markeras
 den som klar med `Reveal.all_on()` – exakt vad SKIP TUTORIAL gör. Utan det
 skulle torget och korridoren visas med ett halvt UI.

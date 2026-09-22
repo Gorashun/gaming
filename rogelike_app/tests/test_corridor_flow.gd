@@ -138,7 +138,7 @@ func test_mounting_a_fight_shrinks_the_corridor_and_fills_the_rest() -> void:
 	assert_object(combat).is_not_null()
 	await await_millis(60)
 
-	assert_bool(combat.in_corridor).is_true()
+	assert_object(combat.readout_host).is_same(screen.chips())
 	var host: Control = screen.get_node("CombatHost")
 	assert_bool(host.visible).is_true()
 	# Korridoren har lämnat plats, och stridsskärmen börjar exakt där den slutar.
@@ -188,8 +188,9 @@ func test_the_chips_replace_the_enemy_panels_and_carry_the_same_numbers() -> voi
 
 	var chips: Array[EnemyChip] = screen.chips().chips()
 	assert_int(chips.size()).is_equal(state.enemies.size())
-	# Fiendezonen är tom: ingen fiende ritas två gånger (COMBAT_READABILITY §8).
-	assert_bool(combat.get_node("Margin/Column/EnemyZone").visible).is_false()
+	# Ingen fiende ritas två gånger (COMBAT_READABILITY §8): den platta
+	# fiendezonen finns inte längre, chipen ÄR avläsningen (M5.5).
+	assert_object(combat.get_node_or_null("Margin/Column/EnemyZone")).is_null()
 	for i: int in range(chips.size()):
 		assert_str(chips[i].enemy_id).is_equal(state.enemies[i].id)
 		assert_str(chips[i].detail()).contains(

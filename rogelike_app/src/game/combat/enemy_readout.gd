@@ -1,12 +1,12 @@
 class_name EnemyReadout
 extends VBoxContainer
-## Gemensam bas för de två sätten att läsa av en fiende.
+## Gemensam bas för avläsningen av en fiende.
 ##
-## [b]Varför en bas och inte två oberoende klasser:[/b] [CombatScreen] binder,
-## uppdaterar och blixtrar fienderna på exakt ett ställe, och skärmen ska inte
-## veta om den står i tutorialens källare (där fienderna är [EnemyPanel] i
-## fiendezonen) eller i korridoren (där de är [EnemyChip] ovanför varsin
-## billboard, COMBAT_READABILITY §5/§8). Allt som skiljer är layouten.
+## [b]Varför en bas och en implementation:[/b] [CombatScreen] binder, uppdaterar
+## och blixtrar fienderna på exakt ett ställe och ska inte veta var avläsningen
+## hänger. [EnemyChip] (korridoren, ovanför varsin billboard,
+## COMBAT_READABILITY §5/§8) är enda implementationen sedan M5.5, men basen står
+## kvar: den är kontraktet [CombatScreen] talar med.
 ##
 ## Det som ligger här är dessutom det som [b]aldrig[/b] får formuleras två
 ## gånger: fiendens visningsnamn, intent-texten och prognosfältet. Två olika
@@ -87,8 +87,7 @@ func set_forecast(_incoming: int) -> void:
 
 
 ## Vart skadan tar vägen, för [b]den här[/b] fienden. [param route] är en post ur
-## [code]ChainReceipt.routes[/code]. Den platta skärmen ritar den i [RouteStrip];
-## i korridoren finns ingen sådan rad och chipet bär siffran själv.
+## [code]ChainReceipt.routes[/code]. Chipet ritar den på varelsen själv.
 func show_route(_route: Dictionary) -> void:
 	pass
 

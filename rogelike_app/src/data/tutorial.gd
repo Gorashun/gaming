@@ -24,6 +24,9 @@ extends RefCounted
 
 ## Rumsantal.
 const ROOM_COUNT: int = 7
+## Steg mellan två rum i källaren. CORRIDOR_DESIGN §5.2 punkt 2 är normativ:
+## "korridoren mellan dem är två steg lång och helt rak".
+const CORRIDOR_STEPS: int = 2
 ## HP spelaren står kvar med när kärran kommer (§B.2).
 const REVIVE_HP: int = 1
 
@@ -70,7 +73,10 @@ const ROOMS: Array[Dictionary] = [
 		],
 		"reveal": ["overflow"],
 		"tip": ["TUT_02_OVERFLOW", "Damage left over rolls on to the next enemy."],
-		"point_at": "routes",
+		# M5.5: leveransremsan är borta med den platta skärmen. Kvittot är där
+		# överskottet står i ord ("… spills 9 onto Rust Mite 2"), så pilen pekar
+		# dit i stället för på en rad som inte finns.
+		"point_at": "receipt",
 		"intents": {},
 		"reward": {"key": "TUT_REWARD_SLOT4", "en": "A fourth slot. One more die in the chain."},
 	},
@@ -347,3 +353,30 @@ static func reward_for(index: int) -> Dictionary:
 ## Kärrans text när HP nått 0 i våning 0.
 static func cart_line() -> Array[String]:
 	return [CART_LINE_KEY, CART_LINE_EN]
+
+
+# ---------------------------------------------------------------------------
+# Källaren under smedjan (CORRIDOR_DESIGN §5.2)
+# ---------------------------------------------------------------------------
+
+## Tutorialvåningen som korridorkarta: sju kammare på rad, två steg emellan, och
+## en trappa upp bakom bossen.
+##
+## [b]Samma presentation som en riktig run[/b] (M5.5). Tutorialen hade en egen
+## platt stridsskärm fram till dess; nu finns exakt en stridspresentation, och
+## källaren skiljer sig bara i innehåll: fasta tärningar, tvingade intents,
+## [Reveal]-flaggor per rum och träningshjulen.
+static func corridor_map() -> CorridorMap:
+	var ids: Array[String] = []
+	for i: int in range(ROOM_COUNT):
+		ids.append(String(node_for(i)["id"]))
+	return CorridorMap.straight_floor(0, ids, CORRIDOR_STEPS)
+
+
+## Rumsindex för en kammares nod-id, eller -1. Motsatsen till
+## [method node_for]: korridoren talar nod-id, tutorialen talar rumsindex.
+static func room_index_for(node_id: String) -> int:
+	for i: int in range(ROOM_COUNT):
+		if String(node_for(i)["id"]) == node_id:
+			return i
+	return -1

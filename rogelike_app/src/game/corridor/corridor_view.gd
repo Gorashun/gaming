@@ -25,6 +25,8 @@ signal treasure_found(treasure: Dictionary)
 signal boss_door_reached()
 signal fate_door_reached()
 signal floor_cleared(floor_index: int)
+## Spelaren klev på trappan upp ur källaren (CORRIDOR_DESIGN §5.2 punkt 4).
+signal stairs_reached()
 signal character_sheet_requested()
 signal settings_requested()
 ## "?" i HUD:en. Under strid i korridoren äger krit-raden hjälpknappen, eftersom
@@ -480,6 +482,9 @@ func _play_events(events: Array[Dictionary]) -> void:
 			CorridorMap.EVENT_FLOOR_CLEARED:
 				quiet = false
 				floor_cleared.emit(int(event["floor"]))
+			CorridorMap.EVENT_STAIRS_UP:
+				quiet = false
+				stairs_reached.emit()
 	_quiet_steps = _quiet_steps + 1 if quiet else 0
 	_max_quiet_steps = maxi(_max_quiet_steps, _quiet_steps)
 

@@ -61,7 +61,7 @@ func test_enemy_frames_slice_the_sheet_into_an_idle_loop() -> void:
 
 
 func test_every_enemy_has_a_death_animation_that_does_not_loop() -> void:
-	# M2: rad 1 i arket. EnemyActor.death_reaction() spelar den automatiskt,
+	# M2: rad 1 i arket. Korridorens billboard spelar den automatiskt,
 	# så en fiende utan rad 1 skulle tyst falla tillbaka på M1:s uttoning.
 	for enemy_id: String in Art.ENEMIES:
 		var frames: SpriteFrames = Art.enemy_frames(enemy_id)
@@ -252,27 +252,6 @@ func test_the_node_kinds_the_march_can_show_have_icons() -> void:
 	for kind: String in ["combat", "boss", "elite", "forge", "rest", "mystery"]:
 		assert_object(Art.node_icon(kind)).override_failure_message(
 			"nodikonen %s saknas" % kind).is_not_null()
-
-
-func test_the_parallax_strip_matches_ui_guide_speeds() -> void:
-	# UI_GUIDE §10.2 är normativ: 0,15 · 0,45 · 1,20.
-	var speeds: Array[float] = []
-	for spec: Dictionary in Art.PARALLAX:
-		var texture: Texture2D = Art.texture(String(spec["file"]))
-		assert_object(texture).override_failure_message(
-			"parallaxlagret %s saknas" % String(spec["file"])).is_not_null()
-		assert_int(texture.get_width()).override_failure_message(
-			"%s måste vara 320 px brett för att kakla" % String(spec["file"])).is_equal(320)
-		assert_int(texture.get_height()).is_equal(int(spec["height"]))
-		speeds.append(float(spec["speed"]))
-	assert_array(speeds).is_equal([0.15, 0.45, 1.2])
-
-
-func test_the_floor_tile_is_a_square_32_px_tile() -> void:
-	var tile: Texture2D = Art.texture(Art.FLOOR_TILE)
-	assert_object(tile).is_not_null()
-	assert_int(tile.get_width()).is_equal(32)
-	assert_int(tile.get_height()).is_equal(32)
 
 
 # --- Heltalsmatematiken ----------------------------------------------------

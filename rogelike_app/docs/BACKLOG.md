@@ -147,3 +147,14 @@
   mot `docs/screenshots/web_verify/corridor.png` (web, tofu). Fix: bunta en font
   med täckning (t.ex. DejaVu Sans eller Noto Symbols) som `fallback` i temat,
   eller byt glyferna mot texturer i `Art`. Ägare: UI (assets/).
+
+## Noterat under M5.5 (dev, 2026-09-22)
+
+- **Föräldralösa parallax-PNG:er.** `assets/sprites/env/floor1_parallax_{far,mid,near}.png`
+  och `floor1_tile.png` användes bara av den borttagna 2D-sidovyn. Ingen kod
+  refererar dem längre; de ligger kvar i pck:en tills UI-agenten städar
+  `assets/` (dev rör inte assets utan undantag).
+- **UI:t växer inte på plats i källaren.** CORRIDOR_DESIGN §5.2 punkt 3 vill att
+  `◀ VÄND ▶` kommer in först vid rum 0.4, kritstråket vid 0.5 och character
+  sheet-knappen vid 0.6. M5.5 flyttade källaren in i korridoren men visar hela
+  HUD:en från rum 0.1. Kräver en `Reveal`-flagga per HUD-element.

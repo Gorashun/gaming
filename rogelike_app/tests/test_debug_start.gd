@@ -19,6 +19,8 @@ func test_each_target_is_parsed() -> void:
 		PackedStringArray(["--pipwreck-start=corridor"]))).is_equal(GameController.START_CORRIDOR)
 	assert_str(GameController.parse_start_target(
 		PackedStringArray(["--pipwreck-start=sheet"]))).is_equal(GameController.START_SHEET)
+	assert_str(GameController.parse_start_target(
+		PackedStringArray(["--pipwreck-start=tutorial"]))).is_equal(GameController.START_TUTORIAL)
 
 
 func test_target_is_case_and_space_insensitive() -> void:

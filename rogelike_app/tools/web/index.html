@@ -77,7 +77,7 @@
   // GameController reads after '--'. No query params = exactly as before.
   // Values are whitelisted here too, so a typo cannot reach the engine.
   const params = new URLSearchParams(window.location.search);
-  const START_TARGETS = ['town', 'corridor', 'sheet'];
+  const START_TARGETS = ['town', 'corridor', 'sheet', 'tutorial'];
   const start = (params.get('start') || '').trim().toLowerCase();
   const seed = (params.get('seed') || '').trim();
   const userArgs = [];

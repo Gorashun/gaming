@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://cpipwreckcs0"]
+[gd_scene load_steps=3 format=3 uid="uid://cpipwreckcs0"]
 
 [ext_resource type="Script" path="res://src/game/combat/combat_screen.gd" id="1_screen"]
-[ext_resource type="PackedScene" path="res://src/game/combat/combat_world.tscn" id="2_world"]
 [ext_resource type="Script" path="res://src/game/juice/event_player.gd" id="3_player"]
 
 [node name="CombatScreen" type="Control"]
@@ -13,7 +12,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_screen")
-world_scene = ExtResource("2_world")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -52,11 +50,6 @@ text = "Charge 0"
 [node name="WardLabel" type="Label" parent="Margin/Column/TopBar"]
 layout_mode = 2
 text = "Ward 0"
-
-[node name="EnemyZone" type="HBoxContainer" parent="Margin/Column"]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 1
 
 [node name="SlotRow" type="HBoxContainer" parent="Margin/Column"]
 layout_mode = 2

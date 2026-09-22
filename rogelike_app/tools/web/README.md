@@ -17,7 +17,7 @@ Emscriptens webbläsarkontroll i Godots web-JS läser Android-appars WebView-UA 
 
 ## Felsökningsstart ur URL:en
 
-`index.html` läser `?start=town|corridor|sheet` och `?seed=N` ur
+`index.html` läser `?start=town|corridor|sheet|tutorial` och `?seed=N` ur
 `window.location.search` och skickar dem vidare som
 `args: ['--', '--pipwreck-start=…', '--pipwreck-seed=…']` i Engine-konfigurationen.
 Godots web-loader lägger dem sist på kommandoraden, och `GameController` läser
@@ -29,6 +29,7 @@ query-parametrar startar spelet exakt som förut.**
 index.html?start=corridor&seed=7   ny run i korridoren med känd seed
 index.html?start=town              torget
 index.html?start=sheet             character sheetet ovanpå en ny run
+index.html?start=tutorial          källaren under smedjan, rum 0.1
 ```
 
 ## WebGL2-verifiering

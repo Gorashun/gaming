@@ -211,15 +211,10 @@ const DIE_BODIES: Dictionary = {
 const DIE_BODY_GRAY: String = "dice/die_body_gray.png"
 const DIE_TUMBLE: String = "dice/die_tumble_gray.png"
 const GLASS_RIM: String = "dice/glass_highlight.png"
-const FLOOR_TILE: String = "env/floor1_tile.png"
-
-## Marschens parallaxlager. [code]speed[/code] är [code]motion_scale.x[/code]
-## ur UI_GUIDE §10.2 och är normativ.
-const PARALLAX: Array[Dictionary] = [
-	{"file": "env/floor1_parallax_far.png", "speed": 0.15, "height": 120},
-	{"file": "env/floor1_parallax_mid.png", "speed": 0.45, "height": 120},
-	{"file": "env/floor1_parallax_near.png", "speed": 1.20, "height": 64},
-]
+# M5.5: FLOOR_TILE och PARALLAX är borta med den platta 2D-sidovyn. Korridoren
+# har sina egna kakelbara texturer i [CorridorMesh]; parallax finns inte längre
+# någonstans i spelet. PNG-filerna under assets/sprites/env/ ägs av UI-agenten
+# och städas där (docs/BACKLOG.md).
 
 static var _textures: Dictionary = {}
 static var _frames: Dictionary = {}

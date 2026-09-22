@@ -38,6 +38,7 @@ const SIGN_LABELS: Dictionary = {
 	CorridorMap.SIGN_FATE: ["CORRIDOR_SIGN_FATE", "fate roll"],
 	CorridorMap.SIGN_UNKNOWN: ["CORRIDOR_SIGN_UNKNOWN", "unknown"],
 	CorridorMap.SIGN_BOSS: ["CORRIDOR_SIGN_BOSS", "boss"],
+	CorridorMap.SIGN_STAIRS: ["CORRIDOR_SIGN_STAIRS", "stairs up"],
 }
 
 var _buttons: Dictionary = {}

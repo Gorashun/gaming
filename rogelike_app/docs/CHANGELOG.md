@@ -2,6 +2,48 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M5.5 – en enda stridspresentation (2026-09-22)
+
+**Anders fick "sidescroll" i webbversionen.** Det var inte ett webbfel: det var
+tutorialvåning 0, som fortfarande spelades i M1:s platta 2D-sidovy medan resten
+av spelet hade flyttat in i korridoren. Två presentationer av samma strid, och
+den första en ny spelare mötte var den gamla.
+
+**1. Källaren är en korridor** (CORRIDOR_DESIGN §5.2)
+- `CorridorMap.straight_floor()` – ny. Rak våning, kammare på rad, en
+  `KIND_STAIRS`-ruta sist. Ingen graf, ingen seed, ingen regel – som
+  `town_square()`.
+- `Tutorial.corridor_map()` / `Tutorial.room_index_for()` – sju kammare, två
+  steg emellan (§5.2 punkt 2), trappa upp bakom bossen. Kammarens `node_id` är
+  hela kopplingen mellan karta och tutorialdata.
+- `EVENT_STAIRS_UP` → `CorridorView.stairs_reached` → `_finish_tutorial()` →
+  torget. "Spelet börjar i mörker och första saken du gör är att gå upp ur det."
+- Rum 0.1–0.7 kör nu samma 45/55-strid, samma chip, samma kvitto och samma
+  `Reveal`-flaggor som en riktig run. Tips och kritpil ligger kvar i ChalkUI.
+- Källaren autosparas aldrig och applicerar ingen belöning: korten är
+  berättande, förändringen ligger i nästa rums data (§B.2).
+- `--pipwreck-start=tutorial` och `index.html?start=tutorial` lades till.
+
+**2. Den platta sidovyn är borta**
+- Borttaget: `combat_world.gd/.tscn`, `enemy_actor.gd`, `enemy_panel.gd`,
+  `route_strip.gd`, `Art.PARALLAX`, `Art.FLOOR_TILE`, `GameScreen.world_scene`,
+  `GameScreen.world`, `GameScreen.world_anchor()` och hela `World`-CanvasLayern
+  i `main.tscn`.
+- `CombatScreen` har inte längre ett korridorläge – den ÄR korridorens.
+  `readout_host` är alltid `CorridorScreen/Chips`; saknas den är det ett fel.
+- Figuren (`HeroFigure`) syns nu **bara** i character sheetet.
+- Rum 0.2:s kritpil pekade på leveransremsan; den pekar nu på kvittot, där
+  överskottet står i ord.
+- Krit-radens rumsnummer uppdateras innan striden monteras – det låg ett rum
+  efter i både källaren och en riktig run.
+
+**Körningar:** hela sviten 391 test, 0 fel. Rökprovet grönt i `en` och `sv`
+(`SMOKE OK`, 29 skärmdumpar vardera) med flödet kroppsval → källaren 0.1–0.7 →
+torget → korridor → strid → belöning → bossdörr → boss → vinst → torget. Nya
+skärmdumpar i `docs/screenshots/m5_tut/` och `docs/screenshots/m5_tut/sv/`.
+Webbexporten verifierad i Chromium/WebGL2 på `?start=tutorial`
+(`docs/screenshots/web_verify/tutorial_room_1.png`).
+
 ## Webbverifiering: korridoren i WebGL2 (2026-09-22)
 
 - **`CorridorScreen/Chips` och `CorridorScreen/Overlay` svalde varje tapp i

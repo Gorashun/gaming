@@ -311,14 +311,18 @@ func _play_corridor(controller: GameController) -> bool:
 		await _frames(1)
 		return true
 
-	if not _taken.has("20_corridor"):
+	var in_basement: bool = _controller != null and int(_controller.get("_tutorial_room")) >= 0
+	if not _taken.has("20_corridor") and not in_basement:
 		await _frames(4)
 		await _shot("20_corridor")
+	if in_basement and not _taken.has("08_basement_corridor"):
+		await _frames(4)
+		await _shot("08_basement_corridor")
 
 	var reward: CorridorReward = corridor.reward()
 	if reward != null and reward.visible:
 		await _frames(6)
-		await _shot("26_reward_in_corridor")
+		await _shot("09_basement_reward" if in_basement else "26_reward_in_corridor")
 		if reward.option_count() <= 0:
 			_fail("the corridor reward showed zero options")
 			return false
@@ -348,11 +352,16 @@ func _play_corridor(controller: GameController) -> bool:
 		await _frames(3)
 		await _shot("21_junction")
 
+	# Källaren går genom samma korridor sedan M5.5, men CORRIDOR_DESIGN §8.1:s
+	# budget gäller VÅNING 1. Tutorialens sju korta rum räknas därför inte in –
+	# annars mäter siffran två olika saker och slutar betyda något.
+	var in_tutorial: bool = _controller != null and int(_controller.get("_tutorial_room")) >= 0
 	var started: int = Time.get_ticks_usec()
 	await view.step(_corridor_pick(actions))
-	_corridor_us += Time.get_ticks_usec() - started
-	_corridor_steps += 1
-	_quiet_steps = maxi(_quiet_steps, view.max_steps_without_event())
+	if not in_tutorial:
+		_corridor_us += Time.get_ticks_usec() - started
+		_corridor_steps += 1
+		_quiet_steps = maxi(_quiet_steps, view.max_steps_without_event())
 	return true
 
 
@@ -394,7 +403,7 @@ func _play_round(combat: CombatScreen) -> bool:
 			_fail("could not place die %d in slot %d" % [placement[slot], slot])
 	await _frames(3)
 	if room < 0:
-		var prefix: String = "23_corridor_combat" if combat.in_corridor else "03_combat"
+		var prefix: String = "23_corridor_combat"
 		await _shot("%s_before_confirm" % prefix)
 		# Hjälp-lagret: sex callouts samtidigt, allt tänt på en gång (§6).
 		if not _taken.has("03b_combat_help"):

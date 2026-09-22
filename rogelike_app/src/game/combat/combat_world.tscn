@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cpipwreckcw0"]
-
-[ext_resource type="Script" path="res://src/game/combat/combat_world.gd" id="1_world"]
-
-[node name="CombatWorld" type="Node2D"]
-texture_filter = 1
-script = ExtResource("1_world")

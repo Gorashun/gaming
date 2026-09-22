@@ -227,6 +227,11 @@ func _combat_screen() -> CombatScreen:
 
 	var scene: PackedScene = load("res://src/game/combat/combat_screen.tscn") as PackedScene
 	var screen: CombatScreen = scene.instantiate() as CombatScreen
+	# Striden monteras alltid i korridoren (M5.5): chipslagret är värd för
+	# fiendeavläsningarna och måste finnas innan setup().
+	var chips: EnemyChips = auto_free(EnemyChips.new())
+	add_child(chips)
+	screen.readout_host = chips
 	add_child(screen)
 	auto_free(screen)
 	screen.setup(null, null, {

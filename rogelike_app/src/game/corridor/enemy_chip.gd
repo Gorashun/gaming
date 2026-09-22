@@ -8,7 +8,7 @@ extends EnemyReadout
 ## vet vilket kort som är vilken varelse. Chipet hänger i stället fast i sin
 ## varelse med ett kritstreck och kan aldrig förväxlas.
 ##
-## Innehållet är detsamma som i [EnemyPanel] och i samma ord: namn, HP-stapel med
+## Innehållet är [EnemyReadout]:s, i dess ord: namn, HP-stapel med
 ## prognosfält, rustning och attack med ikon och siffra. Layouten är hopdragen
 ## till två rader eftersom chipet ligger ovanpå bilden och inte får skymma den.
 ##
@@ -118,7 +118,7 @@ func _init() -> void:
 	row.add_child(_stats_label)
 
 	# Leveransraden, på fienden själv. I den platta skärmen står den i
-	# [RouteStrip]; här finns ingen sådan rad, och siffran hör ändå hemma där
+	# en egen rad; den finns inte längre, och siffran hör ändå hemma där
 	# varelsen är (COMBAT_READABILITY §2.2).
 	_route_label = make_label(Tokens.TYPE_CAPTION - 1, Tokens.SEM_DAMAGE)
 	_route_label.add_theme_color_override("font_outline_color", Tokens.SURFACE_PIT)
@@ -178,7 +178,7 @@ func set_forecast(incoming: int) -> void:
 	_forecast.set_fraction(clampf(float(incoming) / maximum, 0.0, float(_hp_bar.value) / maximum))
 
 
-## [b]Samma ord som [RouteStrip][/b]: "↑ 28" och DIES / SPILL. Två formuleringar
+## [b]Leveranssiffran[/b]: "↑ 28" och DIES / SPILL. Två formuleringar
 ## för samma händelse vore §B.1-problemet om igen.
 func show_route(route: Dictionary) -> void:
 	var damage: int = int(route.get("damage", 0))

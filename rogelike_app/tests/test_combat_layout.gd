@@ -5,7 +5,7 @@ extends GdUnitTestSuite
 ## [i]krymper sina barn under deras minsta storlek[/i] i stället för att klaga.
 ## Resultatet är inte ett fel i loggen utan ett toppfält som glider ut ovanför
 ## skärmen och en bekräfta-knapp som hamnar under den – vilket är precis vad som
-## hände när kvittot, bågarna och leveransremsan lades till i M2.5.
+## hände när kvittot och bågarna lades till i M2.5.
 ##
 ## Testet mäter därför summan av radernas minsta höjder mot viewporten, för
 ## flera rum, och fäller bygget innan en skärmdump hinner se fel.
@@ -21,9 +21,16 @@ const VIEWPORT_HEIGHT: float = 1920.0
 const THUMB_ROWS: Array[String] = ["Tray", "Actions"]
 
 
+## Striden monteras alltid i korridoren (M5.5), och chipslagret ÄR
+## fiendeavläsningen. Testet bygger därför samma par som spelet gör: ett
+## [EnemyChips] som värd och stridsskärmen under det.
 func _screen(state: CombatState, reveal: Reveal) -> CombatScreen:
 	var packed: PackedScene = ResourceLoader.load(SCENE) as PackedScene
 	var screen: CombatScreen = auto_free(packed.instantiate()) as CombatScreen
+	var chips: EnemyChips = auto_free(EnemyChips.new())
+	add_child(chips)
+	chips.size = Vector2(1080.0, 864.0)
+	screen.readout_host = chips
 	add_child(screen)
 	screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	screen.size = Vector2(1080.0, VIEWPORT_HEIGHT)
