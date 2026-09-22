@@ -186,6 +186,20 @@ Ingen drop-shadow i denna riktning. Djup skapas av **kritdammshalo** (`chalk/100
 
 Radavstånd 1,3× för brödtext, 1,0× för Anton. Teckenstorlek skalbar 85/100/115/130 % (se §6).
 
+**Fontfilerna ligger i `assets/fonts/` sedan 2026-09-22 (M5.6).** Fulla
+OFL-original från google/fonts, inte subset: `familjen_grotesk_variable.ttf`
+(variabel, wght 400–700), `anton_regular.ttf`, `caveat_brush_regular.ttf`.
+`ui_regular.tres` är projektets standardfont (`project.godot`,
+`gui/theme/custom_font`); koden går via `Tokens.apply_type(node, TYPE_*)`, som
+sätter storlek **och** typsnitt ur tabellen ovan.
+
+`pipwreck_symbols.ttf` är fallback för formkoderna i §2.3–2.5 (`⬬ ❖ ⬟ ✦ ✚ ⬣ ⬤
+⬚ ▭ ◣ ▤ ◉ ◖ ⛊ ➤`) – Familjen Grotesk har 619 glyfer och saknar dem. Alla fyra
+filerna importeras med `allow_system_fallback=false`: **spelet får aldrig låna
+en systemfont**, för då ser webbexporten annorlunda ut än telefonen. Symboler
+som ingen buntad font har (`⚙ ⚔ ↩ ↳ ◀ ▲ ▶ ◫`) ritas som 16×16-sprites ur
+`assets/sprites/ui/`, aldrig som text. `tests/test_fonts.gd` är vakten.
+
 ### 2.9 Touch targets och tumzon
 
 | Element | Storlek |
@@ -879,7 +893,7 @@ befintliga sprites och primitiver.
 - `design/mockup_combat_pixel.html` – **hybriden med riktiga sprite-PNG:er**: Smeden som paperdoll-stapel (kappa → kropp → hjälm → vapen), tre fiender från rum 2 (`IRON_TICK`, `SLAG_MOTH`, `RUST_RAT`), tärningar komponerade som i Godot (kropp + pip/glyph + glaskant + spricka), tre parallaxlager + golvtile, allt under samma krit-UI.
 - `design/shader_preview_palette.tscn`, `design/shader_preview_chalk.tscn` – Godot-scener för de två shadrarna, öppnas direkt i editorn.
 - `design/shader_probe.tscn` + `tools/shader_probe.gd` + `design/probe_ramp.png` – **mätscen**, inte förhandsvisning. Renderar 16 kända färger till en `SubViewport` och läser tillbaka pixlarna. Exit 0 = passthrough, LUT-väg och modulate stämmer på byten. Körs per renderare under `xvfb-run`.
-- `design/fonts/` – lokala latin-subset av Anton, Familjen Grotesk och Caveat Brush. Mockuperna är helt självständiga och gör ingen nätverkstrafik.
+- `design/fonts/` – lokala latin-subset (woff2) av Anton, Familjen Grotesk och Caveat Brush **för mockuperna**. Mockuperna är helt självständiga och gör ingen nätverkstrafik. Spelet använder inte dessa filer: det läser de fulla OFL-originalen i `assets/fonts/` (§2.8).
 - `design/mockup_choose_smith.html` – **könsvalskärmen** (§14): två porträtt sida vid sida, helfigur under varje, tapp = välj. Skärmdumpar `design/screenshots/choose_smith_{360x640,390x844}.png`.
 - `design/mockup_character_sheet.html` – **character sheetet** (§15) i Diablo-stil: porträtt, paperdoll i ×4, sex utrustningsslots vars ikoner är paperdoll-arken zoomade ×2, slotordning, tärningsrad, relikbricka. `BYT UTSEENDE` växlar kropp + hår + porträtt utan att röra ett gear-lager. Skärmdumpar `character_sheet_{360x640,390x844}.png` och `character_sheet_variant_b_390x844.png`.
 - `design/mockup_corridor.html` – **förstapersonskorridoren** (§17), två vyer i samma fil: utforskning med T-korsning, kritskyltar och tre riktningsknappar, och strid med korridoren i övre 45 % (2 + 1 fiender som billboards med ankrade HP-chips) och stridsskärm v2 i nedre 55 %. Väggarna är CSS-perspektiv med de genererade 64×64-texturerna ur `assets/sprites/env/corridor/`, så texturstilen går att bedöma innan 3D-bygget. Skärmdumpar `corridor_{explore,combat}_{360x640,390x844}.png`.

@@ -32,7 +32,7 @@ mouse_filter = 1
 
 [node name="HpLabel" type="Label" parent="Margin/Column/TopBar"]
 layout_mode = 2
-text = "◖ 100/100"
+text = "100/100"
 
 [node name="HpBar" type="ProgressBar" parent="Margin/Column/TopBar"]
 layout_mode = 2
@@ -82,7 +82,7 @@ text = "REROLL 1"
 
 [node name="UndoButton" type="Button" parent="Margin/Column/Actions"]
 layout_mode = 2
-text = "↩ UNDO"
+text = "UNDO"
 
 [node name="ConfirmButton" type="Button" parent="Margin/Column/Actions"]
 layout_mode = 2

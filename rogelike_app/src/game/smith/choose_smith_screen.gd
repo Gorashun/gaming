@@ -35,7 +35,7 @@ func enter(ctx: Dictionary) -> void:
 	var title: Label = Label.new()
 	title.text = Tokens.translate_or("SMITH_CHOOSE_TITLE", "CHOOSE YOUR SMITH")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_DISPLAY_L))
+	Tokens.apply_type(title, Tokens.TYPE_DISPLAY_L)
 	title.add_theme_color_override("font_color", Tokens.CHALK_100)
 	title.clip_text = true
 	ChalkFx.apply(title, ChalkFx.DISPLAY)
@@ -121,7 +121,7 @@ static func portrait_frame(variant: String) -> PanelContainer:
 		label.text = variant.to_upper()
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_DISPLAY_L))
+		Tokens.apply_type(label, Tokens.TYPE_DISPLAY_L)
 		label.add_theme_color_override("font_color", Tokens.CHALK_500)
 		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		art.add_child(label)

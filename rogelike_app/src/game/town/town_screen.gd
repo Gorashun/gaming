@@ -176,8 +176,8 @@ func _build_hud() -> void:
 	_pips_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	bar.add_child(_pips_label)
 
-	bar.add_child(_hud_button("◫", func() -> void: character_sheet_requested.emit()))
-	bar.add_child(_hud_button("⚙", func() -> void: settings_requested.emit()))
+	bar.add_child(_hud_button(&"sheet", func() -> void: character_sheet_requested.emit()))
+	bar.add_child(_hud_button(&"settings", func() -> void: settings_requested.emit()))
 
 	# Kritmärkena: ett streck per person som gått ner. Kommer du upp suddar du
 	# ditt eget streck med tummen (§A.1). Spelets enda monument.
@@ -192,14 +192,17 @@ func _build_hud() -> void:
 	_hud.add_child(_tally_label)
 
 
-func _hud_button(glyph: String, action: Callable) -> Button:
+## Knapparna bär en 16×16-sprite ur [code]assets/sprites/ui/[/code], aldrig en
+## symbolglyf: ◫ och ⚙ fanns bara i systemfonten och ritades som tomma rutor i
+## webbexporten (docs/BACKLOG.md).
+func _hud_button(icon_name: StringName, action: Callable) -> Button:
 	var button: Button = Button.new()
-	button.text = glyph
 	button.focus_mode = Control.FOCUS_NONE
 	button.custom_minimum_size = Vector2(Tokens.dp(34), Tokens.dp(34))
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY))
 	button.add_theme_color_override("font_color", Tokens.CHALK_300)
+	Art.apply_button_icon(button, icon_name, Tokens.CHALK_300, Tokens.TYPE_BODY)
 	var style: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR)
 	style.bg_color = Color(Tokens.SURFACE_RAISED, 0.85)
 	for state: String in ["normal", "hover", "pressed", "focus"]:
@@ -275,6 +278,13 @@ func _refresh_header() -> void:
 
 
 ## Kritstrecken ritade som text: fyra streck och ett tvärstreck, som på en vägg.
+##
+## [b]ASCII sedan 2026-09-22.[/b] Femgruppen stavades [code]卌[/code] (U+534C),
+## ett CJK-tecken som ingen av de buntade fonterna har – det kom ur systemfonten
+## och blev en tom ruta i webbexporten (docs/BACKLOG.md). Fyra streck och ett
+## snedstreck är samma monument, utan fontberoende.
+const TALLY_GROUP: String = "||||/"
+
 static func _tally_marks(count: int) -> String:
 	if count <= 0:
 		return ""
@@ -282,7 +292,7 @@ static func _tally_marks(count: int) -> String:
 	var rest: int = count % 5
 	var marks: String = ""
 	for i: int in range(mini(groups, 8)):
-		marks += "卌 "
+		marks += TALLY_GROUP + " "
 	for i: int in range(rest):
 		marks += "|"
 	return marks.strip_edges()

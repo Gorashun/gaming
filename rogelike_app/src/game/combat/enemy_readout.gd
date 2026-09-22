@@ -134,17 +134,20 @@ static func display_name_of(enemy: Enemy, p_ordinal: int) -> String:
 ## Intent-texten. [member Intent.note] är en ÖVERSÄTTNINGSNYCKEL, inte prosa:
 ## core får aldrig innehålla spelartext (CLAUDE.md). Nyckeln formateras med
 ## [member Intent.note_args].
-## [b]Ett verb, så att riktningen framgår[/b] (§5): "⚔ Attacks 3" och inte
+## [b]Ett verb, så att riktningen framgår[/b] (§5): "Attacks 3" och inte
 ## "▲ 3 dmg", som inte säger om skadan går mot spelaren eller mot fienden.
+##
+## [b]Ingen ikonglyf här.[/b] Raden är en hel mening i långtryckets popover, och
+## svärdsglyfen som stod först saknas i varje buntad font – den kom ur
+## systemfonten och blev en tom ruta i webbexporten (docs/BACKLOG.md). Verbet
+## bär riktningen ändå; ikonen ritas som sprite där den har en egen plats
+## ([EnemyChip]:s statsrad).
 static func intent_text(enemy: Enemy) -> String:
 	if enemy.intent == null:
 		return Tokens.translate("INTENT_NONE")
 	match enemy.intent.kind:
 		Rules.IntentKind.ATTACK:
-			return "%s %s" % [
-				Art.ui_icon_glyph(&"attack"),
-				Tokens.translate_or("COMBAT_ENEMY_INTENT_ATTACK", "Attacks %d") % enemy.intent.value,
-			]
+			return Tokens.translate_or("COMBAT_ENEMY_INTENT_ATTACK", "Attacks %d") % enemy.intent.value
 		Rules.IntentKind.BLOCK:
 			return Tokens.translate_or("COMBAT_ENEMY_INTENT_BLOCK", "Hardens +%d") % enemy.intent.value
 		Rules.IntentKind.SPECIAL:
@@ -186,12 +189,6 @@ static func detail_text(enemy: Enemy, p_ordinal: int) -> String:
 		parts.append(Tokens.translate_or("COMBAT_ENEMY_POISON", "Poison %d") % enemy.poison)
 	parts.append(intent_text(enemy))
 	return " · ".join(parts)
-
-
-## Ikonen som text. 16×16-sprajtarna ligger i UI-agentens katalog; saknas de
-## ritas reservglyfen, aldrig ett hål (Art.ui_icon varnar en gång per ikon).
-static func icon_glyph(icon_name: StringName) -> String:
-	return Art.ui_icon_glyph(icon_name)
 
 
 static func make_label(font_size: int, color: Color) -> Label:

@@ -1,0 +1,11 @@
+[gd_resource type="FontVariation" load_steps=3 format=3]
+
+; type/scrawl, UI_GUIDE §2.8: Caveat Brush, kritklotter, max 3 ord.
+; Samma symbolfallback som ui_regular.tres.
+
+[ext_resource type="FontFile" uid="uid://6ox72trcuda0" path="res://assets/fonts/caveat_brush_regular.ttf" id="1_base"]
+[ext_resource type="FontFile" uid="uid://bhubpxjf0onsx" path="res://assets/fonts/pipwreck_symbols.ttf" id="2_symbols"]
+
+[resource]
+fallbacks = Array[Font]([ExtResource("2_symbols")])
+base_font = ExtResource("1_base")

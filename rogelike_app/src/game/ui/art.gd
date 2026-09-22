@@ -35,17 +35,41 @@ const UI_ICONS: Dictionary = {
 	&"charge": ["ui/icon_charge.png", "ui/charge.png", "ui/slot_charge.png"],
 	&"overflow": ["ui/icon_overflow.png", "ui/icon_spill.png", "ui/overflow.png"],
 	&"pointer": ["ui/icon_tutorial_pointer.png", "ui/tutorial_pointer.png", "ui/chalk_pointer.png"],
+	&"arrow_left": ["ui/icon_arrow_left.png"],
+	&"arrow_forward": ["ui/icon_arrow_forward.png"],
+	&"arrow_right": ["ui/icon_arrow_right.png"],
+	&"sheet": ["ui/icon_sheet.png"],
+	&"settings": ["ui/icon_settings.png"],
+	&"undo": ["ui/icon_undo.png"],
 }
 
 ## Reservglyfer när ikonen saknas. Formkoden får aldrig försvinna helt.
+##
+## [b]Varje tecken här måste finnas i en buntad font[/b] (Familjen Grotesk eller
+## symbolfallbacken, se [code]assets/fonts/[/code]). Reservglyfen är sista
+## utvägen när PNG:en inte laddas, och en reserv som blir en tom ruta i
+## webbexporten är ingen reserv alls. [code]tests/test_fonts.gd[/code] bevakar
+## tabellen. Därför står här [code]⮌[/code] och inte [code]↩[/code],
+## [code]⯄[/code] och inte [code]⚙[/code], [code]✖[/code] och inte
+## [code]⚔[/code]: de tre sistnämnda saknas i båda fonterna.
 const UI_ICON_GLYPHS: Dictionary = {
 	&"armor": "⛊",
-	&"attack": "⚔",
+	&"attack": "✖",
 	&"help": "?",
 	&"charge": "⬤",
-	&"overflow": "↳",
+	&"overflow": "⮡",
 	&"pointer": "➤",
+	&"arrow_left": "◀",
+	&"arrow_forward": "▲",
+	&"arrow_right": "▶",
+	&"sheet": "◫",
+	&"settings": "⯄",
+	&"undo": "⮌",
 }
+
+## 16×16-ikonernas nominella storlek i dp. 16 dp × 3 px/dp = 48 px, alltså exakt
+## 3× heltalsskala på 1080-viewporten (regel 2 i klassens huvud).
+const ICON_DP: int = 16
 
 static var _missing_icons: Dictionary = {}
 
@@ -65,6 +89,93 @@ static func ui_icon(icon_name: StringName) -> Texture2D:
 
 static func ui_icon_glyph(icon_name: StringName) -> String:
 	return String(UI_ICON_GLYPHS.get(icon_name, ""))
+
+
+## Ikonens storlek i px: största heltalsskala av 16 px som ryms i
+## [param size_dp]. Aldrig en bråkdel – regel 2 i klassens huvud. 16 dp ger
+## 48 px (3×), 14 dp ger 32 px (2×).
+static func icon_px(size_dp: int = ICON_DP) -> int:
+	return 16 * maxi(1, int(floor(Tokens.dp(size_dp) / 16.0)))
+
+
+## Cache för [method scaled_ui_icon]: [code]"namn@px" → ImageTexture[/code].
+static var _scaled_icons: Dictionary = {}
+
+
+## 16×16-ikonen uppskalad till [param size_dp] med [b]nearest[/b] och
+## heltalsfaktor.
+##
+## [b]Varför en förstorad textur och inte skalning vid ritning:[/b]
+## [member Button.icon] ritas i texturens egen storlek, och temakonstanten
+## [code]icon_max_width[/code] kan bara krympa. En 16 px-sprite blev därför en
+## 16 px-prick mitt i en 102 px-knapp. Med rätt storlek redan i texturen sköter
+## [Button] både centreringen (ikon utan text) och radningen bredvid texten
+## (ikon + text), och pixlarna sitter på heltal.
+static func scaled_ui_icon(icon_name: StringName, size_dp: int = ICON_DP) -> Texture2D:
+	var px: int = icon_px(size_dp)
+	var key: String = "%s@%d" % [icon_name, px]
+	if _scaled_icons.has(key):
+		return _scaled_icons[key] as Texture2D
+	var tex: Texture2D = ui_icon(icon_name)
+	if tex == null:
+		return null
+	var image: Image = tex.get_image()
+	if image == null:
+		return tex
+	image = image.duplicate() as Image
+	image.resize(px, px, Image.INTERPOLATE_NEAREST)
+	var scaled: ImageTexture = ImageTexture.create_from_image(image)
+	_scaled_icons[key] = scaled
+	return scaled
+
+
+## Sätter [param button]:s ikon till 16×16-spriten [param icon_name].
+##
+## [b]Varför ikon och inte knapptext:[/b] en symbolglyf i [member Button.text]
+## ritas av fonten, och tecknen det gäller fanns bara i systemfonten –
+## webbexporten ritade en tom ruta (docs/BACKLOG.md). En sprite ritas likadant
+## överallt. Saknas PNG:en faller knappen tillbaka på reservglyfen ur
+## [constant UI_ICON_GLYPHS], som alltid finns i en buntad font.
+##
+## Returnerar [code]true[/code] när spriten användes. Idempotent: anropas den
+## igen (sheet-knappens kritring tänds) byts bara färgen.
+static func apply_button_icon(button: Button, icon_name: StringName, tint: Color, size_dp: int = ICON_DP) -> bool:
+	var tex: Texture2D = scaled_ui_icon(icon_name, size_dp)
+	if tex == null:
+		button.text = ui_icon_glyph(icon_name)
+		button.add_theme_color_override("font_color", tint)
+		return false
+	button.icon = tex
+	button.expand_icon = false
+	for state: String in ["normal", "pressed", "hover", "hover_pressed", "focus", "disabled"]:
+		button.add_theme_color_override("icon_%s_color" % state, tint)
+	return true
+
+
+## Ikonen som en fristående nod att lägga i en rad bredvid en siffra. Saknas
+## PNG:en returneras en [Label] med reservglyfen i stället – aldrig ett hål.
+static func icon_rect(icon_name: StringName, tint: Color = Color.WHITE, size_dp: int = ICON_DP) -> Control:
+	var px: int = icon_px(size_dp)
+	var tex: Texture2D = scaled_ui_icon(icon_name, size_dp)
+	if tex == null:
+		var label: Label = Label.new()
+		label.name = "IconGlyph"
+		label.text = ui_icon_glyph(icon_name)
+		label.add_theme_font_size_override("font_size", px)
+		label.add_theme_color_override("font_color", tint)
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		return label
+	var rect: TextureRect = TextureRect.new()
+	rect.name = "Icon"
+	rect.texture = tex
+	rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	rect.custom_minimum_size = Vector2(px, px)
+	rect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	rect.modulate = tint
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return rect
 
 
 ## Ikoner som saknades under körningen. Rökprovet skriver ut listan.

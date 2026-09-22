@@ -166,7 +166,7 @@ func _style(won: bool) -> void:
 	$Margin/Column.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_4))
 	_stats.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
 
-	_title.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_DISPLAY_L))
+	Tokens.apply_type(_title, Tokens.TYPE_DISPLAY_L)
 	ChalkFx.apply(_title, ChalkFx.DISPLAY)
 	_title.add_theme_color_override("font_color", Tokens.SEM_HEAL if won else Tokens.SEM_BLOOD)
 	_title.clip_text = true

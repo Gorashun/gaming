@@ -83,6 +83,91 @@ const TYPE_BODY: int = 16
 const TYPE_LABEL: int = 14
 const TYPE_CAPTION: int = 12
 
+## Typsnitten ur §2.8. [code]assets/fonts/[/code] har de fulla OFL-originalen av
+## Familjen Grotesk, Anton och Caveat Brush plus symbolfallbacken
+## [code]pipwreck_symbols.ttf[/code]. Alla fyra importeras med
+## [code]allow_system_fallback=false[/code]: spelet får aldrig låna en
+## systemfont, för då ser webbexporten annorlunda ut än telefonen
+## (docs/BACKLOG.md, "Symbolglyfer blir tofu i webbexporten").
+##
+## [code]ui_regular.tres[/code] är också projektets standardfont
+## ([code]project.godot[/code], [code]gui/theme/custom_font[/code]), så en
+## [Label] utan override får den automatiskt. De tre andra sätts explicit där
+## §2.8 kräver dem.
+const FONT_UI_PATH: String = "res://assets/fonts/ui_regular.tres"
+const FONT_UI_BOLD_PATH: String = "res://assets/fonts/ui_bold.tres"
+const FONT_DISPLAY_PATH: String = "res://assets/fonts/display.tres"
+const FONT_SCRAWL_PATH: String = "res://assets/fonts/scrawl.tres"
+
+## Laddade en gång. [method ResourceLoader.load] cachar redan, men uppslaget
+## ligger i varje etikettbygge och en Dictionary-läsning är billigare.
+static var _fonts: Dictionary = {}
+
+
+## Fonten bakom en av FONT_*_PATH. Returnerar null om filen saknas; anroparen
+## hoppar då över sin override och får projektets standardfont.
+static func font(path: String) -> Font:
+	if _fonts.has(path):
+		return _fonts[path] as Font
+	var loaded: Font = ResourceLoader.load(path) as Font
+	if loaded == null:
+		push_warning("Tokens: fonten %s saknas – ritar med standardfonten" % path)
+	_fonts[path] = loaded
+	return loaded
+
+
+## Familjen Grotesk 400 (§2.8 body/caption). Samma som standardfonten.
+static func font_ui() -> Font:
+	return font(FONT_UI_PATH)
+
+
+## Familjen Grotesk 700 (§2.8 title/heading/label).
+static func font_ui_bold() -> Font:
+	return font(FONT_UI_BOLD_PATH)
+
+
+## Anton (§2.8 display-xl/display-l: kedjans totalsiffra, number pop, rubrik).
+static func font_display() -> Font:
+	return font(FONT_DISPLAY_PATH)
+
+
+## Caveat Brush (§2.8 scrawl: kritklotter, max 3 ord).
+static func font_scrawl() -> Font:
+	return font(FONT_SCRAWL_PATH)
+
+
+## Sätter [param node]:s textfont. Tyst no-op när fonten inte gick att ladda.
+static func apply_font(node: Control, value: Font) -> void:
+	if node == null or value == null:
+		return
+	node.add_theme_font_override("normal_font" if node is RichTextLabel else "font", value)
+
+
+## §2.8: allt som ritas i display-xl eller display-l sätts i Anton.
+static func apply_display_font(node: Control) -> void:
+	apply_font(node, font_display())
+
+
+## §2.8: rubrik, knapptext och etikett är Familjen Grotesk 700.
+static func apply_bold_font(node: Control) -> void:
+	apply_font(node, font_ui_bold())
+
+
+## Storlek [b]och[/b] typsnitt för en av TYPE_*-konstanterna, enligt tabellen i
+## §2.8: display-xl/display-l är Anton, title/heading är Familjen Grotesk 700,
+## allt mindre är Familjen Grotesk 400 (projektets standardfont, ingen override
+## behövs). Ett anropsställe i stället för "sätt storlek här, kom ihåg fonten
+## där" – §2.8 är en tabell och ska läsas som en.
+static func apply_type(node: Control, size_token: int) -> void:
+	if node == null:
+		return
+	node.add_theme_font_size_override("font_size", dpi(size_token))
+	if size_token >= TYPE_DISPLAY_L:
+		apply_display_font(node)
+	elif size_token >= TYPE_TITLE:
+		apply_bold_font(node)
+
+
 # --- §2.9 Touch targets (dp) -----------------------------------------------
 const TOUCH_MIN: int = 48
 const DIE_SIZE: int = 64

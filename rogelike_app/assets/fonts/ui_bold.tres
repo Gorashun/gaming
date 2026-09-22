@@ -1,0 +1,19 @@
+[gd_resource type="FontVariation" load_steps=3 format=3]
+
+; UI-typsnittet, UI_GUIDE §2.8: Familjen Grotesk 700 (rubrik, knapptext, etikett).
+;
+; fallbacks: PIPWRECK Symbols (Noto Sans Symbols 2, OFL) baer formkoderna ur §2.3-§2.5 (⬬ ❖ ⬟ ✦ ✚ ⬣
+; ⬤ ⬚ ▭ ◣ ▤ ◉ ◖ ⛊ ➤ ⭮). Familjen Grotesk har 619 glyfer och saknar dem.
+; Importen staeller allow_system_fallback=false paa alla fyra filerna: utan det
+; laanar Godot systemfonten paa Linux/Android och webbexporten faar tofu i
+; staellet (docs/BACKLOG.md, webbverifieringen 2026-09-22).
+
+[ext_resource type="FontFile" uid="uid://b8sv8q4bjys6a" path="res://assets/fonts/familjen_grotesk_variable.ttf" id="1_base"]
+[ext_resource type="FontFile" uid="uid://bhubpxjf0onsx" path="res://assets/fonts/pipwreck_symbols.ttf" id="2_symbols"]
+
+[resource]
+fallbacks = Array[Font]([ExtResource("2_symbols")])
+base_font = ExtResource("1_base")
+variation_opentype = {
+"wght": 700
+}

@@ -138,15 +138,20 @@
 
 ## Noterat under webbverifieringen (dev, 2026-09-22)
 
-- **Symbolglyfer blir tofu i webbexporten.** Projektet har ingen egen font och
-  lutar sig på Godots inbyggda standardfont. Tecken den saknar (`◀ ▲ ▶` på
-  riktningsknapparna, `◫` sheet-ikonen, `⚙` kugghjulet, `⬬`/`◉` i chip och
-  effektrader) hämtas på Linux/Android från **systemfonten** via TextServerns
-  OS-fallback. Webbexporten har ingen systemfont: där ritas de som tomma rutor
-  med hexkod. Verifierat: `docs/screenshots/m5/gl_02_junction.png` (native, rätt)
-  mot `docs/screenshots/web_verify/corridor.png` (web, tofu). Fix: bunta en font
-  med täckning (t.ex. DejaVu Sans eller Noto Symbols) som `fallback` i temat,
-  eller byt glyferna mot texturer i `Art`. Ägare: UI (assets/).
+- ~~**Symbolglyfer blir tofu i webbexporten.**~~ **Löst 2026-09-22 (M5.6).**
+  Båda de föreslagna vägarna togs: `assets/fonts/` buntar nu Familjen Grotesk,
+  Anton och Caveat Brush (fulla OFL-original) plus `pipwreck_symbols.ttf` som
+  fallback för formkoderna, och glyferna som ingen buntad font har (`◀ ▲ ▶ ◫ ⚙
+  ↩ ⚔`) ritas som 16×16-sprites. `gui/theme/custom_font` sätter standardfonten
+  och alla fyra .ttf importeras med `allow_system_fallback=false`.
+  `tests/test_fonts.gd` fäller bygget om en oritbar symbol smyger tillbaka.
+  Skärmdumpar: `docs/screenshots/web_verify/{corridor,combat}.png`.
+- **Ny efter M5.6: spelet har ingen credits-/licensskärm.** Nu när fyra OFL-fonter
+  ligger i bygget kräver licensen (OFL §2) att copyrightnoteringen följer med
+  kopian. `assets/fonts/OFL-*.txt` är `.txt` och hamnar därför inte i pck:en –
+  de finns bara i repot. Behövs innan första publicerade build: en enkel
+  Kodex/Om-sida som listar `assets/ASSET_LICENSES.csv` och OFL-texterna. Ägare:
+  PM prioriterar, UI bygger.
 
 ## Noterat under M5.5 (dev, 2026-09-22)
 

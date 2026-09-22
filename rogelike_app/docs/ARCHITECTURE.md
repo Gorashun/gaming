@@ -14,6 +14,31 @@ tools/        headless-verktyg (run_simulator.gd, smoke_play.gd + smoke_driver.g
 tests/        gdUnit4-sviter. tests/support/ innehåller testhjälpmedel.
 ```
 
+## Typsnitt och symboler
+
+`assets/fonts/` innehåller projektets fyra OFL-fonter. `project.godot` sätter
+`gui/theme/custom_font = res://assets/fonts/ui_regular.tres` (Familjen Grotesk
+400 med `pipwreck_symbols.ttf` som fallback), och alla fyra `.ttf` importeras
+med **`allow_system_fallback=false`**.
+
+Det sista är inte en detalj. Utan det hämtar TextServern tecken den saknar ur
+operativsystemets fonter. Det fungerar på Linux och Android och finns inte i en
+webbexport, alltså renderar samma text olika på olika mål – exakt buggen M5.6
+fixade (`docs/CHANGELOG.md`). Regeln som följer:
+
+> **En symbol som ingen buntad font har får inte stå i text.** Den ritas som en
+> 16×16-sprite ur `assets/sprites/ui/` via `Art.apply_button_icon()` eller
+> `Art.icon_rect()`. `tests/test_fonts.gd` fäller bygget annars.
+
+Koden sätter aldrig `font_size` direkt utan går via `Tokens.apply_type(node,
+Tokens.TYPE_*)`, som sätter storlek och typsnitt enligt UI_GUIDE §2.8 (Anton på
+display-storlekarna, Familjen Grotesk 700 på rubrikerna).
+
+`tools/make_symbol_font.py` bygger `pipwreck_symbols.ttf` ur Noto Sans Symbols
+2 och skalar om dess vertikala metriker. Orörd deklarerar Noto en 1,70 em
+radlåda mot Familjen Grotesks 1,25 em, och eftersom `Font.get_height()` är
+maximum över fallbackkedjan blev varje etikett i spelet 36 % högre.
+
 ## Autoloads (M2)
 
 | Namn | Fil | Ansvar |

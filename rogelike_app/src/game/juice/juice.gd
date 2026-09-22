@@ -497,7 +497,8 @@ func number_pop(parent: Control, text: String, color: Color, at: Vector2, font_s
 	var label: Label = _pops[index]
 	label.text = text
 	label.add_theme_color_override("font_color", color)
-	label.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
+	# Storlek OCH typsnitt: en number pop i display-xl är Anton (UI_GUIDE §2.8).
+	Tokens.apply_type(label, font_size)
 	label.visible = true
 	label.modulate.a = 1.0
 	label.scale = Vector2.ONE if Settings.reduced_motion else Vector2.ONE * 0.6

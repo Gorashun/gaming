@@ -17,12 +17,18 @@ const HEIGHT_DP: int = 64
 const CENTER_WIDTH_FACTOR: float = 1.35
 const DISABLED_ALPHA: float = 0.38
 
-## Glyferna är formkod, inte dekoration: en färgblind spelare ska kunna skilja
+## Pilarna är formkod, inte dekoration: en färgblind spelare ska kunna skilja
 ## de tre knapparna på form allena (UI_GUIDE §2.4-principen, tillämpad).
-const GLYPHS: Dictionary = {
-	CorridorMap.ACTION_LEFT: "◀",
-	CorridorMap.ACTION_FORWARD: "▲",
-	CorridorMap.ACTION_RIGHT: "▶",
+##
+## [b]Sprite, inte glyf.[/b] Fram till 2026-09-22 stod här tecknen
+## [code]◀ ▲ ▶[/code] i knappens text. De finns inte i Godots inbyggda font, så
+## på Linux/Android lånades de ur systemfonten – och webbexporten, som inte har
+## någon systemfont, ritade tre tomma rutor (docs/BACKLOG.md). 16×16-sprites ur
+## [code]assets/sprites/ui/[/code] ritas likadant överallt.
+const ICONS: Dictionary = {
+	CorridorMap.ACTION_LEFT: &"arrow_left",
+	CorridorMap.ACTION_FORWARD: &"arrow_forward",
+	CorridorMap.ACTION_RIGHT: &"arrow_right",
 }
 const LABEL_KEYS: Dictionary = {
 	CorridorMap.ACTION_LEFT: ["CORRIDOR_LEFT", "LEFT"],
@@ -90,13 +96,26 @@ func _make_button(action: String) -> Button:
 	column.add_theme_constant_override("separation", 0)
 	button.add_child(column)
 
+	# Pilen och ordet på samma rad, centrerade: pilen är en TextureRect och kan
+	# inte ligga i etikettens text längre.
+	var title_row: HBoxContainer = HBoxContainer.new()
+	title_row.name = "TitleRow"
+	title_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	title_row.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_1))
+	column.add_child(title_row)
+
+	title_row.add_child(Art.icon_rect(ICONS[action], Tokens.CHALK_100, Tokens.TYPE_LABEL))
+
 	var title: Label = Label.new()
 	title.name = "Title"
-	title.text = "%s %s" % [GLYPHS[action], Tokens.translate_or(LABEL_KEYS[action][0], LABEL_KEYS[action][1])]
+	title.text = Tokens.translate_or(LABEL_KEYS[action][0], LABEL_KEYS[action][1])
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_LABEL))
 	title.add_theme_color_override("font_color", Tokens.CHALK_100)
-	column.add_child(title)
+	title_row.add_child(title)
 
 	var subtitle: Label = Label.new()
 	subtitle.name = "Subtitle"

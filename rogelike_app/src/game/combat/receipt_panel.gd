@@ -244,7 +244,9 @@ func _delivery_row(line: Dictionary, names: PackedStringArray, show_armor_line: 
 	var ink: Color = Tokens.CHALK_500 if dimmed else Tokens.CHALK_300
 
 	var badge: Label = _label(Tokens.TYPE_CAPTION - 3, ink)
-	badge.text = "↳" if bool(line["is_overflow"]) else SlotView.circled(int(line["slot"]) + 1)
+	# ⮡ och inte ↳: U+21B3 saknas i båda de buntade fonterna, U+2BA1 finns i
+	# Noto Sans Symbols 2 (assets/fonts/, docs/BACKLOG.md).
+	badge.text = "⮡" if bool(line["is_overflow"]) else SlotView.circled(int(line["slot"]) + 1)
 	badge.custom_minimum_size = Vector2(Tokens.dp(14), 0.0)
 	row.add_child(badge)
 

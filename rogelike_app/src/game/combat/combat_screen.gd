@@ -48,6 +48,11 @@ const ALLOW_EMPTY_SLOTS: bool = true
 ## "?" pulsar en gång efter spelarens tredje runda i första striden om ingen
 ## kedja ännu bekräftats – därefter aldrig igen (§6).
 const HELP_PULSE_ROUND: int = 3
+## HP-etikettens formkod. Halvcirkeln 0x25D6 ligger i Noto Sans Symbols 2, som
+## är buntad fallback i [code]assets/fonts/ui_regular.tres[/code] – den ritas
+## alltså likadant på web som på telefon. Står som konstant så att
+## [code]tests/test_fonts.gd[/code] kan slå upp den.
+const HP_MARK: String = "◖"
 
 @onready var _hp_label: Label = $Margin/Column/TopBar/HpLabel
 @onready var _hp_bar: ProgressBar = $Margin/Column/TopBar/HpBar
@@ -107,6 +112,9 @@ var _receipt_panel: ReceiptPanel = null
 var _arc_row: ArcRow = null
 var _help_layer: HelpLayer = null
 var _help_button: Button = null
+## Laddningspillrets 16×16-sprite. Ligger före [member _charge_label] i
+## toppfältet och följer dess synlighet.
+var _charge_icon: Control = null
 var _help_pulsed: bool = false
 var _popover: PanelContainer = null
 
@@ -217,13 +225,27 @@ func _style() -> void:
 	# Paus: enda vägen till inställningarna mitt i en run (UI_GUIDE §2.9).
 	var pause_button: Button = Button.new()
 	pause_button.name = "PauseButton"
-	pause_button.text = "⚙"
 	_style_button(pause_button, Tokens.TYPE_BODY, Tokens.CHALK_300, Tokens.TOUCH_MIN)
+	# Sprite, inte kugghjulsglyfen 0x2699: den finns i ingen buntad font och
+	# hämtades ur systemfonten, som webbexporten saknar (docs/BACKLOG.md).
+	Art.apply_button_icon(pause_button, &"settings", Tokens.CHALK_300, Tokens.TYPE_BODY)
 	pause_button.custom_minimum_size = Vector2(Tokens.dp(Tokens.TOUCH_MIN), Tokens.dp(Tokens.TOUCH_MIN))
 	pause_button.tooltip_text = Tokens.translate_or("SETTINGS_TITLE", "Settings")
 	pause_button.pressed.connect(_open_settings)
 	ChalkFx.apply(pause_button, ChalkFx.BUTTON)
 	$Margin/Column/TopBar.add_child(pause_button)
+
+	_charge_icon = Art.icon_rect(&"charge", Tokens.SEM_CHARGE, Tokens.TYPE_LABEL)
+	_charge_icon.name = "ChargeIcon"
+	_charge_icon.visible = false
+	$Margin/Column/TopBar.add_child(_charge_icon)
+	$Margin/Column/TopBar.move_child(_charge_icon, _charge_label.get_index())
+
+	# Ångra: pilen 0x21A9 saknas i varje buntad font. Sprite bredvid ordet –
+	# Button radar ikon och text själv när ikonen redan har rätt storlek.
+	Art.apply_button_icon(_undo_button, &"undo", Tokens.CHALK_300, Tokens.TYPE_CAPTION)
+	_undo_button.add_theme_constant_override("h_separation", Tokens.dpi(Tokens.SPACE_1))
+	_undo_button.text = tr("COMBAT_UNDO")
 
 	_apply_corridor_mode()
 
@@ -275,8 +297,8 @@ func _build_arc_row() -> void:
 func _build_help() -> void:
 	_help_button = Button.new()
 	_help_button.name = "HelpButton"
-	_help_button.text = Art.ui_icon_glyph(&"help")
 	_style_button(_help_button, Tokens.TYPE_BODY, Tokens.SEM_CHARGE, Tokens.TOUCH_MIN)
+	Art.apply_button_icon(_help_button, &"help", Tokens.SEM_CHARGE, Tokens.TYPE_BODY)
 	_help_button.custom_minimum_size = Vector2(Tokens.dp(Tokens.TOUCH_MIN), Tokens.dp(Tokens.TOUCH_MIN))
 	var outline: StyleBoxFlat = Tokens.box(Tokens.SEM_CHARGE, true, Tokens.STROKE_REG)
 	for state_name: String in ["normal", "hover", "pressed"]:
@@ -293,7 +315,7 @@ func _build_help() -> void:
 
 
 static func _apply_label(label: Label, font_size: int, color: Color, clip: bool = true) -> void:
-	label.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
+	Tokens.apply_type(label, font_size)
 	label.add_theme_color_override("font_color", color)
 	if clip and label.autowrap_mode == TextServer.AUTOWRAP_OFF:
 		label.clip_text = true
@@ -301,7 +323,7 @@ static func _apply_label(label: Label, font_size: int, color: Color, clip: bool 
 
 static func _style_button(button: Button, font_size: int, color: Color, height: int) -> void:
 	button.clip_text = true
-	button.add_theme_font_size_override("font_size", Tokens.dpi(font_size))
+	Tokens.apply_type(button, font_size)
 	button.add_theme_color_override("font_color", color)
 	button.add_theme_color_override("font_hover_color", color)
 	button.add_theme_color_override("font_pressed_color", color)
@@ -438,19 +460,18 @@ func _refresh_all() -> void:
 
 func _refresh_hud() -> void:
 	var facts: Dictionary = _reveal_facts()
-	_hp_label.text = "◖ %d/%d" % [state.player_hp, state.player_max_hp]
+	_hp_label.text = "%s %d/%d" % [HP_MARK, state.player_hp, state.player_max_hp]
 	_hp_bar.max_value = maxi(1, state.player_max_hp)
 	_hp_bar.value = clampi(state.player_hp, 0, state.player_max_hp)
 	var room_key: String = "COMBAT_BOSS_ROUND" if RunFlow.is_boss(_node) else "COMBAT_ROOM_ROUND"
 	_room_label.text = tr(room_key) % [int(_node.get("room", 1)), state.round_number]
 
 	# Laddningen med ORD och enhet. "⬤0/20" var skärmens mest obegripliga
-	# element (§1.1 rad 4, betyg 1/10).
+	# element (§1.1 rad 4, betyg 1/10). Ikonen är en sprite bredvid texten: som
+	# glyf i texten ritades den ur systemfonten och blev tofu på web.
 	_charge_label.visible = reveal.shows("charge", facts)
-	_charge_label.text = "%s %s" % [
-		Art.ui_icon_glyph(&"charge"),
-		Tokens.translate_or("COMBAT_CHARGE_PILL", "Charge %d") % state.charge,
-	]
+	_charge_icon.visible = _charge_label.visible
+	_charge_label.text = Tokens.translate_or("COMBAT_CHARGE_PILL", "Charge %d") % state.charge
 	# Ward har ingen egen lärkurveflagga: pillret finns bara när det betyder
 	# något, dvs. när spelaren har Ward eller en VOID-slot som kan ge det (§7).
 	_ward_label.visible = state.ward > 0 or (facts["slot_types"] as Array).has(Rules.SlotType.VOID)
@@ -1211,12 +1232,10 @@ func _apply_view_to_panels() -> void:
 			int(enemy.get("burn", 0)),
 			int(enemy.get("poison", 0)),
 		)
-	_hp_label.text = "◖ %d/%d" % [int(_view.get("player_hp", 0)), state.player_max_hp]
+	_hp_label.text = "%s %d/%d" % [HP_MARK, int(_view.get("player_hp", 0)), state.player_max_hp]
 	_hp_bar.value = clampi(int(_view.get("player_hp", 0)), 0, state.player_max_hp)
-	_charge_label.text = "%s %s" % [
-		Art.ui_icon_glyph(&"charge"),
-		Tokens.translate_or("COMBAT_CHARGE_PILL", "Charge %d") % int(_view.get("charge", 0)),
-	]
+	_charge_label.text = Tokens.translate_or("COMBAT_CHARGE_PILL", "Charge %d") \
+		% int(_view.get("charge", 0))
 	_ward_label.text = Tokens.translate_or("COMBAT_WARD_PILL", "Ward %d") % int(_view.get("ward", 0))
 
 

@@ -334,11 +334,13 @@ func slot_type() -> int:
 	return _slot.type if _slot != null else Rules.SlotType.PLAIN
 
 
-## ①②③④⑤ – samma bricka i sloten och i kvittots leveransrad.
+## Slotens nummer – samma bricka i sloten och i kvittots leveransrad.
+##
+## [b]Ren siffra sedan 2026-09-22.[/b] Här stod ①②③④⑤ (U+2460…), som varken
+## Familjen Grotesk eller Noto Sans Symbols 2 har. De kom ur systemfonten och
+## blev tomma rutor i webbexporten (docs/BACKLOG.md). Ringen runt siffran är
+## brickans StyleBox, inte tecknet – formkoden sitter alltså kvar.
 static func circled(number: int) -> String:
-	const GLYPHS: Array[String] = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨"]
-	if number >= 1 and number <= GLYPHS.size():
-		return GLYPHS[number - 1]
 	return str(number)
 
 

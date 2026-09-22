@@ -54,6 +54,17 @@ window/stretch/scale_mode="fractional"
 
 project/assembly_name="PIPWRECK"
 
+[gui]
+
+; Projektets standardfont. Utan den ritar Godot allt med sin inbyggda font och
+; lånar systemfonten för tecken den saknar – det fungerar på Linux/Android men
+; INTE i webbexporten, där samma tecken blir tofu (docs/BACKLOG.md,
+; "Symbolglyfer blir tofu i webbexporten"). ui_regular.tres är Familjen Grotesk
+; (UI_GUIDE §2.8) med Noto Sans Symbols 2 som explicit fallback, och alla fyra
+; fontfilerna importeras med allow_system_fallback=false. Samma text renderas
+; därmed likadant på Android, Linux och web.
+theme/custom_font="res://assets/fonts/ui_regular.tres"
+
 [input_devices]
 
 ; Hela UI:t är Control-noder som lyssnar på musknappar (Button.pressed,

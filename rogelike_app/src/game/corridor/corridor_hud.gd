@@ -84,16 +84,16 @@ func _build() -> void:
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	bar.add_child(spacer)
 
-	_help_button = _icon_button(Art.ui_icon_glyph(&"help"), Tokens.SEM_CHARGE)
+	_help_button = _icon_button(&"help", Tokens.SEM_CHARGE)
 	_help_button.visible = false
 	_help_button.pressed.connect(func() -> void: help_pressed.emit())
 	bar.add_child(_help_button)
 
-	_sheet_button = _icon_button("◫", Tokens.CHALK_300)
+	_sheet_button = _icon_button(&"sheet", Tokens.CHALK_300)
 	_sheet_button.pressed.connect(func() -> void: character_sheet_pressed.emit())
 	bar.add_child(_sheet_button)
 
-	var settings_button: Button = _icon_button("⚙", Tokens.CHALK_300)
+	var settings_button: Button = _icon_button(&"settings", Tokens.CHALK_300)
 	settings_button.pressed.connect(func() -> void: settings_pressed.emit())
 	bar.add_child(settings_button)
 
@@ -131,14 +131,18 @@ func _label(text: String, size: int, color: Color) -> Label:
 	return node
 
 
-func _icon_button(glyph: String, color: Color) -> Button:
+## Knapparna i HUD-raden bär en 16×16-sprite, aldrig en symbolglyf: glyferna
+## ritades ur systemfonten och blev tomma rutor i webbexporten
+## (docs/BACKLOG.md). [method Art.apply_button_icon] faller tillbaka på
+## reservglyfen om PNG:en saknas.
+func _icon_button(icon_name: StringName, color: Color) -> Button:
 	var button: Button = Button.new()
-	button.text = glyph
 	button.focus_mode = Control.FOCUS_NONE
 	button.custom_minimum_size = Vector2(Tokens.dp(34), Tokens.dp(34))
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY))
 	button.add_theme_color_override("font_color", color)
+	Art.apply_button_icon(button, icon_name, color, Tokens.TYPE_BODY)
 	var style: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR)
 	style.bg_color = Color(Tokens.SURFACE_RAISED, 0.85)
 	for state: String in ["normal", "hover", "pressed", "focus"]:
@@ -153,6 +157,9 @@ func set_status(hp: int, max_hp: int, room: int, floor_index: int, pips: int) ->
 	_hp_bar.max_value = maxi(max_hp, 1)
 	_hp_bar.value = clampi(hp, 0, maxi(max_hp, 1))
 	_room_chip.text = " %s " % Tokens.translate_or("CORRIDOR_ROOM", "ROOM %d") % room
+	# ◉ står kvar som tecken: det ligger i Noto Sans Symbols 2, som är buntad
+	# fallback i assets/fonts/ui_regular.tres. Bara glyfer som INGEN buntad font
+	# har (◫ ⚙ ↩ ⚔ ◀▲▶) blev sprites.
 	_pips_label.text = "◉ %d" % pips
 	_floor_index = floor_index
 
@@ -192,5 +199,7 @@ func set_sheet_badge(pending: bool) -> void:
 	style.bg_color = Color(Tokens.SURFACE_RAISED, 0.85)
 	for state: String in ["normal", "hover", "pressed", "focus"]:
 		_sheet_button.add_theme_stylebox_override(state, style)
-	_sheet_button.add_theme_color_override("font_color",
-		Tokens.SEM_CHARGE if pending else Tokens.CHALK_300)
+	var ink: Color = Tokens.SEM_CHARGE if pending else Tokens.CHALK_300
+	_sheet_button.add_theme_color_override("font_color", ink)
+	# Ikonen är en sprite: den tintas med icon_*_color, inte med font_color.
+	Art.apply_button_icon(_sheet_button, &"sheet", ink, Tokens.TYPE_BODY)

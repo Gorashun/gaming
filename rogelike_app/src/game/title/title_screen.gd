@@ -41,7 +41,7 @@ func _style() -> void:
 	_buttons.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_3))
 
 	_logo.text = "PIPWRECK"
-	_logo.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_DISPLAY_XL))
+	Tokens.apply_type(_logo, Tokens.TYPE_DISPLAY_XL)
 	_logo.add_theme_color_override("font_color", Tokens.CHALK_100)
 	_logo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_logo.clip_text = true

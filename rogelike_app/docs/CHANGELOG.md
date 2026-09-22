@@ -2,6 +2,55 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M5.6 – projektet har en egen font (2026-09-22)
+
+**Symbolglyferna var tofu i webbexporten.** Projektet hade ingen egen font.
+Godot ritade allt med sin inbyggda och hämtade tecken den saknade – `◀ ▲ ▶`
+på riktningsknapparna, `◫` på character sheetet, `⚙` på inställningarna – ur
+**systemfonten**. Det fungerade på Linux och Android och gav tomma rutor på web
+(`docs/screenshots/m5/gl_02_junction.png` mot den gamla
+`docs/screenshots/web_verify/corridor.png`). Samma risk fanns för å/ä/ö.
+
+**1. Fyra OFL-fonter i `assets/fonts/`**
+- `familjen_grotesk_variable.ttf` (UI, wght 400–700), `anton_regular.ttf`
+  (display), `caveat_brush_regular.ttf` (scrawl) – fulla originalfiler från
+  google/fonts, inte subset. Alla täcker å/ä/ö och siffror.
+- `pipwreck_symbols.ttf` – Noto Sans Symbols 2 som symbolfallback för
+  formkoderna i UI_GUIDE §2.3–2.5 (`⬬ ❖ ⬟ ✦ ✚ ⬣ ⬤ ⬚ ▭ ◣ ▤ ◉ ◖ ⛊ ➤`). Orörd
+  gjorde den varje etikett 36 % högre – Godot storlekssätter ur
+  `Font.get_height()`, som är maximum över fallbackkedjan, och Notos radlåda är
+  1,70 em mot Familjen Grotesks 1,25 em. Stridsskärmen växte 127 px förbi
+  tumzonen. `tools/make_symbol_font.py` skalar om metrikerna och bara dem.
+- `ui_regular.tres` / `ui_bold.tres` / `display.tres` / `scrawl.tres` binder
+  bastypsnitt + fallback. `project.godot: gui/theme/custom_font` pekar på den
+  första. Alla fyra .ttf importeras med `allow_system_fallback=false`: spelet
+  får aldrig låna en systemfont igen.
+- `Tokens.font_ui/_bold/_display/_scrawl()` och `Tokens.apply_type()` – §2.8 är
+  en tabell och läses nu som en: storlek OCH typsnitt på samma anropsställe.
+  Anton sitter på display-xl/display-l (number pop, titel, bossnamn).
+
+**2. Sex nya 16×16-ikoner ersätter glyfer som ingen font har**
+- `icon_arrow_{left,forward,right}`, `icon_sheet`, `icon_settings`, `icon_undo`
+  ur `tools/gen_pixel_assets.py` (own-work).
+- `Art.apply_button_icon()` / `Art.icon_rect()` / `Art.scaled_ui_icon()` –
+  ikonen förstoras i texturen med nearest och heltalsfaktor. `icon_max_width`
+  kan bara krympa, så en 16 px-sprite blev annars en prick i en 102 px-knapp.
+- Bytt till sprite: riktningsknapparna, character sheet-knappen (torg + korridor),
+  inställningar (torg, korridor, strid), ångra, "?", laddningspillret samt
+  rustning och attack i fiendechipet.
+- Kvar som text, men ur en **buntad** font: `◉ ◖ ✕ ⬬ ❖ ⬟ ✦ ✚ ⬣ ⬤ ⬚ ▭ ◣ ▤`.
+  Utbytta i CSV:n: `↩ → (inget)`, `↳ → ⮡`, `↻ → ⭮`. `卌` blev `||||/` och
+  `①②③` blev rena siffror i brickan – ringen är brickans ram.
+
+**3. `tests/test_fonts.gd`** – 12 tester: filerna finns, OFL-texten följer med,
+`gui/theme/custom_font` pekar rätt, fallbacken finns, **fallbacken får inte
+blåsa upp radlådan**, varje tecken i `translations.csv`, i `Art.UI_ICON_GLYPHS`
+och i `Tokens`-tabellerna har en glyf, de nio ikonerna finns och är 16×16, och
+ikonstorlekarna ligger på heltalsskala.
+
+**Körningar:** hela sviten 403 test, 0 fel. Rökprovet grönt i `en` och `sv`.
+Webbexport + Playwright: ingen tofu i korridoren eller striden.
+
 ## M5.5 – en enda stridspresentation (2026-09-22)
 
 **Anders fick "sidescroll" i webbversionen.** Det var inte ett webbfel: det var

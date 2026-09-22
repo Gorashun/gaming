@@ -45,11 +45,11 @@ COMBAT_BOSS_ROUND,BOSS %d · R%d,BOSS %d · R%d
 COMBAT_TOTAL_CAPTION,damage · %d dice in the tray,skada · %d tärningar i brickan
 COMBAT_TOTAL_CAPTION_IDLE,damage · chain previewed,skada · kedjan förhandsvisad
 COMBAT_REROLL,REROLL %d,OMKAST %d
-COMBAT_UNDO,↩ UNDO,↩ ÅNGRA
+COMBAT_UNDO,UNDO,ÅNGRA
 COMBAT_CONFIRM_EMPTY,CONFIRM EMPTY,BEKRÄFTA TOMT
 COMBAT_CONFIRM_CHAIN,CONFIRM CHAIN · %d,BEKRÄFTA KEDJA · %d
 COMBAT_CHAIN_HIT,%d → %s,%d → %s
-COMBAT_CHAIN_OVERFLOW,↳ %d overflow → %s,↳ %d överflöd → %s
+COMBAT_CHAIN_OVERFLOW,⮡ %d overflow → %s,⮡ %d överflöd → %s
 COMBAT_CHAIN_EMPTY,No damage yet – place your dice.,Ingen skada ännu – placera tärningar.
 COMBAT_HOUSE,HOUSE ×%d,KÅK ×%d
 COMBAT_ARMOR_BLOCKED,ARMOR %d,RUSTNING %d
@@ -67,7 +67,7 @@ FACE_EFFECT_LIFESTEAL,✚ drain,✚ sug
 FACE_EFFECT_COPY_LEFT,❖ copy,❖ kopia
 FACE_EFFECT_ANVIL,⬣ double,⬣ dubbel
 FACE_EFFECT_GROW,↑ grows,↑ växer
-FACE_EFFECT_REFUND,↻ reroll,↻ omkast
+FACE_EFFECT_REFUND,⭮ reroll,⭮ omkast
 FACE_EFFECT_LOCKED,⬤ locked,⬤ låst
 SLOT_STATE_GRABBED,GRABBED,GRIPEN
 SLOT_STATE_EMPTY,EMPTY,TOM
@@ -170,7 +170,7 @@ COMBAT_RECEIPT_ARMOR_NOTE,%d per hit × %d hits,%d per träff × %d träffar
 COMBAT_RECEIPT_LINE,%d − %d = %d,%d − %d = %d
 COMBAT_RECEIPT_TARGET,→ %s   %d → %d,→ %s   %d → %d
 COMBAT_RECEIPT_KILL,%s dies,%s dör
-COMBAT_RECEIPT_OVERFLOW,↳ %d spill → %s,↳ %d spill → %s
+COMBAT_RECEIPT_OVERFLOW,⮡ %d spill → %s,⮡ %d spill → %s
 COMBAT_RECEIPT_STOPPED,stopped by the armor,stoppas av rustningen
 COMBAT_RECEIPT_STATUS,+ %s %d,+ %s %d
 COMBAT_RECEIPT_TO_WARD,→ %d ward,→ %d ward

@@ -24,7 +24,11 @@ const BAR_HEIGHT_DP: int = 8
 var _name_label: Label = null
 var _hp_bar: ProgressBar = null
 var _hp_label: Label = null
-var _stats_label: Label = null
+var _armor_icon: Control = null
+var _armor_label: Label = null
+var _status_label: Label = null
+var _attack_icon: Control = null
+var _attack_label: Label = null
 var _route_label: Label = null
 var _forecast: ForecastOverlay = null
 var _plate: PanelContainer = null
@@ -113,9 +117,33 @@ func _init() -> void:
 	_hp_label.clip_text = false
 	row.add_child(_hp_label)
 
-	_stats_label = make_label(Tokens.TYPE_CAPTION - 2, Tokens.SEM_SHIELD)
-	_stats_label.clip_text = false
-	row.add_child(_stats_label)
+	# [b]Rustning och attack är sprites, inte glyfer.[/b] Chipet ritade förut
+	# "⛊6 ⚔3" som text. Ingen av de tecknen finns i Godots inbyggda font, så de
+	# lånades ur systemfonten – och webbexporten, som inte har någon, ritade två
+	# tomma rutor (docs/BACKLOG.md). Ikon + siffra som egna noder i samma rad
+	# ger samma kompakta avläsning och samma bild överallt.
+	_armor_icon = Art.icon_rect(&"armor", Tokens.SEM_SHIELD, Tokens.TYPE_CAPTION)
+	_armor_icon.visible = false
+	row.add_child(_armor_icon)
+
+	_armor_label = make_label(Tokens.TYPE_CAPTION - 2, Tokens.SEM_SHIELD)
+	_armor_label.clip_text = false
+	_armor_label.visible = false
+	row.add_child(_armor_label)
+
+	_status_label = make_label(Tokens.TYPE_CAPTION - 2, Tokens.SEM_SHIELD)
+	_status_label.clip_text = false
+	_status_label.visible = false
+	row.add_child(_status_label)
+
+	_attack_icon = Art.icon_rect(&"attack", Tokens.SEM_SHIELD, Tokens.TYPE_CAPTION)
+	_attack_icon.visible = false
+	row.add_child(_attack_icon)
+
+	_attack_label = make_label(Tokens.TYPE_CAPTION - 2, Tokens.SEM_SHIELD)
+	_attack_label.clip_text = false
+	_attack_label.visible = false
+	row.add_child(_attack_label)
 
 	# Leveransraden, på fienden själv. I den platta skärmen står den i
 	# en egen rad; den finns inte längre, och siffran hör ändå hemma där
@@ -151,17 +179,25 @@ func update_vitals(hp: int, armor: int, burn: int, poison: int) -> void:
 	# Rustning och attack med ikon OCH siffra på samma rad. Intent står som en
 	# siffra bakom svärdet: i korridoren finns ingen plats för verbet, men
 	# ikonen bär riktningen (§5) och långtrycket ger hela meningen.
-	var parts: PackedStringArray = PackedStringArray()
-	if armor > 0 and _show_armor:
-		parts.append("%s%d" % [icon_glyph(&"armor"), armor])
+	var show_armor: bool = armor > 0 and _show_armor
+	_armor_icon.visible = show_armor
+	_armor_label.visible = show_armor
+	_armor_label.text = "%d" % armor
+
+	var status: PackedStringArray = PackedStringArray()
 	if burn > 0:
-		parts.append(Tokens.translate_or("COMBAT_ENEMY_BURN_SHORT", "b%d") % burn)
+		status.append(Tokens.translate_or("COMBAT_ENEMY_BURN_SHORT", "b%d") % burn)
 	if poison > 0:
-		parts.append(Tokens.translate_or("COMBAT_ENEMY_POISON_SHORT", "p%d") % poison)
-	if _enemy != null and _enemy.intent != null and _enemy.intent.kind == Rules.IntentKind.ATTACK:
-		parts.append("%s%d" % [icon_glyph(&"attack"), _enemy.intent.value])
-	_stats_label.text = " ".join(parts)
-	_stats_label.visible = not parts.is_empty()
+		status.append(Tokens.translate_or("COMBAT_ENEMY_POISON_SHORT", "p%d") % poison)
+	_status_label.text = " ".join(status)
+	_status_label.visible = not status.is_empty()
+
+	var attacks: bool = _enemy != null and _enemy.intent != null \
+		and _enemy.intent.kind == Rules.IntentKind.ATTACK
+	_attack_icon.visible = attacks
+	_attack_label.visible = attacks
+	if attacks:
+		_attack_label.text = "%d" % _enemy.intent.value
 	var dead: bool = hp <= 0
 	modulate.a = 0.3 if dead else 1.0
 	mouse_filter = Control.MOUSE_FILTER_IGNORE if dead else Control.MOUSE_FILTER_STOP

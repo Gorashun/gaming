@@ -74,7 +74,7 @@ func _build() -> void:
 	inner.add_child(_rows)
 
 	_title = Label.new()
-	_title.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_TITLE))
+	Tokens.apply_type(_title, Tokens.TYPE_TITLE)
 	_title.add_theme_color_override("font_color", Tokens.CHALK_100)
 	_title.clip_text = true
 	ChalkFx.apply(_title, ChalkFx.DISPLAY)
