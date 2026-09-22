@@ -73,7 +73,18 @@
   window.fetch = (u, o) => { const p = lookup(u instanceof Request ? u.url : u); return p ? Promise.resolve(synth(p)) : realFetch(u, o); };
 
   hint.textContent = 'Starting the engine.';
-  const config = { args: [], canvasResizePolicy: 2, emscriptenPoolSize: 8, ensureCrossOriginIsolationHeaders: false,
+  // Debug start out of the URL: ?start=corridor&seed=7 becomes the user args
+  // GameController reads after '--'. No query params = exactly as before.
+  // Values are whitelisted here too, so a typo cannot reach the engine.
+  const params = new URLSearchParams(window.location.search);
+  const START_TARGETS = ['town', 'corridor', 'sheet'];
+  const start = (params.get('start') || '').trim().toLowerCase();
+  const seed = (params.get('seed') || '').trim();
+  const userArgs = [];
+  if (START_TARGETS.includes(start)) userArgs.push('--pipwreck-start=' + start);
+  if (/^\d{1,18}$/.test(seed)) userArgs.push('--pipwreck-seed=' + seed);
+  if (userArgs.length) userArgs.unshift('--');
+  const config = { args: userArgs, canvasResizePolicy: 2, emscriptenPoolSize: 8, ensureCrossOriginIsolationHeaders: false,
                    executable: 'pipwreck', experimentalVK: false, fileSizes: { 'pipwreck.pck': 6493616, 'pipwreck.wasm': 37686550 },
                    focusCanvas: true, gdextensionLibs: [], godotPoolSize: 4,
                    onProgress: (cur, tot) => { if (tot > 0) fill.style.width = Math.round(100 * cur / tot) + '%'; } };

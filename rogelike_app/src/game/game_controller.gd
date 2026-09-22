@@ -120,10 +120,81 @@ func boot() -> void:
 	# en svensk telefon fick svenska utan att någon valt det
 	# (DECISIONS 2026-09-21). Engelska är källspråket; svenska är ett val.
 	TranslationServer.set_locale(Settings.effective_locale())
+	var target: String = _cmdline_start()
+	if target != "":
+		_boot_debug_start(target)
+		return
 	if Settings.smith_variant == "":
 		show_smith_choice()
 		return
 	show_title()
+
+
+# ---------------------------------------------------------------------------
+# Felsökningsstart: --pipwreck-start=town|corridor|sheet
+# ---------------------------------------------------------------------------
+
+## Giltiga mål för [code]--pipwreck-start=[/code].
+const START_TOWN: String = "town"
+const START_CORRIDOR: String = "corridor"
+const START_SHEET: String = "sheet"
+const START_TARGETS: Array[String] = [START_TOWN, START_CORRIDOR, START_SHEET]
+
+const START_PREFIX: String = "--pipwreck-start="
+
+
+## [b]Ren funktion.[/b] Vilket startmål argumenten begär, eller [code]""[/code].
+##
+## Läses [b]bara[/b] ur användararumenten efter [code]--[/code], precis som
+## [code]--pipwreck-seed[/code]: en spelare ska aldrig kunna hamna här av misstag,
+## och webbladdaren skickar dem som [code]args: ['--', '--pipwreck-start=…'][/code].
+## Sista flaggan vinner, okända värden ignoreras (flaggan får aldrig fälla starten).
+static func parse_start_target(args: PackedStringArray) -> String:
+	var found: String = ""
+	for arg: String in args:
+		if not arg.begins_with(START_PREFIX):
+			continue
+		var value: String = arg.substr(START_PREFIX.length()).strip_edges().to_lower()
+		if START_TARGETS.has(value):
+			found = value
+	return found
+
+
+func _cmdline_start() -> String:
+	return parse_start_target(OS.get_cmdline_user_args())
+
+
+## Hoppar förbi kroppsval, titel och tutorial och landar direkt i målskärmen.
+##
+## Kroppsvalet och tutorialen [b]kvitteras[/b] i stället för att kringgås:
+## en profil utan variant får standardkroppen och en oklarad tutorial markeras
+## som klar med allt avslöjat, exakt som SKIP TUTORIAL gör (§B.2). Annars skulle
+## staden och korridoren visas med ett halvt UI.
+func _boot_debug_start(target: String) -> void:
+	if Settings.smith_variant == "":
+		Settings.set_value(&"smith_variant", Art.SMITH_VARIANT_DEFAULT)
+	if not meta.tutorial_done:
+		meta.tutorial_done = true
+		meta.reveal = Reveal.all_on()
+		meta.runs = maxi(meta.runs, 1)
+		SaveIO.save_meta(meta)
+	match target:
+		START_CORRIDOR:
+			SaveIO.clear()
+			start_new_run(next_seed())
+		START_SHEET:
+			# Sheetet är en modal och behöver en run under sig för att ha något
+			# att visa. Anropet skjuts upp så att korridoren hinner monteras –
+			# [method _show] bygger skärmen först nästa bildruta.
+			SaveIO.clear()
+			start_new_run(next_seed())
+			_open_sheet_deferred.call_deferred()
+		_:
+			show_town()
+
+
+func _open_sheet_deferred() -> void:
+	open_character_sheet()
 
 
 func show_smith_choice() -> void:

@@ -376,3 +376,72 @@ func test_go_down_is_always_in_the_thumb_zone() -> void:
 	assert_float(go_down.get_global_rect().end.y).is_less_equal(1921.0)
 	assert_float(go_down.get_global_rect().position.y).override_failure_message(
 		"GO DOWN ligger utanför tumzonen").is_greater(1920.0 * 0.58)
+
+
+# ---------------------------------------------------------------------------
+# Tumzonen måste gå att träffa (regression 2026-09-22)
+# ---------------------------------------------------------------------------
+
+## Godots träffsökning, förenklad: översta syskonet vinner, och [b]PASS stoppar
+## sökningen[/b] precis som STOP – skillnaden är bara att eventet sedan
+## bubblar vidare till FÖRÄLDERN, aldrig till syskonen under.
+##
+## Det var den missuppfattningen som gjorde hela korridoren otryckbar i
+## webbexporten: `Chips` och `Overlay` låg överst, täckte hela skärmen och stod
+## på PASS. Varje tapp på FORWARD, på HUD:ens knappar och på fällprompten
+## hamnade i en tom container.
+static func _topmost_hit(node: Control, point: Vector2) -> Control:
+	for i: int in range(node.get_child_count() - 1, -1, -1):
+		var child: Control = node.get_child(i) as Control
+		if child == null or not child.visible:
+			continue
+		var found: Control = _topmost_hit(child, point)
+		if found != null:
+			return found
+	if node.mouse_filter != Control.MOUSE_FILTER_IGNORE and node.get_global_rect().has_point(point):
+		return node
+	return null
+
+
+func test_the_forward_button_is_the_topmost_control_under_the_thumb() -> void:
+	var screen: CorridorScreen = _corridor(_map())
+	await await_millis(40)
+	var forward: Button = screen.view().get_node("Steer/Row/Forward")
+	var hit: Control = _topmost_hit(screen, forward.get_global_rect().get_center())
+	assert_object(hit).override_failure_message(
+		"tappet på FORWARD togs av %s, inte av knappen" % [hit.get_path() if hit != null else "ingenting"]
+	).is_same(forward)
+
+
+static func _buttons_under(node: Node, out: Array[Button]) -> Array[Button]:
+	for child: Node in node.get_children():
+		var button: Button = child as Button
+		if button != null and button.visible and not button.disabled:
+			out.append(button)
+		_buttons_under(child, out)
+	return out
+
+
+func test_every_visible_corridor_button_is_the_topmost_control_under_the_thumb() -> void:
+	# Character sheet, inställningar och de riktningsknappar som är giltiga.
+	var screen: CorridorScreen = _corridor(_map())
+	await await_millis(40)
+	var buttons: Array[Button] = _buttons_under(screen.view(), [] as Array[Button])
+	assert_int(buttons.size()).is_greater(2)
+	for button: Button in buttons:
+		var hit: Control = _topmost_hit(screen, button.get_global_rect().get_center())
+		assert_object(hit).override_failure_message(
+			"tappet på %s togs av %s" % [button.get_path(), hit.get_path() if hit != null else "ingenting"]
+		).is_same(button)
+
+
+func test_the_full_screen_layers_never_stop_a_tap_themselves() -> void:
+	# De här två har inget eget innehåll att trycka på: deras barn (chip,
+	# prompt, belöningskort) sätter STOP själva. Står de på PASS eller STOP
+	# sväljer de hela korridoren under sig.
+	var screen: CorridorScreen = _corridor(_map())
+	await await_millis(40)
+	for layer_name: String in ["Chips", "Overlay"]:
+		assert_int((screen.get_node(layer_name) as Control).mouse_filter).override_failure_message(
+			"%s måste vara MOUSE_FILTER_IGNORE" % layer_name
+		).is_equal(Control.MOUSE_FILTER_IGNORE)

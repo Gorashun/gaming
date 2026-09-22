@@ -32,9 +32,12 @@ var _targets: PackedVector2Array = PackedVector2Array()
 
 
 func _init() -> void:
-	# PASS och inte IGNORE: chipen ska gå att trycka på, men ytan mellan dem hör
-	# till korridoren under.
-	mouse_filter = Control.MOUSE_FILTER_PASS
+	# [b]IGNORE och inte PASS.[/b] I Godot 4 stoppar PASS träffsökningen på den
+	# här kontrollen och skickar sedan eventet till sin FÖRÄLDER, aldrig till
+	# syskonen under. Chipslagret täcker hela korridorrutan, så PASS svalde
+	# varje tapp på HUD:en och tumzonen. IGNORE hoppar över lagret självt i
+	# träffsökningen medan chipen (som är STOP) fortfarande tar sina egna tapp.
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_process(false)
 
 

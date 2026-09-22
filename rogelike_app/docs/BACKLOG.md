@@ -135,3 +135,15 @@
 - **Splitgolvet 36 % är mätt mot vår text, inte mot 130 % textstorlek.** Faller
   kvittot utanför även där behöver [ReceiptPanel] en kompakt variant.
 - **`Engine.max_fps`** sätts fortfarande inte av spelet (PM-fråga från dag 2).
+
+## Noterat under webbverifieringen (dev, 2026-09-22)
+
+- **Symbolglyfer blir tofu i webbexporten.** Projektet har ingen egen font och
+  lutar sig på Godots inbyggda standardfont. Tecken den saknar (`◀ ▲ ▶` på
+  riktningsknapparna, `◫` sheet-ikonen, `⚙` kugghjulet, `⬬`/`◉` i chip och
+  effektrader) hämtas på Linux/Android från **systemfonten** via TextServerns
+  OS-fallback. Webbexporten har ingen systemfont: där ritas de som tomma rutor
+  med hexkod. Verifierat: `docs/screenshots/m5/gl_02_junction.png` (native, rätt)
+  mot `docs/screenshots/web_verify/corridor.png` (web, tofu). Fix: bunta en font
+  med täckning (t.ex. DejaVu Sans eller Noto Symbols) som `fallback` i temat,
+  eller byt glyferna mot texturer i `Art`. Ägare: UI (assets/).

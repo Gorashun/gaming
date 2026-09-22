@@ -2,6 +2,30 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## Webbverifiering: korridoren i WebGL2 (2026-09-22)
+
+- **`CorridorScreen/Chips` och `CorridorScreen/Overlay` svalde varje tapp i
+  korridoren.** Två tomma helskärmslager låg överst på `MOUSE_FILTER_PASS`, och
+  PASS stoppar Godots träffsökning precis som STOP – eventet bubblar sedan till
+  *föräldern*, aldrig till syskonet under. FORWARD, character sheetet,
+  inställningarna och fällprompten var otryckbara på alla plattformar. Båda står
+  nu på `IGNORE`; barnen sätter STOP själva.
+  (`src/game/corridor/corridor_screen.tscn`, `src/game/corridor/enemy_chips.gd`)
+- `tests/test_corridor_flow.gd` – tre nya test som speglar Godots träffsökning
+  och kräver att varje synlig korridorknapp är översta kontrollen under sin egen
+  mittpunkt. De fäller den gamla scenen med rätt meddelande.
+- `--pipwreck-start=town|corridor|sheet` i `GameController.boot()`, läst bara ur
+  `OS.get_cmdline_user_args()` som `--pipwreck-seed`. Kvitterar kroppsval och
+  tutorial i stället för att kringgå dem. `tests/test_debug_start.gd`, 6 test.
+- `tools/web/index.html` läser `?start=…&seed=…` och skickar vidare som
+  `args: ['--', …]`. Utan query-parametrar startar spelet exakt som förut.
+- Verifierat i Chromium/SwiftShader, WebGL 2.0 (OpenGL ES 3.0), 480×900:
+  torget, korridoren (depth fog, `AnimatedSprite3D`, SubViewport) och character
+  sheetet renderar, och tre tapp på FORWARD går två rutor in i ett möte med
+  stridssplitten monterad. Skärmdumpar i `docs/screenshots/web_verify/`.
+- Känt, ej åtgärdat: symbolglyfer (`◀ ▲ ▶ ◫ ⚙`) blir tofu i webbexporten –
+  ingen systemfont att falla tillbaka på. Se `docs/BACKLOG.md`.
+
 ## M5 – Korridoren, dag 3: integrationen (2026-09-21)
 
 Korridoren blev spelet. Flödet är nu **stad → korridor → strid i korridoren →

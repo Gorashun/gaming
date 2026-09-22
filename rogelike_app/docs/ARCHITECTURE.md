@@ -445,7 +445,7 @@ inom en strid: en ruta som hoppar upp och ner medan spelaren placerar tärningar
 är värre än en som är lite för liten. Golvet `SPLIT_COMBAT_MIN = 0,36` är mätt,
 inte gissat; research 05 §3:s 40 % räknade inte med ett fullt kvitto.
 
-### Tre fällor i korridoren som kostade tid
+### Fyra fällor i korridoren som kostade tid
 
 1. **Krypningen skrev över avslöjandet.** `_show_silhouettes(1)` tweenar
    formeringen 400 ms framåt, men ett steg tar 180 ms. Tweenen levde alltså
@@ -458,6 +458,20 @@ inte gissat; research 05 §3:s 40 % räknade inte med ett fullt kvitto.
 3. **Rutan man står på går före rutan man går mot.** `cell_changed` kommer före
    `encounter_reached`; primade `GameController` blint framåt möttes spelaren av
    fyra Rostråttor med nästa rums monster i bild.
+
+4. **`MOUSE_FILTER_PASS` släpper inte igenom till syskonen under.** Det var
+   den dyraste av de fyra (hittad 2026-09-22 i webbverifieringen, men den gällde
+   alla plattformar). Godots träffsökning går uppifrån och ned bland syskonen
+   och **stannar** på första kontroll vars `mouse_filter != IGNORE`; PASS
+   betyder bara att eventet sedan bubblar vidare till *föräldern*, aldrig till
+   syskonet under. `CorridorScreen/Chips` och `CorridorScreen/Overlay` var två
+   tomma helskärmslager överst på PASS, och de svalde **varje** tapp i
+   korridoren: FORWARD, character sheetet, inställningarna, fällprompten.
+   Skärmen såg helt normal ut och reagerade inte på någonting.
+   Båda står nu på `IGNORE`; barnen (chip, prompt, belöningskort) sätter STOP
+   själva och tar sina egna tapp. `tests/test_corridor_flow.gd` speglar Godots
+   träffsökning och kräver att varje synlig knapp i korridoren är den översta
+   kontrollen under sin egen mittpunkt.
 
 `enemy_anchor()` returnerar `(-1, -1)` och inte `Vector2.ZERO` för ett index
 utan billboard: noll är en giltig skärmpunkt, och chipen samlades i övre vänstra
@@ -765,6 +779,34 @@ sättet att få en **deterministisk dödsskärmdump**: Lookahead vinner våning 
 Rökprovet börjar på titelskärmen, tar en skärmdump av inställningsmodalen och
 trycker sedan NEW RUN. Sparfilen rensas först, så körningen är oberoende av vad
 som hände förra gången.
+
+### Felsökningsstart: `--pipwreck-start=town|corridor|sheet`
+
+`GameController.boot()` läser flaggan **bara** ur `OS.get_cmdline_user_args()`,
+alltså efter `--`, precis som `--pipwreck-seed=N`. En spelare kan därför aldrig
+hamna i den av misstag, och en felstavning fäller inte starten: okända värden
+ignoreras och spelet startar normalt. Parsningen är en ren, testad funktion,
+`GameController.parse_start_target(args)` (`tests/test_debug_start.gd`).
+
+| Värde | Landar i |
+|---|---|
+| `town` | Torget (`SCREEN_TOWN`) |
+| `corridor` | En ny run i korridoren, seed ur `--pipwreck-seed` eller färsk |
+| `sheet` | Samma run, med character sheetet öppet ovanpå |
+
+Flaggan **kvitterar** kroppsvalet och tutorialen i stället för att kringgå dem:
+saknas `smith_variant` sätts standardkroppen, och är tutorialen oklarad markeras
+den som klar med `Reveal.all_on()` – exakt vad SKIP TUTORIAL gör. Utan det
+skulle torget och korridoren visas med ett halvt UI.
+
+```bash
+"$GODOT_BIN" --rendering-method mobile -- --pipwreck-start=corridor --pipwreck-seed=7
+```
+
+Webbladdaren (`tools/web/index.html`) läser `?start=…&seed=…` ur URL:en och
+skickar vidare som `args: ['--', '--pipwreck-start=…', '--pipwreck-seed=…']` i
+Engine-konfigurationen. Utan query-parametrar startar webbversionen som förut.
+Det är så WebGL2-verifieringen av korridoren körs (`docs/screenshots/web_verify/`).
 
 ### Prestandamätningen
 
