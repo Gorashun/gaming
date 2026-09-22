@@ -11,6 +11,7 @@
 - Balanspass våning 1: +45,3 p.e. Lookahead över Greedy, rum 1–3 tar 3–3,4 rundor
 - **M1 godkänd**: våning 1 spelbar (marsch → strid → belöning → boss → vinst/död → ny run), autosave, 160 tester, smoke-run med skärmdumpar
 - **M1.5 godkänd**: engelska källsträngar + svensk översättning, sprites integrerade, 188 tester, skärmdumpar i docs/screenshots/m1_5/
+- **M5.5/M5.6 godkända**: tutorial i korridoren, 2D-sidovy borttagen, knappfix, fonter + sprite-ikoner, webbverifierat. 403 tester
 - **M5 godkänd**: first-person korridor i Godot 3D, torg, strid i korridoren, character sheet. 380 tester
 - **M2.5 godkänd**: stridsskärm v2 med kvitto, tutorialvåning 0, stad (logik), smedja, könsval, engelska default. 339 tester
 - **M2 godkänd**: juice-motor, chalk-UI, ljud (17 own-work WAV), haptik, boss-intro, vinst/död, inställningar, titelskärm, reliklager och dödsframes, färgblindsäkra former. 227 tester
