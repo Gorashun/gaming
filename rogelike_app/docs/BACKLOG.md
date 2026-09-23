@@ -219,3 +219,4 @@
 - ~~**`CORRIDOR_REWARD_TITLE` klipps på en 480 px-skärm.**~~ **Löst 2026-09-22 (M5.8).** "THE ROOM LEAVES YOU
   SOMETHING" går utanför båda kanterna i webbläsaren (`_heading.clip_text`).
   Belöningskortets namnrad klipps på samma sätt.
+- M6 rest: smedjans nivå 3 "omslipning", Kritväggens silhuetter, laddningsräknaren överlappar text i strid (web 480×900), korridoren mörkare i Compatibility-renderaren än i mobile, balans våning 1 med gear (döden syns sällan) tas med våning 2.
