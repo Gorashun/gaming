@@ -12,6 +12,14 @@ extends SceneTree
 ##   --width=N     lookahead-policyns sökbredd (standard Policy.DEFAULT_WIDTH)
 ##   --seed=N      basseed (standard 1)
 ##   --json=PATH   skriv även statistiken som JSON för regressionsjämförelse
+##   --careers=N   M6: N seedade "karriärer" – tutorial + --career-runs runs med
+##                 gear, droppar, trappbank, död/Kistan och staden emellan
+##                 ([Career]). Rapporterar droppar per run, sällsynthets-
+##                 fördelning och kickar per minut (PROGRESSION_REDESIGN §5).
+##   --career-runs=N  runs per karriär (standard 10)
+##   --career-policy=P  lookahead | greedy | mixed (standard mixed: en vanlig
+##                 spelare, planerar varannan runda – lookahead vinner våning 1
+##                 nästan alltid och visar därför aldrig döden och Kistan)
 ##
 ## M0-kravet: 1 000 strider på under 5 sekunder.
 
@@ -26,6 +34,9 @@ func _initialize() -> void:
 	var room: int = int(args.get("room", 1))
 	var width: int = int(args.get("width", Policy.DEFAULT_WIDTH))
 	var base_seed: int = int(args.get("seed", 1))
+	var careers: int = int(args.get("careers", 0))
+	var career_runs: int = int(args.get("career-runs", 10))
+	var career_policy: String = String(args.get("career-policy", "mixed"))
 
 	var report: Dictionary = {
 		"godot": Engine.get_version_info()["string"],
@@ -53,6 +64,9 @@ func _initialize() -> void:
 		_print_policy(policy, stats)
 
 	_print_verdict(report)
+
+	if careers > 0:
+		report["careers"] = _simulate_careers(careers, career_runs, base_seed, width, career_policy)
 
 	if args.has("json"):
 		var file: FileAccess = FileAccess.open(String(args["json"]), FileAccess.WRITE)
@@ -257,6 +271,99 @@ func _apply_reward(state: CombatState, choice: Dictionary, rng: Rng) -> void:
 		Rewards.CATEGORY_SLOT_SWAP:
 			var slot: Slot = state.board.slots[rng.next_int(0, state.board.size() - 1)]
 			slot.type = int(data.get("slot_type", slot.type))
+
+
+# ---------------------------------------------------------------------------
+# M6: karriärer (progression)
+# ---------------------------------------------------------------------------
+func _simulate_careers(count: int, runs: int, base_seed: int, width: int, policy: String) -> Dictionary:
+	var started: int = Time.get_ticks_usec()
+	var per_run: Array = []
+	for i: int in range(runs):
+		per_run.append({"drops": 0, "kicks": 0, "seconds": 0.0, "wins": 0, "rare": 0,
+			"level": 0, "slots": 0, "rescues": 0})
+	var by_rarity: Array[int] = [0, 0, 0, 0]
+	var drops: int = 0
+	var kicks: int = 0
+	var seconds: float = 0.0
+	var wins: int = 0
+	var rare_moments: int = 0
+	var total_runs: int = 0
+	for c: int in range(count):
+		var career: Array[Dictionary] = Career.play_career(runs, base_seed + c, policy, width)
+		for i: int in range(career.size()):
+			var r: Dictionary = career[i]
+			var row: Dictionary = per_run[i]
+			row["drops"] = int(row["drops"]) + int(r["drops"])
+			row["kicks"] = int(row["kicks"]) + int(r["kicks"])
+			row["seconds"] = float(row["seconds"]) + float(r["seconds"])
+			row["wins"] = int(row["wins"]) + (1 if bool(r["won"]) else 0)
+			row["rare"] = int(row["rare"]) + int(r["rare_moments"])
+			row["level"] = int(row["level"]) + int(r["hero_level"])
+			row["slots"] = int(row["slots"]) + int(r["slots"])
+			row["rescues"] = int(row["rescues"]) + int(r["rescues"])
+			for k: int in range(4):
+				by_rarity[k] += int((r["drops_by_rarity"] as Array)[k])
+			drops += int(r["drops"])
+			kicks += int(r["kicks"])
+			seconds += float(r["seconds"])
+			rare_moments += int(r["rare_moments"])
+			wins += 1 if bool(r["won"]) else 0
+			total_runs += 1
+	var out: Dictionary = {
+		"policy": policy,
+		"careers": count,
+		"runs_per_career": runs,
+		"drops_per_run": _fratio(float(drops), float(total_runs)),
+		"rarity_share": [
+			_fratio(float(by_rarity[0]), float(drops)), _fratio(float(by_rarity[1]), float(drops)),
+			_fratio(float(by_rarity[2]), float(drops)), _fratio(float(by_rarity[3]), float(drops)),
+		],
+		"rare_moments_per_run": _fratio(float(rare_moments), float(total_runs)),
+		"kicks_per_run": _fratio(float(kicks), float(total_runs)),
+		"kicks_per_minute": _fratio(float(kicks), seconds / 60.0),
+		"minutes_per_run": _fratio(seconds / 60.0, float(total_runs)),
+		"win_rate": _fratio(float(wins), float(total_runs)),
+		"per_run": [],
+		"elapsed_ms": float(Time.get_ticks_usec() - started) / 1000.0,
+	}
+	print("[CAREERS]  %d careers x %d runs (%s, width %d)" % [count, runs, policy, width])
+	print("  drops per run        %.2f" % float(out["drops_per_run"]))
+	print("  rarity share         common %.1f %%  uncommon %.1f %%  rare %.1f %%  epic %.1f %%" % [
+		float(out["rarity_share"][0]) * 100.0, float(out["rarity_share"][1]) * 100.0,
+		float(out["rarity_share"][2]) * 100.0, float(out["rarity_share"][3]) * 100.0])
+	print("  rare+ moments/run    %.2f  (target 0.6)" % float(out["rare_moments_per_run"]))
+	print("  kicks per run        %.1f" % float(out["kicks_per_run"]))
+	print("  kicks per minute     %.2f  (target 0.9-1.1)" % float(out["kicks_per_minute"]))
+	print("  minutes per run      %.1f" % float(out["minutes_per_run"]))
+	print("  run win rate         %.1f %%" % (float(out["win_rate"]) * 100.0))
+	print("  run  drops  kicks/min  wins  rare+  hero lvl  slots  rescues")
+	for i: int in range(runs):
+		var row: Dictionary = per_run[i]
+		var entry: Dictionary = {
+			"run": i + 1,
+			"drops": _fratio(float(row["drops"]), float(count)),
+			"kicks_per_minute": _fratio(float(row["kicks"]), float(row["seconds"]) / 60.0),
+			"win_rate": _fratio(float(row["wins"]), float(count)),
+			"rare_moments": _fratio(float(row["rare"]), float(count)),
+			"hero_level": _fratio(float(row["level"]), float(count)),
+			"slots": _fratio(float(row["slots"]), float(count)),
+			"rescues": _fratio(float(row["rescues"]), float(count)),
+		}
+		(out["per_run"] as Array).append(entry)
+		print("  %3d  %5.2f  %9.2f  %4.0f%%  %5.2f  %8.2f  %5.2f  %7.2f" % [
+			i + 1, float(entry["drops"]), float(entry["kicks_per_minute"]),
+			float(entry["win_rate"]) * 100.0, float(entry["rare_moments"]),
+			float(entry["hero_level"]), float(entry["slots"]), float(entry["rescues"])])
+	print("  elapsed              %.0f ms" % float(out["elapsed_ms"]))
+	print("")
+	return out
+
+
+func _fratio(numerator: float, denominator: float) -> float:
+	if denominator <= 0.0:
+		return 0.0
+	return numerator / denominator
 
 
 # ---------------------------------------------------------------------------
