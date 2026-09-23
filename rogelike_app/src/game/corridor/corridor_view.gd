@@ -76,22 +76,27 @@ const FORMATION: Array[Vector3] = [
 	Vector3(-0.40, 0.0, -4.4),
 	Vector3(0.40, 0.0, -4.4),
 ]
-## Samma värde för alla fiender, så den relativa storleken bevaras från 2D:
-## en 32 px-fiende blir 1,76 m, en 48 px-boss 2,64 m.
-const ENEMY_PIXEL_SIZE: float = 0.055
-## Silhuetten är fiendespriten i svart. Noll nya bildfiler, hela genrens lockelse.
+## Platserna för ett möte med [param count] fiender. En ensam fiende (bossen,
+## Grave Hand) står i mitten och inte på vänsterplatsen i 2+2-formeringen; tre
+## står två fram och en bak i mitten. Fyra är [constant FORMATION] rakt av.
+static func formation_for(count: int) -> Array[Vector3]:
+	match count:
+		0:
+			return []
+		1:
+			return [Vector3(0.0, 0.0, -3.0)]
+		2:
+			return [FORMATION[0], FORMATION[1]]
+		3:
+			return [FORMATION[0], FORMATION[1], Vector3(0.0, 0.0, -4.4)]
+	return FORMATION.duplicate()
+
+
+## Silhuetten är fiendens egen form i sotfärg (shaderns [code]silhouette[/code]).
+## Noll nya bildfiler, hela genrens lockelse.
 const SILHOUETTE: Color = Color(0.055, 0.071, 0.086, 0.92)
 const REVEAL_MS: int = 180
 const APPROACH_MS: int = 400
-## Träffblixten på billboarden: samma 60 ms som den platta skärmens vitblixt
-## (UI_GUIDE §5.3), här som överexponerad modulate i stället för ett ColorRect.
-const HIT_FLASH: Color = Color(3.0, 3.0, 3.0, 1.0)
-const HIT_FLASH_MS: int = 60
-## Ryck i sidled, i meter. Aldrig kameran – se [method enemy_hit].
-const HIT_SHAKE_M: float = 0.08
-const DEATH_MS: int = 300
-const DEATH_SINK_M: float = 0.3
-
 ## Dimman är samma svarta som krit-UI:ts botten (#0E1216) så att gränsen mellan
 ## 3D och UI aldrig syns som en kant (UI_GUIDE §17.3).
 const FOG_COLOR: Color = Color(0.055, 0.071, 0.086)
@@ -136,7 +141,7 @@ var _split_tween: Tween = null
 var _busy: bool = false
 var _status: Dictionary = {"hp": 100, "max_hp": 100, "room": 1, "pips": 0}
 var _pending_enemies: Array[String] = []
-var _enemy_nodes: Array[AnimatedSprite3D] = []
+var _enemy_nodes: Array[EnemyBattler] = []
 var _door_nodes: Dictionary = {}
 ## Sant från det att mötet avslöjats tills striden är slut. [b]Spärr:[/b]
 ## [method CorridorMap._look_ahead] kör EFTER att mötet nåtts i samma
@@ -329,10 +334,12 @@ func _add_torch(spec: Dictionary) -> void:
 	sprite.name = "Torch_%s" % CorridorMap.cell_key(tile)
 	sprite.sprite_frames = _torch_frames()
 	sprite.animation = &"default"
-	sprite.pixel_size = 0.042
+	var info: Dictionary = Art.art_info(&"env.corridor.torch")
+	# M5:s fackla är 2 × 16 px à 0,042 m; en målad fackla får samma höjd i världen.
+	sprite.pixel_size = 0.042 if bool(info["pixel"]) else 0.042 * 32.0 / maxf(1.0, (info["size"] as Vector2).y)
 	sprite.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 	sprite.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	sprite.texture_filter = filter_3d(&"env.corridor.torch")
 	sprite.shaded = false
 	sprite.double_sided = true
 	var origin: Vector3 = CorridorMesh.tile_origin(tile)
@@ -349,11 +356,14 @@ static func _torch_frames() -> SpriteFrames:
 	var frames: SpriteFrames = SpriteFrames.new()
 	frames.set_animation_speed(&"default", 6.0)
 	frames.set_animation_loop(&"default", true)
-	var sheet: Texture2D = Art.tex(&"env.corridor.torch")
+	var info: Dictionary = Art.art_info(&"env.corridor.torch")
+	var sheet: Texture2D = info["texture"] as Texture2D
 	if sheet == null:
 		return frames
-	var cell: int = sheet.get_width() / 2
-	for i: int in range(2):
+	# M5:s ark har två rutor bredvid varandra; manifestet säger själv hur många.
+	var count: int = 2 if String(info["source"]) == Art.SOURCE_LEGACY else maxi(1, int(info["frames"]))
+	var cell: int = sheet.get_width() / count
+	for i: int in range(count):
 		var slice: AtlasTexture = AtlasTexture.new()
 		slice.atlas = sheet
 		slice.region = Rect2(float(i * cell), 0.0, float(cell), float(sheet.get_height()))
@@ -376,17 +386,23 @@ func _add_sign(spec: Dictionary) -> void:
 		side = CorridorMesh.dir_vector(int(spec.get("lateral_dir", facing))) * lateral
 	var base: Vector3 = origin + out * (CorridorMesh.TILE_M * 0.5 - 0.10) + side + Vector3(0.0, height, 0.0)
 
-	var plate: Sprite3D = _quad_sprite(
-		Art.tex(&"env.corridor.sign"), 0.012)
+	var plate_info: Dictionary = Art.art_info(&"env.corridor.sign")
+	var plate_px: float = 0.012 if bool(plate_info["pixel"]) \
+		else 0.012 * 64.0 / maxf(1.0, (plate_info["size"] as Vector2).x)
+	var plate: Sprite3D = _quad_sprite(plate_info["texture"] as Texture2D, plate_px, bool(plate_info["pixel"]))
 	plate.name = "Sign_%s_%d" % [CorridorMap.cell_key(tile), facing]
 	plate.position = base
 	plate.rotation.y = -float(facing) * PI * 0.5 + PI
 	_props.add_child(plate)
 
-	var icon: Texture2D = Art.node_icon(_icon_key(String(spec["key"])))
+	var icon_id: StringName = StringName("node." + _icon_key(String(spec["key"])))
+	var icon_info: Dictionary = Art.art_info(icon_id)
+	var icon: Texture2D = icon_info["texture"] as Texture2D
 	if icon == null:
 		return
-	var glyph: Sprite3D = _quad_sprite(icon, 0.030)
+	# 16 px × 0,030 m = 0,48 m. En målad ikon får samma storlek i världen.
+	var icon_px: float = 0.030 if bool(icon_info["pixel"]) else 0.48 / maxf(1.0, float(icon.get_width()))
+	var glyph: Sprite3D = _quad_sprite(icon, icon_px, bool(icon_info["pixel"]))
 	glyph.name = "SignIcon_%s_%d" % [CorridorMap.cell_key(tile), facing]
 	# Ikonen ligger FRAMFÖR plattan. out pekar in i väggen, så plustecknet hade
 	# lagt den bakom plattan och den hade försvunnit i djuptestet.
@@ -408,13 +424,20 @@ static func _icon_key(sign_key: String) -> String:
 	return "mystery"
 
 
-static func _quad_sprite(texture: Texture2D, pixel_size: float) -> Sprite3D:
+## 3D-filtret för ett manifest-id: Nearest bara för pixelkonst.
+static func filter_3d(id: StringName) -> int:
+	return BaseMaterial3D.TEXTURE_FILTER_NEAREST if Art.is_pixel(id) \
+		else BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+
+
+static func _quad_sprite(texture: Texture2D, pixel_size: float, pixel: bool = true) -> Sprite3D:
 	var sprite: Sprite3D = Sprite3D.new()
 	sprite.texture = texture
 	sprite.pixel_size = pixel_size
 	sprite.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 	sprite.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST if pixel \
+		else BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	sprite.shaded = false
 	sprite.double_sided = true
 	return sprite
@@ -642,8 +665,8 @@ func restore_encounter() -> void:
 		_spawn_enemies()
 	_encounter.position = _formation_origin(0)
 	_encounter_active = true
-	for sprite: AnimatedSprite3D in _enemy_nodes:
-		sprite.modulate = Color.WHITE
+	for battler: EnemyBattler in _enemy_nodes:
+		battler.silhouette = 0.0
 
 
 ## Står ett möte framme just nu?
@@ -659,12 +682,12 @@ func _reveal_encounter(_node_id: String) -> void:
 	_encounter.position = _formation_origin(0)
 	_encounter_active = true
 	if reduced_motion:
-		for sprite: AnimatedSprite3D in _enemy_nodes:
-			sprite.modulate = Color.WHITE
+		for battler: EnemyBattler in _enemy_nodes:
+			battler.silhouette = 0.0
 		return
 	var tween: Tween = create_tween().set_parallel(true)
-	for sprite: AnimatedSprite3D in _enemy_nodes:
-		tween.tween_property(sprite, "modulate", Color.WHITE, float(REVEAL_MS) / 1000.0)
+	for battler: EnemyBattler in _enemy_nodes:
+		tween.tween_property(battler, "silhouette", 0.0, float(REVEAL_MS) / 1000.0)
 	await tween.finished
 
 
@@ -684,24 +707,22 @@ func _formation_origin(distance: int) -> Vector3:
 
 func _spawn_enemies() -> void:
 	_clear_encounter()
-	for i: int in range(mini(_pending_enemies.size(), FORMATION.size())):
+	var places: Array[Vector3] = formation_for(mini(_pending_enemies.size(), FORMATION.size()))
+	for i: int in range(places.size()):
 		var id: String = _pending_enemies[i]
-		var sprite: AnimatedSprite3D = AnimatedSprite3D.new()
-		sprite.name = "Enemy%d" % i
-		sprite.sprite_frames = Art.enemy_frames(id)
-		sprite.animation = &"default"
-		sprite.pixel_size = ENEMY_PIXEL_SIZE
-		sprite.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-		sprite.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-		sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-		sprite.shaded = false
-		sprite.modulate = SILHOUETTE
+		var battler: EnemyBattler = EnemyBattler.new()
+		battler.setup(id)
+		battler.name = "Enemy%d" % i
 		# Formeringen ligger i en lokal rymd som roteras med spelaren, därför
-		# är -Z alltid "bort från spelaren" oavsett väderstreck.
-		sprite.position = FORMATION[i] + Vector3(0.0, float(Art.enemy_cell(id)) * ENEMY_PIXEL_SIZE * 0.5, 0.0)
-		sprite.play()
-		_encounter.add_child(sprite)
-		_enemy_nodes.append(sprite)
+		# är -Z alltid "bort från spelaren" oavsett väderstreck. Fötterna står
+		# på y = 0: kvaden har sin pivot i underkanten.
+		battler.position = places[i]
+		battler.set_rank(i < 2)
+		battler.silhouette = 1.0
+		_encounter.add_child(battler)
+		# Fasen är visuell slump ur id och plats, aldrig ur den seedade strömmen.
+		battler.start_idle(float(posmod(hash(id) + i * 7919, 1000)) / 1000.0, reduced_motion)
+		_enemy_nodes.append(battler)
 
 
 ## Antalet billboards som står i formeringen just nu.
@@ -709,45 +730,28 @@ func enemy_count() -> int:
 	return _enemy_nodes.size()
 
 
-## Träffblixt och ryck på billboarden (research 05 §3).
-##
-## [b]Skaket ligger på sprajten, aldrig på kameran.[/b] Kameraskak i
-## förstaperson är åksjuka, och korridorkameran har med flit ingen skakfunktion
-## alls ([CorridorCamera] regel 2).
+## Träffblixt och ryck på billboarden (research 05 §3), via paletten i
+## [code]battler.gdshaderinc[/code]. Skaket ligger på varelsen, aldrig på
+## kameran: kameraskak i förstaperson är åksjuka.
 func enemy_hit(index: int) -> void:
 	if index < 0 or index >= _enemy_nodes.size():
 		return
-	var sprite: AnimatedSprite3D = _enemy_nodes[index]
-	sprite.modulate = HIT_FLASH
-	var tween: Tween = create_tween()
-	tween.tween_property(sprite, "modulate", Color.WHITE, float(HIT_FLASH_MS) / 1000.0)
-	if reduced_motion:
-		return
-	var home: float = sprite.position.x
-	var shake: Tween = create_tween()
-	shake.set_trans(Tween.TRANS_SINE)
-	shake.tween_property(sprite, "position:x", home + HIT_SHAKE_M, 0.05)
-	shake.tween_property(sprite, "position:x", home - HIT_SHAKE_M, 0.06)
-	shake.tween_property(sprite, "position:x", home, 0.05)
+	_enemy_nodes[index].hit(reduced_motion)
 
 
-## Döden: arkets tre death-frames, sedan uttoning och en halv meter nedåt.
-## Saknar arket raden tonas billboarden bara ut – aldrig en krasch (Art-regeln).
+## Döden: tona ut och falla omkull (M6: ingen ark-rad längre, en målad PNG
+## har ingen dödsanimation – rörelsen bär den).
 func enemy_die(index: int) -> void:
 	if index < 0 or index >= _enemy_nodes.size():
 		return
-	var sprite: AnimatedSprite3D = _enemy_nodes[index]
-	if sprite.sprite_frames != null and sprite.sprite_frames.has_animation(&"death"):
-		sprite.animation = &"death"
-		sprite.frame = 0
-		sprite.play()
-	var seconds: float = float(DEATH_MS) / 1000.0
-	if reduced_motion:
-		sprite.modulate = Color(1.0, 1.0, 1.0, 0.0)
-		return
-	var tween: Tween = create_tween().set_parallel(true)
-	tween.tween_property(sprite, "modulate:a", 0.0, seconds)
-	tween.tween_property(sprite, "position:y", sprite.position.y - DEATH_SINK_M, seconds)
+	_enemy_nodes[index].die(reduced_motion)
+
+
+## Billboarden för fiende [param index], eller null.
+func enemy_battler(index: int) -> EnemyBattler:
+	if index < 0 or index >= _enemy_nodes.size():
+		return null
+	return _enemy_nodes[index]
 
 
 ## Chipens ankarpunkt i krit-lagret. Ren matematik på kameratransformen, alltså
@@ -758,8 +762,7 @@ func enemy_anchor(index: int) -> Vector2:
 	# hamnade då i skärmens övre vänstra hörn och pekade på ingenting.
 	if index < 0 or index >= _enemy_nodes.size():
 		return Vector2(-1.0, -1.0)
-	var sprite: AnimatedSprite3D = _enemy_nodes[index]
-	var point: Vector3 = sprite.global_position + Vector3.UP * 1.2
+	var point: Vector3 = _enemy_nodes[index].head_point()
 	if _camera.is_position_behind(point):
 		return Vector2(-1.0, -1.0)
 	return _box.global_position + _camera.unproject_position(point) * float(_box.stretch_shrink)

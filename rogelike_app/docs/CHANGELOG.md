@@ -5,6 +5,7 @@ Format: en rad per leverans. Nyast överst.
 ## M6 spår A – art-manifest, målade battlers, stilskikt, character sheet v2, credits (2026-09-23)
 
 - **Steg 1, art-manifest.** `Art.tex(id)` slår upp `assets/art/manifest.json` (cachat) i ordningen manifest → fiendealias → gammal sprite → platshållare; en saknad fil ger platshållare + en varning, aldrig null för fiender/ikoner och aldrig krasch. `Art.reload_manifest()` är hot-swap, `Art.validate_manifest()` fäller bygget på trasiga poster. Korridorens väggar/golv/tak/dörr/fackla/skylt, slot-, nod- och relikikoner och porträtten går via manifestet. Takets reserv lånar golvkaklet (se steg 3). `tests/test_manifest.gd` (17 tester).
+- **Steg 2, målade battlers.** `EnemyBattler` (`src/game/corridor/enemy_battler.gd`) ritar EN PNG ur manifestet som Y-billboard (QuadMesh + `battler.gdshader`, en 3D-port av palette_lut med LUT/flash plus silhuett, kantljus, tilt och alpha; linear + mipmaps, `battler_pixel.gdshader` med Nearest bara för `pixel: true` och gamla sprites). Fast skala per pixel (256 px = 1,76 m) inpassad i en ruta per nivå, fötterna på golvet, bossen 1,6× under taket. Formering efter antal (1 i mitten, 2, 2+1, 2+2), främre ledet sorteras över det bakre, kastskugga som Sprite3D-ellips, andning via tween, träff = palettblixt + ryck, död = tona + falla omkull. Reducerad rörelse: ingen andning, inget ryck, inget fall. `tests/test_corridor_view_battlers.gd` (14 tester).
 
 ## M5.8 – källaren går att återuppta, rum 0.6 är inte längre en fälla (2026-09-22)
 
