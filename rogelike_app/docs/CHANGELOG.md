@@ -2,6 +2,17 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M6 spår B – gear, drops, Kistan, trappbanken, roster och staden (2026-09-23)
+
+- **Steg 1, gear-modellen i core.** `Item`, `Hero` (nivå 1–5 → 2–7 slots, XP, quirk, permadöd), `Roster` (max 4, Gravlunden), `Chest`, `Bank`, `Buildings`, `Market`. De sex relikerna blev gear i sin `RELIC_SLOTS`-slot; `RELIC` lämnade belöningspoolen (FORGE_FACE 65, SLOT_SWAP 25). 28 föremål (22 ur §3.5 + 6) som data med dropkällor. `Rules.Rarity.EPIC`. Meta v2 (poolköp betalas tillbaka), RunState v4 (v3-reliker migreras till gear). `tests/test_gear.gd`.
+- **Steg 2, effekterna som resolver-regler.** 26 effekttyper (`GearRules`), `gear_triggered`-event före det som ändras, `relic_triggered.item` för omgjorda reliker, quirks genom samma motor. Kvittot får en rad per effekt (`GEAR_FX_*`, en + sv). Utan gear är loggen och slumpdragningen oförändrad. `tests/test_gear_effects.gd` (en test per effekt).
+- **Steg 3, droppar.** Tabeller per fiende/altare/boss ur en egen delström per rum; högst två droppar bland de tre korten; `item_dropped`-ceremoni (200–900 ms). Tunat mot §5: vanliga 20 %, tåligare 35 %, boss UNCOMMON/60 % RARE, första boss-kill ett unikt RARE. `tests/test_drops.gd`.
+- **Steg 4, all styrka är dödlig.** `Expedition`: osäkrad kopia av hjälten ner, trappbanken vid `floor_cleared` (före bossen), vinst säkrar allt, död = Marrow + Kistan-val (nivå + Marrow's Tarp + frivillig räddningsannons-stub `rescue_offer_requested`, ingen SDK), permadöd, ny rekryt med Kistans gear. Dödsskärm v2. `tests/test_expedition.gd`.
+- **Steg 5, staden.** Byggnader med nivåer för Pips (Kistan, smedja, taverna, marknad), marknaden säljer gear ur seedad rotation, tavernan visar rostret (nivå, XP, quirk, slots) med val av aktiv hjälte, rekrytering och Kistan/bank att klä hjälten ur. MetaScore bort ur UI. `tests/test_town_m6.gd`.
+- **Steg 6, kurvan.** `Progression`-garantier (run 0 COMMON, run 1 UNCOMMON, run 3 tre slots, RARE senast run 6, EPIC från run 10) och `Career` för headless-karriärer. `tests/test_progression_curve.gd`.
+- **Steg 7, verifiering.** Siffror och testresultat i rapporten till PM; simulatorn: `--careers=40 --career-runs=10` (mixed) 3,49 droppar/run, common 62,0 / uncommon 20,3 / rare 17,0 / epic 0,6 %, 0,61 rare+/run, 0,86 kickar/min (lookahead 1,15). Rökprovet spelar run → död → Kistan-val → ny hjälte → run, en + sv.
+- **PM-tillägg (M6_A_NOTES):** sheetet får `"hero"` och `look_changed` sparar profilen; torgets fackla via `Art.tex(&"env.corridor.torch")`; belöningskortet ritar målade ikoner linjärt; 12 i18n-rader (narrator, credits, `CHARSHEET_LOCKED_LV`); `export_presets.cfg` `include_filter="assets/fonts/OFL-*.txt"` på alla tre presets.
+
 ## M6 spår A – art-manifest, målade battlers, stilskikt, character sheet v2, credits (2026-09-23)
 
 - **Steg 1, art-manifest.** `Art.tex(id)` slår upp `assets/art/manifest.json` (cachat) i ordningen manifest → fiendealias → gammal sprite → platshållare; en saknad fil ger platshållare + en varning, aldrig null för fiender/ikoner och aldrig krasch. `Art.reload_manifest()` är hot-swap, `Art.validate_manifest()` fäller bygget på trasiga poster. Korridorens väggar/golv/tak/dörr/fackla/skylt, slot-, nod- och relikikoner och porträtten går via manifestet. Takets reserv lånar golvkaklet (se steg 3). `tests/test_manifest.gd` (17 tester).

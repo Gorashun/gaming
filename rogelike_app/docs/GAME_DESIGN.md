@@ -865,6 +865,123 @@ Detta är den regel som avgör om spelet hatas eller älskas. Research 03 §5.2 
 
 ---
 
+## 8. Gear, roster, Kistan och bank (M6, NORMATIV)
+
+*Tillagt av dev B 2026-09-23 efter DECISIONS 2026-09-23 (omtaget godkänt, PROGRESSION_REDESIGN §8 alla
+sex besvarade JA). Designunderlaget är `docs/design/PROGRESSION_REDESIGN.md`; det här avsnittet
+beskriver vad som är byggt. Koden: `src/core/{item,hero,roster,chest,bank,buildings,gear_rules,drops,expedition,progression,market,career}.gd`.*
+
+**Detta ersätter:** §1:s "Död: … Ingen continue, inga revives, ingen annons" gäller fortfarande för
+runnen, men döden har nu en insats (hjälten och det osäkrade) och en frivillig räddningsannons.
+§4.6:s reliker är gear (samma id:n, samma regler). §4.7:s kategori `RELIC` finns inte i poolen.
+
+### 8.1 Föremål (`Item`)
+
+| Fält | Värde |
+|---|---|
+| `id` | 22 föremål ur PROGRESSION_REDESIGN §3.5 + de sex relikerna (`BLOOD_PRICE` … `DOMINO`) = 28 |
+| `slot` | `HEAD`, `CHEST`, `HANDS`, `WEAPON`, `LEGS`, `BACK`, `AMULET` (relikerna i `RELIC_SLOTS`-platsen) |
+| `rarity` | `COMMON`, `UNCOMMON`, `RARE`, `EPIC` (ny, bara gear, 2 st) |
+| `level` | 0–3, smedjan höjer; effekter med `per_level` växer |
+| `effects` | lista av regler, se 8.2 |
+| `secured` | falskt så länge föremålet bärs i en run |
+
+**Läsbarhetslagarna (§3.2) som testade regler:** (1) varje effekt som ändrar en runda emitterar
+`gear_triggered{item, name_key, effect, detail}` före eventet den ändrar och får en rad i kvittot
+("Pipsight Lens: +1 on 1s"); passiva effekter listas i runda 1. (2) Högst en ren stat-effekt
+(`MAX_HP`, `COMBAT_REROLL`, `PLAYER_ARMOR`, `WARD_ON_ROUND_START`) per föremål, och bara på COMMON
+(`GearRules.violates_stat_law`, `tests/test_gear.gd`). (3) All styrka är dödlig (8.4).
+
+### 8.2 Effekterna som regler
+
+| Effekt | Föremål | Regel | Fas |
+|---|---|---|---|
+| `MAX_HP` | Scrap Cap | +6 max-HP medan plagget bärs | synk |
+| `FIRST_ROUND_REROLL` | Tallow Hood | +1 omkast i stridens första runda | `begin_combat` |
+| `COMBAT_REROLL` | Grip Wraps | +1 omkast per strid; förbrukas efter rundans egna | `begin_combat`/`advance` |
+| `PIP_BONUS` | Pipsight Lens | sidan 1 räknas +1 (före kopiering och dubbling) | P1 |
+| `PLAYER_ARMOR` | Slag Plate | varje fiendeattack −2 efter Ward | P4 |
+| `WARD_RETAIN` | Tick Carapace | floor(Ward × 50 %) ligger kvar över `round_end` | P5 |
+| `CHARGE_IF_UNHURT` | Kiln Vest | runda utan skada: +4 Charge | P5 |
+| `ANVIL_THRESHOLD` | Tong Gloves | Amboss dubblar från 4 | P1 |
+| `LEFTMOST_BONUS` | Thief's Mitts | vänstraste besatta slot +2 (tolkning av "första placerade") | P0 |
+| `ARMOR_PIERCE_SLOT` | Chipped Hammer | slot 5 (index 4) ignorerar 2 rustning mot första målet | P3 |
+| `ARMOR_PIERCE_BIGGEST` | Spike Maul | rundans största slag ignorerar 3 rustning | P3 |
+| `CHARGE_ON_KILL` | Moth Edge | varje `enemy_killed`: +3 Charge | P3/P4 |
+| `OVERFLOW_IGNORES_ARMOR` | Slagjaw's Tooth | överflödet (mål 2+) möter ingen rustning | P3 |
+| `WARD_ON_ROUND_START` | Rust Greaves | +2 Ward i P0 (`ward_gained{slot:-1}`, utanför kedjans RÅ) | P0 |
+| `START_CHARGE` | Cart Boots | striden börjar med 5 Charge | `begin_combat` |
+| `FIRST_ROUND_EXTRA_DIE` | Pit Striders | en sjunde tärning i runda 1 | `begin_combat` |
+| `UNPLACED_CHARGE_BONUS` | Dice Pouch | +1 Charge per oplacerad tärning | P5 |
+| `CHARGE_CAP` | Chalk Satchel | Charge-tak 20 → 32 | alla `store_charge` |
+| `RESCUE_BONUS` | Marrow's Tarp | +1 räddat föremål vid död | döden |
+| `DAMAGE_PER_KILL` | Bone Tally | +1 på slag som gör skada per fiende redan dödad i striden | P3 |
+| `HOUSE_TWO_PAIR` | Twin Pip | två par ger `HOUSE` (§7 fråga 1, som föremål) | P2 |
+| `EXTRA_SLOT` | Sixth Seat | brädet får en sjätte PLAIN-slot | synk |
+| `RULE` | de sex relikerna | resolverns gamla krok, `relic_triggered` får `item` | som §4.6 |
+
+Quirks (`HEAVY_HANDED`, `SUPERSTITIOUS`, `HOARDER`, `RIGHT_HANDED`) är slotlösa pseudo-föremål på
+hjälten och går genom samma motor och samma kvittorader. Ingen stress.
+
+### 8.3 Droppar och ceremoni
+
+Droppar dras ur `rng.fork("drops:<nod>")`: stridens kast och korten drar exakt samma slump som utan
+gear, och en omladdning ger samma droppar. Efter en vunnen strid ligger högst två droppar bland de
+tre korten (aldrig på sista sidkortets plats); bossens droppar tas direkt (runnen är vunnen), altaret
+ger sitt föremål direkt. Varje drop emitterar `item_dropped{rarity, ms_hint 200/350/600/900}`.
+
+| Källa | Chans | Sällsynthet |
+|---|---|---|
+| `RUST_RAT`, `SLAG_MOTH` | 20 % *(§3.3: 12 %)* | COMMON |
+| `THORN_IMP`, `PIP_THIEF`, `IRON_TICK`, `GRAVE_HAND` | 35 % *(§3.3: 22 %)* | COMMON, 25 % UNCOMMON |
+| Altare (`RELIC`-skatten) | 100 % | UNCOMMON, 20 % RARE |
+| Boss `SLAGJAW` | 100 % | UNCOMMON, 60 % RARE *(§3.3: alltid RARE)*, 15 % EPIC när episkt är tillåtet |
+| Första boss-kill någonsin | 100 % | RARE, ett boss-plagg spelaren aldrig hittat |
+
+Avvikelserna från §3.3 är tuning mot §5 i simulatorn (8.6). Episkt: högst två per run, aldrig före
+våning 2 eller run 10. Inget föremål som redan bärs i runnen droppar igen.
+
+### 8.4 All styrka är dödlig
+
+```
+Nedstigning   rostrets aktiva hjälte går ner; allt hen bär blir osäkrat (kopia i RunState.hero)
+Trappan       vid floor_cleared (bossens kammare i M6) frågar kärran: skicka upp valfritt antal.
+              Uppskickat är säkrat i banken för alltid men bärs inte mot bossen.
+Vinst         allt burna säkras, packningen går till banken, hjälten får XP (1/rum, 3/boss, 5/vinst)
+Död           Marrow håller fram kärran: välj upp till Kistans kapacitet (nivå 0–3)
+              + 1 för Marrow's Tarp + 1 för räddningsannonsen (frivillig stub i M6, ingen SDK).
+              Resten går förlorat. Hjälten dör permanent; namnet går till Gravlunden.
+Övergiven run hjälten står kvar i tavernan med det hen hade när hen gick ner.
+```
+
+Kistan nivå 0 räddar ingenting (§5 run 1: "du förlorar allt – uttalat"). Står rostret tomt efter en
+död rekryterar tavernan en ny hjälte som tar på sig det sällsyntaste Kistan har i sina öppna slots.
+
+### 8.5 Hjälten, rostret och staden
+
+Hjältenivå 1–5 (XP 0/10/25/50/90) låser upp 2/3/4/6/7 gear-slots i ordningen WEAPON, CHEST, HEAD,
+HANDS, LEGS+BACK, AMULET. Ett föremål i en låst slot åker i packningen. Rostret har max fyra platser;
+tavernans nivå ger 1/2/3/4. Pips köper byggnader, smedjans uppgraderingar och gear på marknaden –
+aldrig poolposter (hela belöningspoolen är öppen). Priser (nivå 1/2/3): Kistan 10/25/60, smedjan
+15/35/80, tavernan 20/45/90, marknaden 15/40/85. Marknaden säljer 2/3/4/5 föremål ur en seedad
+rotation, upp till COMMON/UNCOMMON/RARE, aldrig episkt; det köpta hamnar i banken. MetaScore visas
+inte längre (siffran lever kvar som rekordmått i profilen).
+
+### 8.6 Progressionskurvan (§5) som garantier
+
+| Run | Garanti (`Progression`, testat i `tests/test_progression_curve.gd`) |
+|---|---|
+| 0 | Slag Plate (COMMON) på kroppen i rum 0.3 |
+| 1 | minst ett UNCOMMON droppar i rum 1 |
+| 3 | hjälten har minst nivå 2 = tre slots (nivågolv, gäller även nya rekryter) |
+| 6 | har inget RARE någonsin droppat, droppar ett i runnens första rum |
+| 10 | episkt kan droppa |
+
+Kicktäthet mäts av `tools/run_simulator.gd --careers` (tid: 30 s/runda, 8 s/belöning, 15 s korridor,
+10 s bank/räddning). Se `docs/CHANGELOG.md` (M6 spår B) för senaste siffror.
+
+---
+
 ## Källor tillagda efter research 03 (hämtade 2026-09-21)
 
 - MonsterVine, *Rune Dice Review – A Great Idea Crushed by Bad RNG*, juni 2026: https://monstervine.com/2026/06/rune-dice-review/ — färsk bekräftelse på att tärningsroguelikes 2026 fortfarande faller på RNG utan agens.

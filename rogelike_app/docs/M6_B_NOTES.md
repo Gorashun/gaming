@@ -63,3 +63,33 @@ Allt i `src/core/`, rena `RefCounted`, inga Node-beroenden.
 - Paneler jag byggt i min katalog (enkel torg-panelstil, snygga gärna senare men flytta inte
   logik): `src/game/reward/item_picker.gd` (trappbanken och Kistan-valet),
   dödsskärmen `src/game/gameover/gameover_screen.gd`, tavernan i `src/game/town/town_screen.gd`.
+
+## 5. Balans: vad simulatorn säger (seed 1, 40 karriärer × 10 runs, bredd 8)
+
+| Mått | mixed (vanlig spelare) | lookahead (taket) | Mål §5 |
+|---|---|---|---|
+| Droppar per run | 3,49 | 3,51 | run 1: 2–3, run 5: 4–6, run 10: 7–10 (15-min-runs) |
+| Sällsynthet common/uncommon/rare/epic | 62,0 / 20,3 / 17,0 / 0,6 % | 61,4 / 20,8 / 17,2 / 0,6 % | – |
+| Rare+ per run | 0,61 | 0,62 | 0,6 |
+| Kickar per minut | 0,86 | 1,15 | 0,9–1,1 |
+| Minuter per run | 9,4 | 7,0 | ~15 (tre våningar) |
+| Run-vinst | 96,8 % | 100 % | – |
+
+- Tuning mot §3.3: vanliga fiender 12 → 20 %, tåligare 22 → 35 %, bossen "alltid RARE" → UNCOMMON med
+  60 % RARE (första boss-kill alltid ett unikt RARE). Med §3.3:s siffror blev det 0,82 kickar/min och
+  1,0 rare+ per run.
+- **Strukturellt:** M6 har en våning, så droppar per run växer inte över run 1–10 som §5 förutsätter
+  (där växer de av djupare runs). Per minut ligger vi i §5:s mitt.
+- **Legacy-måttet** `--runs` (utan gear, M5-vägen) sjönk 47,5 → 32,0 % (greedy) och 93,0 → 87,0 %
+  (lookahead) när relikerna lämnade belöningspoolen: styrkan flyttade till gear, som bara finns i
+  `--careers`. Lookahead − greedy = +55 p.e. (stoppregeln ≥ 10 håller).
+- Våning 1 är lätt med gear (mixed vinner 97 %): döden och Kistan syns sällan i simulatorn. Det är
+  en fråga för balanspasset när våning 2–3 byggs, inte för M6.
+
+## 6. Idéer och öppet (inte byggt – till BACKLOG om PM vill)
+
+- Smedjan nivå 3 "omslipning" (byt effekt inom slot, §4.1) är inte byggd; nivå 3 höjer bara taket till +3.
+- Kritväggens samling som silhuetter (§4.3): räknaren "Gear found n / 22" finns, bilden inte.
+- Packningen syns inte i character sheetet (dev A): `run.pack`.
+- Trappbanken ligger före bossen eftersom M6 har en våning; när våning 2 finns bör den flyttas till
+  trappan efter bossen (§3.4) – `_on_floor_cleared` är redan kroken.

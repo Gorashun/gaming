@@ -722,6 +722,69 @@ från inställningarna.
 - **`await_millis()` kom tillbaka efter 8 ms** i en körning och gjorde ett tweentest flakigt.
   Tidskänsliga tester väntar på väggklockan (`Time.get_ticks_msec()`) i en bildruteloop.
 
+## M6 spår B: gear, roster, Kistan och bank
+
+*Dev B, 2026-09-23. Regler: `GAME_DESIGN.md` §8. Gränssnittet mot UI-lagret: `docs/M6_B_NOTES.md`.*
+
+### Ägandet: rostret är sanningen i staden, runnen i Gropen
+
+```
+Meta (user://meta.json, v2)          RunState (user://save.json, v4)
+  roster: Roster                       hero: Hero      ← kopia av rostrets aktiva hjälte, allt osäkrat
+    heroes[≤4], active_index, fallen   pack: [Item]    ← burna men oburna (låsta slots, utbytta plagg)
+  chest: Chest   (räddat vid död)      combat.gear     ← GearRules.sync_combat(hero) – resolverns läsyta
+  bank:  Bank    (uppskickat, köpt)
+  buildings, market_stock, räknare
+```
+
+`Expedition` är den enda vägen mellan dem: `begin` (kopia, osäkra, nivågolv), `bank` (trappan),
+`win` (skriv tillbaka, säkra, XP), `die` (Kistan, begrav), `recruit_replacement` (tavernan). En run
+som överges rör aldrig rostret. `GameController` anropar bara dessa; ingen regel ligger i controllern.
+
+### Resolvern läser gear, inte hjälten
+
+`CombatState.gear` är det hjälten bär plus quirken som slotlöst pseudo-föremål. `Resolver.Context`
+indexerar effekterna en gång per resolution (`GearRules.index_effects`) – **tom lista = noll
+extraarbete och byte-identisk logg mot M5**. Omgjorda reliker slår upp via `Context.has_relic`, som
+nu frågar både `state.relics` (klassreliken) och gear-reglerna. `CombatState.copy()` delar
+föremålsobjekten (grund kopia): de är oföränderliga inom en strid, och lookahead-policyn kopierar
+staten hundratals gånger per runda. Stridens startgear (Charge, omkast, sjunde tärning) verkar i
+`begin_combat`; utan gear drar den exakt samma slump som förut.
+
+`GearRules.sync_combat` är enda stället som ändrar `gear`, max-HP (delta mellan gammalt och nytt
+`MAX_HP`) och brädets storlek (`EXTRA_SLOT` lägger PLAIN-slots sist och tar bara bort sina egna).
+
+### Droppar i en egen delström
+
+`Drops.stream(rng, node_id)` = `rng.fork("drops:<nod>")`. `Rng.fork` bygger på seeden, inte på
+strömmens position, så en fork per rum är deterministisk, oberoende av hur många kast striden tog,
+och rör aldrig huvudströmmen (testat). Controllern bokför dropparna i profilen en gång per rum
+(`run.meta.drops_noted`) och fryser rummets kontext (epics, garanti) så att en omladdning i
+belöningsfasen ger samma kort.
+
+### Kvittot
+
+`ChainReceipt.build()` → `"gear"`: `{item, name_key, effect, text_key, args, slot}` per effekt.
+Ingen prosa i core: raden blir text i UI:t som `"%s: %s" % [tr(name_key), tr(text_key) % args]`.
+Ward från gear (`ward_gained{slot:-1}`) räknas inte i kedjans RÅ-summa, så `balances()` håller.
+
+### Sparfilerna
+
+- **RunState v4:** `hero`, `pack`, `combat.gear`, `combat.combat_rerolls`, `combat.kills`. En v3-fil
+  migreras i `SaveIO.migrate_relics_to_gear`: reliker i `combat.relics` blir föremål i sin
+  `RELIC_SLOTS`-slot (även en slot som nivå 1 inte låst upp – spelaren hade regeln när filen
+  skrevs); runnens hjälte får tomt id och binds till rostrets aktiva hjälte vid återupptagning.
+- **Meta v2:** roster, chest, bank, buildings, market_stock, found_gear, drop-räknare,
+  `runs_started`. En v1-profil får sina poolköp tillbakabetalda i Pips (5/8/10 per post).
+- Nya faser i run-sparfilen: `BANK` (trappbanken väntar), och `awarded`/`hero_returned`/
+  `hero_buried` i `run.meta` gör död/vinst idempotenta om appen dödas på dödsskärmen.
+
+### Headless-karriärer
+
+`Career.play_career(n, seed, policy)` spelar tutorialen + n runs genom samma core-anrop som
+controllern och används av `tools/run_simulator.gd --careers` och `tests/test_progression_curve.gd`.
+Boten `mixed` planerar varannan runda (myntet ur `fork("bot")`, rör aldrig spelets ström).
+
 ## Spelartext: engelska i källan, svenska i CSV
 
 CLAUDE.md: **all spelartext är engelska i källan och går via `tr()`.** Svenskan
@@ -1104,6 +1167,16 @@ Simulatorn kör två policyer (`src/core/policy.gd`):
 Vinner greedy lika ofta som lookahead är placeringen meningslös och spelet är
 Luck be a Landlord. Målet är minst 10 procentenheters skillnad; simulatorn
 skriver ut en varning om den inte nås.
+
+**M6, karriärer (progression):**
+
+```bash
+"$GODOT_BIN" --headless -s tools/run_simulator.gd -- --battles=0 --careers=40 --career-runs=10
+# --career-policy=mixed|lookahead|greedy (standard mixed)
+```
+
+Rapporterar droppar per run, sällsynthetsfördelning, rare+-ögonblick per run, kickar per minut och
+en rad per run 1–10 (vinst-%, hjältenivå, slots, räddningar).
 
 ## Android (M4)
 
