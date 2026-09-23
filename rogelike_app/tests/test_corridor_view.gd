@@ -96,7 +96,7 @@ func test_the_tile_textures_carry_mipmaps() -> void:
 	# kokar på golv och tak i snedvinkel, 63 steg per run.
 	for surface: String in [CorridorMesh.SURFACE_WALL, CorridorMesh.SURFACE_FLOOR,
 			CorridorMesh.SURFACE_CEILING]:
-		var texture: Texture2D = CorridorMesh.tile_texture(String(CorridorMesh.TEXTURES[surface]))
+		var texture: Texture2D = CorridorMesh.surface_texture(surface)
 		assert_object(texture).is_not_null()
 		assert_bool(texture.get_image().has_mipmaps()).override_failure_message(
 			"%s saknar mipmaps" % surface).is_true()

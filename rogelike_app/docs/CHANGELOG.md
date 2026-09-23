@@ -2,6 +2,10 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M6 spår A – art-manifest, målade battlers, stilskikt, character sheet v2, credits (2026-09-23)
+
+- **Steg 1, art-manifest.** `Art.tex(id)` slår upp `assets/art/manifest.json` (cachat) i ordningen manifest → fiendealias → gammal sprite → platshållare; en saknad fil ger platshållare + en varning, aldrig null för fiender/ikoner och aldrig krasch. `Art.reload_manifest()` är hot-swap, `Art.validate_manifest()` fäller bygget på trasiga poster. Korridorens väggar/golv/tak/dörr/fackla/skylt, slot-, nod- och relikikoner och porträtten går via manifestet. Takets reserv lånar golvkaklet (se steg 3). `tests/test_manifest.gd` (17 tester).
+
 ## M5.8 – källaren går att återuppta, rum 0.6 är inte längre en fälla (2026-09-22)
 
 Tre riktade fixar ur `docs/BACKLOG.md`, "Noterat under M5.7".

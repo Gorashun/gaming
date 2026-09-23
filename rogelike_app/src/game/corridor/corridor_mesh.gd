@@ -27,11 +27,13 @@ const SURFACE_FLOOR: String = "floor"
 const SURFACE_CEILING: String = "ceiling"
 const SURFACE_DOOR: String = "door"
 
+## Ytornas innehålls-id i art-manifestet (M6). [b]Ingen filsökväg här[/b]:
+## [Art] slår upp manifestet och faller tillbaka på M5:s kakel.
 const TEXTURES: Dictionary = {
-	SURFACE_WALL: "res://assets/sprites/env/corridor/wall_stone.png",
-	SURFACE_FLOOR: "res://assets/sprites/env/corridor/floor_stone.png",
-	SURFACE_CEILING: "res://assets/sprites/env/corridor/ceiling_stone.png",
-	SURFACE_DOOR: "res://assets/sprites/env/corridor/door_boss.png",
+	SURFACE_WALL: &"env.corridor.wall",
+	SURFACE_FLOOR: &"env.corridor.floor",
+	SURFACE_CEILING: &"env.corridor.ceiling",
+	SURFACE_DOOR: &"env.corridor.door",
 }
 
 const DIRS: Array[Vector2i] = [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]
@@ -54,30 +56,32 @@ static func dir_vector(facing: int) -> Vector3:
 	return Vector3(float(d.x), 0.0, float(d.y))
 
 
-## Texturen med mipmaps. [b]Undantaget från research 04:s "Mipmaps: Off"[/b]:
-## den regeln gäller 2D-sprites. Nearest utan mipmaps kokar på golv och tak i
-## snedvinkel, och den kokningen upprepad 63 steg per run är värre än den lilla
-## oskärpan (research 05 §7).
-## [b]M5 dag 3:[/b] [code]wall_stone[/code], [code]floor_stone[/code] och
-## [code]ceiling_stone[/code] har [code]mipmaps/generate=true[/code] i sina
-## [code].import[/code]-filer (PM-beslut), så de laddas rakt av. Övriga – dörren,
-## facklan, skyltplattan – är sprites i ögonhöjd och behöver inga; funktionen
-## genererar dem vid behov så att ett byte av en textur aldrig kan ge kokande
-## golv utan att någon märker det.
-static func tile_texture(path: String) -> Texture2D:
-	if _tiles.has(path):
-		return _tiles[path] as Texture2D
-	var source: Texture2D = ResourceLoader.load(path) as Texture2D
-	var result: Texture2D = source
-	if source != null:
-		var image: Image = source.get_image()
-		if image != null and not image.has_mipmaps():
-			image = Image.create_from_data(image.get_width(), image.get_height(), false,
-				image.get_format(), image.get_data())
-			image.generate_mipmaps()
-			result = ImageTexture.create_from_image(image)
-	_tiles[path] = result
+## Ytans textur ur manifestet, alltid med mipmaps. [b]Undantaget från
+## research 04:s "Mipmaps: Off"[/b]: den regeln gäller 2D-sprites. Utan mipmaps
+## kokar golv och tak i snedvinkel, 63 steg per run (research 05 §7).
+static func surface_texture(surface: String) -> Texture2D:
+	return tile_texture(TEXTURES.get(surface, &"env.corridor.wall") as StringName)
+
+
+## Texturen för ett manifest-id, med mipmaps genererade vid behov så att ett
+## byte av en textur aldrig kan ge kokande golv utan att någon märker det.
+static func tile_texture(id: StringName) -> Texture2D:
+	if _tiles.has(id):
+		return _tiles[id] as Texture2D
+	var result: Texture2D = null
+	if String(id).begins_with("res://"):
+		# Bakåtkompatibelt för anropare utanför korridoren (town_view.gd) som
+		# fortfarande skickar en sökväg. Nya anrop ska använda ett manifest-id.
+		result = Art.with_mipmaps(ResourceLoader.load(String(id)) as Texture2D)
+	else:
+		result = Art.with_mipmaps(Art.tex(id))
+	_tiles[id] = result
 	return result
+
+
+## Töms av [method Art.reload_manifest]-anropare som vill se ny konst.
+static func clear_cache() -> void:
+	_tiles.clear()
 
 
 ## Unlit material. Ljuset i korridoren är dimma, inte lampor (research 05 §1),
@@ -86,7 +90,7 @@ static func tile_texture(path: String) -> Texture2D:
 static func tile_material(surface: String, tint: Color = Color.WHITE) -> StandardMaterial3D:
 	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.albedo_texture = tile_texture(String(TEXTURES[surface]))
+	mat.albedo_texture = surface_texture(surface)
 	mat.albedo_color = tint
 	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
 	mat.texture_repeat = true

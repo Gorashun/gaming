@@ -211,7 +211,12 @@ static func smith_layer(layer: StringName, variant: String) -> Texture2D:
 
 ## Porträttet i könsvalet och (senare) på character sheetet.
 static func smith_portrait(variant: String) -> Texture2D:
-	return texture("hero/smith_portrait_%s.png" % smith_variant(variant))
+	return tex(portrait_key(variant))
+
+
+## Porträttets manifest-id: [code]hero.portrait.a[/code] / [code].b[/code].
+static func portrait_key(variant: String) -> StringName:
+	return StringName("hero.portrait." + smith_variant(variant))
 
 ## Karaktärer och fiender i World-lagret: 32/48 px-celler × 4 (UI_GUIDE §8.3).
 const WORLD_SCALE: int = 4
@@ -329,6 +334,497 @@ const GLASS_RIM: String = "dice/glass_highlight.png"
 
 static var _textures: Dictionary = {}
 static var _frames: Dictionary = {}
+
+
+# ===========================================================================
+# M6: art-manifestet. Innehålls-id → fil, byte = byt fil (DECISIONS 2026-09-23)
+# ===========================================================================
+#
+# [b]Uppslagsordningen är hela kontraktet[/b] och den är densamma för varje id:
+# [br]1. [code]assets/art/manifest.json[/code] – posten finns och filen laddas.
+# [br]2. Fiender: aliaset ur [constant ENEMY_ART_ALIASES] i manifestet
+#    ([code]enemy.RUST_MITE[/code] → [code]enemy.RUST_RAT[/code]).
+# [br]3. Den gamla scriptgenererade spriten ur [code]assets/sprites/[/code]
+#    ([constant LEGACY_ART]). Den är pixelkonst och ritas därför med Nearest.
+# [br]4. Platshållaren: [code]enemy.placeholder[/code] / [code]icon.placeholder[/code]
+#    ur manifestet, annars en genererad textur. Varnar EN gång per id.
+#
+# Ingen väg returnerar null för en fiende eller en ikon, och ingen väg kraschar.
+
+const MANIFEST_PATH: String = "res://assets/art/manifest.json"
+const ART_ROOT: String = "res://assets/art/"
+
+const KIND_BATTLER: String = "battler"
+const KIND_ICON: String = "icon"
+const KIND_PORTRAIT: String = "portrait"
+const KIND_FRAME: String = "frame"
+const KIND_ENV: String = "env"
+const KIND_FX: String = "fx"
+const KIND_UI: String = "ui"
+const KINDS: Array[String] = [KIND_BATTLER, KIND_ICON, KIND_PORTRAIT, KIND_FRAME, KIND_ENV, KIND_FX, KIND_UI]
+const PIVOTS: Array[String] = ["bottom", "center"]
+
+const SOURCE_MANIFEST: String = "manifest"
+const SOURCE_LEGACY: String = "legacy"
+const SOURCE_PLACEHOLDER: String = "placeholder"
+const SOURCE_NONE: String = "none"
+
+const ID_ENEMY_PLACEHOLDER: StringName = &"enemy.placeholder"
+const ID_ICON_PLACEHOLDER: StringName = &"icon.placeholder"
+
+## Miljö-id:n som korridoren frågar efter. Reserven är M5:s kakel.
+## [b]Taket lånar golvets kakel i reserven.[/b] [code]ceiling_stone.png[/code]
+## har två helt röda pixelrader (y 14 och 46, "glödfogar") som upprepas två
+## gånger per ruta och läste som röda scanlines i taket (research 06 §1). Filen
+## ägs av assets/ och ligger kvar; koden slutar bara använda den.
+const LEGACY_ART: Dictionary = {
+	&"env.corridor.wall": "env/corridor/wall_stone.png",
+	&"env.corridor.floor": "env/corridor/floor_stone.png",
+	&"env.corridor.ceiling": "env/corridor/floor_stone.png",
+	&"env.corridor.door": "env/corridor/door_boss.png",
+	&"env.corridor.torch": "env/corridor/torch.png",
+	&"env.corridor.sign": "env/corridor/sign_plate.png",
+	&"hero.portrait.a": "hero/smith_portrait_a.png",
+	&"hero.portrait.b": "hero/smith_portrait_b.png",
+}
+
+## Bossarna ritas större (ART_DIRECTION_V2 §4: "Boss ritas 1,6×"). En
+## manifestpost kan också säga [code]"tier": "boss"[/code].
+const BOSS_IDS: Array[String] = ["SLAGJAW", "SLAGJAW_RUNT"]
+
+static var _manifest: Dictionary = {}
+static var _manifest_loaded: bool = false
+static var _manifest_errors: PackedStringArray = PackedStringArray()
+## Ökar vid varje [method reload_manifest]. En vy som vill byta konst i farten
+## jämför sin sparade siffra med den här.
+static var manifest_version: int = 0
+static var _art_cache: Dictionary = {}
+static var _art_warned: Dictionary = {}
+static var _generated: Dictionary = {}
+## Laddade filer, [code]"sökväg|mip"[/code] → textur. Två id:n som pekar på
+## samma fil delar textur (och minne).
+static var _file_cache: Dictionary = {}
+
+
+## Hela manifestet, `id → post`. Laddas lat en gång och cachas.
+static func manifest() -> Dictionary:
+	if not _manifest_loaded:
+		_manifest_loaded = true
+		_manifest = _read_manifest(MANIFEST_PATH)
+	return _manifest
+
+
+## Läser om manifestet och tömmer alla texturcacher. [b]Hot-swap:[/b] noder som
+## byggs efter anropet får den nya konsten; befintliga noder behåller sin.
+static func reload_manifest() -> void:
+	_manifest_loaded = false
+	_manifest = {}
+	_manifest_errors = PackedStringArray()
+	_art_cache.clear()
+	_art_warned.clear()
+	_file_cache.clear()
+	_frames.clear()
+	manifest_version += 1
+	manifest()
+
+
+## Ersätter manifestet med [param data] utan att läsa filen. För tester och
+## för verktyg som vill prova en post innan den skrivs till disk.
+static func use_manifest(data: Dictionary) -> void:
+	_manifest_loaded = true
+	_manifest = {}
+	_manifest_errors = PackedStringArray()
+	for key: Variant in data:
+		if data[key] is Dictionary:
+			_manifest[String(key)] = data[key]
+	_art_cache.clear()
+	_art_warned.clear()
+	_file_cache.clear()
+	_frames.clear()
+	manifest_version += 1
+
+
+## Problem som hittades när manifestet lästes (trasig JSON, fel form).
+static func manifest_errors() -> PackedStringArray:
+	manifest()
+	return _manifest_errors
+
+
+static func _read_manifest(path: String) -> Dictionary:
+	var text: String = ""
+	# JSON är en importerad resurs i Godot 4 och följer därför med i exporten
+	# (export_presets har inget include_filter). FileAccess är reserven för en
+	# fil som lagts dit utan att editorn importerat den.
+	if ResourceLoader.exists(path):
+		var res: JSON = ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE) as JSON
+		if res != null and res.data is Dictionary:
+			return _only_entries(res.data as Dictionary)
+	if FileAccess.file_exists(path):
+		text = FileAccess.get_file_as_string(path)
+	if text == "":
+		return {}
+	var parsed: Variant = JSON.parse_string(text)
+	if not (parsed is Dictionary):
+		_manifest_errors.append("%s är inte ett JSON-objekt" % path)
+		push_warning("Art: %s gick inte att läsa som JSON – all konst faller tillbaka" % path)
+		return {}
+	return _only_entries(parsed as Dictionary)
+
+
+static func _only_entries(data: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for key: Variant in data:
+		var value: Variant = data[key]
+		if value is Dictionary:
+			out[String(key)] = value
+		elif not String(key).begins_with("_"):
+			_manifest_errors.append("posten %s är inte ett objekt" % String(key))
+	return out
+
+
+## Manifestposten för [param id], eller tom.
+static func entry(id: StringName) -> Dictionary:
+	return manifest().get(String(id), {}) as Dictionary
+
+
+## Texturen för ett innehålls-id. Se uppslagsordningen i sektionens huvud.
+static func tex(id: StringName) -> Texture2D:
+	return art_info(id)["texture"] as Texture2D
+
+
+## Allt en vy behöver veta om ett id:
+## [code]{texture, source, pixel, size: Vector2, pivot, frames, kind, scale, boss}[/code].
+## [code]source[/code] är [constant SOURCE_MANIFEST], [constant SOURCE_LEGACY],
+## [constant SOURCE_PLACEHOLDER] eller [constant SOURCE_NONE].
+static func art_info(id: StringName) -> Dictionary:
+	if _art_cache.has(id):
+		return _art_cache[id] as Dictionary
+	var info: Dictionary = _resolve(id)
+	_art_cache[id] = info
+	return info
+
+
+static func _resolve(id: StringName) -> Dictionary:
+	var key: String = String(id)
+	var from_manifest: Dictionary = _from_manifest(key)
+	if not from_manifest.is_empty():
+		return from_manifest
+	# Fiendealias: tutorialens pedagogiska varianter lånar våning 1:s konst.
+	if key.begins_with("enemy."):
+		var enemy_id: String = key.trim_prefix("enemy.")
+		var art_id: String = enemy_art_id(enemy_id)
+		if art_id != enemy_id:
+			var aliased: Dictionary = _from_manifest("enemy." + art_id)
+			if not aliased.is_empty():
+				return aliased
+	var legacy: Dictionary = _legacy(key)
+	if not legacy.is_empty():
+		return legacy
+	return _placeholder(key)
+
+
+static func _from_manifest(key: String) -> Dictionary:
+	var e: Dictionary = manifest().get(key, {}) as Dictionary
+	if e.is_empty():
+		return {}
+	var path: String = String(e.get("file", ""))
+	var kind: String = String(e.get("kind", ""))
+	var pixel: bool = bool(e.get("pixel", false))
+	var mipmapped: bool = not pixel and (kind == KIND_BATTLER or kind == KIND_ENV)
+	var cache_key: String = "%s|%s" % [path, "mip" if mipmapped else "raw"]
+	var loaded: Texture2D = _file_cache.get(cache_key, null) as Texture2D
+	if loaded == null:
+		loaded = _load_art_file(path)
+		if loaded != null and mipmapped:
+			loaded = with_mipmaps(loaded)
+		if loaded != null:
+			_file_cache[cache_key] = loaded
+	if loaded == null:
+		_warn_once(key, "manifestet pekar på %s som inte finns" % path)
+		return {}
+	var frames: int = maxi(1, int(e.get("frames", 1)))
+	var size: Vector2 = _entry_size(e, loaded)
+	return {
+		"texture": loaded,
+		"source": SOURCE_MANIFEST,
+		"pixel": pixel,
+		"size": size,
+		"pivot": String(e.get("pivot", "bottom")),
+		"frames": frames,
+		"kind": kind,
+		"scale": float(e.get("scale", 1.0)),
+		"boss": String(e.get("tier", "")) == "boss",
+	}
+
+
+static func _entry_size(e: Dictionary, texture: Texture2D) -> Vector2:
+	var raw: Variant = e.get("size", null)
+	if raw is Array and (raw as Array).size() == 2:
+		var w: float = float((raw as Array)[0])
+		var h: float = float((raw as Array)[1])
+		if w > 0.0 and h > 0.0:
+			return Vector2(w, h)
+	var frames: int = maxi(1, int(e.get("frames", 1)))
+	return Vector2(float(texture.get_width()) / float(frames), float(texture.get_height()))
+
+
+## Laddar en fil ur manifestet. [b]Två vägar:[/b] den importerade resursen, och
+## om den saknas själva PNG:en från disk – så att en fil som bytts ut under
+## utveckling syns efter [method reload_manifest] utan omimport.
+static func _load_art_file(path: String) -> Texture2D:
+	if path == "" or not path.begins_with("res://"):
+		return null
+	if ResourceLoader.exists(path):
+		var loaded: Texture2D = ResourceLoader.load(path) as Texture2D
+		if loaded != null:
+			return loaded
+	if FileAccess.file_exists(path):
+		var image: Image = Image.load_from_file(path)
+		if image != null and not image.is_empty():
+			return ImageTexture.create_from_image(image)
+	return null
+
+
+## Samma textur med mipmaps. Målad konst skalas ner 3–6× i korridoren och
+## blinkar utan dem. En komprimerad textur lämnas orörd (den har sina egna).
+static func with_mipmaps(texture: Texture2D) -> Texture2D:
+	if texture == null or texture is AtlasTexture:
+		return texture
+	var image: Image = texture.get_image()
+	if image == null or image.is_empty() or image.has_mipmaps() or image.is_compressed():
+		return texture
+	image = image.duplicate() as Image
+	image.generate_mipmaps()
+	return ImageTexture.create_from_image(image)
+
+
+static func _legacy(key: String) -> Dictionary:
+	var found: Texture2D = null
+	var size: Vector2 = Vector2.ZERO
+	var kind: String = ""
+	if key.begins_with("enemy."):
+		var enemy_id: String = enemy_art_id(key.trim_prefix("enemy."))
+		var spec: Dictionary = ENEMIES.get(enemy_id, {}) as Dictionary
+		var sheet: Texture2D = texture(String(spec.get("file", "")))
+		if sheet != null:
+			var cell: int = int(spec.get("cell", 32))
+			var slice: AtlasTexture = AtlasTexture.new()
+			slice.atlas = sheet
+			slice.region = Rect2(0.0, 0.0, float(cell), float(cell))
+			slice.filter_clip = true
+			found = slice
+			size = Vector2(cell, cell)
+			kind = KIND_BATTLER
+	elif LEGACY_ART.has(StringName(key)):
+		found = texture(String(LEGACY_ART[StringName(key)]))
+		kind = KIND_ENV if key.begins_with("env.") else KIND_PORTRAIT
+	elif key.begins_with("relic."):
+		found = texture("items/relic_%s.png" % key.trim_prefix("relic.").to_lower())
+		kind = KIND_ICON
+	elif key.begins_with("slot."):
+		found = texture("ui/slot_%s.png" % key.trim_prefix("slot.").to_lower())
+		kind = KIND_ICON
+	elif key.begins_with("node."):
+		found = texture("ui/node_%s.png" % key.trim_prefix("node.").to_lower())
+		kind = KIND_ICON
+	elif key.begins_with("ui.icon."):
+		found = ui_icon(StringName(key.trim_prefix("ui.icon.")))
+		kind = KIND_ICON
+	if found == null:
+		return {}
+	if size == Vector2.ZERO:
+		size = Vector2(found.get_width(), found.get_height())
+	return {
+		"texture": found,
+		"source": SOURCE_LEGACY,
+		"pixel": true,
+		"size": size,
+		"pivot": "bottom",
+		"frames": 1,
+		"kind": kind,
+		"scale": 1.0,
+		"boss": BOSS_IDS.has(key.trim_prefix("enemy.")) or size.y >= 48.0 and kind == KIND_BATTLER,
+	}
+
+
+## Sista utvägen. Fiender och ikoner får ALDRIG vara null; ramar, paneler och
+## effekter får det – deras anropare ritar en StyleBox i stället.
+static func _placeholder(key: String) -> Dictionary:
+	var is_enemy: bool = key.begins_with("enemy.")
+	var is_icon: bool = key.begins_with("gear.") or key.begins_with("relic.") \
+		or key.begins_with("slot.") or key.begins_with("node.") or key.begins_with("icon.") \
+		or key.begins_with("ui.icon.")
+	if not is_enemy and not is_icon:
+		_warn_once(key, "ingen konst och ingen reserv – anroparen ritar sin egen")
+		return {"texture": null, "source": SOURCE_NONE, "pixel": false, "size": Vector2.ZERO,
+			"pivot": "bottom", "frames": 1, "kind": "", "scale": 1.0, "boss": false}
+	var holder: StringName = ID_ENEMY_PLACEHOLDER if is_enemy else ID_ICON_PLACEHOLDER
+	var info: Dictionary = {}
+	if key != String(holder):
+		info = _from_manifest(String(holder))
+	if info.is_empty():
+		var generated: Texture2D = placeholder_texture(is_enemy)
+		info = {"texture": generated, "source": SOURCE_PLACEHOLDER, "pixel": false,
+			"size": Vector2(generated.get_width(), generated.get_height()), "pivot": "bottom",
+			"frames": 1, "kind": KIND_BATTLER if is_enemy else KIND_ICON, "scale": 1.0,
+			"boss": false}
+	else:
+		info = info.duplicate()
+		info["source"] = SOURCE_PLACEHOLDER
+	info["boss"] = is_enemy and BOSS_IDS.has(key.trim_prefix("enemy."))
+	_warn_once(key, "saknas i manifestet och har ingen gammal sprite – ritar platshållaren")
+	return info
+
+
+## En genererad platshållare: en mörk, huvförsedd silhuett (fiende) eller en
+## sotcirkel med en ljus kant (ikon). Ingen fil, alltså kan den aldrig saknas.
+static func placeholder_texture(enemy: bool) -> Texture2D:
+	var key: String = "enemy" if enemy else "icon"
+	if _generated.has(key):
+		return _generated[key] as Texture2D
+	var w: int = 96 if enemy else 64
+	var h: int = 128 if enemy else 64
+	var image: Image = Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var body: Color = Color(0.16, 0.18, 0.21)
+	var rim: Color = Color(0.91, 0.88, 0.81)
+	for y: int in range(h):
+		for x: int in range(w):
+			var u: float = (float(x) + 0.5) / float(w) * 2.0 - 1.0
+			var v: float = (float(y) + 0.5) / float(h)
+			var inside: float = 0.0
+			if enemy:
+				# Huva (cirkel) på en kropp som vidgas nedåt.
+				var head: float = Vector2(u, (v - 0.26) * 2.2).length()
+				var half_width: float = lerpf(0.34, 0.92, clampf((v - 0.30) / 0.66, 0.0, 1.0))
+				inside = 1.0 if head < 0.46 or (v > 0.30 and v < 0.98 and absf(u) < half_width) else 0.0
+			else:
+				var r: float = Vector2(u, v * 2.0 - 1.0).length()
+				inside = 1.0 if r < 0.86 else 0.0
+				if inside > 0.0 and r > 0.72:
+					image.set_pixel(x, y, rim)
+					continue
+			if inside > 0.0:
+				image.set_pixel(x, y, body)
+	var result: ImageTexture = ImageTexture.create_from_image(image)
+	_generated[key] = result
+	return result
+
+
+static func _warn_once(key: String, message: String) -> void:
+	if _art_warned.has(key):
+		return
+	_art_warned[key] = true
+	push_warning("Art: '%s' %s" % [key, message])
+
+
+## Rätt 2D-filter för ett id: Nearest bara när konsten är pixelkonst
+## (manifestets [code]pixel: true[/code] eller en gammal sprite).
+static func filter_for(id: StringName) -> int:
+	if bool(art_info(id)["pixel"]):
+		return CanvasItem.TEXTURE_FILTER_NEAREST
+	return CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+
+
+static func is_pixel(id: StringName) -> bool:
+	return bool(art_info(id)["pixel"])
+
+
+## Innehålls-id:t för en fiende.
+static func enemy_art_key(enemy_id: String) -> StringName:
+	return StringName("enemy." + enemy_id)
+
+
+## Varje fiende-id spelet kan visa: våning 1:s möten, tutorialens fiender och
+## arkregistret. Manifestvalideringen och testerna går över den här listan.
+static func content_enemy_ids() -> PackedStringArray:
+	var seen: Dictionary = {}
+	for enemy_id: String in ENEMIES:
+		seen[enemy_id] = true
+	for room: int in range(1, Content.rooms_per_floor() + 1):
+		for variant: int in [0, 1]:
+			for enemy: Enemy in Content.encounter(room, variant):
+				seen[enemy.id] = true
+	for index: int in range(Tutorial.room_count()):
+		for enemy: Enemy in Tutorial.enemies_for(index):
+			seen[enemy.id] = true
+	var ids: PackedStringArray = PackedStringArray()
+	for key: Variant in seen:
+		ids.append(String(key))
+	ids.sort()
+	return ids
+
+
+## Formkontroll av manifestet. Returnerar en rad per problem, tom när allt
+## håller. [b]Körs av tests/test_manifest.gd[/b], så en trasig post fäller
+## bygget i stället för att bli en tyst platshållare i spelet.
+static func validate_manifest(data: Dictionary = {}) -> PackedStringArray:
+	var problems: PackedStringArray = PackedStringArray()
+	var entries: Dictionary = data if not data.is_empty() else manifest()
+	if data.is_empty():
+		problems.append_array(manifest_errors())
+	for key: Variant in entries:
+		var id: String = String(key)
+		var e: Dictionary = entries[key] as Dictionary
+		var path: String = String(e.get("file", ""))
+		if path == "":
+			problems.append("%s: saknar file" % id)
+		elif not path.begins_with(ART_ROOT):
+			problems.append("%s: %s ligger inte under %s" % [id, path, ART_ROOT])
+		elif not (ResourceLoader.exists(path) or FileAccess.file_exists(path)):
+			problems.append("%s: filen %s finns inte" % [id, path])
+		var kind: String = String(e.get("kind", ""))
+		if not KINDS.has(kind):
+			problems.append("%s: okänd kind '%s'" % [id, kind])
+		var raw_size: Variant = e.get("size", null)
+		if not (raw_size is Array and (raw_size as Array).size() == 2
+				and float((raw_size as Array)[0]) > 0.0 and float((raw_size as Array)[1]) > 0.0):
+			problems.append("%s: size ska vara [w, h] > 0" % id)
+		if e.has("pivot") and not PIVOTS.has(String(e["pivot"])):
+			problems.append("%s: okänd pivot '%s'" % [id, String(e["pivot"])])
+		if e.has("frames") and int(e["frames"]) < 1:
+			problems.append("%s: frames < 1" % id)
+		if id.begins_with("enemy.") and kind != "" and kind != KIND_BATTLER:
+			problems.append("%s: fiender ska vara kind battler" % id)
+		if (id.begins_with("gear.") or id.begins_with("relic.")) and kind != "" and kind != KIND_ICON:
+			problems.append("%s: föremål ska vara kind icon" % id)
+		if not e.has("license") or String(e.get("license", "")) == "":
+			problems.append("%s: saknar license" % id)
+	return problems
+
+
+## En föremålsikon ur manifestet: [code]gear.<ID>[/code]. [param icon_id] får
+## vara med eller utan prefix. Faller tillbaka på den generiska ikonen.
+static func gear_icon(icon_id: String) -> Texture2D:
+	if icon_id == "":
+		return tex(ID_ICON_PLACEHOLDER)
+	var key: String = icon_id if icon_id.contains(".") else "gear." + icon_id
+	return tex(StringName(key))
+
+
+## Sällsynthetens ram, eller null (anroparen ritar då en StyleBox i
+## sällsynthetens färg). Namnen följer [code]rarity.frame.<common|uncommon|rare|epic>[/code].
+static func rarity_frame(rarity_name: String) -> Texture2D:
+	var info: Dictionary = art_info(StringName("rarity.frame." + rarity_name.to_lower()))
+	return info["texture"] as Texture2D if String(info["source"]) == SOURCE_MANIFEST else null
+
+
+## Kastskuggan under en fiende: en mjuk svart ellips, genererad en gång.
+static func shadow_texture() -> Texture2D:
+	if _generated.has("shadow"):
+		return _generated["shadow"] as Texture2D
+	var w: int = 64
+	var h: int = 32
+	var image: Image = Image.create(w, h, false, Image.FORMAT_RGBA8)
+	for y: int in range(h):
+		for x: int in range(w):
+			var d: float = Vector2((float(x) + 0.5) / float(w) * 2.0 - 1.0,
+				(float(y) + 0.5) / float(h) * 2.0 - 1.0).length()
+			var a: float = clampf(1.0 - smoothstep(0.35, 1.0, d), 0.0, 1.0)
+			image.set_pixel(x, y, Color(0.0, 0.0, 0.0, a))
+	image.generate_mipmaps()
+	var result: ImageTexture = ImageTexture.create_from_image(image)
+	_generated["shadow"] = result
+	return result
 
 
 # --- Texturer --------------------------------------------------------------
@@ -452,18 +948,21 @@ static func crack(variant_seed: int) -> Texture2D:
 	return texture("dice/crack_%d.png" % (1 + posmod(variant_seed, 3)))
 
 
+## Slot-ikonen ur manifestet ([code]slot.<typ>[/code]), med M1.5-spriten som reserv.
 static func slot_icon(slot_type: int) -> Texture2D:
-	return texture("ui/slot_%s.png" % Rules.slot_type_name(slot_type).to_lower())
+	return tex(StringName("slot." + Rules.slot_type_name(slot_type).to_lower()))
 
 
 ## Nodikonen för en förgreningsknapp. M1 har bara strid och boss i grafen; de
 ## fyra övriga ikonerna finns och väntar på M2:s nodtyper.
 static func node_icon(kind: String) -> Texture2D:
-	return texture("ui/node_%s.png" % kind.to_lower())
+	return tex(StringName("node." + kind.to_lower()))
 
 
+## Relikens ikon ([code]relic.<ID>[/code]). Aldrig null: saknas både manifest
+## och sprite blir det den generiska ikonen.
 static func relic_icon(relic_id: String) -> Texture2D:
-	return texture("items/relic_%s.png" % relic_id.to_lower())
+	return tex(StringName("relic." + relic_id))
 
 
 # --- Noder -----------------------------------------------------------------

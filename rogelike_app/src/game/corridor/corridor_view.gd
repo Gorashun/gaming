@@ -349,7 +349,7 @@ static func _torch_frames() -> SpriteFrames:
 	var frames: SpriteFrames = SpriteFrames.new()
 	frames.set_animation_speed(&"default", 6.0)
 	frames.set_animation_loop(&"default", true)
-	var sheet: Texture2D = CorridorMesh.tile_texture("res://assets/sprites/env/corridor/torch.png")
+	var sheet: Texture2D = Art.tex(&"env.corridor.torch")
 	if sheet == null:
 		return frames
 	var cell: int = sheet.get_width() / 2
@@ -377,7 +377,7 @@ func _add_sign(spec: Dictionary) -> void:
 	var base: Vector3 = origin + out * (CorridorMesh.TILE_M * 0.5 - 0.10) + side + Vector3(0.0, height, 0.0)
 
 	var plate: Sprite3D = _quad_sprite(
-		CorridorMesh.tile_texture("res://assets/sprites/env/corridor/sign_plate.png"), 0.012)
+		Art.tex(&"env.corridor.sign"), 0.012)
 	plate.name = "Sign_%s_%d" % [CorridorMap.cell_key(tile), facing]
 	plate.position = base
 	plate.rotation.y = -float(facing) * PI * 0.5 + PI

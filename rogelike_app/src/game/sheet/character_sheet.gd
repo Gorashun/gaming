@@ -357,6 +357,7 @@ func _build_footer() -> Control:
 func refresh() -> void:
 	var variant: String = Art.smith_variant(Settings.smith_variant)
 	_portrait.texture = Art.smith_portrait(variant)
+	_portrait.texture_filter = Art.filter_for(Art.portrait_key(variant))
 	_title.text = Tokens.translate_or("SMITH_SHEET_TITLE", "THE SMITH")
 	_subtitle.text = Tokens.translate_or("CHARSHEET_SUBTITLE", "%s · run %d") % [
 		Tokens.translate_or("TOWN_NAME", "CHALKRIM"), maxi(meta.runs, 1)]
