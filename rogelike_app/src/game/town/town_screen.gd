@@ -382,28 +382,26 @@ func _new_seed() -> void:
 
 func _build_market(body: VBoxContainer) -> void:
 	_heading(body, Tokens.translate_or("TOWN_PLACE_MARKET", "The Scrap Market"))
-	# Den heliga regeln för metan (§A.3): aldrig en statsiffra. Marknaden
-	# säljer bara INNEHÅLL till belöningspoolen.
-	_line(body, Tokens.translate_or("MARKET_RULE",
-		"Pips buy variety, never power. Everything here joins the reward pool."), Tokens.CHALK_500)
-	var sold: int = 0
-	for entry: Dictionary in Content.market_catalogue():
-		if sold >= 5:
-			break
-		if meta.unlocked.has(String(entry["id"])):
-			continue
-		sold += 1
+	# M6: marknaden säljer gear ur en seedad rotation, aldrig poolposter
+	# (DECISIONS 2026-09-23). Det köpta hamnar i banken, säkrat.
+	_line(body, Tokens.translate_or("GEAR_MARKET_RULE",
+		"Gear bought here waits in the bank. Carry it down and it can be lost."), Tokens.CHALK_500)
+	if meta.market_stock.is_empty():
+		_line(body, Tokens.translate_or("MARKET_EMPTY", "Shelves are bare. Go earn some eyes."), Tokens.CHALK_500)
+		return
+	for i: int in range(meta.market_stock.size()):
+		var offer: Dictionary = meta.market_stock[i]
+		var item: Item = Item.from_dict(offer.get("item", {}) as Dictionary)
 		var row: HBoxContainer = HBoxContainer.new()
 		row.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_2))
 		body.add_child(row)
-		var name: Label = _label(Tokens.TYPE_BODY, Tokens.CHALK_100)
-		name.text = Tokens.translate_or(String(entry.get("name_key", "")), String(entry["name"]))
+		var name: Label = _label(Tokens.TYPE_BODY, Tokens.rarity_color(item.rarity))
+		name.text = Tokens.translate_or(item.name_key, item.display_name)
 		name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(name)
-		var price: int = Meta.price_of(entry)
 		var buy: Button = Button.new()
-		buy.text = Tokens.translate_or("TOWN_PRICE", "%d pips") % price
-		buy.disabled = not meta.can_afford(entry)
+		buy.text = Tokens.translate_or("TOWN_PRICE", "%d pips") % int(offer.get("price", 0))
+		buy.disabled = not meta.can_buy_offer(i)
 		buy.clip_text = true
 		buy.custom_minimum_size = Vector2(Tokens.dp(96), Tokens.dp(Tokens.BUTTON_SECONDARY_HEIGHT))
 		buy.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_LABEL))
@@ -412,14 +410,12 @@ func _build_market(body: VBoxContainer) -> void:
 		var style: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_REG)
 		for state_name: String in ["normal", "hover", "pressed", "disabled"]:
 			buy.add_theme_stylebox_override(state_name, style)
-		buy.pressed.connect(_buy.bind(entry))
+		buy.pressed.connect(_buy.bind(i))
 		row.add_child(buy)
-	if sold == 0:
-		_line(body, Tokens.translate_or("MARKET_EMPTY", "Shelves are bare. Go earn some eyes."), Tokens.CHALK_500)
 
 
-func _buy(entry: Dictionary) -> void:
-	if not meta.buy(entry):
+func _buy(index: int) -> void:
+	if meta.buy_offer(index) == null:
 		return
 	Juice.ui_tap(1.3)
 	Juice.haptic(Haptics.Level.MEDIUM)

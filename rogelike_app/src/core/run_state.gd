@@ -17,7 +17,12 @@ extends RefCounted
 ## [code]meta.tutorial_loot_open[/code] säger om korten på golvet är loot-valet.
 ## En fil från version 2 är per definition en riktig run och migreras med
 ## [code]tutorial_room = -1[/code] – ingen run går förlorad.
-const SAVE_VERSION: int = 3
+##
+## [b]4 (M6):[/b] gear. Runnen bär sin hjälte ([member hero]) och packningen
+## ([member pack]); [code]combat.gear[/code] är det hjälten har på sig. En v3-fil
+## hade reliker i [code]combat.relics[/code] – [method SaveIO.migrate] gör om dem
+## till föremål i rätt slot (DECISIONS 2026-09-23: reliker → gear).
+const SAVE_VERSION: int = 4
 
 var version: int = SAVE_VERSION
 ## Synlig i pausmenyn (GAME_DESIGN §6.10) och nyckeln till dagliga utmaningar.
@@ -31,6 +36,13 @@ var room_index: int = 1
 var combat: CombatState = null
 ## Fritt utrymme för meta-progression och klassval, t.ex. {"class": "SMITH"}.
 var meta: Dictionary = {}
+## M6: hjälten som gick ner, med allt hen bär. [b]Allt här är osäkrat[/b] tills
+## det bankas vid trappan, räddas i Kistan eller runnen vinns (§3.4).
+## null i källaren och i en run utan roster (tester, simulatorns strider).
+var hero: Hero = null
+## Föremål som bärs med men inte sitter på kroppen: låsta slots, utbytta plagg.
+## Lika osäkrade som det hjälten har på sig.
+var pack: Array[Item] = []
 
 
 ## Ny run med Smedens startuppsättning.
@@ -55,6 +67,15 @@ func store_rng(rng: Rng) -> void:
 	rng_state = rng.state()
 
 
+## Allt runnen riskerar just nu: det burna plus packningen, i stabil ordning.
+func carried_items() -> Array[Item]:
+	var out: Array[Item] = []
+	if hero != null:
+		out.append_array(hero.equipped_items())
+	out.append_array(pack)
+	return out
+
+
 func is_run_over() -> bool:
 	return combat != null and combat.player_hp <= 0
 
@@ -68,6 +89,8 @@ func to_dict() -> Dictionary:
 		"room_index": room_index,
 		"combat": combat.to_dict() if combat != null else {},
 		"meta": meta.duplicate(true),
+		"hero": hero.to_dict() if hero != null else {},
+		"pack": Item.list_to_dicts(pack),
 	}
 
 
@@ -81,4 +104,7 @@ static func from_dict(data: Dictionary) -> RunState:
 	var combat_data: Dictionary = data.get("combat", {}) as Dictionary
 	run.combat = CombatState.from_dict(combat_data) if not combat_data.is_empty() else null
 	run.meta = (data.get("meta", {}) as Dictionary).duplicate(true)
+	var hero_data: Dictionary = data.get("hero", {}) as Dictionary
+	run.hero = Hero.from_dict(hero_data) if not hero_data.is_empty() else null
+	run.pack = Item.list_from_dicts(data.get("pack", []))
 	return run

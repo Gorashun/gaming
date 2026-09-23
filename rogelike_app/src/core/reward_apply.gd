@@ -20,9 +20,13 @@ extends RefCounted
 ##   typen, med förtur för [code]PLAIN[/code] (byter hellre bort en tom regel än
 ##   en spelaren redan bygger på).
 ## [br]• [code]RELIC[/code] → inget mål behövs.
+## [br]• [code]GEAR[/code] (M6) → kortet bär sitt mål själv
+##   ([method GearRules.equip_target], satt när dropparna lades bland korten).
 static func default_target(state: CombatState, choice: Dictionary) -> Dictionary:
 	var data: Dictionary = choice.get("data", {}) as Dictionary
 	match String(choice.get("category", "")):
+		Rewards.CATEGORY_GEAR:
+			return (data.get("target", {}) as Dictionary).duplicate(true)
 		Rewards.CATEGORY_FORGE_FACE:
 			var best_die: int = -1
 			var best_face: int = -1
@@ -74,6 +78,8 @@ static func describe(state: CombatState, choice: Dictionary, target: Dictionary)
 			]
 		Rewards.CATEGORY_RELIC:
 			return _t("REWARD_DESC_RELIC") % name
+		Rewards.CATEGORY_GEAR:
+			return describe_gear(choice, target)
 		Rewards.CATEGORY_SLOT_SWAP:
 			var slot_index: int = int(target.get("slot_index", 0))
 			var wanted: int = int(data.get("slot_type", Rules.SlotType.PLAIN))
@@ -84,6 +90,24 @@ static func describe(state: CombatState, choice: Dictionary, target: Dictionary)
 				slot_index + 1, before, _slot_label(wanted),
 			]
 	return name
+
+
+## Gear-kortets mening: effekten, sedan var plagget hamnar. Exakt vad som händer
+## när spelaren trycker – på kroppen (och vad det ersätter) eller i packningen.
+static func describe_gear(choice: Dictionary, target: Dictionary) -> String:
+	var data: Dictionary = choice.get("data", {}) as Dictionary
+	var item_data: Dictionary = data.get("item", {}) as Dictionary
+	var id: String = String(item_data.get("id", ""))
+	var summary: String = _t(Content.gear_desc_key(id))
+	var slot: String = _t(Content.sheet_slot_key(String(target.get("slot", item_data.get("slot", "")))))
+	var where: String = ""
+	if bool(target.get("to_pack", false)):
+		where = _t("GEAR_TARGET_PACK") % [slot, int(target.get("unlock_level", 0))]
+	elif String(target.get("replaces", "")) != "":
+		where = _t("GEAR_TARGET_REPLACES") % [slot, _t(String(target.get("replaces_key", "")))]
+	else:
+		where = _t("GEAR_TARGET_EQUIP") % slot
+	return "%s %s" % [summary, where]
 
 
 static func _effect_suffix(face: Face) -> String:
@@ -119,8 +143,24 @@ static func _name_of(choice: Dictionary) -> String:
 	return fallback if value == key else value
 
 
+## Tillämpar ett val på hela runnen. Gear hamnar på hjälten eller i packningen
+## ([method GearRules.take_item]); allt annat går till [method apply].
+## [b]Muterar [param run][/b] – runnen är controllerns arbetsobjekt, inte ett
+## förhandsvisat tillstånd.
+static func apply_to_run(run: RunState, choice: Dictionary, target: Dictionary = {}) -> void:
+	if run == null or choice.is_empty():
+		return
+	if String(choice.get("category", "")) == Rewards.CATEGORY_GEAR:
+		var data: Dictionary = choice.get("data", {}) as Dictionary
+		GearRules.take_item(run, Item.from_dict(data.get("item", {}) as Dictionary))
+		return
+	run.combat = apply(run.combat, choice, target)
+
+
 ## Returnerar en KOPIA av [param state] med belöningen tillämpad.
 ## Muterar aldrig indata, av samma skäl som [method Resolver.resolve] inte gör det.
+## GEAR ändrar inte stridstillståndet här – det sitter på hjälten, se
+## [method apply_to_run].
 static func apply(state: CombatState, choice: Dictionary, target: Dictionary = {}) -> CombatState:
 	var next: CombatState = state.copy()
 	var data: Dictionary = choice.get("data", {}) as Dictionary

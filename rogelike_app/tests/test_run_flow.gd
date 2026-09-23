@@ -127,20 +127,34 @@ func test_applying_a_reward_does_not_mutate_the_input_state() -> void:
 	var state: CombatState = Content.smith_state()
 	var before: String = JSON.stringify(state.to_dict())
 	RewardApply.apply(state, _option("FORGE_POISON_DROP"))
-	RewardApply.apply(state, _option("RELIC_DOMINO"))
+	RewardApply.apply(state, _gear_option("DOMINO"))
 	RewardApply.apply(state, _option("SWAP_VOID"))
 	assert_str(JSON.stringify(state.to_dict())).is_equal(before)
 
 
-func test_relic_is_added_once() -> void:
-	var state: CombatState = Content.smith_state()
-	var option: Dictionary = _option("RELIC_DOMINO")
-	var after: CombatState = RewardApply.apply(RewardApply.apply(state, option), option)
-	var count: int = 0
-	for relic: Relic in after.relics:
-		if relic.id == "DOMINO":
-			count += 1
-	assert_int(count).is_equal(1)
+func _gear_option(id: String) -> Dictionary:
+	var item: Item = Content.make_item(id)
+	return Rewards.gear_option(item, {"slot": item.slot, "to_pack": false})
+
+
+## [b]Ändrat i M6 (motivering):[/b] hette [code]test_relic_is_added_once[/code].
+## RELIC-kategorin utgick (DECISIONS 2026-09-23); samma löfte gäller nu gear:
+## att ta samma föremål två gånger ger ett plagg på kroppen, inte två regler.
+func test_gear_is_worn_once_and_the_rule_counts_once() -> void:
+	var run: RunState = RunState.new_run(3)
+	run.hero = Hero.new("h1", "Test")
+	var option: Dictionary = _gear_option("DOMINO")
+	RewardApply.apply_to_run(run, option)
+	RewardApply.apply_to_run(run, option)
+	assert_object(run.hero.equipped("WEAPON")).is_not_null()
+	assert_str(run.hero.equipped("WEAPON").id).is_equal("DOMINO")
+	assert_int(run.pack.size()).override_failure_message(
+		"den andra kopian ska ligga i packningen").is_equal(1)
+	var rules: int = 0
+	for item: Item in run.combat.gear:
+		if GearRules.has_rule([item], "DOMINO"):
+			rules += 1
+	assert_int(rules).is_equal(1)
 
 
 func test_slot_swap_prefers_the_leftmost_plain_slot() -> void:

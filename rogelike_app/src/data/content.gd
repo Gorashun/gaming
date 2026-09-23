@@ -20,7 +20,12 @@ const FORGEABLE_FACES: Dictionary = {
 	"LEAD_SIX": {"name": "Lead Six", "value": 6, "effect": Rules.FaceEffectKind.LOCKED, "magnitude": 0, "rarity": Rules.Rarity.RARE},
 }
 
-# --- §4.6 Reliker ----------------------------------------------------------
+# --- §4.6 Reliker (regelkrokar) -----------------------------------------------
+# [b]M6: reliker är inte längre en belöning.[/b] De sex relikerna blev gear
+# (se [constant GEAR], samma id:n) och kategorin RELIC utgick ur belöningspoolen
+# (DECISIONS 2026-09-23). Tabellen står kvar som [i]regelkatalog[/i]: resolverns
+# krokar (BLOOD_PRICE, DOMINO …) heter fortfarande så, character sheetet ritar
+# fortfarande klassreliken, och en v3-sparfil migreras via den.
 
 const RELICS: Dictionary = {
 	"BLOOD_PRICE": {"name": "Blood Price", "rarity": Rules.Rarity.COMMON},
@@ -75,6 +80,210 @@ static func relic_slot(relic_id: String) -> String:
 ## Översättningsnyckeln för en slotetikett. Nycklarna fanns redan i M2.5:s CSV.
 static func sheet_slot_key(slot: String) -> String:
 	return "SMITH_SLOT_%s" % slot
+
+
+# --- M6: Gear (PROGRESSION_REDESIGN §3.5) ------------------------------------
+# 22 föremål ur §3.5 plus de sex relikerna, omgjorda till gear i den slot
+# [constant RELIC_SLOTS] redan hängde dem på (DECISIONS 2026-09-23: reliker →
+# gear). Effekternas regler står i [GearRules]; här är bara data.
+#
+# [b]Läsbarhetslag 2 (§3.2):[/b] högst en ren stat-effekt per föremål, och bara
+# på COMMON. [code]tests/test_gear.gd[/code] fäller bygget annars.
+#
+# [code]sources[/code] är dropkällorna: fiende-id, eller ELITE / ALTAR.
+# [code]per_level[/code] är hur mycket effekten växer per smedjenivå.
+
+const GEAR: Dictionary = {
+	"SCRAP_CAP": {"name": "Scrap Cap", "slot": SLOT_HEAD, "rarity": Rules.Rarity.COMMON,
+		"effects": [{"kind": "MAX_HP", "amount": 6, "per_level": 3}], "sources": ["RUST_RAT"]},
+	"TALLOW_HOOD": {"name": "Tallow Hood", "slot": SLOT_HEAD, "rarity": Rules.Rarity.UNCOMMON,
+		"effects": [{"kind": "FIRST_ROUND_REROLL", "amount": 1}], "sources": ["SLAG_MOTH"]},
+	"PIPSIGHT_LENS": {"name": "Pipsight Lens", "slot": SLOT_HEAD, "rarity": Rules.Rarity.RARE,
+		"effects": [{"kind": "PIP_BONUS", "face_value": 1, "amount": 1}], "sources": ["PIP_THIEF"]},
+	"SLAG_PLATE": {"name": "Slag Plate", "slot": SLOT_CHEST, "rarity": Rules.Rarity.COMMON,
+		"effects": [{"kind": "PLAYER_ARMOR", "amount": 2, "per_level": 1}], "sources": ["IRON_TICK"]},
+	"TICK_CARAPACE": {"name": "Tick Carapace", "slot": SLOT_CHEST, "rarity": Rules.Rarity.UNCOMMON,
+		"effects": [{"kind": "WARD_RETAIN", "percent": 50}], "sources": ["IRON_TICK", "ELITE"]},
+	"KILN_VEST": {"name": "Kiln Vest", "slot": SLOT_CHEST, "rarity": Rules.Rarity.RARE,
+		"effects": [{"kind": "CHARGE_IF_UNHURT", "amount": 4, "per_level": 1}], "sources": ["ALTAR"]},
+	"GRIP_WRAPS": {"name": "Grip Wraps", "slot": SLOT_HANDS, "rarity": Rules.Rarity.COMMON,
+		"effects": [{"kind": "COMBAT_REROLL", "amount": 1}], "sources": ["RUST_RAT"]},
+	"TONG_GLOVES": {"name": "Tong Gloves", "slot": SLOT_HANDS, "rarity": Rules.Rarity.UNCOMMON,
+		"effects": [{"kind": "ANVIL_THRESHOLD", "value": 4}], "sources": ["GRAVE_HAND"]},
+	"THIEFS_MITTS": {"name": "Thief's Mitts", "slot": SLOT_HANDS, "rarity": Rules.Rarity.RARE,
+		"effects": [{"kind": "LEFTMOST_BONUS", "amount": 2, "per_level": 1}], "sources": ["PIP_THIEF", "ELITE"]},
+	"CHIPPED_HAMMER": {"name": "Chipped Hammer", "slot": SLOT_WEAPON, "rarity": Rules.Rarity.COMMON,
+		"effects": [{"kind": "ARMOR_PIERCE_SLOT", "slot": 4, "amount": 2, "per_level": 1}], "sources": ["RUST_RAT"]},
+	"SPIKE_MAUL": {"name": "Spike Maul", "slot": SLOT_WEAPON, "rarity": Rules.Rarity.UNCOMMON,
+		"effects": [{"kind": "ARMOR_PIERCE_BIGGEST", "amount": 3, "per_level": 1}], "sources": ["THORN_IMP"]},
+	"MOTH_EDGE": {"name": "Moth Edge", "slot": SLOT_WEAPON, "rarity": Rules.Rarity.UNCOMMON,
+		"effects": [{"kind": "CHARGE_ON_KILL", "amount": 3, "per_level": 1}], "sources": ["SLAG_MOTH"]},
+	"SLAGJAW_TOOTH": {"name": "Slagjaw's Tooth", "slot": SLOT_WEAPON, "rarity": Rules.Rarity.EPIC,
+		"effects": [{"kind": "OVERFLOW_IGNORES_ARMOR"}], "sources": ["SLAGJAW"]},
+	"RUST_GREAVES": {"name": "Rust Greaves", "slot": SLOT_LEGS, "rarity": Rules.Rarity.COMMON,
+		"effects": [{"kind": "WARD_ON_ROUND_START", "amount": 2, "per_level": 1}], "sources": ["RUST_RAT"]},
+	"CART_BOOTS": {"name": "Cart Boots", "slot": SLOT_LEGS, "rarity": Rules.Rarity.UNCOMMON,
+		"effects": [{"kind": "START_CHARGE", "amount": 5, "per_level": 2}], "sources": ["GRAVE_HAND"]},
+	"PIT_STRIDERS": {"name": "Pit Striders", "slot": SLOT_LEGS, "rarity": Rules.Rarity.RARE,
+		"effects": [{"kind": "FIRST_ROUND_EXTRA_DIE", "amount": 1}], "sources": ["SLAGJAW"]},
+	"DICE_POUCH": {"name": "Dice Pouch", "slot": SLOT_BACK, "rarity": Rules.Rarity.COMMON,
+		"effects": [{"kind": "UNPLACED_CHARGE_BONUS", "amount": 1}], "sources": ["SLAG_MOTH"]},
+	"CHALK_SATCHEL": {"name": "Chalk Satchel", "slot": SLOT_BACK, "rarity": Rules.Rarity.UNCOMMON,
+		"effects": [{"kind": "CHARGE_CAP", "value": 32}], "sources": ["ALTAR"]},
+	"MARROWS_TARP": {"name": "Marrow's Tarp", "slot": SLOT_BACK, "rarity": Rules.Rarity.RARE,
+		"effects": [{"kind": "RESCUE_BONUS", "amount": 1}], "sources": ["GRAVE_HAND", "ELITE"]},
+	"BONE_TALLY": {"name": "Bone Tally", "slot": SLOT_AMULET, "rarity": Rules.Rarity.COMMON,
+		"effects": [{"kind": "DAMAGE_PER_KILL", "amount": 1}], "sources": ["THORN_IMP"]},
+	"TWIN_PIP": {"name": "Twin Pip", "slot": SLOT_AMULET, "rarity": Rules.Rarity.RARE,
+		"effects": [{"kind": "HOUSE_TWO_PAIR"}], "sources": ["SLAGJAW"]},
+	"SIXTH_SEAT": {"name": "Sixth Seat", "slot": SLOT_AMULET, "rarity": Rules.Rarity.EPIC,
+		"effects": [{"kind": "EXTRA_SLOT", "amount": 1}], "sources": ["SLAGJAW"]},
+	# De sex relikerna, i sina RELIC_SLOTS-platser. Regeln är resolverns krok.
+	"BLOOD_PRICE": {"name": "Blood Price", "slot": SLOT_CHEST, "rarity": Rules.Rarity.COMMON,
+		"effects": [{"kind": "RULE", "rule": "BLOOD_PRICE"}], "sources": ["THORN_IMP"]},
+	"BROKEN_SCALE": {"name": "Broken Scale", "slot": SLOT_AMULET, "rarity": Rules.Rarity.UNCOMMON,
+		"effects": [{"kind": "RULE", "rule": "BROKEN_SCALE"}], "sources": ["IRON_TICK"]},
+	"OCTOPUS": {"name": "The Octopus", "slot": SLOT_HANDS, "rarity": Rules.Rarity.UNCOMMON,
+		"effects": [{"kind": "RULE", "rule": "OCTOPUS"}], "sources": ["PIP_THIEF"]},
+	"ECHO_MIRROR": {"name": "Echo Mirror", "slot": SLOT_HEAD, "rarity": Rules.Rarity.RARE,
+		"effects": [{"kind": "RULE", "rule": "ECHO_MIRROR"}], "sources": ["ALTAR"]},
+	"CHEAT_CUBE": {"name": "Cheat Cube", "slot": SLOT_BACK, "rarity": Rules.Rarity.RARE,
+		"effects": [{"kind": "RULE", "rule": "CHEAT_CUBE"}], "sources": ["ALTAR"]},
+	"DOMINO": {"name": "The Domino", "slot": SLOT_WEAPON, "rarity": Rules.Rarity.RARE,
+		"effects": [{"kind": "RULE", "rule": "DOMINO"}], "sources": ["SLAGJAW", "ELITE"]},
+}
+
+## De 22 föremålen ur §3.5, i tabellens ordning. Kritväggens samling räknar dem.
+const GEAR_CATALOGUE_22: Array[String] = [
+	"SCRAP_CAP", "TALLOW_HOOD", "PIPSIGHT_LENS", "SLAG_PLATE", "TICK_CARAPACE",
+	"KILN_VEST", "GRIP_WRAPS", "TONG_GLOVES", "THIEFS_MITTS", "CHIPPED_HAMMER",
+	"SPIKE_MAUL", "MOTH_EDGE", "SLAGJAW_TOOTH", "RUST_GREAVES", "CART_BOOTS",
+	"PIT_STRIDERS", "DICE_POUCH", "CHALK_SATCHEL", "MARROWS_TARP", "BONE_TALLY",
+	"TWIN_PIP", "SIXTH_SEAT",
+]
+
+## Dropkällor som inte är fiender.
+const SOURCE_ELITE: String = "ELITE"
+const SOURCE_ALTAR: String = "ALTAR"
+
+
+static func gear_key(id: String) -> String:
+	return "GEAR_%s" % id
+
+
+static func gear_desc_key(id: String) -> String:
+	return "GEAR_%s_DESC" % id
+
+
+## Ett färskt föremål ur katalogen, nivå 0, säkrat. Okänt id ger null.
+static func make_item(id: String) -> Item:
+	if not GEAR.has(id):
+		return null
+	var d: Dictionary = GEAR[id]
+	var item: Item = Item.new(id, String(d["slot"]), int(d["rarity"]))
+	item.display_name = String(d["name"])
+	# De omgjorda relikerna har sina ikoner under relic.<ID> i art-manifestet.
+	if RELICS.has(id):
+		item.icon_id = "relic.%s" % id
+	var effects: Array[Dictionary] = []
+	for raw: Variant in d["effects"] as Array:
+		effects.append((raw as Dictionary).duplicate(true))
+	item.effects = effects
+	return item
+
+
+## Id:n på alla föremål med [param rarity] som [param source] kan droppa.
+## Tom [param source] = alla källor.
+static func gear_ids(rarity: int, source: String = "") -> Array[String]:
+	var out: Array[String] = []
+	for id: String in GEAR:
+		var d: Dictionary = GEAR[id]
+		if int(d["rarity"]) != rarity:
+			continue
+		if source != "" and not (d["sources"] as Array).has(source):
+			continue
+		out.append(id)
+	return out
+
+
+## En relik-id ur en v3-sparfil → föremålet den blev. Klassreliken
+## (ANVIL_BLESSING) är ingen gear och ger null.
+static func item_for_relic(relic_id: String) -> Item:
+	if not RELICS.has(relic_id):
+		return null
+	return make_item(relic_id)
+
+
+# --- M6: Quirks (PROGRESSION_REDESIGN §4.2) -----------------------------------
+# En per hjälte, smak inte bokföring. Effekterna går genom samma regelmotor som
+# gear ([GearRules]) och syns därför i kvittot med hjältens quirk som källa.
+
+const QUIRKS: Dictionary = {
+	"HEAVY_HANDED": {"name": "Heavy-Handed", "effects": [
+		{"kind": "PIP_BONUS", "face_value": 6, "amount": 1},
+		{"kind": "PIP_BONUS", "face_value": 1, "amount": -1},
+	]},
+	"SUPERSTITIOUS": {"name": "Superstitious", "effects": [
+		{"kind": "COMBAT_REROLL", "amount": 1},
+	]},
+	"HOARDER": {"name": "Hoarder", "effects": [
+		{"kind": "CHARGE_PER_ROUND", "amount": 2},
+		{"kind": "CHARGE_CAP_DELTA", "amount": -5},
+	]},
+	"RIGHT_HANDED": {"name": "Right-Handed", "effects": [
+		{"kind": "SLOT_BONUS", "slot": 4, "amount": 2},
+		{"kind": "SLOT_BONUS", "slot": 0, "amount": -1},
+	]},
+}
+
+
+static func quirk_key(id: String) -> String:
+	return "HERO_QUIRK_%s" % id
+
+
+## Quirken som ett pseudo-föremål utan slot, så att resolvern och kvittot kan
+## behandla den exakt som gear. Okänd eller tom quirk ger null.
+static func quirk_item(id: String) -> Item:
+	if not QUIRKS.has(id):
+		return null
+	var d: Dictionary = QUIRKS[id]
+	var item: Item = Item.new("QUIRK_%s" % id, "", Rules.Rarity.COMMON)
+	item.display_name = String(d["name"])
+	item.name_key = quirk_key(id)
+	item.effect_summary_key = "%s_DESC" % quirk_key(id)
+	item.icon_id = "quirk.%s" % id
+	var effects: Array[Dictionary] = []
+	for raw: Variant in d["effects"] as Array:
+		effects.append((raw as Dictionary).duplicate(true))
+	item.effects = effects
+	return item
+
+
+## Namnlistan tavernan rekryterar ur. Egennamn: de översätts inte.
+const HERO_NAMES: Array[String] = [
+	"Brann", "Hild", "Osk", "Tamsin", "Wren", "Corbin", "Maude", "Pell",
+	"Ysolde", "Garrick", "Nell", "Bram", "Isa", "Dunstan", "Fenn", "Ottilie",
+	"Rook", "Agna", "Tobiah", "Sefa", "Crane", "Idony", "Mabry", "Ulf",
+]
+
+
+## Ny rekryt. Namnet och quirken är seedade ur [param rng]; [param taken] är
+## namn som redan finns i rostret eller på Gravlunden och undviks så länge det
+## går.
+static func recruit_hero(rng: Rng, taken: Array = [], body_variant: String = "a", level: int = 1) -> Hero:
+	var free: Array[String] = []
+	for candidate: String in HERO_NAMES:
+		if not taken.has(candidate):
+			free.append(candidate)
+	var names: Array[String] = free if not free.is_empty() else HERO_NAMES
+	var hero: Hero = Hero.new("", names[rng.next_int(0, names.size() - 1)])
+	var quirk_ids: Array = QUIRKS.keys()
+	quirk_ids.sort()
+	hero.quirk = String(quirk_ids[rng.next_int(0, quirk_ids.size() - 1)])
+	hero.body_variant = body_variant
+	hero.level = clampi(level, 1, Hero.MAX_LEVEL)
+	hero.xp = Hero.XP_FOR_LEVEL[hero.level]
+	return hero
 
 
 # --- §4.7 SLOT_SWAP-pool ---------------------------------------------------
@@ -137,7 +346,9 @@ static func make_relic(id: String) -> Relic:
 	return Relic.new(id, int(d["rarity"]), String(d["name"]))
 
 
-## Hela belöningspoolen som Rewards.generate() drar ur.
+## Hela belöningspoolen som Rewards.generate() drar ur: sidor och slot-byten.
+## [b]Gear ligger inte här[/b] – det droppar från fiender ([Drops]) och läggs in
+## bland de tre korten efter striden. RELIC utgick i M6.
 static func reward_pool() -> Array[Dictionary]:
 	var pool: Array[Dictionary] = []
 	for id: String in FORGEABLE_FACES:
@@ -149,16 +360,6 @@ static func reward_pool() -> Array[Dictionary]:
 			"name_key": face_key(id),
 			"rarity": int(f["rarity"]),
 			"data": {"face_id": id},
-		})
-	for id: String in RELICS:
-		var r: Dictionary = RELICS[id]
-		pool.append({
-			"id": "RELIC_%s" % id,
-			"category": Rewards.CATEGORY_RELIC,
-			"name": String(r["name"]),
-			"name_key": relic_key(id),
-			"rarity": int(r["rarity"]),
-			"data": {"relic_id": id},
 		})
 	for id: String in SLOT_SWAPS:
 		var s: Dictionary = SLOT_SWAPS[id]
@@ -237,51 +438,14 @@ static func rooms_per_floor() -> int:
 	return 4
 
 
-# --- §A.3 Skrotmarknaden ---------------------------------------------------
+# --- §A.3 Belöningspoolen efter M6 ------------------------------------------
 
-## Poolposter som [b]inte[/b] ingår i en färsk spelares belöningspool utan måste
-## köpas loss på Skrotmarknaden. TOWN_AND_ONBOARDING §A.3: startpoolen ska vara
-## liten från början och växa i paket som byter spelstil, inte droppa enstaka
-## skräp ("awkward middle"-varningen i research/01 §A).
-##
-## Notera att detta [b]aldrig[/b] är en siffra: varje post är ett id som läggs
-## till i [method Content.reward_pool]. Ingen +HP, ingen +skada.
-const LOCKED_BY_DEFAULT: Array[String] = [
-	"FORGE_SNOWBALL",
-	"FORGE_VAMP_FANG",
-	"FORGE_TWIN_EYE",
-	"FORGE_HAMMER_FACE",
-	"FORGE_LEAD_SIX",
-	"RELIC_OCTOPUS",
-	"RELIC_ECHO_MIRROR",
-	"RELIC_CHEAT_CUBE",
-	"RELIC_DOMINO",
-	"SWAP_FIRE",
-	"SWAP_ANVIL",
-	"SWAP_MIRROR",
-]
-
-
-## Marknadens hyllor: exakt de poolposter som ligger bakom [Meta.pips].
-## Priset kommer ur [constant Meta.PRICE] och är fast – ingen rabatt, ingen
-## pity-timer, inget som ändrar sig när spelaren tittar bort.
-static func market_catalogue() -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	for entry: Dictionary in reward_pool():
-		if LOCKED_BY_DEFAULT.has(String(entry.get("id", ""))):
-			result.append(entry)
-	return result
-
-
-## Poolen en spelare faktiskt drar ur, givet vad som köpts loss.
-static func unlocked_pool(unlocked: Array) -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	for entry: Dictionary in reward_pool():
-		var id: String = String(entry.get("id", ""))
-		if LOCKED_BY_DEFAULT.has(id) and not unlocked.has(id):
-			continue
-		result.append(entry)
-	return result
+## Poolen en spelare drar ur. [b]M6: Pips köper inte längre poolposter[/b]
+## (DECISIONS 2026-09-23, PROGRESSION_REDESIGN §6), så hela poolen är öppen från
+## första run. Parametern står kvar för att en gammal profils köplista inte
+## ska ändra vad som dras.
+static func unlocked_pool(_unlocked: Array = []) -> Array[Dictionary]:
+	return reward_pool()
 
 
 ## Antal fiender Kodexen kan innehålla. Tutorialvåningens pedagogiska varianter

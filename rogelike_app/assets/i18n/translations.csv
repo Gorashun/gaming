@@ -399,3 +399,73 @@ DIE_MATERIAL_GLASS,Glass,Glas
 COMBAT_ENEMY_HP,HP %d / %d,HP %d / %d
 COMBAT_ENEMY_BURN_SHORT,b%d,b%d
 COMBAT_ENEMY_POISON_SHORT,p%d,p%d
+GEAR_SCRAP_CAP,Scrap Cap,Skrothjälmen
+GEAR_SCRAP_CAP_DESC,+6 max HP.,+6 max-HP.
+GEAR_TALLOW_HOOD,Tallow Hood,Talgkåpan
+GEAR_TALLOW_HOOD_DESC,+1 reroll in the first round of every fight.,+1 omkast i första rundan av varje strid.
+GEAR_PIPSIGHT_LENS,Pipsight Lens,Ögonlinsen
+GEAR_PIPSIGHT_LENS_DESC,Every 1 counts as a 2.,Varje etta räknas som en tvåa.
+GEAR_SLAG_PLATE,Slag Plate,Slaggplåten
+GEAR_SLAG_PLATE_DESC,Armor 2: every enemy attack hits 2 less.,Rustning 2: varje fiendeattack gör 2 mindre.
+GEAR_TICK_CARAPACE,Tick Carapace,Fästingskalet
+GEAR_TICK_CARAPACE_DESC,Half your Ward stays when the round ends.,Hälften av din Ward ligger kvar när rundan slutar.
+GEAR_KILN_VEST,Kiln Vest,Ugnsvästen
+GEAR_KILN_VEST_DESC,A round where you take no damage: +4 Charge.,En runda utan skada: +4 Laddning.
+GEAR_GRIP_WRAPS,Grip Wraps,Grepplindorna
+GEAR_GRIP_WRAPS_DESC,+1 reroll per fight.,+1 omkast per strid.
+GEAR_TONG_GLOVES,Tong Gloves,Tånghandskarna
+GEAR_TONG_GLOVES_DESC,"Anvils double from 4, not 5.","Ambossen dubblar från 4, inte 5."
+GEAR_THIEFS_MITTS,Thief's Mitts,Tjuvvantarna
+GEAR_THIEFS_MITTS_DESC,Your leftmost placed die gets +2.,Din vänstraste placerade tärning får +2.
+GEAR_CHIPPED_HAMMER,Chipped Hammer,Flisade hammaren
+GEAR_CHIPPED_HAMMER_DESC,Slot 5 ignores 2 armor.,Slot 5 ignorerar 2 rustning.
+GEAR_SPIKE_MAUL,Spike Maul,Spikklubban
+GEAR_SPIKE_MAUL_DESC,The round's biggest hit ignores 3 armor.,Rundans största träff ignorerar 3 rustning.
+GEAR_MOTH_EDGE,Moth Edge,Malbettet
+GEAR_MOTH_EDGE_DESC,Every kill: +3 Charge.,Varje dödad fiende: +3 Laddning.
+GEAR_SLAGJAW_TOOTH,Slagjaw's Tooth,Slaggkäftens tand
+GEAR_SLAGJAW_TOOTH_DESC,Overflow ignores armor.,Överflöd beskattas inte av rustning.
+GEAR_RUST_GREAVES,Rust Greaves,Rostbenskenorna
+GEAR_RUST_GREAVES_DESC,+2 Ward at the start of every round.,+2 Ward i början av varje runda.
+GEAR_CART_BOOTS,Cart Boots,Kärrstövlarna
+GEAR_CART_BOOTS_DESC,Start every fight with 5 Charge.,Börja varje strid med 5 Laddning.
+GEAR_PIT_STRIDERS,Pit Striders,Gropskridarna
+GEAR_PIT_STRIDERS_DESC,First round of a fight: you roll 7 dice.,Stridens första runda: du kastar 7 tärningar.
+GEAR_DICE_POUCH,Dice Pouch,Tärningspungen
+GEAR_DICE_POUCH_DESC,Every unplaced die gives +1 extra Charge.,Varje oplacerad tärning ger +1 extra Laddning.
+GEAR_CHALK_SATCHEL,Chalk Satchel,Kritväskan
+GEAR_CHALK_SATCHEL_DESC,Charge cap 20 → 32.,Laddningstak 20 → 32.
+GEAR_MARROWS_TARP,Marrow's Tarp,Marrows presenning
+GEAR_MARROWS_TARP_DESC,"When you die, one more item is rescued.",När du dör räddas ett föremål till.
+GEAR_BONE_TALLY,Bone Tally,Benräkningen
+GEAR_BONE_TALLY_DESC,+1 damage per hit for every enemy already killed this fight.,+1 skada per träff för varje fiende du redan dödat i striden.
+GEAR_TWIN_PIP,Twin Pip,Tvillingögat
+GEAR_TWIN_PIP_DESC,Two pairs also trigger HOUSE.,Två par utlöser också KÅK.
+GEAR_SIXTH_SEAT,Sixth Seat,Sjätte platsen
+GEAR_SIXTH_SEAT_DESC,+1 slot: the board has 6 slots.,+1 slot: brädet har 6 slots.
+GEAR_BLOOD_PRICE,Blood Price,Blodpriset
+GEAR_BLOOD_PRICE_DESC,"If a combo forms: −4 HP, every combo multiplier ×2.","Bildas ett combo: −4 HP, alla combomultiplikatorer ×2."
+GEAR_BROKEN_SCALE,Broken Scale,Trasiga vågen
+GEAR_BROKEN_SCALE_DESC,Odd values round up to even.,Udda värden avrundas upp till jämna.
+GEAR_OCTOPUS,The Octopus,Bläckfisken
+GEAR_OCTOPUS_DESC,Slots 2 and 4 count as neighbours.,Slot 2 och 4 räknas som grannar.
+GEAR_ECHO_MIRROR,Echo Mirror,Ekospegeln
+GEAR_ECHO_MIRROR_DESC,Mirror slots also copy the effect of the face on their left.,Spegelslots kopierar även effekten på sidan till vänster.
+GEAR_CHEAT_CUBE,Cheat Cube,Fuskkuben
+GEAR_CHEAT_CUBE_DESC,First roll of a fight: dice 1–3 show the same value.,Stridens första kast: tärning 1–3 visar samma värde.
+GEAR_DOMINO,The Domino,Dominobrickan
+GEAR_DOMINO_DESC,Once per round the biggest hit makes its right neighbour strike again for half.,En gång per runda får största träffen sin högra granne att slå igen för hälften.
+HERO_QUIRK_HEAVY_HANDED,Heavy-Handed,Tunghänt
+HERO_QUIRK_HEAVY_HANDED_DESC,"+1 on every 6, −1 on every 1.","+1 på varje sexa, −1 på varje etta."
+HERO_QUIRK_SUPERSTITIOUS,Superstitious,Vidskeplig
+HERO_QUIRK_SUPERSTITIOUS_DESC,+1 reroll per fight.,+1 omkast per strid.
+HERO_QUIRK_HOARDER,Hoarder,Hamstrare
+HERO_QUIRK_HOARDER_DESC,"+2 Charge every round, Charge cap −5.","+2 Laddning varje runda, laddningstak −5."
+HERO_QUIRK_RIGHT_HANDED,Right-Handed,Högerhänt
+HERO_QUIRK_RIGHT_HANDED_DESC,"Slot 5 +2, slot 1 −1.","Slot 5 +2, slot 1 −1."
+GEAR_TARGET_EQUIP,Wear it on %s.,Bär den på %s.
+GEAR_TARGET_REPLACES,"Wear it on %s, %s goes to your pack.","Bär den på %s, %s hamnar i packningen."
+GEAR_TARGET_PACK,%s is locked until level %d: it rides in your pack.,%s är låst till nivå %d: den åker med i packningen.
+GEAR_MARKET_RULE,Gear bought here waits in the bank. Carry it down and it can be lost.,Gear du köper här väntar i banken. Bär du ner den kan den gå förlorad.
+GEAR_CATEGORY,gear,gear
+GEAR_RARITY_EPIC,EPIC,EPISK

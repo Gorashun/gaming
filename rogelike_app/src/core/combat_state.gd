@@ -28,6 +28,15 @@ var stolen: Array[String] = []
 var total_damage: int = 0
 ## Sätts av resolve() när spelaren dör. UI ska då avsluta runnen.
 var player_dead: bool = false
+## M6: det hjälten bär just nu, plus hjältens quirk som ett slotlöst
+## pseudo-föremål. Resolvern läser effekterna härifrån ([GearRules]); listan
+## skrivs bara av [method GearRules.sync_combat], aldrig av resolve().
+var gear: Array[Item] = []
+## Omkast per strid ([code]COMBAT_REROLL[/code]) som ännu inte använts. De
+## ingår i [member rerolls_left] och förbrukas efter rundans egna omkast.
+var combat_rerolls: int = 0
+## Fiender dödade hittills i striden ([code]DAMAGE_PER_KILL[/code]).
+var kills: int = 0
 
 
 func _init() -> void:
@@ -113,6 +122,13 @@ func copy() -> CombatState:
 	other.stolen = stolen.duplicate()
 	other.total_damage = total_damage
 	other.player_dead = player_dead
+	# Grunt med flit: föremålen är oföränderliga inom en strid (bara
+	# [method GearRules.sync_combat] byter listan, och då mot nya objekt).
+	# resolve() kopierar staten per förhandsvisning, och lookahead-policyn gör
+	# det hundratals gånger per runda.
+	other.gear = gear.duplicate()
+	other.combat_rerolls = combat_rerolls
+	other.kills = kills
 	return other
 
 
@@ -141,6 +157,9 @@ func to_dict() -> Dictionary:
 		"stolen": stolen.duplicate(),
 		"total_damage": total_damage,
 		"player_dead": player_dead,
+		"gear": Item.list_to_dicts(gear),
+		"combat_rerolls": combat_rerolls,
+		"kills": kills,
 	}
 
 
@@ -180,4 +199,7 @@ static func from_dict(data: Dictionary) -> CombatState:
 	state.stolen = stolen
 	state.total_damage = int(data.get("total_damage", 0))
 	state.player_dead = bool(data.get("player_dead", false))
+	state.gear = Item.list_from_dicts(data.get("gear", []))
+	state.combat_rerolls = int(data.get("combat_rerolls", 0))
+	state.kills = int(data.get("kills", 0))
 	return state

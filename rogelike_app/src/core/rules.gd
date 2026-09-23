@@ -53,6 +53,9 @@ enum Rarity {
 	COMMON,
 	UNCOMMON,
 	RARE,
+	## M6: bara gear. Belöningspoolens vikttabeller har tre kolumner och ger
+	## därför EPIC vikt 0 – en sida eller ett slot-byte kan aldrig bli episk.
+	EPIC,
 }
 
 ## Antal slots på brädet. Slot i har alltid index == i.
@@ -147,4 +150,6 @@ static func rarity_name(r: int) -> String:
 			return "uncommon"
 		Rarity.RARE:
 			return "rare"
+		Rarity.EPIC:
+			return "epic"
 	return "unknown"

@@ -1,23 +1,28 @@
 class_name Meta
 extends RefCounted
-## Profilen mellan runs: Pips, Kodex, kritstreck, upplåsningar, smedjans
-## laddning och [Reveal]-flaggorna. TOWN_AND_ONBOARDING §A.3.
+## Profilen mellan runs: Pips, Kodex, kritstreck, smedjans laddning,
+## [Reveal]-flaggorna – och från M6 rostret, Kistan, banken och byggnaderna.
+## TOWN_AND_ONBOARDING §A.3 och PROGRESSION_REDESIGN §4.
 ##
-## [b]Den heliga regeln för metan[/b] (§A.3): [i]aldrig[/i] en statsiffra. Ingen
-## `+HP`, ingen `+skada`, ingen `+omkast`, ingen `+startcharge`. Upplåsning är
-## variation, inte makt. Det är därför [member unlocked] bara innehåller
-## [b]id:n som läggs till i belöningspoolen[/b] – aldrig ett tal som adderas
-## till något.
+## [b]Metans regel efter M6[/b] (DECISIONS 2026-09-23, §6): [i]aldrig köpbar
+## permanent styrka[/i]. Pips köper byggnader, uppgraderingar och gear – men all
+## gear-styrka bärs av en hjälte och riskeras varje run, och hjältens nivå tjänas
+## in och dör med hjälten. Poolposter säljs inte längre.
 ##
 ## Ligger i [code]user://meta.json[/code], separat från [code]save.json[/code]:
 ## en run som tar slut, eller en sparfil som nollställs, får aldrig sudda
 ## kritväggen. Samma trasig-fil-kontrakt som [SaveIO]: en oläsbar profil ger en
 ## färsk profil, aldrig en krasch.
 
-const SAVE_VERSION: int = 1
+## [b]2 (M6):[/b] roster, Kistan, banken, byggnadsnivåer, marknadens rotation och
+## progressionsräknare. En v1-profil migreras i [method from_dict]: köpta
+## poolposter betalas tillbaka i Pips (de köper ingenting längre), och rostret
+## fylls på med en hjälte första gången staden eller Gropen behöver en.
+const SAVE_VERSION: int = 2
 
-## Fast prislista (§A.3). Tre varutyper, inga rabatter, ingen pity-timer.
-const PRICE: Dictionary = {
+## M1–M5:s prislista för poolposter. [b]Används bara för att betala tillbaka en
+## v1-profils köp[/b] – marknaden säljer gear sedan M6 ([method buy_offer]).
+const LEGACY_POOL_PRICE: Dictionary = {
 	Rewards.CATEGORY_FORGE_FACE: 5,
 	Rewards.CATEGORY_RELIC: 8,
 	Rewards.CATEGORY_SLOT_SWAP: 10,
@@ -48,7 +53,8 @@ var best_score: int = 0
 ## Tutorialvåning 0 spelas exakt en gång (§B.2).
 var tutorial_done: bool = false
 var reveal: Reveal = Reveal.none()
-## Belöningspool-id:n som köpts loss på Skrotmarknaden.
+## M1–M5: poolposter som köpts loss. Tomt efter migreringen till v2 (köpen
+## betalades tillbaka); fältet läses bara för att kunna migrera.
 var unlocked: Array[String] = []
 ## Fiender spelaren mött, och combo-typer spelaren sett. Kodexens innehåll.
 var seen_enemies: Array[String] = []
@@ -60,6 +66,28 @@ var loadout: Dictionary = {}
 ## Index i [constant Content.DEATH_LINES] som Marrow redan sagt (aldrig samma
 ## två gånger i rad, §A.1).
 var last_death_line: int = -1
+
+# --- M6: progression -------------------------------------------------------
+var roster: Roster = Roster.new()
+## Kistan: föremål räddade vid död, i staden.
+var chest: Chest = Chest.new()
+## Trappbanken: föremål skickade upp med kärran.
+var bank: Bank = Bank.new()
+## Byggnad → nivå 0..3 ([Buildings]).
+var buildings: Dictionary = {}
+## Marknadens hyllor: [code]{item: {...}, price: int}[/code]. Roteras seedat
+## efter varje run ([Market]).
+var market_stock: Array[Dictionary] = []
+## Hur många gånger marknaden roterats. Seedar nästa rotation.
+var market_rotation: int = 0
+## Gear-id:n spelaren någonsin hållit i. Kritväggens samling ("17 / 22", §4.3).
+var found_gear: Array[String] = []
+## Progressionskurvans räknare (§5). Bokförs av [Progression].
+var drops_total: int = 0
+var drops_by_rarity: Array[int] = [0, 0, 0, 0]
+var bosses_killed: int = 0
+## Runs som påbörjats i Gropen (inte källaren). Styr kurvans garantier.
+var runs_started: int = 0
 
 
 ## En färsk profil för en spelare som aldrig startat spelet.
@@ -121,37 +149,106 @@ func award_run(rooms_cleared: int, boss_killed: bool, won: bool, firsts: Array,
 	}
 
 
-# --- Skrotmarknaden --------------------------------------------------------
+# --- Byggnader och marknad (M6) --------------------------------------------
 
-static func price_of(entry: Dictionary) -> int:
-	return int(PRICE.get(String(entry.get("category", "")), 0))
-
-
-func can_afford(entry: Dictionary) -> bool:
-	var cost: int = price_of(entry)
-	return cost > 0 and pips >= cost and not unlocked.has(String(entry.get("id", "")))
+func building_level(building: String) -> int:
+	return Buildings.level_of(buildings, building)
 
 
-## Köper en post till belöningspoolen. Returnerar false när köpet inte går
-## igenom – och då har ingenting ändrats.
-func buy(entry: Dictionary) -> bool:
-	if not can_afford(entry):
+## Bygger nästa nivå. Returnerar false – och ändrar ingenting – om byggnaden är
+## fullt utbyggd eller Pips inte räcker.
+func buy_building(building: String) -> bool:
+	var price: int = Buildings.next_price(buildings, building)
+	if price <= 0 or pips < price:
 		return false
-	pips -= price_of(entry)
-	unlocked.append(String(entry.get("id", "")))
+	pips -= price
+	buildings[building] = building_level(building) + 1
 	return true
 
 
-## Belöningspoolen för nästa run: startpoolen plus det som köpts loss.
-## [b]Poolen växer, aldrig siffrorna[/b] (§A.3).
-func reward_pool(base: Array[Dictionary], locked_by_default: Array[String] = []) -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	for entry: Dictionary in base:
-		var id: String = String(entry.get("id", ""))
-		if locked_by_default.has(id) and not unlocked.has(id):
-			continue
-		result.append(entry)
-	return result
+func can_buy_building(building: String) -> bool:
+	var price: int = Buildings.next_price(buildings, building)
+	return price > 0 and pips >= price
+
+
+## Köper hyllplats [param index]. Föremålet hamnar i banken (säkrat, i staden)
+## och hyllan töms. Returnerar föremålet, eller null om köpet inte går igenom.
+func buy_offer(index: int) -> Item:
+	if index < 0 or index >= market_stock.size():
+		return null
+	var offer: Dictionary = market_stock[index]
+	var price: int = int(offer.get("price", 0))
+	if price <= 0 or pips < price:
+		return null
+	var item: Item = Item.from_dict(offer.get("item", {}) as Dictionary)
+	pips -= price
+	market_stock.remove_at(index)
+	bank.deposit([item])
+	note_found(item.id)
+	return item
+
+
+func can_buy_offer(index: int) -> bool:
+	if index < 0 or index >= market_stock.size():
+		return false
+	var price: int = int(market_stock[index].get("price", 0))
+	return price > 0 and pips >= price
+
+
+## Smedjans uppgradering: höjer [param item] en nivå om byggnaden tillåter och
+## Pips räcker. Föremålet muteras på plats (det ligger i staden, säkrat).
+func upgrade_item(item: Item) -> bool:
+	if not Buildings.forge_can_upgrade(buildings, item):
+		return false
+	var price: int = Buildings.upgrade_price(item)
+	if price <= 0 or pips < price:
+		return false
+	pips -= price
+	item.level += 1
+	return true
+
+
+func note_found(item_id: String) -> bool:
+	if item_id == "" or found_gear.has(item_id):
+		return false
+	found_gear.append(item_id)
+	return true
+
+
+# --- Rostret (M6) ----------------------------------------------------------
+
+## Rostrets aktiva hjälte. Finns ingen rekryteras hjälte nummer ett – med
+## samma seed samma namn, så en buggrapport ser samma person.
+func ensure_hero(seed_value: int, body_variant: String = "a") -> Hero:
+	var hero: Hero = roster.active()
+	if hero != null:
+		return hero
+	var rng: Rng = Rng.new(seed_value).fork("recruit_%d" % roster.next_id)
+	hero = Content.recruit_hero(rng, taken_names(), body_variant, Buildings.recruit_level(buildings))
+	roster.add(hero, Buildings.tavern_capacity(buildings))
+	return roster.active()
+
+
+## Rekryterar en hjälte till i tavernan om det finns plats. Returnerar hjälten
+## eller null.
+func recruit(seed_value: int, body_variant: String = "a") -> Hero:
+	if roster.is_full(Buildings.tavern_capacity(buildings)):
+		return null
+	var rng: Rng = Rng.new(seed_value).fork("recruit_%d" % roster.next_id)
+	var hero: Hero = Content.recruit_hero(rng, taken_names(), body_variant, Buildings.recruit_level(buildings))
+	if not roster.add(hero, Buildings.tavern_capacity(buildings)):
+		return null
+	return hero
+
+
+## Namn i rostret och på Gravlunden. Nya rekryter undviker dem.
+func taken_names() -> Array[String]:
+	var out: Array[String] = []
+	for hero: Hero in roster.heroes:
+		out.append(hero.name)
+	for entry: Dictionary in roster.fallen:
+		out.append(String(entry.get("name", "")))
+	return out
 
 
 # --- Kodex -----------------------------------------------------------------
@@ -190,6 +287,17 @@ func to_dict() -> Dictionary:
 		"claimed_firsts": claimed_firsts.duplicate(),
 		"loadout": loadout.duplicate(true),
 		"last_death_line": last_death_line,
+		"roster": roster.to_dict(),
+		"chest": chest.to_dict(),
+		"bank": bank.to_dict(),
+		"buildings": buildings.duplicate(),
+		"market_stock": _stock_to_array(market_stock),
+		"market_rotation": market_rotation,
+		"found_gear": found_gear.duplicate(),
+		"drops_total": drops_total,
+		"drops_by_rarity": drops_by_rarity.duplicate(),
+		"bosses_killed": bosses_killed,
+		"runs_started": runs_started,
 	}
 
 
@@ -213,7 +321,53 @@ static func from_dict(data: Dictionary) -> Meta:
 	meta.claimed_firsts = _strings(data.get("claimed_firsts", []))
 	meta.loadout = _wash_loadout(data.get("loadout", {}) as Dictionary)
 	meta.last_death_line = int(data.get("last_death_line", -1))
+	meta.roster = Roster.from_dict(data.get("roster", {}) as Dictionary)
+	meta.chest = Chest.from_dict(data.get("chest", {}) as Dictionary)
+	meta.bank = Bank.from_dict(data.get("bank", {}) as Dictionary)
+	var raw_buildings: Dictionary = data.get("buildings", {}) as Dictionary
+	for building: String in Buildings.ALL:
+		if raw_buildings.has(building):
+			meta.buildings[building] = clampi(int(raw_buildings[building]), 0, Buildings.MAX_LEVEL)
+	for raw: Variant in data.get("market_stock", []) as Array:
+		var offer: Dictionary = raw as Dictionary
+		meta.market_stock.append({
+			"item": (offer.get("item", {}) as Dictionary).duplicate(true),
+			"price": int(offer.get("price", 0)),
+		})
+	meta.market_rotation = int(data.get("market_rotation", 0))
+	meta.found_gear = _strings(data.get("found_gear", []))
+	var by_rarity: Array = data.get("drops_by_rarity", []) as Array
+	for i: int in range(mini(by_rarity.size(), meta.drops_by_rarity.size())):
+		meta.drops_by_rarity[i] = int(by_rarity[i])
+	meta.drops_total = int(data.get("drops_total", 0))
+	meta.bosses_killed = int(data.get("bosses_killed", 0))
+	meta.runs_started = int(data.get("runs_started", 0))
+	if meta.version < 2:
+		_migrate_v1(meta)
 	return meta
+
+
+## v1 → v2: poolposterna köper ingenting längre, så köpet betalas tillbaka i
+## Pips. En spelare ska aldrig förlora valuta på att vi bytte vad den köper.
+## Runs som redan spelats räknas som påbörjade (kurvans garantier läser dem).
+static func _migrate_v1(meta: Meta) -> void:
+	for id: String in meta.unlocked:
+		var category: String = Rewards.CATEGORY_FORGE_FACE
+		if id.begins_with("RELIC_"):
+			category = Rewards.CATEGORY_RELIC
+		elif id.begins_with("SWAP_"):
+			category = Rewards.CATEGORY_SLOT_SWAP
+		meta.pips += int(LEGACY_POOL_PRICE.get(category, 0))
+	meta.unlocked.clear()
+	meta.runs_started = maxi(meta.runs_started, maxi(0, meta.runs - 1))
+	meta.version = SAVE_VERSION
+
+
+static func _stock_to_array(stock: Array[Dictionary]) -> Array:
+	var out: Array = []
+	for offer: Dictionary in stock:
+		out.append(offer.duplicate(true))
+	return out
 
 
 ## Smedjans laddning är idel heltalsindex, och JSON-tal är float64: utan den

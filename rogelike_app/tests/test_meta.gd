@@ -21,49 +21,89 @@ func after_test() -> void:
 	SaveIO.meta_path = _previous_path
 
 
-# --- Den heliga regeln -----------------------------------------------------
+# --- Metans regel efter M6 ------------------------------------------------
+# [b]Ändrat i M6 (motivering):[/b] DECISIONS 2026-09-23 beslutade att Pips
+# slutar köpa poolposter och i stället köper byggnader, uppgraderingar och gear
+# (PROGRESSION_REDESIGN §6, beslut 5). De tre M2.5-testerna för poolköp ersattes
+# därför av testerna nedan. Regeln de vaktar är den nya formuleringen av samma
+# princip: [i]aldrig köpbar permanent styrka[/i] – gear kan köpas, men hamnar i
+# banken och riskeras så fort en hjälte bär ner det.
 
-func test_the_market_only_ever_sells_pool_entries() -> void:
-	for entry: Dictionary in Content.market_catalogue():
-		var category: String = String(entry.get("category", ""))
-		assert_bool(Meta.PRICE.has(category)).override_failure_message(
-			"%s har en kategori som inte har ett pris" % entry.get("id", "")).is_true()
-		var data: Dictionary = entry.get("data", {}) as Dictionary
-		for key: Variant in data:
-			assert_bool(["face_id", "relic_id", "slot_type"].has(String(key))).override_failure_message(
-				"marknadsvaran %s bär fältet '%s' – metan får ALDRIG sälja en siffra" % [
-					entry.get("id", ""), key]).is_true()
-
-
-func test_buying_grows_the_pool_and_never_the_numbers() -> void:
+func test_the_market_sells_gear_that_lands_in_the_bank_never_on_a_hero() -> void:
 	var meta: Meta = Meta.fresh()
-	var before: Array[Dictionary] = Content.unlocked_pool(meta.unlocked)
-	meta.pips = 100
-	var entry: Dictionary = Content.market_catalogue()[0]
-	assert_bool(meta.buy(entry)).is_true()
-	var after: Array[Dictionary] = Content.unlocked_pool(meta.unlocked)
-	assert_int(after.size()).override_failure_message(
-		"köpet ska lägga till exakt en poolpost").is_equal(before.size() + 1)
+	Market.rotate(meta, 99)
+	assert_int(meta.market_stock.size()).is_equal(Buildings.market_wares(meta.buildings))
+	meta.pips = 1000
+	var hero: Hero = meta.ensure_hero(99)
+	var item: Item = meta.buy_offer(0)
+	assert_object(item).is_not_null()
+	assert_int(meta.bank.items.size()).is_equal(1)
+	assert_bool(meta.bank.items[0].secured).is_true()
+	assert_int(hero.equipped_items().size()).override_failure_message(
+		"ett köp får aldrig sätta styrka direkt på en hjälte").is_equal(0)
 	# Ett köp rör inte Smedens startuppsättning.
 	var state: CombatState = Content.smith_state()
 	assert_int(state.player_max_hp).is_equal(100)
-	assert_int(state.rerolls_left).is_equal(1)
 	assert_int(state.board.size()).is_equal(Rules.SLOT_COUNT)
 
 
-func test_you_cannot_buy_twice_or_on_credit() -> void:
-	var meta: Meta = Meta.fresh()
-	var entry: Dictionary = Content.market_catalogue()[0]
-	assert_bool(meta.can_afford(entry)).override_failure_message(
-		"noll pips ska inte räcka").is_false()
-	assert_bool(meta.buy(entry)).is_false()
-	assert_int(meta.pips).is_equal(0)
+func test_the_market_never_sells_an_epic_and_respects_its_level() -> void:
+	for seed_value: int in range(40):
+		var meta: Meta = Meta.fresh()
+		Market.rotate(meta, seed_value)
+		for offer: Dictionary in meta.market_stock:
+			var rarity: int = int((offer["item"] as Dictionary)["rarity"])
+			assert_int(rarity).is_less_equal(Buildings.market_max_rarity(meta.buildings))
+			assert_int(rarity).is_less(Rules.Rarity.EPIC)
 
-	meta.pips = Meta.price_of(entry)
-	assert_bool(meta.buy(entry)).is_true()
+
+func test_you_cannot_buy_on_credit_and_a_shelf_sells_once() -> void:
+	var meta: Meta = Meta.fresh()
+	Market.rotate(meta, 5)
+	var count: int = meta.market_stock.size()
+	assert_bool(meta.can_buy_offer(0)).override_failure_message(
+		"noll pips ska inte räcka").is_false()
+	assert_object(meta.buy_offer(0)).is_null()
 	assert_int(meta.pips).is_equal(0)
-	assert_bool(meta.buy(entry)).override_failure_message(
-		"samma vara ska inte gå att köpa två gånger").is_false()
+	meta.pips = int(meta.market_stock[0]["price"])
+	assert_object(meta.buy_offer(0)).is_not_null()
+	assert_int(meta.pips).is_equal(0)
+	assert_int(meta.market_stock.size()).override_failure_message(
+		"samma hylla ska inte gå att köpa två gånger").is_equal(count - 1)
+
+
+func test_the_rotation_is_seeded() -> void:
+	var a: Meta = Meta.fresh()
+	var b: Meta = Meta.fresh()
+	Market.rotate(a, 1234)
+	Market.rotate(b, 1234)
+	assert_str(JSON.stringify(a.market_stock)).is_equal(JSON.stringify(b.market_stock))
+
+
+func test_buildings_cost_pips_and_stop_at_level_three() -> void:
+	var meta: Meta = Meta.fresh()
+	assert_bool(meta.buy_building(Buildings.CHEST)).is_false()
+	meta.pips = 10
+	assert_bool(meta.buy_building(Buildings.CHEST)).is_true()
+	assert_int(meta.building_level(Buildings.CHEST)).is_equal(1)
+	assert_int(meta.pips).is_equal(0)
+	meta.pips = 10000
+	assert_bool(meta.buy_building(Buildings.CHEST)).is_true()
+	assert_bool(meta.buy_building(Buildings.CHEST)).is_true()
+	assert_bool(meta.buy_building(Buildings.CHEST)).override_failure_message(
+		"nivå 3 är taket").is_false()
+	assert_int(Buildings.chest_rescue(meta.buildings)).is_equal(3)
+
+
+func test_a_v1_profile_is_refunded_for_pool_entries_it_can_no_longer_use() -> void:
+	var data: Dictionary = Meta.fresh().to_dict()
+	data["version"] = 1
+	data["pips"] = 3
+	data["unlocked"] = ["FORGE_SNOWBALL", "RELIC_DOMINO", "SWAP_FIRE"]
+	var meta: Meta = Meta.from_dict(data)
+	assert_int(meta.version).is_equal(Meta.SAVE_VERSION)
+	assert_int(meta.pips).is_equal(3 + 5 + 8 + 10)
+	assert_array(meta.unlocked).is_empty()
 
 
 # --- Intjäning -------------------------------------------------------------

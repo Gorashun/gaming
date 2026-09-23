@@ -178,8 +178,55 @@ static func migrate(data: Dictionary) -> Dictionary:
 		meta["tutorial_loot_open"] = false
 		data = data.duplicate(true)
 		data["meta"] = meta
-		data["version"] = RunState.SAVE_VERSION
+		data["version"] = 3
+	if int(data.get("version", 0)) < 4:
+		data = migrate_relics_to_gear(data)
 	return data
+
+
+## [b]3 → 4 (M6):[/b] reliker blev gear (DECISIONS 2026-09-23). Varje relik i
+## [code]combat.relics[/code] som finns i [constant Content.RELICS] blir föremålet
+## med samma id, i den slot [constant Content.RELIC_SLOTS] redan hängde det på.
+## Klassreliken ([code]ANVIL_BLESSING[/code]) är ingen gear och ligger kvar.
+##
+## Runnen får en hjälte med tomt id; [GameController] binder den till rostrets
+## aktiva hjälte när filen återupptas. Föremålen sitter på kroppen även i en
+## slot som en nivå 1-hjälte inte har låst upp ännu – spelaren hade effekten när
+## filen skrevs, och en migrering får inte ta ifrån någon en regel mitt i en run.
+## Två reliker i samma slot kan inte förekomma (RELIC_SLOTS är unik), men om
+## det ändå händer hamnar den andra i packningen.
+static func migrate_relics_to_gear(data: Dictionary) -> Dictionary:
+	var out: Dictionary = data.duplicate(true)
+	var combat: Dictionary = out.get("combat", {}) as Dictionary
+	var kept: Array = []
+	var worn: Dictionary = {}
+	var pack: Array = []
+	for raw: Variant in combat.get("relics", []) as Array:
+		var relic: Dictionary = raw as Dictionary
+		var item: Item = Content.item_for_relic(String(relic.get("id", "")))
+		if item == null:
+			kept.append(relic)
+			continue
+		item.secured = false
+		if worn.has(item.slot):
+			pack.append(item.to_dict())
+		else:
+			worn[item.slot] = item.to_dict()
+	combat["relics"] = kept
+	var gear: Array = []
+	for slot: String in Hero.SLOT_UNLOCK_ORDER:
+		if worn.has(slot):
+			gear.append(worn[slot])
+	combat["gear"] = gear
+	out["combat"] = combat
+	if not out.has("hero") or (out.get("hero", {}) as Dictionary).is_empty():
+		var hero: Hero = Hero.new("", "")
+		var hero_data: Dictionary = hero.to_dict()
+		hero_data["worn"] = worn
+		out["hero"] = hero_data
+	out["pack"] = pack
+	out["version"] = 4
+	return out
 
 
 ## Tar bort runnen. [b]Rör inte profilen[/b] – se [method clear_meta].
