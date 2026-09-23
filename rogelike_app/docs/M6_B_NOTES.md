@@ -52,4 +52,14 @@ Allt i `src/core/`, rena `RefCounted`, inga Node-beroenden.
 
 ## 4. Ceremoni-events (steg 3)
 
-*(fylls i vid steg 3)*
+- **Signal** `GameController.item_dropped(event: Dictionary)`, ett per föremål, när dropparna
+  dras (efter strid, bossdrop, altare, tutorialens gåva i rum 0.3).
+  `event = {t: "item_dropped", item, name_key, icon_id, rarity, rarity_name, source, ms_hint}`.
+  `ms_hint` = 200/350/600/900 ms för common/uncommon/rare/epic (§3.3). Koppla ljud/färg på `rarity`.
+- Dropparna ligger sedan som kort bland de tre (`Rewards.CATEGORY_GEAR`, högst två av tre, aldrig
+  på sista sidkortets plats). Kortets `data` = `{item: Item.to_dict(), target: {slot, to_pack, replaces, replaces_key, unlock_level}, source}`.
+- **Signal** `GameController.rescue_offer_requested()` (räddningsannonsen) och
+  `GameController.bank_offered(item_count)` (trappbanken) finns för juice/ljud om ni vill.
+- Paneler jag byggt i min katalog (enkel torg-panelstil, snygga gärna senare men flytta inte
+  logik): `src/game/reward/item_picker.gd` (trappbanken och Kistan-valet),
+  dödsskärmen `src/game/gameover/gameover_screen.gd`, tavernan i `src/game/town/town_screen.gd`.

@@ -15,6 +15,8 @@ var target: Dictionary = {}
 
 ## Konstrutans sida i dp.
 const ART_DP: int = 44
+## §3.3: EPIC är lila. Tills Tokens har en egen rad för den.
+const EPIC_COLOR: Color = Color("#B06BFF")
 
 var _art: Control = null
 var _icon: Sprite2D = null
@@ -111,6 +113,9 @@ func _bind_art() -> void:
 	match String(option.get("category", "")):
 		Rewards.CATEGORY_RELIC:
 			_icon.texture = Art.relic_icon(String(data.get("relic_id", "")))
+		Rewards.CATEGORY_GEAR:
+			# M6: föremålets ikon ur art-manifestet (gear.<ID> / relic.<ID>).
+			_icon.texture = Art.gear_icon(String((data.get("item", {}) as Dictionary).get("icon_id", "")))
 		Rewards.CATEGORY_SLOT_SWAP:
 			var slot_type: int = int(data.get("slot_type", Rules.SlotType.PLAIN))
 			_icon.texture = Art.slot_icon(slot_type)
@@ -126,6 +131,14 @@ func _bind_art() -> void:
 func _layout_art() -> void:
 	if _icon == null or _art == null:
 		return
+	var tex: Texture2D = _icon.texture
+	if tex != null and tex.get_width() > 16:
+		# Målade ikoner (M6-manifestet) är större än pixelikonernas 16×16 och
+		# skalas ned till rutan i stället för upp i heltal.
+		var fit: float = minf(_art.size.x / float(tex.get_width()), _art.size.y / float(tex.get_height()))
+		_icon.scale = Vector2.ONE * maxf(0.01, fit)
+		_icon.position = _art.size * 0.5
+		return
 	_icon.scale = Vector2.ONE * Art.fit_scale(_art.size, 16)
 	_icon.position = Art.snap(_art.size * 0.5, int(_icon.scale.x))
 
@@ -137,11 +150,20 @@ func bind(p_index: int, p_option: Dictionary, p_target: Dictionary, description:
 	var rarity: int = int(option.get("rarity", Rules.Rarity.COMMON))
 	var style: Dictionary = Tokens.rarity_style(rarity)
 	var color: Color = style["color"] as Color
+	var rarity_text: String = Tokens.rarity_label(rarity)
+	var category_text: String = Tokens.category_label(String(option.get("category", "")))
+	# M6: Tokens känner ännu inte EPIC eller GEAR (dev A, docs/M6_B_NOTES.md §2).
+	# Episkt är lila (PROGRESSION_REDESIGN §3.3); kategorin översätts här.
+	if rarity >= Rules.Rarity.EPIC:
+		color = EPIC_COLOR
+		rarity_text = Tokens.translate_or("GEAR_RARITY_EPIC", "EPIC")
+	if String(option.get("category", "")) == Rewards.CATEGORY_GEAR:
+		category_text = Tokens.translate_or("GEAR_CATEGORY", "gear")
 
 	_rarity_label.text = tr("REWARD_CARD_HEADER") % [
 		String(style["mark"]),
-		Tokens.rarity_label(rarity),
-		Tokens.category_label(String(option.get("category", ""))),
+		rarity_text,
+		category_text,
 	]
 	_rarity_label.add_theme_color_override("font_color", color)
 	_name_label.text = Tokens.translate_or(
