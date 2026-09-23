@@ -34,7 +34,21 @@ Allt i `src/core/`, rena `RefCounted`, inga Node-beroenden.
 
 ## 3. Resolver-events för gear (steg 2)
 
-*(fylls i vid steg 2)*
+- **Nytt event** `gear_triggered{item, name_key, effect, detail}` emitteras *före* eventet effekten
+  påverkar. `effect` är en `GearRules`-konstant (`PIP_BONUS`, `PLAYER_ARMOR`, `ARMOR_PIERCE_SLOT` …).
+  Quirks går samma väg (`item` = `QUIRK_<ID>`, `name_key` = `HERO_QUIRK_<ID>`).
+- **`relic_triggered`** får fälten `item` och `name_key` när regeln bärs av ett föremål (de sex omgjorda relikerna).
+- **`ward_gained{slot: -1, source: "GEAR"}`** = Ward från `RUST_GREAVES`, inte från ett slag.
+  Slot -1 får inte indexera en slot-vy.
+- **`charge_stored.source`** kan vara `"GEAR"`.
+- **`enemy_attacks.armor_used`** (valfritt fält) = vad `SLAG_PLATE` tog.
+- **`round_start.ward_in`** (valfritt fält) = Ward som `TICK_CARAPACE` höll kvar från förra rundan.
+  `EventPlayer` nollar Ward vid `round_end`; vill ni visa den kvarhållna Warden, läs `ward_in`.
+- **`slot_modifier_failed.threshold`** (valfritt) = Amboss-tröskeln när `TONG_GLOVES` sänkt den.
+- **Kvittot:** `ChainReceipt.build()` returnerar nu även `"gear": Array[Dictionary]` med
+  `{item, name_key, effect, text_key, args, slot}`. Text: `"%s: %s" % [tr(name_key), tr(text_key) % args]`,
+  t.ex. "Pipsight Lens: +1 on 1s". Nycklarna `GEAR_FX_*` finns i CSV:n (en + sv).
+  Runda 1 listar också passiva effekter (`MAX_HP`, omkast, `START_CHARGE` …) så att allt syns minst en gång per strid.
 
 ## 4. Ceremoni-events (steg 3)
 

@@ -86,6 +86,8 @@ static func build(events: Array[Dictionary], enemies: Array[Enemy], board: Board
 	var killed_by: String = ""
 	var combat_won: bool = false
 	var last_slot: int = -1
+	## M6: en rad per gear-effekt som slog till, i loggens ordning.
+	var gear: Array[Dictionary] = []
 
 	for event: Dictionary in events:
 		var kind: String = String(event.get("t", ""))
@@ -152,7 +154,12 @@ static func build(events: Array[Dictionary], enemies: Array[Enemy], board: Board
 						charge_banked += int(event.get("amount", 0))
 				raw += int(event.get("amount", 0))
 				last_slot = event_slot
+			"gear_triggered":
+				gear.append(gear_line(event))
 			"relic_triggered":
+				# En omgjord relik (M6) bär sitt föremål och får en rad som all gear.
+				if String(event.get("item", "")) != "":
+					gear.append(gear_line(event))
 				# DOMINO upprepar en slot utan ett eget strike-event. Utan den här
 				# raden går kvittots addition inte ihop för den reliken.
 				if String(event.get("relic", "")) == Resolver.RELIC_DOMINO:
@@ -219,7 +226,10 @@ static func build(events: Array[Dictionary], enemies: Array[Enemy], board: Board
 				if dead >= 0:
 					(routes[dead] as Dictionary)["killed"] = true
 			"ward_gained":
-				ward += int(event.get("amount", 0))
+				# slot -1 är Ward ur gear (RUST_GREAVES), inte ur ett slag: den står
+				# på gear-raden och hör inte till kedjans RÅ-summa.
+				if event_slot >= 0:
+					ward += int(event.get("amount", 0))
 				if not slot.is_empty():
 					slot["outcome"] = OUT_WARD
 					_why(slot, WHY_TO_WARD, [], false)
@@ -281,7 +291,57 @@ static func build(events: Array[Dictionary], enemies: Array[Enemy], board: Board
 		"player_died": player_died,
 		"killed_by": killed_by,
 		"won": combat_won,
+		"gear": gear,
 	}
+
+
+# --- M6: gear-rader -----------------------------------------------------------
+
+## En kvittorad för ett [code]gear_triggered[/code]- eller gear-buret
+## [code]relic_triggered[/code]-event. [b]Ingen prosa:[/b] raden är
+## [code]{item, name_key, effect, text_key, args, slot}[/code], och UI:t skriver
+## [code]"%s: %s" % [tr(name_key), tr(text_key) % args][/code] –
+## "Pipsight Lens: +1 on 1s".
+static func gear_line(event: Dictionary) -> Dictionary:
+	var detail: Dictionary = event.get("detail", {}) as Dictionary
+	var item_id: String = String(event.get("item", ""))
+	var line: Dictionary = {
+		"item": item_id,
+		"name_key": String(event.get("name_key", "GEAR_%s" % item_id)),
+		"effect": String(event.get("effect", GearRules.RULE)),
+		"slot": int(detail.get("slot", -1)),
+		"text_key": "",
+		"args": [] as Array,
+	}
+	if String(event.get("t", "")) == "relic_triggered":
+		line["text_key"] = Content.gear_desc_key(item_id)
+		return line
+	var effect: String = String(line["effect"])
+	line["text_key"] = "GEAR_FX_%s" % effect
+	var args: Array = []
+	match effect:
+		GearRules.PIP_BONUS:
+			args = [int(detail.get("amount", 0)), int(detail.get("face_value", 0))]
+		GearRules.LEFTMOST_BONUS, GearRules.SLOT_BONUS, GearRules.DAMAGE_PER_KILL:
+			args = [int(detail.get("amount", 0)), int(detail.get("slot", 0)) + 1]
+		GearRules.ARMOR_PIERCE_SLOT, GearRules.ARMOR_PIERCE_BIGGEST:
+			args = [int(detail.get("slot", 0)) + 1, int(detail.get("ignored", 0))]
+		GearRules.OVERFLOW_IGNORES_ARMOR:
+			args = [int(detail.get("ignored", 0))]
+		GearRules.PLAYER_ARMOR:
+			args = [int(detail.get("blocked", 0))]
+		GearRules.WARD_RETAIN:
+			args = [int(detail.get("kept", 0))]
+		GearRules.ANVIL_THRESHOLD:
+			args = [int(detail.get("value", 0))]
+		GearRules.CHARGE_CAP, GearRules.CHARGE_CAP_DELTA:
+			args = [int(detail.get("cap", Rules.CHARGE_CAP))]
+		GearRules.HOUSE_TWO_PAIR:
+			args = []
+		_:
+			args = [int(detail.get("amount", 0))]
+	line["args"] = args
+	return line
 
 
 ## Talet som står på BEKRÄFTA-knappen och överst i kvittot.
@@ -408,7 +468,7 @@ static func _on_modifier(slots: Array[Dictionary], event: Dictionary, failed: bo
 			"LEFT_NEIGHBOUR_EMPTY":
 				_why(slot, WHY_LEFT_EMPTY, [], true)
 			"VALUE_BELOW_5":
-				_why(slot, WHY_ANVIL_LOW, [Rules.ANVIL_THRESHOLD], true)
+				_why(slot, WHY_ANVIL_LOW, [int(event.get("threshold", Rules.ANVIL_THRESHOLD))], true)
 		slot["modifier_failed"] = modifier
 		return
 	if modifier == "MIRROR" or modifier == "COPY_LEFT":

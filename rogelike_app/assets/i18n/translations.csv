@@ -469,3 +469,28 @@ GEAR_TARGET_PACK,%s is locked until level %d: it rides in your pack.,%s är lås
 GEAR_MARKET_RULE,Gear bought here waits in the bank. Carry it down and it can be lost.,Gear du köper här väntar i banken. Bär du ner den kan den gå förlorad.
 GEAR_CATEGORY,gear,gear
 GEAR_RARITY_EPIC,EPIC,EPISK
+GEAR_FX_MAX_HP,+%d max HP,+%d max-HP
+GEAR_FX_COMBAT_REROLL,+%d reroll this fight,+%d omkast i striden
+GEAR_FX_FIRST_ROUND_REROLL,+%d reroll this round,+%d omkast den här rundan
+GEAR_FX_START_CHARGE,started with %d Charge,började med %d Laddning
+GEAR_FX_FIRST_ROUND_EXTRA_DIE,+%d die this round,+%d tärning den här rundan
+GEAR_FX_EXTRA_SLOT,+%d slot,+%d slot
+GEAR_FX_CHARGE_CAP,Charge cap %d,Laddningstak %d
+GEAR_FX_CHARGE_CAP_DELTA,Charge cap %d,Laddningstak %d
+GEAR_FX_RESCUE_BONUS,+%d item rescued if you die,+%d föremål räddas om du dör
+GEAR_FX_WARD_ON_ROUND_START,+%d Ward,+%d Ward
+GEAR_FX_LEFTMOST_BONUS,+%d on slot %d,+%d på slot %d
+GEAR_FX_SLOT_BONUS,%+d on slot %d,%+d på slot %d
+GEAR_FX_PIP_BONUS,%+d on %ds,%+d på %d:or
+GEAR_FX_ANVIL_THRESHOLD,Anvil doubled a %d,Ambossen dubblade en %d:a
+GEAR_FX_HOUSE_TWO_PAIR,two pairs made a HOUSE,två par blev KÅK
+GEAR_FX_DAMAGE_PER_KILL,+%d damage on slot %d,+%d skada på slot %d
+GEAR_FX_ARMOR_PIERCE_SLOT,slot %d ignored %d armor,slot %d ignorerade %d rustning
+GEAR_FX_ARMOR_PIERCE_BIGGEST,slot %d ignored %d armor,slot %d ignorerade %d rustning
+GEAR_FX_OVERFLOW_IGNORES_ARMOR,overflow ignored %d armor,överflödet ignorerade %d rustning
+GEAR_FX_CHARGE_ON_KILL,+%d Charge from a kill,+%d Laddning för en dödad fiende
+GEAR_FX_PLAYER_ARMOR,blocked %d,blockerade %d
+GEAR_FX_UNPLACED_CHARGE_BONUS,+%d Charge,+%d Laddning
+GEAR_FX_CHARGE_PER_ROUND,+%d Charge,+%d Laddning
+GEAR_FX_CHARGE_IF_UNHURT,"+%d Charge, no damage taken","+%d Laddning, ingen skada tagen"
+GEAR_FX_WARD_RETAIN,%d Ward stays,%d Ward ligger kvar
