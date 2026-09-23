@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PIPWRECK – M6 assets: korridorstrid med riktiga filer ur assets/art/</title>
+<!--
+  Verifieringsmockup för M6 asset-spåret. ALLT bildmaterial läses direkt ur
+  assets/art/ (samma filer som manifest.json pekar på) – inget är inbäddat.
+  Graderingen (ART_DIRECTION_V2 §4: desaturering, kantljus från facklan,
+  85 % svart på fjärran, vinjett 0,55, grain 6–8 %) görs här i CSS för att
+  visa hur Pipoya-figurerna sätter sig ihop med Ravenmore-ikonerna; i spelet
+  gör Godot-shadern (dev A) samma sak. Öppna filen från design/ så att de
+  relativa sökvägarna (../assets/art/...) fungerar.
+-->
+<style>
+@font-face{font-family:'Anton';src:url('fonts/anton-400.woff2') format('woff2');font-weight:400;font-display:block}
+@font-face{font-family:'Caveat Brush';src:url('fonts/caveatbrush-400.woff2') format('woff2');font-weight:400;font-display:block}
+@font-face{font-family:'Familjen Grotesk';src:url('fonts/familjengrotesk-var.woff2') format('woff2');font-weight:400 700;font-display:block}
+
+:root{
+  --void:#07090B; --soot-1:#11161B; --soot-2:#1A2128;
+  --bone:#E8E0CF; --bone-dim:#9A9486;
+  --ember:#FF6A2C; --ember-hi:#FFB258; --gold:#FFD447; --blood:#FF556F;
+  --r-common:#9A9486; --r-uncommon:#4FE3A0; --r-rare:#6ED2F5; --r-epic:#B77FFF;
+  --art:../assets/art;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden}
+body{display:flex;justify-content:center;align-items:flex-start;
+  font-family:'Familjen Grotesk',system-ui,sans-serif;color:var(--bone)}
+.app{position:relative;width:390px;height:844px;overflow:hidden;background:var(--void);display:flex;flex-direction:column}
+
+/* ============ VÄRLDEN: korridoren som en CSS-3D-låda av kaczor237-kakel ============ */
+.world{position:relative;flex:0 0 520px;overflow:hidden;background:var(--void);
+  perspective:300px;perspective-origin:50% 52%}
+.box{position:absolute;inset:0;transform-style:preserve-3d}
+.face{position:absolute;background-repeat:repeat;image-rendering:auto;backface-visibility:hidden}
+/* lådan: 390 bred, 520 hög, 1400 djup */
+.face.left {left:0;top:0;width:1400px;height:520px;transform-origin:left center;transform:rotateY(90deg);
+  background-image:url('../assets/art/env/corridor/wall.png');background-size:260px 260px}
+.face.right{right:0;top:0;width:1400px;height:520px;transform-origin:right center;transform:rotateY(-90deg);
+  background-image:url('../assets/art/env/corridor/wall.png');background-size:260px 260px}
+.face.floor{left:0;bottom:0;width:390px;height:1400px;transform-origin:center bottom;transform:rotateX(90deg);
+  background-image:url('../assets/art/env/corridor/floor.png');background-size:195px 195px}
+.face.ceil {left:0;top:0;width:390px;height:1400px;transform-origin:center top;transform:rotateX(-90deg);
+  background-image:url('../assets/art/env/corridor/ceiling.png');background-size:195px 195px}
+.face.back {left:0;top:0;width:390px;height:520px;transform:translateZ(-1400px);
+  background-image:url('../assets/art/env/corridor/door.png');background-size:390px 390px;background-position:center bottom;
+  background-color:#0b0e12}
+
+/* SOTLJUS-graderingen av världen: värde, dis, en ljuskälla */
+.grade{position:absolute;inset:0;pointer-events:none}
+.grade.depth{background:radial-gradient(52% 38% at 50% 52%, rgba(5,7,10,.97) 0%, rgba(5,7,10,.90) 40%, rgba(5,7,10,.62) 66%, rgba(5,7,10,.10) 100%)}
+.grade.torch{background:radial-gradient(70% 60% at 92% 108%, rgba(255,106,44,.34) 0%, rgba(255,140,70,.14) 30%, rgba(0,0,0,0) 70%);mix-blend-mode:screen}
+.grade.value{background:linear-gradient(180deg, rgba(7,9,11,.78) 0%, rgba(7,9,11,.40) 34%, rgba(7,9,11,.10) 62%, rgba(7,9,11,.55) 100%)}
+.grade.vignette{background:radial-gradient(75% 65% at 50% 50%, rgba(0,0,0,0) 45%, rgba(0,0,0,.55) 100%)}
+.grade.grain{opacity:.075;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .9  0 0 0 0 .86  0 0 0 0 .8  0 0 0 1 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+.world .face{filter:saturate(.55) brightness(.62) contrast(1.06)}
+
+/* figurerna: Pipoya-battlers, fötter på golvlinjen, graderade */
+.fig{position:absolute;transform:translateX(-50%);transform-origin:center bottom}
+.fig img{display:block;height:100%;width:auto}
+.fig .shadow{position:absolute;left:50%;bottom:-6px;width:74%;height:14%;transform:translateX(-50%);
+  background:radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 72%)}
+/* grade: desaturera, dra ned värdet, hett kantljus på högerkanten (facklan sitter bakom spelarens högra axel) */
+.fig.near img{filter:saturate(.58) brightness(.74) contrast(1.10)
+  drop-shadow(2px 0 0 rgba(255,150,80,.70)) drop-shadow(1px 0 0 rgba(255,106,44,.55))}
+.fig.mid img{filter:saturate(.45) brightness(.42) contrast(1.05) drop-shadow(1px 0 0 rgba(255,140,70,.45))}
+.fig.far img{filter:saturate(.25) brightness(.22) contrast(1.15)}
+
+.fig.tick{left:60%;bottom:158px;height:112px;z-index:5}
+.fig.rat {left:30%;bottom:206px;height:74px;z-index:4}
+.fig.boss{left:50%;bottom:256px;height:118px;z-index:3}
+
+/* träff-fx: Kenney star_07, tonad ember */
+.fx{position:absolute;pointer-events:none;mix-blend-mode:screen}
+.fx.hit{left:57%;bottom:206px;width:120px;height:120px;transform:translateX(-50%) rotate(12deg);
+  background:url('../assets/art/fx/hit.png') center/contain no-repeat;
+  filter:sepia(1) saturate(6) hue-rotate(-18deg) brightness(1.2)}
+.fx.slash{left:63%;bottom:196px;width:120px;height:120px;transform:translateX(-50%) rotate(-32deg);opacity:.9;
+  background:url('../assets/art/fx/slash.png') center/contain no-repeat;
+  filter:sepia(1) saturate(4) hue-rotate(-10deg)}
+
+/* skadesiffra (ART_DIRECTION_V2 §4 typografi som vapen) */
+.dmg{position:absolute;left:58%;bottom:262px;transform:translateX(-50%) rotate(-3deg);
+  font-family:'Anton',sans-serif;font-size:84px;line-height:.82;color:var(--bone);
+  -webkit-text-stroke:1px rgba(255,178,88,.9);
+  text-shadow:0 0 0 #000, 3px 3px 0 #000, -3px 3px 0 #000, 3px -3px 0 #000, -3px -3px 0 #000, 0 6px 14px rgba(0,0,0,.8);z-index:8}
+
+/* namnskylt: ADOM-knappbalk (Ravenmore) som 9-slice via border-image */
+.plate{position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:9;
+  width:250px;height:52px;padding:10px 40px 0;
+  border-image:url('../assets/art/ui/button.png') 24 56 24 56 fill / 12px 28px 12px 28px stretch;
+  filter:saturate(.7) brightness(.9);text-align:center}
+.plate .nm{font-family:'Anton',sans-serif;font-size:17px;letter-spacing:.10em;color:#2A2118;text-transform:uppercase;line-height:1}
+.plate .sub{font-size:10px;color:#5A4A38;letter-spacing:.04em;margin-top:1px}
+
+/* fiende-HP direkt på svart */
+.hp{position:absolute;left:16px;right:16px;bottom:118px;z-index:9}
+.hp .row{display:flex;justify-content:space-between;align-items:baseline;font-family:'Anton',sans-serif;font-size:18px;letter-spacing:.03em}
+.hp .row small{font-family:'Familjen Grotesk',sans-serif;font-size:11px;color:var(--bone-dim);letter-spacing:.08em}
+.hp .bar{height:6px;margin-top:4px;background:#1A2128;position:relative}
+.hp .bar i{position:absolute;left:0;top:0;bottom:0;width:61%;background:var(--blood)}
+.hp .bar b{position:absolute;left:61%;top:0;bottom:0;width:22%;background:rgba(255,85,111,.35)}
+
+.narr{position:absolute;left:0;right:0;bottom:92px;text-align:center;font-family:'Caveat Brush',cursive;font-size:16px;color:#C8BEAC;opacity:.85;z-index:9}
+
+/* ============ UI-LAGRET: character sheet-remsa med Ravenmore-ikoner ============ */
+.sheet{position:relative;flex:1 1 auto;min-height:0;padding:12px 16px 0;
+  border-image:url('../assets/art/ui/card.png') 24 fill / 12px stretch;
+  filter:saturate(.8)}
+.sheet h2{font-family:'Anton',sans-serif;font-size:13px;letter-spacing:.14em;color:var(--bone-dim);text-transform:uppercase;display:flex;justify-content:space-between}
+.sheet h2 span{font-family:'Familjen Grotesk',sans-serif;font-weight:400;letter-spacing:.04em;text-transform:none;font-size:11px}
+.slots{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.slot{position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  background:#0E1216 url('../assets/art/ui/slot.png') center/100% 100% no-repeat}
+.slot.framed{background:none}
+.slot .rf{position:absolute;inset:0;background-size:100% 100%;background-repeat:no-repeat}
+.slot.common .rf{background-image:url('../assets/art/rarity/common.png')}
+.slot.uncommon .rf{background-image:url('../assets/art/rarity/uncommon.png')}
+.slot.rare .rf{background-image:url('../assets/art/rarity/rare.png')}
+.slot.epic .rf{background-image:url('../assets/art/rarity/epic.png')}
+.slot img{width:82%;height:82%;object-fit:contain;position:relative;filter:saturate(.85) drop-shadow(0 2px 2px rgba(0,0,0,.7))}
+.slot.empty img{opacity:.22;filter:grayscale(1) brightness(1.6)}
+.slot u{position:absolute;left:14%;right:14%;bottom:-3px;height:2px;background:var(--r-common);text-decoration:none}
+.slot.uncommon u{background:var(--r-uncommon)}.slot.rare u{background:var(--r-rare)}.slot.epic u{background:var(--r-epic)}
+.labels{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px;text-align:center;font-size:9px;letter-spacing:.06em;color:var(--bone-dim);text-transform:uppercase}
+
+.hero{display:flex;gap:12px;align-items:center;margin-top:14px}
+.hero .pf{width:64px;height:64px;border-radius:4px;overflow:hidden;background:#0E1216;flex:0 0 auto;
+  box-shadow:0 0 0 1px #2C353F}
+.hero .pf img{width:100%;height:100%;object-fit:cover;filter:saturate(.8) contrast(1.05)}
+.hero .txt{flex:1 1 auto;line-height:1.25}
+.hero .txt b{font-family:'Anton',sans-serif;font-size:18px;letter-spacing:.06em;display:block;color:var(--bone)}
+.hero .txt i{font-style:normal;font-size:11px;color:var(--bone-dim)}
+.hero .txt em{display:block;font-style:normal;font-size:11px;color:var(--bone);margin-top:3px}
+.hero .txt em s{text-decoration:none;color:var(--r-rare)}
+
+.foot{position:absolute;left:16px;right:16px;bottom:10px;font-size:9px;color:#5E5A52;letter-spacing:.03em;line-height:1.3}
+.foot b{color:#7A7468;font-weight:400}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="world">
+    <div class="box">
+      <div class="face left"></div>
+      <div class="face right"></div>
+      <div class="face floor"></div>
+      <div class="face ceil"></div>
+      <div class="face back"></div>
+    </div>
+    <div class="grade depth"></div>
+    <div class="grade value"></div>
+
+    <div class="fig far boss"><img src="../assets/art/boss/SLAGJAW.png" alt="Slagjaw"><div class="shadow"></div></div>
+    <div class="fig mid rat"><img src="../assets/art/enemy/RUST_RAT.png" alt="Rust Rat"><div class="shadow"></div></div>
+    <div class="fig near tick"><img src="../assets/art/enemy/IRON_TICK.png" alt="Iron Tick"><div class="shadow"></div></div>
+    <div class="fx slash"></div>
+    <div class="fx hit"></div>
+    <div class="dmg">12</div>
+
+    <div class="grade torch"></div>
+    <div class="grade vignette"></div>
+    <div class="grade grain"></div>
+
+    <div class="plate"><div class="nm">Iron Tick</div><div class="sub">ARMOR 6 · HITS 5</div></div>
+    <div class="hp">
+      <div class="row"><span>46 <small>HP</small></span><small>SLAGJAW WAITS AT THE DOOR</small></div>
+      <div class="bar"><i></i><b></b></div>
+    </div>
+    <div class="narr">The tick does not bleed. It rusts.</div>
+  </div>
+
+  <div class="sheet">
+    <h2>The Smith <span>level 3 · 4 of 7 slots</span></h2>
+    <div class="slots">
+      <div class="slot framed common"><div class="rf"></div><img src="../assets/art/gear/SCRAP_CAP.png" alt="Scrap Cap"><u></u></div>
+      <div class="slot empty"><img src="../assets/art/gear/slot_AMULET.png" alt="empty amulet"></div>
+      <div class="slot framed uncommon"><div class="rf"></div><img src="../assets/art/gear/TICK_CARAPACE.png" alt="Tick Carapace"><u></u></div>
+      <div class="slot empty"><img src="../assets/art/gear/slot_BACK.png" alt="empty back"></div>
+      <div class="slot framed epic"><div class="rf"></div><img src="../assets/art/gear/SLAGJAW_TOOTH.png" alt="Slagjaw Tooth"><u></u></div>
+      <div class="slot framed rare"><div class="rf"></div><img src="../assets/art/gear/THIEFS_MITTS.png" alt="Thief's Mitts"><u></u></div>
+      <div class="slot empty"><img src="../assets/art/gear/slot_LEGS.png" alt="empty legs"></div>
+    </div>
+    <div class="labels"><span>head</span><span>amulet</span><span>chest</span><span>back</span><span>weapon</span><span>hands</span><span>legs</span></div>
+
+    <div class="hero">
+      <div class="pf"><img src="../assets/art/portrait/hero_a.png" alt="hero portrait"></div>
+      <div class="txt"><b>BRAND OF THE PIT</b><i>Broad · quirk: Heavy-Handed</i><em>Next slot at level 4: <s>LEGS + BACK</s></em></div>
+      <div class="pf"><img src="../assets/art/portrait/marrow.png" alt="Marrow"></div>
+    </div>
+
+    <div class="foot">
+      <b>M6 asset-mockup, 390×844.</b> Alla bilder läses ur assets/art/ (manifest.json). Väggar/golv/tak/dörr: kaczor237 (CC0).
+      Figurer: Pipoya (egen licens). Ikoner, porträtt, panel: Ravenmore (CC-BY 3.0). Ramar: J. W. Bjerk (CC-BY 3.0). Fx/slot: Kenney (CC0).
+      Grade i CSS här, i shadern i spelet.
+    </div>
+  </div>
+</div>
+</body>
+</html>
