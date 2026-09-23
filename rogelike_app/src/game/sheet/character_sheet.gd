@@ -1,40 +1,56 @@
 class_name CharacterSheet
 extends Control
-## Character sheetet (CORRIDOR_DESIGN §4, mockup design/mockup_character_sheet.html).
+## Character sheetet (CORRIDOR_DESIGN §4), [b]v2 i M6[/b].
 ##
-## [b]Figuren syns aldrig i korridoren. Den finns här, och bara här[/b] – och det
-## är därför den blir värd något att öppna (§4). Sheetet är en [b]modal[/b],
-## precis som inställningarna: att byta skärm mitt i en run skulle kasta bort
-## kamerans plats i rutnätet och stridens placering.
+## [b]Hjälten syns aldrig i korridoren. Den finns här, och bara här.[/b] Sheetet
+## är en [b]modal[/b], precis som inställningarna: att byta skärm mitt i en run
+## skulle kasta bort kamerans plats i rutnätet och stridens placering.
 ##
-## Uppifrån och ner (§4.1):
-## [br]1. Porträtt, namn, stad · run, HP-stapel, Pips, stäng-kryss.
-## [br]2. Figuren i mitten med sju slots runt om. Tomma slots är en [b]kritad
-##    kontur[/b], inte en grå ruta.
-## [br]3. Slotordningen – smedjans enda verktyg. [b]Aktiv bara i staden[/b]: mitt
-##    i en run är brädet redan i spel och en omordning vore ett drag utan kostnad.
+## [b]M6:[/b] paperdoll-figuren är ersatt av ett [b]målat porträtt[/b] ur
+## art-manifestet ([code]hero.portrait.a/b[/code]), och de sju slotsen bär
+## föremålets ikon ([code]gear.<id>[/code]) i sin raritetsram
+## ([code]rarity.frame.<namn>[/code]). Allt går via [Art]; byte = byt fil.
+##
+## Uppifrån och ner:
+## [br]1. Namn, stad · run, HP-linje, Pips, stäng-kryss.
+## [br]2. Porträttet i mitten med sju slots runt om: fyra till vänster, tre till
+##    höger och "CHANGE LOOK" under. En tom slot visar slotens egen ikon nedtonad;
+##    en låst slot (hjältens nivå) säger vilken nivå som låser upp den.
+## [br]3. Slotordningen – smedjans enda verktyg. [b]Aktiv bara i staden.[/b]
 ## [br]4. De sex tärningarna. Tapp fäller ut alla sidorna med värde och effekt.
-##    Detta är [b]enda platsen i spelet[/b] där hela uppsättningen går att läsa.
-## [br]5. Reliker, "CHANGE LOOK" (bara i staden) och "GO DOWN" (bara i staden).
+## [br]5. Reliker, detaljraden och "GO DOWN" (bara i staden).
 ##
-## Sheetet äger ingen regel. [Forge] garanterar att smedjan byter och ordnar om,
-## aldrig lägger till, och [Content.RELIC_SLOTS] säger var en relik hänger.
+## [b]Gränssnittet mot gear[/b] (docs/M6_A_NOTES.md): ctx får bära
+## [code]"hero": Hero[/code]. Sheetet läser då [code]hero.equipped(slot) -> Item|null[/code],
+## [code]item.icon_id[/code], [code]item.rarity[/code], [code]item.name_key[/code] /
+## [code]display_name[/code], [code]item.effect_summary_key[/code] och
+## [code]hero.is_slot_unlocked(slot)[/code]. Utan hjälte läses relikerna som i M5
+## ([constant Content.RELIC_SLOTS]). Sheetet äger ingen regel.
 
 signal closed()
 ## [code]GO DOWN[/code] i staden. Samma tapp som stadens egen knapp.
 signal go_down_pressed(seed_value: int)
+## "CHANGE LOOK" bytte porträtt. [Settings] är redan skriven; har sheetet en
+## hjälte är [member Hero.body_variant] också ändrad och controllern ska spara
+## metan (docs/M6_A_NOTES.md).
+signal look_changed(variant: String)
 
-## Figurens ruta i mitten, i dp. 48 px-cellen × 4 = 192 px hög figur (§4.1:
-## "~52 % av höjden" i portrait).
-const FIGURE_HEIGHT_DP: int = 180
-## [b]Dubbel världsskala.[/b] [HeroFigure] ritas 48 px × 4 i striden; här är den
-## sidans huvudmotiv (§4.1: "~52 % av höjden") och ×8 ger 384 px. Heltalsfaktorn
-## behåller pixelrutnätet – 1,5× hade gett halva pixlar (UI_GUIDE §8.3).
-const FIGURE_SCALE: int = 2
+## Porträttets minsta höjd i dp. Det tar över paperdollens plats (§4.1: "~52 %
+## av höjden").
+const PORTRAIT_MIN_DP: int = 200
+## Samma 52 dp som M5: fyra slots i höjd måste rymmas i paperdollens gamla
+## höjdbudget, annars trycks GO DOWN ut under skärmkanten.
 const SLOT_BOX_DP: int = 52
-const PORTRAIT_DP: int = 56
-## Hur länge ett nytt lager kritas på figuren (§4.3).
+## Ikonen sitter innanför raritetsramens kant.
+const ICON_INSET: float = 0.17
+## En tom slots egen ikon, nedtonad.
+const EMPTY_GLYPH_ALPHA: float = 0.22
+## Hur länge ett nytt föremål blixtrar i sin slot (§4.3).
 const HIGHLIGHT_MS: int = 520
+## Ny nyckel i M6; raden väntar i CSV:n (docs/M6_A_NOTES.md). Som konstant så
+## att en saknad rad visar engelska i stället för att fälla i18n-testet innan
+## asset-agenten lagt in den.
+const KEY_LOCKED: String = "CHARSHEET_LOCKED_LV"
 
 var state: CombatState = null
 var meta: Meta = null
@@ -42,8 +58,8 @@ var in_town: bool = false
 
 var _seed_value: int = 0
 var _room: int = 0
-var _figure: HeroFigure = null
-var _figure_box: Control = null
+var _hero: Hero = null
+var _portrait_box: Control = null
 var _slot_buttons: Dictionary = {}
 var _detail: Label = null
 var _dice_row: HBoxContainer = null
@@ -83,6 +99,7 @@ func open_for(ctx: Dictionary) -> void:
 	if meta == null:
 		meta = Meta.fresh()
 	in_town = bool(ctx.get("in_town", false))
+	_hero = ctx.get("hero", null) as Hero
 	_room = int(ctx.get("room", 0))
 	_seed_value = int(ctx.get("seed", 0))
 	refresh()
@@ -125,24 +142,19 @@ func _build_header() -> Control:
 	row.name = "Header"
 	row.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_3))
 
-	_portrait = TextureRect.new()
-	_portrait.name = "Portrait"
-	_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	_portrait.custom_minimum_size = Vector2(Tokens.dp(PORTRAIT_DP), Tokens.dp(PORTRAIT_DP))
-	row.add_child(_portrait)
-
 	var names: VBoxContainer = VBoxContainer.new()
 	names.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	names.add_theme_constant_override("separation", 0)
 	row.add_child(names)
 
 	_title = _label(Tokens.TYPE_TITLE, Tokens.CHALK_100)
-	ChalkFx.apply(_title, ChalkFx.DISPLAY)
+	Tokens.apply_display_font(_title)
 	names.add_child(_title)
 
 	_subtitle = _label(Tokens.TYPE_LABEL, Tokens.CHALK_500)
+	var scrawl: Font = Tokens.font_scrawl()
+	if scrawl != null:
+		_subtitle.add_theme_font_override("font", scrawl)
 	names.add_child(_subtitle)
 
 	var vitals: HBoxContainer = HBoxContainer.new()
@@ -155,12 +167,12 @@ func _build_header() -> Control:
 
 	_hp_bar = ProgressBar.new()
 	_hp_bar.show_percentage = false
-	_hp_bar.custom_minimum_size = Vector2(Tokens.dp(64), Tokens.dp(9))
+	_hp_bar.custom_minimum_size = Vector2(Tokens.dp(64), Tokens.dp(4))
 	_hp_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_hp_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var track: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR, Tokens.RADIUS_CHIP)
-	track.bg_color = Tokens.SURFACE_PIT
-	var fill: StyleBoxFlat = Tokens.box(Tokens.SEM_BLOOD, true, 0.0, Tokens.RADIUS_CHIP)
+	var track: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, 0.0, 0)
+	track.bg_color = Color(0.09, 0.11, 0.13)
+	var fill: StyleBoxFlat = Tokens.box(Tokens.SEM_BLOOD, true, 0.0, 0)
 	fill.bg_color = Tokens.SEM_BLOOD
 	_hp_bar.add_theme_stylebox_override("background", track)
 	_hp_bar.add_theme_stylebox_override("fill", fill)
@@ -177,8 +189,7 @@ func _build_header() -> Control:
 	close.custom_minimum_size = Vector2(Tokens.dp(Tokens.TOUCH_MIN), Tokens.dp(Tokens.TOUCH_MIN))
 	close.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_HEADING))
 	close.add_theme_color_override("font_color", Tokens.CHALK_300)
-	var close_style: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR)
-	close_style.bg_color = Tokens.SURFACE_RAISED
+	var close_style: StyleBoxFlat = CorridorHud.hud_button_style(Tokens.SURFACE_LINE)
 	for state_name: String in ["normal", "hover", "pressed", "focus"]:
 		close.add_theme_stylebox_override(state_name, close_style)
 	close.pressed.connect(close_sheet)
@@ -186,7 +197,7 @@ func _build_header() -> Control:
 	return row
 
 
-# --- Figuren och de sju slotsen --------------------------------------------
+# --- Porträttet och de sju slotsen -----------------------------------------
 
 func _build_body() -> Control:
 	var row: HBoxContainer = HBoxContainer.new()
@@ -197,26 +208,55 @@ func _build_body() -> Control:
 	var left: VBoxContainer = _slot_column("LeftSlots", Content.SHEET_SLOTS.slice(0, 4))
 	row.add_child(left)
 
-	_figure_box = Control.new()
-	_figure_box.name = "Figure"
-	_figure_box.custom_minimum_size = Vector2(0.0, Tokens.dp(FIGURE_HEIGHT_DP))
-	_figure_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_figure_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_figure_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_figure_box.clip_contents = true
-	row.add_child(_figure_box)
+	_portrait_box = Control.new()
+	_portrait_box.name = "Figure"
+	_portrait_box.custom_minimum_size = Vector2(0.0, Tokens.dp(PORTRAIT_MIN_DP))
+	_portrait_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_portrait_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_portrait_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(_portrait_box)
 
-	_figure = HeroFigure.new()
-	_figure.name = "Paperdoll"
-	_figure.scale = Vector2(FIGURE_SCALE, FIGURE_SCALE)
-	_figure_box.add_child(_figure)
-	_figure_box.resized.connect(_place_figure)
+	# Ett varmt sken bakom porträttet: samma fackla som i korridoren, så att
+	# hjälten står i samma ljus som resten av spelet (ART_DIRECTION_V2 §4).
+	var glow: ColorRect = ColorRect.new()
+	glow.name = "Glow"
+	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var glow_mat: ShaderMaterial = ShaderMaterial.new()
+	glow_mat.shader = load(CorridorView.VIGNETTE_SHADER) as Shader
+	glow_mat.set_shader_parameter(&"void_color", Tokens.SURFACE_PIT)
+	glow_mat.set_shader_parameter(&"vignette", 0.9)
+	glow_mat.set_shader_parameter(&"inner", 0.35)
+	glow_mat.set_shader_parameter(&"outer", 1.0)
+	glow_mat.set_shader_parameter(&"top_dark", 0.0)
+	glow_mat.set_shader_parameter(&"bottom_dark", 0.0)
+	glow_mat.set_shader_parameter(&"glow_center", Vector2(0.55, 0.72))
+	# Skenet måste ta slut innanför rutan, annars syns rutans kant.
+	glow_mat.set_shader_parameter(&"glow_radius", Vector2(0.45, 0.3))
+	glow_mat.set_shader_parameter(&"glow_strength", 0.28)
+	# Inget korn och ingen kall ton här: rutan får inte synas som en rektangel
+	# mot sheetets platta botten.
+	glow_mat.set_shader_parameter(&"grain", 0.0)
+	glow_mat.set_shader_parameter(&"cool_strength", 0.0)
+	glow.material = glow_mat
+	_portrait_box.add_child(glow)
+	glow.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	_portrait = TextureRect.new()
+	_portrait.name = "Portrait"
+	_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_portrait_box.add_child(_portrait)
+	_portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var inset: float = Tokens.dp(Tokens.SPACE_2)
+	_portrait.offset_left = inset
+	_portrait.offset_right = -inset
+	_portrait.offset_top = inset
+	_portrait.offset_bottom = -inset
 
 	var right: VBoxContainer = _slot_column("RightSlots", Content.SHEET_SLOTS.slice(4))
 	_change_look = Button.new()
 	_change_look.name = "ChangeLook"
-	# Kort etikett: rutan är 52 dp bred och "CHANGE LOOK" klipps mitt i ordet.
-	# Hela meningen står i smedjans panel.
 	_change_look.text = Tokens.translate_or("CHARSHEET_LOOK", "LOOK")
 	_change_look.clip_text = true
 	_change_look.focus_mode = Control.FOCUS_NONE
@@ -225,7 +265,7 @@ func _build_body() -> Control:
 	_change_look.add_theme_color_override("font_color", Tokens.SEM_CHARGE)
 	_change_look.add_theme_color_override("font_disabled_color", Tokens.CHALK_500)
 	var look_style: StyleBoxFlat = Tokens.box(Tokens.SEM_CHARGE, true, Tokens.STROKE_REG, Tokens.RADIUS_BUTTON)
-	look_style.bg_color = Tokens.SURFACE_RAISED
+	look_style.bg_color = Color(0.0, 0.0, 0.0, 0.0)
 	for state_name: String in ["normal", "hover", "pressed", "focus", "disabled"]:
 		_change_look.add_theme_stylebox_override(state_name, look_style)
 	_change_look.pressed.connect(change_look)
@@ -247,34 +287,61 @@ func _slot_column(column_name: String, slots: Array) -> VBoxContainer:
 	return column
 
 
-## En tom slot är en [b]kritad kontur[/b], inte en grå ruta (§4.1 punkt 3).
+## En slot: raritetsram, föremålets ikon och slotens namn under. En tom slot
+## visar slotens egen ikon nedtonad, inte en grå ruta (§4.1 punkt 3).
 func _make_slot_button(slot: String) -> Button:
 	var button: Button = Button.new()
 	button.name = "Slot%s" % slot
 	button.focus_mode = Control.FOCUS_NONE
-	button.clip_text = true
 	button.custom_minimum_size = Vector2(Tokens.dp(SLOT_BOX_DP), Tokens.dp(SLOT_BOX_DP))
-	button.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_CAPTION - 1))
-	button.add_theme_color_override("font_color", Tokens.CHALK_300)
-	button.alignment = HORIZONTAL_ALIGNMENT_CENTER
-	button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	button.expand_icon = false
+	var empty: StyleBoxEmpty = StyleBoxEmpty.new()
+	for state_name: String in ["normal", "hover", "pressed", "focus", "disabled"]:
+		button.add_theme_stylebox_override(state_name, empty)
 	button.pressed.connect(_on_slot_pressed.bind(slot))
+
+	var box: Control = Control.new()
+	box.name = "Box"
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(box)
+	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	var plate: Panel = Panel.new()
+	plate.name = "Plate"
+	plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(plate)
+	plate.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	var icon: TextureRect = TextureRect.new()
+	icon.name = "Icon"
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	box.add_child(icon)
+	# Ikonen i ramens övre del; slotens namn står i den nedre, innanför ramen.
+	icon.anchor_left = ICON_INSET
+	icon.anchor_top = ICON_INSET * 0.6
+	icon.anchor_right = 1.0 - ICON_INSET
+	icon.anchor_bottom = 0.74
+
+	var frame: TextureRect = TextureRect.new()
+	frame.name = "Frame"
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	frame.stretch_mode = TextureRect.STRETCH_SCALE
+	frame.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	box.add_child(frame)
+	frame.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	var caption: Label = _label(Tokens.TYPE_CAPTION - 2, Tokens.CHALK_500)
+	caption.name = "Caption"
+	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	button.add_child(caption)
+	caption.anchor_top = 1.0
+	caption.anchor_right = 1.0
+	caption.anchor_bottom = 1.0
+	caption.offset_top = -Tokens.dp(15)
+	caption.offset_bottom = -Tokens.dp(2)
 	return button
-
-
-func _place_figure() -> void:
-	if _figure == null or _figure_box == null:
-		return
-	# [member Node2D.position] ligger i förälderns rymd och påverkas INTE av
-	# nodens egen [member Node2D.scale], men [constant HeroFigure.FOOT_OFFSET]
-	# räknas i figurens oskalade pixlar. Skillnaden kompenseras här, annars står
-	# figuren en halv kropp under golvlinjen.
-	var foot: float = float(HeroFigure.FOOT_OFFSET) * float(FIGURE_SCALE - 1)
-	_figure.stand_on(
-		_figure_box.size.x * 0.5,
-		_figure_box.size.y - Tokens.dp(Tokens.SPACE_2) - foot)
 
 
 # --- Botten ------------------------------------------------------------------
@@ -355,10 +422,11 @@ func _build_footer() -> Control:
 # ---------------------------------------------------------------------------
 
 func refresh() -> void:
-	var variant: String = Art.smith_variant(Settings.smith_variant)
+	var variant: String = look()
 	_portrait.texture = Art.smith_portrait(variant)
 	_portrait.texture_filter = Art.filter_for(Art.portrait_key(variant))
-	_title.text = Tokens.translate_or("SMITH_SHEET_TITLE", "THE SMITH")
+	_title.text = _hero.name if _hero != null and _hero.name != "" \
+		else Tokens.translate_or("SMITH_SHEET_TITLE", "THE SMITH")
 	_subtitle.text = Tokens.translate_or("CHARSHEET_SUBTITLE", "%s · run %d") % [
 		Tokens.translate_or("TOWN_NAME", "CHALKRIM"), maxi(meta.runs, 1)]
 	var hp: int = state.player_hp if state != null else 0
@@ -371,39 +439,97 @@ func refresh() -> void:
 
 	_go_down.visible = in_town
 	_change_look.disabled = not in_town
-	if _figure != null:
-		_figure.set_variant(variant)
-		if state != null:
-			_figure.apply_relics(state.relics)
-	_place_figure()
 	_refresh_slots()
 	_refresh_order()
 	_refresh_dice()
 	_refresh_relics()
 
 
-func _refresh_slots() -> void:
-	var worn: Dictionary = {}
+## Porträttets kroppsvariant: hjältens om sheetet har en, annars [Settings].
+func look() -> String:
+	if _hero != null:
+		return Art.smith_variant(_hero.body_variant)
+	return Art.smith_variant(Settings.smith_variant)
+
+
+## Vad som bärs i [param slot], som en vy: [code]{kind, icon, rarity, name,
+## locked, unlock_level, item, relic}[/code]. [b]Enda stället som frågar
+## hjälten eller relikerna[/b] – resten av sheetet ritar bara vyn.
+func slot_view(slot: String) -> Dictionary:
+	var view: Dictionary = {"kind": "empty", "icon": null, "rarity": Rules.Rarity.COMMON,
+		"name": "", "locked": false, "unlock_level": 0, "item": null, "relic": null}
+	if _hero != null:
+		if not _hero.is_slot_unlocked(slot):
+			view["locked"] = true
+			view["unlock_level"] = Hero.level_for_slot(slot)
+			return view
+		var item: Item = _hero.equipped(slot)
+		if item != null:
+			view["kind"] = "gear"
+			view["item"] = item
+			view["icon"] = Art.gear_icon(item.icon_id if item.icon_id != "" else item.id)
+			view["rarity"] = item.rarity
+			view["name"] = Tokens.translate_or(item.name_key, item.display_name) \
+				if item.name_key != "" else item.display_name
+			return view
 	if state != null:
 		for relic: Relic in state.relics:
-			var slot: String = Content.relic_slot(relic.id)
-			if slot != "":
-				worn[slot] = relic
+			if Content.relic_slot(relic.id) == slot:
+				view["kind"] = "relic"
+				view["relic"] = relic
+				view["icon"] = Art.relic_icon(relic.id)
+				view["rarity"] = relic.rarity
+				view["name"] = Tokens.translate_or(Content.relic_key(relic.id), relic.display_name)
+				return view
+	return view
+
+
+func _refresh_slots() -> void:
 	for raw: Variant in Content.SHEET_SLOTS:
 		var slot: String = String(raw)
 		var button: Button = _slot_buttons[slot] as Button
-		var relic: Relic = worn.get(slot, null) as Relic
-		button.text = Tokens.translate_or(Content.sheet_slot_key(slot), slot)
-		button.icon = Art.relic_icon(relic.id) if relic != null else null
-		var color: Color = Tokens.CHALK_100 if relic != null else Tokens.CHALK_500
-		button.add_theme_color_override("font_color", color)
-		# Kritad kontur för en tom slot, fylld ruta för en buren relik.
-		var style: StyleBoxFlat = Tokens.box(
-			Tokens.SURFACE_LINE if relic != null else Tokens.CHALK_500,
-			true, Tokens.STROKE_HAIR, Tokens.RADIUS_BUTTON)
-		style.bg_color = Tokens.SURFACE_RAISED if relic != null else Color(Tokens.SURFACE_PIT, 0.0)
-		for state_name: String in ["normal", "hover", "pressed", "focus"]:
-			button.add_theme_stylebox_override(state_name, style)
+		_paint_slot(button, slot, slot_view(slot))
+
+
+func _paint_slot(button: Button, slot: String, view: Dictionary) -> void:
+	var icon: TextureRect = button.get_node("Box/Icon") as TextureRect
+	var frame: TextureRect = button.get_node("Box/Frame") as TextureRect
+	var plate: Panel = button.get_node("Box/Plate") as Panel
+	var caption: Label = button.get_node("Caption") as Label
+	var kind: String = String(view["kind"])
+	var filled: bool = kind != "empty"
+	var rarity: int = int(view["rarity"])
+	var rarity_name: String = Rules.rarity_name(rarity)
+
+	caption.text = Tokens.translate_or(Content.sheet_slot_key(slot), slot)
+	caption.add_theme_color_override("font_color", Tokens.CHALK_100 if filled else Tokens.CHALK_500)
+	button.tooltip_text = String(view["name"])
+
+	if filled:
+		icon.texture = view["icon"] as Texture2D
+		icon.modulate = Color.WHITE
+	else:
+		# Slotens egen ikon, nedtonad: formen säger vad som hör hemma här.
+		icon.texture = Art.tex(StringName("gear.slot." + slot))
+		icon.modulate = Color(1.0, 1.0, 1.0, EMPTY_GLYPH_ALPHA * (0.5 if bool(view["locked"]) else 1.0))
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	if kind == "relic":
+		icon.texture_filter = Art.filter_for(StringName("relic." + (view["relic"] as Relic).id))
+
+	var ring: Color = Tokens.rarity_color(rarity) if filled else Tokens.SURFACE_LINE
+	frame.texture = Art.rarity_frame(rarity_name) if filled else null
+	var style: StyleBoxFlat = Tokens.box(ring, true,
+		Tokens.STROKE_HAIR if frame.texture != null or not filled else Tokens.STROKE_REG, Tokens.RADIUS_BUTTON)
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.35) if filled else Color(0.0, 0.0, 0.0, 0.0)
+	if frame.texture != null:
+		style.border_width_left = 0
+		style.border_width_right = 0
+		style.border_width_top = 0
+		style.border_width_bottom = 0
+	plate.add_theme_stylebox_override("panel", style)
+
+	if bool(view["locked"]):
+		caption.text = Tokens.translate_or(KEY_LOCKED, "LV %d") % int(view["unlock_level"])
 
 
 ## Smedjans enda verktyg. [b]Aktivt bara i staden[/b] (§4.1, DECISIONS: smedjan
@@ -560,7 +686,11 @@ func _refresh_relics() -> void:
 		button.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_CAPTION))
 		button.add_theme_color_override("font_color", Tokens.CHALK_100)
 		button.add_theme_stylebox_override("normal", Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR))
-		button.icon = Art.relic_icon(relic.id)
+		# Platshållaren (ett rött kryss) hör inte hemma i en rad som visar vad
+		# spelaren bär: saknas ikonen står namnet ensamt, som i M5.
+		var info: Dictionary = Art.art_info(StringName("relic." + relic.id))
+		if String(info["source"]) != Art.SOURCE_PLACEHOLDER:
+			button.icon = _small_icon(info["texture"] as Texture2D)
 		button.pressed.connect(_on_relic_pressed.bind(relic))
 		_relic_row.add_child(button)
 
@@ -573,15 +703,24 @@ func _refresh_relics() -> void:
 ## belöningskortet (§4.2). Olika formuleringar för samma regel är §B.1-problemet.
 func _on_slot_pressed(slot: String) -> void:
 	Juice.ui_tap(1.0)
-	if state != null:
-		for relic: Relic in state.relics:
-			if Content.relic_slot(relic.id) == slot:
-				_on_relic_pressed(relic)
-				return
-	_detail.text = "%s · %s" % [
-		Tokens.translate_or(Content.sheet_slot_key(slot), slot),
-		Tokens.translate_or("SMITH_SLOT_EMPTY", "empty"),
-	]
+	var view: Dictionary = slot_view(slot)
+	var slot_name: String = Tokens.translate_or(Content.sheet_slot_key(slot), slot)
+	match String(view["kind"]):
+		"relic":
+			_on_relic_pressed(view["relic"] as Relic)
+			return
+		"gear":
+			var item: Item = view["item"] as Item
+			var summary: String = Tokens.translate_or(item.effect_summary_key, "") \
+				if item.effect_summary_key != "" else ""
+			_detail.text = "%s · %s%s" % [slot_name, String(view["name"]),
+				"" if summary == "" else " · " + summary]
+			return
+	if bool(view["locked"]):
+		_detail.text = "%s · %s" % [slot_name,
+			Tokens.translate_or(KEY_LOCKED, "LV %d") % int(view["unlock_level"])]
+		return
+	_detail.text = "%s · %s" % [slot_name, Tokens.translate_or("SMITH_SLOT_EMPTY", "empty")]
 
 
 ## [b]Ordagrant samma mening som på belöningskortet[/b] (§4.2): texten byggs av
@@ -605,31 +744,31 @@ func _on_relic_pressed(relic: Relic) -> void:
 func change_look() -> void:
 	if not in_town:
 		return
-	var next: String = "b" if Art.smith_variant(Settings.smith_variant) == "a" else "a"
+	var next: String = "b" if look() == "a" else "a"
 	Settings.set_value(&"smith_variant", next)
+	if _hero != null:
+		_hero.body_variant = next
 	Juice.ui_tap(1.0)
 	refresh()
+	look_changed.emit(next)
 
 
-## §4.3: lagret kritas på figuren, sloten blixtrar. 520 ms, sedan är det bara
-## en del av figuren – ingen permanent markering.
+## §4.3: det nya föremålet blixtrar i sin slot och porträttet tänds kort.
+## 520 ms, sedan är det bara en del av hjälten – ingen permanent markering.
 func _play_highlight(reward_id: String) -> void:
 	var relic_id: String = reward_id.trim_prefix("RELIC_")
 	var slot: String = Content.relic_slot(relic_id)
-	var seconds: float = float(HIGHLIGHT_MS) / 1000.0
-	if _figure != null and is_instance_valid(_figure):
-		var layer: Sprite2D = null
-		for raw: Variant in Art.RELIC_LAYERS.get(relic_id, []) as Array:
-			layer = _figure.layer_sprite(StringName(raw))
-			if layer != null and layer.visible:
-				break
-			layer = null
-		if layer != null:
-			layer.modulate = Color(Tokens.CHALK_100, 0.0)
-			var draw_in: Tween = create_tween()
-			draw_in.tween_property(layer, "modulate", Color.WHITE, seconds)
+	if slot == "" and _hero != null:
+		for raw: Variant in Content.SHEET_SLOTS:
+			var item: Item = _hero.equipped(String(raw))
+			if item != null and (item.id == reward_id or "GEAR_" + item.id == reward_id):
+				slot = String(raw)
 	if slot != "" and _slot_buttons.has(slot):
 		Juice.outline(_slot_buttons[slot] as Control, Tokens.SEM_CHARGE, HIGHLIGHT_MS)
+	if _portrait != null and not Settings.reduced_motion:
+		_portrait.modulate = Color(1.35, 1.2, 1.05)
+		var tween: Tween = create_tween()
+		tween.tween_property(_portrait, "modulate", Color.WHITE, float(HIGHLIGHT_MS) / 1000.0)
 	Juice.haptic(Haptics.Level.MEDIUM)
 
 
@@ -652,6 +791,24 @@ func slot_button(slot: String) -> Button:
 
 func detail_text() -> String:
 	return _detail.text if _detail != null else ""
+
+
+## En ikon i knappstorlek. [member Button.icon] ritas i texturens egen storlek,
+## och en målad 128 px-ikon blev en halv knapp hög.
+static func _small_icon(texture: Texture2D) -> Texture2D:
+	if texture == null:
+		return null
+	var px: int = Tokens.dpi(Tokens.TOUCH_MIN - 22)
+	if texture.get_height() <= px:
+		return texture
+	var image: Image = texture.get_image()
+	if image == null or image.is_empty():
+		return texture
+	image = image.duplicate() as Image
+	if image.is_compressed():
+		image.decompress()
+	image.resize(px, px, Image.INTERPOLATE_LANCZOS)
+	return ImageTexture.create_from_image(image)
 
 
 static func _label(font_size: int, color: Color) -> Label:
