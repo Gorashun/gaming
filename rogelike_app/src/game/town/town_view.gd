@@ -99,12 +99,17 @@ func _add_torch(spec: Dictionary) -> void:
 	var facing: int = int(spec["facing"])
 	var sprite: Sprite3D = Sprite3D.new()
 	sprite.name = "Torch_%s" % CorridorMap.cell_key(tile)
-	sprite.texture = CorridorMesh.tile_texture("res://assets/sprites/env/corridor/torch.png")
-	sprite.hframes = 2
-	sprite.pixel_size = 0.042
+	# M6: facklan följer art-manifestet (docs/M6_A_NOTES.md §2), precis som i
+	# korridoren. M5:s ark har två rutor; en målad remsa säger själv hur många.
+	var info: Dictionary = Art.art_info(&"env.corridor.torch")
+	sprite.texture = Art.tex(&"env.corridor.torch")
+	sprite.hframes = 2 if String(info["source"]) == Art.SOURCE_LEGACY else maxi(1, int(info["frames"]))
+	sprite.pixel_size = 0.042 if bool(info["pixel"]) \
+		else 0.042 * 32.0 / maxf(1.0, (info["size"] as Vector2).y)
 	sprite.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 	sprite.alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
-	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST if bool(info["pixel"]) \
+		else BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	sprite.shaded = false
 	sprite.double_sided = true
 	sprite.position = CorridorMesh.tile_origin(tile) \

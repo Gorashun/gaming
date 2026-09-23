@@ -1112,16 +1112,28 @@ func open_character_sheet(highlight_id: String = "") -> void:
 	_modal_root.add_child(sheet)
 	sheet.closed.connect(_on_sheet_closed)
 	sheet.go_down_pressed.connect(_on_sheet_go_down)
+	# M6 (docs/M6_A_NOTES.md §1): sheetet ritar gear via hjälten. I staden är det
+	# rostrets aktiva hjälte; i Gropen hjälten som gick ner, med allt osäkrat.
+	var in_town: bool = _screen_name == SCREEN_TOWN
+	var hero: Hero = meta.roster.active() if in_town else (run.hero if run != null else null)
+	sheet.look_changed.connect(_on_sheet_look_changed)
 	sheet.open_for({
 		"state": run.combat if run != null else null,
 		"meta": meta,
-		"in_town": _screen_name == SCREEN_TOWN,
+		"hero": hero,
+		"in_town": in_town,
 		"room": run.room_index if run != null else 0,
 		"seed": run.seed_value if run != null else next_seed(),
 		"highlight": highlight_id,
 	})
 	if _corridor != null and is_instance_valid(_corridor):
 		_corridor.view().set_sheet_badge(false)
+
+
+## CHANGE LOOK i staden skriver [code]hero.body_variant[/code] på rostrets
+## hjälte; profilen sparas direkt så att valet överlever en omstart.
+func _on_sheet_look_changed(_variant: String) -> void:
+	SaveIO.save_meta(meta)
 
 
 func sheet_open() -> bool:

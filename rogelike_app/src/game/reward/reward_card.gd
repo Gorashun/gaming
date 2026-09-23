@@ -110,12 +110,20 @@ func _bind_art() -> void:
 	_icon.texture = null
 	_icon.modulate = Color.WHITE
 	_die_art.visible = false
+	# Pixelikoner ritas med Nearest; målade manifestikoner (M6) med linjärt
+	# filter, annars blir de hårda och trappstegade när de skalas ned.
+	_art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	match String(option.get("category", "")):
 		Rewards.CATEGORY_RELIC:
-			_icon.texture = Art.relic_icon(String(data.get("relic_id", "")))
+			var relic_id: String = String(data.get("relic_id", ""))
+			_icon.texture = Art.relic_icon(relic_id)
+			_art.texture_filter = Art.filter_for(StringName("relic." + relic_id))
 		Rewards.CATEGORY_GEAR:
 			# M6: föremålets ikon ur art-manifestet (gear.<ID> / relic.<ID>).
-			_icon.texture = Art.gear_icon(String((data.get("item", {}) as Dictionary).get("icon_id", "")))
+			var icon_id: String = String((data.get("item", {}) as Dictionary).get("icon_id", ""))
+			_icon.texture = Art.gear_icon(icon_id)
+			_art.texture_filter = Art.filter_for(StringName(icon_id)) if icon_id != "" \
+				else CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		Rewards.CATEGORY_SLOT_SWAP:
 			var slot_type: int = int(data.get("slot_type", Rules.SlotType.PLAIN))
 			_icon.texture = Art.slot_icon(slot_type)
@@ -132,7 +140,7 @@ func _layout_art() -> void:
 	if _icon == null or _art == null:
 		return
 	var tex: Texture2D = _icon.texture
-	if tex != null and tex.get_width() > 16:
+	if tex != null and (tex.get_width() > 16 or _art.texture_filter != CanvasItem.TEXTURE_FILTER_NEAREST):
 		# Målade ikoner (M6-manifestet) är större än pixelikonernas 16×16 och
 		# skalas ned till rutan i stället för upp i heltal.
 		var fit: float = minf(_art.size.x / float(tex.get_width()), _art.size.y / float(tex.get_height()))
