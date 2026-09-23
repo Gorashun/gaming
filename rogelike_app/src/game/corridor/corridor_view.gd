@@ -122,12 +122,12 @@ const NARRATOR_LINES: Dictionary = {
 		["NARRATOR_ENCOUNTER_2", "Something breathes in the dark ahead."],
 		["NARRATOR_ENCOUNTER_3", "Count them before they count you."],
 	],
-	"boss": [["NARRATOR_BOSS", "The door breathes. So does whatever is behind it."]],
+	"door": [["NARRATOR_DOOR", "The door breathes. So does whatever is behind it."]],
+	"boss": [["NARRATOR_BOSS", "Everything down here answers to this."]],
 	"cleared": [
 		["NARRATOR_CLEARED_1", "Quiet again. For now."],
 		["NARRATOR_CLEARED_2", "The dark takes back what it lent."],
 	],
-	"floor": [["NARRATOR_FLOOR", "Deeper. The air tastes of slag."]],
 }
 
 ## Våningstonen. Samma atlas, annan ton – noll nya bildfiler per våning
@@ -729,14 +729,16 @@ func _play_events(events: Array[Dictionary]) -> void:
 			CorridorMap.EVENT_BOSS_DOOR:
 				quiet = false
 				if not bool(event.get("ahead", false)):
-					narrate("boss", str(map.floor_index))
+					narrate("door", str(map.floor_index))
 					boss_door_reached.emit()
 			CorridorMap.EVENT_FATE_DOOR:
 				quiet = false
 				fate_door_reached.emit()
 			CorridorMap.EVENT_FLOOR_CLEARED:
 				quiet = false
-				narrate("floor", str(event["floor"]))
+				# floor_cleared kommer när bosskammaren nås (CorridorMap), alltså
+				# är det bossens rad och inte "ny våning".
+				narrate("boss", str(event["floor"]))
 				floor_cleared.emit(int(event["floor"]))
 			CorridorMap.EVENT_STAIRS_UP:
 				quiet = false

@@ -1009,6 +1009,8 @@ const BOSS_INTRO_MS: int = 1200
 ## Scrimmen under bossnamnet. 0,94 och inte SURFACE_SCRIM: allt som syns genom
 ## den läses som text ovanpå text.
 const BOSS_SCRIM_ALPHA: float = 0.94
+## Över DieArt:s högsta lager (sprickan, z 3).
+const BOSS_Z: int = 8
 
 var _intro_hidden: Array[CanvasItem] = []
 
@@ -1035,10 +1037,15 @@ func play_boss_intro() -> void:
 	scrim.name = "BossScrim"
 	scrim.color = Color(CorridorView.FOG_COLOR, BOSS_SCRIM_ALPHA)
 	scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# z_index och inte bara trädordning: tärningskonstens lager (DieArt: pips z 1,
+	# glas z 2, spricka z 3) är globala inom CanvasLayern och ritades annars
+	# OVANPÅ bandet – prickarna syntes genom bossens namn.
+	scrim.z_index = BOSS_Z
 	_fx_layer.add_child(scrim)
 	scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	var band: PanelContainer = PanelContainer.new()
+	band.z_index = BOSS_Z + 1
 	band.name = "BossBand"
 	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var band_style: StyleBoxFlat = StyleBoxFlat.new()

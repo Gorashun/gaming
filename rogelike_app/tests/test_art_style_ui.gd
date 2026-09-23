@@ -96,6 +96,9 @@ func test_the_boss_name_never_sits_on_top_of_other_text() -> void:
 	# Bandet har en helt ogenomskinlig botten och scrimmen täcker nästan allt.
 	assert_float((band.get_theme_stylebox("panel") as StyleBoxFlat).bg_color.a).is_equal(1.0)
 	assert_float(scrim.color.a).is_greater_equal(0.9)
+	# Över tärningskonstens z-lager (DieArt: pips 1, glas 2, spricka 3).
+	assert_int(scrim.z_index).is_greater(3)
+	assert_int(band.z_index).is_greater(scrim.z_index)
 	# Namnet ryms på skärmens bredd.
 	var name_label: Label = band.get_node("BossName") as Label
 	var font: Font = name_label.get_theme_font("font")

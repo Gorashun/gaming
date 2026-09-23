@@ -62,10 +62,10 @@ Koden går via `Tokens.translate_or()` med konstanta nycklar, så engelska visas
 NARRATOR_ENCOUNTER_1,The torch holds. The wall does not.,Facklan håller. Det gör inte muren.
 NARRATOR_ENCOUNTER_2,Something breathes in the dark ahead.,Något andas i mörkret framför dig.
 NARRATOR_ENCOUNTER_3,Count them before they count you.,Räkna dem innan de räknar dig.
-NARRATOR_BOSS,The door breathes. So does whatever is behind it.,Dörren andas. Det gör det bakom den också.
+NARRATOR_DOOR,The door breathes. So does whatever is behind it.,Dörren andas. Det gör det bakom den också.
+NARRATOR_BOSS,Everything down here answers to this.,Allt här nere lyder under den här.
 NARRATOR_CLEARED_1,Quiet again. For now.,Tyst igen. För stunden.
 NARRATOR_CLEARED_2,The dark takes back what it lent.,Mörkret tar tillbaka det det lånat ut.
-NARRATOR_FLOOR,Deeper. The air tastes of slag.,Djupare. Luften smakar slagg.
 CHARSHEET_LOCKED_LV,LV %d,NV %d
 CREDITS_TITLE,CREDITS,MEDVERKANDE
 CREDITS_FONTS,FONTS,TYPSNITT

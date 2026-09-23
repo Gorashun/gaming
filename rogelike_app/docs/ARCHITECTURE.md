@@ -188,8 +188,8 @@ i `assets/sprites/README.md` när CC0-paketen går att hämta) ändras en rad d�
 
 | Nod | Lager | Innehåll |
 |---|---|---|
-| Korridorens `Encounter` | SubViewport (3D) | `AnimatedSprite3D`-billboard per fiende, 4 idle + 3 death (ark 4×2), boss 48×48 övriga 32×32 |
-| `HeroFigure` | ChalkUI (character sheet) | paperdoll, nio `Sprite2D`-lager, 48×48-celler, 8×4 frames. **Enda stället figuren syns** |
+| Korridorens `Encounter` | SubViewport (3D) | **M6:** `EnemyBattler` per fiende, en målad PNG ur manifestet (se "M6 spår A") |
+| `HeroFigure` | – | **M6:** används inte längre av sheetet (målat porträtt); klassen står kvar för `tests/test_smith.gd` |
 | `DieView.art_root()` → `DieArt` | ChalkUI | kropp + pips/glyph + glaskant + spricka |
 | `SlotView.art_root()` + `DieArt` | ChalkUI | slot-ikon och den placerade tärningen |
 | `RewardCard.art_root()` | ChalkUI | relikikon, slot-ikon eller komponerad sida |
@@ -619,6 +619,108 @@ Relik → slot ligger i `Content.RELIC_SLOTS` (presentationsdata, aldrig core:
 och sex reliker; `ANVIL_BLESSING` är klassreliken och har ingen slot.
 **Avvikelse:** §4.2 listar `SLOT_SPARE` för `CHEAT_CUBE`, men DECISIONS låste
 sju slots utan reservplats – bältespungen ritas därför på ryggen.
+
+## M6 spår A: art-manifestet, battlers, stilskiktet
+
+*Uppdaterad 2026-09-23. Integrationspunkterna mot dev B och `game_controller.gd` står i
+`docs/M6_A_NOTES.md`.*
+
+### `Art.tex(id)`: innehålls-id → fil, byte = byt fil
+
+`assets/art/manifest.json` (asset-agentens fil) mappar innehålls-id:n (`enemy.RUST_RAT`,
+`gear.SCRAP_CAP`, `hero.portrait.a`, `rarity.frame.rare`, `env.corridor.wall`, …) till en PNG
+plus `kind`, `size`, `pivot`, `frames`, valfritt `pixel`, `tier` och `scale`. `Art` läser den
+lat en gång (via `ResourceLoader`: JSON är en importerad resurs och följer med i exporten,
+verifierat i webb-pck:n) och slår upp i en fast ordning:
+
+```
+manifest (filen laddas) → fiendealias (ENEMY_ART_ALIASES) → gammal sprite (LEGACY_ART, Nearest)
+                        → platshållare (enemy.placeholder / icon.placeholder, annars genererad)
+```
+
+Fiender och ikoner blir **aldrig** null; ramar, paneler och effekter får bli null och
+anroparen ritar en StyleBox. En saknad fil varnar en gång per id. `Art.art_info(id)` ger hela
+svaret (`texture, source, pixel, size, pivot, frames, kind, scale, boss`), `Art.filter_for(id)`
+filtret: **Nearest bara för pixelkonst**, målad konst är Linear med mipmaps (battlers och
+miljö får mipmaps genererade vid inläsning om importen saknar dem). `Art.reload_manifest()` är
+hot-swap: den tömmer alla cacher och höjer `Art.manifest_version`; noder som byggs efteråt får
+den nya konsten. `Art.validate_manifest()` körs av `tests/test_manifest.gd` och fäller bygget
+på en post vars fil saknas, fel `kind`, fel `size` eller saknad `license`.
+
+Tärningarnas delar (kropp, LUT, pips, glyfer, sprickor) går fortfarande genom
+`Art.texture(relativ_sökväg)` – de är ett komponerat system, inte innehålls-id:n.
+
+### Fienderna är målade battlers
+
+`EnemyBattler` (`src/game/corridor/enemy_battler.gd`) ersätter M5:s `AnimatedSprite3D`. Kroppen
+är en `QuadMesh` med `battler.gdshader` och inte en `Sprite3D`: en `SpriteBase3D` binder inte
+sin textur till ett eget shadermaterial, och billboarden är en materialfunktion. Shadern är en
+3D-port av `palette_lut.gdshader` (LUT, `flash`, `flash_color`, `luma_gamma`) plus silhuett,
+kantljus mot facklan, `tilt` (fallet) och `alpha`. Filtret väljs med en `#define` före
+`#include "battler.gdshaderinc"`: `battler.gdshader` är linear + mipmaps,
+`battler_pixel.gdshader` Nearest. Samma mönster för korridorens ytor.
+
+Storleken är **fast per pixel**: 256 px = 1,76 m (M5:s 32 px-fiende), passad in i en ruta per
+nivå (vanlig 1,9 × 2,4 m, boss 3,8 × 3,0 m, aldrig högre än taket). Pipoya-packet ritar en råtta
+mindre än en zombie, och den skillnaden är information. Kvaden står på sin underkant så att
+andningen (`scale.y`-tween) aldrig lyfter fötterna. Formeringen följer antalet (1 i mitten,
+2, 2+1, 2+2); det främre ledet får högre `render_priority` än det bakre, eftersom genomskinliga
+ytor annars sorteras på mittpunkten och kan byta plats när kameran vrider sig. Kastskuggan är en
+`Sprite3D`-ellips på golvet.
+
+### Ljus utan lampor
+
+Mobil- och Compatibility-renderarna tar max åtta omni-ljus per mesh och våningen är **en** mesh
+(research 06 §1). `CorridorLight` är därför ren matematik:
+
+- `CorridorMesh.build()` samlar först facklorna och bakar sedan ljuset i hörnfärgerna: kall blå
+  fyllnad överallt, varma pooler runt varje väggfackla med avståndsfalloff, taket × 0,3,
+  hörnskugga på väggarna. Kvaderna är delade `SUBDIV` × `SUBDIV` (3 × 3) så att ljusfallet inte
+  blir en diagonal; en våning är ~2 500 trianglar.
+- `corridor_surface.gdshader` lägger handfacklan ovanpå: en fast punkt i vyrymden bakom
+  spelarens högra axel, kvadratisk falloff med avståndet. Nära är varmt, långt bort faller det
+  tillbaka på den kalla fyllnaden – färgtemperaturkontrasten. Flimret är en uniform som
+  `CorridorView._process` skriver ur en visuell RNG (aldrig den seedade strömmen); reducerad
+  rörelse stänger av processen.
+- Fienderna får `CorridorLight.battler_tint()` vid fötterna, så att de står i samma ljus.
+
+### Stilskiktet i krit-lagret
+
+`CorridorView` lägger tre noder mellan `ViewportBox` och `Hud` (barnordningen är
+lagerordningen): `Vignette` (en `ColorRect` med `vignette.gdshader`, premultiplicerad alfa så
+att EN kvad både mörknar – vinjett, statiskt korn – och lyser upp – facklans sken nere till
+höger, en kall ton uppe till vänster; ingen `SCREEN_TEXTURE`-läsning), `Motes` (glest damm,
+`GPUParticles2D`, av med reducerad rörelse) och `Narrator` (en rad i Caveat Brush, deterministiskt
+vald ur `NARRATOR_LINES` med ett salt). Alla tre följer korridorrutans höjd, även i
+stridssplitten.
+
+UI-bruset: `SlotView` är ikon + färgad underlinje (`SlotView.underline_style()`), kvittot står på
+svart, chip och HUD saknar ramar, och tärningarna i brickan är det enda med skugga. Hög kontrast
+behåller ramarna. Skadesiffran är `Juice.damage_pop()`: 88 dp Anton, 6 dp svart kontur, −4°,
+0,55 s; poolen nollställer kontur och lutning vid varje ny pop.
+
+### Character sheet v2 och credits
+
+Sheetets mitt är det målade porträttet (`hero.portrait.<variant>`); slotsen ritar
+`CharacterSheet.slot_view(slot)`, som är det enda stället som frågar hjälten
+(`Hero.equipped(slot)`, `Item.icon_id`, `Item.rarity`) eller, utan hjälte, relikerna.
+`CreditsScreen` renderar `assets/credits.json` ordagrant plus fonternas OFL-notiser och nås
+från inställningarna.
+
+### Fallgropar från M6 spår A
+
+- **`Texture2D.get_image()` i headless returnerar den lagrade bilden**, inte en kopia
+  (dummy-renderaren). Ett test som körde `clear_mipmaps()` på den tog bort mipmaparna ur
+  cachen för nästa svit. Duplicera alltid innan en bild muteras.
+- **`z_index` är global inom en CanvasLayer.** `DieArt`:s lager (pips z 1, glas z 2, spricka
+  z 3) ritades ovanpå bossbannerns band trots att bandet låg senare i trädet. Allt som ska
+  täcka tärningar behöver `z_index` > 3.
+- **Sampler-filtret går inte att byta i körtid** i en spatial shader. Två små shaderfiler som
+  sätter en `#define` och inkluderar samma `.gdshaderinc` är billigare än två kopior.
+- **`CorridorMap.EVENT_FLOOR_CLEARED` kommer när bosskammaren nås**, inte när våningen är
+  lämnad. Narratorn säger därför bossens rad där.
+- **`await_millis()` kom tillbaka efter 8 ms** i en körning och gjorde ett tweentest flakigt.
+  Tidskänsliga tester väntar på väggklockan (`Time.get_ticks_msec()`) i en bildruteloop.
 
 ## Spelartext: engelska i källan, svenska i CSV
 
