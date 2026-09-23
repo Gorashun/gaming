@@ -346,13 +346,13 @@ Lägg till under respektive rubrik i den mall som redan finns i `ASSET_SHOPPING_
 ```text
 ART  (CC BY 3.0 / 4.0 — attribution required)
 ---------------------------------------------
-Fantasy Icon Pack 2.0 by Ravenmore (Daniel Kvarfordt).
+Fantasy Icon Pack 2.0 by Ravenmore (Krzysztof Dycha).
   https://opengameart.org/content/fantasy-icon-pack-by-ravenmore-0
   https://ravenmore.itch.io
   Licensed under Creative Commons Attribution 3.0
   https://creativecommons.org/licenses/by/3.0/
 
-Fantasy Portrait Pack by Ravenmore (Daniel Kvarfordt).
+Fantasy Portrait Pack by Ravenmore (Krzysztof Dycha).
   https://opengameart.org/content/fantasy-portrait-pack-by-ravenmore
   https://ravenmore.itch.io
   Licensed under Creative Commons Attribution 3.0
@@ -433,7 +433,7 @@ assets/incoming/game-icons-net-all-svg/
 
 ```text
 Paket:        Fantasy Icon Pack 2.0
-Skapare:      Ravenmore (Daniel Kvarfordt)
+Skapare:      Ravenmore (Krzysztof Dycha)
 URL:          https://opengameart.org/content/fantasy-icon-pack-by-ravenmore-0
 Spegel:       https://ravenmore.itch.io/fantasy-icon-pack
 Hämtad:       2026-09-2X
