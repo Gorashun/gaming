@@ -86,6 +86,7 @@ func _build() -> void:
 	_build_toggle_row("SETTINGS_REDUCED_MOTION", "Reduced motion", &"reduced_motion")
 	_build_toggle_row("SETTINGS_HIGH_CONTRAST", "High contrast", &"high_contrast")
 	_build_reset_row()
+	_build_credits_row()
 
 	_close_button = Button.new()
 	_close_button.custom_minimum_size = Vector2(0.0, Tokens.dp(Tokens.BUTTON_PRIMARY_HEIGHT))
@@ -174,6 +175,35 @@ func _build_reset_row() -> void:
 	_reset_button.add_theme_color_override("font_color", Tokens.SEM_BLOOD)
 	_reset_button.pressed.connect(_on_reset_pressed)
 	row.add_child(_reset_button)
+
+
+## M6: credits (CC BY-villkoren och fonternas OFL-notiser), offline.
+const CREDITS_SCENE: String = "res://src/game/credits/credits_screen.tscn"
+const KEY_CREDITS: String = "SETTINGS_CREDITS"
+
+
+func _build_credits_row() -> void:
+	var row: HBoxContainer = _row(KEY_CREDITS, "Credits")
+	var button: Button = Button.new()
+	button.name = "CreditsButton"
+	_style_small(button)
+	button.custom_minimum_size.x = Tokens.dp(Tokens.TOUCH_MIN + 60)
+	button.pressed.connect(open_credits)
+	row.add_child(button)
+	_retexters.append(func() -> void:
+		button.text = Tokens.translate_or(CreditsScreen.KEY_TITLE, "CREDITS"))
+
+
+## Öppnar credits ovanpå inställningarna. Stängs de kommer man tillbaka hit.
+func open_credits() -> Control:
+	Juice.ui_tap(1.0)
+	var packed: PackedScene = ResourceLoader.load(CREDITS_SCENE) as PackedScene
+	if packed == null:
+		push_error("SettingsScreen: kunde inte ladda %s" % CREDITS_SCENE)
+		return null
+	var credits: Control = packed.instantiate() as Control
+	add_child(credits)
+	return credits
 
 
 static func _style_small(button: Button) -> void:

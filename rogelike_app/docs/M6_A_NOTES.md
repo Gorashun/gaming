@@ -67,9 +67,28 @@ NARRATOR_CLEARED_1,Quiet again. For now.,Tyst igen. För stunden.
 NARRATOR_CLEARED_2,The dark takes back what it lent.,Mörkret tar tillbaka det det lånat ut.
 NARRATOR_FLOOR,Deeper. The air tastes of slag.,Djupare. Luften smakar slagg.
 CHARSHEET_LOCKED_LV,LV %d,NV %d
+CREDITS_TITLE,CREDITS,MEDVERKANDE
+CREDITS_FONTS,FONTS,TYPSNITT
+CREDITS_FONTS_NOTE,All four typefaces are licensed under the SIL Open Font License 1.1.,Alla fyra typsnitten är licensierade under SIL Open Font License 1.1.
+SETTINGS_CREDITS,Credits,Medverkande
 ```
 
-## 4. Till asset-agenten
+Attributionsraderna i `assets/credits.json` översätts **inte**: för CC BY 3.0 är de ett
+licensvillkor och visas ordagrant.
+
+## 4. Credits och exporten
+
+- Credits nås från inställningarna (`SettingsScreen.open_credits()`, knappen `CreditsButton`)
+  och läser `assets/credits.json` via `ResourceLoader` (JSON är en importerad resurs och följer
+  med i exporten; verifierat i webbygget, se CHANGELOG). Samma väg gäller `assets/art/manifest.json`.
+- Fonternas copyrightrader och OFL-namnet står i koden (`CreditsScreen.FONT_NOTICES`, testat mot
+  `assets/fonts/OFL-*.txt`). Den **fulla** OFL-texten visas bara om `.txt`-filen finns i paketet,
+  vilket den inte gör med dagens tomma `include_filter`. Förslag till PM (export_presets.cfg,
+  alla tre preset): `include_filter="assets/fonts/OFL-*.txt"`.
+- `settings_screen.gd` stod inte på någons lista i M6-briefen; spår A lade till en rad och en
+  metod där (avvikelse, rapporterad).
+
+## 5. Till asset-agenten
 
 - `relic.ANVIL_BLESSING` saknas i manifestet (klassreliken). Sheetets relikrad visar då bara
   namnet; resten av spelet får platshållaren (rött kryss).
@@ -81,7 +100,7 @@ CHARSHEET_LOCKED_LV,LV %d,NV %d
   i en ruta per nivå; `"scale": 1.2` i en post justerar en enskild figur utan kodändring.
   `"tier": "boss"` ger bossrutan.
 
-## 5. Kända avvikelser
+## 6. Kända avvikelser
 
 - `src/game/reward/reward_card.gd` (dev B) ritar relik- och slotikoner som pixelsprites med
   Nearest och heltalsskala. Med målade relikikoner ur manifestet (128 px) blir de stora och
