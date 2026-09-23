@@ -1,0 +1,150 @@
+{
+  "_about": "En post per extern källa i assets/art/. Dev A renderar listan till credits-skärmen (nåbar offline, utan konto). attribution_lines är texten ordagrant enligt docs/ASSET_SHOPPING_LIST_PAINTED.md §C; required=true betyder att raden är ett licensvillkor, inte en artighet. Sanningen om enskilda filer är assets/ASSET_LICENSES.csv; tools/normalize_art.py läser den här filen för att fylla manifestets license-fält.",
+  "sections": [
+    {"id": "cc-by", "title": "ART  (CC BY 3.0 — attribution required)"},
+    {"id": "creator", "title": "ART  (creator's own licence — credit not required, given anyway)"},
+    {"id": "cc0", "title": "PUBLIC DOMAIN  (CC0 1.0 — no attribution required, credited anyway)"}
+  ],
+  "sources": [
+    {
+      "id": "ravenmore-icons",
+      "section": "cc-by",
+      "name": "Fantasy Icon Pack 2.0",
+      "author": "Ravenmore (Krzysztof Dycha)",
+      "license": "CC-BY-3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "url": "https://opengameart.org/content/fantasy-icon-pack-by-ravenmore-0",
+      "author_url": "https://ravenmore.itch.io",
+      "required": true,
+      "incoming": "assets/incoming/ravenmore-fantasy-icon-pack",
+      "attribution_lines": [
+        "Fantasy Icon Pack 2.0 by Ravenmore (Krzysztof Dycha).",
+        "  https://opengameart.org/content/fantasy-icon-pack-by-ravenmore-0",
+        "  https://ravenmore.itch.io",
+        "  Licensed under Creative Commons Attribution 3.0",
+        "  https://creativecommons.org/licenses/by/3.0/"
+      ]
+    },
+    {
+      "id": "ravenmore-portraits",
+      "section": "cc-by",
+      "name": "Fantasy Portrait Pack",
+      "author": "Ravenmore (Krzysztof Dycha)",
+      "license": "CC-BY-3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "url": "https://opengameart.org/content/fantasy-portrait-pack-by-ravenmore",
+      "author_url": "https://ravenmore.itch.io",
+      "required": true,
+      "incoming": "assets/incoming/ravenmore-fantasy-portrait-pack",
+      "attribution_lines": [
+        "Fantasy Portrait Pack by Ravenmore (Krzysztof Dycha).",
+        "  https://opengameart.org/content/fantasy-portrait-pack-by-ravenmore",
+        "  https://ravenmore.itch.io",
+        "  Licensed under Creative Commons Attribution 3.0",
+        "  https://creativecommons.org/licenses/by/3.0/"
+      ]
+    },
+    {
+      "id": "ravenmore-ui",
+      "section": "cc-by",
+      "name": "Fantasy UI Elements (ADOM UI)",
+      "author": "Ravenmore (Krzysztof Dycha)",
+      "license": "CC-BY-3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "url": "https://opengameart.org/content/fantasy-ui-elements-by-ravenmore",
+      "author_url": "http://dycha.net",
+      "required": true,
+      "incoming": "assets/incoming/ravenmore-fantasy-ui-elements",
+      "attribution_lines": [
+        "Fantasy UI Elements by Ravenmore (Krzysztof Dycha).",
+        "  https://opengameart.org/content/fantasy-ui-elements-by-ravenmore",
+        "  Portfolio: http://dycha.net",
+        "  Licensed under Creative Commons Attribution 3.0",
+        "  https://creativecommons.org/licenses/by/3.0/"
+      ]
+    },
+    {
+      "id": "painterly",
+      "section": "cc-by",
+      "name": "Painterly Spell Icons (part 1-4)",
+      "author": "J. W. Bjerk (eleazzaar)",
+      "license": "CC-BY-3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "url": "https://opengameart.org/content/painterly-spell-icons-part-1",
+      "author_url": "http://www.jwbjerk.com/art",
+      "required": true,
+      "incoming": "assets/incoming/jwbjerk-painterly-spell-icons",
+      "attribution_lines": [
+        "\"Painterly Spell Icons\" by J. W. Bjerk (eleazzaar)",
+        "  www.jwbjerk.com/art",
+        "  find this and other open art at: http://opengameart.org",
+        "  Used under the Creative Commons Attribution 3.0 branch of its multi-license.",
+        "  https://creativecommons.org/licenses/by/3.0/"
+      ]
+    },
+    {
+      "id": "pipoya",
+      "section": "creator",
+      "name": "FREE RPG Monster Pack",
+      "author": "Pipoya",
+      "license": "proprietary-free",
+      "license_url": "https://pipoya.itch.io/free-rpg-monster-pack",
+      "url": "https://pipoya.itch.io/free-rpg-monster-pack",
+      "author_url": "https://pipoya.net",
+      "required": false,
+      "incoming": "assets/incoming/pipoya-free-rpg-monster-pack",
+      "license_text": "For commercial or personal use. Use and edit freely. Not redistribute or resell this asset. It can be used for game development and other productions.",
+      "attribution_lines": [
+        "\"FREE RPG Monster Pack\" by Pipoya.",
+        "  https://pipoya.itch.io/free-rpg-monster-pack",
+        "  Used under the creator's terms (commercial use and edits allowed, no redistribution)."
+      ]
+    },
+    {
+      "id": "kaczor237",
+      "section": "cc0",
+      "name": "Stylized Mossy Dungeon Wall / Stylized Dungeon Stone Floor",
+      "author": "kaczor237",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "url": "https://kaczor237.itch.io/stylized-mossy-dungeon-wall-seamless-pbr-texture",
+      "author_url": "https://kaczor237.itch.io",
+      "required": false,
+      "incoming": "assets/incoming/kaczor237-stylized-dungeon-wall-floor",
+      "attribution_lines": [
+        "\"Stylized Dungeon Wall / Floor\" by kaczor237 (CC0 1.0).",
+        "  https://kaczor237.itch.io"
+      ]
+    },
+    {
+      "id": "kenney-borders",
+      "section": "cc0",
+      "name": "Fantasy UI Borders",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "url": "https://kenney.nl/assets/fantasy-ui-borders",
+      "author_url": "https://www.kenney.nl",
+      "required": false,
+      "incoming": "assets/incoming/kenney-fantasy-ui-borders",
+      "attribution_lines": [
+        "Fantasy UI Borders — Kenney (www.kenney.nl) (CC0 1.0)"
+      ]
+    },
+    {
+      "id": "kenney-particles",
+      "section": "cc0",
+      "name": "Particle Pack",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "url": "https://kenney.nl/assets/particle-pack",
+      "author_url": "https://www.kenney.nl",
+      "required": false,
+      "incoming": "assets/incoming/kenney-particle-pack",
+      "attribution_lines": [
+        "Particle Pack — Kenney (www.kenney.nl) (CC0 1.0)"
+      ]
+    }
+  ]
+}
