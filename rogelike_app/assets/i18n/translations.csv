@@ -494,3 +494,37 @@ GEAR_FX_UNPLACED_CHARGE_BONUS,+%d Charge,+%d Laddning
 GEAR_FX_CHARGE_PER_ROUND,+%d Charge,+%d Laddning
 GEAR_FX_CHARGE_IF_UNHURT,"+%d Charge, no damage taken","+%d Laddning, ingen skada tagen"
 GEAR_FX_WARD_RETAIN,%d Ward stays,%d Ward ligger kvar
+CHEST_MARROW_TITLE,Marrow holds out the cart,Marrow håller fram kärran
+CHEST_MARROW_BODY,Everything else stays down there with them.,Allt annat stannar där nere med dem.
+CHEST_EMPTY_BODY,No chest to put it in. Build one in the forge and I will carry what fits.,Det finns ingen kista att lägga det i. Bygg en i smedjan så bär jag det som får plats.
+CHEST_AD_OFFER,Watch an ad: rescue one more,Se en annons: rädda ett till
+CHEST_RESCUE_CONFIRM,RESCUE %d AND GO UP,RÄDDA %d OCH GÅ UPP
+CHEST_ARRIVAL,"%s is gone. The chest kept %d, the pit kept %d.","%s är borta. Kistan behöll %d, gropen behöll %d."
+CHEST_LEVEL,Chest level %d · rescues %d when a hero dies,Kistan nivå %d · räddar %d när en hjälte dör
+CHEST_STORE,In the chest,I kistan
+BANK_TITLE,The cart goes up from here,Kärran går upp härifrån
+BANK_BODY,"What you send up is safe for good, but you will not wear it against the boss.","Det du skickar upp är säkert för alltid, men du bär det inte mot bossen."
+BANK_SEND,SEND %d UP,SKICKA UPP %d
+BANK_KEEP_ALL,KEEP EVERYTHING,BEHÅLL ALLT
+BANK_STORE,Sent up with the cart,Skickat upp med kärran
+HERO_XP_GAINED,XP gained,XP intjänat
+HERO_LEVEL_UP,Level up,Ny nivå
+HERO_LEVEL_VALUE,level %d,nivå %d
+HERO_GEAR_SECURED,Gear secured,Gear säkrat
+HERO_FALLEN,%s is dead,%s är död
+HERO_ROW,%s · level %d · %d XP to next · %s · %d slots,%s · nivå %d · %d XP till nästa · %s · %d platser
+TAVERN_PLACE,The Tavern,Tavernan
+TAVERN_RULE,"Four seats, never more. Whoever goes down carries everything they wear.","Fyra platser, aldrig fler. Den som går ner bär allt den har på sig."
+TAVERN_LEVEL,Tavern level %d · %d seats,Tavernan nivå %d · %d platser
+TAVERN_ACTIVE,GOES DOWN,GÅR NER
+TAVERN_SEND,SEND DOWN,SKICKA NER
+TAVERN_RECRUIT,RECRUIT,REKRYTERA
+TAVERN_FALLEN,The fallen: %s,De fallna: %s
+TAVERN_FALLEN_COUNT,Heroes lost,Förlorade hjältar
+GEAR_MARKET_LEVEL,Market level %d · %d wares per visit,Marknaden nivå %d · %d varor per besök
+GEAR_FORGE_LEVEL,Forge level %d · items up to +%d,Smedjan nivå %d · föremål upp till +%d
+GEAR_BUILD_NEXT,BUILD · %d PIPS,BYGG · %d ÖGON
+GEAR_UPGRADE,UPGRADE · %d PIPS,UPPGRADERA · %d ÖGON
+GEAR_WEAR,WEAR,BÄR
+GEAR_LOCKED_SLOT,locked,låst
+GEAR_COLLECTION,Gear found,Gear funnet

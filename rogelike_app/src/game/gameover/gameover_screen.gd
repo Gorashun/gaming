@@ -4,8 +4,20 @@ extends GameScreen
 ## och vad du låste upp" med "EN RUN TILL" som primärknapp i tumzonen.
 ##
 ## Skärmen räknar ingenting själv. Siffrorna kommer från
-## [method GameController.build_summary] och poängen från [MetaScore], så att
-## formeln kan testas utan UI och ändras på ett ställe.
+## [method GameController.build_summary].
+##
+## [b]M6 – dödsskärm v2:[/b] Marrow presenterar Kistan. Det hjälten bar listas,
+## spelaren väljer upp till Kistans kapacitet ([method Expedition.rescue_capacity]),
+## och resten går förlorat med hjälten (permadöd). Räddningsannonsen är en
+## frivillig sekundärknapp som ger en plats till: skärmen skickar
+## [signal rescue_offer_requested], controllern svarar med
+## [method grant_rescue_slot] när "annonsen" bekräftats. Ingen SDK i M6.
+## MetaScore-siffran visas inte längre (PROGRESSION_REDESIGN §6); den lever kvar
+## i koden som rekordmått.
+
+## Spelaren vill se en annons för att rädda ett föremål till. Frivillig, aldrig
+## ett avbrott (DECISIONS 2026-09-22).
+signal rescue_offer_requested()
 
 @onready var _title: Label = $Margin/Column/Title
 @onready var _subtitle: Label = $Margin/Column/Subtitle
@@ -33,22 +45,12 @@ func enter(ctx: Dictionary) -> void:
 	_title.text = tr("GAMEOVER_WIN_TITLE") if won else tr("GAMEOVER_LOSE_TITLE")
 	_subtitle.text = _subtitle_text(ctx, won)
 
-	var score: Dictionary = ctx.get("score", {}) as Dictionary
 	_add_stat(tr("GAMEOVER_STAT_ROOM_REACHED"), "%d" % int(ctx.get("room_reached", 1)))
 	_add_stat(tr("GAMEOVER_STAT_ROOMS_CLEARED"), "%d" % int(ctx.get("rooms_cleared", 0)))
 	_add_count_stat(tr("GAMEOVER_STAT_BEST_CHAIN"), int(ctx.get("best_chain", 0)),
 		tr("GAMEOVER_STAT_BEST_CHAIN_VALUE"))
 	_add_stat(tr("GAMEOVER_STAT_HP_LEFT"), "%d" % int(ctx.get("hp_left", 0)))
-	_add_divider()
-	_add_stat(tr("GAMEOVER_SCORE_ROOMS") % MetaScore.POINTS_PER_ROOM, "+%d" % int(score.get("rooms", 0)))
-	_add_stat(tr("GAMEOVER_SCORE_CHAIN") % MetaScore.CHAIN_DAMAGE_PER_POINT, "+%d" % int(score.get("chain", 0)))
-	_add_stat(tr("GAMEOVER_SCORE_SURVIVAL") % MetaScore.HP_LEFT_PER_POINT, "+%d" % int(score.get("survival", 0)))
-	if int(score.get("win", 0)) > 0:
-		_add_stat(tr("GAMEOVER_SCORE_WIN"), "+%d" % int(score.get("win", 0)))
-	_add_count_stat(tr("GAMEOVER_SCORE_TOTAL"), int(score.get("total", 0)), "%d", true)
 
-	# GAME_DESIGN §6.10: seeden är synlig. Det är communityns bevis på att vi
-	# inte fuskar, och förutsättningen för dagliga utmaningar.
 	# Pips-utbetalningen (§A.3). Förlust betalar alltid, och "första gången"-
 	# bonusarna gör att en spektakulär förlust betalar bättre än en trist
 	# överlevnad. Det är rätt incitament: vi belönar att spelaren försökte.
@@ -57,12 +59,14 @@ func enter(ctx: Dictionary) -> void:
 		_add_divider()
 		_add_count_stat(Tokens.translate_or("GAMEOVER_PIPS", "Pips earned"),
 			int(award.get("earned", 0)), "+%d", true)
+	_add_hero_lines(ctx, won)
 
 	_seed_label.text = tr("GAMEOVER_SEED") % int(ctx.get("seed", 0))
 	# Knappen leder till staden, inte rakt in i en ny run: GO DOWN ligger redan
 	# i tumzonen där, så "en run till" är fortfarande ett tapp (§A.4 regel 2).
 	_again_button.text = Tokens.translate_or("GAMEOVER_BACK_TO_TOWN", "BACK TO CHALKRIM")
 	_again_button.pressed.connect(play_again)
+	_open_rescue(ctx, won)
 
 	# Ögonblicket. Ljudet först, sedan siffrorna som räknas upp, sedan – bara
 	# vid vinst – kritdammet. Ordningen är avsiktlig: ljudet säger vad som hände,
@@ -232,6 +236,80 @@ func play_again() -> void:
 	Juice.ui_tap(1.0)
 	Juice.haptic(Haptics.Level.MEDIUM)
 	screen_done.emit({"again": true})
+
+
+# --- M6: hjälten och Kistan ----------------------------------------------------
+
+var _picker: ItemPicker = null
+var _rescue: Dictionary = {}
+var _ad_used: bool = false
+
+
+## Hjältens rad: vem som dog (och på vilken nivå), eller vad vinsten gav.
+func _add_hero_lines(ctx: Dictionary, won: bool) -> void:
+	var hero: Dictionary = ctx.get("hero", {}) as Dictionary
+	if hero.is_empty():
+		return
+	_add_divider()
+	if won:
+		_add_stat(Tokens.translate_or("HERO_XP_GAINED", "XP gained"), "+%d" % int(hero.get("xp", 0)))
+		if int(hero.get("level_ups", 0)) > 0:
+			_add_stat(Tokens.translate_or("HERO_LEVEL_UP", "Level up"), Tokens.translate_or(
+				"HERO_LEVEL_VALUE", "level %d") % int(hero.get("level", 1)), true)
+		if int(hero.get("secured", 0)) > 0:
+			_add_stat(Tokens.translate_or("HERO_GEAR_SECURED", "Gear secured"), "%d" % int(hero.get("secured", 0)))
+		return
+	_add_stat(Tokens.translate_or("HERO_FALLEN", "%s is dead") % String(hero.get("name", "")),
+		Tokens.translate_or("HERO_LEVEL_VALUE", "level %d") % int(hero.get("level", 1)), true)
+
+
+## Marrow vid kärran: välj vad Kistan räddar (§3.4). Visas bara vid död och bara
+## när hjälten bar något.
+func _open_rescue(ctx: Dictionary, won: bool) -> void:
+	_rescue = ctx.get("rescue", {}) as Dictionary
+	if won or _rescue.is_empty():
+		return
+	var items: Array[Item] = Item.list_from_dicts(_rescue.get("items", []))
+	if items.is_empty():
+		return
+	_picker = ItemPicker.new()
+	_picker.name = "RescuePicker"
+	_picker.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	$Margin/Column.add_child(_picker)
+	$Margin/Column.move_child(_picker, _again_button.get_index())
+	_again_button.visible = false
+	var capacity: int = int(_rescue.get("capacity", 0))
+	var body: String = Tokens.translate_or("CHEST_MARROW_BODY",
+		"Everything else stays down there with them.")
+	if capacity <= 0:
+		body = Tokens.translate_or("CHEST_EMPTY_BODY",
+			"No chest to put it in. Build one in the forge and I will carry what fits.")
+	var secondary: Array = []
+	if bool(_rescue.get("ad_available", true)) and items.size() > capacity:
+		secondary = ["CHEST_AD_OFFER", "Watch an ad: rescue one more"]
+	_picker.open(["CHEST_MARROW_TITLE", "Marrow holds out the cart"], body, items, capacity,
+		["CHEST_RESCUE_CONFIRM", "RESCUE %d AND GO UP"], secondary)
+	_picker.confirmed.connect(_on_rescue_confirmed)
+	_picker.secondary_pressed.connect(func() -> void: rescue_offer_requested.emit())
+
+
+## Controllern svarar på [signal rescue_offer_requested] när "annonsen" är
+## bekräftad: en plats till, en gång per död.
+func grant_rescue_slot() -> void:
+	if _picker == null or _ad_used:
+		return
+	_ad_used = true
+	_picker.set_max(_picker.max_select() + 1)
+	_picker.set_secondary_enabled(false)
+
+
+func rescue_picker() -> ItemPicker:
+	return _picker
+
+
+func _on_rescue_confirmed(indices: Array) -> void:
+	Juice.haptic(Haptics.Level.MEDIUM)
+	screen_done.emit({"again": true, "rescue": indices, "ad": _ad_used})
 
 
 func summary() -> Dictionary:

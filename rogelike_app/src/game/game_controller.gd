@@ -24,6 +24,9 @@ const SCREEN_COMBAT: String = "COMBAT"
 ## Belöningen. Visas i korridoren; konstanten är fas i sparfilen och reservväg
 ## om korridoren av någon anledning inte står framme.
 const SCREEN_REWARD: String = "REWARD"
+## M6: trappbanken inför bossen. Bara en fas i sparfilen – panelen ligger över
+## korridoren – så att en omladdning ställer samma fråga igen.
+const PHASE_BANK: String = "BANK"
 const SCREEN_GAMEOVER: String = "GAMEOVER"
 ## Staden Chalkrim som förstapersons torg (M5, CORRIDOR_DESIGN §5).
 const SCREEN_TOWN: String = "TOWN"
@@ -54,6 +57,15 @@ signal screen_changed(screen_name: String)
 signal round_autosaved(round_number: int, chain_damage: int)
 ## Runnen är slut. [param won] är false vid död.
 signal run_over(won: bool, summary: Dictionary)
+## M6: ett föremål droppade. [param event] är [method Drops.ceremony]-formen:
+## [code]{t: "item_dropped", item, name_key, icon_id, rarity, rarity_name,
+## source, ms_hint}[/code]. Dev A kopplar färg och ljud på [code]rarity[/code].
+signal item_dropped(event: Dictionary)
+## M6: spelaren bad om räddningsannonsen på dödsskärmen. En framtida annons-SDK
+## lyssnar här; i M6 bekräftar [method confirm_rescue_ad] direkt (ingen SDK).
+signal rescue_offer_requested()
+## M6: trappbanken väntar på svar (rökprovet lyssnar).
+signal bank_offered(item_count: int)
 
 @onready var _screen_root: Control = $ChalkUI/UiRoot/ScreenRoot
 @onready var _modal_root: Control = $ChalkUI/UiRoot/ModalRoot
@@ -103,6 +115,9 @@ var _run_won: bool = false
 ## ska kunna svara på frågan "vad var det som tog mig" (UI_GUIDE §3).
 var _killed_by: String = ""
 var _settings_modal: Control = null
+## M6: trappbankens panel medan den är öppen, och noden bossen väntar i.
+var _bank_picker: ItemPicker = null
+var _bank_node: String = ""
 
 
 func _ready() -> void:
@@ -374,9 +389,16 @@ func show_town() -> void:
 	_corridor_state = {}
 	var arrival: Dictionary = _arrival.duplicate()
 	_arrival = {}
+	# M6: tavernan har alltid någon att skicka ner (en ny rekryt tar på sig det
+	# bästa ur Kistan om den förra dog), och marknaden har alltid hyllor.
+	var seed_value: int = next_seed()
+	Expedition.recruit_replacement(meta, seed_value, Settings.smith_variant)
+	if meta.market_stock.is_empty():
+		Market.rotate(meta, seed_value)
+	SaveIO.save_meta(meta)
 	_show(SCREEN_TOWN, {
 		"meta": meta,
-		"seed": next_seed(),
+		"seed": seed_value,
 		"arrival": arrival,
 	}, {
 		"go_down": _on_go_down,
@@ -424,6 +446,12 @@ func start_tutorial() -> void:
 	_node_id = String(Tutorial.node_for(0)["id"])
 	run.room_index = 1
 	run.combat = Tutorial.prepare_room(run.combat, 0, rng)
+	# M6: hjälte nummer ett går ner i källaren. Källaren kan inte döda, och
+	# stridernas pedagogik rörs inte: gåvan i 0.3 sitter på hjälten, inte i
+	# stridstillståndet ([method _tutorial_gift]).
+	var hero: Hero = meta.ensure_hero(run.seed_value, Settings.smith_variant)
+	run.hero = hero.copy()
+	run.meta["hero_id"] = hero.id
 	Tutorial.apply_reveal(meta.reveal, 0)
 	SaveIO.save_meta(meta)
 	# M5.8: källaren autosparas som vilken våning som helst. Se
@@ -466,6 +494,8 @@ func _advance_tutorial(state: CombatState) -> void:
 	var reward: Dictionary = Tutorial.reward_for(_tutorial_room)
 	_tutorial_loot_pending = Tutorial.has_loot(_tutorial_room)
 	_tutorial_loot_open = false
+	if _tutorial_loot_pending:
+		_tutorial_gift()
 	_autosave(SCREEN_REWARD)
 	if _corridor == null or not is_instance_valid(_corridor):
 		return
@@ -496,6 +526,20 @@ func _show_tutorial_loot() -> void:
 	_corridor.show_reward(run.combat, options, false, Tutorial.loot_title(), targets)
 
 
+## Progressionskurvans run 0 (PROGRESSION_REDESIGN §5): ett garanterat COMMON i
+## rum 0.3, på kroppen – "loot existerar". Ges en gång; hjälten tar med sig det
+## upp ur källaren.
+func _tutorial_gift() -> void:
+	if run.hero == null or bool(run.meta.get("tutorial_gift", false)):
+		return
+	var gift: Item = Content.make_item(Progression.TUTORIAL_GIFT)
+	run.hero.equip(gift)
+	run.meta["tutorial_gift"] = true
+	Progression.note_drops(meta, [gift])
+	SaveIO.save_meta(meta)
+	_emit_drops([gift], {gift.id: "TUTORIAL"})
+
+
 func _finish_tutorial() -> void:
 	# En färdig spelare har alla flaggor på. Rummen sätter dem en och en, men
 	# hoppar spelaren ur mitt i ska hen ändå inte hamna i ett halvt UI.
@@ -506,6 +550,15 @@ func _finish_tutorial() -> void:
 	# som en vinst – men lägger INGET kritstreck: ingen dog där uppe.
 	meta.runs = maxi(meta.runs, 1)
 	meta.pips += Meta.PIPS_WIN
+	# Hjälten kommer upp ur källaren med det hen fick där, säkrat.
+	if run != null and run.hero != null:
+		var returned: Hero = run.hero.copy()
+		returned.set_all_secured(true)
+		if returned.id == "":
+			returned.id = String(run.meta.get("hero_id", ""))
+		meta.roster.replace(returned)
+	if meta.market_stock.is_empty():
+		Market.rotate(meta, run.seed_value if run != null else 0)
 	SaveIO.save_meta(meta)
 	_tutorial_room = -1
 	_tutorial_loot_pending = false
@@ -567,6 +620,10 @@ func start_new_run(seed_value: int) -> void:
 	# Smedjans laddning ligger i profilen och läggs på det färska tillståndet.
 	# Byte och omordning, aldrig tillägg – [Forge] garanterar det.
 	run.combat = Forge.apply_loadout(run.combat, meta.loadout)
+	# M6: rostrets aktiva hjälte går ner. Allt hen bär är osäkrat från och med
+	# nu (PROGRESSION_REDESIGN §3.4); rostrets post rörs först vid vinst eller död.
+	Expedition.begin(meta, run, seed_value, Settings.smith_variant)
+	SaveIO.save_meta(meta)
 	rng = run.make_rng()
 	graph = RunGraph.generate_floor(M1_FLOOR, rng)
 	# [b]Forken är en sparfilsgaranti[/b] (CORRIDOR_DEV_NOTES §4.9): korridorens
@@ -602,6 +659,17 @@ func resume_run() -> bool:
 	run = loaded
 	rng = run.make_rng()
 	var saved: Dictionary = run.meta
+	# En migrerad v3-run (reliker → gear) bär en hjälte utan id: hen är
+	# rostrets aktiva hjälte.
+	if run.hero != null and String(saved.get("hero_id", "")) == "" and int(saved.get("tutorial_room", -1)) < 0:
+		var active: Hero = meta.ensure_hero(run.seed_value, Settings.smith_variant)
+		run.hero.id = active.id
+		if run.hero.name == "":
+			run.hero.name = active.name
+			run.hero.quirk = active.quirk
+			run.hero.level = active.level
+			run.hero.xp = active.xp
+		saved["hero_id"] = active.id
 	var graph_data: Dictionary = saved.get("graph", {}) as Dictionary
 	if graph_data.is_empty():
 		return false
@@ -631,6 +699,7 @@ func resume_run() -> bool:
 	if phase == SCREEN_GAMEOVER:
 		_show_gameover()
 		return true
+	_bank_node = String(saved.get("bank_node", ""))
 
 	# Korridoren ÄR runnen från och med M5. En sparfil utan map_state kan inte
 	# återupptas – [method SaveIO.migrate] fäller den redan, men vakten står
@@ -650,6 +719,8 @@ func resume_run() -> bool:
 			_resume_tutorial_reward.call_deferred()
 		else:
 			_show_reward.call_deferred()
+	elif phase == PHASE_BANK and _bank_node != "":
+		_offer_bank.call_deferred()
 	return true
 
 
@@ -775,6 +846,15 @@ func _on_encounter_reached(node_id: String, _enemy_ids: Array) -> void:
 	# första kastet här (all slump före bekräftelse, GAME_DESIGN §6.4).
 	if run.combat.enemies.is_empty() or run.combat.is_won():
 		run.combat = RunFlow.start_room(run.combat, node, rng)
+	# M6: bossens kammare är våningens slut – trappan. Bär hjälten något får
+	# hen först skicka upp det med kärran ([method _on_floor_cleared]).
+	if RunFlow.is_boss(node) and not bool(run.meta.get("bank_offered_%d" % run.floor_index, false)) \
+			and not run.carried_items().is_empty():
+		_bank_node = node_id
+		_autosave(PHASE_BANK)
+		if _corridor != null and is_instance_valid(_corridor):
+			_corridor.view().set_steering_enabled(false)
+		return
 	_autosave(SCREEN_COMBAT)
 	_mount_combat()
 
@@ -839,7 +919,19 @@ func _on_treasure_taken() -> void:
 			for enemy: Enemy in run.combat.enemies:
 				meta.see_enemy(enemy.id)
 			SaveIO.save_meta(meta)
-		"FORGE_FACE", "RELIC":
+		"RELIC":
+			# M6: altaret droppar gear (§3.3: 100 %, UNCOMMON, 20 % RARE).
+			var ctx: Dictionary = Progression.drop_context(meta, run, run.floor_index, 0,
+				int(run.meta.get("epics", 0)))
+			var item: Item = Drops.roll_source(Drops.SOURCE_ALTAR,
+				Drops.stream(rng, String(cell.get("key", "altar"))), ctx)
+			run.meta["epics"] = int(ctx["epics_this_run"])
+			if item != null:
+				GearRules.take_item(run, item)
+				Progression.note_drops(meta, [item])
+				SaveIO.save_meta(meta)
+				_emit_drops([item], {item.id: Drops.SOURCE_ALTAR})
+		"FORGE_FACE":
 			var option: Dictionary = _draw_single_reward(String(treasure["id"]))
 			if not option.is_empty():
 				run.combat = RewardApply.apply(run.combat, option,
@@ -878,8 +970,58 @@ func _on_door_opened() -> void:
 
 ## Våningen är rensad. I M5 finns bara våning 1, så signalen bokförs och vinsten
 ## avgörs av bossstriden; M3:s trappa ner hakar i här.
+##
+## [b]M6: trappbanken.[/b] Här ställs frågan "skicka upp med kärran?" – före
+## bossen, eftersom Gropen i M6 har en våning och vinsten säkrar allt ändå. Det
+## gör bankningen till ett äkta beslut: det som skickas upp är säkert för alltid
+## men bärs inte i bossstriden (PROGRESSION_REDESIGN §3.4).
 func _on_floor_cleared(floor_index: int) -> void:
+	if run == null:
+		return
 	run.floor_index = maxi(run.floor_index, floor_index)
+	if _bank_node != "":
+		_offer_bank()
+
+
+## Öppnar trappbankens panel över korridoren.
+func _offer_bank() -> void:
+	if run == null or _bank_node == "" or (_bank_picker != null and is_instance_valid(_bank_picker)):
+		return
+	var items: Array[Item] = run.carried_items()
+	if _corridor != null and is_instance_valid(_corridor):
+		_corridor.view().set_steering_enabled(false)
+	_bank_picker = ItemPicker.new()
+	_bank_picker.name = "BankPicker"
+	_bank_picker.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_modal_root.add_child(_bank_picker)
+	_bank_picker.open(["BANK_TITLE", "The cart goes up from here"],
+		Tokens.translate_or("BANK_BODY",
+			"What you send up is safe for good, but you will not wear it against the boss."),
+		items, items.size(), ["BANK_SEND", "SEND %d UP"], ["BANK_KEEP_ALL", "KEEP EVERYTHING"])
+	_bank_picker.confirmed.connect(_on_bank_answered)
+	_bank_picker.secondary_pressed.connect(func() -> void: _on_bank_answered([]))
+	bank_offered.emit(items.size())
+
+
+func bank_picker() -> ItemPicker:
+	return _bank_picker if _bank_picker != null and is_instance_valid(_bank_picker) else null
+
+
+func _on_bank_answered(indices: Array) -> void:
+	if _bank_picker != null and is_instance_valid(_bank_picker):
+		_bank_picker.queue_free()
+	_bank_picker = null
+	if run == null or _bank_node == "":
+		return
+	if not indices.is_empty():
+		Expedition.bank(meta, run, indices)
+		SaveIO.save_meta(meta)
+	run.meta["bank_offered_%d" % run.floor_index] = true
+	_node_id = _bank_node
+	_bank_node = ""
+	_refresh_corridor_status()
+	_autosave(SCREEN_COMBAT)
+	_mount_combat()
 
 
 ## Trappan upp ur källaren (CORRIDOR_DESIGN §5.2 punkt 4). Spelet börjar i
@@ -906,7 +1048,7 @@ func _on_corridor_reward_chosen(option: Dictionary, target: Dictionary) -> void:
 			# Loot-kortet är det enda i källaren som FAKTISKT ändrar tillståndet.
 			_tutorial_loot_open = false
 			if not option.is_empty():
-				run.combat = RewardApply.apply(run.combat, option, target)
+				RewardApply.apply_to_run(run, option, target)
 				_taken_ids.append(String(option.get("id", "")))
 		elif _tutorial_loot_pending:
 			_tutorial_loot_pending = false
@@ -926,8 +1068,9 @@ func _on_corridor_reward_chosen(option: Dictionary, target: Dictionary) -> void:
 			_prime_enemies()
 		return
 	if not option.is_empty():
-		run.combat = RewardApply.apply(run.combat, option, target)
-		_taken_ids.append(String(option.get("id", "")))
+		RewardApply.apply_to_run(run, option, target)
+		if String(option.get("category", "")) != Rewards.CATEGORY_GEAR:
+			_taken_ids.append(String(option.get("id", "")))
 	_autosave(SCREEN_CORRIDOR)
 	if _corridor == null or not is_instance_valid(_corridor):
 		return
@@ -1095,6 +1238,9 @@ func _on_screen_done(payload: Dictionary, from_screen: String) -> void:
 		SCREEN_REWARD:
 			_on_reward_chosen(payload)
 		SCREEN_GAMEOVER:
+			# M6: vid död är knappen Marrows val – Kistan först, sedan staden.
+			if not _run_won:
+				_die(payload.get("rescue", []) as Array, bool(payload.get("ad", false)))
 			# "BACK TO CHALKRIM" leder till staden, där GO DOWN redan ligger i
 			# tumzonen: en run till är ett tapp därifrån (§A.4 regel 2).
 			SaveIO.clear()
@@ -1112,7 +1258,8 @@ func _show_reward() -> void:
 	# Marknaden lägger till innehåll, aldrig siffror (§A.3).
 	var pool: Array[Dictionary] = RunFlow.available_pool(
 		Content.unlocked_pool(meta.unlocked), _taken_ids)
-	var options: Array[Dictionary] = Rewards.generate(pool, rng, RunFlow.reward_floor_key(node))
+	var options: Array[Dictionary] = Rewards.with_drops(
+		Rewards.generate(pool, rng, RunFlow.reward_floor_key(node)), _room_drop_options())
 	if _corridor == null or not is_instance_valid(_corridor):
 		_show(SCREEN_REWARD, {
 			"state": run.combat,
@@ -1130,12 +1277,138 @@ func _show_reward() -> void:
 	_corridor.show_reward(run.combat, options, RunFlow.grants_breather(node))
 
 
+# ---------------------------------------------------------------------------
+# M6: droppar, ceremoni, vinst och död
+# ---------------------------------------------------------------------------
+
+## Rummets droppar som belöningskort. Dras ur rummets egen delström
+## ([method Drops.stream]), så en omladdning mitt i valet ger samma kort, och
+## bokförs i profilen exakt en gång per rum.
+func _room_drop_options() -> Array[Dictionary]:
+	var drops: Array[Item] = _roll_room_drops()
+	var options: Array[Dictionary] = []
+	for item: Item in drops:
+		options.append(Rewards.gear_option(item, GearRules.equip_target(run.hero, item)))
+	return options
+
+
+func _roll_room_drops() -> Array[Item]:
+	var enemy_ids: Array = []
+	for enemy: Enemy in run.combat.enemies:
+		enemy_ids.append(enemy.id)
+	var noted: Array = run.meta.get("drops_noted", []) as Array
+	var first_time: bool = not noted.has(_node_id)
+	# Rummets epics-räknare fryses första gången, så att en omladdning drar
+	# med exakt samma kontext.
+	if first_time:
+		run.meta["epics_before_%s" % _node_id] = int(run.meta.get("epics", 0))
+	var ctx: Dictionary = Progression.drop_context(meta, run, run.floor_index, _rooms_cleared,
+		int(run.meta.get("epics_before_%s" % _node_id, 0)))
+	if not first_time:
+		ctx["min_rarity"] = int(run.meta.get("min_rarity_%s" % _node_id, -1))
+	var sources: Dictionary = {}
+	var drops: Array[Item] = Drops.roll_room(enemy_ids, Drops.stream(rng, _node_id), ctx, sources)
+	if first_time:
+		run.meta["min_rarity_%s" % _node_id] = int(ctx.get("min_rarity", -1))
+		run.meta["epics"] = int(ctx["epics_this_run"])
+		noted.append(_node_id)
+		run.meta["drops_noted"] = noted
+		Progression.note_drops(meta, drops)
+		SaveIO.save_meta(meta)
+		_emit_drops(drops, sources)
+	return drops
+
+
+## Ceremonin: ett [signal item_dropped] per föremål.
+func _emit_drops(items: Array, sources: Dictionary) -> void:
+	for event: Dictionary in Drops.ceremony(items, sources):
+		item_dropped.emit(event)
+
+
+## Vinsten: bossens drop tas direkt (runnen är över), sedan säkras allt och
+## hjälten kommer upp. Körs en gång per run även om sparfilen läses om.
+func _win_run() -> Dictionary:
+	if bool(run.meta.get("hero_returned", false)):
+		return run.meta.get("hero_summary", {}) as Dictionary
+	var drops: Array[Item] = _roll_room_drops()
+	for item: Item in drops:
+		GearRules.take_item(run, item)
+	var secured: int = run.carried_items().size()
+	var result: Dictionary = Expedition.win(meta, run, maxi(0, _rooms_cleared - 1), 1)
+	var hero: Hero = meta.roster.find(String(run.meta.get("hero_id", "")))
+	var summary: Dictionary = {
+		"name": hero.name if hero != null else "",
+		"level": hero.level if hero != null else 1,
+		"xp": int(result["xp"]),
+		"level_ups": int(result["level_ups"]),
+		"secured": secured,
+	}
+	run.meta["hero_returned"] = true
+	run.meta["hero_summary"] = summary
+	Market.rotate(meta, run.seed_value)
+	SaveIO.save_meta(meta)
+	return summary
+
+
+## Vad dödsskärmen behöver för Marrows val.
+func _rescue_offer() -> Dictionary:
+	var items: Array[Item] = run.carried_items()
+	return {
+		"items": Item.list_to_dicts(items),
+		"capacity": Expedition.rescue_capacity(meta, run),
+		"ad_available": true,
+	}
+
+
+## Räddningsannonsens krok. [b]Ingen SDK i M6:[/b] "annonsen" bekräftas direkt
+## och dödsskärmen får en plats till. Riktig annons (AdMob-plugin) kopplas hit
+## senare – alltid frivillig, aldrig ett avbrott (DECISIONS 2026-09-22).
+func _on_rescue_offer_requested() -> void:
+	rescue_offer_requested.emit()
+	confirm_rescue_ad()
+
+
+func confirm_rescue_ad() -> void:
+	var over: GameOverScreen = _screen as GameOverScreen
+	if over != null:
+		over.grant_rescue_slot()
+
+
+## Döden, efter Marrows val: Kistan tar det valda, resten går förlorat, hjälten
+## begravs och tavernan får en ny (med Kistans gear) om rostret blev tomt.
+func _die(rescued: Array, ad_used: bool) -> void:
+	if run == null or bool(run.meta.get("hero_buried", false)):
+		return
+	var result: Dictionary = Expedition.die(meta, run, rescued, _killed_by, 1 if ad_used else 0)
+	run.meta["hero_buried"] = true
+	Expedition.recruit_replacement(meta, run.seed_value, Settings.smith_variant)
+	Market.rotate(meta, run.seed_value)
+	SaveIO.save_meta(meta)
+	_arrival["fallen"] = String(result.get("hero_name", ""))
+	_arrival["rescued"] = (result.get("rescued", []) as Array).size()
+	_arrival["lost"] = (result.get("lost", []) as Array).size()
+
+
 func _show_gameover() -> void:
 	var summary: Dictionary = build_summary()
 	_save_phase(SCREEN_GAMEOVER, true)
-	summary["award"] = _award_run()
-	_show(SCREEN_GAMEOVER, summary)
+	if bool(run.meta.get("awarded", false)):
+		summary["award"] = run.meta.get("award", {}) as Dictionary
+		_arrival = (run.meta.get("arrival", {}) as Dictionary).duplicate()
+	else:
+		summary["award"] = _award_run()
+		run.meta["awarded"] = true
+		run.meta["award"] = summary["award"]
+		run.meta["arrival"] = _arrival.duplicate()
+	if _run_won:
+		summary["hero"] = _win_run()
+	elif run.hero != null:
+		summary["hero"] = {"name": run.hero.name, "level": run.hero.level}
+		summary["rescue"] = _rescue_offer()
+	_save_phase(SCREEN_GAMEOVER, true)
+	_show(SCREEN_GAMEOVER, summary, {"rescue_offer_requested": _on_rescue_offer_requested})
 	run_over.emit(_run_won, summary)
+
 
 
 ## Betalar ut Pips och sätter kritstrecket (§A.3). Körs [b]en gång per run[/b],
@@ -1286,4 +1559,6 @@ func _autosave(phase: String = "") -> void:
 		"tutorial_room": _tutorial_room,
 		"tutorial_loot_pending": _tutorial_loot_pending,
 		"tutorial_loot_open": _tutorial_loot_open,
+		# M6: bossen väntar på trappbankens svar i den här noden.
+		"bank_node": _bank_node,
 	})

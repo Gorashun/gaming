@@ -1,5 +1,11 @@
 extends Node
-## Rökprovets drivrutin. Spelar en hel run på våning 1 genom det RIKTIGA UI:t.
+## Rökprovets drivrutin. Spelar hela slingan genom det RIKTIGA UI:t.
+##
+## [b]M6-slingan:[/b] kroppsval → Grundstigen → staden → run 1 (lookahead, med
+## trappbanken före bossen) → staden (Kistan byggs) → run 2 (policy "none": dör
+## deterministiskt) → Marrow och Kistan-valet (med räddningsannonsens stub) →
+## staden med en ny hjälte i tavernan → run 3 → staden. Rökprovet fäller om
+## den döda hjälten inte hamnar på Gravlunden eller om rostret blir tomt.
 ##
 ## [b]Varför den ligger i en egen fil:[/b] [code]tools/smoke_play.gd[/code] körs
 ## med [code]-s[/code] och kompileras därmed INNAN motorn registrerat
@@ -8,7 +14,12 @@ extends Node
 ## "Identifier not found: Juice". Drivrutinen laddas i stället på första
 ## bildrutan, när [code]/root/Juice[/code] och [code]/root/Settings[/code] finns.
 
-const DEFAULT_MAX_SECONDS: float = 180.0
+const DEFAULT_MAX_SECONDS: float = 420.0
+## Vilken run som spelas med policy "none" (dör alltid) för att bevisa döden,
+## Kistan och permadöden.
+const DEATH_RUN: int = 2
+## Staden besöks efter Grundstigen och efter varje run.
+const TOWN_VISITS_TO_FINISH: int = 4
 ## Hur länge en enskild kedjeuppspelning får ta innan vi kallar det ett fel.
 const PLAYBACK_TIMEOUT_MS: int = 15000
 const MAIN_SCENE: String = "res://src/game/main.tscn"
@@ -36,6 +47,10 @@ var _controller: Node = null
 var _town_visits: int = 0
 ## Vilken titelknapp rökprovet trycker på. Sätts när titeln lästs.
 var _title_action: String = "tutorial"
+## Runs som påbörjats i Gropen (inte källaren).
+var _runs_started: int = 0
+## Hjälten som gick ner i dödsrunnen, för permadödskontrollen.
+var _doomed_hero: String = ""
 ## Slingan är sluten (staden besökt andra gången). Avslutar rökprovet.
 var _done: bool = false
 
@@ -134,6 +149,9 @@ func _run() -> void:
 		if controller.sheet_open():
 			await _play_sheet(controller)
 			continue
+		if controller.bank_picker() != null:
+			await _play_bank(controller)
+			continue
 
 		match controller.current_screen_name():
 			GameController.SCREEN_SMITH:
@@ -165,7 +183,9 @@ func _run() -> void:
 				# är ett tapp DÄRIFRÅN (§A.4 regel 2). Vi följer med tillbaka
 				# så att hela slingan bevisas i ett svep.
 				var over: GameOverScreen = screen as GameOverScreen
-				if is_instance_valid(over):
+				if is_instance_valid(over) and over.rescue_picker() != null:
+					await _play_rescue(controller, over)
+				elif is_instance_valid(over):
 					over.play_again()
 				await _frames(2)
 			_:
@@ -178,6 +198,8 @@ func _run() -> void:
 ## dödsskärmdump, eftersom Lookahead vinner våning 1 i ~94 % av fallen
 ## (DECISIONS 2026-09-21, balanspasset).
 func _placement_for(combat: CombatScreen) -> PackedInt32Array:
+	if _runs_started == DEATH_RUN and int(_controller.get("_tutorial_room")) < 0:
+		return CombatState.empty_placement(combat.state.board.size())
 	match String(args.get("policy", "lookahead")):
 		"greedy":
 			return Policy.greedy(combat.state)
@@ -243,27 +265,93 @@ func _play_town(town: TownScreen) -> void:
 	if not is_instance_valid(town):
 		return
 	_town_visits += 1
-	await _shot("10_town_square" if _town_visits == 1 else "40_town_after_run")
-	if _town_visits >= 2:
-		# Tutorial → staden → en run → tillbaka till staden. Slingan är sluten
-		# och rökprovet är klart; går vi ned igen snurrar det för evigt.
+	var names: Array[String] = ["10_town_square", "40_town_after_run", "50_town_after_death", "60_town_after_third_run"]
+	await _shot(names[mini(_town_visits - 1, names.size() - 1)])
+	var meta: Meta = _controller.meta
+	if meta.roster.active() == null:
+		_fail("the tavern has nobody to send down (visit %d)" % _town_visits)
+	if _town_visits >= TOWN_VISITS_TO_FINISH:
 		_done = true
 		return
-	for place: String in [TownScreen.PLACE_PIT, TownScreen.PLACE_MARKET,
-			TownScreen.PLACE_WALL, TownScreen.PLACE_FORGE]:
-		if not is_instance_valid(town):
-			return
-		town.open_place(place)
+	if _town_visits == 1:
+		for place: String in [TownScreen.PLACE_PIT, TownScreen.PLACE_MARKET,
+				TownScreen.PLACE_WALL, TownScreen.PLACE_FORGE, TownScreen.PLACE_TAVERN]:
+			if not is_instance_valid(town):
+				return
+			town.open_place(place)
+			await _frames(4)
+			if is_instance_valid(town) and town.current_place() == place:
+				await _shot("11_town_%s" % place.to_lower())
+	elif _town_visits == 2:
+		# Kistan nivå 1 om Pips räcker (§5 run 2). Räcker de inte bevisar
+		# räddningsannonsen ändå valet.
+		town.open_place(TownScreen.PLACE_FORGE)
+		await _frames(3)
+		if is_instance_valid(town) and meta.can_buy_building(Buildings.CHEST):
+			town.buy_building(Buildings.CHEST)
+			await _frames(3)
+			await _shot("41_town_chest_built")
+		# Hjälten ska bära något ner i dödsrunnen, annars har Marrow inget att
+		# rädda. Tavernan: ta på det första ur banken som sloten tillåter.
+		town.open_place(TownScreen.PLACE_TAVERN)
+		await _frames(3)
+		var hero: Hero = meta.roster.active()
+		for i: int in range(meta.bank.items.size()):
+			if hero != null and hero.is_slot_unlocked(meta.bank.items[i].slot) and hero.equipped(meta.bank.items[i].slot) == null:
+				town.wear_item("bank", i)
+				await _frames(3)
+				break
+		await _shot("42_town_tavern_wearing")
+		if hero == null or hero.equipped_items().is_empty():
+			_fail("the hero goes down into the death run carrying nothing")
+		_doomed_hero = hero.name if hero != null else ""
+	elif _town_visits == 3:
+		# Permadöd: namnet på Gravlunden, en ny hjälte vid bordet.
+		var fallen: Array = []
+		for entry: Dictionary in meta.roster.fallen:
+			fallen.append(String(entry.get("name", "")))
+		if not fallen.has(_doomed_hero):
+			_fail("the hero who died (%s) is not among the fallen %s" % [_doomed_hero, str(fallen)])
+		var hero: Hero = meta.roster.active()
+		if hero == null or hero.name == _doomed_hero:
+			_fail("no new hero was recruited after the death")
+		else:
+			print("  new hero        %s (level %d, wearing %d, chest holds %d)" % [
+				hero.name, hero.level, hero.equipped_items().size(), meta.chest.items.size()])
+		town.open_place(TownScreen.PLACE_TAVERN)
 		await _frames(4)
-		if is_instance_valid(town) and town.current_place() == place:
-			await _shot("11_town_%s" % place.to_lower())
+		await _shot("51_town_tavern_new_hero")
 	if not is_instance_valid(town):
 		return
 	town.close_place()
 	await _frames(2)
 	if is_instance_valid(town):
+		_runs_started += 1
 		town.descend()
 	await _frames(2)
+
+
+## Trappbanken före bossen: skicka upp det första föremålet, behåll resten.
+func _play_bank(controller: GameController) -> void:
+	await _frames(4)
+	var picker: ItemPicker = controller.bank_picker()
+	if picker == null:
+		return
+	await _shot("27_bank_prompt")
+	if picker.item_count() <= 0:
+		_fail("the bank prompt opened with nothing to send up")
+	picker.toggle(0)
+	await _frames(2)
+	var before: int = controller.meta.bank.items.size()
+	var offered: int = picker.item_count()
+	# Panelen friges när den svarat: läs allt FÖRE confirm(). En typad
+	# referens till en frigjord nod kontrolleras inte och ger segfault.
+	picker.confirm()
+	picker = null
+	await _frames(3)
+	if controller.meta.bank.items.size() != before + 1:
+		_fail("the bank did not receive the item that was sent up")
+	print("  bank            sent 1 of %d up" % offered)
 
 
 ## Striden, var den än står: monterad i korridoren eller ensam i källaren.
@@ -451,6 +539,41 @@ func _play_reward(reward: RewardScreen) -> void:
 		_fail("the reward screen got zero options")
 	await _frames(1)
 
+## Marrow och Kistan: välj ett föremål, ta räddningsannonsen (stub, ingen SDK)
+## och välj ett till om det finns, bekräfta.
+func _play_rescue(controller: GameController, over: GameOverScreen) -> void:
+	var picker: ItemPicker = over.rescue_picker()
+	var before_max: int = picker.max_select()
+	await _shot("36_death_chest_choice")
+	var ads: Array[int] = [0]
+	controller.rescue_offer_requested.connect(func() -> void: ads[0] += 1, CONNECT_ONE_SHOT)
+	# Annonsknappen: frivillig, en plats till.
+	picker.secondary_pressed.emit()
+	await _frames(2)
+	if ads[0] != 1:
+		_fail("rescue_offer_requested was not emitted")
+	if picker.max_select() != before_max + 1:
+		_fail("the rescue ad did not add a slot (%d -> %d)" % [before_max, picker.max_select()])
+	for i: int in range(mini(picker.max_select(), picker.item_count())):
+		picker.toggle(i)
+	await _frames(2)
+	await _shot("37_death_chest_chosen")
+	var chosen: int = picker.selected().size()
+	var offered: int = picker.item_count()
+	var capacity: int = picker.max_select()
+	var chest_before: int = controller.meta.chest.items.size()
+	# Skärmen byts när valet bekräftats: läs allt FÖRE confirm().
+	picker.confirm()
+	picker = null
+	await _frames(4)
+	print("  chest           rescued %d of %d (capacity %d incl. ad)" % [chosen, offered, capacity])
+	# Den nya hjälten tar på sig det bästa ur Kistan, så Kistan kan ha färre
+	# föremål än som räddades – men inte fler, och inte om inget räddades.
+	var worn: int = controller.meta.roster.active().equipped_items().size() if controller.meta.roster.active() != null else 0
+	if chosen > 0 and controller.meta.chest.items.size() + worn < chest_before + 1:
+		_fail("the rescued items never reached the chest or the new hero")
+
+
 func _report(over: GameOverScreen, rounds_played: int, rooms_seen: int) -> void:
 	await _frames(8)
 	if not is_instance_valid(over):
@@ -461,7 +584,7 @@ func _report(over: GameOverScreen, rounds_played: int, rooms_seen: int) -> void:
 	await _shot("35_win" if won else "35_death")
 	var score: Dictionary = summary.get("score", {}) as Dictionary
 	print("")
-	print("Run over: %s" % ("WIN" if won else "DEATH"))
+	print("Run over: %s  (run %d)" % ["WIN" if won else "DEATH", _runs_started])
 	print("  room reached    %d" % int(summary.get("room_reached", 0)))
 	print("  rooms cleared   %d" % int(summary.get("rooms_cleared", 0)))
 	print("  best chain      %d" % int(summary.get("best_chain", 0)))
@@ -471,7 +594,12 @@ func _report(over: GameOverScreen, rounds_played: int, rooms_seen: int) -> void:
 	print("  rooms visited   %d" % rooms_seen)
 	print("  juice calls     %d   haptic calls %d" % [
 		(juice.calls.size() if juice != null else 0), Haptics.calls.size()])
-	_report_corridor()
+	var hero: Dictionary = summary.get("hero", {}) as Dictionary
+	if not hero.is_empty():
+		print("  hero            %s level %d%s" % [String(hero.get("name", "")), int(hero.get("level", 1)),
+			"  +%d XP, %d secured" % [int(hero.get("xp", 0)), int(hero.get("secured", 0))] if won else ""])
+	if _runs_started <= 1:
+		_report_corridor()
 	if juice != null:
 		var missing: Dictionary = juice.get("missing_sfx") as Dictionary
 		print("  sfx loaded      %d" % int(juice.get("sfx_loaded")))
