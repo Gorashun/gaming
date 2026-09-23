@@ -19,7 +19,7 @@
 - Asset-pipeline: 93 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- **Omtagsförslag klart:** docs/REBOOT_PROPOSAL.md. Väntar på Anders beslut §6. Dev slutför autosave i källaren + rum 0.6 under tiden
+- **M6 (omtag) pågår:** assets integreras via manifest, stilskikt, gear/progression-core. Se DECISIONS 2026-09-23
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt
