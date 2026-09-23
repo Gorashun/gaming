@@ -72,6 +72,9 @@ var _panel_host: PanelContainer = null
 var _panel_scroll: ScrollContainer = null
 var _pips_label: Label = null
 var _tally_label: Label = null
+## M6: "+4 PIPS · Dunstan är borta. Kistan behöll 1 …" – under kritstrecken,
+## över torgets bild, där det finns plats.
+var _news_label: Label = null
 var _marrow_label: Label = null
 var _go_down: Button = null
 var _place_buttons: Dictionary = {}
@@ -99,6 +102,9 @@ func _build() -> void:
 	_marrow_label = _label(Tokens.TYPE_BODY, Tokens.CHALK_300)
 	_marrow_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_marrow_label.clip_text = false
+	# Bara repliken här nere, högst två rader: Pips och dödsraden står i
+	# krit-raden överst ([member _news_label]), så att GO DOWN aldrig trycks ut.
+	_marrow_label.max_lines_visible = 2
 	_column.add_child(_marrow_label)
 
 	# Panelen får ALDRIG trycka ut GO DOWN. §A.4 regel 1 är normativ: knappen
@@ -114,7 +120,10 @@ func _build() -> void:
 	_panel_scroll = ScrollContainer.new()
 	_panel_scroll.name = "PanelScroll"
 	_panel_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	_panel_scroll.custom_minimum_size = Vector2(0.0, Tokens.dp(120))
+	# M6: minsta höjden sänktes 120 → 48 dp. Med Marrows rad, dödsraden och
+	# tavernans knapprad räckte inte den nedre skärmdelen längre, och det var
+	# GO DOWN som klipptes (test_town_m6). Panelen scrollar i stället.
+	_panel_scroll.custom_minimum_size = Vector2(0.0, Tokens.dp(48))
 	_panel_host.add_child(_panel_scroll)
 
 	# Luften mellan panelen och GO DOWN. Panelen får tre gånger så mycket av
@@ -194,6 +203,18 @@ func _build_hud() -> void:
 	_tally_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_tally_label.clip_text = false
 	_hud.add_child(_tally_label)
+
+	_news_label = _label(Tokens.TYPE_BODY, Tokens.CHALK_100)
+	_news_label.name = "News"
+	_news_label.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	_news_label.offset_left = Tokens.dpi(Tokens.SCREEN_MARGIN)
+	_news_label.offset_right = -Tokens.dpi(Tokens.SCREEN_MARGIN)
+	_news_label.offset_top = Tokens.dp(70)
+	_news_label.offset_bottom = Tokens.dp(118)
+	_news_label.clip_text = false
+	_news_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_news_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hud.add_child(_news_label)
 
 
 ## Knapparna bär en 16×16-sprite ur [code]assets/sprites/ui/[/code], aldrig en
@@ -320,15 +341,17 @@ func _show_arrival() -> void:
 		Tokens.translate_or("TOWN_MARROW_NAME", "Marrow"),
 		Tokens.translate_or(String(line["key"]), String(line["en"])),
 	]
+	var news: PackedStringArray = PackedStringArray()
 	var earned: int = int(_arrival.get("pips_earned", 0))
 	if earned > 0:
-		_marrow_label.text += "\n%s" % (Tokens.translate_or("TOWN_PIPS_GAINED", "+%d PIPS") % earned)
+		news.append(Tokens.translate_or("TOWN_PIPS_GAINED", "+%d PIPS") % earned)
 	# M6: permadöd. Namnet, och vad Kistan höll.
 	var fallen: String = String(_arrival.get("fallen", ""))
 	if fallen != "":
-		_marrow_label.text += "\n%s" % (Tokens.translate_or("CHEST_ARRIVAL",
+		news.append(Tokens.translate_or("CHEST_ARRIVAL",
 			"%s is gone. The chest kept %d, the pit kept %d.") % [
 				fallen, int(_arrival.get("rescued", 0)), int(_arrival.get("lost", 0))])
+	_news_label.text = " · ".join(news)
 
 
 # ---------------------------------------------------------------------------
