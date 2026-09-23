@@ -28,7 +28,7 @@ uniform vec4 silhouette_color : source_color = vec4(0.055, 0.071, 0.086, 0.92);
 
 uniform vec4 light_tint : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 uniform vec4 rim_color : source_color = vec4(1.0, 0.62, 0.30, 1.0);
-uniform float rim_strength : hint_range(0.0, 2.0) = 0.9;
+uniform float rim_strength : hint_range(0.0, 2.0) = 0.65;
 // Where the torch is, in UV units of one frame: +x = right, -y = up.
 uniform vec2 rim_offset = vec2(0.018, -0.012);
 

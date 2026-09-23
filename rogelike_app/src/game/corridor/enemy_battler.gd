@@ -59,6 +59,8 @@ var width_m: float = ENEMY_HEIGHT_M
 var is_boss: bool = false
 var is_pixel: bool = false
 var source: String = ""
+## Sant från första dödsbildrutan. Vyn räknar tysta rum på den.
+var dying: bool = false
 
 ## Tweenbara egenskaper. [Tween] kan bara röra namngivna egenskaper, därför
 ## setters som skriver rakt in i shadern.
@@ -245,6 +247,7 @@ func hit(reduced_motion: bool) -> void:
 ## Döden: tona ut och falla omkull runt fötterna, 300 ms (ryms i
 ## enemy_killed-budgeten på 360 ms, UI_GUIDE §5.5).
 func die(reduced_motion: bool) -> void:
+	dying = true
 	stop_idle()
 	if reduced_motion:
 		fade = 0.0

@@ -97,12 +97,38 @@ static func formation_for(count: int) -> Array[Vector3]:
 const SILHOUETTE: Color = Color(0.055, 0.071, 0.086, 0.92)
 const REVEAL_MS: int = 180
 const APPROACH_MS: int = 400
-## Dimman är samma svarta som krit-UI:ts botten (#0E1216) så att gränsen mellan
-## 3D och UI aldrig syns som en kant (UI_GUIDE §17.3).
-const FOG_COLOR: Color = Color(0.055, 0.071, 0.086)
+## Dimman är ART_DIRECTION_V2:s "void" (#07090B): 70 % av bilden ska ligga mot
+## nära-svart. Vinjetten mörknar korridorens nederkant mot samma ton, så gränsen
+## mot krit-UI:t (#0E1216) läser aldrig som en kant (UI_GUIDE §17.3).
+const FOG_COLOR: Color = Color(0.027, 0.035, 0.043)
 ## Sikten tar slut vid ~3 rutor.
-const FOG_BEGIN_M: float = 2.0
-const FOG_END_M: float = 11.0
+const FOG_BEGIN_M: float = 1.8
+const FOG_END_M: float = 10.5
+
+const VIGNETTE_SHADER: String = "res://src/game/shaders/vignette.gdshader"
+## Dammet i luften: glest, långsamt, varmt (ART_DIRECTION_V2 §4 "dis-djup").
+const MOTE_COUNT: int = 22
+const MOTE_LIFETIME: float = 7.0
+## Handfacklans flimmer: amplitud och hur ofta ett nytt mål dras.
+const FLICKER_AMOUNT: float = 0.10
+const FLICKER_HZ: float = 9.0
+## Narratorn (ART_DIRECTION_V2 §4): EN handskriven rad vid dramatiska
+## ögonblick. Engelska i källan, svenskan i CSV:n; nycklarna står i
+## docs/M6_A_NOTES.md tills raderna finns.
+const NARRATOR_HOLD_MS: int = 2600
+const NARRATOR_LINES: Dictionary = {
+	"encounter": [
+		["NARRATOR_ENCOUNTER_1", "The torch holds. The wall does not."],
+		["NARRATOR_ENCOUNTER_2", "Something breathes in the dark ahead."],
+		["NARRATOR_ENCOUNTER_3", "Count them before they count you."],
+	],
+	"boss": [["NARRATOR_BOSS", "The door breathes. So does whatever is behind it."]],
+	"cleared": [
+		["NARRATOR_CLEARED_1", "Quiet again. For now."],
+		["NARRATOR_CLEARED_2", "The dark takes back what it lent."],
+	],
+	"floor": [["NARRATOR_FLOOR", "Deeper. The air tastes of slag."]],
+}
 
 ## Våningstonen. Samma atlas, annan ton – noll nya bildfiler per våning
 ## (research 05 §5).
@@ -156,12 +182,26 @@ var _approach_tween: Tween = null
 var _quiet_steps: int = 0
 var _max_quiet_steps: int = 0
 
+var _vignette: ColorRect = null
+var _motes_clip: Control = null
+var _motes: GPUParticles2D = null
+var _narrator: Label = null
+var _narrator_tween: Tween = null
+var _surface_materials: Array[ShaderMaterial] = []
+var _lights: PackedVector3Array = PackedVector3Array()
+## Visuell slump för flimret. ALDRIG den seedade strömmen (ARCHITECTURE).
+var _flicker_rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var _flicker: float = 0.0
+var _flicker_target: float = 0.0
+var _flicker_clock: float = 0.0
+
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	_camera.reduced_motion = reduced_motion
 	_camera.speed_scale = speed_scale
 	_apply_environment()
+	_build_style_layer()
 	_steer.direction_pressed.connect(_on_direction_pressed)
 	_hud.character_sheet_pressed.connect(func() -> void: character_sheet_requested.emit())
 	_hud.settings_pressed.connect(func() -> void: settings_requested.emit())
@@ -191,6 +231,10 @@ func set_reduced_motion(value: bool) -> void:
 	reduced_motion = value
 	if _camera != null:
 		_camera.reduced_motion = value
+	_apply_motion_to_style_layer()
+	for battler: EnemyBattler in _enemy_nodes:
+		if value:
+			battler.stop_idle()
 
 
 func set_speed_scale(value: float) -> void:
@@ -269,6 +313,7 @@ func _layout() -> void:
 	_steer.offset_bottom = -Tokens.dp(10)
 	_steer.offset_left = Tokens.dp(Tokens.SPACE_3)
 	_steer.offset_right = -Tokens.dp(Tokens.SPACE_3)
+	_layout_style_layer(height)
 	split_changed.emit(height)
 
 
@@ -291,6 +336,188 @@ func _apply_environment() -> void:
 	_environment.environment = env
 
 
+# ---------------------------------------------------------------------------
+# Stilskiktet (M6 spår A steg 3, ART_DIRECTION_V2 steg 0)
+# ---------------------------------------------------------------------------
+
+## Vinjetten, dammet och narratorn. Allt ligger i krit-lagret OVANPÅ 3D-rutan
+## och UNDER HUD:en och tumzonen (barnordningen), och följer rutans storlek så
+## att vinjetten mörknar korridorens egen kant även i stridssplitten.
+func _build_style_layer() -> void:
+	if _vignette != null:
+		return
+	_vignette = ColorRect.new()
+	_vignette.name = "Vignette"
+	_vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mat: ShaderMaterial = ShaderMaterial.new()
+	mat.shader = load(VIGNETTE_SHADER) as Shader
+	mat.set_shader_parameter(&"void_color", FOG_COLOR)
+	_vignette.material = mat
+	_vignette.color = Color.WHITE
+	add_child(_vignette)
+	move_child(_vignette, _box.get_index() + 1)
+
+	_motes_clip = Control.new()
+	_motes_clip.name = "Motes"
+	_motes_clip.clip_contents = true
+	_motes_clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_motes_clip)
+	move_child(_motes_clip, _vignette.get_index() + 1)
+	_motes = GPUParticles2D.new()
+	_motes.name = "Dust"
+	_motes.amount = MOTE_COUNT
+	_motes.lifetime = MOTE_LIFETIME
+	_motes.preprocess = MOTE_LIFETIME
+	_motes.texture = Art.mote_texture()
+	_motes.process_material = _mote_material()
+	_motes_clip.add_child(_motes)
+
+	_narrator = Label.new()
+	_narrator.name = "Narrator"
+	_narrator.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_narrator.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_narrator.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	_narrator.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var scrawl: Font = Tokens.font_scrawl()
+	if scrawl != null:
+		_narrator.add_theme_font_override("font", scrawl)
+	_narrator.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY_L))
+	_narrator.add_theme_color_override("font_color", Color(0.784, 0.745, 0.675, 0.9))
+	_narrator.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.9))
+	_narrator.add_theme_constant_override("shadow_offset_y", Tokens.dpi(1))
+	_narrator.add_theme_constant_override("shadow_outline_size", Tokens.dpi(3))
+	_narrator.modulate.a = 0.0
+	add_child(_narrator)
+	move_child(_narrator, _motes_clip.get_index() + 1)
+	_apply_motion_to_style_layer()
+
+
+static func _mote_material() -> ParticleProcessMaterial:
+	var pm: ParticleProcessMaterial = ParticleProcessMaterial.new()
+	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	pm.emission_box_extents = Vector3(540.0, 432.0, 0.0)
+	pm.direction = Vector3(0.25, -1.0, 0.0)
+	pm.spread = 35.0
+	pm.initial_velocity_min = 6.0
+	pm.initial_velocity_max = 16.0
+	pm.gravity = Vector3(0.0, -2.0, 0.0)
+	pm.scale_min = 0.18
+	pm.scale_max = 0.45
+	pm.color = Color(1.0, 0.74, 0.5, 0.55)
+	var ramp: Gradient = Gradient.new()
+	ramp.set_color(0, Color(1.0, 1.0, 1.0, 0.0))
+	ramp.set_color(1, Color(1.0, 1.0, 1.0, 0.0))
+	ramp.add_point(0.3, Color(1.0, 1.0, 1.0, 1.0))
+	ramp.add_point(0.7, Color(1.0, 1.0, 1.0, 0.8))
+	var ramp_tex: GradientTexture1D = GradientTexture1D.new()
+	ramp_tex.gradient = ramp
+	pm.color_ramp = ramp_tex
+	return pm
+
+
+func _layout_style_layer(height: float) -> void:
+	if _vignette == null:
+		return
+	for raw: Variant in [_vignette, _motes_clip]:
+		var node: Control = raw as Control
+		node.anchor_left = 0.0
+		node.anchor_right = 1.0
+		node.anchor_top = 0.0
+		node.anchor_bottom = 0.0
+		node.offset_left = 0.0
+		node.offset_right = 0.0
+		node.offset_top = 0.0
+		node.offset_bottom = height
+	if _motes != null:
+		var width: float = maxf(size.x, 1.0)
+		_motes.position = Vector2(width * 0.5, height * 0.5)
+		var pm: ParticleProcessMaterial = _motes.process_material as ParticleProcessMaterial
+		pm.emission_box_extents = Vector3(width * 0.5, height * 0.5, 0.0)
+	var margin: float = Tokens.dp(Tokens.SCREEN_MARGIN)
+	_narrator.anchor_left = 0.0
+	_narrator.anchor_right = 1.0
+	_narrator.anchor_top = 0.0
+	_narrator.anchor_bottom = 0.0
+	_narrator.offset_left = margin
+	_narrator.offset_right = -margin
+	_narrator.offset_bottom = height - Tokens.dp(Tokens.SPACE_3)
+	_narrator.offset_top = _narrator.offset_bottom - Tokens.dp(56)
+
+
+## Reducerad rörelse: inget damm i luften, inget flimmer. Vinjetten och kornet
+## är statiska och står kvar (DECISIONS 2026-09-21: tidslinjen ändras inte).
+func _apply_motion_to_style_layer() -> void:
+	if _motes != null:
+		_motes.emitting = not reduced_motion
+		_motes.visible = not reduced_motion
+	set_process(not reduced_motion)
+	if reduced_motion:
+		_flicker = 0.0
+		_set_flicker(0.0)
+
+
+func _process(delta: float) -> void:
+	# Handfacklans flimmer: ett nytt mål ~9 gånger i sekunden, mjukt närmat.
+	# Fyra uniform-skrivningar per bildruta, inga allokeringar.
+	_flicker_clock -= delta
+	if _flicker_clock <= 0.0:
+		_flicker_clock = 1.0 / FLICKER_HZ
+		_flicker_target = _flicker_rng.randf_range(-FLICKER_AMOUNT, FLICKER_AMOUNT)
+	_flicker = lerpf(_flicker, _flicker_target, clampf(delta * 12.0, 0.0, 1.0))
+	_set_flicker(_flicker)
+
+
+func _set_flicker(value: float) -> void:
+	for mat: ShaderMaterial in _surface_materials:
+		mat.set_shader_parameter(&"hand_flicker", value)
+
+
+## En handskriven rad längst ned i korridorbilden. [param kind] är en nyckel i
+## [constant NARRATOR_LINES]; [param salt] väljer rad deterministiskt (samma
+## möte, samma rad) utan att röra den seedade strömmen.
+func narrate(kind: String, salt: String = "") -> void:
+	var lines: Array = NARRATOR_LINES.get(kind, []) as Array
+	if lines.is_empty():
+		return
+	var line: Array = lines[posmod(hash(salt), lines.size())] as Array
+	narrate_text(Tokens.translate_or(String(line[0]), String(line[1])))
+
+
+func narrate_text(text: String) -> void:
+	if _narrator == null:
+		return
+	if _narrator_tween != null and _narrator_tween.is_valid():
+		_narrator_tween.kill()
+	_narrator.text = text
+	if reduced_motion or not is_inside_tree():
+		_narrator.modulate.a = 1.0
+		_narrator_tween = create_tween() if is_inside_tree() else null
+		if _narrator_tween != null:
+			_narrator_tween.tween_interval(float(NARRATOR_HOLD_MS) / 1000.0)
+			_narrator_tween.tween_callback(func() -> void: _narrator.modulate.a = 0.0)
+		return
+	_narrator_tween = create_tween()
+	_narrator_tween.tween_property(_narrator, "modulate:a", 1.0, 0.18)
+	_narrator_tween.tween_interval(float(NARRATOR_HOLD_MS) / 1000.0)
+	_narrator_tween.tween_property(_narrator, "modulate:a", 0.0, 0.4)
+
+
+func narrator_text() -> String:
+	return _narrator.text if _narrator != null else ""
+
+
+## Det bakade ljuset vid varje fiende plus handfacklan på avståndet till
+## kameran (se [CorridorLight]). Körs när formeringen står på sin plats.
+func _light_battlers() -> void:
+	if _camera == null:
+		return
+	for battler: EnemyBattler in _enemy_nodes:
+		if not battler.is_inside_tree():
+			continue
+		var point: Vector3 = battler.global_position
+		battler.set_light(CorridorLight.battler_tint(point, _lights, point.distance_to(_camera.global_position)))
+
+
 func _build_world() -> void:
 	for child: Node in _props.get_children():
 		child.queue_free()
@@ -299,6 +526,12 @@ func _build_world() -> void:
 	var tint: Color = FLOOR_TINTS[posmod(map.floor_index - 1, FLOOR_TINTS.size())]
 	var built: Dictionary = CorridorMesh.build(map, tint)
 	_geometry.mesh = built["mesh"] as ArrayMesh
+	_lights = built.get("lights", PackedVector3Array()) as PackedVector3Array
+	_surface_materials.clear()
+	for i: int in range(_geometry.mesh.get_surface_count()):
+		var mat: ShaderMaterial = _geometry.mesh.surface_get_material(i) as ShaderMaterial
+		if mat != null:
+			_surface_materials.append(mat)
 	for door: Dictionary in built["doors"] as Array:
 		_add_door(door)
 	for torch: Dictionary in built["torches"] as Array:
@@ -317,8 +550,9 @@ func _add_door(spec: Dictionary) -> void:
 	var node: MeshInstance3D = MeshInstance3D.new()
 	node.name = "Door_%s_%d" % [CorridorMap.cell_key(tile), facing]
 	node.mesh = CorridorMesh.door_mesh(Vector2(CorridorMesh.TILE_M * 0.62, CorridorMesh.CEIL_M * 0.86))
-	var mat: StandardMaterial3D = CorridorMesh.tile_material(CorridorMesh.SURFACE_DOOR)
+	var mat: ShaderMaterial = CorridorMesh.tile_material(CorridorMesh.SURFACE_DOOR)
 	node.material_override = mat
+	_surface_materials.append(mat)
 	var origin: Vector3 = CorridorMesh.tile_origin(tile)
 	# 6 cm in mot rutan: annars z-fightar dörren med väggen den står i.
 	node.position = origin + CorridorMesh.dir_vector(facing) * (CorridorMesh.TILE_M * 0.5 - 0.06)
@@ -342,11 +576,8 @@ func _add_torch(spec: Dictionary) -> void:
 	sprite.texture_filter = filter_3d(&"env.corridor.torch")
 	sprite.shaded = false
 	sprite.double_sided = true
-	var origin: Vector3 = CorridorMesh.tile_origin(tile)
-	var along: Vector3 = CorridorMesh.dir_vector(posmod(facing + 1, 4))
-	sprite.position = origin + CorridorMesh.dir_vector(facing) * (CorridorMesh.TILE_M * 0.5 - 0.08) \
-		+ along * float(spec.get("lateral", 0.0)) \
-		+ Vector3(0.0, CorridorMesh.CEIL_M * float(spec.get("height", 0.62)), 0.0)
+	# Samma punkt som ljuset bakades runt: facklan lyser där den hänger.
+	sprite.position = CorridorMesh.torch_position(spec)
 	sprite.rotation.y = -float(facing) * PI * 0.5 + PI
 	sprite.play()
 	_props.add_child(sprite)
@@ -498,12 +729,14 @@ func _play_events(events: Array[Dictionary]) -> void:
 			CorridorMap.EVENT_BOSS_DOOR:
 				quiet = false
 				if not bool(event.get("ahead", false)):
+					narrate("boss", str(map.floor_index))
 					boss_door_reached.emit()
 			CorridorMap.EVENT_FATE_DOOR:
 				quiet = false
 				fate_door_reached.emit()
 			CorridorMap.EVENT_FLOOR_CLEARED:
 				quiet = false
+				narrate("floor", str(event["floor"]))
 				floor_cleared.emit(int(event["floor"]))
 			CorridorMap.EVENT_STAIRS_UP:
 				quiet = false
@@ -638,6 +871,7 @@ func _show_silhouettes(distance: int) -> void:
 	var target: Vector3 = _formation_origin(distance)
 	if reduced_motion or distance >= 2:
 		_encounter.position = target
+		_light_battlers()
 		return
 	_approach_tween = create_tween()
 	_approach_tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
@@ -665,6 +899,7 @@ func restore_encounter() -> void:
 		_spawn_enemies()
 	_encounter.position = _formation_origin(0)
 	_encounter_active = true
+	_light_battlers()
 	for battler: EnemyBattler in _enemy_nodes:
 		battler.silhouette = 0.0
 
@@ -675,12 +910,14 @@ func has_encounter() -> bool:
 
 
 ## Takt 3 forts.: silhuetten fylls med färg och pixlar på 180 ms.
-func _reveal_encounter(_node_id: String) -> void:
+func _reveal_encounter(node_id: String) -> void:
 	_kill_approach()
 	if _enemy_nodes.is_empty():
 		_spawn_enemies()
 	_encounter.position = _formation_origin(0)
 	_encounter_active = true
+	_light_battlers()
+	narrate("encounter", node_id)
 	if reduced_motion:
 		for battler: EnemyBattler in _enemy_nodes:
 			battler.silhouette = 0.0
@@ -745,6 +982,10 @@ func enemy_die(index: int) -> void:
 	if index < 0 or index >= _enemy_nodes.size():
 		return
 	_enemy_nodes[index].die(reduced_motion)
+	for battler: EnemyBattler in _enemy_nodes:
+		if not battler.dying:
+			return
+	narrate("cleared", "%d:%d" % [map.steps_taken if map != null else 0, index])
 
 
 ## Billboarden för fiende [param index], eller null.

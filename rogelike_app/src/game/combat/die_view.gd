@@ -237,6 +237,12 @@ func _refresh(face: Face) -> void:
 	style.bg_color = Tokens.SURFACE_SLATE if (_art != null and _art.is_drawing()) else body
 	if socket:
 		style.bg_color = Tokens.SURFACE_PIT
+	else:
+		# M6: tärningarna är de ENDA upphöjda objekten på skärmen (ART_DIRECTION_V2
+		# §4). Skuggan under dem är vad som gör dem till föremål.
+		style.shadow_color = Color(0.0, 0.0, 0.0, 0.65)
+		style.shadow_size = Tokens.dpi(2)
+		style.shadow_offset = Vector2(0.0, Tokens.dp(2))
 	_panel.add_theme_stylebox_override("panel", style)
 
 	var pip_color: Color = Tokens.BONE_PIP if body == Tokens.BONE_DIE else Tokens.CHALK_500

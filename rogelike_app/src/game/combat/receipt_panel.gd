@@ -36,7 +36,18 @@ var _lines: VBoxContainer = null
 
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_PASS
-	add_theme_stylebox_override("panel", Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR))
+	# M6: kedjeuträkningen sätts direkt på svart, utan panel (ART_DIRECTION_V2
+	# §4). Innermarginalen står kvar så att höjdbudgeten inte flyttar sig.
+	var flat: StyleBoxFlat = StyleBoxFlat.new()
+	flat.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	var pad: float = Tokens.dp(Tokens.STROKE_HAIR)
+	flat.content_margin_left = pad
+	flat.content_margin_right = pad
+	flat.content_margin_top = pad
+	flat.content_margin_bottom = pad
+	if Tokens.high_contrast:
+		flat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR)
+	add_theme_stylebox_override("panel", flat)
 
 	var margin: MarginContainer = MarginContainer.new()
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE

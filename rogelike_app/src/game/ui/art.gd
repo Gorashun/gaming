@@ -1016,3 +1016,20 @@ static func fit_scale(box: Vector2, cell: int, max_scale: int = 8) -> int:
 static func snap(point: Vector2, art_scale: int) -> Vector2:
 	var step: float = float(maxi(1, art_scale))
 	return Vector2(floor(point.x / step) * step, floor(point.y / step) * step)
+
+
+## Ett dammkorn i luften: en mjuk vit prick, genererad en gång och tintad av
+## partikelmaterialet.
+static func mote_texture() -> Texture2D:
+	if _generated.has("mote"):
+		return _generated["mote"] as Texture2D
+	var n: int = 16
+	var image: Image = Image.create(n, n, false, Image.FORMAT_RGBA8)
+	for y: int in range(n):
+		for x: int in range(n):
+			var d: float = Vector2((float(x) + 0.5) / float(n) * 2.0 - 1.0,
+				(float(y) + 0.5) / float(n) * 2.0 - 1.0).length()
+			image.set_pixel(x, y, Color(1.0, 1.0, 1.0, clampf(1.0 - d, 0.0, 1.0) ** 2))
+	var result: ImageTexture = ImageTexture.create_from_image(image)
+	_generated["mote"] = result
+	return result

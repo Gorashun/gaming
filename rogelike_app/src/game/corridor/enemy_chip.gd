@@ -51,10 +51,13 @@ func _init() -> void:
 	_plate = PanelContainer.new()
 	_plate.name = "Plate"
 	_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var box: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR, Tokens.RADIUS_CHIP)
-	# Halvgenomskinlig botten: chipet ligger ovanpå korridorbilden och ska gå att
-	# läsa utan att sudda ut varelsen bakom sig (UI_GUIDE §17.2).
-	box.bg_color = Color(Tokens.SURFACE_PIT, 0.82)
+	var box: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, 0.0, Tokens.RADIUS_CHIP)
+	# M6: ingen ram (ART_DIRECTION_V2 §4, "namnskylt: ingen låda"). En svag sotbotten
+	# står kvar: chipet ligger ovanpå korridorbilden och siffrorna ska gå att
+	# läsa mot en ljus vägg (UI_GUIDE §17.2). Hög kontrast behåller ramen.
+	if Tokens.high_contrast:
+		box = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR, Tokens.RADIUS_CHIP)
+	box.bg_color = Color(CorridorView.FOG_COLOR, 0.62)
 	_plate.add_theme_stylebox_override("panel", box)
 	add_child(_plate)
 

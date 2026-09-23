@@ -1006,6 +1006,11 @@ func _open_settings() -> void:
 # ---------------------------------------------------------------------------
 
 const BOSS_INTRO_MS: int = 1200
+## Scrimmen under bossnamnet. 0,94 och inte SURFACE_SCRIM: allt som syns genom
+## den läses som text ovanpå text.
+const BOSS_SCRIM_ALPHA: float = 0.94
+
+var _intro_hidden: Array[CanvasItem] = []
 
 
 func play_boss_intro() -> void:
@@ -1014,23 +1019,58 @@ func play_boss_intro() -> void:
 	_intro_active = true
 	_tap_catcher.visible = true
 
+	# [b]Bugg (research 06 §1, 25_boss_intro.png):[/b] namnet ritades ovanpå
+	# tutorialtipset. Scrimmen var halvgenomskinlig och namnet låg mitt i
+	# stridskolumnen utan egen botten. Nu: nästan ogenomskinlig scrim, tipset och
+	# pekaren göms under introt, och namnet står på ett eget band som krymper
+	# texten hellre än att låta den gå utanför skärmen.
+	_intro_hidden.clear()
+	for raw: Variant in [_tip_label, _pointer]:
+		var node: CanvasItem = raw as CanvasItem
+		if node != null and is_instance_valid(node) and node.visible:
+			node.visible = false
+			_intro_hidden.append(node)
+
 	var scrim: ColorRect = ColorRect.new()
-	scrim.color = Tokens.SURFACE_SCRIM
+	scrim.name = "BossScrim"
+	scrim.color = Color(CorridorView.FOG_COLOR, BOSS_SCRIM_ALPHA)
 	scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_fx_layer.add_child(scrim)
 	scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
+	var band: PanelContainer = PanelContainer.new()
+	band.name = "BossBand"
+	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var band_style: StyleBoxFlat = StyleBoxFlat.new()
+	band_style.bg_color = Color(CorridorView.FOG_COLOR, 1.0)
+	band_style.border_color = Tokens.SEM_BLOOD
+	band_style.border_width_top = Tokens.dpi(2)
+	band_style.border_width_bottom = Tokens.dpi(2)
+	band_style.content_margin_left = Tokens.dp(Tokens.SCREEN_MARGIN)
+	band_style.content_margin_right = Tokens.dp(Tokens.SCREEN_MARGIN)
+	band_style.content_margin_top = Tokens.dp(Tokens.SPACE_3)
+	band_style.content_margin_bottom = Tokens.dp(Tokens.SPACE_3)
+	band.add_theme_stylebox_override("panel", band_style)
+	_fx_layer.add_child(band)
+	band.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
+	band.anchor_left = 0.0
+	band.anchor_right = 1.0
+	band.offset_left = 0.0
+	band.offset_right = 0.0
+	band.grow_vertical = Control.GROW_DIRECTION_BOTH
+
 	var plate: Label = Label.new()
+	plate.name = "BossName"
 	plate.text = _boss_name()
 	plate.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	plate.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	plate.clip_text = false
 	_apply_label(plate, Tokens.TYPE_DISPLAY_L, Tokens.CHALK_100, false)
-	plate.add_theme_color_override("font_outline_color", Tokens.SURFACE_PIT)
+	plate.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
 	plate.add_theme_constant_override("outline_size", Tokens.dpi(3))
-	ChalkFx.apply(plate, ChalkFx.DISPLAY)
-	_fx_layer.add_child(plate)
-	plate.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	band.add_child(plate)
+	Tokens.shrink_to_fit(plate, Tokens.TYPE_DISPLAY_L, Tokens.TYPE_TITLE)
 
 	Juice.sfx(&"boss_intro", 1.0, -6.0)
 	Juice.haptic(Haptics.Level.HEAVY)
@@ -1039,10 +1079,10 @@ func play_boss_intro() -> void:
 	var tween: Tween = create_tween()
 	tween.tween_interval(seconds * 0.55)
 	tween.tween_property(scrim, "color:a", 0.0, seconds * 0.45)
-	tween.parallel().tween_property(plate, "modulate:a", 0.0, seconds * 0.45)
+	tween.parallel().tween_property(band, "modulate:a", 0.0, seconds * 0.45)
 	tween.tween_callback(_end_boss_intro)
 	_intro_tween = tween
-	_intro_nodes = [scrim, plate]
+	_intro_nodes = [scrim, band]
 
 
 func _end_boss_intro() -> void:
@@ -1053,6 +1093,10 @@ func _end_boss_intro() -> void:
 		if is_instance_valid(node):
 			node.queue_free()
 	_intro_nodes.clear()
+	for node: CanvasItem in _intro_hidden:
+		if is_instance_valid(node) and not (node == _tip_label and _tip_dismissed):
+			node.visible = true
+	_intro_hidden.clear()
 	if not _intro_active:
 		return
 	_intro_active = false
@@ -1196,7 +1240,12 @@ func _on_damage(event: Dictionary) -> void:
 			font_size = Tokens.TYPE_TITLE
 		elif overflow > 0:
 			color = Tokens.SEM_OVERFLOW
-		_pop(_panels[index], text, color, font_size)
+		if amount > 0:
+			# ART_DIRECTION_V2 §4: skadesiffran är spelets största text.
+			Juice.damage_pop(_fx_layer, text, color if overflow > 0 else Tokens.CHALK_100,
+				_panels[index].get_global_rect().get_center())
+		else:
+			_pop(_panels[index], text, color, font_size)
 	if overflow > 0:
 		_overflow_arrow(index, overflow)
 

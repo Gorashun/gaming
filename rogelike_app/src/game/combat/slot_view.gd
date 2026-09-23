@@ -310,20 +310,47 @@ func _update_pulse() -> void:
 	_pulse_tween.tween_property(self, "scale", Vector2.ONE, 0.6)
 
 
+## [b]M6 (ART_DIRECTION_V2 §4, "UI-brus ned ~60 %"):[/b] en slot är ikon +
+## färgad underlinje, [b]ingen låda[/b]. Tärningarna är de enda objekten med
+## egen upphöjd yta, så ögat alltid vet var handlingen är. Markeringen (vald
+## tärning, tomma slots pulsar) är en tjockare linje i sem/charge och ett svagt
+## sken – aldrig en ram. Hög kontrast behåller den hela ramen (UI_GUIDE §2.11).
 func _apply_style() -> void:
 	if _slot == null:
 		return
 	var color: Color = Tokens.slot_color(_slot.type)
-	var width: float = float(Tokens.slot_style(_slot.type)["width"])
+	var width: float = Tokens.STROKE_BOLD
+	var glow: Color = Color(0.0, 0.0, 0.0, 0.0)
 	if _slot.blocked:
 		color = Tokens.SURFACE_LINE
 	elif _highlight:
 		color = Tokens.SEM_CHARGE
 		width = Tokens.STROKE_HEAVY
-	var style: StyleBoxFlat = Tokens.box(color, true, width, Tokens.RADIUS_BUTTON)
-	style.bg_color = Tokens.SURFACE_SLATE if _slot.blocked else Tokens.SURFACE_RAISED
-	add_theme_stylebox_override("panel", style)
+		glow = Color(Tokens.SEM_CHARGE, 0.08)
+	add_theme_stylebox_override("panel", underline_style(color, width, glow, _slot.blocked))
 	modulate.a = 0.45 if _slot.blocked else 1.0
+
+
+## Stilen för en slot: en underlinje, eller hela ramen i hög kontrast. Statisk
+## så att testerna kan läsa den utan en skärm.
+static func underline_style(color: Color, width: float, glow: Color, blocked: bool) -> StyleBoxFlat:
+	if Tokens.high_contrast:
+		var framed: StyleBoxFlat = Tokens.box(color, true, width, Tokens.RADIUS_BUTTON)
+		framed.bg_color = Tokens.SURFACE_SLATE if blocked else Tokens.SURFACE_RAISED
+		return framed
+	var style: StyleBoxFlat = StyleBoxFlat.new()
+	style.bg_color = Color(Tokens.SURFACE_SLATE, 0.5) if blocked else glow
+	style.border_color = color
+	style.border_width_bottom = int(round(Tokens.dp(width)))
+	# Samma innermarginal som ramen gav, så att höjdbudgeten i
+	# tests/test_combat_layout.gd inte flyttar sig när ramen försvinner.
+	var pad: float = Tokens.dp(Tokens.STROKE_REG)
+	style.content_margin_left = pad
+	style.content_margin_right = pad
+	style.content_margin_top = pad
+	style.corner_radius_top_left = Tokens.dpi(Tokens.RADIUS_CHIP)
+	style.corner_radius_top_right = Tokens.dpi(Tokens.RADIUS_CHIP)
+	return style
 
 
 func accepts_dice() -> bool:

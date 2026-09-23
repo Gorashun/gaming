@@ -47,10 +47,12 @@ func test_a_wall_quad_is_emitted_exactly_where_the_map_is_closed() -> void:
 	# Index, inte hörn: SurfaceTool.index() slår ihop identiska hörn, och
 	# grannrutornas golvkanter ÄR identiska eftersom UV:n räknas ur
 	# världskoordinaten. Indexantalet är däremot stabilt: sex per kvad.
+	# M6: varje kvad är delad i SUBDIV × SUBDIV för det bakade ljuset.
+	var per_quad: int = 6 * CorridorMesh.SUBDIV * CorridorMesh.SUBDIV
 	assert_int(_indices(mesh, 2)).override_failure_message(
-		"väggkvaderna stämmer inte med kartans stängda sidor").is_equal(closed * 6)
+		"väggkvaderna stämmer inte med kartans stängda sidor").is_equal(closed * per_quad)
 	for surface: int in [0, 1]:
-		assert_int(_indices(mesh, surface)).is_equal(map.tiles().size() * 6)
+		assert_int(_indices(mesh, surface)).is_equal(map.tiles().size() * per_quad)
 
 
 func _indices(mesh: ArrayMesh, surface: int) -> int:

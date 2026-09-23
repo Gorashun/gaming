@@ -37,6 +37,14 @@ const HIT_STOP_SCALE: float = 0.04
 ## Number pop: stigning i dp och livslängd i sekunder (UI_GUIDE §5.3).
 const POP_RISE_DP: float = 24.0
 const POP_LIFE: float = 0.30
+## Skadesiffran (ART_DIRECTION_V2 §4, mockupen art_v2_390x844.png): spelets
+## dopaminögonblick i 88 dp Anton, 6 dp svart kontur, 4° snedställd. Den lever
+## längre än en vanlig pop – den ska hinna läsas.
+const DAMAGE_POP_DP: int = 88
+const DAMAGE_POP_TILT_DEG: float = -4.0
+const DAMAGE_POP_OUTLINE_DP: int = 6
+const DAMAGE_POP_LIFE: float = 0.55
+const POP_OUTLINE_DP: int = 2
 ## Skakens avklingning per sekund.
 const SHAKE_DECAY: float = 6.0
 
@@ -497,6 +505,11 @@ func number_pop(parent: Control, text: String, color: Color, at: Vector2, font_s
 	var label: Label = _pops[index]
 	label.text = text
 	label.add_theme_color_override("font_color", color)
+	# Poolen återanvänder etiketter: en tidigare skadesiffra lämnade kontur och
+	# lutning efter sig.
+	label.add_theme_color_override("font_outline_color", Tokens.SURFACE_PIT)
+	label.add_theme_constant_override("outline_size", Tokens.dpi(POP_OUTLINE_DP))
+	label.rotation = 0.0
 	# Storlek OCH typsnitt: en number pop i display-xl är Anton (UI_GUIDE §2.8).
 	Tokens.apply_type(label, font_size)
 	label.visible = true
@@ -517,6 +530,23 @@ func number_pop(parent: Control, text: String, color: Color, at: Vector2, font_s
 	_pop_life[index] = POP_LIFE
 	_pops_active += 1
 	set_process(true)
+	return label
+
+
+## Skadesiffran: [method number_pop] i [constant DAMAGE_POP_DP] med tjock svart
+## kontur och lutning. Samma pool, samma animation, ingen allokering.
+func damage_pop(parent: Control, text: String, color: Color, at: Vector2) -> Label:
+	var label: Label = number_pop(parent, text, color, at, DAMAGE_POP_DP)
+	if label == null:
+		return null
+	label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
+	label.add_theme_constant_override("outline_size", Tokens.dpi(DAMAGE_POP_OUTLINE_DP))
+	label.rotation = deg_to_rad(DAMAGE_POP_TILT_DEG)
+	var index: int = _pops.find(label)
+	if index >= 0:
+		_pop_life[index] = DAMAGE_POP_LIFE
+	if log_calls:
+		calls.append({"kind": "damage_pop", "text": text})
 	return label
 
 

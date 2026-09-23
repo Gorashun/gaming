@@ -56,24 +56,26 @@ func _build() -> void:
 	bar.alignment = BoxContainer.ALIGNMENT_BEGIN
 	add_child(bar)
 
-	_hp_label = _label("", Tokens.TYPE_BODY, Tokens.SEM_BLOOD)
+	# M6 (mockupen art_v2): HP-siffran i Anton, benvit, stapeln en tunn linje.
+	_hp_label = _label("", Tokens.TYPE_HEADING, Tokens.CHALK_100)
+	Tokens.apply_display_font(_hp_label)
 	bar.add_child(_hp_label)
 
 	_hp_bar = ProgressBar.new()
 	_hp_bar.name = "HpBar"
 	_hp_bar.show_percentage = false
-	_hp_bar.custom_minimum_size = Vector2(Tokens.dp(HP_BAR_WIDTH_DP), Tokens.dp(8))
+	_hp_bar.custom_minimum_size = Vector2(Tokens.dp(HP_BAR_WIDTH_DP), Tokens.dp(4))
 	_hp_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var track: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR, Tokens.RADIUS_CHIP)
-	track.bg_color = Tokens.SURFACE_PIT
+	var track: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, 0.0, 0)
+	track.bg_color = Color(0.09, 0.11, 0.13)
 	_hp_bar.add_theme_stylebox_override("background", track)
-	var fill: StyleBoxFlat = Tokens.box(Tokens.SEM_BLOOD, true, 0.0, Tokens.RADIUS_CHIP)
+	var fill: StyleBoxFlat = Tokens.box(Tokens.SEM_BLOOD, true, 0.0, 0)
 	fill.bg_color = Tokens.SEM_BLOOD
 	_hp_bar.add_theme_stylebox_override("fill", fill)
 	bar.add_child(_hp_bar)
 
-	_room_chip = _label("", Tokens.TYPE_LABEL, Tokens.CHALK_300)
-	_room_chip.add_theme_stylebox_override("normal", Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR, Tokens.RADIUS_CHIP))
+	# Ingen låda runt rummet: text på svart, spärrad (mockupen art_v2).
+	_room_chip = _label("", Tokens.TYPE_CAPTION, Tokens.CHALK_300)
 	bar.add_child(_room_chip)
 
 	_pips_label = _label("", Tokens.TYPE_LABEL, Tokens.SEM_CHARGE)
@@ -143,11 +145,23 @@ func _icon_button(icon_name: StringName, color: Color) -> Button:
 	button.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_BODY))
 	button.add_theme_color_override("font_color", color)
 	Art.apply_button_icon(button, icon_name, color, Tokens.TYPE_BODY)
-	var style: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR)
-	style.bg_color = Color(Tokens.SURFACE_RAISED, 0.85)
 	for state: String in ["normal", "hover", "pressed", "focus"]:
-		button.add_theme_stylebox_override(state, style)
+		button.add_theme_stylebox_override(state, hud_button_style(Tokens.SURFACE_LINE))
 	return button
+
+
+## M6: HUD-knapparna är ikoner på svart, ingen låda (mockupen art_v2: "4 element,
+## noll lådor"). Kritringen för "något nytt" (§4.4) är en tunn ring, och hög
+## kontrast får tillbaka ramen.
+static func hud_button_style(ring: Color) -> StyleBoxFlat:
+	var style: StyleBoxFlat = Tokens.box(ring, true, Tokens.STROKE_HAIR)
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	if ring == Tokens.SURFACE_LINE and not Tokens.high_contrast:
+		style.border_width_left = 0
+		style.border_width_right = 0
+		style.border_width_top = 0
+		style.border_width_bottom = 0
+	return style
 
 
 ## HP, rum, våning och Pips. Anropas efter varje steg och efter varje strid.
@@ -156,7 +170,7 @@ func set_status(hp: int, max_hp: int, room: int, floor_index: int, pips: int) ->
 	_hp_label.text = "%d/%d" % [hp, max_hp]
 	_hp_bar.max_value = maxi(max_hp, 1)
 	_hp_bar.value = clampi(hp, 0, maxi(max_hp, 1))
-	_room_chip.text = " %s " % Tokens.translate_or("CORRIDOR_ROOM", "ROOM %d") % room
+	_room_chip.text = Tokens.translate_or("CORRIDOR_ROOM", "ROOM %d") % room
 	# ◉ står kvar som tecken: det ligger i Noto Sans Symbols 2, som är buntad
 	# fallback i assets/fonts/ui_regular.tres. Bara glyfer som INGEN buntad font
 	# har (◫ ⚙ ↩ ⚔ ◀▲▶) blev sprites.
@@ -194,9 +208,7 @@ func set_sheet_badge(pending: bool) -> void:
 	if _sheet_badge == pending:
 		return
 	_sheet_badge = pending
-	var style: StyleBoxFlat = Tokens.box(
-		Tokens.SEM_CHARGE if pending else Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR)
-	style.bg_color = Color(Tokens.SURFACE_RAISED, 0.85)
+	var style: StyleBoxFlat = hud_button_style(Tokens.SEM_CHARGE if pending else Tokens.SURFACE_LINE)
 	for state: String in ["normal", "hover", "pressed", "focus"]:
 		_sheet_button.add_theme_stylebox_override(state, style)
 	var ink: Color = Tokens.SEM_CHARGE if pending else Tokens.CHALK_300
