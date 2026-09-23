@@ -1,0 +1,18 @@
+Paket:        Fantasy UI Borders (1.0) (kenney_fantasy-ui-borders.zip)
+Skapare:      Kenney (www.kenney.nl)
+URL:          https://kenney.nl/assets/fantasy-ui-borders
+Hämtad:       2026-09-23 (Anders, uppladdad via chatten)
+Licens:       CC0 1.0
+Licenstext (ordagrant ur License.txt i zipen):
+"License: (Creative Commons Zero, CC0)
+http://creativecommons.org/publicdomain/zero/1.0/
+
+You can use this content for personal, educational, and commercial purposes.
+
+Support by crediting 'Kenney' or 'www.kenney.nl' (this is not a requirement)"
+Attribution krävs:  NEJ. Vi crediterar ändå.
+Vidaredistribution: tillåten (CC0).
+AI:           nej.
+Skärmdump av licensrutan:  License.txt i mappen är primärkälla (kenney.nl blockeras av proxyn).
+Innehåll:     PNG/Default och PNG/Double: Border, Panel, Transparent border/center, Divider. 48×48 9-slice (16 px kant).
+Använt i assets/art/:  ui/slot.png (panel-border-005, tyst 9-slice-ram för slots).

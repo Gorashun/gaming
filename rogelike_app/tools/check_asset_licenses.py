@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Verify that every asset under assets/ has a license row in ASSET_LICENSES.csv.
 
-PIPWRECK license rule (DECISIONS.md 2026-09-21): only CC0, OGA-BY, CC-BY 4.0,
-OFL (fonts), purchased royalty-free or own work may enter the repository.
-CC-BY-SA (any version) and GPL are forbidden.
+PIPWRECK license rule (DECISIONS.md 2026-09-21, ASSET_SHOPPING_LIST_PAINTED
+section 0): only CC0, OGA-BY, CC-BY 3.0/4.0, OFL (fonts), purchased
+royalty-free, a creator's own commercial-free licence (proprietary-free, e.g.
+Pipoya: "commercial or personal use, edit freely, no redistribution") or own
+work may enter the repository. CC-BY-SA (any version) and GPL are forbidden.
+
+assets/incoming/ is the raw inbox (.gdignore, never shipped, only KALLA.txt
+and licence files are committed) and is therefore not scanned.
 
 Exit codes:
     0  every asset is registered and every license is allowed
@@ -26,7 +31,9 @@ from pathlib import Path
 ALLOWED_LICENSES: tuple[str, ...] = (
     "CC0-1.0",
     "OGA-BY-3.0",
+    "CC-BY-3.0",
     "CC-BY-4.0",
+    "proprietary-free",
     "OFL-1.1",
     "proprietary-purchased",
     "own-work",
@@ -63,6 +70,9 @@ CSV_FIELDS: tuple[str, ...] = ("path", "source", "author", "license", "url", "re
 
 REGISTRY_PATH = Path("assets/ASSET_LICENSES.csv")
 ASSET_ROOT = Path("assets")
+# Raw inbox: unpacked packages live here before tools/normalize_art.py moves
+# the files we actually use into assets/art/. Never imported by Godot.
+EXCLUDED_DIRS: tuple[str, ...] = ("assets/incoming",)
 
 
 # --- Helpers --------------------------------------------------------------
@@ -81,7 +91,14 @@ def collect_assets(root: Path) -> list[Path]:
     base = root / ASSET_ROOT
     if not base.is_dir():
         return []
-    found = [p for p in sorted(base.rglob("*")) if p.is_file() and is_asset(p)]
+    found = []
+    for p in sorted(base.rglob("*")):
+        if not (p.is_file() and is_asset(p)):
+            continue
+        rel = p.relative_to(root).as_posix()
+        if any(rel == d or rel.startswith(d + "/") for d in EXCLUDED_DIRS):
+            continue
+        found.append(p)
     return found
 
 

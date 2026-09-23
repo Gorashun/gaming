@@ -1,0 +1,11 @@
+Paket:        Handpainted RPG icons (items_free_l.zip, 10,8 MB) – EJ UPPLADDAT, bara licensskärmdumpen finns
+Skapare:      LudicArts (http://www.ludicarts.com)
+URL:          https://opengameart.org/content/handpainted-rpg-icons
+Hämtad:       2026-09-23 laddade Anders upp "image.png" = skärmdump av OGA-sidan (omdöpt till license-screenshot.png).
+              Själva zipen saknas i inkorgen.
+Licens:       CC-BY 3.0 (syns i skärmdumpen)
+Licenstext (ur skärmdumpen): "License(s): CC-BY 3.0" · "Copyright/Attribution Notice: details: http://ludicarts.com/free-rpg-icons/"
+Attribution krävs:  JA (när paketet används).
+AI:           nej (publicerat 2015).
+Skärmdump av licensrutan:  license-screenshot.png
+Status:       Inte integrerat – inga filer. Ladda upp items_free_l.zip hit så fyller UI-agenten på (37 ikoner i 256/128/64/32).

@@ -1,0 +1,16 @@
+Paket:        Stylized Mossy Dungeon Wall – Seamless PBR Texture (Dungeon_Wall.zip)
+              Stylized Dungeon Stone Floor – Seamless PBR Texture Pack (Stylized_Dungeon_Floor_Pack.zip)
+Skapare:      kaczor237
+URL:          https://kaczor237.itch.io/stylized-mossy-dungeon-wall-seamless-pbr-texture
+              https://kaczor237.itch.io/stylized-dungeon-stone-floor-steamless-pbr-texture-pack
+Hämtad:       2026-09-23 (Anders, uppladdad via chatten)
+Licens:       CC0 1.0 (Public Domain)
+Licenstext (enligt itch-sidornas licensruta, återgiven i sökutdrag 2026-09-23 – sidorna blockeras av proxyn; zipparna saknar licensfil):
+"License: CC0 (Public Domain). Use it for anything, commercial or personal, no strings attached."
+              Sidorna beskriver texturerna som "hand-painted mossy stone wall texture, seamless and PBR ready".
+Attribution krävs:  NEJ. Vi crediterar ändå ("Dungeon textures by kaczor237").
+Vidaredistribution: tillåten (CC0).
+AI:           okänt på sidan – skaparen skriver "hand-painted". Räknas som "nej" med reservation; kontrolleras vid skärmdumpen.
+Skärmdump av licensrutan:  SAKNAS – Anders tar license-screenshot.png från båda itch-sidorna.
+Innehåll:     dungeon-wall/: Albedo (jpg 1024×1024), Normal, AO. dungeon-floor/: Albedo (png 500×500), Normal, AO.
+Använt i assets/art/:  env/corridor/{wall,floor,ceiling,door}.png (bara albedo; normal/AO används inte i 2D).

@@ -1,0 +1,17 @@
+Paket:        Particle Pack (1.1) (kenney_particle-pack.zip)
+Skapare:      Kenney Vleugels (Kenney.nl)
+URL:          https://kenney.nl/assets/particle-pack
+Hämtad:       2026-09-23 (Anders, uppladdad via chatten)
+Licens:       CC0 1.0
+Licenstext (ordagrant ur License.txt i zipen):
+"License (Creative Commons Zero, CC0)
+http://creativecommons.org/publicdomain/zero/1.0/
+
+You may use these assets in personal and commercial projects.
+Credit (Kenney or www.kenney.nl) would be nice but is not mandatory."
+Attribution krävs:  NEJ. Vi crediterar ändå ("Kenney (www.kenney.nl)").
+Vidaredistribution: tillåten (CC0).
+AI:           nej (paketet är från 2014–2019; Kenney deklarerar inte AI).
+Skärmdump av licensrutan:  License.txt i mappen är primärkälla (kenney.nl blockeras av proxyn).
+Innehåll:     png-transparent/: 195 png 512×512 (star, spark, slash, flame, fire, smoke, dirt, magic, light, ...).
+Använt i assets/art/:  fx/*.png (hit, slash, fire, poison, dust).

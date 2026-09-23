@@ -1,0 +1,18 @@
+Paket:        Fantasy UI Elements by Ravenmore ("ADOM UI": ADOM-OGA-UI-Deploy.psd 3,5 MB + ADOM-OGA-UI-SmartObject.psd 3 MB)
+Skapare:      Ravenmore (Krzysztof Dycha, dycha.net)
+URL:          https://opengameart.org/content/fantasy-ui-elements-by-ravenmore
+Hämtad:       2026-09-23 (Anders, uppladdad via chatten)
+Licens:       CC-BY 3.0
+Licenstext (OGA-sidan enligt sökutdrag 2026-09-23 – sidan blockeras av proxyn):
+              "License(s): CC-BY 3.0"
+              Copyright/Attribution Notice: "If you use these resources and publish a game, please include a link to my
+              portfolio at http://dycha.net somewhere visible."
+              Beskrivning: UI-idé för Ancient Domains of Mystery som inte kom med; psd med smart object, inga up/down/hover-lägen.
+Attribution krävs:  JA – namn + verk + källänk + licenslänk + synlig länk till http://dycha.net.
+Vidaredistribution: tillåten under CC-BY 3.0. PSD:erna behålls i git som källa (samma princip som ikonpackets PSD).
+AI:           nej (publicerat 2014).
+Skärmdump av licensrutan:  SAKNAS – Anders tar license-screenshot.png.
+Innehåll:     Deploy.psd 798×419 (mockup), SmartObject.psd 1767×1500 (elementen: parchment-panel, mörk panel, header/knapp,
+              slider, progress bars, checkbox, radio, skalle, stängknapp).
+Använt i assets/art/:  ui/panel.png, ui/card.png, ui/button.png (beskurna ur SmartObject-kompositen med Pillow; PSD-lager
+              går inte att läsa separat i Pillow, därför beskärning ur kompositen).

@@ -1,0 +1,15 @@
+Paket:        Fantasy Portrait Pack by Ravenmore (RavenmorePortraitPack.zip)
+Skapare:      Ravenmore (Krzysztof Dycha, dycha.net)
+URL:          https://opengameart.org/content/fantasy-portrait-pack-by-ravenmore
+Spegel:       https://ravenmore.itch.io
+Hämtad:       2026-09-23 (Anders, uppladdad via chatten)
+Licens:       CC-BY 3.0 (OGA-sidans licensruta enligt sökutdrag 2026-09-23; samma licens som ikonpacket, vars ruta finns i
+              ../ravenmore-fantasy-icon-pack/license-screenshot.png)
+Licenstext:   OGA: "License(s): CC-BY 3.0". Sidbeskrivning: fyra porträtt (Human, Elf, Dwarf, Gnome) i 256/128/64 px,
+              "somewhat based on sprites created for Ancient Domains of Mystery (ADOM)".
+Attribution krävs:  JA – namn + verk + källänk + licenslänk, plus länk till ravenmore.itch.io (Ravenmores egen begäran).
+Vidaredistribution: tillåten under CC-BY 3.0; itch-villkoren förbjuder vidaredistribution som del av annat assetpaket – vi följer den striktare.
+AI:           nej (publicerat 2014).
+Skärmdump av licensrutan:  SAKNAS – opengameart.org blockeras av proxyn. Anders tar license-screenshot.png.
+Innehåll:     7 porträtt × 3 storlekar (dwarf_f/m, elf_f/m, gnome_m, human_f/m) + preview.png.
+Använt i assets/art/:  portrait/hero_a.png (dwarf_m), portrait/hero_b.png (human_f), portrait/marrow.png (gnome_m).

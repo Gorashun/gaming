@@ -1,0 +1,26 @@
+Paket:        Painterly Spell Icons part 1, 2, 3 och 4 (painterly-spell-icons-1..4.zip)
+Skapare:      J. W. Bjerk (eleazzaar) -- www.jwbjerk.com/art
+URL:          https://opengameart.org/content/painterly-spell-icons-part-1
+              https://opengameart.org/content/painterly-spell-icons-part-2
+              https://opengameart.org/content/painterly-spell-icons-part-3
+              https://opengameart.org/content/painterly-spell-icons-part-4
+Hämtad:       2026-09-23 (Anders, uppladdad via chatten)
+Licens:       Multilicens: CC-BY 3.0 / CC-BY-SA 3.0 / GPL 2.0 / GPL 3.0 (OGA listar även CC-BY-SA 4.0).
+              PIPWRECK väljer CC-BY 3.0-grenen (ASSET_SHOPPING_LIST_PAINTED §0). SA- och GPL-grenarna används inte.
+Licenstext (ordagrant ur README.txt i part 3 och part 4, identisk text; part 1–2 saknar README i zipen,
+OGA-sidorna anger samma licensuppsättning enligt sökutdrag 2026-09-23):
+"These icons are released by the artist under the following licenses:
+GNU GPL 2.0
+GNU GPL 3.0
+CC-BY 3.0
+CC-BY-SA 3.0
+
+Attribution:
+
+J. W. Bjerk (eleazzaar) -- www.jwbjerk.com/art  -- find this and other open art at: http://opengameart.org"
+Attribution krävs:  JA (CC-BY 3.0): namn + verk + källänk + licenslänk. Attributionsraden ovan används ordagrant i assets/credits.json.
+Vidaredistribution: tillåten under CC-BY 3.0, men vi distribuerar ändå bara normaliserade filer.
+AI:           nej (publicerat 2010–2011, långt före generativ AI).
+Skärmdump av licensrutan:  saknas – opengameart.org blockeras av utvecklingsmiljöns proxy. README.txt i part-3/ och part-4/ är primärkälla.
+Innehåll:     part-1: 81 png, part-2: 126 png, part-3: 110 png + 36 ramar (frame-N-färg), part-4: 151 png. Alla 256×256, RGBA.
+Använt i assets/art/:  rarity/*.png (frame-0-grey/jade/sky/royal ur part-3).

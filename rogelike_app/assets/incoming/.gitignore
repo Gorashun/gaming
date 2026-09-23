@@ -1,0 +1,17 @@
+# Inkorgen: rå paketinnehåll committas inte (zip är redan ignorerat globalt).
+# Det som ska in i repot är normaliserade filer under assets/art/ (tools/normalize_art.py).
+# Här committas bara proveniens: KALLA.txt, licensfil/skärmdump och README.
+*
+!.gitignore
+!.gdignore
+!README.md
+!*/
+!*/KALLA.txt
+!*/License.txt
+!*/README.txt
+!*/*/README.txt
+!*/README.md
+!*/license-screenshot.png
+!*/manifest.csv
+!*/tools/
+!*/tools/*.py
