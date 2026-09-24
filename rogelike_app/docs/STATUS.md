@@ -1,6 +1,6 @@
 # Status
 
-*Uppdaterad 2026-09-21*
+*Uppdaterad 2026-09-24*
 
 **Klart**
 - Projektkatalog, CLAUDE.md, agentteam (5 roller)
@@ -11,6 +11,7 @@
 - Balanspass våning 1: +45,3 p.e. Lookahead över Greedy, rum 1–3 tar 3–3,4 rundor
 - **M1 godkänd**: våning 1 spelbar (marsch → strid → belöning → boss → vinst/död → ny run), autosave, 160 tester, smoke-run med skärmdumpar
 - **M1.5 godkänd**: engelska källsträngar + svensk översättning, sprites integrerade, 188 tester, skärmdumpar i docs/screenshots/m1_5/
+- **M7 (UI + monster) godkänd**: UI utan pixelgrafik (ritade tärningar, game-icons-ikoner, Ravenmore-utrustningsslots), interims-monster "shades" med glödande ögon, Ækashics-redo ingest. 597 tester, webbygge 8013f09 publicerat
 - **M6 godkänd**: målad art via manifest, stilskikt, gear/drops/Kistan/bank/roster/byggnader. 577 tester
 - **M5.5/M5.6 godkända**: tutorial i korridoren, 2D-sidovy borttagen, knappfix, fonter + sprite-ikoner, webbverifierat. 403 tester
 - **M5 godkänd**: first-person korridor i Godot 3D, torg, strid i korridoren, character sheet. 380 tester
@@ -20,7 +21,7 @@
 - Asset-pipeline: 93 egengjorda assets, licensregister med CI-check, palett-LUT- och krit-shaders, paperdoll-spec
 
 **Pågår**
-- Väntar på Anders speltest av M6 (webb + APK)
+- Väntar på Anders speltest av M7 (webb + APK) och på Ækashics-PNG:erna i assets/incoming/aekashics-librarium/
 
 **Blockerat**
 - Play-konto (25 USD) och 12-testare-listan: Anders manuellt
