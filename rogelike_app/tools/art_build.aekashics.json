@@ -1,0 +1,18 @@
+{
+  "_about": "OVERLAY: Ækashics Librarium-battlers (frontala målade monster). Anders lägger PNG:erna i assets/incoming/aekashics-librarium/ med exakt filnamnen nedan (se README.md där). PROVA: python3 tools/normalize_art.py --build tools/art_build.aekashics.json. PERMANENT: sätt enabled: true här. Saknas en fil byggs basens post (shade) för det id:t, så ett halvt set går att köra. Credits: källan 'aekashics' ligger i assets/credits.json pending_sources och flyttas automatiskt in i credits-skärmen när minst en Ækashics-fil byggs (licensvillkor: credit + länk så länge en battler finns i builden) och ut igen när ingen används. PARAMETRAR i defaults: strip_shadow = 0 (av); har Librarium-filerna en inbränd svart skugga under fötterna, sätt 96 (samma regel som Pipoya: ren svart med alfa <= värdet tas bort). grade = av; om de mättade Ækashics-färgerna inte tas in av shadern, prova {\"desaturate\": 0.35, \"contrast\": 1.1, \"cool_shadows\": 0.3, \"rim\": 0} (rim 0 eftersom battler.gdshader redan lägger kantljuset). display_h = hur stor figuren står i korridoren i Pipoya-/shade-pixlar (manifestets scale), så att en 512 px-råtta inte blir lika stor som fågelskrämman; justera per figur efter första bygget.",
+  "enabled": false,
+  "retrieved": "",
+  "defaults": {"op": "battler", "source": "aekashics", "strip_shadow": 0, "grade": false},
+  "entries": [
+    {"id": "enemy.RUST_RAT",    "out": "enemy/RUST_RAT.png",    "src": "RUST_RAT.png",    "max": [512, 512],   "display_h": 200, "note": "Ækashics Librarium: Rostråttan."},
+    {"id": "enemy.SLAG_MOTH",   "out": "enemy/SLAG_MOTH.png",   "src": "SLAG_MOTH.png",   "max": [512, 512],   "display_h": 300, "note": "Ækashics Librarium: Slaggmalen."},
+    {"id": "enemy.THORN_IMP",   "out": "enemy/THORN_IMP.png",   "src": "THORN_IMP.png",   "max": [512, 512],   "display_h": 260, "note": "Ækashics Librarium: Törnimpen."},
+    {"id": "enemy.PIP_THIEF",   "out": "enemy/PIP_THIEF.png",   "src": "PIP_THIEF.png",   "max": [512, 512],   "display_h": 320, "note": "Ækashics Librarium: Pipptjuven."},
+    {"id": "enemy.IRON_TICK",   "out": "enemy/IRON_TICK.png",   "src": "IRON_TICK.png",   "max": [512, 512],   "display_h": 250, "note": "Ækashics Librarium: Järnfästingen (bred, 'muren')."},
+    {"id": "enemy.GRAVE_HAND",  "out": "enemy/GRAVE_HAND.png",  "src": "GRAVE_HAND.png",  "max": [512, 512],   "display_h": 340, "note": "Ækashics Librarium: Gravhanden (GRAB)."},
+    {"id": "enemy.CHALK_DUMMY", "out": "enemy/CHALK_DUMMY.png", "src": "CHALK_DUMMY.png", "max": [512, 512],   "display_h": 360, "note": "Ækashics Librarium: tutorialdockan."},
+    {"id": "enemy.placeholder", "out": "enemy/placeholder.png", "src": "placeholder.png", "max": [512, 512],   "display_h": 140, "note": "Ækashics Librarium: platshållare för fiende-id utan egen bild."},
+    {"id": "enemy.SLAGJAW",     "out": "boss/SLAGJAW.png",      "src": "SLAGJAW.png",     "max": [1024, 1024], "display_h": 640, "tier": "boss", "note": "Ækashics Librarium: Slaggkäften. Samma fil som boss.SLAGJAW."},
+    {"id": "boss.SLAGJAW",      "out": "boss/SLAGJAW.png",      "src": "SLAGJAW.png",     "max": [1024, 1024], "display_h": 640, "tier": "boss", "note": "Alias för enemy.SLAGJAW (samma fil, delad textur)."}
+  ]
+}

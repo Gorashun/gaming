@@ -2,6 +2,10 @@
 
 Format: en rad per leverans. Nyast överst.
 
+## M7 – interimsmonster "shades" och Ækashics-redo ingest (2026-09-24)
+
+- **Shades + Ækashics-ingest.** Nio game-icons.net-silhuetter (CC BY 3.0: Lorc, Delapouite, Skoll) renderade till mörka kol-/slaggvarelser med fackelrim och glödande ögon (`tools/shade_monsters/`: `fetch_shades.py`, `render_shades.js` via Playwright/Chromium, deterministiskt, `shades.json`, `contact_sheet.py`, `shot_battlers.gd`) ersätter Pipoya i manifestet (samma id, nya filer). `normalize_art.py`: overlays (`--build FIL` eller `enabled: true`; saknad rå fil = basens post), `tools/art_build.aekashics.json` (väntar på Anders filer, se `assets/incoming/aekashics-librarium/README.md`) och `tools/art_build.pipoya.json` (återställning, byte-identisk med M6), credits följer manifestet (`pending_sources` ↔ `sources`, `only_while_used`), valfri Pillow-`grade` (av som standard), `display_h` → manifestets `scale`, per-fil-`url`. `tools/test_normalize_art.py` (12 tester) körs i CI. Skärmdumpar: `docs/screenshots/m7_shades/`.
+
 ## M6 spår B – gear, drops, Kistan, trappbanken, roster och staden (2026-09-23)
 
 - **Steg 1, gear-modellen i core.** `Item`, `Hero` (nivå 1–5 → 2–7 slots, XP, quirk, permadöd), `Roster` (max 4, Gravlunden), `Chest`, `Bank`, `Buildings`, `Market`. De sex relikerna blev gear i sin `RELIC_SLOTS`-slot; `RELIC` lämnade belöningspoolen (FORGE_FACE 65, SLOT_SWAP 25). 28 föremål (22 ur §3.5 + 6) som data med dropkällor. `Rules.Rarity.EPIC`. Meta v2 (poolköp betalas tillbaka), RunState v4 (v3-reliker migreras till gear). `tests/test_gear.gd`.

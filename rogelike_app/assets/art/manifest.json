@@ -4,131 +4,131 @@
     "file": "res://assets/art/enemy/RUST_RAT.png",
     "kind": "battler",
     "size": [
-      204,
-      198
+      160,
+      200
     ],
     "pivot": "bottom",
     "frames": 1,
-    "source": "pipoya",
-    "license": "proprietary-free",
-    "note": "Pipoya 034 mus. Rostråttan."
+    "source": "game-icons-delapouite",
+    "license": "CC-BY-3.0",
+    "note": "Shade: Delapouite rat. Rostråttan."
   },
   "enemy.SLAG_MOTH": {
     "file": "res://assets/art/enemy/SLAG_MOTH.png",
     "kind": "battler",
     "size": [
-      197,
-      328
+      380,
+      282
     ],
     "pivot": "bottom",
     "frames": 1,
-    "source": "pipoya",
-    "license": "proprietary-free",
-    "note": "Pipoya 001 fladdermus: närmaste bevingade lilla figur, ingen mal i packet."
+    "source": "game-icons-delapouite",
+    "license": "CC-BY-3.0",
+    "note": "Shade: Delapouite bat (ingen mal finns i game-icons)."
   },
   "enemy.THORN_IMP": {
     "file": "res://assets/art/enemy/THORN_IMP.png",
     "kind": "battler",
     "size": [
-      216,
-      249
+      214,
+      260
     ],
     "pivot": "bottom",
     "frames": 1,
-    "source": "pipoya",
-    "license": "proprietary-free",
-    "note": "Pipoya 013 imp."
+    "source": "game-icons-lorc",
+    "license": "CC-BY-3.0",
+    "note": "Shade: Lorc evil-minion, stående hornad imp (lorc/imp är flygande i profil och läste som fladdermus nr 2)."
   },
   "enemy.PIP_THIEF": {
     "file": "res://assets/art/enemy/PIP_THIEF.png",
     "kind": "battler",
     "size": [
-      302,
-      313
+      185,
+      320
     ],
     "pivot": "bottom",
     "frames": 1,
-    "source": "pipoya",
-    "license": "proprietary-free",
-    "note": "Pipoya 041 kattsvärdsman med kappa: tjuven."
+    "source": "game-icons-lorc",
+    "license": "CC-BY-3.0",
+    "note": "Shade: Lorc cloak-dagger, huva + dolk: tjuven."
   },
   "enemy.IRON_TICK": {
     "file": "res://assets/art/enemy/IRON_TICK.png",
     "kind": "battler",
     "size": [
-      255,
-      189
+      266,
+      250
     ],
     "pivot": "bottom",
     "frames": 1,
-    "source": "pipoya",
-    "license": "proprietary-free",
-    "note": "Pipoya 004 pansarskalbagge: fästingen (rustning 6)."
+    "source": "game-icons-lorc",
+    "license": "CC-BY-3.0",
+    "note": "Shade: Lorc tick, skalet fyllt (seal): fästingen."
   },
   "enemy.GRAVE_HAND": {
     "file": "res://assets/art/enemy/GRAVE_HAND.png",
     "kind": "battler",
     "size": [
-      244,
-      341
+      380,
+      330
     ],
     "pivot": "bottom",
     "frames": 1,
-    "source": "pipoya",
-    "license": "proprietary-free",
-    "note": "Pipoya 011 zombie med utsträckta armar: gravhanden (GRAB)."
+    "source": "game-icons-skoll",
+    "license": "CC-BY-3.0",
+    "note": "Shade: Skoll raise-zombie, hand ur graven (GRAB)."
   },
   "enemy.CHALK_DUMMY": {
     "file": "res://assets/art/enemy/CHALK_DUMMY.png",
     "kind": "battler",
     "size": [
-      302,
-      363
+      358,
+      360
     ],
     "pivot": "bottom",
     "frames": 1,
-    "source": "pipoya",
-    "license": "proprietary-free",
-    "note": "Pipoya 050 fågelskrämma: tutorialdockan (src/data/tutorial.gd)."
+    "source": "game-icons-lorc",
+    "license": "CC-BY-3.0",
+    "note": "Shade: Lorc scarecrow: tutorialdockan."
   },
   "enemy.placeholder": {
     "file": "res://assets/art/enemy/placeholder.png",
     "kind": "battler",
     "size": [
-      141,
-      120
+      146,
+      140
     ],
     "pivot": "bottom",
     "frames": 1,
-    "source": "pipoya",
-    "license": "proprietary-free",
-    "note": "Pipoya 009 slime: platshållare för fiende-id utan egen bild."
+    "source": "game-icons-delapouite",
+    "license": "CC-BY-3.0",
+    "note": "Shade: Delapouite slime: platshållare för fiende-id utan egen bild."
   },
   "enemy.SLAGJAW": {
     "file": "res://assets/art/boss/SLAGJAW.png",
     "kind": "battler",
     "size": [
-      1024,
-      491
+      523,
+      640
     ],
     "pivot": "bottom",
     "frames": 1,
-    "source": "pipoya",
-    "license": "proprietary-free",
+    "source": "game-icons-lorc",
+    "license": "CC-BY-3.0",
     "tier": "boss",
-    "note": "Pipoya boss004 bevingad demon med huggtandskäft: Slaggkäften. Samma fil som boss.SLAGJAW."
+    "note": "Shade: Lorc daemon-skull med glödande ögon/näsa: Slaggkäften. Samma fil som boss.SLAGJAW."
   },
   "boss.SLAGJAW": {
     "file": "res://assets/art/boss/SLAGJAW.png",
     "kind": "battler",
     "size": [
-      1024,
-      491
+      523,
+      640
     ],
     "pivot": "bottom",
     "frames": 1,
-    "source": "pipoya",
-    "license": "proprietary-free",
+    "source": "game-icons-lorc",
+    "license": "CC-BY-3.0",
     "tier": "boss",
     "note": "Alias för enemy.SLAGJAW (samma fil, delad textur)."
   },

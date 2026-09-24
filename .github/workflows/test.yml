@@ -33,6 +33,19 @@ jobs:
         working-directory: ${{ env.PROJECT_DIR }}
         run: python3 tools/check_asset_licenses.py
 
+      # Art pipeline (tools/normalize_art.py): trim/fit/manifest/registry,
+      # overlays and the credits sync, on a synthetic project. Needs Pillow.
+      - name: Set up Python for tool tests
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Test art pipeline
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          python -m pip install --quiet pillow
+          python tools/test_normalize_art.py -v
+
       - name: Cache Godot binary
         id: godot-cache
         uses: actions/cache@v4
