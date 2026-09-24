@@ -1,0 +1,17 @@
+{
+  "_about": "OVERLAY (återställning): M6:s Pipoya-monster. Aktivera med python3 tools/normalize_art.py --build tools/art_build.pipoya.json (en körning) eller enabled: true (permanent). Kräver Pipoya-packet uppackat i assets/incoming/pipoya-free-rpg-monster-pack/full-480/ (committas inte, vidaredistribution förbjuden). Saknas en rå fil byggs basens post (shades) för det id:t. Pipoya-krediten flyttas automatiskt in i credits när någon post används.",
+  "enabled": false,
+  "retrieved": "2026-09-23",
+  "entries": [
+    {"id": "enemy.RUST_RAT",    "out": "enemy/RUST_RAT.png",    "op": "battler", "source": "pipoya", "strip_shadow": 96, "src": "full-480/pipo-enemy034.png", "max": [512, 512], "note": "Pipoya 034 mus. Rostråttan."},
+    {"id": "enemy.SLAG_MOTH",   "out": "enemy/SLAG_MOTH.png",   "op": "battler", "source": "pipoya", "strip_shadow": 96, "src": "full-480/pipo-enemy001.png", "max": [512, 512], "note": "Pipoya 001 fladdermus: närmaste bevingade lilla figur, ingen mal i packet."},
+    {"id": "enemy.THORN_IMP",   "out": "enemy/THORN_IMP.png",   "op": "battler", "source": "pipoya", "strip_shadow": 96, "src": "full-480/pipo-enemy013.png", "max": [512, 512], "note": "Pipoya 013 imp."},
+    {"id": "enemy.PIP_THIEF",   "out": "enemy/PIP_THIEF.png",   "op": "battler", "source": "pipoya", "strip_shadow": 96, "src": "full-480/pipo-enemy041.png", "max": [512, 512], "note": "Pipoya 041 kattsvärdsman med kappa: tjuven."},
+    {"id": "enemy.IRON_TICK",   "out": "enemy/IRON_TICK.png",   "op": "battler", "source": "pipoya", "strip_shadow": 96, "src": "full-480/pipo-enemy004.png", "max": [512, 512], "note": "Pipoya 004 pansarskalbagge: fästingen (rustning 6)."},
+    {"id": "enemy.GRAVE_HAND",  "out": "enemy/GRAVE_HAND.png",  "op": "battler", "source": "pipoya", "strip_shadow": 96, "src": "full-480/pipo-enemy011.png", "max": [512, 512], "note": "Pipoya 011 zombie med utsträckta armar: gravhanden (GRAB)."},
+    {"id": "enemy.CHALK_DUMMY", "out": "enemy/CHALK_DUMMY.png", "op": "battler", "source": "pipoya", "strip_shadow": 96, "src": "full-480/pipo-enemy050.png", "max": [512, 512], "note": "Pipoya 050 fågelskrämma: tutorialdockan (src/data/tutorial.gd)."},
+    {"id": "enemy.placeholder", "out": "enemy/placeholder.png", "op": "battler", "source": "pipoya", "strip_shadow": 96, "src": "full-480/pipo-enemy009.png", "max": [512, 512], "note": "Pipoya 009 slime: platshållare för fiende-id utan egen bild."},
+    {"id": "enemy.SLAGJAW",     "out": "boss/SLAGJAW.png",      "op": "battler", "source": "pipoya", "strip_shadow": 96, "src": "full-480/pipo-boss004.png", "max": [1024, 640], "tier": "boss", "note": "Pipoya boss004 bevingad demon med huggtandskäft: Slaggkäften. Samma fil som boss.SLAGJAW."},
+    {"id": "boss.SLAGJAW",      "out": "boss/SLAGJAW.png",      "op": "battler", "source": "pipoya", "strip_shadow": 96, "src": "full-480/pipo-boss004.png", "max": [1024, 640], "tier": "boss", "note": "Alias för enemy.SLAGJAW (samma fil, delad textur)."}
+  ]
+}

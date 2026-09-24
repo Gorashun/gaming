@@ -500,7 +500,8 @@ static func tex(id: StringName) -> Texture2D:
 
 
 ## Allt en vy behöver veta om ett id:
-## [code]{texture, source, pixel, size: Vector2, pivot, frames, kind, scale, boss}[/code].
+## [code]{texture, source, pixel, size: Vector2, pivot, frames, kind, scale, boss}[/code],
+## för manifestposter även [code]baked_rim[/code] och [code]emissive[/code] (Texture2D eller null).
 ## [code]source[/code] är [constant SOURCE_MANIFEST], [constant SOURCE_LEGACY],
 ## [constant SOURCE_PLACEHOLDER] eller [constant SOURCE_NONE].
 static func art_info(id: StringName) -> Dictionary:
@@ -573,7 +574,30 @@ static func _from_manifest(key: String) -> Dictionary:
 		"kind": kind,
 		"scale": float(e.get("scale", 1.0)),
 		"boss": String(e.get("tier", "")) == "boss",
+		"baked_rim": bool(e.get("baked_rim", false)),
+		"emissive": _emissive_texture(key, e, mipmapped),
 	}
+
+
+## Glödlagret ur manifestets valfria [code]emissive[/code] (M7): samma
+## beskärning och storlek som huvudbilden, RGB på svart, adderas efter ljuset i
+## [code]battler.gdshader[/code]. Saknas fältet eller filen: null (ingen glöd,
+## aldrig ett fel i spelet; [method validate_manifest] fäller bygget).
+static func _emissive_texture(key: String, e: Dictionary, mipmapped: bool) -> Texture2D:
+	var path: String = String(e.get("emissive", ""))
+	if path == "":
+		return null
+	var cache_key: String = "%s|%s" % [path, "mip" if mipmapped else "raw"]
+	var loaded: Texture2D = _file_cache.get(cache_key, null) as Texture2D
+	if loaded == null:
+		loaded = _load_art_file(path)
+		if loaded != null and mipmapped:
+			loaded = with_mipmaps(loaded)
+		if loaded != null:
+			_file_cache[cache_key] = loaded
+	if loaded == null:
+		_warn_once(key + ".emissive", "manifestet pekar på glödlagret %s som inte finns" % path)
+	return loaded
 
 
 static func _entry_size(e: Dictionary, texture: Texture2D) -> Vector2:
@@ -812,6 +836,10 @@ static func validate_manifest(data: Dictionary = {}) -> PackedStringArray:
 			problems.append("%s: föremål ska vara kind icon" % id)
 		if not e.has("license") or String(e.get("license", "")) == "":
 			problems.append("%s: saknar license" % id)
+		if e.has("emissive"):
+			var glow: String = String(e["emissive"])
+			if not glow.begins_with(ART_ROOT) or not (ResourceLoader.exists(glow) or FileAccess.file_exists(glow)):
+				problems.append("%s: glödlagret %s finns inte under %s" % [id, glow, ART_ROOT])
 	return problems
 
 

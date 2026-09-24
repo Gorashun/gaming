@@ -2,6 +2,7 @@
   "_about": "En post per extern källa i assets/art/. Dev A renderar listan till credits-skärmen (nåbar offline, utan konto). attribution_lines är texten ordagrant enligt docs/ASSET_SHOPPING_LIST_PAINTED.md §C; required=true betyder att raden är ett licensvillkor, inte en artighet. Sanningen om enskilda filer är assets/ASSET_LICENSES.csv; tools/normalize_art.py läser den här filen för att fylla manifestets license-fält.",
   "sections": [
     {"id": "cc-by", "title": "ART  (CC BY 3.0 — attribution required)"},
+    {"id": "creator-credit", "title": "ART  (creator's own licence — credit required by the creator)"},
     {"id": "creator", "title": "ART  (creator's own licence — credit not required, given anyway)"},
     {"id": "cc0", "title": "PUBLIC DOMAIN  (CC0 1.0 — no attribution required, credited anyway)"}
   ],
@@ -110,24 +111,6 @@
       ]
     },
     {
-      "id": "pipoya",
-      "section": "creator",
-      "name": "FREE RPG Monster Pack",
-      "author": "Pipoya",
-      "license": "proprietary-free",
-      "license_url": "https://pipoya.itch.io/free-rpg-monster-pack",
-      "url": "https://pipoya.itch.io/free-rpg-monster-pack",
-      "author_url": "https://pipoya.net",
-      "required": false,
-      "incoming": "assets/incoming/pipoya-free-rpg-monster-pack",
-      "license_text": "For commercial or personal use. Use and edit freely. Not redistribute or resell this asset. It can be used for game development and other productions.",
-      "attribution_lines": [
-        "\"FREE RPG Monster Pack\" by Pipoya.",
-        "  https://pipoya.itch.io/free-rpg-monster-pack",
-        "  Used under the creator's terms (commercial use and edits allowed, no redistribution)."
-      ]
-    },
-    {
       "id": "kaczor237",
       "section": "cc0",
       "name": "Stylized Mossy Dungeon Wall / Stylized Dungeon Stone Floor",
@@ -172,6 +155,107 @@
       "attribution_lines": [
         "Particle Pack — Kenney (www.kenney.nl) (CC0 1.0)"
       ]
+    },
+    {
+      "id": "game-icons-lorc",
+      "section": "cc-by",
+      "name": "game-icons.net — Lorc",
+      "author": "Lorc",
+      "license": "CC-BY-3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "url": "https://game-icons.net",
+      "author_url": "http://lorcblog.blogspot.com",
+      "required": true,
+      "only_while_used": true,
+      "incoming": "assets/incoming/game-icons-shades",
+      "attribution_lines": [
+        "Monster silhouettes by Lorc, from game-icons.net.",
+        "  http://lorcblog.blogspot.com",
+        "  https://game-icons.net",
+        "  Licensed under Creative Commons Attribution 3.0",
+        "  https://creativecommons.org/licenses/by/3.0/",
+        "  Modified: recoloured, shaded and lit for PIPWRECK."
+      ]
+    },
+    {
+      "id": "game-icons-delapouite",
+      "section": "cc-by",
+      "name": "game-icons.net — Delapouite",
+      "author": "Delapouite",
+      "license": "CC-BY-3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "url": "https://game-icons.net",
+      "author_url": "http://delapouite.com",
+      "required": true,
+      "only_while_used": true,
+      "incoming": "assets/incoming/game-icons-shades",
+      "attribution_lines": [
+        "Monster silhouettes by Delapouite, from game-icons.net.",
+        "  http://delapouite.com",
+        "  https://game-icons.net",
+        "  Licensed under Creative Commons Attribution 3.0",
+        "  https://creativecommons.org/licenses/by/3.0/",
+        "  Modified: recoloured, shaded and lit for PIPWRECK."
+      ]
+    },
+    {
+      "id": "game-icons-skoll",
+      "section": "cc-by",
+      "name": "game-icons.net — Skoll",
+      "author": "Skoll",
+      "license": "CC-BY-3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "url": "https://game-icons.net",
+      "author_url": "https://game-icons.net",
+      "required": true,
+      "only_while_used": true,
+      "incoming": "assets/incoming/game-icons-shades",
+      "attribution_lines": [
+        "Monster silhouettes by Skoll, from game-icons.net.",
+        "  https://game-icons.net",
+        "  Licensed under Creative Commons Attribution 3.0",
+        "  https://creativecommons.org/licenses/by/3.0/",
+        "  Modified: recoloured, shaded and lit for PIPWRECK."
+      ]
+    }
+  ],
+  "pending_sources": [
+    {
+      "id": "aekashics",
+      "section": "creator-credit",
+      "name": "Ækashics Librarium",
+      "author": "Ækashics",
+      "license": "proprietary-free",
+      "license_url": "http://www.akashics.moe",
+      "url": "http://www.akashics.moe",
+      "author_url": "http://www.akashics.moe",
+      "required": true,
+      "only_while_used": true,
+      "incoming": "assets/incoming/aekashics-librarium",
+      "license_text": "Creator's own terms (Librarium page): credit Ækashics with a link to www.akashics.moe; the files may not be redistributed. Verify commercial use against license-screenshot.png before release.",
+      "attribution_lines": [
+        "Monster battlers by Ækashics – www.akashics.moe",
+        "  Used under the Librarium Terms of Use."
+      ]
+    },
+    {
+      "id": "pipoya",
+      "section": "creator",
+      "name": "FREE RPG Monster Pack",
+      "author": "Pipoya",
+      "license": "proprietary-free",
+      "license_url": "https://pipoya.itch.io/free-rpg-monster-pack",
+      "url": "https://pipoya.itch.io/free-rpg-monster-pack",
+      "author_url": "https://pipoya.net",
+      "required": false,
+      "incoming": "assets/incoming/pipoya-free-rpg-monster-pack",
+      "license_text": "For commercial or personal use. Use and edit freely. Not redistribute or resell this asset. It can be used for game development and other productions.",
+      "attribution_lines": [
+        "\"FREE RPG Monster Pack\" by Pipoya.",
+        "  https://pipoya.itch.io/free-rpg-monster-pack",
+        "  Used under the creator's terms (commercial use and edits allowed, no redistribution)."
+      ],
+      "only_while_used": true
     }
   ]
 }

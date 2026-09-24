@@ -19,3 +19,10 @@
 # och licensfilen committas. De renderade PNG:erna (render/) gör det inte.
 !game-icons/license.txt
 !game-icons/**/*.svg
+
+# M7 shades: game-icons.net (CC BY 3.0, redistribution allowed). The SVGs and
+# the rendered raw PNGs are committed so normalize_art.py runs without network.
+!game-icons-shades/*.png
+!game-icons-shades/license.txt
+!game-icons-shades/svg/
+!game-icons-shades/svg/*.svg

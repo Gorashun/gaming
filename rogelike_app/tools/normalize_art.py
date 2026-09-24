@@ -8,10 +8,59 @@ assets/credits.json (who made it, under which licence), then:
      (transparent margins trimmed, scaled to the target size, RGBA),
   2. writes assets/art/manifest.json (content id -> file, kind, size, pivot,
      frames, source, license), the file src/game/ui/art.gd reads,
-  3. rewrites every assets/art/ row in assets/ASSET_LICENSES.csv.
+  3. rewrites every assets/art/ row in assets/ASSET_LICENSES.csv,
+  4. keeps assets/credits.json in step with what the manifest uses (below).
 
-Palette grading is NOT done here: ART_DIRECTION_V2 section 4 is applied by
-the Godot shader (dev track A), so the files stay neutral and replaceable.
+Overlays (swap a whole set in one command)
+------------------------------------------
+An overlay is another build file with the same shape ({"entries": [...]},
+optionally "defaults": {...} merged into every entry of that overlay).
+Its entries replace the base entries with the same id. Two ways to apply one:
+
+    python3 tools/normalize_art.py --build tools/art_build.aekashics.json   # this run
+    "enabled": true in the overlay file (listed under "overlays" in art_build.json)
+
+An overlay entry whose raw file is missing is skipped with a notice and the
+base entry is built instead, so a half-downloaded pack still gives a full
+game. tools/art_build.aekashics.json (Aekashics battlers) and
+tools/art_build.pipoya.json (the M6 Pipoya set, rollback) are overlays.
+
+Credits follow the manifest
+---------------------------
+assets/credits.json has "sources" (shown on the credits screen) and
+"pending_sources" (known, not shown). After a full build:
+  - a pending source that the manifest now uses moves to "sources";
+  - a source marked "only_while_used": true that no manifest entry uses any
+    more moves back to "pending_sources".
+So a licence that says "credit while the art is in the build" (Aekashics)
+holds by construction. --only never touches credits, manifest or registry.
+
+Optional entry keys
+-------------------
+  "display_h": N   manifest "scale" = N / output height, i.e. the figure stands
+                   in the corridor as tall as an N px image would (the battler
+                   world scale is fixed per pixel, enemy_battler.gd). Lets a
+                   512 px source keep its resolution without becoming a giant.
+  "url": "..."     per-file URL for the ASSET_LICENSES.csv row (else the source's).
+  "emissive_src": "X_emissive.png"   (battler) glow layer beside the raw file,
+                   cropped and scaled like the battler into <out stem>_emissive.png;
+                   manifest "emissive" -> battler.gdshader adds it after the light.
+  "author": "A; B"  CSV author for a file composed from several makers' work.
+  "also_sources": [ids]  extra credits.json sources this file uses (credits sync).
+  "baked_rim": true  the PNG already carries its torch rim; manifest flag that
+                   turns the shader rim off in enemy_battler.gd (no double edge).
+  "grade": {...}   Pillow colour grade, see grade() below. OFF by default.
+
+Palette grading is normally NOT done here: ART_DIRECTION_V2 section 4 is
+applied at runtime by the Godot shaders (battler.gdshader: light_tint, torch
+rim, optional palette LUT), so the files stay neutral and replaceable. Turn
+"grade" on for an entry only when
+  (a) the art is shown somewhere without the battler shader (a 2D screen,
+      credits, store screenshots) and must still look SOTLJUS, or
+  (b) the source palette is so far from SOTLJUS (saturated, bright, warm-lit
+      from the wrong side) that the runtime grade cannot pull it in.
+For (b) keep it mild and set "rim": 0 if the shader rim is on, or the edge
+gets lit twice.
 
 M7 UI ink (assets/art/ui/{icon,slot,node,face,gearslot}/): white chalk icons
 the game tints with modulate. Two ways in:
@@ -27,11 +76,13 @@ The contract of the manifest: replace a file on disk under the same name, or
 point "file" at another PNG, and the game shows the new art. No code change.
 
 Requires Pillow (python3 -c "import PIL"). No other dependency.
+Test: python3 tools/test_normalize_art.py
 
 Usage:
     python3 tools/normalize_art.py            # from rogelike_app/
     python3 tools/normalize_art.py --root DIR
     python3 tools/normalize_art.py --only enemy.RUST_RAT   # one entry
+    python3 tools/normalize_art.py --build tools/art_build.aekashics.json
 """
 
 from __future__ import annotations
@@ -43,7 +94,7 @@ import sys
 from pathlib import Path
 
 try:
-    from PIL import Image, ImageDraw, ImageFilter, ImageOps
+    from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageOps
 except ImportError:  # pragma: no cover
     sys.stderr.write("normalize_art.py needs Pillow: pip install pillow\n")
     sys.exit(2)
@@ -130,6 +181,25 @@ def op_battler(image: Image.Image, e: dict) -> Image.Image:
     if e.get("strip_shadow"):
         image = strip_baked_shadow(image, int(e["strip_shadow"]))
     return fit(trim(image), max_w, max_h, upscale=False)
+
+
+def battler_emissive(image: Image.Image, emissive: Image.Image, e: dict, size: tuple[int, int]) -> Image.Image:
+    """The glow layer, cropped and scaled exactly like its battler.
+
+    The trim box comes from the battler's alpha (after strip_shadow), never
+    from the glow, so the two stay pixel-aligned. Output is opaque RGB on
+    black: the shader adds it, and black adds nothing.
+    """
+    if emissive.size != image.size:
+        raise SystemExit(f"{e['id']}: emissive {emissive.size} and battler {image.size} differ in size")
+    if e.get("strip_shadow"):
+        image = strip_baked_shadow(image.copy(), int(e["strip_shadow"]))
+    alpha = image.split()[3].point(lambda a: 255 if a > ALPHA_THRESHOLD else 0)
+    box = alpha.getbbox() or (0, 0, image.width, image.height)
+    glow = emissive.convert("RGB").crop(box)
+    if glow.size != size:
+        glow = glow.resize(size, Image.Resampling.LANCZOS)
+    return glow.convert("RGBA")
 
 
 def op_square(image: Image.Image, e: dict) -> Image.Image:
@@ -269,6 +339,70 @@ def op_fx(image: Image.Image, e: dict) -> Image.Image:
     return square(image, int(e["size"]))
 
 
+# --- Grade (optional, ART_DIRECTION_V2 section 4) ---------------------------
+
+GRADE_DEFAULTS = {
+    "desaturate": 0.30,          # 0..1, share of colour removed
+    "contrast": 1.12,            # 1 = unchanged
+    "cool_shadows": 0.35,        # 0..1, how far the darks move toward soot blue-grey
+    "shadow_color": "#2c3a48",   # "sot": cold blue-grey shadow
+    "rim": 0.5,                  # 0..1, warm torch rim on the lit edge; 0 = off
+    "rim_color": "#ff6a2c",      # "eld"
+    "rim_from": [0.72, -0.69],   # screen vector toward the torch (y down): upper right
+    "rim_px": 3,                 # rim width in output pixels
+}
+
+
+def _hex_rgb(value: str) -> tuple[int, int, int]:
+    value = value.lstrip("#")
+    return int(value[0:2], 16), int(value[2:4], 16), int(value[4:6], 16)
+
+
+def grade(image: Image.Image, params: dict | bool) -> Image.Image:
+    """SOTLJUS grade with Pillow: desaturate, contrast, cold darks, warm rim.
+
+    params is True (defaults) or a dict overriding GRADE_DEFAULTS. Alpha is
+    never changed, so trim, pivot and the game's silhouette pass still match.
+    """
+    p = dict(GRADE_DEFAULTS)
+    if isinstance(params, dict):
+        p.update(params)
+    rgba = image.convert("RGBA")
+    alpha = rgba.getchannel("A")
+    rgb = rgba.convert("RGB")
+    if p["desaturate"] > 0:
+        rgb = ImageEnhance.Color(rgb).enhance(max(0.0, 1.0 - float(p["desaturate"])))
+    if p["contrast"] != 1:
+        rgb = ImageEnhance.Contrast(rgb).enhance(float(p["contrast"]))
+    if p["cool_shadows"] > 0:
+        # Mask = how dark the pixel is (1 at black, 0 from mid-grey up).
+        luma = rgb.convert("L")
+        strength = float(p["cool_shadows"])
+        mask = luma.point(lambda v: int(max(0.0, 1.0 - v / 128.0) * 255 * strength))
+        cold = Image.new("RGB", rgb.size, _hex_rgb(p["shadow_color"]))
+        # Keep the value, take the hue: multiply-ish blend toward the cold colour.
+        tinted = ImageChops.multiply(rgb, cold.point(lambda v: min(255, v * 3)))
+        tinted = Image.blend(tinted, rgb, 0.5)
+        rgb = Image.composite(tinted, rgb, mask)
+    if p["rim"] > 0:
+        dx, dy = p["rim_from"]
+        norm = max(1e-6, (dx * dx + dy * dy) ** 0.5)
+        step = float(p["rim_px"])
+        ox, oy = round(dx / norm * step), round(dy / norm * step)
+        # Opaque here, transparent one step toward the torch = the lit edge.
+        shifted = Image.new("L", alpha.size, 0)
+        shifted.paste(alpha, (-ox, -oy))
+        edge = ImageChops.subtract(alpha, shifted)
+        edge = edge.filter(ImageFilter.GaussianBlur(max(0.5, step / 3)))
+        edge = ImageChops.multiply(edge, alpha)
+        edge = edge.point(lambda v: int(v * float(p["rim"])))
+        rim_layer = Image.new("RGB", rgb.size, _hex_rgb(p["rim_color"]))
+        rgb = ImageChops.add(rgb, ImageChops.multiply(rim_layer, Image.merge("RGB", (edge, edge, edge))))
+    out = rgb.convert("RGBA")
+    out.putalpha(alpha)
+    return out
+
+
 # --- Build ----------------------------------------------------------------
 
 
@@ -297,7 +431,15 @@ def build_entry(root: Path, e: dict, source: dict) -> tuple[Path, Image.Image]:
         out = op_fx(image, e)
     else:
         raise ValueError(f"{e['id']}: unknown op {op!r}")
+    if e.get("grade"):
+        out = grade(out, e["grade"])
     return src, out
+
+
+def emissive_out(e: dict) -> str:
+    """assets/art-relative path of an entry's glow layer: <out stem>_emissive.png."""
+    out = Path(e["out"])
+    return out.with_name(out.stem + "_emissive" + out.suffix).as_posix()
 
 
 def manifest_entry(e: dict, source: dict, image: Image.Image) -> dict:
@@ -313,6 +455,12 @@ def manifest_entry(e: dict, source: dict, image: Image.Image) -> dict:
     }
     if e.get("tier"):
         entry["tier"] = e["tier"]
+    if e.get("display_h"):
+        entry["scale"] = round(float(e["display_h"]) / image.height, 4)
+    if e.get("emissive_src"):
+        entry["emissive"] = RES_PREFIX + emissive_out(e)
+    if e.get("baked_rim"):
+        entry["baked_rim"] = True
     if e.get("nine_slice"):
         entry["nine_slice"] = e["nine_slice"]
     author = entry_author(e, source)
@@ -343,9 +491,9 @@ def csv_row(e: dict, source: dict, src: Path, root: Path, retrieved: str, image:
     row = {
         "path": (ART_ROOT / e["out"]).as_posix(),
         "source": src.relative_to(root).as_posix(),
-        "author": source["author"],
+        "author": e.get("author", source["author"]),
         "license": source["license"],
-        "url": source["url"],
+        "url": e.get("url", source["url"]),
         "retrieved": e.get("retrieved", retrieved),
         "notes": f"{e['id']} ({e['op']} {image.width}x{image.height} via tools/normalize_art.py)",
     }
@@ -379,17 +527,132 @@ def rewrite_registry(root: Path, rows: dict[str, dict]) -> None:
             writer.writerow(rows[path])
 
 
+# --- Overlays ---------------------------------------------------------------
+
+
+def load_spec(root: Path, builds: list[str]) -> tuple[dict, list[dict], list[str]]:
+    """Base spec plus overlays. Returns (base spec, entries, applied overlay names).
+
+    Overlay entries carry "_overlay", "_fallback" (the base entry with the same
+    id, if any) and "_retrieved" (the overlay's date), private to this script.
+    """
+    spec = json.loads((root / BUILD_SPEC).read_text(encoding="utf-8"))
+    entries: list[dict] = [dict(e) for e in spec["entries"] if "id" in e]  # skip {"_comment": ...} rows
+    explicit = [Path(b).as_posix() for b in builds]
+    candidates: list[str] = []
+    for name in list(spec.get("overlays", [])) + explicit:
+        if name not in candidates:
+            candidates.append(name)
+    applied: list[str] = []
+    for name in candidates:
+        path = Path(name) if Path(name).is_absolute() else root / name
+        if not path.is_file():
+            if name in explicit:
+                raise SystemExit(f"--build {name}: file not found")
+            continue
+        overlay = json.loads(path.read_text(encoding="utf-8"))
+        if not overlay.get("enabled", False) and name not in explicit:
+            continue
+        index = {e["id"]: n for n, e in enumerate(entries)}
+        defaults = overlay.get("defaults", {})
+        for raw in overlay.get("entries", []):
+            # "defaults" = keys shared by every entry (strip_shadow, grade ...).
+            e = {**defaults, **raw}
+            e["_overlay"] = name
+            if "retrieved" not in e:
+                # "" = not filled in yet; checked when the entry is really built.
+                e["_retrieved"] = overlay.get("retrieved", spec.get("retrieved", ""))
+            if e["id"] in index:
+                e["_fallback"] = entries[index[e["id"]]]
+                entries[index[e["id"]]] = e
+            else:
+                entries.append(e)
+        applied.append(name)
+    return spec, entries, applied
+
+
+def raw_path(root: Path, e: dict, sources: dict[str, dict]) -> Path:
+    source = sources.get(e["source"])
+    if source is None:
+        raise SystemExit(f"{e['id']}: unknown source {e['source']!r} (not in {CREDITS})")
+    return root / source["incoming"] / e["src"]
+
+
+def resolve_entry(root: Path, e: dict, sources: dict[str, dict]) -> dict:
+    """An overlay entry whose raw file is missing falls back to the base entry."""
+    while "_overlay" in e and not raw_path(root, e, sources).is_file():
+        fallback = e.get("_fallback")
+        missing = raw_path(root, e, sources).relative_to(root).as_posix()
+        print(f"note: {e['id']}: {missing} missing, overlay {e['_overlay']} skipped for this id"
+              + ("" if fallback else " (no base entry either)"))
+        if fallback is None:
+            return {}
+        e = fallback
+    return e
+
+
+# --- Credits sync -------------------------------------------------------------
+
+
+def dump_credits(data: dict) -> str:
+    """Same layout as the hand-written file: sections one per line, rest indent 2."""
+    out = ["{"]
+    keys = list(data)
+    for n, key in enumerate(keys):
+        value = data[key]
+        comma = "," if n < len(keys) - 1 else ""
+        if key == "sections":
+            out.append(f'  "{key}": [')
+            for m, section in enumerate(value):
+                out.append("    " + json.dumps(section, ensure_ascii=False) + ("," if m < len(value) - 1 else ""))
+            out.append("  ]" + comma)
+        else:
+            body = json.dumps(value, indent=2, ensure_ascii=False).replace("\n", "\n  ")
+            out.append(f'  "{key}": {body}{comma}')
+    out.append("}")
+    return "\n".join(out) + "\n"
+
+
+def sync_credits(credits: dict, used: set[str]) -> list[str]:
+    """Move sources between "sources" and "pending_sources" (see module doc).
+
+    Mutates credits; returns human-readable changes (empty = nothing moved).
+    """
+    active: list[dict] = list(credits.get("sources", []))
+    pending: list[dict] = list(credits.get("pending_sources", []))
+    changes: list[str] = []
+    for source in list(pending):
+        if source["id"] in used:
+            pending.remove(source)
+            active.append(source)
+            changes.append(f"credits: {source['id']} is used -> shown (sources)")
+    for source in list(active):
+        if source.get("only_while_used") and source["id"] not in used:
+            active.remove(source)
+            pending.append(source)
+            changes.append(f"credits: {source['id']} no longer used -> pending_sources (not shown)")
+    if changes:
+        credits["sources"] = active
+        credits["pending_sources"] = pending
+    return changes
+
+
 def main(argv: list[str]) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--root", default=".", help="project root (contains assets/ and tools/)")
     parser.add_argument("--only", default="", help="build a single manifest id")
+    parser.add_argument("--build", action="append", default=[], metavar="FILE",
+                        help="apply an overlay build file (repeatable), e.g. tools/art_build.aekashics.json")
     args = parser.parse_args(argv)
     root = Path(args.root).resolve()
 
-    spec = json.loads((root / BUILD_SPEC).read_text(encoding="utf-8"))
+    spec, entries, applied = load_spec(root, args.build)
     credits = json.loads((root / CREDITS).read_text(encoding="utf-8"))
-    sources = {s["id"]: s for s in credits["sources"]}
+    sources = {s["id"]: s for s in credits.get("pending_sources", [])}
+    sources.update({s["id"]: s for s in credits.get("sources", [])})
     retrieved = spec.get("retrieved", "")
+    for name in applied:
+        print(f"overlay: {name}")
 
     manifest: dict = {
         "_about": "PIPWRECK art manifest. Content id -> file. Generated by tools/normalize_art.py "
@@ -400,35 +663,63 @@ def main(argv: list[str]) -> int:
     rows: dict[str, dict] = {}
     built = 0
     written_files: dict[str, str] = {}
-    for e in spec["entries"]:
+    used_sources: set[str] = set()
+    # Resolve and validate everything before the first file is written.
+    resolved: list[dict] = []
+    for e in entries:
         if "id" not in e:
             continue  # {"_comment": ...} rows that group the spec
         if args.only and e["id"] != args.only:
             continue
-        source = sources.get(e["source"])
-        if source is None:
+        e = resolve_entry(root, e, sources)
+        if not e:
+            continue
+        if e["source"] not in sources:
             raise SystemExit(f"{e['id']}: unknown source {e['source']!r} (not in {CREDITS})")
+        if not e.get("_retrieved", retrieved):
+            raise SystemExit(f"{e['id']}: overlay {e.get('_overlay')} has no \"retrieved\" date; "
+                             "set it (YYYY-MM-DD, the day the files were downloaded) and run again")
+        resolved.append(e)
+    for e in resolved:
+        source = sources[e["source"]]
         out_path = root / ART_ROOT / e["out"]
         if e["out"] in written_files:
             # Two ids share one file (enemy.SLAGJAW / boss.SLAGJAW): build once.
             image = load_rgba(out_path)
             src = root / source["incoming"] / e["src"]
         else:
+            row_date = e.get("_retrieved", retrieved)
             src, image = build_entry(root, e, source)
             out_path.parent.mkdir(parents=True, exist_ok=True)
             image.save(out_path, "PNG", optimize=True)
             written_files[e["out"]] = e["id"]
-            rows[(ART_ROOT / e["out"]).as_posix()] = csv_row(e, source, src, root, retrieved, image)
+            if e.get("emissive_src"):
+                glow_src = root / source["incoming"] / e["emissive_src"]
+                if not glow_src.is_file():
+                    raise SystemExit(f"{e['id']}: emissive raw file missing: {glow_src}")
+                glow = battler_emissive(load_rgba(src), load_rgba(glow_src), e, image.size)
+                glow.save(root / ART_ROOT / emissive_out(e), "PNG", optimize=True)
+                glow_entry = dict(e, out=emissive_out(e), id=e["id"] + " emissive")
+                rows[(ART_ROOT / emissive_out(e)).as_posix()] = csv_row(
+                    glow_entry, source, glow_src, root, row_date, glow)
+            rows[(ART_ROOT / e["out"]).as_posix()] = csv_row(e, source, src, root, row_date, image)
             built += 1
         manifest[e["id"]] = manifest_entry(e, source, image)
+        used_sources.add(source["id"])
+        used_sources.update(e.get("also_sources", []))
         print(f"{e['id']:<26} {e['out']:<30} {image.width}x{image.height}  {source['license']}")
 
     if args.only:
-        print(f"built {built} file(s); manifest and registry NOT rewritten for --only")
+        print(f"built {built} file(s); manifest, registry and credits NOT rewritten for --only")
         return 0
 
     (root / MANIFEST).write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     rewrite_registry(root, rows)
+    changes = sync_credits(credits, used_sources)
+    for change in changes:
+        print(change)
+    if changes:
+        (root / CREDITS).write_text(dump_credits(credits), encoding="utf-8")
     ids = [k for k in manifest if not k.startswith("_")]
     print(f"built {built} file(s), {len(ids)} manifest entries -> {MANIFEST}")
     print(f"registry rows for {ART_ROOT}/: {len(rows)} -> {REGISTRY}")

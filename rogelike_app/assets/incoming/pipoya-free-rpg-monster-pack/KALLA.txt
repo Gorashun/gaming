@@ -17,4 +17,4 @@ AI:           nej. Skaparen anger att illustrationerna är gjorda i Adobe Illust
               (BOOTH-sidan för ぴぽやポップモンスターイラスト素材, sökutdrag 2026-09-23). Paketet publicerades 2019–2020.
 Skärmdump av licensrutan:  SAKNAS – Anders tar license-screenshot.png från itch-sidan (proxyn blockerar).
 Innehåll:     full-480/: 50 enemies 480×480 + 4 bossar 1280×600 ("shade"-varianten); small-256/: samma i 256 px; manifest.csv.
-Använt i assets/art/:  enemy/{RUST_RAT,SLAG_MOTH,THORN_IMP,PIP_THIEF,IRON_TICK,GRAVE_HAND,CHALK_DUMMY,placeholder}.png, boss/SLAGJAW.png
+Använt i assets/art/:  INGET sedan M7 (2026-09-24, ersatt av game-icons-shades). Återställning: python3 tools/normalize_art.py --build tools/art_build.pipoya.json

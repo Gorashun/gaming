@@ -16,3 +16,11 @@ Bara proveniens: `KALLA.txt`, licensfiler, `license-screenshot.png`, README (se 
 **Vektorikoner (game-icons.net, M7):** `python3 tools/icons/fetch_icons.py` hämtar SVG:erna som `tools/art_build.json` pekar ut (`"svg": "<author>/<name>.svg"`), `NODE_PATH=/opt/node22/lib/node_modules node tools/icons/render_icons.js` renderar dem till `game-icons/render/<id>.png` (256 px vit krita), sedan steg 2–3 ovan. Se `docs/M7_UI_NOTES.md`.
 
 Byte av grafik = byt PNG under samma namn i `assets/art/` eller peka om `file` i manifestet. Ingen kod ändras.
+
+## Byta ett helt set (overlays)
+Monstren byts som ett set med en overlay-fil (docstringen i `tools/normalize_art.py`):
+- `game-icons-shades/` – M7:s interimsmonster (basen i `tools/art_build.json`), renderade av `tools/shade_monsters/`.
+- `aekashics-librarium/` – Ækashics-battlers när Anders lagt in dem: `python3 tools/normalize_art.py --build tools/art_build.aekashics.json` (se README där).
+- `pipoya-free-rpg-monster-pack/` – M6-setet, återställning: `--build tools/art_build.pipoya.json`.
+
+Credits följer med automatiskt: en källa i `assets/credits.json` `pending_sources` visas först när manifestet använder den.
