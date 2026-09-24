@@ -42,6 +42,13 @@ Optional entry keys
                    world scale is fixed per pixel, enemy_battler.gd). Lets a
                    512 px source keep its resolution without becoming a giant.
   "url": "..."     per-file URL for the ASSET_LICENSES.csv row (else the source's).
+  "emissive_src": "X_emissive.png"   (battler) glow layer beside the raw file,
+                   cropped and scaled like the battler into <out stem>_emissive.png;
+                   manifest "emissive" -> battler.gdshader adds it after the light.
+  "author": "A; B"  CSV author for a file composed from several makers' work.
+  "also_sources": [ids]  extra credits.json sources this file uses (credits sync).
+  "baked_rim": true  the PNG already carries its torch rim; manifest flag that
+                   turns the shader rim off in enemy_battler.gd (no double edge).
   "grade": {...}   Pillow colour grade, see grade() below. OFF by default.
 
 Palette grading is normally NOT done here: ART_DIRECTION_V2 section 4 is
@@ -164,6 +171,25 @@ def op_battler(image: Image.Image, e: dict) -> Image.Image:
     if e.get("strip_shadow"):
         image = strip_baked_shadow(image, int(e["strip_shadow"]))
     return fit(trim(image), max_w, max_h, upscale=False)
+
+
+def battler_emissive(image: Image.Image, emissive: Image.Image, e: dict, size: tuple[int, int]) -> Image.Image:
+    """The glow layer, cropped and scaled exactly like its battler.
+
+    The trim box comes from the battler's alpha (after strip_shadow), never
+    from the glow, so the two stay pixel-aligned. Output is opaque RGB on
+    black: the shader adds it, and black adds nothing.
+    """
+    if emissive.size != image.size:
+        raise SystemExit(f"{e['id']}: emissive {emissive.size} and battler {image.size} differ in size")
+    if e.get("strip_shadow"):
+        image = strip_baked_shadow(image.copy(), int(e["strip_shadow"]))
+    alpha = image.split()[3].point(lambda a: 255 if a > ALPHA_THRESHOLD else 0)
+    box = alpha.getbbox() or (0, 0, image.width, image.height)
+    glow = emissive.convert("RGB").crop(box)
+    if glow.size != size:
+        glow = glow.resize(size, Image.Resampling.LANCZOS)
+    return glow.convert("RGBA")
 
 
 def op_square(image: Image.Image, e: dict) -> Image.Image:
@@ -360,6 +386,12 @@ def build_entry(root: Path, e: dict, source: dict) -> tuple[Path, Image.Image]:
     return src, out
 
 
+def emissive_out(e: dict) -> str:
+    """assets/art-relative path of an entry's glow layer: <out stem>_emissive.png."""
+    out = Path(e["out"])
+    return out.with_name(out.stem + "_emissive" + out.suffix).as_posix()
+
+
 def manifest_entry(e: dict, source: dict, image: Image.Image) -> dict:
     kind = KIND_FOR_OP[e["op"]]
     entry = {
@@ -375,6 +407,10 @@ def manifest_entry(e: dict, source: dict, image: Image.Image) -> dict:
         entry["tier"] = e["tier"]
     if e.get("display_h"):
         entry["scale"] = round(float(e["display_h"]) / image.height, 4)
+    if e.get("emissive_src"):
+        entry["emissive"] = RES_PREFIX + emissive_out(e)
+    if e.get("baked_rim"):
+        entry["baked_rim"] = True
     if e.get("nine_slice"):
         entry["nine_slice"] = e["nine_slice"]
     if e.get("note"):
@@ -386,7 +422,7 @@ def csv_row(e: dict, source: dict, src: Path, root: Path, retrieved: str, image:
     return {
         "path": (ART_ROOT / e["out"]).as_posix(),
         "source": src.relative_to(root).as_posix(),
-        "author": source["author"],
+        "author": e.get("author", source["author"]),
         "license": source["license"],
         "url": e.get("url", source["url"]),
         "retrieved": e.get("retrieved", retrieved),
@@ -577,10 +613,20 @@ def main(argv: list[str]) -> int:
             out_path.parent.mkdir(parents=True, exist_ok=True)
             image.save(out_path, "PNG", optimize=True)
             written_files[e["out"]] = e["id"]
+            if e.get("emissive_src"):
+                glow_src = root / source["incoming"] / e["emissive_src"]
+                if not glow_src.is_file():
+                    raise SystemExit(f"{e['id']}: emissive raw file missing: {glow_src}")
+                glow = battler_emissive(load_rgba(src), load_rgba(glow_src), e, image.size)
+                glow.save(root / ART_ROOT / emissive_out(e), "PNG", optimize=True)
+                glow_entry = dict(e, out=emissive_out(e), id=e["id"] + " emissive")
+                rows[(ART_ROOT / emissive_out(e)).as_posix()] = csv_row(
+                    glow_entry, source, glow_src, root, row_date, glow)
             rows[(ART_ROOT / e["out"]).as_posix()] = csv_row(e, source, src, root, row_date, image)
             built += 1
         manifest[e["id"]] = manifest_entry(e, source, image)
         used_sources.add(source["id"])
+        used_sources.update(e.get("also_sources", []))
         print(f"{e['id']:<26} {e['out']:<30} {image.width}x{image.height}  {source['license']}")
 
     if args.only:

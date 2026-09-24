@@ -1,4 +1,4 @@
-Paket:        game-icons.net (github.com/game-icons/icons, gren master), 9 SVG-ikoner
+Paket:        game-icons.net (github.com/game-icons/icons, gren master), 11 SVG-ikoner
 Skapare:      Lorc (lorc/*), Delapouite (delapouite/*), Skoll (skoll/*)
 URL:          https://game-icons.net
 Spegel:       https://raw.githubusercontent.com/game-icons/icons/master/<author>/<name>.svg (enda vägen genom proxyn)
@@ -17,7 +17,8 @@ AI:           nej. Handritade vektorikoner (projektet startade 2012); renderinge
               "shades" är vår egen deterministiska kod (tools/shade_monsters/render_shades.js).
 Skärmdump av licensrutan:  behövs inte – licensen ligger i repot (license.txt).
 Innehåll:     svg/<author>__<name>.svg  – originalen
-              <ID>.png                  – render_shades.js-utdata (512 px, bossen 1024 px)
+              <ID>.png                  – render_shades.js-utdata (512 px, bossen 1024×640)
+              <ID>_emissive.png         – glödlagret (ögon, glödsprickor) på svart, adderas i spelet efter ljuset
 Ikon -> fiende:
   RUST_RAT     delapouite/rat
   SLAG_MOTH    delapouite/bat          (ingen mal finns i samlingen)
@@ -27,5 +28,5 @@ Ikon -> fiende:
   GRAVE_HAND   skoll/raise-zombie
   CHALK_DUMMY  lorc/scarecrow
   placeholder  delapouite/slime
-  SLAGJAW      lorc/daemon-skull
-Använt i assets/art/:  enemy/{RUST_RAT,SLAG_MOTH,THORN_IMP,PIP_THIEF,IRON_TICK,GRAVE_HAND,CHALK_DUMMY,placeholder}.png, boss/SLAGJAW.png
+  SLAGJAW      komposit: lorc/daemon-skull framför delapouite/muscular-torso och två lorc/bat-wing (en speglad)
+Använt i assets/art/:  enemy/{RUST_RAT,SLAG_MOTH,THORN_IMP,PIP_THIEF,IRON_TICK,GRAVE_HAND,CHALK_DUMMY,placeholder}{,_emissive}.png, boss/SLAGJAW{,_emissive}.png

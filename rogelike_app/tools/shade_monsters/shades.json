@@ -1,5 +1,5 @@
 {
-  "_about": "Interimsmonstren 'shades' (M7): game-icons.net-silhuetter (CC BY 3.0) renderade till mörka kol-/slaggvarelser i fackelljus av render_shades.js. id = fiende-id i spelet (filnamnet), icon = <author>/<name> i github.com/game-icons/icons, size = rå PNG i px (kvadrat), eyes = glödande ovaler i ikonens 512-enheter {x, y, rx, ry, rot (grader)}, tom lista = inga ögon. lines = hur ikonens inre linjer (inneslutna hål) ritas: incise (mörk skåra med varm läpp), ember (glödande spricka), fill (blir kropp). hole_keep_r = hål som rymmer en cirkel med den radien (ikonenheter) förblir genomskinliga (mellanrum mellan ben o.d.). seal = glipor i konturen smalare än 2 × seal (ikonenheter) räknas som stängda, så en öppen ring fylls som en kropp. inner_glow = svag inre glöd {x, y, r, strength} (boss). erase = cirklar {x, y, r} i ikonenheter som skärs bort (lösa detaljer som inte hör till varelsen). Flöde: python3 tools/shade_monsters/fetch_shades.py --render, sedan python3 tools/normalize_art.py.",
+  "_about": "Interimsmonstren 'shades' (M7): game-icons.net-silhuetter (CC BY 3.0) renderade till mörka kol-/slaggvarelser i fackelljus av render_shades.js. id = fiende-id i spelet (filnamnet), icon = <author>/<name> i github.com/game-icons/icons, size = rå PNG i px (kvadrat), eyes = glödande ovaler i ikonens 512-enheter {x, y, rx, ry, rot (grader)}, tom lista = inga ögon. lines = hur ikonens inre linjer (inneslutna hål) ritas: incise (mörk skåra med varm läpp), ember (glödande spricka), fill (blir kropp). hole_keep_r = hål som rymmer en cirkel med den radien (ikonenheter) förblir genomskinliga (mellanrum mellan ben o.d.). seal = glipor i konturen smalare än 2 × seal (ikonenheter) räknas som stängda, så en öppen ring fylls som en kropp. inner_glow = svag inre glöd {x, y, r, strength} (boss). erase = cirklar {x, y, r} i ikonenheter som skärs bort (lösa detaljer som inte hör till varelsen). layers = komposit bakifrån och fram (sista = främst): {icon, box [x, y, w, h] i utdata-px för ikonens 512-ruta, flip, tone (mörkare bakre lager), rim, lines, hole_keep_r, seal, main (ögon/inner_glow räknas i dess ikonenheter)}; size får då vara [w, h]. Utdata: <ID>.png (albedo) och <ID>_emissive.png (bara glöden, på svart), som spelet adderar efter ljuset. Flöde: python3 tools/shade_monsters/fetch_shades.py --render, sedan python3 tools/normalize_art.py.",
   "svg_dir": "assets/incoming/game-icons-shades/svg",
   "out_dir": "assets/incoming/game-icons-shades",
   "style": {
@@ -19,16 +19,19 @@
     "mottle_freq": 0.018,
     "key": 0.7,
     "fill": 0.22,
-    "rim_px": 2.5,
+    "rim_px": 3.5,
     "rim_broad_blur": 5,
-    "rim_tight": 0.8,
-    "rim_wide": 0.28,
+    "rim_tight": 1.2,
+    "rim_wide": 0.4,
     "counter": 0.35,
     "lip": 0.35,
     "ember_halo": 0.45,
     "eye_halo": 8,
     "eye_glow": 1.2,
     "hole_keep_r": 10,
+    "contact_blur": 6,
+    "contact": 0.8,
+    "emissive_lines": 0.8,
     "colors": {
       "body": "#141517",
       "body_slag": "#221a16",
@@ -61,7 +64,13 @@
      "eyes": [{"x": 243, "y": 100, "rx": 11, "ry": 8}, {"x": 277, "y": 100, "rx": 11, "ry": 8}]},
     {"id": "placeholder", "icon": "delapouite/slime",   "size": 512,  "lines": "incise",
      "eyes": [{"x": 282, "y": 140, "rx": 17, "ry": 11}]},
-    {"id": "SLAGJAW",     "icon": "lorc/daemon-skull",  "size": 1024, "lines": "ember", "hole_keep_r": 999, "eyes": [],
-     "inner_glow": {"x": 256, "y": 300, "r": 200, "strength": 0.5}}
+    {"id": "SLAGJAW",     "size": [1024, 640], "lines": "ember", "eyes": [],
+     "inner_glow": {"x": 256, "y": 300, "r": 200, "strength": 0.5},
+     "layers": [
+       {"icon": "lorc/bat-wing",            "box": [470, -10, 440, 440], "tone": 0.55, "rim": 0.6, "lines": "incise"},
+       {"icon": "lorc/bat-wing",            "box": [114, -10, 440, 440],  "flip": true, "tone": 0.55, "rim": 0.6, "lines": "incise"},
+       {"icon": "delapouite/muscular-torso", "box": [297, 250, 430, 430], "tone": 0.75, "rim": 0.8, "lines": "incise", "hole_keep_r": 999},
+       {"icon": "lorc/daemon-skull",        "box": [322, 0, 380, 380],   "tone": 1.0, "lines": "ember", "hole_keep_r": 999, "main": true}
+     ]}
   ]
 }

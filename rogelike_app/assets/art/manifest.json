@@ -11,20 +11,24 @@
     "frames": 1,
     "source": "game-icons-delapouite",
     "license": "CC-BY-3.0",
+    "emissive": "res://assets/art/enemy/RUST_RAT_emissive.png",
+    "baked_rim": true,
     "note": "Shade: Delapouite rat. Rostråttan."
   },
   "enemy.SLAG_MOTH": {
     "file": "res://assets/art/enemy/SLAG_MOTH.png",
     "kind": "battler",
     "size": [
-      380,
-      282
+      229,
+      170
     ],
     "pivot": "bottom",
     "frames": 1,
     "source": "game-icons-delapouite",
     "license": "CC-BY-3.0",
-    "note": "Shade: Delapouite bat (ingen mal finns i game-icons)."
+    "emissive": "res://assets/art/enemy/SLAG_MOTH_emissive.png",
+    "baked_rim": true,
+    "note": "Shade: Delapouite bat (ingen mal finns i game-icons). Liten (230×170) så att den inte läser som den bevingade bossen."
   },
   "enemy.THORN_IMP": {
     "file": "res://assets/art/enemy/THORN_IMP.png",
@@ -37,6 +41,8 @@
     "frames": 1,
     "source": "game-icons-lorc",
     "license": "CC-BY-3.0",
+    "emissive": "res://assets/art/enemy/THORN_IMP_emissive.png",
+    "baked_rim": true,
     "note": "Shade: Lorc evil-minion, stående hornad imp (lorc/imp är flygande i profil och läste som fladdermus nr 2)."
   },
   "enemy.PIP_THIEF": {
@@ -50,6 +56,8 @@
     "frames": 1,
     "source": "game-icons-lorc",
     "license": "CC-BY-3.0",
+    "emissive": "res://assets/art/enemy/PIP_THIEF_emissive.png",
+    "baked_rim": true,
     "note": "Shade: Lorc cloak-dagger, huva + dolk: tjuven."
   },
   "enemy.IRON_TICK": {
@@ -63,6 +71,8 @@
     "frames": 1,
     "source": "game-icons-lorc",
     "license": "CC-BY-3.0",
+    "emissive": "res://assets/art/enemy/IRON_TICK_emissive.png",
+    "baked_rim": true,
     "note": "Shade: Lorc tick, skalet fyllt (seal): fästingen."
   },
   "enemy.GRAVE_HAND": {
@@ -76,6 +86,8 @@
     "frames": 1,
     "source": "game-icons-skoll",
     "license": "CC-BY-3.0",
+    "emissive": "res://assets/art/enemy/GRAVE_HAND_emissive.png",
+    "baked_rim": true,
     "note": "Shade: Skoll raise-zombie, hand ur graven (GRAB)."
   },
   "enemy.CHALK_DUMMY": {
@@ -89,6 +101,8 @@
     "frames": 1,
     "source": "game-icons-lorc",
     "license": "CC-BY-3.0",
+    "emissive": "res://assets/art/enemy/CHALK_DUMMY_emissive.png",
+    "baked_rim": true,
     "note": "Shade: Lorc scarecrow: tutorialdockan."
   },
   "enemy.placeholder": {
@@ -102,34 +116,40 @@
     "frames": 1,
     "source": "game-icons-delapouite",
     "license": "CC-BY-3.0",
+    "emissive": "res://assets/art/enemy/placeholder_emissive.png",
+    "baked_rim": true,
     "note": "Shade: Delapouite slime: platshållare för fiende-id utan egen bild."
   },
   "enemy.SLAGJAW": {
     "file": "res://assets/art/boss/SLAGJAW.png",
     "kind": "battler",
     "size": [
-      523,
-      640
+      766,
+      633
     ],
     "pivot": "bottom",
     "frames": 1,
     "source": "game-icons-lorc",
     "license": "CC-BY-3.0",
     "tier": "boss",
-    "note": "Shade: Lorc daemon-skull med glödande ögon/näsa: Slaggkäften. Samma fil som boss.SLAGJAW."
+    "emissive": "res://assets/art/boss/SLAGJAW_emissive.png",
+    "baked_rim": true,
+    "note": "Shade-komposit: Lorc daemon-skull (glödande ögon/näsa) framför Delapouite muscular-torso och två Lorc bat-wing: Slaggkäften. Samma fil som boss.SLAGJAW."
   },
   "boss.SLAGJAW": {
     "file": "res://assets/art/boss/SLAGJAW.png",
     "kind": "battler",
     "size": [
-      523,
-      640
+      766,
+      633
     ],
     "pivot": "bottom",
     "frames": 1,
     "source": "game-icons-lorc",
     "license": "CC-BY-3.0",
     "tier": "boss",
+    "emissive": "res://assets/art/boss/SLAGJAW_emissive.png",
+    "baked_rim": true,
     "note": "Alias för enemy.SLAGJAW (samma fil, delad textur)."
   },
   "hero.portrait.a": {

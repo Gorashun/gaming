@@ -40,6 +40,11 @@ const SHADOW_WIDTH: float = 0.78
 const SHADOW_DEPTH: float = 0.30
 const SHADOW_ALPHA: float = 0.82
 
+## Glödlagret (manifestets [code]emissive[/code], M7): styrka och pulsens
+## amplitud (0,8–1,0 över 2 s). Reducerad rörelse: ingen puls.
+const EMISSIVE_STRENGTH: float = 1.0
+const EMISSIVE_PULSE: float = 0.1
+
 const SHADER_PAINTED: String = "res://src/game/shaders/battler.gdshader"
 const SHADER_PIXEL: String = "res://src/game/shaders/battler_pixel.gdshader"
 
@@ -59,6 +64,10 @@ var width_m: float = ENEMY_HEIGHT_M
 var is_boss: bool = false
 var is_pixel: bool = false
 var source: String = ""
+## Manifestets [code]baked_rim[/code]: shaderns kantljus är avstängt.
+var baked_rim: bool = false
+## Manifestet gav ett glödlager ([code]emissive[/code]).
+var has_emissive: bool = false
 ## Sant från första dödsbildrutan. Vyn räknar tysta rum på den.
 var dying: bool = false
 
@@ -111,6 +120,17 @@ func setup(p_enemy_id: String) -> void:
 	_material.shader = load(SHADER_PIXEL if is_pixel else SHADER_PAINTED) as Shader
 	_material.set_shader_parameter(&"region", frame_region(texture, int(info.get("frames", 1))))
 	_material.set_shader_parameter(&"albedo_tex", _base_texture(texture))
+	# Konst med inbakat kantljus (shades) får inte ett till från shadern: det
+	# blev en tjock orange kontur. Allt annat (Pipoya, Ækashics) är oförändrat.
+	baked_rim = bool(info.get("baked_rim", false))
+	if baked_rim:
+		_material.set_shader_parameter(&"rim_strength", 0.0)
+	var glow: Texture2D = info.get("emissive", null) as Texture2D
+	has_emissive = glow != null
+	if has_emissive:
+		_material.set_shader_parameter(&"emissive_tex", glow)
+		_material.set_shader_parameter(&"emissive_strength", EMISSIVE_STRENGTH)
+		_material.set_shader_parameter(&"emissive_pulse", EMISSIVE_PULSE)
 
 	var quad: QuadMesh = QuadMesh.new()
 	quad.size = Vector2(width_m, height_m)
@@ -207,6 +227,8 @@ func head_point() -> Vector3:
 ## [b]Reducerad rörelse:[/b] ingen andning alls.
 func start_idle(phase: float, reduced_motion: bool) -> void:
 	stop_idle()
+	if has_emissive:
+		_param(&"emissive_pulse", 0.0 if reduced_motion else EMISSIVE_PULSE)
 	if reduced_motion or _body == null:
 		return
 	var half: float = BREATH_SECONDS * 0.5

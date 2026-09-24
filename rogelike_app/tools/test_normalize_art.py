@@ -196,6 +196,26 @@ class NormalizeArtTest(unittest.TestCase):
         entry = self.p.manifest()["enemy.MON"]
         self.assertAlmostEqual(entry["scale"], round(32 / entry["size"][1], 4))
 
+    def test_emissive_layer_is_cropped_like_the_battler_and_registered(self) -> None:
+        glow = Image.new("RGBA", (200, 160), (0, 0, 0, 255))
+        # A hot patch on the body; the trim box starts at (60, 30), so it must land at (40, 25).
+        ImageDraw.Draw(glow).rectangle((95, 52, 105, 58), fill=(255, 120, 40, 255))
+        glow.save(self.p.root / "assets/incoming/base/mon_emissive.png")
+        e = self.p.spec["entries"][0]
+        e.update({"emissive_src": "mon_emissive.png", "baked_rim": True, "max": [512, 512]})
+        self.p.write()
+        self.p.run()
+        body = self.p.out_png()
+        light = self.p.out_png("enemy/MON_emissive.png")
+        self.assertEqual(light.size, body.size)
+        # Stripped shadow -> trim box starts at the body (60, 30); the hot patch moves with it.
+        self.assertEqual(light.getpixel((100 - 60, 55 - 30))[:3], (255, 120, 40))
+        self.assertEqual(light.getpixel((0, 0))[:3], (0, 0, 0))
+        entry = self.p.manifest()["enemy.MON"]
+        self.assertEqual(entry["emissive"], "res://assets/art/enemy/MON_emissive.png")
+        self.assertTrue(entry["baked_rim"])
+        self.assertIn("assets/art/enemy/MON_emissive.png", {r["path"] for r in self.p.rows()})
+
     def _overlay(self, enabled: bool = False, retrieved: str = "2026-10-01") -> Path:
         overlay = {
             "enabled": enabled,

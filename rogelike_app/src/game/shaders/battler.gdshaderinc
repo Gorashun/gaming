@@ -32,6 +32,15 @@ uniform float rim_strength : hint_range(0.0, 2.0) = 0.65;
 // Where the torch is, in UV units of one frame: +x = right, -y = up.
 uniform vec2 rim_offset = vec2(0.018, -0.012);
 
+// Glow layer (M7, manifest "emissive"): RGB on black, same frame as albedo_tex.
+// Added AFTER light_tint and the rim, so eyes and ember cracks glow in the dark
+// corridor instead of being dimmed with the body. Hidden by the silhouette
+// (beat 1 of the reveal has no colour). Breathes 0.8..1.0 over 2 s;
+// emissive_pulse = 0 holds it at 1.0 (reduced motion).
+uniform sampler2D emissive_tex : source_color, hint_default_black, BATTLER_FILTER, repeat_disable;
+uniform float emissive_strength : hint_range(0.0, 4.0) = 0.0;
+uniform float emissive_pulse : hint_range(0.0, 0.5) = 0.1;
+
 uniform float tilt = 0.0;
 uniform float alpha : hint_range(0.0, 1.0) = 1.0;
 
@@ -77,6 +86,10 @@ void fragment() {
 	float toward = texture(albedo_tex, UV + rim_offset * region.zw).a;
 	float edge = clamp(src.a - toward, 0.0, 1.0);
 	rgb += rim_color.rgb * edge * rim_strength;
+	if (emissive_strength > 0.0) {
+		float pulse = (1.0 - emissive_pulse) + emissive_pulse * sin(TIME * 3.14159265);
+		rgb += texture(emissive_tex, UV).rgb * emissive_strength * pulse;
+	}
 	rgb = mix(rgb, silhouette_color.rgb, silhouette);
 	rgb = mix(rgb, flash_color.rgb, flash);
 	ALBEDO = rgb;

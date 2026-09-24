@@ -9,7 +9,7 @@ files come straight from github.com/game-icons/icons (branch master):
     <BASE>/license.txt          ->  assets/incoming/game-icons-shades/license.txt
 
 Then (optionally, --render) runs render_shades.js, which writes
-assets/incoming/game-icons-shades/<ID>.png. After that:
+assets/incoming/game-icons-shades/<ID>.png and <ID>_emissive.png. After that:
 
     python3 tools/normalize_art.py      # -> assets/art/, manifest, ASSET_LICENSES.csv
     python3 tools/check_asset_licenses.py
@@ -64,8 +64,12 @@ def main(argv: list[str]) -> int:
     svg_dir.mkdir(parents=True, exist_ok=True)
 
     wanted: set[str] = set()
+    icons: list[str] = []
     for shade in spec["shades"]:
-        icon = shade["icon"]
+        for icon in [layer["icon"] for layer in shade.get("layers", [])] or [shade["icon"]]:
+            if icon not in icons:
+                icons.append(icon)
+    for icon in icons:
         author, name = icon.split("/")
         target = svg_dir / f"{author}__{name}.svg"
         wanted.add(target.name)
