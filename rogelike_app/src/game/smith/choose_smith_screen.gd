@@ -110,8 +110,9 @@ static func portrait_frame(variant: String) -> PanelContainer:
 		rect.texture = texture
 		rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		# Porträttet är pixelkonst och ligger inuti krit-UI:t, som ärver Linear.
-		rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		# M6/M7: porträttet är målat (hero.portrait.*) och ritas Linear; bara
+		# den gamla pixelreserven vill ha Nearest.
+		rect.texture_filter = Art.filter_for(Art.portrait_key(variant))
 		rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		art.add_child(rect)
 		rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

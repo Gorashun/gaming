@@ -151,25 +151,29 @@ func test_the_icons_that_replaced_the_glyphs_exist() -> void:
 		if Art.ui_icon(icon_name) == null:
 			missing.append(String(icon_name))
 	assert_array(Array(missing)).override_failure_message(
-		"16×16-ikoner som UI:t räknar med saknas: %s" % ", ".join(missing)).is_empty()
+		"ikoner som UI:t räknar med saknas: %s" % ", ".join(missing)).is_empty()
 
 
-func test_the_icons_are_sixteen_by_sixteen() -> void:
+func test_the_icons_are_painted_chalk_from_the_manifest() -> void:
+	# M7: inga 16×16-pixelsprites i UI:t längre. Varje ikon är 256 px krita ur
+	# manifestet och skalas fritt (Lanczos) till sin dp-storlek.
 	for icon_name: StringName in Art.UI_ICONS:
-		var tex: Texture2D = Art.ui_icon(icon_name)
-		if tex == null:
-			continue
-		assert_int(tex.get_width()).override_failure_message(
-			"%s är %d px bred, inte 16" % [icon_name, tex.get_width()]).is_equal(16)
-		assert_int(tex.get_height()).is_equal(16)
+		var info: Dictionary = Art.art_info(StringName(Art.UI_ICON_PREFIX + String(icon_name)))
+		assert_str(String(info["source"])).override_failure_message(
+			"%s kommer inte ur manifestet" % icon_name).is_equal(Art.SOURCE_MANIFEST)
+		assert_bool(bool(info["pixel"])).is_false()
+		var tex: Texture2D = info["texture"] as Texture2D
+		assert_int(tex.get_width()).is_equal(256)
+		assert_int(tex.get_height()).is_equal(256)
 
 
-func test_icon_sizes_stay_on_an_integer_scale() -> void:
-	# Art regel 2: en 16 px-ikon ritas bara i heltalsskala, annars kryper
-	# pixelkanterna. 16 dp → 48 px (3×), 14 dp → 32 px (2×).
-	assert_int(Art.icon_px(Art.ICON_DP)).is_equal(48)
-	assert_int(Art.icon_px(14)).is_equal(32)
-	assert_int(Art.icon_px(1)).is_equal(16)
+func test_icon_sizes_follow_dp_without_integer_steps() -> void:
+	# M7: ingen heltalsskala. 16 dp → 48 px, 14 dp → 42 px (inte 32).
+	assert_int(Art.icon_px(Art.ICON_DP)).is_equal(Tokens.dpi(Art.ICON_DP))
+	assert_int(Art.icon_px(14)).is_equal(Tokens.dpi(14))
+	assert_int(Art.icon_px(0)).is_equal(1)
+	var scaled: Texture2D = Art.scaled_ui_icon(&"settings", 14)
+	assert_int(scaled.get_width()).is_equal(Tokens.dpi(14))
 
 
 # --- Hjälpare --------------------------------------------------------------

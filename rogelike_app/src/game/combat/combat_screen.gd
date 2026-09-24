@@ -741,10 +741,13 @@ func _hide_popover() -> void:
 # ---------------------------------------------------------------------------
 
 ## Kritpilen som pekar på rätt element per rum. Den är en [Sprite2D] när
-## UI-agentens [code]ui/tutorial_pointer.png[/code] finns, annars en ritad
+## [code]ui.icon.pointer[/code] finns i manifestet, annars en ritad
 ## triangel – aldrig ett tomt hål (briefen: placeholder + varning, aldrig krasch).
 class TutorialPointer:
 	extends Control
+
+	## Pilens storlek i dp.
+	const POINTER_DP: float = 22.0
 
 	var target: Control = null
 	var _sprite: Sprite2D = null
@@ -753,7 +756,15 @@ class TutorialPointer:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var texture: Texture2D = Art.ui_icon(&"pointer")
 		if texture != null:
-			_sprite = Art.pixel_sprite(texture, Art.ICON_SCALE)
+			# M7: 256 px krita ur manifestet (ui.icon.pointer), nedskalad till
+			# POINTER_DP och tintad i sem/charge. Ingen heltalsskala, inget Nearest.
+			_sprite = Sprite2D.new()
+			_sprite.texture = texture
+			_sprite.centered = true
+			_sprite.texture_filter = Art.filter_for(&"ui.icon.pointer")
+			var side: float = Tokens.dp(POINTER_DP)
+			_sprite.scale = Vector2.ONE * side / maxf(1.0, float(texture.get_width()))
+			_sprite.modulate = Tokens.SEM_CHARGE
 			add_child(_sprite)
 
 	func point_at(node: Control) -> void:

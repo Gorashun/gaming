@@ -1,0 +1,20 @@
+Paket:        game-icons.net (urval, se manifest.csv)
+Skapare:      Lorc (http://lorcblog.blogspot.com), Delapouite (http://delapouite.com),
+              Sbed (http://opengameart.org/content/95-game-icons)
+URL:          https://game-icons.net
+Spegel:       https://github.com/game-icons/icons (hämtat via raw.githubusercontent.com/game-icons/icons/master/<author>/<name>.svg)
+Hämtad:       2026-09-24 (av UI-agenten, tools/icons/fetch_icons.py)
+Licens:       CC-BY 3.0 (några upphovspersoner CC0, ingen av dem används här)
+Licenstext:   license.txt i den här mappen, ordagrant från repots rot (hämtad samma dag).
+              Villkoret där: "Please, include a mention "Icons made by {author}" in your derivative work."
+Attribution krävs:  JA. Per upphovsperson: "Icons made by Lorc / Delapouite / Sbed" + länk, i assets/credits.json
+              (källa "game-icons") och per fil i assets/ASSET_LICENSES.csv (kolumnen author).
+Vidaredistribution: TILLÅTEN (CC-BY 3.0). Därför ligger SVG-källorna i git här, bakgrundsrekten borttagen.
+AI:           nej enligt projektets kända historik (handritade SVG, Lorcs ikoner från 2012 och framåt).
+              Inte verifierat mot webbsidan denna session: github.com-HTML är blockerad av proxyn.
+Skärmdump av licensrutan:  ingen (ingen webbsida nåbar); license.txt är själva licensfilen ur repot.
+Anteckning:   Ändringar vi gör (CC-BY kräver att de anges): bakgrundsrekten borttagen, formen vit på
+              transparent, kritfinish (SVG-filter i tools/icons/render_icons.js), vissa pilar vridna.
+              Färg sätts i spelet (modulate + tokens), aldrig i filen.
+Flöde:        tools/icons/fetch_icons.py -> tools/icons/render_icons.js -> tools/normalize_art.py
+              (tools/art_build.json, source "game-icons") -> assets/art/ui/{icon,slot,node,face,gearslot}/

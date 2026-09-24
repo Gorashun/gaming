@@ -2,6 +2,8 @@
 
 **Ägare:** UI/UX · **Uppdaterad:** 2026-09-21 · Gäller M2 (våning 1 + juice).
 
+> **Utfasat sedan M7 (2026-09-24, `docs/M7_UI_NOTES.md`):** `dice/*` (tärningarna ritas i kod, `DieArt`), `ui/slot_*`, `ui/node_*`, `ui/icon_*` (ersatta av `ui.slot.*`, `ui.node.*`, `ui.icon.*` i `assets/art/manifest.json`), `env/corridor/sign_plate.png` och `env/corridor/torch.png` (ritas av `Art.sign_plate_texture()` / `Art.torch_texture()`) och `hero/*` (pixelpaperdollen, död kod sedan M6). Filerna ligger kvar **bara som reserv** när en manifestpost saknas; inget ritas ur dem i normalfallet. Fiendearken och `items/relic_*` är likaså bara reserv sedan M6.
+
 Alla sprites här är 16 px-baserad pixelgrafik i `docs/UI_GUIDE.md` §2-paletten.
 Varje fil har en rad i `assets/ASSET_LICENSES.csv` och CI failar annars
 (`tools/check_asset_licenses.py`).

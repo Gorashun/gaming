@@ -8,7 +8,7 @@ extends PanelContainer
 ## [codeblock]
 ## ② ❖ MIRROR        nummerbricka + ikon + namn   (12 dp, slotfärg)
 ## copies left       REGELN, får aldrig utelämnas (11 dp, chalk/500)
-## [tärningen]       pixelkonst; 55 % opacitet i en spegel
+## [tärningen]       ritad i kod (DieArt); 55 % opacitet i en spegel
 ## 5 ×2 = 10         räkningen: bas ×mult = resultat (14 dp)
 ## copy of 2         VARFÖR, ≤ 14 tecken           (8 dp)
 ## [/codeblock]
@@ -26,10 +26,13 @@ signal die_dropped(slot_index: int, die_index: int)
 ## Långtryck: popover med slotens hela regel (§3).
 signal held(slot_index: int)
 
-## Slot-ikonens cellstorlek (assets/sprites/ui/slot_*.png).
-const ICON_CELL: int = 16
-## Heltalsskala för tärningen i sloten. 32 px × 3 = 96 px.
-const DIE_SCALE_IN_SLOT: int = 3
+## Slot-ikonens storlek i rubrikraden, dp. [b]M7:[/b] 256 px krita ur
+## manifestet ([code]ui.slot.*[/code]) i stället för en 16 px-sprite i skala 1.
+const ICON_DP: int = 14
+## Den tomma slotens vattenstämpel: slotens egen ikon, stor och svag, så att
+## formen syns där tärningen ska landa (formkoden i UI_GUIDE §2.4).
+const WATERMARK_DP: int = 26
+const WATERMARK_ALPHA: float = 0.4
 ## Långtryckets tröskel (§3: 400 ms).
 const HOLD_MS: int = 400
 ## Spegelns tärning ritas nedtonad: den betyder ingenting och ska se ut så
@@ -63,7 +66,8 @@ var slot_index: int = -1
 var _slot: Slot = null
 var _die: Die = null
 var _art: Control = null
-var _icon: Sprite2D = null
+var _icon: TextureRect = null
+var _watermark: TextureRect = null
 var _die_art: DieArt = null
 var _badge: Label = null
 var _type_label: Label = null
@@ -103,16 +107,19 @@ func _init() -> void:
 
 	_art = Control.new()
 	_art.name = "Art"
-	_art.custom_minimum_size = Vector2(float(ICON_CELL), float(ICON_CELL * 2))
+	_art.custom_minimum_size = Vector2(Tokens.dp(ICON_DP), Tokens.dp(ICON_DP))
+	_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	header.add_child(_art)
 
-	_icon = Art.pixel_sprite(null, 1)
-	_icon.name = "SlotIcon"
+	_icon = _ink_rect("SlotIcon")
 	_art.add_child(_icon)
-	_art.resized.connect(_layout_icon)
+	_icon.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	_type_label = _make_label(Tokens.TYPE_CAPTION - 3, Tokens.CHALK_300)
+	# Namnet står direkt efter ikonen, inte centrerat i resten av raden: ikon
+	# och namn är en enhet (M7, ikonen blev 14 dp i stället för 16 px).
+	_type_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_type_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(_type_label)
 
@@ -125,12 +132,17 @@ func _init() -> void:
 
 	var stack: Control = Control.new()
 	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Två gånger cellen som MINSTA höjd, tre som önskad: DieArt räknar själv ut
-	# största heltalsskala som ryms (Art.fit_scale), så sloten krymper snyggt
-	# när kvittot tar plats i stället för att trycka ut tumzonen.
-	stack.custom_minimum_size = Vector2(0.0, float(DieArt.CELL * 2))
+	# En minsta höjd, resten växer: DieArt ritas i vilken storlek som helst,
+	# så sloten krymper snyggt när kvittot tar plats i stället för att trycka
+	# ut tumzonen.
+	stack.custom_minimum_size = Vector2(0.0, DieArt.MIN_SIDE)
 	stack.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	column.add_child(stack)
+
+	_watermark = _ink_rect("Watermark")
+	_watermark.visible = false
+	stack.add_child(_watermark)
+	stack.resized.connect(_layout_watermark.bind(stack))
 
 	_die_art = DieArt.new()
 	_die_art.name = "DieArt"
@@ -173,15 +185,31 @@ static func _make_label(font_size: int, color: Color) -> Label:
 	return label
 
 
-## Noden som bär slot-ikonen (assets/sprites/ui/slot_<typ>.png).
+## En ikonruta för vit krita: skalas med bibehållet format, Linear + mipmaps.
+static func _ink_rect(node_name: String) -> TextureRect:
+	var rect: TextureRect = TextureRect.new()
+	rect.name = node_name
+	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return rect
+
+
+## Vattenstämpeln: [constant WATERMARK_DP], men aldrig större än ytan den står i.
+func _layout_watermark(stack: Control) -> void:
+	var side: float = minf(Tokens.dp(WATERMARK_DP), minf(stack.size.x, stack.size.y))
+	_watermark.position = (stack.size - Vector2(side, side)) * 0.5
+	_watermark.size = Vector2(side, side)
+
+
+## Noden som bär slot-ikonen ([code]ui.slot.<typ>[/code] i manifestet).
 func art_root() -> Control:
 	return _art
 
 
-func _layout_icon() -> void:
-	if _icon == null or _art == null:
-		return
-	_icon.position = Art.snap(_art.size * 0.5, 1)
+func slot_icon_rect() -> TextureRect:
+	return _icon
 
 
 ## Regelraden syns när slot-typerna är avslöjade. Är de inte det är brädet
@@ -199,13 +227,18 @@ func bind(index: int, slot: Slot, die: Die) -> void:
 	_badge.text = circled(index + 1)
 	_type_label.text = Tokens.slot_label(slot.type)
 	_icon.texture = Art.slot_icon(slot.type)
+	_icon.texture_filter = Art.filter_for(Art.slot_icon_key(slot.type))
 	_icon.modulate = Tokens.slot_color(slot.type)
 	_icon.visible = _icon.texture != null
 	if _icon.texture == null:
 		# Saknas ikonen faller typraden tillbaka på reservglyphen ur §2.4, så
 		# formkoden aldrig försvinner helt.
 		_type_label.text = "%s %s" % [Tokens.slot_icon(slot.type), Tokens.slot_label(slot.type)]
-	_layout_icon()
+	_watermark.texture = _icon.texture
+	_watermark.texture_filter = _icon.texture_filter
+	_watermark.modulate = Color(Tokens.slot_color(slot.type), WATERMARK_ALPHA)
+	_watermark.visible = false
+	_die_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_type_label.add_theme_color_override("font_color", Tokens.slot_color(slot.type))
 	_rule_label.text = rule_text(slot.type)
 	_rule_label.visible = _show_rules
@@ -233,6 +266,10 @@ func bind(index: int, slot: Slot, die: Die) -> void:
 		_die_label.text = tr("SLOT_STATE_EMPTY")
 		_die_label.add_theme_color_override("font_color", Tokens.CHALK_500)
 		_word_size()
+		# Tom slot: formen står stor och svag i mitten och ÄR tomläget. Ordet
+		# ritas bara när ikonen saknas – båda på 21 dp höjd blev ett gyttre.
+		_watermark.visible = _watermark.texture != null
+		_die_label.visible = not _watermark.visible
 
 	_apply_style()
 
@@ -267,7 +304,9 @@ func set_calculation(calc: String, why: String, multiplier: int, dimmed: bool) -
 	_calc_label.add_theme_color_override("font_color",
 		Tokens.CHALK_500 if dimmed else (Tokens.multiplier_color(multiplier) if multiplier > 1 else Tokens.SEM_DAMAGE))
 	_why_label.text = why
-	_why_label.visible = why != ""
+	# M7: raden tar alltid sin höjd, även tom. Annars fick en slot utan "varför"
+	# en högre tärningsyta än grannarna, och tärningarna ritades i olika storlek.
+	_why_label.visible = true
 
 
 ## Aktiveringspulsen i kedjan (UI_GUIDE §5.1).

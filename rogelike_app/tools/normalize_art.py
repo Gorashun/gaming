@@ -13,6 +13,16 @@ assets/credits.json (who made it, under which licence), then:
 Palette grading is NOT done here: ART_DIRECTION_V2 section 4 is applied by
 the Godot shader (dev track A), so the files stay neutral and replaceable.
 
+M7 UI ink (assets/art/ui/{icon,slot,node,face,gearslot}/): white chalk icons
+the game tints with modulate. Two ways in:
+  * "source": "game-icons" + "svg": "<author>/<name>.svg" - vector icons from
+    game-icons.net, fetched by tools/icons/fetch_icons.py and rendered to
+    "src" (render/<id>.png) by tools/icons/render_icons.js. The CSV row names
+    the author (credits.json "authors") and points at the SVG, not the PNG.
+  * "op": "icon" + "mono": true - a painted colour icon turned into tintable
+    ink (op_mono_icon). Used for the empty gear-slot glyphs (Ravenmore).
+Rows without an "id" ({"_comment": ...}) only group the spec and are skipped.
+
 The contract of the manifest: replace a file on disk under the same name, or
 point "file" at another PNG, and the game shows the new art. No code change.
 
@@ -33,7 +43,7 @@ import sys
 from pathlib import Path
 
 try:
-    from PIL import Image, ImageDraw
+    from PIL import Image, ImageDraw, ImageFilter, ImageOps
 except ImportError:  # pragma: no cover
     sys.stderr.write("normalize_art.py needs Pillow: pip install pillow\n")
     sys.exit(2)
@@ -124,6 +134,44 @@ def op_battler(image: Image.Image, e: dict) -> Image.Image:
 
 def op_square(image: Image.Image, e: dict) -> Image.Image:
     return square(image, int(e["size"]))
+
+
+# Mono icons (M7): the ink the UI tints with modulate. Light grey to white in
+# RGB so a semantic token multiplies it, the painted shading kept as value.
+MONO_FLOOR = 0.45
+MONO_PAD = 0.07
+MONO_OUTLINE_PX = 9
+MONO_OUTLINE_ALPHA = 0.62
+
+
+def op_mono_icon(image: Image.Image, e: dict) -> Image.Image:
+    """A painted colour icon as tintable ink (tools/icons/render_icons.js does
+    the same for vector icons): trimmed, desaturated, value range lifted to
+    MONO_FLOOR..1 so a tint never goes muddy, centred with a margin, and the
+    same soft dark outline the vector icons get from their SVG filter."""
+    size = int(e["size"])
+    alpha = image.split()[3]
+    box = alpha.point(lambda a: 255 if a > 40 else 0).getbbox()
+    if box:
+        image = image.crop(box)
+        alpha = image.split()[3]
+    grey = ImageOps.grayscale(image)
+    solid = alpha.point(lambda a: 255 if a > 128 else 0)
+    grey = ImageOps.autocontrast(grey, cutoff=1, mask=solid)
+    grey = grey.point(lambda v: int(255 * (MONO_FLOOR + (1.0 - MONO_FLOOR) * v / 255)))
+    ink = Image.merge("RGBA", (grey, grey, grey, alpha))
+    pad = float(e.get("pad", MONO_PAD))
+    side = max(ink.size)
+    canvas_side = max(1, round(side / (1.0 - 2.0 * pad)))
+    canvas = Image.new("RGBA", (canvas_side, canvas_side), (0, 0, 0, 0))
+    canvas.alpha_composite(ink, ((canvas_side - ink.width) // 2, (canvas_side - ink.height) // 2))
+    canvas = canvas.resize((size, size), Image.Resampling.LANCZOS)
+    rim = canvas.split()[3].filter(ImageFilter.MaxFilter(MONO_OUTLINE_PX))
+    rim = rim.filter(ImageFilter.GaussianBlur(1.5)).point(lambda a: int(a * MONO_OUTLINE_ALPHA))
+    out = Image.new("RGBA", canvas.size, (8, 9, 10, 0))
+    out.putalpha(rim)
+    out.alpha_composite(canvas)
+    return out
 
 
 def op_copy(image: Image.Image, e: dict) -> Image.Image:
@@ -233,6 +281,8 @@ def build_entry(root: Path, e: dict, source: dict) -> tuple[Path, Image.Image]:
     image = load_rgba(src)
     if op == "battler":
         out = op_battler(image, e)
+    elif op == "icon" and e.get("mono"):
+        out = op_mono_icon(image, e)
     elif op in ("icon", "portrait", "frame"):
         out = op_square(image, e)
     elif op == "copy":
@@ -265,21 +315,49 @@ def manifest_entry(e: dict, source: dict, image: Image.Image) -> dict:
         entry["tier"] = e["tier"]
     if e.get("nine_slice"):
         entry["nine_slice"] = e["nine_slice"]
+    author = entry_author(e, source)
+    if author:
+        entry["author"] = author["name"]
+    if e.get("tint"):
+        entry["tint"] = e["tint"]
     if e.get("note"):
         entry["note"] = e["note"]
     return entry
 
 
+def entry_author(e: dict, source: dict) -> dict:
+    """Per-file author for multi-author sources (game-icons.net: one folder
+    per author, credits.json lists them under "authors"). Empty otherwise."""
+    svg = str(e.get("svg", ""))
+    authors = source.get("authors", {})
+    if not svg or not authors:
+        return {}
+    folder = svg.split("/", 1)[0]
+    if folder not in authors:
+        raise SystemExit(f"{e['id']}: author folder {folder!r} missing from credits.json "
+                         f"source {source['id']!r} 'authors' (attribution is a licence term)")
+    return authors[folder]
+
+
 def csv_row(e: dict, source: dict, src: Path, root: Path, retrieved: str, image: Image.Image) -> dict:
-    return {
+    row = {
         "path": (ART_ROOT / e["out"]).as_posix(),
         "source": src.relative_to(root).as_posix(),
         "author": source["author"],
         "license": source["license"],
         "url": source["url"],
-        "retrieved": retrieved,
+        "retrieved": e.get("retrieved", retrieved),
         "notes": f"{e['id']} ({e['op']} {image.width}x{image.height} via tools/normalize_art.py)",
     }
+    author = entry_author(e, source)
+    if author:
+        # The vector original is the provenance, not the rendered PNG in between.
+        row["source"] = (Path(source["incoming"]) / e["svg"]).as_posix()
+        row["author"] = f"{author['name']} ({source['author']})"
+        row["url"] = source["raw_base"] + e["svg"]
+        row["notes"] = (f"{e['id']} (svg rendered by tools/icons/render_icons.js, "
+                        f"{e['op']} {image.width}x{image.height} via tools/normalize_art.py)")
+    return row
 
 
 def rewrite_registry(root: Path, rows: dict[str, dict]) -> None:
@@ -323,6 +401,8 @@ def main(argv: list[str]) -> int:
     built = 0
     written_files: dict[str, str] = {}
     for e in spec["entries"]:
+        if "id" not in e:
+            continue  # {"_comment": ...} rows that group the spec
         if args.only and e["id"] != args.only:
             continue
         source = sources.get(e["source"])

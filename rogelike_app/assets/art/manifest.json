@@ -791,6 +791,521 @@
     ],
     "note": "Kenney tyst 9-slice-ram (48 px, 16 px kant) för slots."
   },
+  "ui.icon.settings": {
+    "file": "res://assets/art/ui/icon/settings.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "note": "Inställningar (kugghjul)."
+  },
+  "ui.icon.sheet": {
+    "file": "res://assets/art/ui/icon/sheet.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "note": "Karaktärsbladet."
+  },
+  "ui.icon.help": {
+    "file": "res://assets/art/ui/icon/help.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Sbed",
+    "tint": "SEM_CHARGE",
+    "note": "Hjälp."
+  },
+  "ui.icon.undo": {
+    "file": "res://assets/art/ui/icon/undo.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Delapouite",
+    "note": "Ångra."
+  },
+  "ui.icon.armor": {
+    "file": "res://assets/art/ui/icon/armor.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Sbed",
+    "tint": "SEM_SHIELD",
+    "note": "Rustning i fiendechipet."
+  },
+  "ui.icon.attack": {
+    "file": "res://assets/art/ui/icon/attack.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "note": "Fiendens attack."
+  },
+  "ui.icon.charge": {
+    "file": "res://assets/art/ui/icon/charge.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "tint": "SEM_CHARGE",
+    "note": "Charge-banken."
+  },
+  "ui.icon.overflow": {
+    "file": "res://assets/art/ui/icon/overflow.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Delapouite",
+    "tint": "SEM_OVERFLOW",
+    "note": "Överflöd till nästa fiende."
+  },
+  "ui.icon.pointer": {
+    "file": "res://assets/art/ui/icon/pointer.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Delapouite",
+    "tint": "SEM_CHARGE",
+    "note": "Tutorialpekaren, spets nedåt."
+  },
+  "ui.icon.arrow_forward": {
+    "file": "res://assets/art/ui/icon/arrow_forward.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Delapouite",
+    "note": "Korridor framåt (pilen vriden 180)."
+  },
+  "ui.icon.arrow_left": {
+    "file": "res://assets/art/ui/icon/arrow_left.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Delapouite",
+    "note": "Korridor vänster (pilen vriden 90)."
+  },
+  "ui.icon.arrow_right": {
+    "file": "res://assets/art/ui/icon/arrow_right.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Delapouite",
+    "note": "Korridor höger (pilen vriden 270)."
+  },
+  "ui.slot.plain": {
+    "file": "res://assets/art/ui/slot/plain.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "tint": "Tokens.slot_color(PLAIN)",
+    "note": "PLAIN: kvadratfamiljen (UI_GUIDE 2.4)."
+  },
+  "ui.slot.fire": {
+    "file": "res://assets/art/ui/slot/fire.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Sbed",
+    "tint": "Tokens.slot_color(FIRE)",
+    "note": "FIRE: spets uppåt."
+  },
+  "ui.slot.mirror": {
+    "file": "res://assets/art/ui/slot/mirror.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "tint": "Tokens.slot_color(MIRROR)",
+    "note": "MIRROR: ramad spegel."
+  },
+  "ui.slot.anvil": {
+    "file": "res://assets/art/ui/slot/anvil.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "tint": "Tokens.slot_color(ANVIL)",
+    "note": "ANVIL: städet."
+  },
+  "ui.slot.charge": {
+    "file": "res://assets/art/ui/slot/charge.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "tint": "Tokens.slot_color(CHARGE)",
+    "note": "CHARGE: blixten."
+  },
+  "ui.slot.void": {
+    "file": "res://assets/art/ui/slot/void.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "tint": "Tokens.slot_color(VOID)",
+    "note": "VOID: virvel med hål."
+  },
+  "ui.node.combat": {
+    "file": "res://assets/art/ui/node/combat.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "note": "Korridorskylt: strid."
+  },
+  "ui.node.elite": {
+    "file": "res://assets/art/ui/node/elite.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "note": "Korridorskylt: elit."
+  },
+  "ui.node.boss": {
+    "file": "res://assets/art/ui/node/boss.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "note": "Korridorskylt: boss."
+  },
+  "ui.node.forge": {
+    "file": "res://assets/art/ui/node/forge.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "note": "Korridorskylt: marknad/smedja."
+  },
+  "ui.node.rest": {
+    "file": "res://assets/art/ui/node/rest.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "note": "Korridorskylt: vila."
+  },
+  "ui.node.mystery": {
+    "file": "res://assets/art/ui/node/mystery.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "note": "Korridorskylt: ödet."
+  },
+  "ui.face.gift": {
+    "file": "res://assets/art/ui/face/gift.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "tint": "SEM_POISON",
+    "note": "POISON_DROP (Venom Drop): droppen."
+  },
+  "ui.face.eld": {
+    "file": "res://assets/art/ui/face/eld.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Sbed",
+    "tint": "SEM_FIRE",
+    "note": "EMBER: lågan."
+  },
+  "ui.face.blod": {
+    "file": "res://assets/art/ui/face/blod.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "tint": "SEM_BLOOD",
+    "note": "VAMP_FANG (livsstöld): hjärta med droppe."
+  },
+  "ui.face.frost": {
+    "file": "res://assets/art/ui/face/frost.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "tint": "SEM_FROST",
+    "note": "Frost: reserv för en framtida frostsida."
+  },
+  "ui.face.tomrum": {
+    "file": "res://assets/art/ui/face/tomrum.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "tint": "SEM_SHIELD",
+    "note": "HOLLOW (värde 0, +1 omkast): portalen."
+  },
+  "ui.gearslot.HEAD": {
+    "file": "res://assets/art/ui/gearslot/HEAD.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "ravenmore-icons",
+    "license": "CC-BY-3.0",
+    "note": "Tom HEAD-slot (mono-bläck)."
+  },
+  "ui.gearslot.CHEST": {
+    "file": "res://assets/art/ui/gearslot/CHEST.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "ravenmore-icons",
+    "license": "CC-BY-3.0",
+    "note": "Tom CHEST-slot."
+  },
+  "ui.gearslot.BACK": {
+    "file": "res://assets/art/ui/gearslot/BACK.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "ravenmore-icons",
+    "license": "CC-BY-3.0",
+    "note": "Tom BACK-slot."
+  },
+  "ui.gearslot.HANDS": {
+    "file": "res://assets/art/ui/gearslot/HANDS.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "ravenmore-icons",
+    "license": "CC-BY-3.0",
+    "note": "Tom HANDS-slot: tång och hammare."
+  },
+  "ui.gearslot.WEAPON": {
+    "file": "res://assets/art/ui/gearslot/WEAPON.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "ravenmore-icons",
+    "license": "CC-BY-3.0",
+    "note": "Tom WEAPON-slot (512 saknar sword.png)."
+  },
+  "ui.gearslot.AMULET": {
+    "file": "res://assets/art/ui/gearslot/AMULET.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Lorc",
+    "note": "Tom AMULET-slot: Ravenmore saknar smycke."
+  },
+  "ui.gearslot.LEGS": {
+    "file": "res://assets/art/ui/gearslot/LEGS.png",
+    "kind": "icon",
+    "size": [
+      256,
+      256
+    ],
+    "pivot": "center",
+    "frames": 1,
+    "source": "game-icons",
+    "license": "CC-BY-3.0",
+    "author": "Delapouite",
+    "note": "Tom LEGS-slot: Ravenmore saknar benskydd."
+  },
   "env.corridor.wall": {
     "file": "res://assets/art/env/corridor/wall.png",
     "kind": "env",

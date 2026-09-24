@@ -15,3 +15,7 @@
 !*/manifest.csv
 !*/tools/
 !*/tools/*.py
+# M7: game-icons.net är CC-BY 3.0 (vidaredistribution tillåten) - SVG-källorna
+# och licensfilen committas. De renderade PNG:erna (render/) gör det inte.
+!game-icons/license.txt
+!game-icons/**/*.svg

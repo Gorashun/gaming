@@ -64,6 +64,33 @@
       ]
     },
     {
+      "id": "game-icons",
+      "section": "cc-by",
+      "name": "game-icons.net (UI icons, slot, node and die-face glyphs)",
+      "author": "game-icons.net",
+      "license": "CC-BY-3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0/",
+      "url": "https://game-icons.net",
+      "author_url": "https://github.com/game-icons/icons",
+      "raw_base": "https://raw.githubusercontent.com/game-icons/icons/master/",
+      "required": true,
+      "incoming": "assets/incoming/game-icons",
+      "authors": {
+        "lorc": {"name": "Lorc", "url": "http://lorcblog.blogspot.com"},
+        "delapouite": {"name": "Delapouite", "url": "http://delapouite.com"},
+        "sbed": {"name": "Sbed", "url": "http://opengameart.org/content/95-game-icons"}
+      },
+      "attribution_lines": [
+        "Icons from game-icons.net, recoloured and given a chalk finish.",
+        "  Icons made by Lorc, http://lorcblog.blogspot.com",
+        "  Icons made by Delapouite, http://delapouite.com",
+        "  Icons made by Sbed, http://opengameart.org/content/95-game-icons",
+        "  https://game-icons.net",
+        "  Licensed under Creative Commons Attribution 3.0",
+        "  https://creativecommons.org/licenses/by/3.0/"
+      ]
+    },
+    {
       "id": "painterly",
       "section": "cc-by",
       "name": "Painterly Spell Icons (part 1-4)",

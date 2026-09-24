@@ -172,6 +172,12 @@ func test_the_tutorial_pointer_stands_above_the_slot_it_points_at() -> void:
 
 	var pointer: Control = screen.tutorial_pointer()
 	assert_object(pointer).override_failure_message("rum 0.6 ska ha en kritpil").is_not_null()
+	# Pilen placeras i _process. Under last (hela sviten direkt efter en
+	# import) hann 60 ms ibland inte räcka till en bildruta: vänta på den.
+	for i: int in range(60):
+		if pointer.global_position != Vector2.ZERO:
+			break
+		await await_idle_frame()
 	var anchor: Control = screen.pointer_anchors()["slot_0"] as Control
 	var slot: Rect2 = anchor.get_global_rect()
 	assert_float(pointer.global_position.x).override_failure_message(

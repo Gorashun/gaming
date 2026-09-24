@@ -108,6 +108,14 @@ den som ser den, aldrig den enda bäraren (§6.2). Ikonerna ligger i
 `assets/sprites/ui/slot_<typ>.png`, 16×16 px, genererade av
 `tools/gen_pixel_assets.py`.
 
+> **M7 (2026-09-24):** slot-ikonerna är nu game-icons-motiv i 256 px vit krita,
+> `ui.slot.<typ>` i `assets/art/manifest.json` (PLAIN stenblock, FIRE låga,
+> MIRROR spegel, ANVIL städ, CHARGE blixt, VOID virvel), tintade med
+> slotfärgen. Formregeln gäller oförändrat och mäts nu på **24 dp**:
+> sämsta par PLAIN/ANVIL **0,56** (gräns 0,85), bevakat av
+> `tests/test_m7_ui.gd`. Tabellens formkolumn beskriver M1-ikonerna, som
+> finns kvar som reserv. Se `docs/M7_UI_NOTES.md`.
+
 | Slot | `Rules.SlotType` | Form (16×16-ikon) | Ram | Färg |
 |---|---|---|---|---|
 | Vanlig | `PLAIN` | **Kvadrat**, fylld, liten och centrerad | Tunn (1,5 dp) | `#CFC7B8` |
@@ -547,6 +555,16 @@ likadant, annars kryper kanterna under marschen.
 
 Tärningen är spelets enda "fysiska" objekt och ska alltid vara det öga dras
 till (§1A). Den är därför den enda pixelsaken som får ligga i tumzonen.
+
+> **M7 (2026-09-24): tärningen är inte pixelgrafik längre.** `DieArt` ritar
+> den i kod (`_draw()`): tung rundad kropp med synlig framkant och skugga,
+> materialets fem LUT-steg som gradient (järn, ben, glas + glasets sken och
+> ljusa kant), pips som ritade insänkta cirklar i `bone/pip`, specialsidor som
+> `ui.face.*`-glypher (256 px krita, tintade med sin token på en ingraverad
+> medaljong), sprickor som seedade linjer och blixten som en lerp mot vitt.
+> Ingen heltalsskala och inget Nearest. §9.1–9.3 nedan beskriver M1–M6-
+> kompositionen, vars filer ligger kvar som oanvänd reserv; färg- och
+> sidtabellerna gäller fortfarande. Se `docs/M7_UI_NOTES.md`.
 
 ### 9.1 Komposition, inte färdiga bilder
 

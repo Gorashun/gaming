@@ -58,6 +58,15 @@ func test_only_the_dice_are_raised() -> void:
 		assert_int(slot_style.shadow_size).is_equal(0)
 	var raised: int = 0
 	for die: Node in screen.get_node("Margin/Column/Tray").get_children():
+		# M7: en ritad tärning (DieArt) bär sin egen skugga – brickan runt den
+		# är ingen låda längre.
+		var drawn: bool = false
+		for child: Node in die.get_children():
+			if child is DieArt and (child as DieArt).is_drawing() and (child as DieArt).visible:
+				drawn = true
+		if drawn:
+			raised += 1
+			continue
 		for child: Node in die.find_children("*", "Panel", true, false):
 			var style: StyleBoxFlat = (child as Panel).get_theme_stylebox("panel") as StyleBoxFlat
 			if style != null and style.shadow_size > 0:

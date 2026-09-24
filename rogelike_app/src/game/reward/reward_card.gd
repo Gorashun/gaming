@@ -19,7 +19,7 @@ const ART_DP: int = 44
 const EPIC_COLOR: Color = Color("#B06BFF")
 
 var _art: Control = null
-var _icon: Sprite2D = null
+var _icon: TextureRect = null
 var _die_art: DieArt = null
 var _rarity_label: Label = null
 var _name_label: Label = null
@@ -45,25 +45,29 @@ func _init() -> void:
 	row.add_theme_constant_override("separation", Tokens.dpi(Tokens.SPACE_4))
 	margin.add_child(row)
 
-	# Relikikon (16×16) eller komponerad tärningssida (32×32), beroende på
-	# belöningens kategori. Ligger i krit-UI:t och sätter därför Nearest själv.
+	# Relik-/föremålsikon, slot-ikon eller en ritad tärning med sidan,
+	# beroende på belöningens kategori. M7: allt skalas fritt till rutan,
+	# Linear + mipmaps – ingen pixelkonst kvar här.
 	_art = Control.new()
 	_art.name = "Art"
 	_art.custom_minimum_size = Vector2(Tokens.dp(ART_DP), Tokens.dp(ART_DP))
 	_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	row.add_child(_art)
 
-	_icon = Art.pixel_sprite()
+	_icon = TextureRect.new()
 	_icon.name = "Icon"
+	_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_art.add_child(_icon)
+	_icon.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	_die_art = DieArt.new()
 	_die_art.name = "DieArt"
 	_die_art.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_die_art.visible = false
 	_art.add_child(_die_art)
-	_art.resized.connect(_layout_art)
 
 	var column: VBoxContainer = VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -110,9 +114,9 @@ func _bind_art() -> void:
 	_icon.texture = null
 	_icon.modulate = Color.WHITE
 	_die_art.visible = false
-	# Pixelikoner ritas med Nearest; målade manifestikoner (M6) med linjärt
-	# filter, annars blir de hårda och trappstegade när de skalas ned.
-	_art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	# Målad konst och krita: Linear + mipmaps. Nearest bara om en post faller
+	# tillbaka på en gammal pixelsprite (Art.filter_for).
+	_art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	match String(option.get("category", "")):
 		Rewards.CATEGORY_RELIC:
 			var relic_id: String = String(data.get("relic_id", ""))
@@ -128,27 +132,12 @@ func _bind_art() -> void:
 			var slot_type: int = int(data.get("slot_type", Rules.SlotType.PLAIN))
 			_icon.texture = Art.slot_icon(slot_type)
 			_icon.modulate = Tokens.slot_color(slot_type)
+			_art.texture_filter = Art.filter_for(Art.slot_icon_key(slot_type))
 		Rewards.CATEGORY_FORGE_FACE:
 			var die: Die = Die.new("preview", [Content.make_face(String(data.get("face_id", "")))])
 			_die_art.show_die(die, 0)
 			_die_art.visible = _die_art.is_drawing()
 	_icon.visible = _icon.texture != null
-	_layout_art()
-
-
-func _layout_art() -> void:
-	if _icon == null or _art == null:
-		return
-	var tex: Texture2D = _icon.texture
-	if tex != null and (tex.get_width() > 16 or _art.texture_filter != CanvasItem.TEXTURE_FILTER_NEAREST):
-		# Målade ikoner (M6-manifestet) är större än pixelikonernas 16×16 och
-		# skalas ned till rutan i stället för upp i heltal.
-		var fit: float = minf(_art.size.x / float(tex.get_width()), _art.size.y / float(tex.get_height()))
-		_icon.scale = Vector2.ONE * maxf(0.01, fit)
-		_icon.position = _art.size * 0.5
-		return
-	_icon.scale = Vector2.ONE * Art.fit_scale(_art.size, 16)
-	_icon.position = Art.snap(_art.size * 0.5, int(_icon.scale.x))
 
 
 func bind(p_index: int, p_option: Dictionary, p_target: Dictionary, description: String) -> void:

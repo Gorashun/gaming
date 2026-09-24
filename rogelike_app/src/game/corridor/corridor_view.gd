@@ -626,7 +626,8 @@ func _add_sign(spec: Dictionary) -> void:
 	plate.rotation.y = -float(facing) * PI * 0.5 + PI
 	_props.add_child(plate)
 
-	var icon_id: StringName = StringName("node." + _icon_key(String(spec["key"])))
+	var icon_key: String = _icon_key(String(spec["key"]))
+	var icon_id: StringName = Art.node_icon_key(icon_key)
 	var icon_info: Dictionary = Art.art_info(icon_id)
 	var icon: Texture2D = icon_info["texture"] as Texture2D
 	if icon == null:
@@ -640,10 +641,26 @@ func _add_sign(spec: Dictionary) -> void:
 	glyph.position = base - out * 0.03
 	glyph.rotation.y = plate.rotation.y
 	glyph.render_priority = 1
+	# M7: nodikonen är vit krita (ui.node.*) och får sin färg här. En gammal
+	# pixelsprite i reserven bär sin egen färg och lämnas vit.
+	if not bool(icon_info["pixel"]):
+		glyph.modulate = sign_tint(icon_key)
 	_props.add_child(glyph)
 
 
-## Skyltnyckel → filnamnet i [code]assets/sprites/ui/node_*.png[/code].
+## Kritans färg på skylten per nodtyp. Formen bär betydelsen (UI_GUIDE §6.2),
+## färgen är genvägen: blod för bossen, eld för eliten, guld för marknaden.
+static func sign_tint(icon_key: String) -> Color:
+	match icon_key:
+		"boss": return Tokens.SEM_BLOOD
+		"elite": return Tokens.SEM_FIRE
+		"forge": return Tokens.SEM_CHARGE
+		"rest": return Tokens.SEM_HEAL
+		"mystery": return Tokens.SEM_POISON
+	return Tokens.CHALK_100
+
+
+## Skyltnyckel → nodtyp, [code]ui.node.<typ>[/code] i manifestet.
 static func _icon_key(sign_key: String) -> String:
 	match sign_key:
 		CorridorMap.SIGN_FIGHT: return "combat"

@@ -138,9 +138,12 @@ func test_every_ui_icon_resolves_or_has_a_glyph() -> void:
 			assert_str(Art.ui_icon_glyph(icon_name)).override_failure_message(
 				"ikonen %s saknar både PNG och reservglyf" % icon_name).is_not_empty()
 			continue
+		# M7: ikonen är 256 px krita ur manifestet, inte en 16×16-sprite.
+		var info: Dictionary = Art.art_info(StringName(Art.UI_ICON_PREFIX + String(icon_name)))
+		assert_str(String(info["source"])).override_failure_message(
+			"%s ritas ur %s, inte ur manifestet" % [icon_name, info["source"]]).is_equal(Art.SOURCE_MANIFEST)
 		assert_int(texture.get_width()).override_failure_message(
-			"%s: 16×16 förväntas, fick %d px" % [icon_name, texture.get_width()]).is_equal(16)
-		assert_int(texture.get_height()).is_equal(16)
+			"%s: 256 px förväntas, fick %d px" % [icon_name, texture.get_width()]).is_equal(256)
 
 
 ## Tutorialvåningens fiender lånar ark från våning 1. Varje alias måste peka på
@@ -193,50 +196,51 @@ func test_every_relic_in_the_pool_has_a_paperdoll_layer_and_an_icon() -> void:
 
 # --- Tärningar -------------------------------------------------------------
 
-func test_every_die_material_has_a_body_and_a_lut() -> void:
+func test_every_die_material_has_a_five_step_palette() -> void:
+	# M7: tärningen ritas i kod; materialets färgspråk är LUT:arnas fem steg.
 	for die_material: int in [Rules.DieMaterial.IRON, Rules.DieMaterial.BONE, Rules.DieMaterial.GLASS]:
-		var body: Texture2D = Art.die_body(die_material)
-		assert_object(body).override_failure_message(
-			"materialet %d saknar kropp" % die_material).is_not_null()
-		assert_int(body.get_width()).is_equal(DieArt.CELL)
-		assert_int(body.get_height()).is_equal(DieArt.CELL)
-		assert_object(Art.die_lut(die_material)).override_failure_message(
-			"materialet %d saknar LUT" % die_material).is_not_null()
+		var colors: Array[Color] = DieArt.palette(die_material)
+		assert_int(colors.size()).is_equal(5)
+		# Mörkt → ljust, annars blir kanten ljusare än ovansidan.
+		assert_float(colors[0].get_luminance()).is_less(colors[4].get_luminance())
 
 
-func test_every_forgeable_face_resolves_to_an_overlay() -> void:
+func test_every_forgeable_face_resolves_to_a_glyph_or_drawn_pips() -> void:
 	for face_id: String in Content.FORGEABLE_FACES:
 		var face: Face = Content.make_face(face_id)
 		var overlay: Dictionary = Art.face_overlay(face)
-		assert_object(overlay["texture"]).override_failure_message(
-			"sidan %s saknar glyph/pips" % face_id).is_not_null()
+		var drawable: bool = overlay["texture"] != null or (bool(overlay["is_pips"]) and int(overlay["pips"]) >= 0)
+		assert_bool(drawable).override_failure_message(
+			"sidan %s saknar glyph/pips" % face_id).is_true()
 
 
-func test_pip_faces_carry_their_own_colour_and_glyphs_do_not() -> void:
-	# Pip-arken är redan tintade i bone/pip; ett modulate ovanpå skulle
-	# kvadrera färgen och göra ögonen svarta. Glypherna är vita och SKA tintas.
+func test_pips_are_drawn_and_glyphs_are_tinted_chalk() -> void:
 	var pips: Dictionary = Art.face_overlay(Face.new("PIP_5", 5))
-	assert_str(String(pips["color_token"])).is_equal("NONE")
 	assert_bool(bool(pips["is_pips"])).is_true()
+	assert_int(int(pips["pips"])).is_equal(5)
+	assert_object(pips["texture"]).is_null()
 
 	var ember: Dictionary = Art.face_overlay(Content.make_face("EMBER"))
 	assert_str(String(ember["color_token"])).is_equal("SEM_FIRE")
 	assert_bool(bool(ember["is_pips"])).is_false()
+	assert_object(ember["texture"]).is_same(Art.tex(&"ui.face.eld"))
 
 
-func test_every_pip_value_zero_to_six_has_an_overlay() -> void:
-	for value: int in range(0, 7):
-		var overlay: Dictionary = Art.face_overlay(Face.new("PIP_%d" % value, value))
-		assert_object(overlay["texture"]).override_failure_message(
-			"pips_%d saknas" % value).is_not_null()
+func test_every_pip_value_zero_to_six_has_a_layout() -> void:
+	var top: Rect2 = Rect2(0.0, 0.0, 100.0, 100.0)
+	for value: int in range(1, 7):
+		assert_int(DieArt.pip_centers(value, top).size()).is_equal(value)
+	# 0 är den spruckna sidan: en ring, inga ögon.
+	assert_int(int(Art.face_overlay(Face.new("PIP_0", 0))["pips"])).is_equal(0)
+	assert_int(DieArt.pip_centers(0, top).size()).is_equal(0)
 
 
-func test_all_three_crack_variants_exist_and_wrap() -> void:
-	for variant_seed: int in range(0, 6):
-		assert_object(Art.crack(variant_seed)).override_failure_message(
-			"sprickvariant för seed %d saknas" % variant_seed).is_not_null()
-	# posmod: ett negativt hash-värde får aldrig ge crack_0 eller crack_-1.
-	assert_object(Art.crack(-7)).is_not_null()
+func test_the_crack_is_seeded_per_die_and_never_touches_the_rng() -> void:
+	var a: Array[PackedVector2Array] = DieArt.crack_paths(12345)
+	var b: Array[PackedVector2Array] = DieArt.crack_paths(12345)
+	assert_int(a.size()).is_greater_equal(2)
+	assert_bool(a[0] == b[0]).is_true()
+	assert_bool(DieArt.crack_paths(-7)[0] != a[0]).is_true()
 
 
 # --- Slots, noder och miljö ------------------------------------------------
@@ -254,15 +258,7 @@ func test_the_node_kinds_the_march_can_show_have_icons() -> void:
 			"nodikonen %s saknas" % kind).is_not_null()
 
 
-# --- Heltalsmatematiken ----------------------------------------------------
-
-func test_fit_scale_never_returns_zero_or_a_fraction() -> void:
-	assert_int(Art.fit_scale(Vector2(160, 160), 32)).is_equal(5)
-	assert_int(Art.fit_scale(Vector2(100, 160), 32)).is_equal(3)
-	# Mindre ruta än en cell: hellre för stor tärning än ingen tärning.
-	assert_int(Art.fit_scale(Vector2(10, 10), 32)).is_equal(1)
-	assert_int(Art.fit_scale(Vector2(1000, 1000), 32)).is_equal(8)
-
+# --- Heltalsmatematiken (bara den gamla pixelpaperdollen, HeroFigure) ------
 
 func test_snap_quantises_against_the_art_grid() -> void:
 	assert_vector(Art.snap(Vector2(13.7, 27.2), 4)).is_equal(Vector2(12.0, 24.0))

@@ -1,30 +1,28 @@
 class_name Art
 extends RefCounted
-## Enda uppslagsplatsen för pixelgrafiken i [code]assets/sprites/[/code].
+## Enda uppslagsplatsen för grafiken: art-manifestet ([code]assets/art/[/code])
+## och, som reserv, de gamla spritesen i [code]assets/sprites/[/code].
 ##
-## Filnamnen står här och ingen annanstans. Byts en sprite ut (utbytesplanen i
-## [code]assets/sprites/README.md[/code] när CC0-paketen går att hämta) ändras
-## en rad här, inte fem skärmar.
+## Filnamnen står här och ingen annanstans. Byts en bild ut ändras manifestet
+## (eller PNG:en under samma namn), inte fem skärmar.
 ##
-## [b]Tre regler som hela pixelpipen vilar på[/b] (research 04 §5, UI_GUIDE §8.3):
-## [br]1. [b]Nearest, alltid.[/b] [code]project.godot[/code] sätter
-##    [code]default_texture_filter = 0[/code] globalt, men krit-UI:t
-##    ([code]ChalkUI[/code]) står på Linear och ärver nedåt. Sprites som ligger
-##    [i]inuti[/i] krit-UI:t (tärningsbrickan, slot-ramar, kortikoner) måste
-##    därför sätta [constant CanvasItem.TEXTURE_FILTER_NEAREST] själva. Det gör
-##    [method pixel_sprite] och [method pixel_texture_rect].
-## [br]2. [b]Heltalsskala, alltid.[/b] En 32 px-tärning på 2,5× ger ojämna
-##    pixlar. [method fit_scale] räknar därför ut största heltal som får plats.
-## [br]3. [b]Heltalspositioner.[/b] [method snap] kvantiserar mot skalan, annars
-##    kryper kanterna under marschens sidoscroll.
+## [b]M7: UI:t är inte pixelgrafik längre[/b] (docs/M7_UI_NOTES.md). Ikonerna i
+## krit-UI:t är 256 px vit krita ur manifestet ([code]ui.icon.*[/code],
+## [code]ui.slot.*[/code], [code]ui.node.*[/code], [code]ui.face.*[/code],
+## [code]ui.gearslot.*[/code]), tintas med [member CanvasItem.modulate] och en
+## token ur [Tokens], och ritas Linear med mipmaps i vilken storlek som helst.
+## Tärningarna ritas i kod ([DieArt]). Nearest och heltalsskala gäller bara det
+## som faller tillbaka på en gammal sprite ([constant SOURCE_LEGACY],
+## [code]pixel: true[/code]) – se [method filter_for].
 
 const SPRITES: String = "res://assets/sprites"
 const PALETTE_SHADER: String = "res://src/game/shaders/palette_lut.gdshader"
 
-## 16×16-ikoner i krit-UI:t (COMBAT_READABILITY §9). Varje post är en lista med
-## kandidatfilnamn, eftersom UI-agenten levererar dem parallellt och det exakta
-## namnet inte är låst. Första filen som finns vinner; finns ingen returneras
-## null, anroparen ritar sin glyf-reserv och [method missing_icons] räknar upp.
+## Ikonerna i krit-UI:t (COMBAT_READABILITY §9). [b]M7:[/b] nyckeln är namnet
+## i manifestet, [code]ui.icon.<nyckel>[/code] (256 px, game-icons.net). Listan
+## med filnamn är [b]reserven[/b]: de gamla 16×16-spritesen, som bara ritas om
+## manifestposten saknas. Finns ingen av dem returneras null, anroparen ritar
+## sin glyf-reserv och [method missing_icons] räknar upp.
 ##
 ## [b]Regeln:[/b] en saknad ikon ska ge en varning och en reservglyf, aldrig en
 ## krasch och aldrig ett tomt hål där en regel skulle ha stått.
@@ -67,23 +65,41 @@ const UI_ICON_GLYPHS: Dictionary = {
 	&"undo": "⮌",
 }
 
-## 16×16-ikonernas nominella storlek i dp. 16 dp × 3 px/dp = 48 px, alltså exakt
-## 3× heltalsskala på 1080-viewporten (regel 2 i klassens huvud).
+## Ikonernas nominella storlek i dp när anroparen inte säger något.
 const ICON_DP: int = 16
+
+## Prefixen för M7:s ikon-id:n i manifestet. Alla är [code]kind: icon[/code],
+## vit krita på transparent, och tintas av anroparen.
+const UI_ICON_PREFIX: String = "ui.icon."
+const UI_SLOT_PREFIX: String = "ui.slot."
+const UI_NODE_PREFIX: String = "ui.node."
+const UI_FACE_PREFIX: String = "ui.face."
+const UI_GEARSLOT_PREFIX: String = "ui.gearslot."
+const UI_INK_PREFIXES: Array[String] = [UI_ICON_PREFIX, UI_SLOT_PREFIX, UI_NODE_PREFIX,
+	UI_FACE_PREFIX, UI_GEARSLOT_PREFIX]
 
 static var _missing_icons: Dictionary = {}
 
 
-## En 16×16-ikon ur [constant UI_ICONS], eller null. Varnar en gång per namn.
+## Ikonen [code]ui.icon.<icon_name>[/code] ur manifestet, annars den gamla
+## 16×16-spriten ur [constant UI_ICONS], annars null. Varnar en gång per namn.
 static func ui_icon(icon_name: StringName) -> Texture2D:
+	var info: Dictionary = art_info(StringName(UI_ICON_PREFIX + String(icon_name)))
+	if String(info["source"]) == SOURCE_MANIFEST or String(info["source"]) == SOURCE_LEGACY:
+		return info["texture"] as Texture2D
+	if not _missing_icons.has(icon_name):
+		_missing_icons[icon_name] = true
+		push_warning("Art: ikonen '%s' saknas i manifestet och i assets/sprites/ui/ – ritar reservglyfen '%s'" % [
+			icon_name, UI_ICON_GLYPHS.get(icon_name, "?")])
+	return null
+
+
+## Den gamla 16×16-spriten för en ikon (reserven), eller null.
+static func _legacy_ui_icon(icon_name: StringName) -> Texture2D:
 	for candidate: Variant in UI_ICONS.get(icon_name, []) as Array:
 		var tex: Texture2D = texture(String(candidate))
 		if tex != null:
 			return tex
-	if not _missing_icons.has(icon_name):
-		_missing_icons[icon_name] = true
-		push_warning("Art: 16×16-ikonen '%s' saknas i assets/sprites/ui/ – ritar reservglyfen '%s'" % [
-			icon_name, UI_ICON_GLYPHS.get(icon_name, "?")])
 	return null
 
 
@@ -91,26 +107,27 @@ static func ui_icon_glyph(icon_name: StringName) -> String:
 	return String(UI_ICON_GLYPHS.get(icon_name, ""))
 
 
-## Ikonens storlek i px: största heltalsskala av 16 px som ryms i
-## [param size_dp]. Aldrig en bråkdel – regel 2 i klassens huvud. 16 dp ger
-## 48 px (3×), 14 dp ger 32 px (2×).
+## Ikonens storlek i px: [param size_dp] rakt av. [b]M7:[/b] ingen
+## heltalsskala längre – ikonerna är 256 px målad krita och skalas ned med
+## Lanczos, så 14 dp blir 42 px och inte 32.
 static func icon_px(size_dp: int = ICON_DP) -> int:
-	return 16 * maxi(1, int(floor(Tokens.dp(size_dp) / 16.0)))
+	return maxi(1, Tokens.dpi(size_dp))
 
 
 ## Cache för [method scaled_ui_icon]: [code]"namn@px" → ImageTexture[/code].
 static var _scaled_icons: Dictionary = {}
 
 
-## 16×16-ikonen uppskalad till [param size_dp] med [b]nearest[/b] och
-## heltalsfaktor.
+## Ikonen omsamplad till exakt [param size_dp].
 ##
-## [b]Varför en förstorad textur och inte skalning vid ritning:[/b]
+## [b]Varför en färdigskalad textur och inte skalning vid ritning:[/b]
 ## [member Button.icon] ritas i texturens egen storlek, och temakonstanten
-## [code]icon_max_width[/code] kan bara krympa. En 16 px-sprite blev därför en
-## 16 px-prick mitt i en 102 px-knapp. Med rätt storlek redan i texturen sköter
-## [Button] både centreringen (ikon utan text) och radningen bredvid texten
-## (ikon + text), och pixlarna sitter på heltal.
+## [code]icon_max_width[/code] kan bara krympa. Med rätt storlek redan i
+## texturen sköter [Button] både centreringen (ikon utan text) och radningen
+## bredvid texten (ikon + text).
+##
+## Målad krita (manifestet) skalas med Lanczos; en gammal pixelsprite i
+## reserven med Nearest, så att den åtminstone inte blir suddig.
 static func scaled_ui_icon(icon_name: StringName, size_dp: int = ICON_DP) -> Texture2D:
 	var px: int = icon_px(size_dp)
 	var key: String = "%s@%d" % [icon_name, px]
@@ -119,17 +136,25 @@ static func scaled_ui_icon(icon_name: StringName, size_dp: int = ICON_DP) -> Tex
 	var tex: Texture2D = ui_icon(icon_name)
 	if tex == null:
 		return null
-	var image: Image = tex.get_image()
-	if image == null:
-		return tex
-	image = image.duplicate() as Image
-	image.resize(px, px, Image.INTERPOLATE_NEAREST)
-	var scaled: ImageTexture = ImageTexture.create_from_image(image)
+	var scaled: Texture2D = resampled(tex, px, is_pixel(StringName(UI_ICON_PREFIX + String(icon_name))))
 	_scaled_icons[key] = scaled
 	return scaled
 
 
-## Sätter [param button]:s ikon till 16×16-spriten [param icon_name].
+## [param tex] omsamplad till [param px]×[param px]. Returnerar originalet om
+## bilden inte går att läsa (t.ex. en komprimerad textur).
+static func resampled(tex: Texture2D, px: int, pixel: bool = false) -> Texture2D:
+	var image: Image = tex.get_image()
+	if image == null or image.is_empty() or image.is_compressed():
+		return tex
+	image = image.duplicate() as Image
+	if image.has_mipmaps():
+		image.clear_mipmaps()
+	image.resize(px, px, Image.INTERPOLATE_NEAREST if pixel else Image.INTERPOLATE_LANCZOS)
+	return ImageTexture.create_from_image(image)
+
+
+## Sätter [param button]:s ikon till [code]ui.icon.<icon_name>[/code], skalad till [param size_dp].
 ##
 ## [b]Varför ikon och inte knapptext:[/b] en symbolglyf i [member Button.text]
 ## ritas av fonten, och tecknen det gäller fanns bara i systemfonten –
@@ -169,7 +194,7 @@ static func icon_rect(icon_name: StringName, tint: Color = Color.WHITE, size_dp:
 	var rect: TextureRect = TextureRect.new()
 	rect.name = "Icon"
 	rect.texture = tex
-	rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	rect.texture_filter = filter_for(StringName(UI_ICON_PREFIX + String(icon_name)))
 	rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	rect.custom_minimum_size = Vector2(px, px)
 	rect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -219,9 +244,8 @@ static func portrait_key(variant: String) -> StringName:
 	return StringName("hero.portrait." + smith_variant(variant))
 
 ## Karaktärer och fiender i World-lagret: 32/48 px-celler × 4 (UI_GUIDE §8.3).
+## Används bara av den gamla pixelpaperdollen ([HeroFigure], död kod sedan M6).
 const WORLD_SCALE: int = 4
-## 16 px-ikoner (relik, slot, nod) i krit-UI:t.
-const ICON_SCALE: int = 4
 
 ## Fiendeark. Rad 0 är fyra idle-frames, rad 1 är dödsanimationen
 ## (assets/sprites/README.md §1, ändrat i M2: [code]hframes = 4, vframes = 2[/code]).
@@ -296,37 +320,16 @@ const RELIC_LAYERS: Dictionary = {
 }
 
 ## Sidor med egen glyph (UI_GUIDE §9.3). Allt annat ritas som pips för sitt
-## värde; en ny smidbar sida i M2 kostar en rad här och en PNG.
+## värde ([DieArt] ritar dem i kod). [code]glyph[/code] är namnet i manifestet,
+## [code]ui.face.<glyph>[/code]; en ny smidbar sida kostar en rad här och en
+## post i tools/art_build.json. [code]frost[/code] finns i manifestet men ingen
+## sida använder den ännu.
 const FACE_GLYPHS: Dictionary = {
-	"POISON_DROP": {"file": "dice/glyph_gift.png", "color": "SEM_POISON"},
-	"EMBER": {"file": "dice/glyph_eld.png", "color": "SEM_FIRE"},
-	"VAMP_FANG": {"file": "dice/glyph_blod.png", "color": "SEM_BLOOD"},
-	"HOLLOW": {"file": "dice/glyph_tomrum.png", "color": "SEM_SHIELD"},
+	"POISON_DROP": {"glyph": "gift", "color": "SEM_POISON"},
+	"EMBER": {"glyph": "eld", "color": "SEM_FIRE"},
+	"VAMP_FANG": {"glyph": "blod", "color": "SEM_BLOOD"},
+	"HOLLOW": {"glyph": "tomrum", "color": "SEM_SHIELD"},
 }
-
-const LUTS: Dictionary = {
-	Rules.DieMaterial.IRON: "dice/lut_iron.png",
-	Rules.DieMaterial.BONE: "dice/lut_bone.png",
-	Rules.DieMaterial.GLASS: "dice/lut_glass.png",
-}
-
-## Förtintade tärningskroppar, en per material. [b]Reserv sedan M2:[/b] den
-## dokumenterade vägen (assets/sprites/README.md §3) är gråskalemastern
-## [constant DIE_BODY_GRAY] genom [code]palette_lut.gdshader[/code] med en
-## 16×1-LUT per material, och den fungerar igen sedan UI-agenten fixade
-## shaderns dubbelmultiplikation mot modulate (DECISIONS 2026-09-21 antog
-## sRGB-tapp; rotorsaken var att fragmentets COLOR redan innehåller modulate).
-## De förtintade kropparna ritas bara om gråskalan eller LUT:en saknas.
-const DIE_BODIES: Dictionary = {
-	Rules.DieMaterial.IRON: "dice/die_body_iron.png",
-	Rules.DieMaterial.BONE: "dice/die_body_bone.png",
-	Rules.DieMaterial.GLASS: "dice/die_body_glass.png",
-}
-
-## Gråskalemastern som LUT-vägen använder.
-const DIE_BODY_GRAY: String = "dice/die_body_gray.png"
-const DIE_TUMBLE: String = "dice/die_tumble_gray.png"
-const GLASS_RIM: String = "dice/glass_highlight.png"
 # M5.5: FLOOR_TILE och PARALLAX är borta med den platta 2D-sidovyn. Korridoren
 # har sina egna kakelbara texturer i [CorridorMesh]; parallax finns inte längre
 # någonstans i spelet. PNG-filerna under assets/sprites/env/ ägs av UI-agenten
@@ -367,10 +370,16 @@ const PIVOTS: Array[String] = ["bottom", "center"]
 const SOURCE_MANIFEST: String = "manifest"
 const SOURCE_LEGACY: String = "legacy"
 const SOURCE_PLACEHOLDER: String = "placeholder"
+## Ritad i kod av [Art] själv (M7: korridorskyltens platta). Ingen fil.
+const SOURCE_GENERATED: String = "generated"
 const SOURCE_NONE: String = "none"
 
 const ID_ENEMY_PLACEHOLDER: StringName = &"enemy.placeholder"
 const ID_ICON_PLACEHOLDER: StringName = &"icon.placeholder"
+## Korridorskyltens platta. Ingen manifestpost ⇒ [method sign_plate_texture].
+const ID_SIGN_PLATE: StringName = &"env.corridor.sign"
+## Väggfacklan. Ingen manifestpost ⇒ [method torch_texture] (två rutor).
+const ID_TORCH: StringName = &"env.corridor.torch"
 
 ## Miljö-id:n som korridoren frågar efter. Reserven är M5:s kakel.
 ## [b]Taket lånar golvets kakel i reserven.[/b] [code]ceiling_stone.png[/code]
@@ -382,8 +391,6 @@ const LEGACY_ART: Dictionary = {
 	&"env.corridor.floor": "env/corridor/floor_stone.png",
 	&"env.corridor.ceiling": "env/corridor/floor_stone.png",
 	&"env.corridor.door": "env/corridor/door_boss.png",
-	&"env.corridor.torch": "env/corridor/torch.png",
-	&"env.corridor.sign": "env/corridor/sign_plate.png",
 	&"hero.portrait.a": "hero/smith_portrait_a.png",
 	&"hero.portrait.b": "hero/smith_portrait_b.png",
 }
@@ -509,6 +516,18 @@ static func _resolve(id: StringName) -> Dictionary:
 	var from_manifest: Dictionary = _from_manifest(key)
 	if not from_manifest.is_empty():
 		return from_manifest
+	if id == ID_SIGN_PLATE:
+		# M7: skyltplattan ritas här i stället för M5:s 64 px-pixelsprite.
+		var plate: Texture2D = sign_plate_texture()
+		return {"texture": plate, "source": SOURCE_GENERATED, "pixel": false,
+			"size": Vector2(plate.get_width(), plate.get_height()), "pivot": "center",
+			"frames": 1, "kind": KIND_ENV, "scale": 1.0, "boss": false}
+	if id == ID_TORCH:
+		# M7: facklan ritas här i stället för M5:s 16×32 px-pixelsprite.
+		var torch: Texture2D = torch_texture()
+		return {"texture": torch, "source": SOURCE_GENERATED, "pixel": false,
+			"size": Vector2(TORCH_FRAME_SIZE), "pivot": "bottom",
+			"frames": TORCH_FRAMES, "kind": KIND_ENV, "scale": 1.0, "boss": false}
 	# Fiendealias: tutorialens pedagogiska varianter lånar våning 1:s konst.
 	if key.begins_with("enemy."):
 		var enemy_id: String = key.trim_prefix("enemy.")
@@ -621,14 +640,17 @@ static func _legacy(key: String) -> Dictionary:
 	elif key.begins_with("relic."):
 		found = texture("items/relic_%s.png" % key.trim_prefix("relic.").to_lower())
 		kind = KIND_ICON
-	elif key.begins_with("slot."):
-		found = texture("ui/slot_%s.png" % key.trim_prefix("slot.").to_lower())
+	elif key.begins_with("slot.") or key.begins_with(UI_SLOT_PREFIX):
+		found = texture("ui/slot_%s.png" % key.get_slice(".", key.get_slice_count(".") - 1).to_lower())
 		kind = KIND_ICON
-	elif key.begins_with("node."):
-		found = texture("ui/node_%s.png" % key.trim_prefix("node.").to_lower())
+	elif key.begins_with("node.") or key.begins_with(UI_NODE_PREFIX):
+		found = texture("ui/node_%s.png" % key.get_slice(".", key.get_slice_count(".") - 1).to_lower())
 		kind = KIND_ICON
-	elif key.begins_with("ui.icon."):
-		found = ui_icon(StringName(key.trim_prefix("ui.icon.")))
+	elif key.begins_with(UI_FACE_PREFIX):
+		found = texture("dice/glyph_%s.png" % key.trim_prefix(UI_FACE_PREFIX))
+		kind = KIND_ICON
+	elif key.begins_with(UI_ICON_PREFIX):
+		found = _legacy_ui_icon(StringName(key.trim_prefix(UI_ICON_PREFIX)))
 		kind = KIND_ICON
 	if found == null:
 		return {}
@@ -652,8 +674,9 @@ static func _legacy(key: String) -> Dictionary:
 static func _placeholder(key: String) -> Dictionary:
 	var is_enemy: bool = key.begins_with("enemy.")
 	var is_icon: bool = key.begins_with("gear.") or key.begins_with("relic.") \
-		or key.begins_with("slot.") or key.begins_with("node.") or key.begins_with("icon.") \
-		or key.begins_with("ui.icon.")
+		or key.begins_with("slot.") or key.begins_with("node.") or key.begins_with("icon.")
+	for prefix: String in UI_INK_PREFIXES:
+		is_icon = is_icon or key.begins_with(prefix)
 	if not is_enemy and not is_icon:
 		_warn_once(key, "ingen konst och ingen reserv – anroparen ritar sin egen")
 		return {"texture": null, "source": SOURCE_NONE, "pixel": false, "size": Vector2.ZERO,
@@ -808,6 +831,119 @@ static func rarity_frame(rarity_name: String) -> Texture2D:
 	return info["texture"] as Texture2D if String(info["source"]) == SOURCE_MANIFEST else null
 
 
+## Korridorskyltens platta, ritad en gång: en rundad skifferplatta med en
+## kritram, i krit-UI:ts egna tokens (surface/raised → surface/slate,
+## chalk/300). [b]M7:[/b] ersätter [code]env/corridor/sign_plate.png[/code]
+## (64 px pixelgrafik). Nodikonen (ui.node.*) ritas som eget quad framför.
+const SIGN_PLATE_PX: int = 192
+
+
+static func sign_plate_texture() -> Texture2D:
+	if _generated.has("sign_plate"):
+		return _generated["sign_plate"] as Texture2D
+	var n: int = SIGN_PLATE_PX
+	var image: Image = Image.create(n, n, false, Image.FORMAT_RGBA8)
+	var half: Vector2 = Vector2(n, n) * 0.5 - Vector2(6.0, 6.0)
+	var radius: float = 22.0
+	var top: Color = Tokens.SURFACE_RAISED
+	var bottom: Color = Tokens.SURFACE_SLATE
+	var chalk: Color = Tokens.CHALK_300
+	for y: int in range(n):
+		for x: int in range(n):
+			var p: Vector2 = Vector2(float(x) + 0.5, float(y) + 0.5) - Vector2(n, n) * 0.5
+			var q: Vector2 = p.abs() - (half - Vector2(radius, radius))
+			var d: float = Vector2(maxf(q.x, 0.0), maxf(q.y, 0.0)).length() + minf(maxf(q.x, q.y), 0.0) - radius
+			var cover: float = clampf(0.5 - d, 0.0, 1.0)
+			if cover <= 0.0:
+				continue
+			var color: Color = top.lerp(bottom, float(y) / float(n))
+			# Mörk kant: plattan har tjocklek.
+			color = color.darkened(0.55 * smoothstep(-7.0, 0.0, d))
+			# Kritramen: en linje 17 px in, med korn så att den ser dragen ut.
+			var grain: float = fposmod(sin(float(x) * 12.9898 + float(y) * 78.233) * 43758.5453, 1.0)
+			var line: float = 1.0 - smoothstep(1.6, 3.2, absf(d + 17.0))
+			if line > 0.0:
+				color = color.lerp(chalk, line * lerpf(0.55, 0.95, grain))
+			image.set_pixel(x, y, Color(color, cover))
+	image.generate_mipmaps()
+	var result: ImageTexture = ImageTexture.create_from_image(image)
+	_generated["sign_plate"] = result
+	return result
+
+
+## Väggfacklans ruta i px och antal rutor (flammans två lägen).
+const TORCH_FRAME_SIZE: Vector2i = Vector2i(96, 192)
+const TORCH_FRAMES: int = 2
+
+
+## Väggfacklan, ritad en gång: järnkopp på ett träskaft och en flamma i
+## eldfamiljen (ART_DIRECTION_V2 §4: #FF6A2C → #FFB258, vit kärna). Två rutor
+## sida vid sida; den andra lutar åt andra hållet och är lite lägre, vilket
+## på 6 fps ser ut som fladder. [b]M7:[/b] ersätter
+## [code]env/corridor/torch.png[/code] (16×32 px pixelgrafik).
+static func torch_texture() -> Texture2D:
+	if _generated.has("torch"):
+		return _generated["torch"] as Texture2D
+	var fw: int = TORCH_FRAME_SIZE.x
+	var fh: int = TORCH_FRAME_SIZE.y
+	var image: Image = Image.create(fw * TORCH_FRAMES, fh, false, Image.FORMAT_RGBA8)
+	var core: Color = Color("#FFF4D6")
+	var mid: Color = Color("#FFB258")
+	var edge: Color = Color("#FF6A2C")
+	var wood_light: Color = Color("#5A4130")
+	var wood_dark: Color = Color("#231912")
+	var iron_light: Color = Color("#7A8896")
+	var iron_dark: Color = Color("#2C353F")
+	for frame: int in range(TORCH_FRAMES):
+		var sway: float = 5.0 if frame == 0 else -4.0
+		var flame_h: float = 72.0 if frame == 0 else 64.0
+		var base_y: float = 104.0
+		for y: int in range(fh):
+			for x: int in range(fw):
+				var fx: float = float(x) + 0.5
+				var fy: float = float(y) + 0.5
+				var cx: float = float(fw) * 0.5
+				var color: Color = Color(0, 0, 0, 0)
+				# Skaftet: rundat trä, ljust på vänsterkanten.
+				if fy > 108.0 and fy < 186.0 and absf(fx - cx) < 8.0:
+					var u: float = (fx - cx + 8.0) / 16.0
+					color = wood_light.lerp(wood_dark, smoothstep(0.1, 0.95, u))
+					if absf(fy - 150.0) < 4.0:
+						color = iron_dark.lerp(iron_light, 1.0 - u)
+				# Koppen: trapets i järn.
+				var cup_t: float = (fy - 96.0) / 16.0
+				if cup_t >= 0.0 and cup_t <= 1.0:
+					var cup_half: float = lerpf(19.0, 10.0, cup_t)
+					if absf(fx - cx) < cup_half:
+						var u2: float = (fx - cx + cup_half) / (2.0 * cup_half)
+						color = iron_light.lerp(iron_dark, smoothstep(0.0, 1.0, u2))
+						if cup_t < 0.18:
+							color = color.lightened(0.25)
+				# Flamman: en droppe som smalnar uppåt och svajar.
+				var v: float = (base_y - fy) / flame_h
+				if v > -0.06 and v < 1.0:
+					var vv: float = clampf(v, 0.0, 1.0)
+					var half_w: float = 19.0 * pow(sin(PI * pow(vv * 0.92 + 0.08, 0.62)), 0.9) * (1.0 - vv * 0.35)
+					var center: float = cx + sway * vv * vv
+					var dx: float = absf(fx - center)
+					if dx < half_w + 2.0 and half_w > 0.5:
+						var t: float = clampf(dx / half_w, 0.0, 1.0)
+						var a: float = clampf((half_w + 2.0 - dx) / 4.0, 0.0, 1.0) * (1.0 - smoothstep(0.82, 1.0, vv))
+						var flame: Color = core.lerp(mid, smoothstep(0.0, 0.55, t + vv * 0.45))
+						flame = flame.lerp(edge, smoothstep(0.45, 1.0, t * 0.7 + vv * 0.6))
+						if v < 0.0:
+							a *= clampf(1.0 + v / 0.06, 0.0, 1.0)
+						if a > 0.0:
+							# Flamman ligger framför koppens överkant.
+							color = Color(flame, maxf(a, color.a)) if color.a < 1.0 or v > 0.02 else color.lerp(flame, a)
+				if color.a > 0.0:
+					image.set_pixel(frame * fw + x, y, color)
+	image.generate_mipmaps()
+	var result: ImageTexture = ImageTexture.create_from_image(image)
+	_generated["torch"] = result
+	return result
+
+
 ## Kastskuggan under en fiende: en mjuk svart ellips, genererad en gång.
 static func shadow_texture() -> Texture2D:
 	if _generated.has("shadow"):
@@ -889,74 +1025,66 @@ static func _add_row(frames: SpriteFrames, anim: StringName, sheet: Texture2D,
 		frames.add_frame(anim, slice)
 
 
-## Tärningskroppen för ett material. Gråskalemastern när den och materialets
-## LUT finns (då bär [method die_material] färgen), annars den förtintade.
-static func die_body(die_material: int) -> Texture2D:
-	if lut_path_available(die_material):
-		return texture(DIE_BODY_GRAY)
-	return texture(String(DIE_BODIES.get(die_material, DIE_BODIES[Rules.DieMaterial.IRON])))
-
-
-## Går LUT-vägen att använda för det här materialet?
-static func lut_path_available(die_material: int) -> bool:
-	return texture(DIE_BODY_GRAY) != null and die_lut(die_material) != null
-
-
-## Materialet som färgar gråskalekroppen. [b]Ett eget ShaderMaterial per
-## anrop[/b] och inte ett delat: [code]flash[/code] sätts per tärning, och ett
-## delat material hade blixtrat alla sex tärningarna samtidigt.
-## I hög kontrast höjs [code]luma_gamma[/code] till 1,35 (UI_GUIDE §8.5).
-static func die_material(die_material: int) -> ShaderMaterial:
-	var mat: ShaderMaterial = palette_material(die_lut(die_material), 1.0)
-	if mat != null and Tokens.high_contrast:
-		mat.set_shader_parameter("luma_gamma", 1.35)
-	return mat
-
-
-## 16×1-LUT:en för ett material (assets/sprites/README.md §3).
-static func die_lut(die_material: int) -> Texture2D:
-	return texture(String(LUTS.get(die_material, LUTS[Rules.DieMaterial.IRON])))
-
-
-## Overlayn för en sida: glyph om sidan har en, annars pips för värdet.
-## Returnerar [code]{texture, color_token, is_pips}[/code], där
-## [code]color_token[/code] är "NONE" när texturen redan bär sin färg.
+## Overlayn för en sida: en glyph om sidan har en, annars pips för värdet.
+## Returnerar [code]{texture, color_token, is_pips, pips}[/code].
+## [br]Glyph: [code]texture[/code] är vit krita ur manifestet
+## ([code]ui.face.<glyph>[/code]) och [code]color_token[/code] den semantiska
+## token den ska tintas med.
+## [br]Pips: [code]texture[/code] är null och [code]pips[/code] är antalet ögon
+## (0–6; 0 är den spruckna sidans ihåliga ring). [DieArt] ritar dem i kod i
+## [code]bone/pip[/code] – ingen textur, inget rutnät.
 static func face_overlay(face: Face) -> Dictionary:
 	if face == null:
-		return {"texture": null, "color_token": "NONE", "is_pips": false}
+		return {"texture": null, "color_token": "NONE", "is_pips": false, "pips": -1}
 	if FACE_GLYPHS.has(face.id):
 		var glyph: Dictionary = FACE_GLYPHS[face.id]
 		return {
-			"texture": texture(String(glyph["file"])),
+			"texture": face_glyph(String(glyph["glyph"])),
 			"color_token": String(glyph["color"]),
 			"is_pips": false,
+			"pips": -1,
 		}
-	# Pip-arken är redan tintade i bone/pip (#12161A). Ett modulate ovanpå det
-	# skulle kvadrera färgen och göra ögonen svarta; glypherna är däremot vita
-	# (chalk/100) och SKA tintas av sin semantiska token.
-	var value: int = clampi(face.value, 0, 6)
 	return {
-		"texture": texture("dice/pips_%d.png" % value),
-		"color_token": "NONE",
+		"texture": null,
+		"color_token": "BONE_PIP",
 		"is_pips": true,
+		"pips": clampi(face.value, 0, 6),
 	}
 
 
-## Sprickvariant. [param variant_seed] är visuell slump och får aldrig dra ur
-## den seedade [Rng]-strömmen (ARCHITECTURE: rendering rör inte strömmen).
-static func crack(variant_seed: int) -> Texture2D:
-	return texture("dice/crack_%d.png" % (1 + posmod(variant_seed, 3)))
+## En sidglyph ur manifestet ([code]ui.face.<glyph_name>[/code]), med den
+## gamla 32 px-spriten som reserv. Aldrig null.
+static func face_glyph(glyph_name: String) -> Texture2D:
+	return tex(StringName(UI_FACE_PREFIX + glyph_name))
 
 
-## Slot-ikonen ur manifestet ([code]slot.<typ>[/code]), med M1.5-spriten som reserv.
+## Slot-ikonen ur manifestet ([code]ui.slot.<typ>[/code]), med M1.5-spriten
+## som reserv. Vit krita: anroparen tintar med [method Tokens.slot_color].
 static func slot_icon(slot_type: int) -> Texture2D:
-	return tex(StringName("slot." + Rules.slot_type_name(slot_type).to_lower()))
+	return tex(slot_icon_key(slot_type))
 
 
-## Nodikonen för en förgreningsknapp. M1 har bara strid och boss i grafen; de
-## fyra övriga ikonerna finns och väntar på M2:s nodtyper.
+static func slot_icon_key(slot_type: int) -> StringName:
+	return StringName(UI_SLOT_PREFIX + Rules.slot_type_name(slot_type).to_lower())
+
+
+## Nodikonen på korridorens skyltar ([code]ui.node.<kind>[/code]).
 static func node_icon(kind: String) -> Texture2D:
-	return tex(StringName("node." + kind.to_lower()))
+	return tex(node_icon_key(kind))
+
+
+static func node_icon_key(kind: String) -> StringName:
+	return StringName(UI_NODE_PREFIX + kind.to_lower())
+
+
+## Den tomma utrustningsslotens egen ikon på karaktärsbladet
+## ([code]ui.gearslot.<SLOT>[/code], mono-krita). Faller tillbaka på M6:s
+## färgikon [code]gear.slot.<SLOT>[/code] om posten saknas.
+static func gearslot_icon(slot: String) -> Texture2D:
+	var info: Dictionary = art_info(StringName(UI_GEARSLOT_PREFIX + slot))
+	if String(info["source"]) == SOURCE_MANIFEST:
+		return info["texture"] as Texture2D
+	return tex(StringName("gear.slot." + slot))
 
 
 ## Relikens ikon ([code]relic.<ID>[/code]). Aldrig null: saknas både manifest
@@ -967,20 +1095,9 @@ static func relic_icon(relic_id: String) -> Texture2D:
 
 # --- Noder -----------------------------------------------------------------
 
-## En [Sprite2D] med Nearest-filter och heltalsskala. Används även inuti
-## krit-UI:t, som annars ärver Linear och suddar pixlarna.
-static func pixel_sprite(tex: Texture2D = null, art_scale: int = 1) -> Sprite2D:
-	var sprite: Sprite2D = Sprite2D.new()
-	sprite.texture = tex
-	sprite.centered = true
-	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	sprite.scale = Vector2(art_scale, art_scale)
-	return sprite
-
-
 ## Träffblixtens material: palette_lut utan LUT, bara [code]flash[/code].
-## Sätts PÅ noden när blixten börjar och tas bort när den slutar – se noten vid
-## [constant DIE_BODIES] om varför den inte får ligga kvar.
+## Sätts PÅ noden när blixten börjar och tas bort när den slutar. ([DieArt]
+## behöver det inte längre sedan M7: den ritar sin blixt själv.)
 static func flash_material() -> ShaderMaterial:
 	return palette_material(null, 0.0)
 
@@ -1003,16 +1120,9 @@ static func palette_material(lut: Texture2D = null, strength: float = 1.0, tint:
 
 # --- Heltalsmatematik ------------------------------------------------------
 
-## Största heltalsskala där [param cell] px konst får plats i [param box].
-static func fit_scale(box: Vector2, cell: int, max_scale: int = 8) -> int:
-	if cell <= 0:
-		return 1
-	var shortest: float = minf(box.x, box.y)
-	return clampi(int(floor(shortest / float(cell))), 1, max_scale)
-
-
 ## Kvantiserar en position mot konstrutnätet. De globala snap_2d_*-flaggorna
 ## snappar mot viewportpixlar och hjälper inte här (research 04 §5).
+## [b]M7:[/b] bara den gamla pixelpaperdollen ([HeroFigure]) använder den.
 static func snap(point: Vector2, art_scale: int) -> Vector2:
 	var step: float = float(maxi(1, art_scale))
 	return Vector2(floor(point.x / step) * step, floor(point.y / step) * step)

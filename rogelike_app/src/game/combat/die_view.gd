@@ -32,7 +32,7 @@ const STATE_CRACKED: int = 5
 
 ## Lyftet på en vald tärning, i dp (§4).
 const SELECT_LIFT: int = 6
-## Spöksilhuettens opacitet i en tom sockel (§9: "die_body_*.png med 16 % alpha").
+## Spöksilhuettens opacitet i en tom sockel (§9: tärningen med 16 % alpha).
 const GHOST_ALPHA: float = 0.16
 
 var die_index: int = -1
@@ -234,12 +234,20 @@ func _refresh(face: Face) -> void:
 			_state_label.text = ""
 
 	var style: StyleBoxFlat = Tokens.box(border, true, width, Tokens.RADIUS_DIE)
-	style.bg_color = Tokens.SURFACE_SLATE if (_art != null and _art.is_drawing()) else body
+	var drawing: bool = _art != null and _art.is_drawing()
+	style.bg_color = body
 	if socket:
 		style.bg_color = Tokens.SURFACE_PIT
+	elif drawing:
+		# M7: tärningen ritar sin egen tunga kropp och skugga (DieArt). Brickan
+		# är då bara tillståndets ring – och i READY ingenting alls, så att
+		# tärningen är det enda upphöjda objektet (ART_DIRECTION_V2 §4) och
+		# inte en låda i en låda.
+		style.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+		if current == STATE_READY and not Tokens.high_contrast:
+			style.set_border_width_all(0)
 	else:
-		# M6: tärningarna är de ENDA upphöjda objekten på skärmen (ART_DIRECTION_V2
-		# §4). Skuggan under dem är vad som gör dem till föremål.
+		# Reserv utan konst: brickan ÄR tärningen. Skuggan gör den till ett föremål.
 		style.shadow_color = Color(0.0, 0.0, 0.0, 0.65)
 		style.shadow_size = Tokens.dpi(2)
 		style.shadow_offset = Vector2(0.0, Tokens.dp(2))
@@ -320,20 +328,32 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 	Juice.haptic(Haptics.Level.LIGHT)
 	Juice.ui_tap(1.1)
 
-	var preview: Panel = Panel.new()
+	var preview: Control = Control.new()
 	preview.custom_minimum_size = size
 	preview.size = size
-	var style: StyleBoxFlat = Tokens.box(Tokens.SEM_CHARGE, true, Tokens.STROKE_BOLD, Tokens.RADIUS_DIE)
-	style.bg_color = Tokens.BONE_DIE
-	preview.add_theme_stylebox_override("panel", style)
-	var label: Label = Label.new()
-	label.text = _value_label.text
-	label.set_anchors_preset(Control.PRESET_FULL_RECT)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_TITLE))
-	label.add_theme_color_override("font_color", Tokens.BONE_PIP)
-	preview.add_child(label)
+	if _art != null and _art.is_drawing():
+		# M7: fingret bär samma ritade tärning, lite större – den är lyft.
+		var art: DieArt = DieArt.new()
+		preview.add_child(art)
+		art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		art.show_die(_die, hash(_die.id) if _die != null else 0)
+		preview.pivot_offset = size * 0.5
+		preview.scale = Vector2(1.08, 1.08)
+	else:
+		var panel: Panel = Panel.new()
+		panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+		var style: StyleBoxFlat = Tokens.box(Tokens.SEM_CHARGE, true, Tokens.STROKE_BOLD, Tokens.RADIUS_DIE)
+		style.bg_color = Tokens.BONE_DIE
+		panel.add_theme_stylebox_override("panel", style)
+		preview.add_child(panel)
+		var label: Label = Label.new()
+		label.text = _value_label.text
+		label.set_anchors_preset(Control.PRESET_FULL_RECT)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.add_theme_font_size_override("font_size", Tokens.dpi(Tokens.TYPE_TITLE))
+		label.add_theme_color_override("font_color", Tokens.BONE_PIP)
+		preview.add_child(label)
 
 	# UI_GUIDE §4.1.3: tärningen följer fingret med 4 dp offset uppåt.
 	var wrapper: Control = Control.new()

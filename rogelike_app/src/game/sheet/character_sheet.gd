@@ -43,8 +43,10 @@ const PORTRAIT_MIN_DP: int = 200
 const SLOT_BOX_DP: int = 52
 ## Ikonen sitter innanför raritetsramens kant.
 const ICON_INSET: float = 0.17
-## En tom slots egen ikon, nedtonad.
-const EMPTY_GLYPH_ALPHA: float = 0.22
+## En tom slots egen ikon, nedtonad. M7: ikonen är mono-krita
+## ([code]ui.gearslot.*[/code]) tintad i chalk/300, inte en färgikon, och tål
+## därför mer opacitet än M6:s 0,22 utan att se ut som ett föremål.
+const EMPTY_GLYPH_ALPHA: float = 0.42
 ## Hur länge ett nytt föremål blixtrar i sin slot (§4.3).
 const HIGHLIGHT_MS: int = 520
 ## Ny nyckel i M6; raden väntar i CSV:n (docs/M6_A_NOTES.md). Som konstant så
@@ -510,8 +512,8 @@ func _paint_slot(button: Button, slot: String, view: Dictionary) -> void:
 		icon.modulate = Color.WHITE
 	else:
 		# Slotens egen ikon, nedtonad: formen säger vad som hör hemma här.
-		icon.texture = Art.tex(StringName("gear.slot." + slot))
-		icon.modulate = Color(1.0, 1.0, 1.0, EMPTY_GLYPH_ALPHA * (0.5 if bool(view["locked"]) else 1.0))
+		icon.texture = Art.gearslot_icon(slot)
+		icon.modulate = Color(Tokens.CHALK_300, EMPTY_GLYPH_ALPHA * (0.5 if bool(view["locked"]) else 1.0))
 	icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	if kind == "relic":
 		icon.texture_filter = Art.filter_for(StringName("relic." + (view["relic"] as Relic).id))
@@ -606,10 +608,14 @@ func _refresh_dice() -> void:
 		art_button.name = "DieButton%d" % i
 		art_button.focus_mode = Control.FOCUS_NONE
 		art_button.custom_minimum_size = Vector2(0.0, Tokens.dp(46))
-		var style: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR, Tokens.RADIUS_DIE)
-		style.bg_color = Tokens.SURFACE_RAISED
-		for state_name: String in ["normal", "hover", "pressed", "focus"]:
+		# M7: tärningen ritar sin egen kropp och skugga (DieArt), så knappen har
+		# ingen låda runt den – bara ett svagt sken när den trycks.
+		var style: StyleBoxEmpty = StyleBoxEmpty.new()
+		var pressed: StyleBoxFlat = Tokens.box(Tokens.SURFACE_LINE, true, Tokens.STROKE_HAIR, Tokens.RADIUS_DIE)
+		pressed.bg_color = Color(Tokens.SURFACE_RAISED, 0.6)
+		for state_name: String in ["normal", "hover", "focus"]:
 			art_button.add_theme_stylebox_override(state_name, style)
+		art_button.add_theme_stylebox_override("pressed", pressed)
 		art_button.pressed.connect(show_die_faces.bind(i))
 		cell.add_child(art_button)
 
