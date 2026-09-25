@@ -19,6 +19,7 @@ import { setHapticsEnabled, vibrate } from '../systems/haptics';
 import { clearBackHandler, setBackHandler } from '../systems/back';
 import { DEBUG } from '../data/debug';
 import { DebugPanel } from '../ui/debugPanel';
+import { fitCamera } from '../ui/view';
 
 const L = THEME.layout;
 const TOUCH = THEME.touch.minLogical;
@@ -57,6 +58,7 @@ export class Start extends Phaser.Scene {
   }
 
   create(): void {
+    fitCamera(this);
     // Bästa objektet visas i aktivt sets skinn (UI.md §12.4).
     useSet(this, cached().activeSet);
     drawBackground(this);

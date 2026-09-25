@@ -88,6 +88,10 @@ export class Juice {
   private shakeAmp = 0;
   private shakeDx = 0;
   private shakeDy = 0;
+  /** Kamerans vila (hi-DPI: zoom Z, centrerad på den logiska rymden). Shake och zoom är relativa till den. */
+  private readonly baseX: number;
+  private readonly baseY: number;
+  private readonly baseZoom: number;
 
   private stopUntil = 0;
   private stopped = false;
@@ -102,6 +106,9 @@ export class Juice {
   ) {
     this.scene = scene;
     this.cam = scene.cameras.main;
+    this.baseX = this.cam.scrollX;
+    this.baseY = this.cam.scrollY;
+    this.baseZoom = this.cam.zoom;
     this.hudX = hudX;
     this.hudY = hudY;
     this.calm = settings.calm;
@@ -299,8 +306,8 @@ export class Juice {
   private shake(x: number, y: number, i: number): void {
     if (this.calm && !JUICE.calm.shake) return;
     const s = JUICE.shake;
-    const dx = x - this.cam.width / 2;
-    const dy = y - this.cam.height / 2;
+    const dx = x - (this.baseX + this.cam.width / 2);
+    const dy = y - (this.baseY + this.cam.height / 2);
     const len = Math.sqrt(dx * dx + dy * dy) || 1;
     this.shakeDx = dx / len;
     this.shakeDy = dy / len;
@@ -340,14 +347,14 @@ export class Juice {
   private zoom(i: number): void {
     if (this.calm && !JUICE.calm.zoom) return;
     const z = JUICE.zoom;
-    const peak = 1 + (z.peak - 1) * i;
+    const peak = this.baseZoom * (1 + (z.peak - 1) * i);
     this.scene.tweens.add({
       targets: this.cam,
       zoom: peak,
       duration: z.durationMs / 2,
       ease: z.ease,
       yoyo: true,
-      onComplete: () => this.cam.setZoom(1),
+      onComplete: () => this.cam.setZoom(this.baseZoom),
     });
   }
 
@@ -469,12 +476,12 @@ export class Juice {
       this.shakeT += delta;
       if (this.shakeT >= s.durationMs) {
         this.shakeT = Infinity;
-        this.cam.setScroll(0, 0);
+        this.cam.setScroll(this.baseX, this.baseY);
       } else {
         const t = this.shakeT / 1000;
         const a =
           this.shakeAmp * Math.exp(-this.shakeT / s.tauMs) * Math.sin(2 * Math.PI * s.freqHz * t);
-        this.cam.setScroll(this.shakeDx * a, this.shakeDy * a);
+        this.cam.setScroll(this.baseX + this.shakeDx * a, this.baseY + this.shakeDy * a);
       }
     }
   }
@@ -487,8 +494,8 @@ export class Juice {
     this.scene.matter?.world?.resume();
     this.setTimeScale(1);
     this.scene.tweens.timeScale = 1;
-    this.cam.setScroll(0, 0);
-    this.cam.setZoom(1);
+    this.cam.setScroll(this.baseX, this.baseY);
+    this.cam.setZoom(this.baseZoom);
     this.emitter = null;
     this.mixEmitter = null;
     this.avatarEmitter = null;

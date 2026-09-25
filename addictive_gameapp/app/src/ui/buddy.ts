@@ -3,7 +3,7 @@ import { hexToInt } from '../data/theme';
 import { AVATAR_UI, UPGRADE, avatarById, type AvatarDef, type GestureTrigger, type TrailDef } from '../data/avatarsIndex';
 import type { Juice } from '../systems/juice';
 import { playTone } from '../systems/audio';
-import { AVATAR_TEX_ORIGIN_Y, avatarParticleKey, bakeAvatar, bakeAvatarParticles, gripToTop } from './avatarArt';
+import { avatarOriginY, avatarParticleKey, bakeAvatar, bakeAvatarParticles, gripToTop } from './avatarArt';
 import { AvatarRig } from './avatarRig';
 
 const S = AVATAR_UI.slapparen;
@@ -44,9 +44,9 @@ export class Buddy {
     bakeAvatarParticles(scene);
     const look = c.look;
     const key = bakeAvatar(scene, id, S.displayPx, false, look ? 'body' : 'full', level - 1);
-    this.img = scene.add.image(180, 0, key).setOrigin(0.5, AVATAR_TEX_ORIGIN_Y).setDepth(S.depth);
+    this.img = scene.add.image(180, 0, key).setOrigin(0.5, avatarOriginY()).setDepth(S.depth);
     this.pupils = look
-      ? scene.add.image(180, 0, bakeAvatar(scene, id, S.displayPx, false, 'pupils')).setOrigin(0.5, AVATAR_TEX_ORIGIN_Y).setDepth(S.depth)
+      ? scene.add.image(180, 0, bakeAvatar(scene, id, S.displayPx, false, 'pupils')).setOrigin(0.5, avatarOriginY()).setDepth(S.depth)
       : null;
     this.lookPx = look ? (look.lookPx * S.displayPx) / 56 : 0;
     this.rig = new AvatarRig(scene, this.def, S.displayPx, calm, S.calmScale);

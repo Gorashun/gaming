@@ -23,6 +23,7 @@ import { ECONOMY } from '../data/economy';
 import { ECONOMY_ICON_KEYS, ECONOMY_SOUND, ECONOMY_UI } from '../data/economyUi';
 import type { AvatarTone } from '../data/avatarsIndex';
 import { clearBackHandler, setBackHandler } from '../systems/back';
+import { fitCamera } from '../ui/view';
 
 /** En plats som fylldes i rundan. */
 export interface RevealCatch {
@@ -72,6 +73,7 @@ export class GameOver extends Phaser.Scene {
   }
 
   create(data: GameOverData): void {
+    fitCamera(this);
     const score = data.score ?? 0;
     const highscore = data.highscore ?? cached().highscore;
     const bestLevel = data.bestLevel ?? 0;

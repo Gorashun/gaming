@@ -12,6 +12,10 @@ import {
   type SetLevelSkin,
   type SpotStyle,
 } from '../data/themes';
+import { ART } from '../data/art';
+import { SetLru } from '../systems/setLru';
+import { levelBakeInfo, renderLevel, type BakeInfo } from './artv2';
+import { ART_LOG, ART_MODE, texDpr } from './view';
 
 /**
  * Bakar en textur per nivå (och per specialobjekt) EN gång vid boot,
@@ -521,12 +525,87 @@ function drawSkin(
 // ---------------------------------------------------------------- bakning
 
 /**
+ * CanvasTexture i enhetspixlar (`info.px`) som Phaser ser i logisk storlek (`info.logical`):
+ * ramen får den logiska storleken och hela bilden som UV. Då ger scale 1 samma logiska storlek
+ * som v1, så all scenkod (scaleForBodyRadius, pulser, partiklar, origin) är oförändrad.
+ */
+export function bakeCanvas(scene: Phaser.Scene, key: string, info: BakeInfo, draw: (ctx: CanvasRenderingContext2D) => void): void {
+  const tex = scene.textures.createCanvas(key, info.px, info.px);
+  if (!tex) return;
+  draw(tex.getContext());
+  tex.refresh();
+  if (info.px !== info.logical) tex.get().setSize(info.logical, info.logical).setUVs(info.px, info.px, 0, 0, 1, 1);
+}
+
+/** Set (texturfamiljer, `setTag`) i full upplösning. Bara v2; v1 är 1× och obegränsat som förut. */
+const fullSets = new SetLru(ART.maxSets);
+
+/** Nivåset (texturfamiljer) som faktiskt finns i TextureManager (testhook). */
+export function loadedBallSets(scene: Phaser.Scene): string[] {
+  return scene.textures.getTextureKeys().filter((k) => /^ball-.+-0$/.test(k)).map((k) => k.slice(5, -2));
+}
+
+/** v2: 11 nivåer i Z (renderLevel) + siluetter i 1× (tonade och små, UI.md §15.6). */
+function bakeSetV2(scene: Phaser.Scene, set: ReturnType<typeof themeSetById>, tag: string, glowBonus: number): void {
+  const plain = currentSet.split('~')[0];
+  for (const old of fullSets.use(tag, [currentSet, plain])) {
+    for (const def of LEVELS) {
+      scene.textures.remove(ballTextureKey(def.level, old));
+      scene.textures.remove(silhouetteTextureKey(def.level, old));
+    }
+    if (ART_LOG) console.log(`[art] frigjorde set ${old}`);
+  }
+  if (scene.textures.exists(ballTextureKey(0, tag))) return;
+  const t0 = performance.now();
+  const dpr = texDpr(scene);
+  for (const def of LEVELS) {
+    const base = set.levels[def.level];
+    const skin = glowBonus > 0 ? { ...base, glow: base.glow + glowBonus } : base;
+    const r = def.radius;
+    const info = levelBakeInfo(skin, r, dpr);
+    bakeCanvas(scene, ballTextureKey(def.level, tag), info, (ctx) => renderLevel(ctx, skin, r, { dpr, spotStyle: set.spotStyle }));
+    const sil = levelBakeInfo(skin, r, 1, 'v1');
+    bakeCanvas(scene, silhouetteTextureKey(def.level, tag), sil, (ctx) => renderLevel(ctx, skin, r, { sil: true }));
+  }
+  if (ART_LOG) {
+    const ms = (performance.now() - t0).toFixed(1);
+    console.log(`[art] bakade set ${tag} i ${ms} ms (dpr ${dpr}) · i minnet: ${fullSets.sets.join(',')}`);
+  }
+}
+
+/**
+ * Nivå i bokens visade storlek (kroppsradie `r`, logiska px), UI.md §15.6: små objekt bakas i sin
+ * storlek och räknas inte mot setbudgeten. Returnerar nyckel och skala (v1: setets textur, skalad).
+ */
+export function bookLevelTexture(scene: Phaser.Scene, setId: string, level: number, r: number, sil: boolean): { key: string; scale: number } {
+  if (ART_MODE === 'v1') {
+    bakeSet(scene, setId);
+    return { key: sil ? silhouetteTextureKey(level, setId) : ballTextureKey(level, setId), scale: scaleForBodyRadius(level, r) };
+  }
+  const key = `book-${setId}-${level}${sil ? '-sil' : ''}`;
+  if (!scene.textures.exists(key)) {
+    const set = themeSetById(setId);
+    const skin = set.levels[level];
+    const dpr = texDpr(scene);
+    bakeCanvas(scene, key, levelBakeInfo(skin, r, dpr, sil ? 'v1' : 'v2'), (ctx) =>
+      renderLevel(ctx, skin, r, { dpr, sil, spotStyle: set.spotStyle }),
+    );
+  }
+  return { key, scale: 1 };
+}
+
+/**
  * Bakar setets 11 nivåer + vita siluetter. Idempotent och cachat per set: ett byte av set
  * kostar bara första gången. Anropas vid rundstart/boot och när boken visar en sida.
+ * v2: budget `ART.maxSets` set i minnet, äldsta frigörs (aldrig det aktiva).
  */
 export function bakeSet(scene: Phaser.Scene, setId: string, glowBonus = 0): void {
   const set = themeSetById(setId);
   const tag = setTag(set.id, glowBonus);
+  if (ART_MODE === 'v2') {
+    bakeSetV2(scene, set, tag, glowBonus);
+    return;
+  }
   for (const def of LEVELS) {
     const key = ballTextureKey(def.level, tag);
     if (scene.textures.exists(key)) continue;
@@ -563,9 +642,10 @@ function setTag(id: string, glowBonus: number): string {
  */
 export function useSet(scene: Phaser.Scene, setId: string, glowBonus = 0): void {
   const id = themeSetById(setId).id;
+  // Aktivt först, så att budgeten aldrig frigör det.
+  currentSet = setTag(id, glowBonus);
   bakeSet(scene, id);
   if (glowBonus > 0) bakeSet(scene, id, glowBonus);
-  currentSet = setTag(id, glowBonus);
 }
 
 function bakeSpecials(scene: Phaser.Scene): void {

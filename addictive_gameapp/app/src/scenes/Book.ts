@@ -7,8 +7,9 @@ import {
   FX_GLITTER_R,
   bakeSet,
   ballTextureKey,
+  bookLevelTexture,
+  loadedBallSets,
   scaleForBodyRadius,
-  silhouetteTextureKey,
 } from '../ui/textures';
 import { drawBackground } from '../ui/background';
 import { iconTextureKey, setIconKey } from '../ui/icons';
@@ -37,7 +38,7 @@ import { clearBackHandler, setBackHandler } from '../systems/back';
 import { BG_GLOW } from '../ui/textures';
 import { avatarIconKey } from '../ui/icons';
 import {
-  AVATAR_TEX_ORIGIN_Y,
+  avatarOriginY,
   addAvatarImage,
   bakeAvatar,
   bakeAvatarParticles,
@@ -51,6 +52,7 @@ import {
 import { FX_DOT } from '../ui/textures';
 import { AvatarRig } from '../ui/avatarRig';
 import { playFxCue } from '../ui/avatarFx';
+import { fitCamera } from '../ui/view';
 
 const W = THEME.layout.width;
 const BK = META.book;
@@ -181,7 +183,10 @@ export class Book extends Phaser.Scene {
   }
 
   create(data?: { tab?: Tab }): void {
+    fitCamera(this);
     const d = cached();
+    // Scenens objekt och nivåikonen visar aktivt set i full upplösning; sidorna bakas i bokens storlek.
+    bakeSet(this, d.activeSet);
     this.bg = this.add.container(0, 0).setDepth(-10);
     drawBackground(this, undefined, { still: true, into: this.bg });
     this.locked = THEME_SETS.map((s) => !d.unlockedSets.includes(s.id));
@@ -288,6 +293,10 @@ export class Book extends Phaser.Scene {
         return { x: c.x, y: c.y - self.scroll };
       },
       /** Kompisen på bokens scen. */
+      /** Nivåset i full upplösning i minnet (Art v2-budgeten). */
+      get ballSets(): string[] {
+        return loadedBallSets(self);
+      },
       get stageId(): string {
         return self.stageId;
       },
@@ -753,7 +762,7 @@ export class Book extends Phaser.Scene {
     }
     const img = this.add
       .image(SF.x, STAGE_GRIP_Y, bakeAvatar(this, def.id, SF.displayPx, false, 'full', lvl - 1))
-      .setOrigin(0.5, AVATAR_TEX_ORIGIN_Y);
+      .setOrigin(0.5, avatarOriginY());
     this.friendsTop.add(img);
     const rig = new AvatarRig(this, def, SF.displayPx, cached().settings.calm);
     this.stageImg = img;
@@ -1251,7 +1260,6 @@ export class Book extends Phaser.Scene {
       return;
     }
 
-    bakeSet(this, set.id);
     const d = cached();
     const page = d.collection[set.id];
     const icon = this.add.image(ox + I.x, I.y, setIconKey(set.id)).setDisplaySize(I.size, I.size);
@@ -1311,9 +1319,8 @@ export class Book extends Phaser.Scene {
   private addSlot(page: number, x: number, y: number, level: number, have: boolean, shiny: boolean, fresh: boolean): void {
     const set = THEME_SETS[page];
     const r = BK.r0 + BK.rStep * level;
-    const img = this.add
-      .image(x, y, have ? ballTextureKey(level, set.id) : silhouetteTextureKey(level, set.id))
-      .setScale(scaleForBodyRadius(level, r));
+    const tex = bookLevelTexture(this, set.id, level, r, !have);
+    const img = this.add.image(x, y, tex.key).setScale(tex.scale);
     if (!have) img.setTint(INT.hudDim).setAlpha(BK.lockedAlpha);
     this.strip.add(img);
     if (shiny && have) {

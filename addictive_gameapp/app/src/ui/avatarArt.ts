@@ -12,7 +12,9 @@ import {
   type Rarity,
 } from '../data/avatarsIndex';
 import { mulberry32 } from '../systems/rng';
-import { particleTextureKey } from './textures';
+import { bakeCanvas, particleTextureKey } from './textures';
+import { avatarBakeInfo, renderAvatar } from './artv2';
+import { ART_LOG, ART_MODE, texDpr } from './view';
 
 /**
  * Generisk ritare för kompisarnas `draw`-primitiver (UI.md §13.1). Samma språk som
@@ -23,8 +25,13 @@ const EDGE_W = 2.8;
 /** Pad i box-enheter runt 56-boxen, så att konturen inte klipps. */
 const PAD = 2;
 const FULL = AVATAR_BOX + PAD * 2;
-/** Origin y i den paddade texturen: greppunkten (0, 24) i boxen. */
+/** Origin y i den paddade texturen: greppunkten (0, 24) i boxen. v1; använd avatarOriginY(). */
 export const AVATAR_TEX_ORIGIN_Y = (PAD + AVATAR_BOX / 2 + AVATAR_GRIP[1]) / FULL;
+
+/** Greppunktens origin y i texturen från bakeAvatar (v2: större pad för drop shadow; siluetter ritas som v1). */
+export function avatarOriginY(sil = false): number {
+  return ART_MODE === 'v1' ? AVATAR_TEX_ORIGIN_Y : avatarBakeInfo(AVATAR_BOX, 1, sil ? 'v1' : 'v2').originY;
+}
 
 type P2 = readonly [number, number];
 
@@ -153,6 +160,13 @@ export function bakeAvatar(scene: Phaser.Scene, id: string, displayPx: number, s
   const key = avatarTextureKey(id, displayPx, sil, part, rombs);
   if (scene.textures.exists(key)) return key;
   const def = avatarById(id);
+  if (ART_MODE === 'v2' && def) {
+    const t0 = performance.now();
+    const dpr = texDpr(scene);
+    bakeCanvas(scene, key, avatarBakeInfo(displayPx, dpr, sil ? 'v1' : 'v2'), (ctx) => renderAvatar(ctx, def, displayPx, { dpr, sil, part, rombs }));
+    if (ART_LOG) console.log(`[art] bakade ${key} i ${(performance.now() - t0).toFixed(1)} ms`);
+    return key;
+  }
   const s = displayPx / AVATAR_BOX;
   const size = Math.ceil(FULL * s);
   const g = scene.make.graphics({ x: 0, y: 0 }, false);
@@ -174,7 +188,7 @@ export function bakeAvatar(scene: Phaser.Scene, id: string, displayPx: number, s
 
 /** En figurbild med origin i greppunkten. */
 export function addAvatarImage(scene: Phaser.Scene, x: number, y: number, id: string, displayPx: number, sil = false): Phaser.GameObjects.Image {
-  return scene.add.image(x, y, bakeAvatar(scene, id, displayPx, sil)).setOrigin(0.5, AVATAR_TEX_ORIGIN_Y);
+  return scene.add.image(x, y, bakeAvatar(scene, id, displayPx, sil)).setOrigin(0.5, avatarOriginY(sil));
 }
 
 /** Boxens överkant ligger så här många px ovanför greppunkten. */

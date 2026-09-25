@@ -15,6 +15,15 @@
  */
 
 export const ART = {
+  /**
+   * Spelets zoom Z = min(devicePixelRatio, maxZoom) (DESIGN §17): canvas 360·Z × 640·Z, kamerazoom Z,
+   * nivåer och kompisar bakas i Z. `?zoom=1` sänker (aldrig höjer), t.ex. för fps-jämförelse.
+   */
+  maxZoom: 2,
+  /** 'v2' = material (Canvas2D, bakat i Z). 'v1' = gamla Graphics-vägen i 1× (lågprestandaläge, `?art=v1`). */
+  mode: 'v2' as 'v1' | 'v2',
+  /** Högst så här många nivåset (11 nivåer + siluetter) i full upplösning samtidigt. Det aktiva frigörs aldrig. */
+  maxSets: 2,
   /** Bakningsupplösning: min(devicePixelRatio, maxDpr). Texturen visas med setScale(1/dpr). */
   maxDpr: 3,
   /** Stora nivåer: sänk dpr så att texturens sida aldrig överstiger detta (px). */

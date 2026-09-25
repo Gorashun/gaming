@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { WORLD } from '../data/physics';
 import { bakeTextures, ballTextureKey } from '../ui/textures';
+import { fitCamera } from '../ui/view';
 
 /** Benchmark: ~2000 levande partiklar, loggar medel-fps. Nås via ?bench=1. */
 export class Bench extends Phaser.Scene {
@@ -15,6 +16,7 @@ export class Bench extends Phaser.Scene {
   }
 
   create(): void {
+    fitCamera(this);
     this.cameras.main.setBackgroundColor(0x000000);
     bakeTextures(this);
     // lifespan 2000 ms med 1 partikel per ms ger ~2000 levande partiklar.

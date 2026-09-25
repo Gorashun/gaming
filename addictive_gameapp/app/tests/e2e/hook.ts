@@ -96,6 +96,10 @@ export interface GameHook {
   readonly buddy: { id: string; x: number; y: number; visible: boolean } | null;
   /** Nivån på det hängande objektet (-1 = specialobjekt). */
   readonly hangingLevel: number;
+  /** Det hängande objektets x i logiska px (-1 utan objekt). */
+  readonly hangingX: number;
+  /** Nivåset i full upplösning i TextureManager, t.ex. ['glimtarna']. */
+  readonly ballSets: string[];
   /** Antal objekt med synlig lyktring (Lykt-Lisa). */
   readonly lampsVisible: number;
   /** Lisas oljemätare vid Släpparen syns. */
@@ -138,6 +142,8 @@ export interface BookHook {
   equip(id: string): boolean;
   /** Scrollar cellen till mitten av rutnätet; returnerar dess mitt i logiska koordinater, null om okänd. */
   cellOf(id: string): { x: number; y: number } | null;
+  /** Nivåset i full upplösning i TextureManager. */
+  readonly ballSets: string[];
   /** Kompisen på bokens scen ('' = ingen). */
   readonly stageId: string;
   /** Nyöppnade kompisar som pulsar just nu. */

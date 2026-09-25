@@ -21,6 +21,7 @@ import {
   SPECIAL_BOMB,
   SPECIAL_RAINBOW,
   ballTextureKey,
+  loadedBallSets,
   particleTextureKey,
   scaleForBodyRadius,
   silhouetteTextureKey,
@@ -73,6 +74,7 @@ import { AbilityFx } from '../ui/abilityFx';
 import { DEBUG } from '../data/debug';
 import { pushRun, setRestart, summarizeRun, takeRestartTap } from '../systems/debug';
 import { clearBackHandler, setBackHandler } from '../systems/back';
+import { Z, fitCamera } from '../ui/view';
 
 interface Ball {
   body: MatterJS.BodyType;
@@ -307,6 +309,7 @@ export class Game extends Phaser.Scene {
   }
 
   create(): void {
+    fitCamera(this);
     this.balls.length = 0;
     this.byId.clear();
     this.pool.length = 0;
@@ -473,6 +476,10 @@ export class Game extends Phaser.Scene {
     this.input.on('pointermove', this.onPointerMove, this);
     this.input.on('pointerup', this.onPointerUp, this);
     this.matter.world.resume();
+    // resume() sätter runnerns klocka till "nu", efter den här framens tid: första deltat blir negativt
+    // och fastnar om spelet går under 15 fps (Matter återanvänder då senaste delta) – fysiken står still.
+    // Nollställd klocka ⇒ första framen använder standarddeltat.
+    (this.matter.world.runner as unknown as { timeLastTick: number }).timeLastTick = 0;
     this.matter.world.engine.timing.timeScale = 1;
     this.matter.world.on('collisionstart', this.onCollisionStart, this);
     document.addEventListener('visibilitychange', this.onHide);
@@ -726,6 +733,14 @@ export class Game extends Phaser.Scene {
         return b ? { id: b.def.id, x: b.img.x, y: b.img.y, visible: b.img.visible } : null;
       },
       /** Nivån på objektet som hänger nu (-1 = specialobjekt). */
+      /** Det hängande objektets x (logiska px), -1 utan objekt. */
+      get hangingX(): number {
+        return self.hanging ? self.hanging.x : -1;
+      },
+      /** Nivåset i full upplösning i minnet (Art v2-budgeten). */
+      get ballSets(): string[] {
+        return loadedBallSets(self);
+      },
       get hangingLevel(): number {
         return self.currentSpecial ? -1 : self.currentLevel;
       },
@@ -1750,7 +1765,8 @@ export class Game extends Phaser.Scene {
     const P = ABILITY_FX.polaroid;
     const w = INNER_RIGHT - INNER_LEFT;
     const h = Math.round((w * P.h) / P.w);
-    this.game.renderer.snapshotArea(INNER_LEFT, CAN.floorY - h, w, h, (img) => {
+    // snapshotArea läser enhetspixlar i canvasen (hi-DPI: logiskt × Z).
+    this.game.renderer.snapshotArea(INNER_LEFT * Z, (CAN.floorY - h) * Z, w * Z, h * Z, (img) => {
       this.snapQueue.shift();
       if (img instanceof HTMLImageElement) {
         if (this.textures.exists(key)) this.textures.remove(key);

@@ -7,12 +7,14 @@ import { GameOver } from './scenes/GameOver';
 import { Bench } from './scenes/Bench';
 import { Book } from './scenes/Book';
 import { installBackButton } from './systems/back';
+import { Z, installHiDpiText } from './ui/view';
 
 document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 
 const params = new URLSearchParams(location.search);
 const bench = params.has('bench');
 installBackButton(import.meta.env.DEV || params.has('test'));
+installHiDpiText();
 
 new Phaser.Game({
   type: Phaser.AUTO,
@@ -21,8 +23,9 @@ new Phaser.Game({
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: WORLD.width,
-    height: WORLD.height,
+    // Enhetspixlar; scenerna ser 360×640 via kamerazoom Z (ui/view.ts).
+    width: WORLD.width * Z,
+    height: WORLD.height * Z,
   },
   physics: {
     default: 'matter',
