@@ -198,3 +198,10 @@ Aldrig rött (rött = fara). Vanlig/ovanlig namnges och ritas av UI-designern me
 - Lykt-Lisa: parametern är antal sekunders siktning per runda som lyktan räcker.
 - Rundavslut med mussla + nytt set + många fångster: flygarna körs i snabbläge så budgeten 2,5 s håller.
 - Data: `app/src/data/avatars.ts` (ersätter stubben), spec UI.md §13.
+
+## 15. Språk (beslut 2026-09-25)
+- **Engelska är primärspråk** för allt en spelare eller butik kan se. **Svenska är lokalisering.**
+- UI:t förblir textfritt. Namn på avatarer, set och förmågor lagras som `{ en, sv }` i data och visas bara där text införs senare (bok, öppning, butik).
+- Appnamn: KLUNK (samma på båda språk). `index.html` lang="en".
+- Butikstext (Play/App Store) skrivs på engelska med svensk översättning i `docs/store/`.
+- Enkel `i18n`-modul väljer språk från enhetens språk (sv → svenska, annars engelska). Ingen inställning i v1.
