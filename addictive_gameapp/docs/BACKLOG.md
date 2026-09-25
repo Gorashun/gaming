@@ -58,3 +58,8 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [ ] U3 `freshSet` ska pulsa i boken tills boken besökts, inte nollställas i rundavslutet.
 - [ ] U4 Svep-ledtråd första gången boken öppnas; Androids bakåtknapp stänger boken.
 - [ ] U5 Sex guldstjärnor när skimrande skapas; dubbelring vid "?"-tändning (UI.md §12).
+
+## Fas 8 – Kompisar v1.2 (DESIGN §14)
+- [ ] K1 UI: 48 avatarer som ritrecept i `data/avatars.ts` (Släpparen-figur, raritet, kosmetik, animationsrecept), musslans öppning, odds-burk, fliken Kompisar, uppgraderingspärlor, förhandsbild. (ui-designer)
+- [ ] K2 Logik: musslor (intjäning, odds, ingen dubblett, ingen pity), inventarie, XP/nivåer, sparning, öppningsflöde på startskärmen, fliken Kompisar. (programmerare)
+- [ ] K3 Rendering av Släpparen + alla kosmetiska effekter + förmågor (sällsynt–mytisk) med nivåskalning. (programmerare)

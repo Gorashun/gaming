@@ -150,3 +150,44 @@ Ikonuppdrag, funktionella Glimtar ("Lyktan"). Beslut efter speltest.
 - Nytt set i rundavslutet: `jackpot`-juice utan shake, zoom och hit-stop.
 - Frostisarna nivå 0/1 har ΔE 23, speltestas med barn.
 - Set: Glimtarna, Planeterna, Frostisarna, Godisarna, Glöden (`app/src/data/themes.ts`).
+
+## 14. Kompisar: avatarer, musslor och uppgradering (v1.2, beslut 2026-09-25)
+Källa: research/avatar-box-research.md. Beslut av Anders: ingen garanti på episk och uppåt, uppgraderingsbara avatarer med små förbättringar, fler avatarer, unika förmågor från sällsynt och uppåt, vanlig/ovanlig rent kosmetiska.
+
+### 14.1 Avataren "Släpparen"
+Figuren som sitter på burkkanten och håller det hängande objektet. Syns hela rundan. Ritas med Graphics-primitiver per avatar (ingen bildfil). Reagerar på drop/merge/kedja/fara enligt sin egen animationsrecept.
+
+### 14.2 Antal och rariteter (48 st)
+| Raritet | Antal | Färg/pärlor | Innehåll |
+|---|---|---|---|
+| Vanlig | 16 | grå, 1 pärla | ren kosmetik: spår, ljud, små gester |
+| Ovanlig | 12 | grön, 2 | ren kosmetik, lite rikare |
+| Sällsynt | 9 | blå, 3 | **unik känsloförmåga** (ändrar juice/ljud/bakgrund, aldrig poäng) |
+| Episk | 6 | lila, 4 | **unik informationsförmåga** (visar något spelaren annars måste se själv) |
+| Legendarisk | 3 | guld, 5 | **unik mild spelförmåga** (en gång per runda eller små parametrar) |
+| Mytisk | 2 | regnbåge, 6 | unik förmåga + spektakel |
+Aldrig rött (rött = fara). Vanlig/ovanlig namnges och ritas av UI-designern med fritt tema (havsdjur och vänner). Sällsynt och uppåt enligt 14.5.
+
+### 14.3 Musslor (lådor)
+- **Intjäning**: mussla nummer k vid `50·k^1,3` ackumulerade merges (samma räknare som temaseten) + sex överraskningsmusslor för skicklighet: första nivå 7, 8, 9, 10, första dubbel-Klunk, första skimrande. Ingen timer, ingen valuta, inga köp, inga annonser.
+- **Odds per raritet**: vanlig 44 %, ovanlig 28 %, sällsynt 16 %, episk 8 %, legendarisk 3 %, mytisk 1 %. Omnormeras bland rariteter som har figurer kvar. Inom rariteten dras jämnt. **Inga dubbletter**: poolen är ändlig, 48 musslor ger alla 48. **Ingen garanti (pity) för episk och uppåt.** Första musslan är alltid sällsynt (onboarding: spelaren ser att förmågor finns).
+- **Öppning**: musslan flyger till hyllan i rundavslutet (omstart <0,5 s). Öppnas med ett tryck på startskärmen, fast tid 1,2 s, visar direkt figur, raritetsfärg och pärlor, figuren visar sin förmåga en gång. Jackpot-juice utan shake/zoom, max 0,9 för mytisk. Ett tryck hoppar över. Ingen rullning, ingen stegvis uppgradering, aldrig "nästan". Oöppnade musslor ligger på hyllan, utan siffra, puls ≤1 Hz, öppnas en i taget. Ingen "öppna alla".
+- **Odds utan text**: i fliken Kompisar en glasburk med 25 pärlor i raritetsfärgerna i proportion till aktuella odds.
+
+### 14.4 Uppgradering
+- Tre nivåer: I, II, III. XP = merges gjorda medan avataren är vald. Nivå II vid 150 XP, nivå III vid 450 XP (kumulativt). Ingen valuta, inga dubbletter.
+- Effekt per nivå: kosmetik blir rikare (fler partiklar, längre spår), förmågor får **små** parametersteg definierade per avatar i data (t.ex. Lyktan: 6 s → 8 s → 10 s). Aldrig mer än ~+30 % på förmågans parameter mellan I och III.
+- Visas som pärlor under avataren i boken och en liten romb på Släpparen.
+
+### 14.5 Förmågor (sällsynt och uppåt)
+**Sällsynt (känsla, 9):** Åskmolnet Muller (större skak och blixtar vid kedja, inom Lugnt läge-tak), Dirigenten Maestro (combon spelar en melodi), Tidsugglan Tick (egen slow-mo-stil vid fara), Fyrverkeri-Fia (egen fanfar vid rekord), Vulkanen Vulle (lava och bas vid merge nivå ≥8), Discokulan Disco (bakgrund pulserar med combon, flash-guard), Ekot Eko (katedraleko på merge), Kameran Klick (polaroid av största kedjan i rundavslutet), Norrsken-Nora (norrsken över burken vid kedja ≥3).
+**Episk (information, 6):** Lykt-Lisa (medan man siktar lyser objekt av samma nivå svagt, 6/8/10 s), Spådamen Siri (ser två steg fram i kön), Sikt-Sixten (siktlinjen slutar i en landningsprick), Bubblan Bubbel (första 10/12/15 dropen studsar inte), Ekolodet Ekko (när ny nivå tänds blinkar alla av den nivån, ≤1 Hz), Kikaren Kajsa (near-miss visas från nivå ≥6/5/4).
+**Legendarisk (mild spel, 3):** Magnet-Maja (1/1/2 gånger per runda dras två lika inom 40 px ihop), Regnbågs-Rut (rundan börjar med en regnbåge i kön; III: även en bomb), Andrums-Vala (1/2/2 gånger per runda: farogräns 2,5 s i stället för 1,5).
+**Mytisk (2):** Havsdrottningen (guldburk, orkester-klang, en regnbåge i varje runda + I/II/III: 1/1/2 extra specialobjekt), Stjärnvalen (stjärnhimmel, glödande objekt, dubbel/2,5×/3× chans på skimrande).
+
+### 14.6 Highscore och regler
+- Regeln "upplåsningar ger aldrig poäng" ändras till: **ger aldrig poäng direkt**. Förmågor är små (uppskattning <5 % på poäng) och ett enda rekord behålls. Avataren som satte rekordet visas vid rekordet på hyllan.
+- Avatar väljs i fliken Kompisar i boken. Byte gäller från nästa runda.
+
+### 14.7 Sparformat
+`avatars: { owned: string[], level: Record<id, 1|2|3>, xp: Record<id, number>, equipped: string, boxesEarned: number, boxesOpened: number, pendingBoxes: number }`, `stats.merges` återanvänds för intjäning. `highscoreAvatar: string`.
