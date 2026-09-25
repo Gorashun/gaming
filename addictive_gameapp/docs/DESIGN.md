@@ -205,3 +205,41 @@ Aldrig rött (rött = fara). Vanlig/ovanlig namnges och ritas av UI-designern me
 - Appnamn: KLUNK (samma på båda språk). `index.html` lang="en".
 - Butikstext (Play/App Store) skrivs på engelska med svensk översättning i `docs/store/`.
 - Enkel `i18n`-modul väljer språk från enhetens språk (sv → svenska, annars engelska). Ingen inställning i v1.
+
+## 16. Ekonomi: pärlor, stjärnsand, musslor i butik (v1.3, beslut 2026-09-25)
+Källa: research/economy-research.md §5. Ersätter §14.3 (intjäning) och §14.4 (XP). Inga köp för riktiga pengar, inga annonser, ingen timer, inga dubbletter, odds synliga, ingen spelautomat-estetik. Reservflagga `SHOP.mode: 'random' | 'pick3'` (välj 1 av 3 synliga) om regelverk kräver.
+
+### 16.1 Resurser
+- **Pärlor**: 1 per merge. Visas i rundavslutet (räknas upp ≤0,6 s) och i boken.
+- **Stjärnsand**: +1 per skimrande, +1 per kedja ≥3 (max 3/runda), +2 per nivå 10, engångs +3 för första nivå 7, 8, 9, 10, första skimrande, första dubbel-Klunk (ersätter skicklighetsmusslorna), +10 per full boksida.
+- Konfig i `data/economy.ts`. Sparformat: `economy: { pearls, sand, mergesBaseline, freeShellsClaimed, milestones: string[] }`.
+
+### 16.2 Musslor
+| Typ | Pris | Raritetsgolv | Odds vanlig/ovanlig/sällsynt/episk/legendarisk/mytisk |
+|---|---|---|---|
+| Vanlig | 300 pärlor | vanlig | 50 / 30 / 13 / 5 / 1,5 / 0,5 |
+| Silver | 700 pärlor | ovanlig | – / 50 / 30 / 14 / 4,5 / 1,5 |
+| Guld | 50 stjärnsand | sällsynt | – / – / 50 / 32 / 13 / 5 |
+| Gratis (vanlig) | vid 120 och 400 merges räknat från `mergesBaseline`, sedan var 750:e | vanlig | som vanlig |
+- Odds omnormeras bland rariteter ≥ golvet som har figurer kvar. Inga dubbletter. Ingen pity. Första musslan i spelarens liv är alltid sällsynt.
+- Silver/guld visas grå med bock när inget finns kvar över golvet.
+- **Ingen retroaktiv utbetalning**: vid migrering sätts `mergesBaseline = stats.merges`, befintliga kompisar och oöppnade musslor behålls, pärlor/sand startar på 0.
+- När alla 48 ägs: gratismusslan ger 10 stjärnsand; butiken visar "full bok". Inga nya sinks.
+- Köpta musslor öppnas direkt i butiken med samma öppningsceremoni (1,2 s, tryck hoppar över).
+
+### 16.3 Uppgradering (ersätter XP)
+| Raritet | I→II | II→III |
+|---|---|---|
+| Vanlig | 80 pärlor | 200 pärlor + 4 sand |
+| Ovanlig | 100 | 250 + 6 |
+| Sällsynt | 150 | 400 + 10 |
+| Episk | 200 | 550 + 15 |
+| Legendarisk | 250 | 700 + 20 |
+| Mytisk | 300 | 800 + 24 |
+- Knapp under kompisen i boken med pris; grå när det inte räcker. Effekterna per nivå oförändrade (§14.5).
+- `avatars.xp` tas bort ur sparformatet (migrering: befintliga nivåer behålls).
+
+### 16.4 Boken
+- Fliken Kompisar får en **butikshylla** högst upp: tre musslor med pris och en liten oddsburk var (25 pärlor), resursräknare för pärlor och sand.
+- Vald kompis: **förmågetext** ≤60 tecken per språk (EN/SV via i18n), för alla 48 (kosmetik beskrivs också, kort). **Uppgraderingsstapel** i tre segment med värdet per nivå där det finns en parameter, annars bara segment.
+- Oddsburken per mussla ersätter den gamla gemensamma burken.

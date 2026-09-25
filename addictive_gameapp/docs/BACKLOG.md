@@ -72,3 +72,8 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [x] U11 Språk: `{en, sv}`-namn, i18n-modul, butikstext EN/SV.
 - [x] U12 Låt en engelsktalande läsa avatarnamnen ("Echo the Echo" är svagt).
 - [ ] U13 Debugpanel: sessionsfält firstBoxEarnedMs/firstBoxOpenedMs/firstBookOpenMs/firstFriendsTabMs (PLAYTEST §3).
+
+## Fas 9 – Ekonomi v1.3 (DESIGN §16)
+- [ ] E1 UI: butikshylla i Kompisar (tre musslor, pris, oddsburk var), resursikoner pärla/stjärnsand, förmågetext-yta, uppgraderingsknapp + stapel, rundavslutets resursräkning; text `desc: {en, sv}` ≤60 tecken för alla 48. (ui-designer)
+- [ ] E2 Logik: resurser, intjäning, gratismussla från baseline, tre musseltyper med odds/golv, köp, uppgradering med kostnad, migrering utan retroaktivitet, pick3-flagga. (programmerare)
+- [ ] E3 Integration i bok, rundavslut och startskärm; tester; testversion 7. (programmerare)
