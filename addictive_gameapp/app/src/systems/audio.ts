@@ -6,7 +6,7 @@
 import { THEME } from '../data/theme';
 import type { JuiceEvent } from '../data/juice';
 
-interface ToneDef {
+export interface ToneDef {
   readonly wave: string;
   readonly baseHz: number;
   readonly glideTo?: number;
@@ -215,6 +215,20 @@ export function playSound(event: JuiceEvent | 'bomb' | 'ui', opts: PlayOpts = {}
   }
 
   tone(def, def.baseHz, vol, now);
+}
+
+/** Fristående ton ur data (skimrande, kedjepling). `semitones` transponerar, `delayMs` fördröjer. */
+export function playTone(
+  def: ToneDef & { readonly delayMs?: number },
+  semitones = 0,
+  intensity = 1,
+): void {
+  if (!ready()) return;
+  const at = ctx!.currentTime + (def.delayMs ?? 0) / 1000;
+  const vol = 0.55 + 0.45 * Math.min(1, Math.max(0, intensity));
+  const f = def.baseHz * semi(semitones);
+  tone(def, f, vol, at);
+  if (def.harmonicSemitones) tone(def, f * semi(def.harmonicSemitones), vol * (def.harmonicGain ?? 0.3), at);
 }
 
 /** Dov sågtandston som loopar medan faran pågår. */

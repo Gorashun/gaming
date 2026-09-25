@@ -120,9 +120,10 @@ Mål: "mer att komma tillbaka till" utan timers, streaks, notiser, dubbletter el
 - Tänds med scale-punch 0,3 och ett kort pling när ny nivå skapas i rundan. Ingen text.
 
 ### 13.2 Samlarbok
-- En sida per temaset (v1.1: 5 sidor). 22 platser per sida: 11 vanliga + 11 skimrande. Nivå 0 vanlig är ifylld från start på varje sida (endowed progress).
+- En sida per temaset (v1.1: 5 sidor). **21 platser per sida: 11 vanliga + 10 skimrande (nivå 1–10).** Nivå 0 skapas aldrig genom merge och kan därför inte bli skimrande. Nivå 0 vanlig är ifylld från start på varje sida (endowed progress). "Full sida" = 21/21.
 - **Fångst**: en Glimt fångas när nivån *skapas* genom merge (eller regnbåge) i det aktiva setet. Drop från kön räknas inte.
 - **Skimrande**: avgörs med seedad RNG vid skapande. Ren kosmetik: glittrande ring runt objektet + egen ton (kvint upp), inga poäng. Sannolikhet per nivå i `data/collection.ts`: nivå 0–4: 1/60, 5–6: 1/30, 7–8: 1/12, 9–10: 1/5. **Garanti**: räknare per nivå, garanterad skimrande efter 3/p skapade utan träff. Första skimrande garanteras senast i runda 3 på nivå ≥2.
+- Tolkningar (bekräftade 2026-09-25): pity slår till på den 3/p:e skapade i rad utan träff; ett skimrande objekt fyller även den vanliga platsen; nivå 0 i kedjan är tänd från rundans start; drop från kön tänder inte kedjan.
 - Boken öppnas från hyllan på startskärmen. Bläddring mellan sidor med svep. Låsta platser syns som siluetter med alpha 0,25. Ingen text utöver siffror.
 - Sparformat: `collection: { [setId]: { caught: number[11 bitmask eller boolean[]], shiny: boolean[11] } }`, `stats.createdPerLevel: number[11]`, `stats.shinyPity: number[11]`.
 

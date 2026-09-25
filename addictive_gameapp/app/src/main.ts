@@ -5,6 +5,7 @@ import { Start } from './scenes/Start';
 import { Game } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
 import { Bench } from './scenes/Bench';
+import { Book } from './scenes/Book';
 
 document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 
@@ -28,5 +29,5 @@ new Phaser.Game({
     },
   },
   input: { activePointers: 2 },
-  scene: bench ? [Bench] : [Boot, Start, Game, GameOver],
+  scene: bench ? [Bench] : [Boot, Start, Game, GameOver, Book],
 });

@@ -1,0 +1,123 @@
+/**
+ * Fångst och skimrande (DESIGN §13.2). Ren logik, ingen Phaser: seedbar och testbar.
+ * Anropas en gång per nivå som SKAPAS (merge eller regnbåge), aldrig för drop från kön.
+ */
+import type { Rng } from './rng';
+import { LEVEL_COUNT, type CollectionConfig } from '../data/collection';
+
+/** En boksida: 11 vanliga + 11 skimrande platser. */
+export interface CollectionPage {
+  caught: boolean[];
+  shiny: boolean[];
+}
+
+export type Collection = Record<string, CollectionPage>;
+
+export interface CollectionState {
+  /** Aktiva setets sida. Muteras. */
+  page: CollectionPage;
+  /** Muteras. */
+  createdPerLevel: number[];
+  /** Skapade i rad utan skimrande, per nivå. Muteras. */
+  shinyPity: number[];
+  /** 1-baserat index för rundan som pågår. */
+  run: number;
+  /** Har spelaren någonsin fått ett skimrande (i något set)? Muteras. */
+  everShiny: boolean;
+}
+
+export interface CreatedResult {
+  /** Nivån fångades nu för första gången på sidan. */
+  caught: boolean;
+  /** Det skapade objektet är skimrande. */
+  shiny: boolean;
+  /** Första skimrande av nivån på sidan. */
+  newShiny: boolean;
+}
+
+/** Garantin: den N:e skapade i rad utan träff är alltid skimrande, N = pityFactor / p. */
+export function pityThreshold(level: number, cfg: CollectionConfig): number {
+  return Math.round(cfg.pityFactor / cfg.shinyP[level]);
+}
+
+export function onLevelCreated(
+  level: number,
+  state: CollectionState,
+  rng: Rng,
+  cfg: CollectionConfig,
+): CreatedResult {
+  state.createdPerLevel[level]++;
+  const caught = !state.page.caught[level];
+  state.page.caught[level] = true;
+  // Nivå 0 skapas aldrig genom merge; den blir aldrig skimrande.
+  if (level < 1) return { caught, shiny: false, newShiny: false };
+
+  const roll = rng.next() < cfg.shinyP[level];
+  const pity = state.shinyPity[level] + 1 >= pityThreshold(level, cfg);
+  const first =
+    !state.everShiny && state.run >= cfg.firstShinyByRun && level >= cfg.firstShinyMinLevel;
+  const shiny = roll || pity || first;
+  const newShiny = shiny && !state.page.shiny[level];
+  if (shiny) {
+    state.shinyPity[level] = 0;
+    state.everShiny = true;
+    state.page.shiny[level] = true;
+  } else {
+    state.shinyPity[level]++;
+  }
+  return { caught, shiny, newShiny };
+}
+
+/** Ny sida: nivå 0 vanlig är ifylld från start (endowed progress). */
+export function emptyPage(): CollectionPage {
+  const caught = new Array<boolean>(LEVEL_COUNT).fill(false);
+  caught[0] = true;
+  return { caught, shiny: new Array<boolean>(LEVEL_COUNT).fill(false) };
+}
+
+function boolArray(raw: unknown): boolean[] {
+  const out = new Array<boolean>(LEVEL_COUNT).fill(false);
+  if (Array.isArray(raw)) for (let i = 0; i < LEVEL_COUNT; i++) out[i] = raw[i] === true;
+  return out;
+}
+
+/** Tål gamla/korrupta sparfiler: rätt längd, bara booleans, nivå 0 alltid fångad. */
+export function normalizeCollection(raw: unknown, sets: readonly string[]): Collection {
+  const src = (raw && typeof raw === 'object' ? raw : {}) as Record<string, Partial<CollectionPage>>;
+  const out: Collection = {};
+  for (const id of Object.keys(src)) {
+    const p = src[id] ?? {};
+    const page = { caught: boolArray(p.caught), shiny: boolArray(p.shiny) };
+    page.caught[0] = true;
+    out[id] = page;
+  }
+  for (const id of sets) if (!out[id]) out[id] = emptyPage();
+  return out;
+}
+
+/** Tal-array med rätt längd (createdPerLevel, shinyPity). */
+export function countArray(raw: unknown): number[] {
+  const out = new Array<number>(LEVEL_COUNT).fill(0);
+  if (Array.isArray(raw)) {
+    for (let i = 0; i < LEVEL_COUNT; i++) {
+      const v = raw[i];
+      if (typeof v === 'number' && Number.isFinite(v) && v > 0) out[i] = Math.floor(v);
+    }
+  }
+  return out;
+}
+
+/** Ifyllda platser på sidan, 0–22. */
+export function filledSlots(page: CollectionPage): number {
+  let n = 0;
+  for (let i = 0; i < LEVEL_COUNT; i++) {
+    if (page.caught[i]) n++;
+    if (page.shiny[i]) n++;
+  }
+  return n;
+}
+
+export function hasAnyShiny(c: Collection): boolean {
+  for (const id of Object.keys(c)) if (c[id].shiny.some(Boolean)) return true;
+  return false;
+}

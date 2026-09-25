@@ -11,6 +11,8 @@ const L = THEME.layout;
 const TOUCH = THEME.touch.minLogical;
 /** Minsta mellanrum mellan två träffytor (UI.md §2.3). */
 const ICON_GAP = 8;
+/** Hyllans träffyta (bästa objekt + highscore) öppnar samlarboken. */
+const SHELF_HIT = { x0: 70, x1: 290, y0: 396, y1: 516 };
 
 interface Toggle {
   img: Phaser.GameObjects.Image;
@@ -49,6 +51,16 @@ export class Start extends Phaser.Scene {
         return;
       }
       if (p.worldY > 540) return; // ikonraden: ingen oavsiktlig start
+      if (
+        p.worldX >= SHELF_HIT.x0 &&
+        p.worldX <= SHELF_HIT.x1 &&
+        p.worldY >= SHELF_HIT.y0 &&
+        p.worldY <= SHELF_HIT.y1
+      ) {
+        playSound('ui');
+        this.scene.start('Book');
+        return;
+      }
       playSound('ui');
       this.scene.start('Game');
     });

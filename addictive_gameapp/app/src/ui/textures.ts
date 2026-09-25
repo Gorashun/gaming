@@ -44,7 +44,15 @@ export const FX_DOT = 'fx-dot';
 export const FX_RING = 'fx-ring';
 /** Ringens radie i texturen (128×128, strokeCircle r=58). Scale = önskad radie / detta. */
 export const FX_RING_R = 58;
+/** Glitterring runt skimrande objekt (DESIGN §13.2). Ringradie i texturen: FX_GLITTER_R. */
+export const FX_GLITTER = 'fx-glitter';
+export const FX_GLITTER_R = 52;
 export const SPECIAL_BOMB = 'special-bomb';
+
+/** Siluett av nivån (kropp + dekor, ingen färg/ansikte). Samma pad som bolltexturen. */
+export function silhouetteTextureKey(level: number): string {
+  return `sil-${level}`;
+}
 export const SPECIAL_RAINBOW = 'special-rainbow';
 
 // ---------------------------------------------------------------- geometri
@@ -400,6 +408,13 @@ function bakeLevels(scene: Phaser.Scene): void {
     drawSkin(g, pad, pad, r, skin);
     g.generateTexture(key, pad * 2, pad * 2);
     g.destroy();
+    const sil = scene.make.graphics({ x: 0, y: 0 }, false);
+    const c = hexToInt(THEME.palette.hudDim);
+    drawDeco(sil, pad, pad, r, skin.deco ?? 'none', c, c);
+    sil.fillStyle(c, 1);
+    sil.fillCircle(pad, pad, r);
+    sil.generateTexture(silhouetteTextureKey(def.level), pad * 2, pad * 2);
+    sil.destroy();
   }
 }
 
@@ -473,6 +488,30 @@ function bakeFx(scene: Phaser.Scene): void {
   }
 }
 
+/** Tunn guldring med åtta fyrudds-gnistor. Ingen blixt: pulsen görs med alpha ≤1 Hz. */
+function bakeGlitter(scene: Phaser.Scene): void {
+  if (scene.textures.exists(FX_GLITTER)) return;
+  const gold = hexToInt(THEME.palette.gold);
+  const R = FX_GLITTER_R;
+  const g = scene.make.graphics({ x: 0, y: 0 }, false);
+  g.lineStyle(2, gold, 0.55);
+  g.strokeCircle(64, 64, R);
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2;
+    const x = 64 + Math.cos(a) * R;
+    const y = 64 + Math.sin(a) * R;
+    const big = i % 2 === 0 ? 9 : 6;
+    const w = big * 0.28;
+    g.fillStyle(i % 2 === 0 ? 0xffffff : gold, 1);
+    g.fillTriangle(x - big, y, x, y - w, x, y + w);
+    g.fillTriangle(x + big, y, x, y - w, x, y + w);
+    g.fillTriangle(x, y - big, x - w, y, x + w, y);
+    g.fillTriangle(x, y + big, x - w, y, x + w, y);
+  }
+  g.generateTexture(FX_GLITTER, 128, 128);
+  g.destroy();
+}
+
 export const BG_GLOW = 'bg-glow';
 
 function bakeBackground(scene: Phaser.Scene): void {
@@ -499,5 +538,6 @@ export function bakeTextures(scene: Phaser.Scene): void {
   bakeLevels(scene);
   bakeSpecials(scene);
   bakeFx(scene);
+  bakeGlitter(scene);
   bakeBackground(scene);
 }

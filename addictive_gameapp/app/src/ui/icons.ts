@@ -40,6 +40,10 @@ export const ICONS = {
   hand: (c = '#EAF2FF', ink = '#14202E') =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><path d="M26 40 V14 a5 5 0 0 1 10 0 v18 l4 1 a10 10 0 0 1 7 9 v6 a10 10 0 0 1 -10 10 h-8 a10 10 0 0 1 -8 -4 l-8 -11 a4 4 0 0 1 6 -5 l7 6 Z" fill="${c}" stroke="${ink}" stroke-width="4" stroke-linejoin="round"/></svg>`,
 
+  // Stäng (samlarboken). Interaktiv ⇒ accent.
+  close: (c = '#7CF9FF') =>
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18 L46 46 M46 18 L18 46"/></svg>`,
+
   // Rörelsespår under handen
   swipe: (c = '#7CF9FF') =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 9"><path d="M8 32 H56"/></svg>`,
@@ -62,6 +66,7 @@ export const ICON_KEYS: readonly IconKey[] = [
   'replay',
   'hand',
   'swipe',
+  'close',
 ];
 
 /** Rastrerar SVG-strängen till en HTMLImageElement (2× för skärpa). */

@@ -13,10 +13,13 @@ import { FEEL, JUICE, mergeIntensity } from '../data/juice';
 import { DIRECTOR, SPECIALS, type SpecialType } from '../data/director';
 import { INT, LEVEL_COLORS, THEME } from '../data/theme';
 import {
+  FX_GLITTER,
+  FX_GLITTER_R,
   SPECIAL_BOMB,
   SPECIAL_RAINBOW,
   ballTextureKey,
   scaleForBodyRadius,
+  silhouetteTextureKey,
 } from '../ui/textures';
 import { drawBackground } from '../ui/background';
 import { iconTextureKey } from '../ui/icons';
@@ -29,8 +32,16 @@ import { autoDropMsForDrop, createPacer, type Pacer, type PacerInput } from '../
 import { createComboTracker, type ComboTracker } from '../systems/combo';
 import { createDangerTracker, type DangerTracker } from '../systems/danger';
 import { Juice } from '../systems/juice';
-import { unlockAudio } from '../systems/audio';
-import { mulberry32 } from '../systems/rng';
+import { playTone, unlockAudio } from '../systems/audio';
+import { mulberry32, type Rng } from '../systems/rng';
+import { COLLECTION, COLLECTION_FX, LEVEL_COUNT } from '../data/collection';
+import {
+  emptyPage,
+  hasAnyShiny,
+  onLevelCreated,
+  pityThreshold,
+  type CollectionState,
+} from '../systems/collection';
 import { cached, save, submitRun } from '../systems/save';
 
 interface Ball {
@@ -50,9 +61,15 @@ interface Ball {
   nearMiss: boolean;
   /** Puls pausad tills dess (landnings-/merge-tween äger skalan). */
   noPulseUntil: number;
+  /** Skimrande (DESIGN §13.2). Försvinner när objektet mergeas vidare. */
+  shiny: boolean;
+  /** Glitterring, skapas första gången bollen blir skimrande och poolas med den. */
+  glitter: Phaser.GameObjects.Image | null;
 }
 
 const L = THEME.layout;
+const GL = COLLECTION_FX.glitter;
+const CH = COLLECTION_FX.chain;
 const PREVIEW_R = 24;
 const DEG = Math.PI / 180;
 /** Tak för mätbufferten i testhooken (DESIGN §11). */
@@ -112,6 +129,14 @@ export class Game extends Phaser.Scene {
   private recordTween: Phaser.Tweens.Tween | null = null;
   private comboDots: Phaser.GameObjects.Arc[] = [];
   private hand: Phaser.GameObjects.Container | null = null;
+
+  // ---- samlarbok och kedja (DESIGN §13.1–13.2)
+  private col!: CollectionState;
+  private colRng!: Rng;
+  /** Nivåer som skapats i rundan. Nivå 0 är alltid tänd. */
+  private chainLit: boolean[] = new Array<boolean>(LEVEL_COUNT).fill(false);
+  private chainImgs: Phaser.GameObjects.Image[] = [];
+  private chainQ: Phaser.GameObjects.Text[] = [];
 
   private currentLevel = 0;
   private currentSpecial: SpecialType | null = null;
@@ -220,7 +245,22 @@ export class Game extends Phaser.Scene {
       },
     });
 
-    this.director = createDirector(mulberry32(SEED ?? ((Date.now() ^ 0x9e3779b9) >>> 0)));
+    const seed = SEED ?? ((Date.now() ^ 0x9e3779b9) >>> 0);
+    this.director = createDirector(mulberry32(seed));
+    // Egen ström för skimrande så regissörens sekvens inte påverkas.
+    this.colRng = mulberry32((seed ^ 0x5eed5) >>> 0);
+    if (!data.collection[data.activeSet]) data.collection[data.activeSet] = emptyPage();
+    this.col = {
+      page: data.collection[data.activeSet],
+      createdPerLevel: data.stats.createdPerLevel,
+      shinyPity: data.stats.shinyPity,
+      run: data.stats.runs + 1,
+      everShiny: hasAnyShiny(data.collection),
+    };
+    this.chainLit.fill(false);
+    this.chainLit[0] = true;
+    this.chainImgs.length = 0;
+    this.chainQ.length = 0;
     this.combo = createComboTracker();
     this.dangerTracker = createDangerTracker();
     this.takeNext();
@@ -338,6 +378,26 @@ export class Game extends Phaser.Scene {
           mode === 'off' ? 'off' : mode === 'always' ? 'always' : 'aiming';
         self.refreshAimLine();
       },
+      /** Kopia av samlarboken (DESIGN §13.2). */
+      get collection(): unknown {
+        return JSON.parse(JSON.stringify(cached().collection));
+      },
+      get chainLit(): boolean[] {
+        return self.chainLit.slice();
+      },
+      /** Antal skimrande objekt i burken vars glitterring syns. */
+      get glitterVisible(): number {
+        let n = 0;
+        for (let i = 0; i < self.balls.length; i++) {
+          const b = self.balls[i];
+          if (b.shiny && b.glitter?.visible) n++;
+        }
+        return n;
+      },
+      /** Nästa skapade objekt av nivån blir skimrande (via pity-garantin). */
+      forceShiny(level: number): void {
+        self.col.shinyPity[level] = pityThreshold(level, COLLECTION) - 1;
+      },
     };
   }
 
@@ -438,6 +498,74 @@ export class Game extends Phaser.Scene {
     this.showPreview();
 
     this.aimLine = this.add.graphics().setDepth(3).setAlpha(0);
+    this.buildChain();
+  }
+
+  /** Kedjan (DESIGN §13.1): 11 siluetter i en rad under poängen. Byggs en gång per runda. */
+  private buildChain(): void {
+    const step = CH.size + CH.gap;
+    const x0 = CH.cx - (LEVEL_COUNT * step - CH.gap) / 2 + CH.size / 2;
+    const created = this.col.createdPerLevel;
+    for (let i = 0; i < LEVEL_COUNT; i++) {
+      const x = x0 + i * step;
+      const lit = this.chainLit[i];
+      const img = this.add
+        .image(x, CH.y, lit ? ballTextureKey(i) : silhouetteTextureKey(i))
+        .setScale(scaleForBodyRadius(i, CH.bodyR))
+        .setAlpha(lit ? 1 : CH.unlitAlpha)
+        .setDepth(5.5);
+      const q = this.add
+        .text(x, CH.y, '?', {
+          fontFamily: THEME.type.family,
+          fontSize: '12px',
+          color: THEME.palette.hud,
+          fontStyle: THEME.type.weightHeavy,
+        })
+        .setOrigin(0.5)
+        .setDepth(5.6)
+        .setVisible(!lit && i > 0 && created[i] === 0);
+      this.chainImgs.push(img);
+      this.chainQ.push(q);
+    }
+  }
+
+  /** Tänder en nivå i kedjan: scale-punch 0,3 + kort pling. */
+  private lightChain(level: number): void {
+    this.chainLit[level] = true;
+    const img = this.chainImgs[level];
+    const base = scaleForBodyRadius(level, CH.bodyR);
+    img.setTexture(ballTextureKey(level)).setAlpha(1);
+    this.chainQ[level].setVisible(false);
+    this.tweens.killTweensOf(img);
+    this.tweens.add({
+      targets: img,
+      scale: { from: base * (1 + CH.punch), to: base },
+      duration: CH.punchMs,
+      ease: THEME.anim.mergePunch.ease,
+    });
+    playTone(COLLECTION_FX.sound.chain, level);
+  }
+
+  /**
+   * En nivå har SKAPATS (merge eller regnbåge): fångst, skimrande och kedja.
+   * Returnerar true om objektet blev skimrande.
+   */
+  private registerCreated(ball: Ball): boolean {
+    const r = onLevelCreated(ball.level, this.col, this.colRng, COLLECTION);
+    if (!this.chainLit[ball.level]) this.lightChain(ball.level);
+    if (r.shiny) {
+      this.makeShiny(ball);
+      playTone(COLLECTION_FX.sound.shiny);
+    }
+    // Fångst skrivs direkt: progression får aldrig tappas.
+    if (r.caught || r.newShiny) void save();
+    return r.shiny;
+  }
+
+  private makeShiny(ball: Ball): void {
+    ball.shiny = true;
+    if (!ball.glitter) ball.glitter = this.add.image(0, 0, FX_GLITTER).setDepth(5.2);
+    ball.glitter.setPosition(ball.body.position.x, ball.body.position.y).setVisible(true);
   }
 
   /** Ramen byter färg när ett specialobjekt ligger i kön (UI.md §4). */
@@ -733,8 +861,12 @@ export class Game extends Phaser.Scene {
         activated: false,
         nearMiss: false,
         noPulseUntil: 0,
+        shiny: false,
+        glitter: null,
       };
     }
+    ball.shiny = false;
+    ball.glitter?.setVisible(false);
     ball.special = special;
     ball.landedAt = 0;
     ball.activated = false;
@@ -754,6 +886,8 @@ export class Game extends Phaser.Scene {
     this.matter.world.remove(ball.body);
     this.tweens.killTweensOf(ball.img);
     ball.img.setVisible(false).setScale(1);
+    ball.shiny = false;
+    ball.glitter?.setVisible(false);
     this.pool.push(ball);
   }
 
@@ -876,10 +1010,12 @@ export class Game extends Phaser.Scene {
     }
     const created = this.addBall(x, y, level + 1, true);
     created.noPulseUntil = this.time.now + JUICE.punch.durationMs;
+    const shiny = this.registerCreated(created);
     const points = scoreForCreating(level + 1);
     this.addScore(points);
     const jackpot = level + 1 >= MAX_LEVEL;
-    this.juice.trigger(jackpot ? 'jackpot' : 'special', jackpot ? 1 : intensity, x, y, {
+    const bonus = shiny ? COLLECTION_FX.shinyIntensityBonus : 0;
+    this.juice.trigger(jackpot ? 'jackpot' : 'special', jackpot ? 1 : Math.min(1, intensity + bonus), x, y, {
       target: created.img,
       color: LEVEL_COLORS[level + 1],
       score: points,
@@ -939,6 +1075,7 @@ export class Game extends Phaser.Scene {
     let points: number;
     let target: Phaser.GameObjects.Image | undefined;
     let newLevel = level;
+    let shiny = false;
     if (level >= MAX_LEVEL) {
       points = TOP_PAIR_SCORE;
     } else {
@@ -946,6 +1083,7 @@ export class Game extends Phaser.Scene {
       const created = this.addBall(x, y, newLevel, true);
       created.noPulseUntil = this.time.now + JUICE.punch.durationMs;
       target = created.img;
+      shiny = this.registerCreated(created);
       points = scoreForCreating(newLevel);
     }
     this.addScore(points);
@@ -955,11 +1093,12 @@ export class Game extends Phaser.Scene {
     const color = jackpot ? INT.gold : LEVEL_COLORS[newLevel];
     const chain = state.chain >= FEEL.chain.minLength;
     const event = jackpot ? 'jackpot' : chain ? 'chain' : 'merge';
-    const intensity = jackpot
+    const base = jackpot
       ? 1
       : chain
         ? FEEL.chain.intensity
         : mergeIntensity(newLevel, state.combo);
+    const intensity = Math.min(1, base + (shiny ? COLLECTION_FX.shinyIntensityBonus : 0));
     this.juice.trigger(event, intensity, x, y, {
       target,
       color,
@@ -1031,6 +1170,11 @@ export class Game extends Phaser.Scene {
     this.pulseMs += delta;
     const nmPhase = (this.pulseMs / (FEEL.nearMiss.halfCycleMs * 2)) * Math.PI * 2;
     const nmScale = 1 + (FEEL.nearMiss.scale - 1) * (0.5 - 0.5 * Math.cos(nmPhase));
+    // Glitterpuls ≤1 Hz, gemensam för alla skimrande objekt (flash-guard).
+    const glw = 0.5 - 0.5 * Math.cos((this.pulseMs / (GL.halfCycleMs * 2)) * Math.PI * 2);
+    const glAlpha = GL.alphaMin + (GL.alphaMax - GL.alphaMin) * glw;
+    const glScale = 1 + GL.scaleAmp * glw;
+    const glRot = (this.pulseMs / 1000) * GL.spinDegPerSec * DEG;
 
     // Bild följer fysikkroppen. Inga allokeringar.
     for (let i = 0; i < this.balls.length; i++) {
@@ -1048,6 +1192,13 @@ export class Game extends Phaser.Scene {
         continue;
       }
       b.img.rotation = b.body.angle;
+      if (b.shiny && b.glitter) {
+        b.glitter.x = b.img.x;
+        b.glitter.y = b.img.y;
+        b.glitter.rotation = glRot;
+        b.glitter.alpha = glAlpha;
+        b.glitter.setScale(((radiusOf(b.level) * GL.ringRadius) / FX_GLITTER_R) * glScale);
+      }
       if (b.nearMiss) {
         b.img.setScale(nmScale);
       } else if (b.img.scaleX !== 1 && now >= b.noPulseUntil && !this.tweens.isTweening(b.img)) {
