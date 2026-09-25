@@ -10,6 +10,7 @@
  *    Kontroll: `node` + skriptet i UI.md §12.9 (tester kan göra samma sak).
  */
 import { THEME, type Deco, type LevelSkin } from './theme'
+import type { LocalizedName } from '../systems/i18n'
 
 // ---------------------------------------------------------------- typer
 
@@ -143,8 +144,8 @@ export interface SetBackdrop {
 
 export interface ThemeSet {
   readonly id: string
-  /** Internt namn, visas aldrig */
-  readonly name: string
+  /** Namn { en, sv }, visas inte i UI:t i v1 (DESIGN §15) */
+  readonly name: LocalizedName
   /** En mening: varför setet känns annorlunda */
   readonly idea: string
   /** Setets signaturfärg: ikon, sidindikator, partiklar i rundavslut */
@@ -165,7 +166,7 @@ export interface ThemeSet {
 /** Bygger en nivå. Ansiktet kopieras ALLTID ur Glimtarna. */
 function skin(
   id: number,
-  name: string,
+  name: LocalizedName,
   color: string,
   color2: string,
   glow: number,
@@ -271,7 +272,7 @@ export const SET_DECO_GEOM: Readonly<Record<NewDeco, DecoGeom>> = {
 
 const GLIMTARNA: ThemeSet = {
   id: 'glimtarna',
-  name: 'Glimtarna',
+  name: { en: 'The Glimmers', sv: 'Glimtarna' },
   idea: 'Lysande djuphavsvarelser: neon mot svart hav, mjuk glöd – basen alla andra set jämförs med.',
   signature: '#7CF9FF',
   levels: THEME.levels,
@@ -314,21 +315,21 @@ const GLIMTARNA: ThemeSet = {
 
 const PLANETERNA: ThemeSet = {
   id: 'planeterna',
-  name: 'Planeterna',
+  name: { en: 'The Planets', sv: 'Planeterna' },
   idea: 'Små matta planeter och månar i ett violett stjärnmörker: dammiga pastellkulörer, kratrar och ringar i stället för neon – lugnt och svävande.',
   signature: '#E8C45C',
   levels: [
-    skin(0, 'Stoftet', '#D9D4F0', '#2E2A4F', 0.2, { spots: 2 }),
-    skin(1, 'Kometen', '#8FE8DC', '#0E4A44', 0.2, { deco: 'moon' }),
-    skin(2, 'Sanden', '#E8DA8A', '#5A3E12', 0.18, { spots: 3 }),
-    skin(3, 'Persikan', '#F7A08C', '#5C2A16', 0.18, { ring: true }),
-    skin(4, 'Nebulosan', '#C4A6F5', '#33195C', 0.18, { deco: 'antenna' }),
-    skin(5, 'Isjätten', '#80C8F5', '#0F3A5C', 0.16, { spots: 4 }),
-    skin(6, 'Saturnus', '#E8C45C', '#4F3A06', 0.16, { deco: 'orbit' }),
-    skin(7, 'Grönisen', '#A3E89C', '#1E4A18', 0.16, { ring: true, spots: 2 }),
-    skin(8, 'Raketen', '#F59CC8', '#5A1638', 0.16, { deco: 'fins' }),
-    skin(9, 'Vitstjärnan', '#C4E0FF', '#2A3F5E', 0.2, { ring: true, spots: 3 }),
-    skin(10, 'Solen', '#FFD36B', '#6B4300', 0.3, { ring: true, deco: 'crown' }),
+    skin(0, { en: 'Stardust', sv: 'Stoftet' }, '#D9D4F0', '#2E2A4F', 0.2, { spots: 2 }),
+    skin(1, { en: 'Comet', sv: 'Kometen' }, '#8FE8DC', '#0E4A44', 0.2, { deco: 'moon' }),
+    skin(2, { en: 'Sand', sv: 'Sanden' }, '#E8DA8A', '#5A3E12', 0.18, { spots: 3 }),
+    skin(3, { en: 'Peach', sv: 'Persikan' }, '#F7A08C', '#5C2A16', 0.18, { ring: true }),
+    skin(4, { en: 'Nebula', sv: 'Nebulosan' }, '#C4A6F5', '#33195C', 0.18, { deco: 'antenna' }),
+    skin(5, { en: 'Ice Giant', sv: 'Isjätten' }, '#80C8F5', '#0F3A5C', 0.16, { spots: 4 }),
+    skin(6, { en: 'Saturn', sv: 'Saturnus' }, '#E8C45C', '#4F3A06', 0.16, { deco: 'orbit' }),
+    skin(7, { en: 'Greenie', sv: 'Grönisen' }, '#A3E89C', '#1E4A18', 0.16, { ring: true, spots: 2 }),
+    skin(8, { en: 'Rocket', sv: 'Raketen' }, '#F59CC8', '#5A1638', 0.16, { deco: 'fins' }),
+    skin(9, { en: 'White Star', sv: 'Vitstjärnan' }, '#C4E0FF', '#2A3F5E', 0.2, { ring: true, spots: 3 }),
+    skin(10, { en: 'Sun', sv: 'Solen' }, '#FFD36B', '#6B4300', 0.3, { ring: true, deco: 'crown' }),
   ],
   spotStyle: 'crater',
   palette: {
@@ -388,21 +389,21 @@ const PLANETERNA: ThemeSet = {
 
 const FROSTISARNA: ThemeSet = {
   id: 'frostisarna',
-  name: 'Frostisarna',
+  name: { en: 'The Frosties', sv: 'Frostisarna' },
   idea: 'Iskristaller under norrsken: nästan vita pastelltoner med skarpa mörkblå konturer och istaggar – kallt, krispigt, klingar som glas.',
   signature: '#BFEFFF',
   levels: [
-    skin(0, 'Flingan', '#E3F6FF', '#1F4660', 0.5),
-    skin(1, 'Kristallen', '#9DEFE6', '#0C4A45', 0.46, { deco: 'shards' }),
-    skin(2, 'Frostgrodd', '#BDF2A6', '#25501A', 0.44, { spots: 3 }),
-    skin(3, 'Vintersol', '#FFF0A6', '#5A4A0C', 0.42, { ring: true }),
-    skin(4, 'Istappen', '#FFCBAA', '#5C2E14', 0.4, { deco: 'icicles' }),
-    skin(5, 'Alpglöd', '#FFBBDA', '#5A1E3C', 0.38, { spots: 5 }),
-    skin(6, 'Norrskenet', '#DDB4FF', '#34205E', 0.36, { deco: 'shards' }),
-    skin(7, 'Glaciären', '#94B6FF', '#1A3263', 0.34, { ring: true, spots: 2 }),
-    skin(8, 'Isvingen', '#7FE3FF', '#0A4458', 0.34, { deco: 'fins' }),
-    skin(9, 'Snöbollen', '#F4F7FF', '#33415C', 0.32, { ring: true, spots: 4 }),
-    skin(10, 'Frostkungen', '#FFE08A', '#6B4A00', 0.32, { ring: true, deco: 'crown' }),
+    skin(0, { en: 'Flake', sv: 'Flingan' }, '#E3F6FF', '#1F4660', 0.5),
+    skin(1, { en: 'Crystal', sv: 'Kristallen' }, '#9DEFE6', '#0C4A45', 0.46, { deco: 'shards' }),
+    skin(2, { en: 'Frost Sprout', sv: 'Frostgrodd' }, '#BDF2A6', '#25501A', 0.44, { spots: 3 }),
+    skin(3, { en: 'Winter Sun', sv: 'Vintersol' }, '#FFF0A6', '#5A4A0C', 0.42, { ring: true }),
+    skin(4, { en: 'Icicle', sv: 'Istappen' }, '#FFCBAA', '#5C2E14', 0.4, { deco: 'icicles' }),
+    skin(5, { en: 'Alpenglow', sv: 'Alpglöd' }, '#FFBBDA', '#5A1E3C', 0.38, { spots: 5 }),
+    skin(6, { en: 'Aurora', sv: 'Norrskenet' }, '#DDB4FF', '#34205E', 0.36, { deco: 'shards' }),
+    skin(7, { en: 'Glacier', sv: 'Glaciären' }, '#94B6FF', '#1A3263', 0.34, { ring: true, spots: 2 }),
+    skin(8, { en: 'Ice Wing', sv: 'Isvingen' }, '#7FE3FF', '#0A4458', 0.34, { deco: 'fins' }),
+    skin(9, { en: 'Snowball', sv: 'Snöbollen' }, '#F4F7FF', '#33415C', 0.32, { ring: true, spots: 4 }),
+    skin(10, { en: 'Frost King', sv: 'Frostkungen' }, '#FFE08A', '#6B4A00', 0.32, { ring: true, deco: 'crown' }),
   ],
   spotStyle: 'flake',
   palette: {
@@ -471,21 +472,21 @@ const FROSTISARNA: ThemeSet = {
 
 const GODISARNA: ThemeSet = {
   id: 'godisarna',
-  name: 'Godisarna',
+  name: { en: 'The Candies', sv: 'Godisarna' },
   idea: 'Karameller och klubbor i en plommonfärgad godisburk: mättade sockerfärger, strössel, papperssnurrar och läskbubblor – glatt, poppigt, studsigt.',
   signature: '#FF80B5',
   levels: [
-    skin(0, 'Tuggummit', '#FFB5DF', '#5C1A43', 0.24),
-    skin(1, 'Mintklubban', '#74F0C4', '#0A4A35', 0.24, { deco: 'stick' }),
-    skin(2, 'Citronen', '#FFE35A', '#5A4700', 0.22, { spots: 4 }),
-    skin(3, 'Druvkolan', '#B79BFF', '#2F1A66', 0.22, { deco: 'wrapper' }),
-    skin(4, 'Apelsinen', '#FF9D5C', '#5C2800', 0.22, { ring: true }),
-    skin(5, 'Blåhallonet', '#6ED6FF', '#083F5C', 0.2, { spots: 5 }),
-    skin(6, 'Jordgubben', '#FF80B5', '#5A0F37', 0.2, { deco: 'wrapper' }),
-    skin(7, 'Suräpplet', '#C3EE68', '#37500A', 0.2, { deco: 'stick' }),
-    skin(8, 'Blåbäret', '#A2B5FF', '#1C2A6B', 0.2, { ring: true, spots: 3 }),
-    skin(9, 'Marshmallow', '#FFF0D8', '#5C4526', 0.22, { ring: true, spots: 5 }),
-    skin(10, 'Kolakungen', '#FFCC57', '#6B4300', 0.28, { ring: true, deco: 'crown' }),
+    skin(0, { en: 'Bubblegum', sv: 'Tuggummit' }, '#FFB5DF', '#5C1A43', 0.24),
+    skin(1, { en: 'Mint Pop', sv: 'Mintklubban' }, '#74F0C4', '#0A4A35', 0.24, { deco: 'stick' }),
+    skin(2, { en: 'Lemon Drop', sv: 'Citronen' }, '#FFE35A', '#5A4700', 0.22, { spots: 4 }),
+    skin(3, { en: 'Grape Toffee', sv: 'Druvkolan' }, '#B79BFF', '#2F1A66', 0.22, { deco: 'wrapper' }),
+    skin(4, { en: 'Orange', sv: 'Apelsinen' }, '#FF9D5C', '#5C2800', 0.22, { ring: true }),
+    skin(5, { en: 'Blue Raspberry', sv: 'Blåhallonet' }, '#6ED6FF', '#083F5C', 0.2, { spots: 5 }),
+    skin(6, { en: 'Strawberry', sv: 'Jordgubben' }, '#FF80B5', '#5A0F37', 0.2, { deco: 'wrapper' }),
+    skin(7, { en: 'Sour Apple', sv: 'Suräpplet' }, '#C3EE68', '#37500A', 0.2, { deco: 'stick' }),
+    skin(8, { en: 'Blueberry', sv: 'Blåbäret' }, '#A2B5FF', '#1C2A6B', 0.2, { ring: true, spots: 3 }),
+    skin(9, { en: 'Marshmallow', sv: 'Marshmallow' }, '#FFF0D8', '#5C4526', 0.22, { ring: true, spots: 5 }),
+    skin(10, { en: 'Toffee King', sv: 'Kolakungen' }, '#FFCC57', '#6B4300', 0.28, { ring: true, deco: 'crown' }),
   ],
   spotStyle: 'sprinkle',
   palette: {
@@ -547,21 +548,21 @@ const GODISARNA: ThemeSet = {
 
 const GLODEN: ThemeSet = {
   id: 'gloden',
-  name: 'Glöden',
+  name: { en: 'The Embers', sv: 'Glöden' },
   idea: 'Stenar och kristaller ur en vulkan: kolsvart bakgrund med kopparglas, lågor, sprickor och glödringar – varmt, tungt, knastrande (ingen mättad röd, magma är korall/bärnsten).',
   signature: '#FFBE55',
   levels: [
-    skin(0, 'Askan', '#D5CFE0', '#3A3348', 0.18, { spots: 2 }),
-    skin(1, 'Svavlet', '#E2EE6C', '#46500A', 0.24, { deco: 'tuft' }),
-    skin(2, 'Patinan', '#6CDEC6', '#0B4A3E', 0.22, { spots: 3 }),
-    skin(3, 'Glödkolet', '#FFBE55', '#5C3500', 0.44, { deco: 'flames' }),
-    skin(4, 'Magman', '#FF8766', '#5C1F0E', 0.44, { ring: true }),
-    skin(5, 'Rosenkvartsen', '#FF9FC6', '#5A1838', 0.3, { spots: 4 }),
-    skin(6, 'Ametisten', '#C69CFF', '#2F1760', 0.3, { deco: 'shards' }),
-    skin(7, 'Blålågan', '#82A9FF', '#16296B', 0.44, { deco: 'flames' }),
-    skin(8, 'Opalen', '#B5F2D6', '#1B4A38', 0.3, { ring: true, spots: 3 }),
-    skin(9, 'Vitglöden', '#FFF2DC', '#5C4028', 0.5, { ring: true, spots: 4 }),
-    skin(10, 'Guldklumpen', '#FFD75E', '#6B4300', 0.4, { ring: true, deco: 'crown' }),
+    skin(0, { en: 'Ash', sv: 'Askan' }, '#D5CFE0', '#3A3348', 0.18, { spots: 2 }),
+    skin(1, { en: 'Sulfur', sv: 'Svavlet' }, '#E2EE6C', '#46500A', 0.24, { deco: 'tuft' }),
+    skin(2, { en: 'Patina', sv: 'Patinan' }, '#6CDEC6', '#0B4A3E', 0.22, { spots: 3 }),
+    skin(3, { en: 'Ember', sv: 'Glödkolet' }, '#FFBE55', '#5C3500', 0.44, { deco: 'flames' }),
+    skin(4, { en: 'Magma', sv: 'Magman' }, '#FF8766', '#5C1F0E', 0.44, { ring: true }),
+    skin(5, { en: 'Rose Quartz', sv: 'Rosenkvartsen' }, '#FF9FC6', '#5A1838', 0.3, { spots: 4 }),
+    skin(6, { en: 'Amethyst', sv: 'Ametisten' }, '#C69CFF', '#2F1760', 0.3, { deco: 'shards' }),
+    skin(7, { en: 'Blue Flame', sv: 'Blålågan' }, '#82A9FF', '#16296B', 0.44, { deco: 'flames' }),
+    skin(8, { en: 'Opal', sv: 'Opalen' }, '#B5F2D6', '#1B4A38', 0.3, { ring: true, spots: 3 }),
+    skin(9, { en: 'White Heat', sv: 'Vitglöden' }, '#FFF2DC', '#5C4028', 0.5, { ring: true, spots: 4 }),
+    skin(10, { en: 'Gold Nugget', sv: 'Guldklumpen' }, '#FFD75E', '#6B4300', 0.4, { ring: true, deco: 'crown' }),
   ],
   spotStyle: 'crack',
   palette: {

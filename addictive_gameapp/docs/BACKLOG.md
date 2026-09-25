@@ -68,4 +68,5 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [ ] U8 Tryck på siluett skakar bara cellen; tonad överkant på rutnätet.
 - [ ] U9 Mät öppningens 1,2 s på riktig telefon (räknas i speltid).
 - [ ] U10 Speltesta Siris kö-fördröjning och Havsdrottningens extra specialobjekt (drop 22/44).
-- [ ] U11 Språk: `name.en` per avatar/set, engelsk butikstext med svensk lokalisering (väntar på beslut).
+- [x] U11 Språk: `{en, sv}`-namn, i18n-modul, butikstext EN/SV.
+- [ ] U12 Låt en engelsktalande läsa avatarnamnen ("Echo the Echo" är svagt).

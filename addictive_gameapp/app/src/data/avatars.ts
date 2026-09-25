@@ -14,6 +14,8 @@
  *  - Vanlig/ovanlig: bara kosmetik. Sällsynt+: `ability` (programmeraren implementerar beteendet).
  */
 
+import type { LocalizedName } from '../systems/i18n';
+
 // ---------------------------------------------------------------- typer (stubbens form + tillägg)
 
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'mythic';
@@ -188,7 +190,8 @@ export interface Ability {
 
 export interface AvatarDef {
   readonly id: string;
-  readonly name: string;
+  /** Visningsnamn, engelska primärt (DESIGN §15). Visas bara där text införs (bok, öppning, butik). */
+  readonly names: LocalizedName;
   readonly rarity: Rarity;
   /** = RARITY.color[rarity] */
   readonly rarityColor: string;
@@ -538,7 +541,7 @@ const def = (d: Base): AvatarDef => ({ ...d, rarityColor: RARITY.color[d.rarity]
 const COMMON: AvatarDef[] = [
   def({
     id: 'common-1',
-    name: 'Snäckan Sigge',
+    names: { en: 'Sheldon the Shell', sv: 'Snäckan Sigge' },
     rarity: 'common',
     idea: 'Liten havssnäcka som bär sitt hus: långsam, trygg, lämnar pärlor efter sig.',
     draw: [
@@ -561,7 +564,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-2',
-    name: 'Maneten Molly',
+    names: { en: 'Jilly the Jellyfish', sv: 'Maneten Molly' },
     rarity: 'common',
     idea: 'Svävande manet: allt hon gör är mjukt och långsamt, som i vatten.',
     draw: [
@@ -584,7 +587,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-3',
-    name: 'Krabban Krille',
+    names: { en: 'Cody the Crab', sv: 'Krabban Krille' },
     rarity: 'common',
     idea: 'Kaxig liten krabba som klickar med klorna varje gång han släpper.',
     draw: [
@@ -616,7 +619,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-4',
-    name: 'Sjöstjärnan Stina',
+    names: { en: 'Stella the Starfish', sv: 'Sjöstjärnan Stina' },
     rarity: 'common',
     idea: 'Glad sjöstjärna som gör varje merge till en liten stjärnregn.',
     draw: [
@@ -637,7 +640,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-5',
-    name: 'Bläckfisken Bosse',
+    names: { en: 'Otto the Octopus', sv: 'Bläckfisken Bosse' },
     rarity: 'common',
     idea: 'Mjuk bläckfisk med åtta armar i luften – sprutar lila bläckprickar av glädje.',
     draw: [
@@ -661,7 +664,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-6',
-    name: 'Fisken Fenja',
+    names: { en: 'Finley the Fish', sv: 'Fisken Fenja' },
     rarity: 'common',
     idea: 'Nyfiken fisk som aldrig tar ögonen från det du släpper.',
     draw: [
@@ -687,7 +690,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-7',
-    name: 'Pingvinen Pim',
+    names: { en: 'Pim the Penguin', sv: 'Pingvinen Pim' },
     rarity: 'common',
     idea: 'Pingvin i stickad mössa som nickar belåtet efter varje släpp.',
     draw: [
@@ -709,7 +712,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-8',
-    name: 'Grodan Gurra',
+    names: { en: 'Freddie the Frog', sv: 'Grodan Gurra' },
     rarity: 'common',
     idea: 'Bred glad groda som kväker när det går bra (combo 3).',
     draw: [
@@ -731,7 +734,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-9',
-    name: 'Sälen Selma',
+    names: { en: 'Selma the Seal', sv: 'Sälen Selma' },
     rarity: 'common',
     idea: 'Sälen som balanserar bollar – hon är född till att hålla saker.',
     draw: [
@@ -757,7 +760,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-10',
-    name: 'Musen Mio',
+    names: { en: 'Milo the Mouse', sv: 'Musen Mio' },
     rarity: 'common',
     idea: 'Pigg mus med stora öron som piper när något landar.',
     draw: [
@@ -783,7 +786,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-11',
-    name: 'Snigeln Sally',
+    names: { en: 'Sally the Snail', sv: 'Snigeln Sally' },
     rarity: 'common',
     idea: 'Långsam snigel som lämnar ett glittrande slemspår efter allt hon släpper.',
     draw: [
@@ -808,7 +811,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-12',
-    name: 'Humlan Humle',
+    names: { en: 'Bea the Bumblebee', sv: 'Humlan Humle' },
     rarity: 'common',
     idea: 'Rund humla som surrar till när hon släpper.',
     draw: [
@@ -833,7 +836,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-13',
-    name: 'Blåsfisken Puff',
+    names: { en: 'Puff the Pufferfish', sv: 'Blåsfisken Puff' },
     rarity: 'common',
     idea: 'Taggig blåsfisk som blåser upp sig av förtjusning vid varje merge.',
     draw: [
@@ -866,7 +869,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-14',
-    name: 'Sköldpaddan Tuss',
+    names: { en: 'Tess the Turtle', sv: 'Sköldpaddan Tuss' },
     rarity: 'common',
     idea: 'Lugn sköldpadda – ingenting stressar henne, inte ens fara.',
     draw: [
@@ -889,7 +892,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-15',
-    name: 'Räkan Räkel',
+    names: { en: 'Skip the Shrimp', sv: 'Räkan Räkel' },
     rarity: 'common',
     idea: 'Spralligt böjd räka med långa spröt som darrar av iver.',
     draw: [
@@ -914,7 +917,7 @@ const COMMON: AvatarDef[] = [
   }),
   def({
     id: 'common-16',
-    name: 'Sjöborren Borre',
+    names: { en: 'Urban the Urchin', sv: 'Sjöborren Borre' },
     rarity: 'common',
     idea: 'Taggig men snäll sjöborre – ser farlig ut, är världens mjukaste.',
     draw: [
@@ -947,7 +950,7 @@ const COMMON: AvatarDef[] = [
 const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-1',
-    name: 'Sjöhästen Harry',
+    names: { en: 'Stanley the Seahorse', sv: 'Sjöhästen Harry' },
     rarity: 'uncommon',
     idea: 'Stolt sjöhäst som håller objektet med svansen; partiklarna skiftar färg med combon.',
     draw: [
@@ -973,7 +976,7 @@ const UNCOMMON: AvatarDef[] = [
   }),
   def({
     id: 'uncommon-2',
-    name: 'Kometen Kim',
+    names: { en: 'Kit the Comet', sv: 'Kometen Kim' },
     rarity: 'uncommon',
     idea: 'En liten komet: allt han släpper får en eldsvans.',
     draw: [
@@ -995,7 +998,7 @@ const UNCOMMON: AvatarDef[] = [
   }),
   def({
     id: 'uncommon-3',
-    name: 'Snögubben Snö',
+    names: { en: 'Snowy the Snowman', sv: 'Snögubben Snö' },
     rarity: 'uncommon',
     idea: 'Snögubbe som får det att snöa och frosta i kanterna vid merge.',
     draw: [
@@ -1027,7 +1030,7 @@ const UNCOMMON: AvatarDef[] = [
   }),
   def({
     id: 'uncommon-4',
-    name: 'Robotten Bip',
+    names: { en: 'Bip the Bot', sv: 'Robotten Bip' },
     rarity: 'uncommon',
     idea: 'Liten robot: alla merge-ljud blir robotpip i skala.',
     draw: [
@@ -1052,7 +1055,7 @@ const UNCOMMON: AvatarDef[] = [
   }),
   def({
     id: 'uncommon-5',
-    name: 'Draken Dunder',
+    names: { en: 'Dexter the Dragon', sv: 'Draken Dunder' },
     rarity: 'uncommon',
     idea: 'Liten drake som puffar rök när han släpper – aldrig eld, bara puff.',
     draw: [
@@ -1083,7 +1086,7 @@ const UNCOMMON: AvatarDef[] = [
   }),
   def({
     id: 'uncommon-6',
-    name: 'Katten Kurre',
+    names: { en: 'Cosmo the Cat', sv: 'Katten Kurre' },
     rarity: 'uncommon',
     idea: 'Randig katt som spinner när kedjan i HUD tänds.',
     draw: [
@@ -1117,7 +1120,7 @@ const UNCOMMON: AvatarDef[] = [
   }),
   def({
     id: 'uncommon-7',
-    name: 'Ballongen Bella',
+    names: { en: 'Bella the Balloon', sv: 'Ballongen Bella' },
     rarity: 'uncommon',
     idea: 'Ballong som håller objektet i snöret och släpper konfetti när rekordet närmar sig.',
     draw: [
@@ -1141,7 +1144,7 @@ const UNCOMMON: AvatarDef[] = [
   }),
   def({
     id: 'uncommon-8',
-    name: 'Pirat-Pelle',
+    names: { en: 'Pirate Pete', sv: 'Pirat-Pelle' },
     rarity: 'uncommon',
     idea: 'Pirat med lapp för ögat: "Arrr!" och en skattkista-gest vid Klunk.',
     draw: [
@@ -1170,7 +1173,7 @@ const UNCOMMON: AvatarDef[] = [
   }),
   def({
     id: 'uncommon-9',
-    name: 'Spöket Svischa',
+    names: { en: 'Gracie the Ghost', sv: 'Spöket Svischa' },
     rarity: 'uncommon',
     idea: 'Snällt spöke: allt hon släpper lämnar genomskinliga efterbilder.',
     draw: [
@@ -1196,7 +1199,7 @@ const UNCOMMON: AvatarDef[] = [
   }),
   def({
     id: 'uncommon-10',
-    name: 'Trumslagaren Trumma',
+    names: { en: 'Dilly the Drum', sv: 'Trumslagaren Trumma' },
     rarity: 'uncommon',
     idea: 'Levande trumma: varje drop är ett trumslag och combon bygger takten.',
     draw: [
@@ -1223,7 +1226,7 @@ const UNCOMMON: AvatarDef[] = [
   }),
   def({
     id: 'uncommon-11',
-    name: 'Narvalen Nisse',
+    names: { en: 'Ned the Narwhal', sv: 'Narvalen Nisse' },
     rarity: 'uncommon',
     idea: 'Narval med spiralhorn som sjunger en liten valsång vid kedjor.',
     draw: [
@@ -1250,7 +1253,7 @@ const UNCOMMON: AvatarDef[] = [
   }),
   def({
     id: 'uncommon-12',
-    name: 'Axolotln Axel',
+    names: { en: 'Axel the Axolotl', sv: 'Axolotln Axel' },
     rarity: 'uncommon',
     idea: 'Ständigt leende axolotl vars gälar fladdrar när något landar.',
     draw: [
@@ -1287,7 +1290,7 @@ function cloud(parts: readonly (readonly [number, number, number])[], color: str
 const RARE: AvatarDef[] = [
   def({
     id: 'muller',
-    name: 'Åskmolnet Muller',
+    names: { en: 'Theo the Thundercloud', sv: 'Åskmolnet Muller' },
     rarity: 'rare',
     idea: 'Buttert åskmoln som mullrar till och slår små blixtar när kedjan går.',
     draw: [
@@ -1315,7 +1318,7 @@ const RARE: AvatarDef[] = [
   }),
   def({
     id: 'maestro',
-    name: 'Dirigenten Maestro',
+    names: { en: 'Conrad the Conductor', sv: 'Dirigenten Maestro' },
     rarity: 'rare',
     idea: 'Liten fågeldirigent med taktpinne: combon spelar en riktig melodi.',
     draw: [
@@ -1356,7 +1359,7 @@ const RARE: AvatarDef[] = [
   }),
   def({
     id: 'tick',
-    name: 'Tidsugglan Tick',
+    names: { en: 'Tick the Time Owl', sv: 'Tidsugglan Tick' },
     rarity: 'rare',
     idea: 'Uggla med klockögon: faran blir sepiatonad och tickar lugnt i stället för att brumma.',
     draw: [
@@ -1401,7 +1404,7 @@ const RARE: AvatarDef[] = [
   }),
   def({
     id: 'fia',
-    name: 'Fyrverkeri-Fia',
+    names: { en: 'Firework Faye', sv: 'Fyrverkeri-Fia' },
     rarity: 'rare',
     idea: 'Liten rosa raket som skjuter upp egna fyrverkerier när du slår rekord.',
     draw: [
@@ -1440,7 +1443,7 @@ const RARE: AvatarDef[] = [
   }),
   def({
     id: 'vulle',
-    name: 'Vulkanen Vulle',
+    names: { en: 'Vinnie the Volcano', sv: 'Vulkanen Vulle' },
     rarity: 'rare',
     idea: 'Varm liten vulkan: stora merges (nivå ≥8) sprutar lava och en djup bas.',
     draw: [
@@ -1478,7 +1481,7 @@ const RARE: AvatarDef[] = [
   }),
   def({
     id: 'disco',
-    name: 'Discokulan Disco',
+    names: { en: 'Dizzy the Disco Ball', sv: 'Discokulan Disco' },
     rarity: 'rare',
     idea: 'Coolaste discokulan: bakgrunden gungar mjukt i takt med combon.',
     draw: [
@@ -1523,7 +1526,7 @@ const RARE: AvatarDef[] = [
   }),
   def({
     id: 'eko',
-    name: 'Ekot Eko',
+    names: { en: 'Echo the Echo', sv: 'Ekot Eko' },
     rarity: 'rare',
     idea: 'Ropar in i en grotta: varje merge ekar tillbaka som i en katedral.',
     draw: [
@@ -1559,7 +1562,7 @@ const RARE: AvatarDef[] = [
   }),
   def({
     id: 'klick',
-    name: 'Kameran Klick',
+    names: { en: 'Clicky the Camera', sv: 'Kameran Klick' },
     rarity: 'rare',
     idea: 'Glad retrokamera som tar en polaroid av rundans största kedja.',
     draw: [
@@ -1602,7 +1605,7 @@ const RARE: AvatarDef[] = [
   }),
   def({
     id: 'nora',
-    name: 'Norrsken-Nora',
+    names: { en: 'Aurora the Arctic Fox', sv: 'Norrsken-Nora' },
     rarity: 'rare',
     idea: 'Fjällräv med norrskenssvans: långa kedjor tänder norrsken över burken.',
     draw: [
@@ -1649,7 +1652,7 @@ const RARE: AvatarDef[] = [
 const EPIC: AvatarDef[] = [
   def({
     id: 'lisa',
-    name: 'Lykt-Lisa',
+    names: { en: 'Lantern Lucy', sv: 'Lykt-Lisa' },
     rarity: 'epic',
     idea: 'Marulk från djupet med en lykta på pannan: den lyser upp de som passar ihop.',
     draw: [
@@ -1681,7 +1684,7 @@ const EPIC: AvatarDef[] = [
   }),
   def({
     id: 'siri',
-    name: 'Spådamen Siri',
+    names: { en: 'Sybil the Seer', sv: 'Spådamen Siri' },
     rarity: 'epic',
     idea: 'Spådam som håller objektet som en kristallkula och ser två steg fram.',
     draw: [
@@ -1724,7 +1727,7 @@ const EPIC: AvatarDef[] = [
   }),
   def({
     id: 'sixten',
-    name: 'Sikt-Sixten',
+    names: { en: 'Spotter Sam', sv: 'Sikt-Sixten' },
     rarity: 'epic',
     idea: 'Keps och kikarsikte: han visar exakt var det du släpper landar.',
     draw: [
@@ -1757,7 +1760,7 @@ const EPIC: AvatarDef[] = [
   }),
   def({
     id: 'bubbel',
-    name: 'Bubblan Bubbel',
+    names: { en: 'Bobby the Bubble', sv: 'Bubblan Bubbel' },
     rarity: 'epic',
     idea: 'En levande såpbubbla: rundans första drop landar mjukt utan studs.',
     draw: [
@@ -1789,7 +1792,7 @@ const EPIC: AvatarDef[] = [
   }),
   def({
     id: 'ekko',
-    name: 'Ekolodet Ekko',
+    names: { en: 'Sonny the Sonar', sv: 'Ekolodet Ekko' },
     rarity: 'epic',
     idea: 'Liten ubåt med ekolod: när en ny nivå tänds pingar alla av den nivån.',
     draw: [
@@ -1827,7 +1830,7 @@ const EPIC: AvatarDef[] = [
   }),
   def({
     id: 'kajsa',
-    name: 'Kikaren Kajsa',
+    names: { en: 'Mira the Meerkat', sv: 'Kikaren Kajsa' },
     rarity: 'epic',
     idea: 'Surikat på utkik med kikare: hon ser nästan-träffar långt innan du gör det.',
     draw: [
@@ -1888,7 +1891,7 @@ const magnetU: P2[] = [
 const LEGENDARY: AvatarDef[] = [
   def({
     id: 'maja',
-    name: 'Magnet-Maja',
+    names: { en: 'Magnet Maya', sv: 'Magnet-Maja' },
     rarity: 'legendary',
     idea: 'Hästskomagnet som håller objektet mellan polerna och en gång per runda drar ihop två lika.',
     draw: [
@@ -1923,7 +1926,7 @@ const LEGENDARY: AvatarDef[] = [
   }),
   def({
     id: 'rut',
-    name: 'Regnbågs-Rut',
+    names: { en: 'Rainbow Rosie', sv: 'Regnbågs-Rut' },
     rarity: 'legendary',
     idea: 'En regnbåge med molnfötter som alltid har en regnbåge med sig till rundan.',
     draw: [
@@ -1962,7 +1965,7 @@ const LEGENDARY: AvatarDef[] = [
   }),
   def({
     id: 'vala',
-    name: 'Andrums-Vala',
+    names: { en: 'Willow the Whale', sv: 'Andrums-Vala' },
     rarity: 'legendary',
     idea: 'Stor lugn val som blåser en fontän: ger dig ett extra andetag när burken blir full.',
     draw: [
@@ -2012,7 +2015,7 @@ const LEGENDARY: AvatarDef[] = [
 const MYTHIC: AvatarDef[] = [
   def({
     id: 'havsdrottningen',
-    name: 'Havsdrottningen',
+    names: { en: 'The Sea Queen', sv: 'Havsdrottningen' },
     rarity: 'mythic',
     idea: 'Havets drottning med pärlhalsband och krona: hela burken blir guld och orkestern spelar.',
     draw: [
@@ -2056,7 +2059,7 @@ const MYTHIC: AvatarDef[] = [
   }),
   def({
     id: 'stjärnvalen',
-    name: 'Stjärnvalen',
+    names: { en: 'The Star Whale', sv: 'Stjärnvalen' },
     rarity: 'mythic',
     idea: 'En val gjord av natthimmel: stjärnor i kroppen, månskära på huvudet, allt i burken glöder.',
     draw: [

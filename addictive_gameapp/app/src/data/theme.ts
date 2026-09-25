@@ -9,6 +9,8 @@
  * Inga bildfiler. Ljud genereras med Web Audio. Ikoner är SVG-strängar i ui/icons.ts.
  */
 
+import type { LocalizedName } from '../systems/i18n'
+
 /** Ansiktsuttryck – ett unikt per nivå, så färg aldrig är enda informationsbäraren. */
 export type Face =
   | 'dot' // två små prickar, ingen mun
@@ -38,8 +40,8 @@ export type Deco =
 export interface LevelSkin {
   /** Nivåindex 0–10, samma som levels.ts */
   readonly id: number
-  /** Internt svenskt namn, visas aldrig i UI:t */
-  readonly name: string
+  /** Namn { en, sv }, visas inte i UI:t i v1 (DESIGN §15) */
+  readonly name: LocalizedName
   /** Kroppens fyllning */
   readonly color: string
   /** Mörk kontur + dekorfärg, samma kulör som color men mörk */
@@ -55,7 +57,7 @@ export interface LevelSkin {
 }
 
 export const THEME = {
-  name: 'Glimtarna',
+  name: { en: 'The Glimmers', sv: 'Glimtarna' },
   /** Kort designidé, för den som läser koden först */
   idea:
     'Lysande djuphavsvarelser i en glasburk. Mörkt hav bakom, burken är det enda ljusa rummet. ' +
@@ -132,22 +134,22 @@ export const THEME = {
   },
 
   levels: [
-    { id: 0, name: 'Gnutt', color: '#7CF9FF', color2: '#0B4A57', face: 'dot', glow: 0.55 },
-    { id: 1, name: 'Blipp', color: '#4FE0B0', color2: '#064032', face: 'smile', deco: 'antenna', glow: 0.5 },
-    { id: 2, name: 'Grodd', color: '#B9F05A', color2: '#2D4A0B', face: 'wink', spots: 3, glow: 0.45 },
-    { id: 3, name: 'Pling', color: '#FFD447', color2: '#5A3D00', face: 'open', ring: true, glow: 0.42 },
-    { id: 4, name: 'Knorr', color: '#FF9F3C', color2: '#5C2A00', face: 'grin', deco: 'tentacles', glow: 0.4 },
-    { id: 5, name: 'Kludd', color: '#FF6B6B', color2: '#59161B', face: 'sleepy', spots: 5, glow: 0.38 },
-    { id: 6, name: 'Bubbel', color: '#FF5FA2', color2: '#55103A', face: 'starry', deco: 'tuft', glow: 0.36 },
-    { id: 7, name: 'Drömmen', color: '#C77DFF', color2: '#2F1056', face: 'awe', ring: true, spots: 2, glow: 0.34 },
-    { id: 8, name: 'Vågen', color: '#6C8BFF', color2: '#14235A', face: 'cool', deco: 'fins', glow: 0.32 },
-    { id: 9, name: 'Pärlan', color: '#E8F1FF', color2: '#3A4A6B', face: 'happy', ring: true, spots: 4, glow: 0.3 },
-    { id: 10, name: 'Klunken', color: '#FFD75E', color2: '#6B4300', face: 'joy', ring: true, deco: 'crown', glow: 0.28 },
+    { id: 0, name: { en: 'Speck', sv: 'Gnutt' }, color: '#7CF9FF', color2: '#0B4A57', face: 'dot', glow: 0.55 },
+    { id: 1, name: { en: 'Blip', sv: 'Blipp' }, color: '#4FE0B0', color2: '#064032', face: 'smile', deco: 'antenna', glow: 0.5 },
+    { id: 2, name: { en: 'Sprout', sv: 'Grodd' }, color: '#B9F05A', color2: '#2D4A0B', face: 'wink', spots: 3, glow: 0.45 },
+    { id: 3, name: { en: 'Ping', sv: 'Pling' }, color: '#FFD447', color2: '#5A3D00', face: 'open', ring: true, glow: 0.42 },
+    { id: 4, name: { en: 'Squiggle', sv: 'Knorr' }, color: '#FF9F3C', color2: '#5C2A00', face: 'grin', deco: 'tentacles', glow: 0.4 },
+    { id: 5, name: { en: 'Blot', sv: 'Kludd' }, color: '#FF6B6B', color2: '#59161B', face: 'sleepy', spots: 5, glow: 0.38 },
+    { id: 6, name: { en: 'Bubble', sv: 'Bubbel' }, color: '#FF5FA2', color2: '#55103A', face: 'starry', deco: 'tuft', glow: 0.36 },
+    { id: 7, name: { en: 'Dream', sv: 'Drömmen' }, color: '#C77DFF', color2: '#2F1056', face: 'awe', ring: true, spots: 2, glow: 0.34 },
+    { id: 8, name: { en: 'Wave', sv: 'Vågen' }, color: '#6C8BFF', color2: '#14235A', face: 'cool', deco: 'fins', glow: 0.32 },
+    { id: 9, name: { en: 'Pearl', sv: 'Pärlan' }, color: '#E8F1FF', color2: '#3A4A6B', face: 'happy', ring: true, spots: 4, glow: 0.3 },
+    { id: 10, name: { en: 'Klunk', sv: 'Klunken' }, color: '#FFD75E', color2: '#6B4300', face: 'joy', ring: true, deco: 'crown', glow: 0.28 },
   ] as const satisfies readonly LevelSkin[],
 
   special: {
     bomb: {
-      name: 'Bomben',
+      name: { en: 'Bomb', sv: 'Bomben' },
       color: '#2A3350',
       color2: '#FF5FA2',
       core: '#FFF1CF', // vitglödande kärna, alpha-puls
@@ -163,7 +165,7 @@ export const THEME = {
       pulseScale: 1.08,
     },
     rainbow: {
-      name: 'Regnbågen',
+      name: { en: 'Rainbow', sv: 'Regnbågen' },
       color: '#FFFFFF',
       color2: '#14202E',
       face: 'joy',
