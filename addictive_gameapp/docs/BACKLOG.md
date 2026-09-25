@@ -62,4 +62,10 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 ## Fas 8 – Kompisar v1.2 (DESIGN §14)
 - [x] K1 UI: 48 avatarer som ritrecept i `data/avatars.ts` (Släpparen-figur, raritet, kosmetik, animationsrecept), musslans öppning, odds-burk, fliken Kompisar, uppgraderingspärlor, förhandsbild. (ui-designer)
 - [x] K2 Logik: musslor (intjäning, odds, ingen dubblett, ingen pity), inventarie, XP/nivåer, sparning, öppningsflöde på startskärmen, fliken Kompisar. (programmerare)
-- [ ] K3 Rendering av Släpparen + alla kosmetiska effekter + förmågor (sällsynt–mytisk) med nivåskalning. (programmerare)
+- [x] K3 Rendering av Släpparen + alla kosmetiska effekter + förmågor (sällsynt–mytisk) med nivåskalning. (programmerare)
+- [ ] U6 Lisas lykta ska krympa synligt när tiden tar slut.
+- [ ] U7 Boken: scroll-ledtråd, puls på nya kompisar, öppna på Kompisar-fliken när ny kompis finns.
+- [ ] U8 Tryck på siluett skakar bara cellen; tonad överkant på rutnätet.
+- [ ] U9 Mät öppningens 1,2 s på riktig telefon (räknas i speltid).
+- [ ] U10 Speltesta Siris kö-fördröjning och Havsdrottningens extra specialobjekt (drop 22/44).
+- [ ] U11 Språk: `name.en` per avatar/set, engelsk butikstext med svensk lokalisering (väntar på beslut).

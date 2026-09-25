@@ -524,12 +524,14 @@ function drawSkin(
  * Bakar setets 11 nivåer + vita siluetter. Idempotent och cachat per set: ett byte av set
  * kostar bara första gången. Anropas vid rundstart/boot och när boken visar en sida.
  */
-export function bakeSet(scene: Phaser.Scene, setId: string): void {
+export function bakeSet(scene: Phaser.Scene, setId: string, glowBonus = 0): void {
   const set = themeSetById(setId);
+  const tag = setTag(set.id, glowBonus);
   for (const def of LEVELS) {
-    const key = ballTextureKey(def.level, set.id);
+    const key = ballTextureKey(def.level, tag);
     if (scene.textures.exists(key)) continue;
-    const skin = set.levels[def.level];
+    const base = set.levels[def.level];
+    const skin = glowBonus > 0 ? { ...base, glow: base.glow + glowBonus } : base;
     const r = def.radius;
     const deco = skin.deco ?? 'none';
     const extent = Math.max(1 + skin.glow, decoExtent(deco));
@@ -544,16 +546,26 @@ export function bakeSet(scene: Phaser.Scene, setId: string): void {
     drawAnyDeco(sil, pad, pad, r, deco, 'front', c, c);
     sil.fillStyle(c, 1);
     sil.fillCircle(pad, pad, r);
-    sil.generateTexture(silhouetteTextureKey(def.level, set.id), pad * 2, pad * 2);
+    sil.generateTexture(silhouetteTextureKey(def.level, tag), pad * 2, pad * 2);
     sil.destroy();
   }
 }
 
 /** Gör setet till det som `ballTextureKey(level)` pekar på. Anropas aldrig mitt i en runda. */
-export function useSet(scene: Phaser.Scene, setId: string): void {
+/** Texturfamiljens namn: setet, eller setet med extra glow (Stjärnvalen, UI.md §13.8). */
+function setTag(id: string, glowBonus: number): string {
+  return glowBonus > 0 ? `${id}~g${Math.round(glowBonus * 100)}` : id;
+}
+
+/**
+ * Gör setet till det som `ballTextureKey(level)` pekar på. Anropas aldrig mitt i en runda.
+ * `glowBonus` > 0: objekten får extra glow (egen texturfamilj, setets vanliga bakas också).
+ */
+export function useSet(scene: Phaser.Scene, setId: string, glowBonus = 0): void {
   const id = themeSetById(setId).id;
   bakeSet(scene, id);
-  currentSet = id;
+  if (glowBonus > 0) bakeSet(scene, id, glowBonus);
+  currentSet = setTag(id, glowBonus);
 }
 
 function bakeSpecials(scene: Phaser.Scene): void {

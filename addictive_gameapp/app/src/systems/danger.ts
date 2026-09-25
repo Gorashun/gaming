@@ -3,6 +3,7 @@
  * ut går 'start' | 'end' | null. Max N triggers per tidsfönster.
  */
 import { FEEL } from '../data/juice';
+import { PHYSICS } from '../data/physics';
 
 export type DangerSignal = 'start' | 'end' | null;
 
@@ -10,6 +11,11 @@ export interface DangerTracker {
   /** Anropas varje frame. `near` = minst ett objekt inom marginalen. */
   update(nowMs: number, near: boolean): DangerSignal;
   readonly active: boolean;
+  /**
+   * Förlustgränsen (ms över farolinjen) som gäller just nu. Default PHYSICS.lossGraceMs;
+   * förmågor (Andrums-Vala) får sätta en annan, scenen läser den här.
+   */
+  graceMs: number;
   reset(): void;
 }
 
@@ -28,6 +34,7 @@ export function createDangerTracker(
     get active() {
       return active;
     },
+    graceMs: PHYSICS.lossGraceMs,
     update(nowMs, near) {
       if (near) {
         safeSince = 0;
@@ -46,6 +53,7 @@ export function createDangerTracker(
       return 'end';
     },
     reset() {
+      this.graceMs = PHYSICS.lossGraceMs;
       active = false;
       safeSince = 0;
       triggers.length = 0;

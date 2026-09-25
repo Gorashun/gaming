@@ -33,3 +33,4 @@ Se PROPOSAL.md §10: go/no-go, Mac, Google Play-konto och dess ålder, Apple-kon
 | 2026-09-20 | Mjuk auto-drop (DESIGN §11) klar: bara i Flöde, efter första egna drop, vickning 3 s, fall 6 s, timer nollställs när fara/slow-mo släpper. 75 unit + 13 e2e gröna. **Testversion 2** på samma länkar. |
 | 2026-09-20 | Ramp 6→3,5 s över 60 drops + siktlinje bara vid sikte, med inställningsikon. 80 unit + 17 e2e gröna. **Testversion 3.** |
 | 2026-09-25 | Meta-lager v1.1 klart: kedja i HUD, samlarbok med skimrande, 5 temaset med upplåsning på två spår, rundavslut "nytt!". 113 unit + 23 e2e gröna. **Testversion 4.** |
+| 2026-09-25 | Kompisar v1.2 klart: 48 avatarer i 6 rariteter, musslor utan pity/dubbletter, XP-nivåer I–III, 20 unika förmågor. 147 unit + 32 e2e gröna. **Testversion 5.** |

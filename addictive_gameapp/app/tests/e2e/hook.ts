@@ -67,6 +67,33 @@ export interface GameHook {
   readonly pendingBoxes: number;
   /** Öppnar en mussla direkt och sparar. null när alla ägs. */
   openBox(): { avatarId: string; rarity: string } | null;
+  /** Äger och väljer kompisen på nivån (1–3, default 1) och startar om rundan. */
+  equipForTest(id: string, level?: number): void;
+  /** Förmågans tillstånd i rundan (DESIGN §14.5). */
+  readonly abilityState: AbilityState;
+  /** Släpparen (null = ingen kompis vald). */
+  readonly buddy: { id: string; x: number; y: number; visible: boolean } | null;
+  /** Nivån på det hängande objektet (-1 = specialobjekt). */
+  readonly hangingLevel: number;
+  /** Antal objekt med synlig lyktring (Lykt-Lisa). */
+  readonly lampsVisible: number;
+  /** Ett objekt med statisk kropp (sitter fast), för farogräns-scenarier. */
+  pin(level: number, x: number, y: number): void;
+}
+
+export interface AbilityState {
+  id: string;
+  key: string;
+  level: number;
+  lisa: { active: boolean; oilMs: number };
+  maja: { usesLeft: number; pulling: boolean };
+  vala: { usesLeft: number; breathing: boolean; graceMs: number };
+  bubbel: { left: number };
+  siri: { afterKind: string | null };
+  nearMissMinLevel: number;
+  /** Skimrande-chansens multiplikator i samlarboken (Stjärnvalen). */
+  shinyMul: number;
+  chainShakeMul: number;
 }
 
 /** Testhooken som Book-scenen installerar på `window.__book`. */
@@ -84,8 +111,10 @@ export interface BookHook {
   selectTab(t: string): void;
   /** Väljer en ägd avatar (samma väg som ett tryck). */
   equip(id: string): boolean;
-  /** Mitten av avatarens cell i logiska koordinater (med aktuell scroll), null om okänd. */
+  /** Scrollar cellen till mitten av rutnätet; returnerar dess mitt i logiska koordinater, null om okänd. */
   cellOf(id: string): { x: number; y: number } | null;
+  /** Kompisen på bokens scen ('' = ingen). */
+  readonly stageId: string;
 }
 
 /** Rundavslutet (GameOver-overlayen) på `window.__reveal`. */
@@ -102,6 +131,8 @@ export interface StartHook {
   readonly lastBox: { avatarId: string; rarity: string } | null;
   /** Öppningen visas (ett tryck stänger). */
   readonly opening: boolean;
+  /** 'play' före 1 200 ms (tryck hoppar över), 'done' efter (tryck stänger). */
+  readonly openPhase: string;
 }
 
 declare global {

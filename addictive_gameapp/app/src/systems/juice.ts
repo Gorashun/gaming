@@ -31,6 +31,22 @@ export interface TriggerOpts {
   overlay?: boolean;
   /** Ersätter eventets ringvåg. */
   ring?: RingWave;
+  /** Inget eget ljud (en förmåga spelar sitt, t.ex. Fias fanfar). */
+  mute?: boolean;
+  /** Kompisens partiklar (setAvatarParticles) även för detta event, t.ex. öppningen. */
+  avatarParticles?: boolean;
+  /** Ingen guldton över skärmen (öppningen har sin egen glöd, UI.md §13.3). */
+  noTint?: boolean;
+}
+
+/** Kompisens egna partiklar vid merge (UI.md §13.1): form, färg och antal ×. */
+export interface AvatarParticles {
+  /** Texturnyckel (vit, tintas). null = setets form. */
+  texture: string | null;
+  /** Hex, 'combo' (nyans roterar med combon) eller 'level' (objektets färg). */
+  tint: string;
+  /** Antal × (uppgraderingsnivå). */
+  countMul: number;
 }
 
 export interface JuiceSettings {
@@ -59,6 +75,11 @@ export class Juice {
   private tint: Phaser.GameObjects.Rectangle | null = null;
   private dangerActive = false;
   private jackpotSlowmo = false;
+  /** Kompisens partiklar ersätter setets vid merge/kedja. */
+  private avatarEmitter: Phaser.GameObjects.Particles.ParticleEmitter | null = null;
+  private avatarP: AvatarParticles | null = null;
+  /** Shake × vid kedja (förmåga, Muller). Taket JUICE.shake.maxPx gäller alltid. */
+  chainShakeMul = 1;
 
   private calm: boolean;
 
@@ -122,6 +143,33 @@ export class Juice {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
 
+  /** Kompisens partikelform/färg vid merge (vanlig/ovanlig kosmetik). null = setets. */
+  setAvatarParticles(p: AvatarParticles | null): void {
+    this.avatarP = p;
+    if (!p) return;
+    const base = this.emitter;
+    this.avatarEmitter?.destroy();
+    const J = JUICE.particles;
+    this.avatarEmitter = this.scene.add
+      .particles(0, 0, p.texture ?? particleTextureKey(this.pc.shape), {
+        lifespan: this.pc.lifespanMs,
+        speed: { min: J.speedMin * this.pc.speedScale, max: J.speedMax * this.pc.speedScale },
+        angle: { min: 0, max: 360 },
+        scale: { start: J.scaleStart, end: J.scaleEnd },
+        alpha: { start: 1, end: 0 },
+        rotate: { start: 0, end: 180 },
+        gravityY: this.pc.gravityY,
+        emitting: false,
+        maxAliveParticles: J.poolSize,
+      })
+      .setDepth(base?.depth ?? 30);
+  }
+
+  /** Expanderande ringar vid (x, y) utan övriga kanaler (förmågor: Eko, Ekko). */
+  ringAt(x: number, y: number, cfg: RingWave): void {
+    this.ringWave(x, y, cfg);
+  }
+
   setCalm(on: boolean): void {
     this.calm = on;
   }
@@ -139,7 +187,7 @@ export class Juice {
     if (this.calm) i *= JUICE.calm.intensityScale;
 
     const overlay = opts.overlay === true;
-    if (!overlay) playSound(SOUND_ALIAS[event] ?? event, { intensity: i, combo: opts.combo });
+    if (!overlay && !opts.mute) playSound(SOUND_ALIAS[event] ?? event, { intensity: i, combo: opts.combo });
     if (ch.haptics) hapticForIntensity(i);
 
     if (event === 'danger') {
@@ -151,13 +199,13 @@ export class Juice {
 
     if (ch.hitStop && !overlay) this.hitStop(i);
     if (opts.target) this.punch(opts.target, i);
-    if (ch.particles > 0) this.burst(x, y, i * ch.particles, opts);
-    if (ch.shake > 0 && !overlay) this.shake(x, y, i * ch.shake);
+    if (ch.particles > 0) this.burst(x, y, i * ch.particles, opts, event === 'merge' || event === 'chain' || opts.avatarParticles === true);
+    if (ch.shake > 0 && !overlay) this.shake(x, y, i * ch.shake * (event === 'chain' ? this.chainShakeMul : 1));
     if (ch.scorePop && opts.score) this.scorePop(x, y, opts.score);
     if (ch.zoom && !overlay) this.zoom(i);
     const ring = opts.ring ?? RINGS[event];
     if (ring) this.ringWave(x, y, ring);
-    if (event === 'jackpot') this.jackpot(overlay);
+    if (event === 'jackpot' && !opts.noTint) this.jackpot(overlay);
   }
 
   /** Faran är över: tillbaka till 1,0× och tyst. */
@@ -197,13 +245,24 @@ export class Juice {
     });
   }
 
-  private burst(x: number, y: number, i: number, opts: TriggerOpts): void {
+  private burst(x: number, y: number, i: number, opts: TriggerOpts, avatar = false): void {
     const e = this.emitter;
     if (!e) return;
     const p = JUICE.particles;
     const count = Math.min(p.max, Math.round((p.base + p.perIntensity * i) * this.pc.countScale));
     if (count <= 0) return;
     const color = opts.color ?? hexToInt(THEME.palette.accent);
+    const ap = this.avatarP;
+    if (avatar && ap && this.avatarEmitter) {
+      const t =
+        ap.tint === 'level'
+          ? color
+          : ap.tint === 'combo'
+            ? Phaser.Display.Color.HSVToRGB((((opts.combo ?? 0) * 47) % 360) / 360, 0.55, 1).color
+            : hexToInt(ap.tint);
+      this.emit(this.avatarEmitter, x, y, Math.min(p.max, Math.round(count * ap.countMul)), t, opts);
+      return;
+    }
     const nMix = this.mixEmitter && this.pc.mix ? Math.round(count * this.pc.mix.share) : 0;
     const n = count - nMix;
     // 'levelLight': varannan partikel i hud-vit (glittrigt utan att något blinkar).
@@ -432,6 +491,8 @@ export class Juice {
     this.cam.setZoom(1);
     this.emitter = null;
     this.mixEmitter = null;
+    this.avatarEmitter = null;
+    this.avatarP = null;
     this.pops.length = 0;
     this.rings.length = 0;
     this.tint = null;

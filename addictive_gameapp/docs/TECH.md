@@ -54,3 +54,16 @@ Plus `preventDefault()` på `touchmove` på document.
 
 ## GitHub Actions (fas 4)
 `.github/workflows/android.yml` på `ubuntu-latest`: setup-node 22, setup-java 21 (temurin), android-actions/setup-android, `npm ci && npm run build && npx cap sync android`, `./gradlew assembleDebug` → artifact `klunk-debug.apk`. Debug-APK är installerbar via sideload utan egen keystore. Signerad release-build läggs till när Play-konto finns (secrets `KEYSTORE_B64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`).
+
+## Abilities: hur man lägger till en förmåga (K3, DESIGN §14.5)
+Förmågor är data + en nyckel. Parametrarna per nivå ligger i `src/data/avatars.ts` (`ability: { key, params: { I, II, III } }`), implementationsvärden som inte skalar med nivån (färger, tider, positioner) i `src/data/abilities.ts` (`ABILITY_FX`). Inga siffror i scener.
+
+1. **Data**: ge figuren `ability.key` och parametrar för I/II/III i `avatars.ts`. Håll spelpåverkande parametrar inom ~30 % mellan I och III (DESIGN §14.4).
+2. **Logik** (`src/systems/abilities.ts`, ren TS, ingen Phaser):
+   - Påverkar förmågan ett befintligt system? Lägg ett fält i `AbilityOverrides` och mappa det i `overridesFor()`. Scenen skickar det vidare vid rundstart genom systemets lilla gränssnitt: `director.setSeedQueue()`, `dangerTracker.graceMs`, near-miss-konfigens `minLevel`, `CollectionState.shinyMul`, `juice.chainShakeMul` / `juice.setAvatarParticles()` / `juice.ringAt()`, `audio.setMergeMelody()` / `setMergeEcho()` / `setMergeLayer()` / `setDangerStyle()`. Rör aldrig scenens interna fält från ett system.
+   - Har den en räknare "per runda" (N gånger, en budget)? Lägg den i klassen `Abilities`, fyll på i `resetRound()` och exponera en metod som förbrukar (`tryMagnet`, `lossGrace`, `tickAim`, `takeNoBounce`).
+   - **Aldrig poäng direkt**: inga poängfält i overrides, poängtabellen (`data/levels.ts`) rörs inte. Förmågor får bara skapa situationer där vanliga merges ger poäng.
+3. **Bild och ljud**: rena känsloeffekter (sällsynt) i `src/ui/abilityFx.ts` (`onMerge`, `onChain`, `onDanger`, `onNewRecord`, `onComboEnd`). Effekter som behöver burkens objekt (Lisa, Sixten, Bubbel, Ekko, Maja, Klick) ligger i `Game.ts` bakom `this.abil.key`. Allt skapas vid rundstart och återanvänds; inga allokeringar i `update()`. Flash-guard: ljusändringar ≤ 2 Hz, inga vitblixtar, Lugnt läge halverar/stänger av.
+4. **Test**: Vitest i `tests/unit/abilities.test.ts` (overrides per nivå läses ur `avatars.ts`, räknare nollställs, poängtabellen oförändrad). E2E via `__game.equipForTest(id, level)` och `__game.abilityState`.
+
+Kompisens kosmetik (vanlig/ovanlig) går inte via abilities: `src/ui/buddy.ts` (Släpparen, spår, gester, ljud) + `juice.setAvatarParticles()`. Ritning: `src/ui/avatarArt.ts` (bakar en textur per figur och storlek, siluett i vitt), rörelser: `src/ui/avatarRig.ts`, showcase-effekter: `src/ui/avatarFx.ts`.

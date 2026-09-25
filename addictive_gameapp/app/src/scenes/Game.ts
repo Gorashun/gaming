@@ -28,7 +28,7 @@ import {
 import { drawBackground } from '../ui/background';
 import { iconTextureKey } from '../ui/icons';
 import { resolveMerges, type MergeCandidate } from '../systems/merge';
-import { findNearMiss, type NearMissItem } from '../systems/nearmiss';
+import { findNearMiss, type NearMissCfg, type NearMissItem } from '../systems/nearmiss';
 import { createDirector, type Director, type DirectorMode, type DirectorState } from '../systems/director';
 import { PACING, type PacingMode } from '../data/pacing';
 import { AIM, type AimLineMode } from '../data/aim';
@@ -53,6 +53,11 @@ import { addXp } from '../systems/avatars';
 import { boxesEarnedFor, grantBoxes, openBox } from '../systems/boxes';
 import { BOXES } from '../data/boxes';
 import type { RevealCatch, RevealData } from './GameOver';
+import { Abilities, findMagnetPair, type AbilityLevel, type MagnetItem } from '../systems/abilities';
+import { ABILITY_FX } from '../data/abilities';
+import { AVATARS, AVATAR_UI, UPGRADE } from '../data/avatarsIndex';
+import { Buddy } from '../ui/buddy';
+import { AbilityFx } from '../ui/abilityFx';
 
 interface Ball {
   body: MatterJS.BodyType;
@@ -75,6 +80,8 @@ interface Ball {
   shiny: boolean;
   /** Glitterring, skapas första gången bollen blir skimrande och poolas med den. */
   glitter: Phaser.GameObjects.Image | null;
+  /** Lykt-Lisas ring (förmåga), skapas vid behov och poolas med bollen. */
+  lamp: Phaser.GameObjects.Image | null;
 }
 
 const L = THEME.layout;
@@ -221,6 +228,40 @@ export class Game extends Phaser.Scene {
   private dropLatencies: number[] = [];
   private latencyIndex = 0;
 
+  // ---- kompisar och förmågor (DESIGN §14, UI.md §13.5/13.8). Allt skapas vid rundstart.
+  private buddy: Buddy | null = null;
+  private abil!: Abilities;
+  private afx!: AbilityFx;
+  private nmCfg!: NearMissCfg;
+  /** Siri: objektet efter nästa. */
+  private afterReady = false;
+  private afterLevel = 0;
+  private afterSpecial: SpecialType | null = null;
+  private afterMode: DirectorMode = 'flow';
+  private ghost: Phaser.GameObjects.Image | null = null;
+  /** Sixten: landningsprick. */
+  private landing: Phaser.GameObjects.Graphics | null = null;
+  /** Bubbel: objektet som faller utan studs och dess bubbelhinna. */
+  private bubbleBall: Ball | null = null;
+  private bubble: Phaser.GameObjects.Image | null = null;
+  /** Maja: kandidatpar, tid sedan det uppstod, pågående drag. */
+  private magnetItems: MagnetItem[] = [];
+  private magnetOut: number[] = [0, 0];
+  private magnetA = -1;
+  private magnetB = -1;
+  private magnetSince = 0;
+  private pullA: Ball | null = null;
+  private pullB: Ball | null = null;
+  private pullUntil = 0;
+  private pullV = 0;
+  private pullLines: Phaser.GameObjects.Graphics | null = null;
+  private readonly tmpV = { x: 0, y: 0 };
+  /** Klick: rundans längsta kedja och högsta nivå (polaroid). */
+  private bestChain = 0;
+  private photoLevel = 0;
+  private photos: string[] = [];
+  private snapQueue: number[] = [];
+
   private onHide = (): void => {
     if (document.visibilityState === 'hidden') this.persist();
   };
@@ -276,9 +317,28 @@ export class Game extends Phaser.Scene {
     this.runCatches = [];
     this.runAvatar = data.avatars.equipped;
     this.xpFlushed = 0;
+    // Förmågan (DESIGN §14.5) för kompisen som var vald vid rundstart, på dess nivå.
+    const avLevel = (data.avatars.level[this.runAvatar] ?? 1) as AbilityLevel;
+    this.abil = new Abilities(this.runAvatar, avLevel, PHYSICS.lossGraceMs);
+    const ov = this.abil.o;
+    this.buddy = null;
+    this.afterReady = false;
+    this.ghost = null;
+    this.landing = null;
+    this.bubbleBall = null;
+    this.bubble = null;
+    this.magnetA = -1;
+    this.magnetB = -1;
+    this.pullA = null;
+    this.pullB = null;
+    this.pullLines = null;
+    this.bestChain = 0;
+    this.photoLevel = 0;
+    this.photos = [];
+    this.snapQueue = [];
     // Aktivt set gäller från rundstart och byts aldrig mitt i en runda (DESIGN §13.3).
     const set = themeSetById(data.activeSet);
-    useSet(this, set.id);
+    useSet(this, set.id, ov.glowBonus);
     setMergeTimbre(set.sound);
     this.levelColors = set.levels.map((l) => hexToInt(l.color));
     void save({
@@ -292,6 +352,12 @@ export class Game extends Phaser.Scene {
     const seed = SEED ?? ((Date.now() ^ 0x9e3779b9) >>> 0);
     this.seedUsed = seed;
     this.director = createDirector(mulberry32(seed));
+    this.director.setSeedQueue(ov.seedQueue);
+    this.nmCfg = {
+      minLevel: ov.nearMissMinLevel ?? FEEL.nearMiss.minLevel,
+      minGapPx: FEEL.nearMiss.minGapPx,
+      maxGapPx: FEEL.nearMiss.maxGapPx,
+    };
     // Egen ström för skimrande så regissörens sekvens inte påverkas.
     this.colRng = mulberry32((seed ^ 0x5eed5) >>> 0);
     if (!data.collection[data.activeSet]) data.collection[data.activeSet] = emptyPage();
@@ -301,6 +367,7 @@ export class Game extends Phaser.Scene {
       shinyPity: data.stats.shinyPity,
       run: data.stats.runs + 1,
       everShiny: hasAnyShiny(data.collection),
+      shinyMul: ov.shinyMul,
     };
     this.filledAtStart = filledSlots(this.col.page);
     this.chainLit.fill(false);
@@ -317,10 +384,16 @@ export class Game extends Phaser.Scene {
     this.dangerTracker = createDangerTracker();
     this.takeNext();
 
-    drawBackground(this, set.id, { still: data.settings.calm });
-    this.buildCan(setPalette(set));
+    drawBackground(this, set.id, { still: data.settings.calm, starSky: ov.starSky ? ABILITY_FX.starWhale : undefined });
+    const pal = setPalette(set);
+    const Q = ABILITY_FX.queen;
+    this.buildCan(ov.goldJar ? { ...pal, jarEdge: Q.jarEdge, jarShine: Q.jarShine } : pal);
     this.buildHud();
     this.juice = new Juice(this, L.hud.scoreX, L.hud.scoreY, { ...data.settings }, set.particle);
+    this.afx = new AbilityFx(this, this.abil, data.settings.calm, this.juice);
+    if (AVATARS.some((a) => a.id === this.runAvatar)) {
+      this.buddy = new Buddy(this, this.runAvatar, avLevel, data.settings.calm, this.juice);
+    }
 
     this.input.on('pointerdown', this.onPointerDown, this);
     this.input.on('pointermove', this.onPointerMove, this);
@@ -492,6 +565,55 @@ export class Game extends Phaser.Scene {
       get timbrePlays(): number {
         return timbrePlayCount();
       },
+      // ---- Släpparen och förmågor (DESIGN §14.1, §14.5)
+      /** Äger och väljer en kompis på nivån (1–3) och startar om rundan. */
+      equipForTest(id: string, level = 1): void {
+        const av = cached().avatars;
+        if (!av.owned.includes(id)) av.owned.push(id);
+        const lv = (level >= 3 ? 3 : level === 2 ? 2 : 1) as AbilityLevel;
+        av.xp[id] = lv === 3 ? UPGRADE.xpIII : lv === 2 ? UPGRADE.xpII : 0;
+        av.level[id] = lv;
+        av.equipped = id;
+        void save();
+        self.scene.restart();
+      },
+      get abilityState(): unknown {
+        const a = self.abil;
+        return {
+          id: a.id,
+          key: a.key,
+          level: a.level,
+          lisa: { active: a.lisaActive, oilMs: a.lisaOilMs },
+          maja: { usesLeft: a.magnetLeft, pulling: self.pullA !== null },
+          vala: { usesLeft: a.breathLeft, breathing: a.breathing, graceMs: self.dangerTracker.graceMs },
+          bubbel: { left: a.noBounceLeft },
+          siri: { afterKind: self.ghost ? self.afterSpecial ?? 'level' : null },
+          nearMissMinLevel: self.nmCfg.minLevel,
+          shinyMul: self.col.shinyMul ?? 1,
+          chainShakeMul: self.juice.chainShakeMul,
+        };
+      },
+      /** Släpparen syns (figur på greppunkten). */
+      get buddy(): { id: string; x: number; y: number; visible: boolean } | null {
+        const b = self.buddy;
+        return b ? { id: b.def.id, x: b.img.x, y: b.img.y, visible: b.img.visible } : null;
+      },
+      /** Nivån på objektet som hänger nu (-1 = specialobjekt). */
+      get hangingLevel(): number {
+        return self.currentSpecial ? -1 : self.currentLevel;
+      },
+      /** Antal objekt med synlig lyktring (Lykt-Lisa). */
+      get lampsVisible(): number {
+        let n = 0;
+        for (let i = 0; i < self.balls.length; i++) if (self.balls[i].lamp?.visible) n++;
+        return n;
+      },
+      /** Ett objekt som sitter fast (statisk kropp), för farogräns-scenarier. */
+      pin(level: number, x: number, y: number): void {
+        if (self.over) return;
+        const b = self.addBall(x, y, level, false);
+        self.matter.body.setStatic(b.body, true);
+      },
     };
   }
 
@@ -589,9 +711,25 @@ export class Game extends Phaser.Scene {
     this.preview = this.add
       .image(L.preview.cx, L.preview.cy, ballTextureKey(this.nextLevel))
       .setDepth(10);
+    if (this.abil.o.peekSteps >= 2) {
+      // Siri: objektet efter nästa, mindre och till vänster, i streckad ram (UI.md §13.8).
+      const S = ABILITY_FX.siri;
+      const f = this.add.graphics().setDepth(10);
+      f.lineStyle(2, INT.jarEdge, 0.7);
+      const h = S.frame / 2;
+      for (let d = -h; d < h; d += 8) {
+        const e = Math.min(d + 4, h);
+        f.lineBetween(S.x + d, S.y - h, S.x + e, S.y - h);
+        f.lineBetween(S.x + d, S.y + h, S.x + e, S.y + h);
+        f.lineBetween(S.x - h, S.y + d, S.x - h, S.y + e);
+        f.lineBetween(S.x + h, S.y + d, S.x + h, S.y + e);
+      }
+      this.ghost = this.add.image(S.x, S.y, ballTextureKey(0)).setDepth(10).setAlpha(this.abil.param('ghostAlpha'));
+    }
     this.showPreview();
 
     this.aimLine = this.add.graphics().setDepth(3).setAlpha(0);
+    if (this.abil.key === 'landingDot') this.landing = this.add.graphics().setDepth(5.05);
     this.buildChain();
   }
 
@@ -748,7 +886,11 @@ export class Game extends Phaser.Scene {
       this.chainHidden = false;
       this.tweens.add({ targets: this.chain, alpha: 1, duration: CH.firstRunFadeMs });
     }
-    if (!this.chainLit[ball.level]) this.lightChain(ball.level);
+    if (!this.chainLit[ball.level]) {
+      this.lightChain(ball.level);
+      this.buddy?.on('newLevel');
+      if (this.abil.key === 'sonarNewLevel') this.sonar(ball.level);
+    }
     if (r.shiny) {
       this.makeShiny(ball);
       this.chainShiny(ball.level);
@@ -759,6 +901,26 @@ export class Game extends Phaser.Scene {
     // Fångst skrivs direkt: progression får aldrig tappas.
     if (r.caught || r.newShiny) void save();
     return r.shiny;
+  }
+
+  /** Ekko: alla objekt av nivån får en expanderande ring, N gånger 1 Hz (flash-guard). */
+  private sonar(level: number): void {
+    const E = ABILITY_FX.ekko;
+    const n = this.abil.param('pulses');
+    const period = this.abil.param('periodMs');
+    const scale = this.abil.param('ringScale');
+    const r = radiusOf(level);
+    for (let k = 0; k < n; k++) {
+      this.time.delayedCall(k * period, () => {
+        if (this.over) return;
+        for (let i = 0; i < this.balls.length; i++) {
+          const b = this.balls[i];
+          if (b.special || b.level !== level) continue;
+          this.juice.ringAt(b.img.x, b.img.y, { count: 1, fromR: r, maxR: r * scale, durationMs: E.ms, stepMs: 0, color: E.color, alpha: E.alpha });
+        }
+        playTone(META_SOUND.chainLight, CHAIN_STEPS[level]);
+      });
+    }
   }
 
   private makeShiny(ball: Ball): void {
@@ -787,6 +949,13 @@ export class Game extends Phaser.Scene {
   private showPreview(): void {
     this.previewTween?.remove();
     this.previewTween = null;
+    if (this.ghost) {
+      const gr = this.abil.param('ghostR');
+      const a = this.afterSpecial;
+      this.ghost
+        .setTexture(this.textureFor(a, this.afterLevel))
+        .setScale(a ? gr / SPECIALS.radius : scaleForBodyRadius(this.afterLevel, gr));
+    }
     const sp = this.nextSpecial;
     const base = sp
       ? PREVIEW_R / SPECIALS.radius
@@ -843,8 +1012,34 @@ export class Game extends Phaser.Scene {
     }
   }
 
-  /** Hämtar nästa köobjekt från regissören. */
+  /** Hämtar nästa köobjekt från regissören. Siri (förmåga): kön är ett steg längre. */
   private takeNext(): void {
+    if (this.abil.o.peekSteps < 2) {
+      this.pull();
+      return;
+    }
+    if (!this.afterReady) {
+      this.pull();
+      this.afterReady = true;
+    } else {
+      this.nextLevel = this.afterLevel;
+      this.nextSpecial = this.afterSpecial;
+      this.nextMode = this.afterMode;
+    }
+    const level = this.nextLevel;
+    const special = this.nextSpecial;
+    const mode = this.nextMode;
+    this.pull();
+    this.afterLevel = this.nextLevel;
+    this.afterSpecial = this.nextSpecial;
+    this.afterMode = this.nextMode;
+    this.nextLevel = level;
+    this.nextSpecial = special;
+    this.nextMode = mode;
+  }
+
+  /** Ett val från regissören till next*-fälten. */
+  private pull(): void {
     this.computeMergeable();
     const pick = this.director.next(this.dirState);
     this.nextMode = this.director.mode;
@@ -869,7 +1064,9 @@ export class Game extends Phaser.Scene {
       this.recordTween = null;
       this.recordMarker.setScale(1);
       this.recordRing.setVisible(true);
-      this.juice.trigger('newRecord', FEEL.record.newRecordIntensity, L.hud.scoreX + 40, L.hud.scoreY + 16);
+      const own = this.afx.onNewRecord();
+      this.juice.trigger('newRecord', FEEL.record.newRecordIntensity, L.hud.scoreX + 40, L.hud.scoreY + 16, own ? { mute: true } : undefined);
+      this.buddy?.on('record');
       return;
     }
     if (!this.recordPulsing && !this.passedRecord && this.score >= this.highscore * FEEL.record.thresholdPct) {
@@ -914,6 +1111,7 @@ export class Game extends Phaser.Scene {
     const cx = Phaser.Math.Clamp(x, INNER_LEFT + r, INNER_RIGHT - r);
     this.hanging.x = cx;
     this.aimLine.x = cx;
+    this.buddy?.followX(cx);
     this.updateChainDim();
   }
 
@@ -946,6 +1144,11 @@ export class Game extends Phaser.Scene {
     this.aimLine.x = x;
     this.refreshAimLine();
     this.updateChainDim();
+    if (this.buddy) {
+      const first = this.dropIndex === 1;
+      this.buddy.followX(x);
+      this.buddy.setGrip(CAN.spawnY - r + AVATAR_UI.slapparen.gripBelowTop, !first);
+    }
   }
 
   /** Streckad siktlinje, ritas om bara när radien ändras (aldrig per frame). */
@@ -1000,6 +1203,8 @@ export class Game extends Phaser.Scene {
     this.aimLine.clear();
     this.aimLine.setAlpha(0);
     const ball = this.addBall(x, CAN.spawnY, this.currentLevel, false, this.currentSpecial);
+    this.buddy?.onDrop(ball.img);
+    if (this.abil.takeNoBounce()) this.startBubble(ball);
     if (this.currentSpecial) {
       this.juice.trigger('specialDrop', SPECIALS[this.currentSpecial].intensity, x, CAN.spawnY, {
         color: INT.accent2,
@@ -1064,10 +1269,12 @@ export class Game extends Phaser.Scene {
         noPulseUntil: 0,
         shiny: false,
         glitter: null,
+        lamp: null,
       };
     }
     ball.shiny = false;
     ball.glitter?.setVisible(false);
+    ball.lamp?.setVisible(false).setAlpha(0);
     ball.special = special;
     ball.landedAt = 0;
     ball.activated = false;
@@ -1089,6 +1296,8 @@ export class Game extends Phaser.Scene {
     ball.img.setVisible(false).setScale(1);
     ball.shiny = false;
     ball.glitter?.setVisible(false);
+    ball.lamp?.setVisible(false).setAlpha(0);
+    if (this.bubbleBall === ball) this.endBubble();
     this.pool.push(ball);
   }
 
@@ -1113,6 +1322,8 @@ export class Game extends Phaser.Scene {
       const bodyB = pairs[i].bodyB as MatterJS.BodyType;
       const a = this.byId.get(bodyA.id);
       const b = this.byId.get(bodyB.id);
+      // Bubbel: paret löses före studsen, så restitution 0 gäller just den här landningen.
+      if (this.bubbleBall && (a === this.bubbleBall || b === this.bubbleBall)) (pairs[i] as unknown as { restitution: number }).restitution = 0;
       if (this.pending !== null && (a === this.pending || b === this.pending)) this.pending = null;
       if (a && !a.landed) this.land(a);
       if (b && !b.landed) this.land(b);
@@ -1246,10 +1457,32 @@ export class Game extends Phaser.Scene {
     this.activateSpecial(s, best);
   }
 
+  /** Bubbel: rundans första N drop landar utan studs, med en bubbelhinna tills landning. */
+  private startBubble(ball: Ball): void {
+    const B = ABILITY_FX.bubbel;
+    ball.body.restitution = 0;
+    this.bubbleBall = ball;
+    if (!this.bubble) this.bubble = this.add.image(0, 0, FX_RING).setDepth(5.3).setTint(hexToInt(B.color));
+    this.bubble
+      .setPosition(ball.img.x, ball.img.y)
+      .setScale((this.radiusFor(ball.special, ball.level) * B.rMul) / FX_RING_R)
+      .setAlpha(B.alpha)
+      .setVisible(true);
+  }
+
+  private endBubble(): void {
+    if (this.bubbleBall) this.bubbleBall.body.restitution = PHYSICS.restitution;
+    this.bubbleBall = null;
+    this.bubble?.setVisible(false);
+  }
+
   /** Första kontakten: "klunk" + squash. */
   private land(ball: Ball): void {
     ball.landed = true;
     ball.landedAt = this.time.now;
+    if (this.bubbleBall === ball) this.endBubble();
+    if (!ball.fromMerge) this.buddy?.on('land');
+    this.buddy?.onLand(ball.img);
     const speed = Math.abs(ball.body.velocity.y);
     if (speed < 1.5) return;
     ball.noPulseUntil = this.time.now + THEME.anim.landSquash.durationMs;
@@ -1311,8 +1544,57 @@ export class Game extends Phaser.Scene {
       score: points,
     });
 
+    // Kompisen och förmågorna (ingen av dem rör poängen).
+    const bud = this.buddy;
+    if (bud) {
+      if (level >= MAX_LEVEL) bud.on('klunk');
+      else if (chain) bud.on('chain');
+      else bud.on('merge', state.combo);
+      if (state.combo === 3) bud.on('combo3');
+    }
+    this.afx.onMerge(x, y, newLevel, state.combo);
+    if (chain) this.afx.onChain(x, y, state.chain);
+    if (this.abil.key === 'polaroid') this.maybePhoto(state.chain, newLevel);
+
     this.kickNeighbours(x, y);
   }
+
+  /** Klick: ögonblicksbild av burken när rundans längsta kedja (och III: högsta nivå) toppar. */
+  private maybePhoto(chain: number, level: number): void {
+    if (chain > this.bestChain) {
+      this.bestChain = chain;
+      this.snapJar(0);
+    }
+    if (this.abil.param('photos') >= 2 && level > this.photoLevel) {
+      this.photoLevel = level;
+      this.snapJar(1);
+    }
+  }
+
+  /** Renderaren tar en ögonblicksbild i taget; fler köas. */
+  private snapJar(i: number): void {
+    if (this.snapQueue.includes(i)) return;
+    this.snapQueue.push(i);
+    if (this.snapQueue.length === 1) this.nextSnap();
+  }
+
+  private nextSnap(): void {
+    if (this.snapQueue.length === 0 || !this.sys.isActive()) return;
+    const key = `polaroid-${this.snapQueue[0]}`;
+    const P = ABILITY_FX.polaroid;
+    const w = INNER_RIGHT - INNER_LEFT;
+    const h = Math.round((w * P.h) / P.w);
+    this.game.renderer.snapshotArea(INNER_LEFT, CAN.floorY - h, w, h, (img) => {
+      this.snapQueue.shift();
+      if (img instanceof HTMLImageElement) {
+        if (this.textures.exists(key)) this.textures.remove(key);
+        this.textures.addImage(key, img);
+        if (!this.photos.includes(key)) this.photos.push(key);
+      }
+      this.nextSnap();
+    });
+  }
+
 
   private kickNeighbours(x: number, y: number): void {
     const rad = PHYSICS.mergeNeighbourRadius;
@@ -1378,6 +1660,9 @@ export class Game extends Phaser.Scene {
     const glAlpha = GL.alphaMin + (GL.alphaMax - GL.alphaMin) * glw;
     const glScale = 1 + GL.scaleAmp * glw;
     const glRot = (this.pulseMs / 1000) * GL.spinDegPerSec * DEG;
+    // Lykt-Lisa: lyktan lyser medan man siktar, så länge oljan räcker (förmåga).
+    const lamp = this.abil.tickAim(delta, this.aiming && this.hanging !== null && this.currentSpecial === null);
+    const lampK = Math.min(1, delta / ABILITY_FX.lisa.inMs);
 
     // Bild följer fysikkroppen. Inga allokeringar.
     for (let i = 0; i < this.balls.length; i++) {
@@ -1402,6 +1687,7 @@ export class Game extends Phaser.Scene {
         b.glitter.alpha = glAlpha;
         b.glitter.setScale(((radiusOf(b.level) * GL.ringRadius) / FX_GLITTER_R) * glScale);
       }
+      if (b.lamp || (lamp && b.level === this.currentLevel)) this.updateLamp(b, lamp && b.level === this.currentLevel, lampK);
       if (b.nearMiss) {
         b.img.setScale(nmScale);
       } else if (b.img.scaleX !== 1 && now >= b.noPulseUntil && !this.tweens.isTweening(b.img)) {
@@ -1410,7 +1696,14 @@ export class Game extends Phaser.Scene {
     }
 
     this.juice.update(delta);
-    if (this.combo.tick(now)) this.updateComboDots();
+    if (this.combo.tick(now)) {
+      this.updateComboDots();
+      this.afx.onComboEnd();
+    }
+    this.buddy?.update(delta, this.pending?.img ?? null);
+    if (this.bubbleBall && this.bubble) this.bubble.setPosition(this.bubbleBall.img.x, this.bubbleBall.img.y);
+    if (this.landing && this.frame % 2 === 0) this.drawLanding();
+    if (this.abil.key === 'magnetPull') this.updateMagnet(now);
 
     if (!this.hanging && (this.pending === null || now >= this.dropReadyAt)) {
       this.spawnHanging();
@@ -1422,6 +1715,7 @@ export class Game extends Phaser.Scene {
     this.updatePacing(now);
 
     let near = false;
+    let maxAbove = 0;
     for (let i = 0; i < this.balls.length; i++) {
       const ball = this.balls[i];
       if (ball === this.pending) {
@@ -1432,18 +1726,171 @@ export class Game extends Phaser.Scene {
       if (y < CAN.dangerY + FEEL.danger.marginPx) near = true;
       if (y < CAN.dangerY) {
         ball.aboveMs += delta;
-        if (ball.aboveMs >= PHYSICS.lossGraceMs) {
-          this.gameOver();
-          return;
-        }
+        if (ball.aboveMs > maxAbove) maxAbove = ball.aboveMs;
       } else {
         ball.aboveMs = 0;
       }
     }
+    // Förlustgränsen kan förlängas av en förmåga (Andrums-Vala), annars PHYSICS.lossGraceMs.
+    const wasBreathing = this.abil.breathing;
+    this.dangerTracker.graceMs = this.abil.lossGrace(maxAbove);
+    if (this.abil.breathing && !wasBreathing) this.breathFx();
+    if (maxAbove >= this.dangerTracker.graceMs) {
+      this.gameOver();
+      return;
+    }
 
     const signal = this.dangerTracker.update(now, near);
-    if (signal === 'start') this.juice.trigger('danger', 1);
-    else if (signal === 'end') this.juice.endDanger();
+    if (signal === 'start') {
+      this.juice.trigger('danger', 1);
+      this.buddy?.setDanger(true);
+      this.afx.onDanger(true);
+    } else if (signal === 'end') {
+      this.juice.endDanger();
+      this.buddy?.setDanger(false);
+      this.afx.onDanger(false);
+    }
+  }
+
+  /** Lisas ring runt ett objekt av samma nivå: tonas in/ut, ingen puls. */
+  private updateLamp(b: Ball, on: boolean, k: number): void {
+    const A = ABILITY_FX.lisa;
+    if (!b.lamp) b.lamp = this.add.image(0, 0, FX_RING).setDepth(5.1).setTint(hexToInt(A.color)).setAlpha(0);
+    const lamp = b.lamp;
+    const to = on && !b.special ? this.abil.param('ringAlpha') : 0;
+    lamp.alpha += (to - lamp.alpha) * k;
+    lamp.visible = lamp.alpha > 0.01;
+    if (!lamp.visible) return;
+    lamp.x = b.img.x;
+    lamp.y = b.img.y;
+    lamp.setScale((radiusOf(b.level) * A.ringR) / FX_RING_R);
+  }
+
+  /** Andrums-Vala: en blå fontän i burkens hals när ett andetag används. */
+  private breathFx(): void {
+    const c = ABILITY_FX.vala.color;
+    this.juice.ringAt(WORLD.width / 2, CAN.dangerY, { count: 2, fromR: 10, maxR: 60, durationMs: 600, stepMs: 200, color: c, alpha: 0.8 });
+    this.buddy?.setDanger(true);
+  }
+
+  /**
+   * Sikt-Sixten: prick där det hängande objektet först träffar något (golv eller objekt), rakt
+   * under siktet. II–III: streckad kontur på landningsplatsen. Följer siktlinjens inställning.
+   */
+  private drawLanding(): void {
+    const g = this.landing!;
+    g.clear();
+    const show = this.hanging !== null && (this.aimLineMode === 'always' || this.aiming);
+    if (!show) return;
+    const x = this.hanging!.x;
+    const r = this.radiusFor(this.currentSpecial, this.currentLevel);
+    let cy = CAN.floorY - r;
+    let px = x;
+    let py = CAN.floorY;
+    for (let i = 0; i < this.balls.length; i++) {
+      const b = this.balls[i];
+      if (b === this.pending) continue;
+      const br = this.radiusFor(b.special, b.level);
+      const dx = b.body.position.x - x;
+      const R = r + br;
+      if (Math.abs(dx) >= R) continue;
+      const y = b.body.position.y - Math.sqrt(R * R - dx * dx);
+      if (y >= cy) continue;
+      cy = y;
+      px = x + (dx * r) / R;
+      py = y + ((b.body.position.y - y) * r) / R;
+    }
+    if (cy < CAN.spawnY) return;
+    const c = hexToInt(ABILITY_FX.sixten.color);
+    const ghost = this.abil.param('ghostAlpha');
+    if (ghost > 0) {
+      g.lineStyle(2, c, ghost);
+      for (let a = 0; a < Math.PI * 2; a += 0.5) {
+        g.beginPath();
+        g.arc(x, cy, r, a, a + 0.25, false);
+        g.strokePath();
+      }
+    }
+    g.fillStyle(c, 0.9);
+    g.fillCircle(px, py, this.abil.param('dotR'));
+  }
+
+  /**
+   * Magnet-Maja: två lika (ej nivå 10) som ligger stilla med gap < range i 400 ms dras ihop på
+   * 300 ms, med fältlinjer. Automatiskt, N gånger per runda, aldrig under fara.
+   */
+  private updateMagnet(now: number): void {
+    const M = ABILITY_FX.maja;
+    if (this.pullA && this.pullB) {
+      const a = this.pullA;
+      const b = this.pullB;
+      const g = this.pullLines!;
+      g.clear();
+      if (now >= this.pullUntil || !this.byId.has(a.body.id) || !this.byId.has(b.body.id)) {
+        this.pullA = null;
+        this.pullB = null;
+        return;
+      }
+      const dx = b.body.position.x - a.body.position.x;
+      const dy = b.body.position.y - a.body.position.y;
+      const d = Math.sqrt(dx * dx + dy * dy) || 1;
+      const v = this.tmpV;
+      v.x = (dx / d) * this.pullV;
+      v.y = (dy / d) * this.pullV;
+      this.matter.body.setVelocity(a.body, v);
+      v.x = -v.x;
+      v.y = -v.y;
+      this.matter.body.setVelocity(b.body, v);
+      g.lineStyle(2, hexToInt(M.lineColor), 0.7);
+      for (let k = -1; k <= 1; k++) {
+        const ox = (-dy / d) * k * 6;
+        const oy = (dx / d) * k * 6;
+        g.lineBetween(a.img.x + ox, a.img.y + oy, b.img.x + ox, b.img.y + oy);
+      }
+      return;
+    }
+    if (this.abil.magnetLeft <= 0 || this.frame % M.checkEveryFrames !== 0) return;
+    const n = this.balls.length;
+    for (let i = 0; i < n; i++) {
+      const b = this.balls[i];
+      let it = this.magnetItems[i];
+      if (!it) {
+        it = { level: 0, x: 0, y: 0, r: 0, speed: 0 };
+        this.magnetItems[i] = it;
+      }
+      it.level = b.special || b === this.pending ? -1 : b.level;
+      it.x = b.body.position.x;
+      it.y = b.body.position.y;
+      it.r = this.radiusFor(b.special, b.level);
+      it.speed = b.body.speed;
+    }
+    const found = findMagnetPair(this.magnetItems, n, this.abil.param('rangePx'), M.maxLevel, M.stillSpeed, this.magnetOut);
+    if (!found) {
+      this.magnetA = -1;
+      return;
+    }
+    const ida = this.balls[this.magnetOut[0]].body.id;
+    const idb = this.balls[this.magnetOut[1]].body.id;
+    if (ida !== this.magnetA || idb !== this.magnetB) {
+      this.magnetA = ida;
+      this.magnetB = idb;
+      this.magnetSince = now;
+      return;
+    }
+    if (now - this.magnetSince < M.stillMs || !this.abil.tryMagnet(this.dangerTracker.active)) return;
+    const a = this.balls[this.magnetOut[0]];
+    const b = this.balls[this.magnetOut[1]];
+    const ia = this.magnetItems[this.magnetOut[0]];
+    const ib = this.magnetItems[this.magnetOut[1]];
+    const gap = Math.hypot(ib.x - ia.x, ib.y - ia.y) - ia.r - ib.r;
+    this.pullA = a;
+    this.pullB = b;
+    this.pullUntil = now + M.pullMs;
+    // px per fysiksteg (16,7 ms) så att gapet sluts inom pullMs, plus lite marginal.
+    this.pullV = gap / 2 / (M.pullMs / 16.7) + 0.3;
+    this.magnetA = -1;
+    if (!this.pullLines) this.pullLines = this.add.graphics().setDepth(5.4);
+    playTone(META_SOUND.chainFirst);
   }
 
   /**
@@ -1465,6 +1912,7 @@ export class Game extends Phaser.Scene {
 
     const out = this.pacer.update(p);
     this.hanging.setRotation(out.wobbleAngleDeg * DEG);
+    this.buddy?.setWobble(out.wobbleAngleDeg);
     if (out.phase === 'autodrop' && !this.aiming) this.doDrop(true);
   }
 
@@ -1484,7 +1932,7 @@ export class Game extends Phaser.Scene {
       it.r = this.radiusFor(b.special, b.level);
       b.nearMiss = false;
     }
-    findNearMiss(this.nmItems, n, FEEL.nearMiss, this.nmOut);
+    findNearMiss(this.nmItems, n, this.nmCfg, this.nmOut);
     const now = this.time.now;
     for (let k = 0; k < this.nmOut.length; k++) {
       const b = this.balls[this.nmOut[k]];
@@ -1557,6 +2005,8 @@ export class Game extends Phaser.Scene {
       barTo: nextSetProgress(stats.merges!, before.length),
       newSet,
       boxes,
+      photos: this.photos.slice().sort().slice(0, Math.max(0, this.abil.param('photos'))),
+      photoTint: this.abil.flag('frameTint'),
     };
   }
 

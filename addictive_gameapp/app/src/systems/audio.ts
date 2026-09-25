@@ -40,6 +40,37 @@ let timbre: SetSound | null = null;
 /** Antal spelade klang-toner (testhooken verifierar att ljudvägen körs). */
 let timbrePlays = 0;
 
+/** Förmågor (DESIGN §14.5): overrides på merge- och faroljudet. Sätts vid rundstart. */
+export interface MelodyCfg {
+  melody: readonly number[];
+  harmony: boolean;
+  bass: boolean;
+  harmonySemitones: number;
+  harmonyGain: number;
+  bassEvery: number;
+  bassSemitones: number;
+  bassGain: number;
+}
+export interface EchoCfg {
+  delayMs: number;
+  feedback: number;
+  wet: number;
+  repeats: number;
+}
+export interface TickCfg {
+  gain: number;
+  hz: readonly number[];
+  clickMs: number;
+}
+let melody: MelodyCfg | null = null;
+let echo: EchoCfg | null = null;
+let layer: { def: ToneDef; semitones: number } | null = null;
+let tickStyle: TickCfg | null = null;
+let tickSrc: AudioBufferSourceNode | null = null;
+let tickGain: GainNode | null = null;
+/** Antal spelade merge-ljud med förmåga (testbarhet). */
+let abilityPlays = 0;
+
 let dangerOsc: OscillatorNode | null = null;
 let dangerGain: GainNode | null = null;
 let dangerLfo: OscillatorNode | null = null;
@@ -239,6 +270,33 @@ function timbreAt(s: SetSound, f: number, vol: number, at: number): void {
   timbrePlays++;
 }
 
+/** Maestro: merge-tonen följer en melodi (halvtoner över 392 Hz). null = halvtonstrappan. */
+export function setMergeMelody(m: MelodyCfg | null): void {
+  melody = m;
+}
+/** Eko: fördröjda, avklingande upprepningar av merge-tonen. */
+export function setMergeEcho(e: EchoCfg | null): void {
+  echo = e;
+}
+/** Havsdrottningen: extra lager (stråkar) ovanpå merge-tonen. */
+export function setMergeLayer(def: ToneDef | null, semitones = 0): void {
+  layer = def ? { def, semitones } : null;
+}
+/** Tick: tick-tack i stället för det dova faroljudet. */
+export function setDangerStyle(t: TickCfg | null): void {
+  tickStyle = t;
+}
+/** Alla förmågeoverrides av (vid rundstart innan förmågan sätter sina). */
+export function resetAudioOverrides(): void {
+  melody = null;
+  echo = null;
+  layer = null;
+  tickStyle = null;
+}
+export function abilityPlayCount(): number {
+  return abilityPlays;
+}
+
 /** Aktivt sets klangfärg för merge-ljudet. Sätts vid rundstart, aldrig mitt i en runda. */
 export function setMergeTimbre(s: SetSound | null): void {
   timbre = s;
@@ -284,14 +342,17 @@ export function playSound(event: JuiceEvent | 'bomb' | 'ui', opts: PlayOpts = {}
   if (event === 'merge') {
     const m = S.merge as ToneDef & { comboCap: number; semitonePerCombo: number };
     const steps = Math.min(opts.combo ?? 0, m.comboCap);
-    const f = m.baseHz * semi(steps * (m.semitonePerCombo ?? 1));
-    if (timbre) {
-      timbreAt(timbre, f, vol, now);
-      return;
-    }
-    tone(m, f, vol, now);
-    if (m.harmonicSemitones) {
-      tone(m, f * semi(m.harmonicSemitones), vol * (m.harmonicGain ?? 0.4), now);
+    const n = Math.max(1, opts.combo ?? 1);
+    const f = m.baseHz * semi(melody ? melody.melody[(n - 1) % melody.melody.length] : steps * (m.semitonePerCombo ?? 1));
+    mergeAt(m, f, vol, now);
+    if (melody || echo || layer) abilityPlays++;
+    if (melody?.harmony) mergeAt(m, f * semi(melody.harmonySemitones), vol * melody.harmonyGain, now);
+    if (melody?.bass && n % melody.bassEvery === 0) mergeAt(m, f * semi(melody.bassSemitones), vol * melody.bassGain, now);
+    if (layer) tone(layer.def, f * semi(layer.semitones), vol, now);
+    if (echo) {
+      for (let k = 1; k <= echo.repeats; k++) {
+        mergeAt(m, f, vol * echo.wet * Math.pow(echo.feedback, k - 1), now + (k * echo.delayMs) / 1000);
+      }
     }
     return;
   }
@@ -309,6 +370,16 @@ export function playSound(event: JuiceEvent | 'bomb' | 'ui', opts: PlayOpts = {}
   }
 
   tone(def, def.baseHz, vol, now);
+}
+
+/** Merge-klangen (setets klangfärg, annars tonen + kvint) på frekvens f. */
+function mergeAt(m: ToneDef, f: number, vol: number, at: number): void {
+  if (timbre) {
+    timbreAt(timbre, f, vol, at);
+    return;
+  }
+  tone(m, f, vol, at);
+  if (m.harmonicSemitones) tone(m, f * semi(m.harmonicSemitones), vol * (m.harmonicGain ?? 0.4), at);
 }
 
 /** Fristående ton ur data (skimrande, kedjepling). `semitones` transponerar, `delayMs` fördröjer. */
@@ -331,7 +402,11 @@ export function playTone(
 
 /** Dov sågtandston som loopar medan faran pågår. */
 export function startDanger(): void {
-  if (!ready() || dangerOsc) return;
+  if (!ready() || dangerOsc || tickSrc) return;
+  if (tickStyle) {
+    startTick(tickStyle);
+    return;
+  }
   const c = ctx!;
   const d = S.danger;
   const osc = c.createOscillator();
@@ -360,7 +435,38 @@ export function startDanger(): void {
   dangerLfo = lfo;
 }
 
+/** Tick-tack: en loopad buffert på 1 s med ett klick per halvsekund (2 Hz). */
+function startTick(t: TickCfg): void {
+  const c = ctx!;
+  const len = c.sampleRate;
+  const buf = c.createBuffer(1, len, c.sampleRate);
+  const d = buf.getChannelData(0);
+  const click = Math.floor((c.sampleRate * t.clickMs) / 1000);
+  for (let k = 0; k < t.hz.length; k++) {
+    const o = Math.floor((k * len) / t.hz.length);
+    for (let i = 0; i < click && o + i < len; i++) {
+      d[o + i] = Math.sin((2 * Math.PI * t.hz[k] * i) / c.sampleRate) * Math.exp((-6 * i) / click);
+    }
+  }
+  const src = c.createBufferSource();
+  src.buffer = buf;
+  src.loop = true;
+  const g = c.createGain();
+  g.gain.value = t.gain;
+  src.connect(g);
+  g.connect(master!);
+  src.start();
+  tickSrc = src;
+  tickGain = g;
+}
+
 export function stopDanger(): void {
+  if (tickSrc && ctx) {
+    tickGain?.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.05);
+    tickSrc.stop(ctx.currentTime + 0.25);
+    tickSrc = null;
+    tickGain = null;
+  }
   if (!dangerOsc || !ctx || !dangerGain) return;
   const end = ctx.currentTime + 0.25;
   dangerGain.gain.cancelScheduledValues(ctx.currentTime);

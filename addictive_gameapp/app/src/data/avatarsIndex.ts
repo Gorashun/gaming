@@ -1,3 +1,2 @@
-/** Enda ingången till avatardata. Pekas om från stubben till `avatars.ts` när K1 är klar. */
-export { AVATARS, RARITY, UPGRADE } from './avatars.stub';
-export type { AvatarDef, Rarity } from './avatars.stub';
+/** Enda ingången till avatardata (UI-designerns `avatars.ts`). */
+export * from './avatars';

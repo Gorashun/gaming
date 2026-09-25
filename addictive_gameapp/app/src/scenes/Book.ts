@@ -17,11 +17,33 @@ import { filledSlots, slotIndex } from '../systems/collection';
 import { nextSetProgress } from '../systems/unlocks';
 import { playSound, playTimbre, playTone } from '../systems/audio';
 import { vibrate } from '../systems/haptics';
-import { AVATARS, RARITY, type AvatarDef } from '../data/avatarsIndex';
-import { BOX_FX } from '../data/boxes';
+import {
+  AVATARS,
+  AVATAR_SOUND,
+  AVATAR_UI,
+  RARITY,
+  UPGRADE,
+  avatarById,
+  oddsPearls,
+  type AvatarDef,
+  type Rarity,
+} from '../data/avatarsIndex';
 import { equip } from '../systems/avatars';
-import { currentOdds, pearlCounts } from '../systems/boxes';
-import { addAvatarBadge, drawPearls } from '../ui/avatarBadge';
+import { BG_GLOW } from '../ui/textures';
+import { avatarIconKey } from '../ui/icons';
+import {
+  AVATAR_TEX_ORIGIN_Y,
+  addAvatarImage,
+  bakeAvatar,
+  bakeAvatarParticles,
+  drawPearl,
+  drawRomb,
+  gripToCenter,
+  rarityInt,
+  strokeRarityRoundRect,
+} from '../ui/avatarArt';
+import { AvatarRig } from '../ui/avatarRig';
+import { playFxCue } from '../ui/avatarFx';
 
 const W = THEME.layout.width;
 const BK = META.book;
@@ -33,7 +55,9 @@ const MARK = { ringW: 4, dash: 6, badgeDx: 27, badgeDy: -27, badgeR: 10, selectM
 const LOCKED_FB = { px: 6, ms: 240, barScale: 1.1, barMs: 300 };
 /** "Nytt sedan sist" nollställs när sidan har synts så här länge. */
 const SEEN_MS = 2000;
-const FR = BOX_FX.friends;
+const AB = AVATAR_UI.book;
+const GR = AB.grid;
+const ST = AB.stage;
 
 type Tab = 'sets' | 'friends';
 
@@ -85,17 +109,25 @@ export class Book extends Phaser.Scene {
   private tabIcons!: Phaser.GameObjects.Graphics;
   private band!: Phaser.GameObjects.Rectangle;
   private friends!: Phaser.GameObjects.Container;
+  /** Scen + odds-burk (står still), rutnätet scrollar under. */
+  private friendsTop!: Phaser.GameObjects.Container;
   private friendSel!: Phaser.GameObjects.Graphics;
   private cells: FriendCell[] = [];
   private scroll = 0;
   private maxScroll = 0;
   private downScroll = 0;
+  private vel = 0;
+  private lastMoveY = 0;
+  private stageImg: Phaser.GameObjects.Image | null = null;
+  private stageRig: AvatarRig | null = null;
+  private stageId = '';
+  private showcasing = false;
 
   constructor() {
     super('Book');
   }
 
-  create(): void {
+  create(data?: { tab?: Tab }): void {
     const d = cached();
     drawBackground(this, undefined, { still: true });
     this.locked = THEME_SETS.map((s) => !d.unlockedSets.includes(s.id));
@@ -116,15 +148,20 @@ export class Book extends Phaser.Scene {
       .setDisplaySize(BK.close.icon, BK.close.icon)
       .setDepth(10);
     this.buildFriends();
-    this.band = this.add.rectangle(W / 2, FR.headerH / 2, W, FR.headerH, INT.bg, 1).setDepth(9);
-    this.tabIcons = this.add.graphics().setDepth(10);
-    this.selectTab('sets');
+    this.band = this.add.rectangle(W / 2, GR.top / 2, W, GR.top, INT.bg, 0.001).setDepth(4);
+    this.tabIcons = this.add.graphics().setDepth(11);
+    this.tabSetImg = this.add.image(AB.tabs.set.x, AB.tabs.set.y, avatarIconKey('tabSetOn')).setDepth(12);
+    this.tabFriendsImg = this.add.image(AB.tabs.friends.x, AB.tabs.friends.y, avatarIconKey('tabFriendsOff')).setDepth(12);
+    this.selectTab(data?.tab === 'friends' ? 'friends' : 'sets');
 
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       this.down = { x: p.worldX, y: p.worldY, t: this.time.now };
       this.downScroll = this.scroll;
+      this.vel = 0;
+      this.lastMoveY = p.worldY;
       if (this.tab === 'sets') this.tweens.killTweensOf(this.strip);
     });
+    this.events.on(Phaser.Scenes.Events.UPDATE, this.tick, this);
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => this.onMove(p));
     this.input.on('pointerup', (p: Phaser.Input.Pointer) => this.onUp(p));
     this.onPageShown();
@@ -162,9 +199,17 @@ export class Book extends Phaser.Scene {
       equip(id: string): boolean {
         return self.equipFriend(id);
       },
+      /** Scrollar cellen till mitten av rutnätet och returnerar dess mitt på skärmen. */
       cellOf(id: string): { x: number; y: number } | null {
         const c = self.cells.find((k) => k.def.id === id);
-        return c ? { x: c.x, y: c.y - self.scroll } : null;
+        if (!c) return null;
+        self.vel = 0;
+        self.setScroll(c.y - (GR.top + GR.bottom) / 2);
+        return { x: c.x, y: c.y - self.scroll };
+      },
+      /** Kompisen på bokens scen. */
+      get stageId(): string {
+        return self.stageId;
       },
     };
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -186,7 +231,10 @@ export class Book extends Phaser.Scene {
   private onMove(p: Phaser.Input.Pointer): void {
     if (!this.down || !p.isDown) return;
     if (this.tab === 'friends') {
-      this.setScroll(this.downScroll - (p.worldY - this.down.y));
+      if (this.down.y < GR.top) return;
+      this.vel = this.lastMoveY - p.worldY;
+      this.lastMoveY = p.worldY;
+      this.setScroll(this.downScroll - (p.worldY - this.down.y), true);
       return;
     }
     let dx = p.worldX - this.down.x;
@@ -211,7 +259,12 @@ export class Book extends Phaser.Scene {
       return;
     }
     if (this.tab === 'friends') {
-      if (!tap) return;
+      if (!tap) {
+        if (down.y < GR.top) return;
+        this.setScroll(this.scroll);
+        return;
+      }
+      this.vel = 0;
       const c = BK.close;
       if (Math.abs(p.worldX - c.x) <= c.hit / 2 && Math.abs(p.worldY - c.y) <= c.hit / 2) this.close();
       else this.tapFriend(p.worldX, p.worldY);
@@ -234,144 +287,336 @@ export class Book extends Phaser.Scene {
 
   // ---------------------------------------------------------------- flikar
 
+  private tabSetImg!: Phaser.GameObjects.Image;
+  private tabFriendsImg!: Phaser.GameObjects.Image;
+
+  /** Flikarnas träffytor 56×72 (UI.md §13.4). */
   private tabAt(x: number, y: number): Tab | null {
-    const T = FR.tabs;
-    if (Math.abs(y - T.y) > T.hit / 2) return null;
-    if (Math.abs(x - T.xSet) <= T.hit / 2) return 'sets';
-    if (Math.abs(x - T.xFriends) <= T.hit / 2) return 'friends';
+    const T = AB.tabs;
+    if (y < 0 || y > T.hit.h) return null;
+    if (Math.abs(x - T.set.x) <= T.hit.w / 2) return 'sets';
+    if (Math.abs(x - T.friends.x) <= T.hit.w / 2) return 'friends';
     return null;
   }
 
   private selectTab(t: Tab): void {
+    const changed = this.tab !== t;
     this.tab = t;
     const sets = t === 'sets';
     this.strip.setVisible(sets);
     this.dots.setVisible(sets);
     this.bar?.setVisible(sets);
     this.friends.setVisible(!sets);
+    this.friendsTop.setVisible(!sets);
     this.band.setVisible(!sets);
+    if (changed) {
+      const shown: (Phaser.GameObjects.Container | Phaser.GameObjects.Graphics)[] = sets ? [this.strip, this.dots] : [this.friends, this.friendsTop];
+      for (const o of shown) {
+        o.setAlpha(0);
+        this.tweens.add({ targets: o, alpha: 1, duration: 160 });
+      }
+    }
     this.drawTabs();
   }
 
-  /** Två ikoner utan text: bok (set) och ansikte (kompisar). Aktiv: full färg + streck under. */
+  /** Två bokmärkesband: aktivt längre och fyllt, inaktivt kortare. Formen bär informationen. */
   private drawTabs(): void {
-    const T = FR.tabs;
+    const T = AB.tabs;
     const g = this.tabIcons;
-    const s = T.icon / 2;
     g.clear();
-    const on = (t: Tab): number => (this.tab === t ? 1 : 0.45);
-    // Bok: två sidor och en rygg.
-    g.lineStyle(3, INT.accent, on('sets'));
-    g.strokeRoundedRect(T.xSet - s, T.y - s * 0.75, s, s * 1.5, 3);
-    g.strokeRoundedRect(T.xSet, T.y - s * 0.75, s, s * 1.5, 3);
-    // Kompis: huvud med ögon och leende.
-    g.lineStyle(3, INT.accent, on('friends'));
-    g.strokeCircle(T.xFriends, T.y, s * 0.85);
-    g.fillStyle(INT.accent, on('friends'));
-    g.fillCircle(T.xFriends - s * 0.3, T.y - s * 0.15, 2.5);
-    g.fillCircle(T.xFriends + s * 0.3, T.y - s * 0.15, 2.5);
-    g.beginPath();
-    g.arc(T.xFriends, T.y + s * 0.05, s * 0.4, 0.3, Math.PI - 0.3, false);
-    g.strokePath();
-    g.fillStyle(INT.accent, 1);
-    g.fillRoundedRect((this.tab === 'sets' ? T.xSet : T.xFriends) - s, T.y + s + 6, s * 2, 3, 1.5);
+    for (const t of ['sets', 'friends'] as Tab[]) {
+      const on = this.tab === t;
+      const x = t === 'sets' ? T.set.x : T.friends.x;
+      const h = on ? T.hActive : T.hIdle;
+      const pts = [
+        { x: x - T.w / 2, y: 0 },
+        { x: x + T.w / 2, y: 0 },
+        { x: x + T.w / 2, y: h },
+        { x, y: h - 10 },
+        { x: x - T.w / 2, y: h },
+      ];
+      g.fillStyle(on ? INT.bg : INT.jarWall, on ? 1 : 0.7);
+      g.fillPoints(pts, true);
+      if (on) {
+        g.fillStyle(INT.accent, 0.16);
+        g.fillPoints(pts, true);
+      }
+      g.lineStyle(on ? 3 : 2, on ? INT.accent : INT.hudDim, 1);
+      g.strokePoints(pts, true, true);
+    }
+    const s = T.icon / 128;
+    this.tabSetImg.setTexture(avatarIconKey(this.tab === 'sets' ? 'tabSetOn' : 'tabSetOff')).setScale(s);
+    this.tabFriendsImg.setTexture(avatarIconKey(this.tab === 'friends' ? 'tabFriendsOn' : 'tabFriendsOff')).setScale(s);
   }
 
   // ---------------------------------------------------------------- kompisar
 
-  /** Odds-burk + rutnät 6 kolumner per raritet. Byggs en gång; valet ritas om vid equip. */
+  /** Scen, odds-burk och rutnät (UI.md §13.4). Byggs en gång; valet ritas om vid equip. */
   private buildFriends(): void {
-    const d = cached();
-    const av = d.avatars;
+    const av = cached().avatars;
+    bakeAvatarParticles(this);
+    this.friendsTop = this.add.container(0, 0).setDepth(6);
     const c = this.add.container(0, 0).setDepth(5);
     this.friends = c;
     this.cells = [];
     this.scroll = 0;
+    this.vel = 0;
 
-    // Odds-burken: 25 pärlor i raritetsfärger, vanligast längst ner.
-    const J = FR.jar;
-    const jar = this.add.graphics();
-    jar.fillStyle(INT.jarGlass, 0.6);
-    jar.fillRoundedRect(J.x - J.w / 2, J.y - J.h / 2, J.w, J.h, 16);
-    jar.lineStyle(3, INT.jarEdge, 1);
-    jar.strokeRoundedRect(J.x - J.w / 2, J.y - J.h / 2, J.w, J.h, 16);
-    jar.lineBetween(J.x - J.w / 2 - 4, J.y - J.h / 2 - 6, J.x + J.w / 2 + 4, J.y - J.h / 2 - 6);
-    const counts = pearlCounts(currentOdds(av.owned), J.pearls);
-    let k = 0;
-    for (const r of RARITY.order) {
-      jar.fillStyle(hexToInt(RARITY.color[r]), 1);
-      for (let i = 0; i < counts[r]; i++, k++) {
-        const col = k % J.cols;
-        const row = Math.floor(k / J.cols);
-        jar.fillCircle(J.x + (col - (J.cols - 1) / 2) * J.pitch, J.y + J.h / 2 - 16 - row * J.pitch, J.pearlR);
-      }
-    }
-    c.add(jar);
+    // Rutnätet klipps till viewporten.
+    const maskG = this.make.graphics({ x: 0, y: 0 }, false);
+    maskG.fillStyle(0xffffff, 1);
+    maskG.fillRect(0, GR.top, W, GR.bottom - GR.top);
+    c.setMask(maskG.createGeometryMask());
 
-    const pitch = FR.cell + FR.gap;
-    const left = (W - (FR.cols * FR.cell + (FR.cols - 1) * FR.gap)) / 2 + FR.cell / 2;
+    this.buildJar(av.owned);
+    this.buildStage();
+
     const g = this.add.graphics();
     c.add(g);
-    let y = FR.gridTop;
-    for (const r of RARITY.order) {
+    let y = GR.top;
+    for (const r of GR.order) {
       const list = AVATARS.filter((a) => a.rarity === r);
-      const color = hexToInt(RARITY.color[r]);
-      g.lineStyle(2, color, 0.6);
-      g.lineBetween(left - FR.cell / 2, y, W - left + FR.cell / 2, y);
-      y += FR.gap;
+      const owned = list.filter((a) => av.owned.includes(a.id)).length;
+      // Grupprubrik: N pärlor, linje i raritetsfärg, ägda/antal.
+      const H = GR.header;
+      const hy = y + GR.headerH / 2;
+      for (let i = 0; i < RARITY.pearls[r]; i++) drawPearl(g, H.x0 + i * H.pearlPitch, hy, H.pearlR, r);
+      const count = this.add
+        .text(H.countX, hy, `${owned}/${list.length}`, {
+          fontFamily: THEME.type.family,
+          fontSize: `${H.countPx}px`,
+          color: THEME.palette.hud,
+          fontStyle: '800',
+        })
+        .setOrigin(1, 0.5);
+      c.add(count);
+      g.lineStyle(2, rarityInt(r), 0.5);
+      g.lineBetween(H.x0 + RARITY.pearls[r] * H.pearlPitch, hy, Math.min(H.lineX1, H.countX - count.width - 8), hy);
+      y += GR.headerH;
       list.forEach((def, i) => {
-        const x = left + (i % FR.cols) * pitch;
-        const cy = y + Math.floor(i / FR.cols) * pitch + FR.cell / 2;
+        const x = GR.x0 + (i % GR.cols) * GR.pitchX;
+        const cy = y + Math.floor(i / GR.cols) * GR.rowPitch + GR.cell / 2 + 4;
         this.cells.push({ def, x, y: cy });
-        const ay = cy - 5;
-        if (!av.owned.includes(def.id)) {
-          g.fillStyle(INT.hudDim, FR.silhouetteAlpha);
-          g.fillCircle(x, ay, FR.avatarR);
-          return;
-        }
-        c.add(addAvatarBadge(this, x, ay, FR.avatarR, def));
-        g.lineStyle(FR.ringW, color, 1);
-        g.strokeCircle(x, ay, FR.avatarR + FR.ringW);
-        drawPearls(g, x, cy + FR.avatarR + 2, av.level[def.id] ?? 1, 3, FR.levelPearlR, FR.levelPearlPitch, color);
+        this.drawCell(g, def, x, cy, av.owned.includes(def.id));
       });
-      y += Math.ceil(list.length / FR.cols) * pitch + FR.groupGap;
+      y += Math.ceil(list.length / GR.cols) * GR.rowPitch + GR.groupGap;
     }
     this.friendSel = this.add.graphics();
     c.add(this.friendSel);
     this.drawFriendSel();
-    this.maxScroll = Math.max(0, y + FR.bottomPad - THEME.layout.height);
+    this.maxScroll = Math.max(0, y - GR.bottom);
+    // Startposition: raden med den valda kompisen, centrerad.
+    const sel = this.cells.find((k) => k.def.id === av.equipped);
+    if (sel) this.setScroll(sel.y - (GR.top + GR.bottom) / 2);
   }
 
-  /** Vald avatar: accent-ring utanför raritetsringen. */
+  private drawCell(g: Phaser.GameObjects.Graphics, def: AvatarDef, x: number, y: number, owned: boolean): void {
+    const half = GR.cell / 2;
+    const av = cached().avatars;
+    if (owned) {
+      g.fillStyle(rarityInt(def.rarity), GR.ownedFillAlpha);
+      g.fillRoundedRect(x - half, y - half, GR.cell, GR.cell, GR.cellR);
+      strokeRarityRoundRect(g, x - half, y - half, GR.cell, GR.cell, GR.cellR, GR.frameW, def.rarity);
+      this.friends.add(addAvatarImage(this, x, y + gripToCenter(GR.avatarPx), def.id, GR.avatarPx));
+      // Uppgradering: två rombplatser under cellen.
+      const lvl = av.level[def.id] ?? 1;
+      const xp = av.xp[def.id] ?? 0;
+      for (let k = 0; k < 2; k++) {
+        const rx = x + (k - 0.5) * GR.rombPitch;
+        const reached = lvl >= k + 2;
+        const next = lvl === k + 1;
+        const from = k === 0 ? 0 : UPGRADE.xpII;
+        const to = k === 0 ? UPGRADE.xpII : UPGRADE.xpIII;
+        const pct = next ? Phaser.Math.Clamp((xp - from) / (to - from), 0, 1) : 0;
+        drawRomb(g, rx, y + GR.rombY, GR.rombW, GR.rombH, reached, pct, INT.hud, INT.hudDim);
+      }
+      return;
+    }
+    // Ej ägd: siluett + streckad ram.
+    const sil = addAvatarImage(this, x, y + gripToCenter(GR.avatarPx), def.id, GR.avatarPx, true)
+      .setTint(INT.hudDim)
+      .setAlpha(GR.silAlpha);
+    this.friends.add(sil);
+    g.lineStyle(2, INT.hudDim, GR.emptyFrameAlpha);
+    const e = [
+      [x - half, y - half, x + half, y - half],
+      [x + half, y - half, x + half, y + half],
+      [x + half, y + half, x - half, y + half],
+      [x - half, y + half, x - half, y - half],
+    ];
+    for (const [x0, y0, x1, y1] of e) {
+      const len = Math.hypot(x1 - x0, y1 - y0);
+      for (let d = 0; d < len; d += 10) {
+        const t0 = d / len;
+        const t1 = Math.min(len, d + 5) / len;
+        g.lineBetween(x0 + (x1 - x0) * t0, y0 + (y1 - y0) * t0, x0 + (x1 - x0) * t1, y0 + (y1 - y0) * t1);
+      }
+    }
+  }
+
+  /** Odds-burken: 25 pärlor i raritetsfärger, vanlig längst ner, mytisk överst (UI.md §13.4). */
+  private buildJar(owned: readonly string[]): void {
+    const J = AB.jar;
+    const g = this.add.graphics();
+    const left = J.x - J.w / 2;
+    const top = J.y - J.h / 2;
+    g.fillStyle(INT.jarGlass, 0.55);
+    g.fillRoundedRect(left, top, J.w, J.h, 14);
+    g.lineStyle(3, INT.jarEdge, 1);
+    g.strokeRoundedRect(left, top, J.w, J.h, 14);
+    g.fillStyle(INT.jarEdge, 1);
+    g.fillRoundedRect(left - 4, top - J.lidH, J.w + 8, J.lidH, 4);
+    this.friendsTop.add(g);
+    const remaining = {} as Record<Rarity, number>;
+    for (const r of RARITY.order) remaining[r] = AVATARS.filter((a) => a.rarity === r && !owned.includes(a.id)).length;
+    const counts = oddsPearls(remaining, J.rows.reduce((a, b) => a + b, 0));
+    const seq: Rarity[] = [];
+    for (const r of RARITY.order) for (let i = 0; i < counts[r]; i++) seq.push(r);
+    if (seq.length === 0) {
+      this.friendsTop.add(this.add.image(J.x, J.bottomY - 8, avatarIconKey('shellOpen')).setScale(40 / 128));
+      return;
+    }
+    let k = 0;
+    J.rows.forEach((n, row) => {
+      for (let i = 0; i < n && k < seq.length; i++, k++) {
+        const x = J.x + (i - (n - 1) / 2) * J.pitchX;
+        drawPearl(g, x, J.bottomY - row * J.pitchY, J.pearlR, seq[k]);
+      }
+    });
+  }
+
+  /** Scenen: vald kompis 80 px som håller en nivå 2-glimt, glöd i raritetsfärg bakom. */
+  private buildStage(): void {
+    const def = avatarById(cached().avatars.equipped);
+    this.stageId = def?.id ?? '';
+    if (!def) return;
+    const glow = this.add.image(ST.x, ST.gripY - gripToCenter(ST.displayPx), BG_GLOW)
+      .setDisplaySize(ST.glowR * 2 * 2, ST.glowR * 2 * 2)
+      .setTint(rarityInt(def.rarity))
+      .setAlpha(0.25);
+    const ball = this.add.image(ST.x, ST.gripY + 14, ballTextureKey(2)).setScale(scaleForBodyRadius(2, ST.objR));
+    this.friendsTop.add([glow, ball]);
+    this.setStageFigure(def, false);
+  }
+
+  private setStageFigure(def: AvatarDef, animate: boolean): void {
+    const lvl = cached().avatars.level[def.id] ?? 1;
+    const old = this.stageImg;
+    if (old) {
+      this.stageRig?.destroy();
+      this.tweens.add({ targets: old, y: old.y + 40, alpha: 0, duration: 160, ease: 'Quad.easeIn', onComplete: () => old.destroy() });
+    }
+    const img = this.add
+      .image(ST.x, ST.gripY, bakeAvatar(this, def.id, ST.displayPx, false, 'full', lvl - 1))
+      .setOrigin(0.5, AVATAR_TEX_ORIGIN_Y);
+    this.friendsTop.add(img);
+    const rig = new AvatarRig(this, def, ST.displayPx, cached().settings.calm);
+    this.stageImg = img;
+    this.stageRig = rig;
+    this.stageId = def.id;
+    if (!animate) {
+      rig.resumeLoop();
+      return;
+    }
+    rig.base = 0;
+    this.tweens.add({
+      targets: rig,
+      base: 1,
+      duration: 240,
+      ease: 'Back.easeOut',
+      onComplete: () => this.playStageShowcase(),
+    });
+  }
+
+  /** Scenens showcase i normal takt. Tryck under pågående showcase ignoreras. */
+  private playStageShowcase(): void {
+    const rig = this.stageRig;
+    const def = avatarById(this.stageId);
+    if (!rig || !def || this.showcasing) return;
+    this.showcasing = true;
+    const sc = def.showcase;
+    playTone(sc.sound);
+    rig.play(sc.anim, 3, 1, () => {
+      this.showcasing = false;
+      rig.resumeLoop();
+    });
+    const k = ST.displayPx / 56;
+    this.time.delayedCall(sc.fxAtMs, () =>
+      playFxCue(this, sc.fx, ST.x, ST.gripY - gripToCenter(ST.displayPx), k, 7, cached().settings.calm),
+    );
+  }
+
+  /** Varje frame: scenens pose och scrollens tröghet. Inga allokeringar. */
+  private tick(): void {
+    if (this.stageImg && this.stageRig) this.stageRig.apply(this.stageImg, ST.x, ST.gripY);
+    if (this.tab !== 'friends' || this.down || Math.abs(this.vel) < 0.1) return;
+    this.vel *= AB.scroll.friction;
+    this.setScroll(this.scroll + this.vel);
+  }
+
+  /** Vald: yttre accentram 56×56 och bockbricka (UI.md §13.4). */
   private drawFriendSel(): void {
     const g = this.friendSel;
     g.clear();
     const cell = this.cells.find((k) => k.def.id === cached().avatars.equipped);
     if (!cell) return;
-    g.lineStyle(3, INT.accent, 1);
-    g.strokeRoundedRect(cell.x - FR.cell / 2, cell.y - FR.cell / 2, FR.cell, FR.cell + 4, 10);
+    const S = GR.selected;
+    const size = GR.cell + S.pad * 2;
+    g.lineStyle(S.width, INT.accent, 1);
+    g.strokeRoundedRect(cell.x - size / 2, cell.y - size / 2, size, size, GR.cellR + S.pad);
+    const bx = cell.x + S.badgeDx;
+    const by = cell.y + S.badgeDy;
+    g.fillStyle(INT.accent, 1);
+    g.fillCircle(bx, by, S.badgeR);
+    g.lineStyle(2.5, INT.ink, 1);
+    g.strokePoints([{ x: bx - 4, y: by }, { x: bx - 1, y: by + 3 }, { x: bx + 4, y: by - 3 }], false);
   }
 
-  private setScroll(v: number): void {
-    this.scroll = Phaser.Math.Clamp(v, 0, this.maxScroll);
+  /** Scroll med gummiband i kanterna medan fingret drar, annars klampat. */
+  private setScroll(v: number, rubber = false): void {
+    if (rubber && (v < 0 || v > this.maxScroll)) {
+      const edge = v < 0 ? 0 : this.maxScroll;
+      this.scroll = edge + (v - edge) * AB.scroll.rubber;
+    } else {
+      this.scroll = Phaser.Math.Clamp(v, 0, this.maxScroll);
+    }
     this.friends.y = -this.scroll;
   }
 
   private tapFriend(x: number, y: number): void {
-    const half = FR.cell / 2 + FR.gap / 2;
-    const cell = this.cells.find((k) => Math.abs(k.x - x) <= half && Math.abs(k.y - this.scroll - y) <= half);
-    if (cell) this.equipFriend(cell.def.id);
+    const S = ST.hit;
+    if (x >= S.x && x <= S.x + S.w && y >= S.y && y <= S.y + S.h) {
+      this.playStageShowcase();
+      return;
+    }
+    if (y < GR.top || y > GR.bottom) return;
+    const cell = this.cells.find((k) => Math.abs(k.x - x) <= GR.cell / 2 && Math.abs(k.y - this.scroll - y) <= (GR.cell + 8) / 2 + 4);
+    if (!cell) return;
+    if (!this.equipFriend(cell.def.id)) this.lockedCell(cell);
   }
 
-  /** Tryck på ägd avatar: vald från nästa runda, sparas direkt. */
+  /** Tryck på siluett: skakar ±4 px två gånger och ljudet `locked`. Inget mer. */
+  private lockedCell(cell: FriendCell): void {
+    playTone(META_SOUND.locked);
+    const c = this.friends;
+    this.tweens.add({ targets: c, x: 4, duration: 60, yoyo: true, repeat: 1, ease: 'Sine.easeInOut', onComplete: () => c.setX(0) });
+    void cell;
+  }
+
+  /** Tryck på ägd kompis: vald från nästa runda, sparas direkt, scenen byter figur. */
   private equipFriend(id: string): boolean {
     const av = cached().avatars;
     if (av.equipped === id) return true;
     if (!equip(av, id)) return false;
     void save();
     this.drawFriendSel();
-    playSound('ui');
+    playTone(AVATAR_SOUND.equip);
     vibrate(10);
+    const def = avatarById(id);
+    if (def) {
+      this.showcasing = false;
+      this.setStageFigure(def, true);
+    }
     return true;
   }
 

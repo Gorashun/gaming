@@ -60,8 +60,9 @@ test('mussla: 50 merges ger en mussla på hyllan, öppning ger sällsynt, fliken
   await page.waitForTimeout(1200);
   await page.screenshot({ path: 'tests/e2e/screenshots/shelf-box.png' });
 
-  await tap(page, 104, 454);
-  await page.waitForTimeout(1300);
+  await tap(page, 92, 450);
+  // Fast 1,2 s i speltid; vänta tills öppningen är klar (headless kan gå långsammare).
+  await page.waitForFunction(() => window.__start?.openPhase === 'done', undefined, { timeout: 10_000 });
   await page.screenshot({ path: 'tests/e2e/screenshots/box-open.png' });
   const first = await page.evaluate(() => window.__start!.lastBox);
   expect(first?.rarity).toBe('rare');

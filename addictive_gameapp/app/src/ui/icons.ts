@@ -1,5 +1,37 @@
 /** Ikoner enligt docs/UI.md §9. En stil: viewBox 64×64, stroke 6, rundade ändar. */
 import { BOOK_ICON, QMARK_ICON, SPARKLE_ICON, THEME_SETS } from '../data/themes';
+import {
+  AVATAR_UI,
+  SHELL_BOTTOM_SVG,
+  SHELL_ICON,
+  SHELL_OPEN_ICON,
+  SHELL_TOP_SVG,
+  TAB_FRIENDS_ICON,
+  TAB_SET_ICON,
+} from '../data/avatarsIndex';
+
+const SHELL_DARK = '#5C2A43';
+const HUD_DIM = '#8FA3C8';
+const INSIDE = AVATAR_UI.open.shellOpen.inside;
+
+/** Musslor och flikar (UI.md §13.11). Accent-kontur på hyllan, mörk i öppningen. */
+export const AVATAR_ICONS = {
+  shell: () => SHELL_ICON(),
+  shellDark: () => SHELL_ICON(SHELL_DARK),
+  shellOpen: () => SHELL_OPEN_ICON(),
+  shellTop: () => SHELL_TOP_SVG(SHELL_DARK),
+  shellTopInside: () => SHELL_TOP_SVG(SHELL_DARK, INSIDE.fill, INSIDE.rib),
+  shellBottom: () => SHELL_BOTTOM_SVG(SHELL_DARK),
+  tabSetOn: () => TAB_SET_ICON(),
+  tabSetOff: () => TAB_SET_ICON(HUD_DIM),
+  tabFriendsOn: () => TAB_FRIENDS_ICON(),
+  tabFriendsOff: () => TAB_FRIENDS_ICON(HUD_DIM),
+};
+export type AvatarIconKey = keyof typeof AVATAR_ICONS;
+
+export function avatarIconKey(k: AvatarIconKey): string {
+  return `icon-av-${k}`;
+}
 
 export const ICONS = {
   play: (c = '#7CF9FF') =>
@@ -107,6 +139,7 @@ export async function loadIcons(
   const all: [string, string][] = [
     ...ICON_KEYS.map((k): [string, string] => [iconTextureKey(k), ICONS[k]()]),
     ...THEME_SETS.map((s): [string, string] => [setIconKey(s.id), s.icon]),
+    ...(Object.keys(AVATAR_ICONS) as AvatarIconKey[]).map((k): [string, string] => [avatarIconKey(k), AVATAR_ICONS[k]()]),
   ];
   await Promise.all(
     all.map(async ([key, svg]) => {

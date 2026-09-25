@@ -23,7 +23,7 @@ describe('avatardata (DESIGN §14.2)', () => {
     expect(new Set(AVATARS.map((a) => a.id)).size).toBe(48);
     expect(RARITY.order.map(countBy)).toEqual([16, 12, 9, 6, 3, 2]);
     expect(RARITY.order.reduce((s, r) => s + RARITY.odds[r], 0)).toBe(100);
-    expect(UPGRADE).toEqual({ xpII: 150, xpIII: 450 });
+    expect([UPGRADE.xpII, UPGRADE.xpIII]).toEqual([150, 450]);
   });
 });
 

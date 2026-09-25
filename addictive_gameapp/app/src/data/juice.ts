@@ -6,6 +6,7 @@ import { THEME } from './theme';
 import { MAX_LEVEL } from './levels';
 import { SPECIALS } from './director';
 import { META } from './themes';
+import { AVATAR_UI } from './avatarsIndex';
 
 export type JuiceEvent =
   | 'drop'
@@ -119,6 +120,9 @@ export const JUICE = {
     chainGoal: META.chain.goalPulse.halfCycleMs,
     bookFresh: META.book.freshPulse.halfCycleMs,
     shiny: META.shiny.halfCycleMs,
+    // Kompisar (UI.md §13.12)
+    boxPulse: AVATAR_UI.shelf.boxPulse.halfCycleMs,
+    friendFresh: AVATAR_UI.book.freshPulse.halfCycleMs,
   },
   /**
    * Alla färger som ingår i en ljusstyrkeväxling. Ingen mättad röd, ingen ren vit blixt.

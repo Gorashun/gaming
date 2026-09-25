@@ -4,7 +4,7 @@ import { setPalette, themeSetById, type BackdropOp, type ThemeSet } from '../dat
 import { mulberry32 } from '../systems/rng';
 import { BG_GLOW } from './textures';
 
-type ScatterOp = Extract<BackdropOp, { op: 'scatter' }>;
+export type ScatterOp = Extract<BackdropOp, { op: 'scatter' }>;
 
 function drawScatter(g: Phaser.GameObjects.Graphics, op: ScatterOp, ox: number, oy: number): void {
   const rng = mulberry32(op.seed);
@@ -89,6 +89,8 @@ export interface BackgroundOpts {
   plain?: boolean;
   /** Lägg allt i en container (boken). */
   into?: Phaser.GameObjects.Container;
+  /** Stjärnhimmel (Stjärnvalen) i stället för setets detaljer. */
+  starSky?: ScatterOp;
 }
 
 /**
@@ -120,6 +122,11 @@ export function drawBackground(scene: Phaser.Scene, setId?: string, opts: Backgr
     );
   }
   if (opts.plain) return;
+  if (opts.starSky) {
+    const sky = add(scene.add.graphics().setDepth(-8));
+    drawScatter(sky, opts.starSky, ox + opts.starSky.x, opts.starSky.y);
+    return;
+  }
   const still = opts.still ?? false;
   const key = backdropKey(scene, set, still);
   if (key) add(scene.add.image(ox, 0, key).setOrigin(0).setDepth(-8));

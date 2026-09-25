@@ -15,8 +15,9 @@ import { slotIndex } from '../systems/collection';
 import { playSound, playTimbre, playTone } from '../systems/audio';
 import { vibrate } from '../systems/haptics';
 import { Juice } from '../systems/juice';
-import { BOX_FX } from '../data/boxes';
-import { drawShell } from '../ui/shell';
+import { AVATAR_SOUND, AVATAR_UI } from '../data/avatarsIndex';
+import { ABILITY_FX } from '../data/abilities';
+import { avatarIconKey } from '../ui/icons';
 
 /** En plats som fylldes i rundan. */
 export interface RevealCatch {
@@ -35,6 +36,10 @@ export interface RevealData {
   newSet: string | null;
   /** Nya musslor i rundan (DESIGN §14.3). */
   boxes: number;
+  /** Kameran Klick: texturnycklar till rundans polaroider (förmåga). */
+  photos?: string[];
+  /** Ram i raritetsfärg (Klick II–III). */
+  photoTint?: boolean;
 }
 
 export interface GameOverData {
@@ -156,7 +161,8 @@ export class GameOver extends Phaser.Scene {
     const n = rv.catches.length;
     if (n === 0 && rv.barFrom === null && !rv.newSet && rv.boxes === 0) return;
     const page = cached().collection[rv.setId];
-    const fast = rv.newSet !== null;
+    // Snabbläge när nytt set (och ev. mussla + många fångster) ska rymmas i 2,5 s (UI.md §13.7).
+    const fast = rv.newSet !== null || (rv.boxes > 0 && n >= R.flyers.max);
     const fly = fast ? { ...R.flyers, ...R.flyersFast } : R.flyers;
     const m = Math.min(n, R.flyers.max);
     const depth = 23;
@@ -236,31 +242,65 @@ export class GameOver extends Phaser.Scene {
       );
     }
 
+    // Musslan poppar in när sista flygaren landat + 80 ms (420 ms om inget fångades) och flyger
+    // 300 ms senare mot hyllan. Den kommer FÖRE set-ceremonin, som startar när musslan lyfter.
+    const RV = AVATAR_UI.reveal;
+    const shellAt = m > 0 ? barAt : R.flyStartMs;
+    const shellHold = 300;
+    if (rv.boxes > 0) this.time.delayedCall(shellAt, () => this.flyShell(Math.min(rv.boxes, AVATAR_UI.shelf.box.maxShown), shellHold, depth + 3));
     if (rv.newSet) {
       const id = rv.newSet;
-      this.time.delayedCall(barAt + barMs, () => {
+      const at = rv.boxes > 0 ? Math.max(barAt + barMs, shellAt + RV.popMs + shellHold) : barAt + barMs;
+      this.time.delayedCall(at, () => {
         this.tweens.add({ targets: strip, alpha: 0, duration: R.newSet.stripFadeMs });
         this.revealSet(id, depth + 2);
       });
     }
-
-    // Sist: musslan poppar upp och flyger till hyllan (≤400 ms, omstart går alltid).
-    if (rv.boxes > 0) {
-      const at = barAt + barMs + (rv.newSet ? R.newSet.ringMs : 0);
-      this.time.delayedCall(at, () => this.flyShell(depth + 3));
-    }
+    if (rv.photos && rv.photos.length > 0) this.polaroids(rv.photos, rv.photoTint === true, depth + 1);
   }
 
-  private flyShell(depth: number): void {
-    const F = BOX_FX.fly;
-    const g = drawShell(this.add.graphics(), F.size).setPosition(F.x, F.y).setDepth(depth).setScale(0);
-    playTone(META_SOUND.catch, CATCH_STEPS[CATCH_STEPS.length - 1]);
+  /** Mussla (1–3 staplade, ingen siffra) i stripen, sedan mot hyllan (UI.md §13.7). */
+  private flyShell(count: number, holdMs: number, depth: number): void {
+    const RV = AVATAR_UI.reveal;
+    const B = AVATAR_UI.shelf.box;
+    const c = this.add.container(RV.x, RV.y).setDepth(depth).setScale(0);
+    for (let i = count - 1; i >= 0; i--) {
+      c.add(
+        this.add
+          .image(i * B.dx * (RV.size / B.size), i * B.dy * (RV.size / B.size), avatarIconKey('shell'))
+          .setAlpha(i === 0 ? 1 : B.backAlpha)
+          .setScale((RV.size / 128) * (i === 0 ? 1 : B.backScale)),
+      );
+    }
+    playTone(AVATAR_SOUND.boxEarned);
+    vibrate(10);
     this.tweens.chain({
-      targets: g,
+      targets: c,
       tweens: [
-        { scale: 1, duration: F.popMs, ease: 'Back.easeOut' },
-        { x: F.toX, y: F.toY, scale: 0.5, alpha: 0, duration: F.flyMs, ease: 'Cubic.easeIn' },
+        { scale: 1, duration: RV.popMs, ease: 'Back.easeOut' },
+        { x: RV.toX, y: RV.toY, scale: 0.6, duration: RV.flyMs, ease: 'Cubic.easeIn', delay: holdMs },
       ],
+    });
+  }
+
+  /** Kameran Klick: polaroid(er) av rundans största kedja glider in snett nere till vänster. */
+  private polaroids(keys: string[], tint: boolean, depth: number): void {
+    const P = ABILITY_FX.polaroid;
+    keys.forEach((key, i) => {
+      if (!this.textures.exists(key)) return;
+      const frame = this.add.graphics();
+      frame.fillStyle(tint ? hexToInt(P.frameTint) : 0xf4f7ff, 1);
+      frame.fillRect(-P.w / 2, -P.h / 2, P.w, P.h);
+      const iw = P.w - P.border * 2;
+      const ih = P.h - P.border - P.bottom;
+      const photo = this.add.image(0, -P.h / 2 + P.border + ih / 2, key).setDisplaySize(iw, ih);
+      // Slutaren: två mörka lameller som stängs och öppnas EN gång. Aldrig en vitblixt.
+      const top = this.add.rectangle(0, photo.y - ih / 4, iw, ih / 2, INT.ink, 1).setScale(1, 0);
+      const bot = this.add.rectangle(0, photo.y + ih / 4, iw, ih / 2, INT.ink, 1).setScale(1, 0);
+      const x = P.x + i * P.pitchX;
+      const c = this.add.container(-P.w, P.y, [frame, photo, top, bot]).setDepth(depth).setAngle(P.rotDeg);
+      this.tweens.add({ targets: c, x, duration: P.inMs, delay: R.startMs + i * 120, ease: 'Back.easeOut' });
+      this.tweens.add({ targets: [top, bot], scaleY: 1, duration: P.shutterMs / 2, delay: R.startMs + P.inMs + i * 120, yoyo: true });
     });
   }
 

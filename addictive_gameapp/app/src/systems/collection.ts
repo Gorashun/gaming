@@ -31,6 +31,8 @@ export interface CollectionState {
   run: number;
   /** Har spelaren någonsin fått ett skimrande (i något set)? Muteras. */
   everShiny: boolean;
+  /** Multiplikator på chansen (Stjärnvalen). Garantin (pity) är oförändrad. Default 1. */
+  shinyMul?: number;
 }
 
 export interface CreatedResult {
@@ -61,7 +63,7 @@ export function onLevelCreated(
   // Nivå 0 skapas aldrig genom merge; den blir aldrig skimrande.
   if (level < 1) return { caught, shiny: false, newShiny: false };
 
-  const roll = rng.next() < cfg.shinyP[level];
+  const roll = rng.next() < cfg.shinyP[level] * (state.shinyMul ?? 1);
   const pity = state.shinyPity[level] + 1 >= pityThreshold(level, cfg);
   const first =
     !state.everShiny && state.run >= cfg.firstShinyByRun && level >= cfg.firstShinyMinLevel;

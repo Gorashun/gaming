@@ -14,6 +14,15 @@ export type DirectorPick =
   | { kind: 'level'; level: number }
   | { kind: 'special'; type: SpecialType };
 
+/**
+ * Förbeställt specialobjekt (förmågor, DESIGN §14.5): läggs som drop nr `atDrop` (1 = första
+ * objektet i rundan). `type: null` = regissörens Kick-tabell. Påverkar inte Kick-räknaren.
+ */
+export interface SeedEntry {
+  atDrop: number;
+  type: SpecialType | null;
+}
+
 /** Sammanfattning av burken. Scenen räknar ut den enligt DESIGN §4. */
 export interface DirectorState {
   /** Nivåer som just nu kan mergea direkt. */
@@ -27,6 +36,8 @@ export interface Director {
   /** Antal drops sedan senaste Kick. */
   readonly dropsSinceKick: number;
   reset(): void;
+  /** Förbeställda specialobjekt för rundan (ersätter tidigare). */
+  setSeedQueue(entries: readonly SeedEntry[]): void;
 }
 
 /** Likformigt bland köbara nivåer där `mergeable.has(level) === want`. Inga allokeringar. */
@@ -49,6 +60,8 @@ export function createDirector(rng: Rng): Director {
   let modeLeft: number = DIRECTOR.openingFlowDrops;
   let dropsSinceKick = 0;
   let kickTarget = rng.int(DIRECTOR.kickEvery.min, DIRECTOR.kickEvery.max);
+  let picks = 0;
+  let seeded: readonly SeedEntry[] = [];
 
   return {
     get mode(): DirectorMode {
@@ -59,6 +72,10 @@ export function createDirector(rng: Rng): Director {
     },
 
     next(state: DirectorState): DirectorPick {
+      picks++;
+      for (let i = 0; i < seeded.length; i++) {
+        if (seeded[i].atDrop === picks) return { kind: 'special', type: seeded[i].type ?? rng.pick(DIRECTOR.specials) };
+      }
       dropsSinceKick++;
       if (dropsSinceKick >= kickTarget) {
         // Kick: ett specialobjekt, sedan tillbaka till Torka.
@@ -89,7 +106,12 @@ export function createDirector(rng: Rng): Director {
       mode = 'flow';
       modeLeft = DIRECTOR.openingFlowDrops;
       dropsSinceKick = 0;
+      picks = 0;
       kickTarget = rng.int(DIRECTOR.kickEvery.min, DIRECTOR.kickEvery.max);
+    },
+
+    setSeedQueue(entries: readonly SeedEntry[]): void {
+      seeded = entries.slice();
     },
   };
 }
