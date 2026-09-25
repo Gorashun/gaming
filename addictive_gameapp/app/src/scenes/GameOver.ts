@@ -15,6 +15,8 @@ import { slotIndex } from '../systems/collection';
 import { playSound, playTimbre, playTone } from '../systems/audio';
 import { vibrate } from '../systems/haptics';
 import { Juice } from '../systems/juice';
+import { BOX_FX } from '../data/boxes';
+import { drawShell } from '../ui/shell';
 
 /** En plats som fylldes i rundan. */
 export interface RevealCatch {
@@ -31,6 +33,8 @@ export interface RevealData {
   barFrom: number | null;
   barTo: number | null;
   newSet: string | null;
+  /** Nya musslor i rundan (DESIGN §14.3). */
+  boxes: number;
 }
 
 export interface GameOverData {
@@ -150,7 +154,7 @@ export class GameOver extends Phaser.Scene {
    */
   private playReveal(rv: RevealData): void {
     const n = rv.catches.length;
-    if (n === 0 && rv.barFrom === null && !rv.newSet) return;
+    if (n === 0 && rv.barFrom === null && !rv.newSet && rv.boxes === 0) return;
     const page = cached().collection[rv.setId];
     const fast = rv.newSet !== null;
     const fly = fast ? { ...R.flyers, ...R.flyersFast } : R.flyers;
@@ -239,6 +243,25 @@ export class GameOver extends Phaser.Scene {
         this.revealSet(id, depth + 2);
       });
     }
+
+    // Sist: musslan poppar upp och flyger till hyllan (≤400 ms, omstart går alltid).
+    if (rv.boxes > 0) {
+      const at = barAt + barMs + (rv.newSet ? R.newSet.ringMs : 0);
+      this.time.delayedCall(at, () => this.flyShell(depth + 3));
+    }
+  }
+
+  private flyShell(depth: number): void {
+    const F = BOX_FX.fly;
+    const g = drawShell(this.add.graphics(), F.size).setPosition(F.x, F.y).setDepth(depth).setScale(0);
+    playTone(META_SOUND.catch, CATCH_STEPS[CATCH_STEPS.length - 1]);
+    this.tweens.chain({
+      targets: g,
+      tweens: [
+        { scale: 1, duration: F.popMs, ease: 'Back.easeOut' },
+        { x: F.toX, y: F.toY, scale: 0.5, alpha: 0, duration: F.flyMs, ease: 'Cubic.easeIn' },
+      ],
+    });
   }
 
   /** En Glimt lyfter från sin kedjeplats och flyger i en båge in i boken. */

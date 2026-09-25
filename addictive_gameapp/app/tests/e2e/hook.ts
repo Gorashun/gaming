@@ -54,6 +54,19 @@ export interface GameHook {
   readonly textureKey: string;
   /** Antal spelade merge-klanger (ljudvägen per set). */
   readonly timbrePlays: number;
+  /** Kompisar (DESIGN §14.7), kopia av sparat läge. */
+  readonly avatars: {
+    owned: string[];
+    level: Record<string, number>;
+    xp: Record<string, number>;
+    equipped: string;
+    boxesEarned: number;
+    boxesOpened: number;
+    pendingBoxes: number;
+  };
+  readonly pendingBoxes: number;
+  /** Öppnar en mussla direkt och sparar. null när alla ägs. */
+  openBox(): { avatarId: string; rarity: string } | null;
 }
 
 /** Testhooken som Book-scenen installerar på `window.__book`. */
@@ -66,6 +79,13 @@ export interface BookHook {
   readonly locked: boolean[];
   /** Bläddrar till sidan och trycker på den (väljer aktivt set om upplåst). */
   selectPage(i: number): void;
+  /** 'sets' | 'friends'. */
+  readonly tab: string;
+  selectTab(t: string): void;
+  /** Väljer en ägd avatar (samma väg som ett tryck). */
+  equip(id: string): boolean;
+  /** Mitten av avatarens cell i logiska koordinater (med aktuell scroll), null om okänd. */
+  cellOf(id: string): { x: number; y: number } | null;
 }
 
 /** Rundavslutet (GameOver-overlayen) på `window.__reveal`. */
@@ -76,8 +96,17 @@ export interface RevealHook {
   readonly elapsed: number;
 }
 
+/** Startskärmen på `window.__start`. */
+export interface StartHook {
+  /** Senast öppnade musslan. */
+  readonly lastBox: { avatarId: string; rarity: string } | null;
+  /** Öppningen visas (ett tryck stänger). */
+  readonly opening: boolean;
+}
+
 declare global {
   interface Window {
+    __start?: StartHook;
     __game?: GameHook;
     __book?: BookHook;
     __reveal?: RevealHook;

@@ -17,6 +17,11 @@ import { filledSlots, slotIndex } from '../systems/collection';
 import { nextSetProgress } from '../systems/unlocks';
 import { playSound, playTimbre, playTone } from '../systems/audio';
 import { vibrate } from '../systems/haptics';
+import { AVATARS, RARITY, type AvatarDef } from '../data/avatarsIndex';
+import { BOX_FX } from '../data/boxes';
+import { equip } from '../systems/avatars';
+import { currentOdds, pearlCounts } from '../systems/boxes';
+import { addAvatarBadge, drawPearls } from '../ui/avatarBadge';
 
 const W = THEME.layout.width;
 const BK = META.book;
@@ -28,6 +33,15 @@ const MARK = { ringW: 4, dash: 6, badgeDx: 27, badgeDy: -27, badgeR: 10, selectM
 const LOCKED_FB = { px: 6, ms: 240, barScale: 1.1, barMs: 300 };
 /** "Nytt sedan sist" nollställs när sidan har synts så här länge. */
 const SEEN_MS = 2000;
+const FR = BOX_FX.friends;
+
+type Tab = 'sets' | 'friends';
+
+interface FriendCell {
+  def: AvatarDef;
+  x: number;
+  y: number;
+}
 
 /** Platsens position i rutnätet 4-4-3 (nivå 0–3, 4–7, 8–10). */
 function slotXY(level: number, rows: readonly number[]): [number, number] {
@@ -67,6 +81,15 @@ export class Book extends Phaser.Scene {
   private bar: Phaser.GameObjects.Container | null = null;
   private seenTimer: Phaser.Time.TimerEvent | null = null;
   private down: { x: number; y: number; t: number } | null = null;
+  private tab: Tab = 'sets';
+  private tabIcons!: Phaser.GameObjects.Graphics;
+  private band!: Phaser.GameObjects.Rectangle;
+  private friends!: Phaser.GameObjects.Container;
+  private friendSel!: Phaser.GameObjects.Graphics;
+  private cells: FriendCell[] = [];
+  private scroll = 0;
+  private maxScroll = 0;
+  private downScroll = 0;
 
   constructor() {
     super('Book');
@@ -92,10 +115,15 @@ export class Book extends Phaser.Scene {
       .image(BK.close.x, BK.close.y, iconTextureKey('close'))
       .setDisplaySize(BK.close.icon, BK.close.icon)
       .setDepth(10);
+    this.buildFriends();
+    this.band = this.add.rectangle(W / 2, FR.headerH / 2, W, FR.headerH, INT.bg, 1).setDepth(9);
+    this.tabIcons = this.add.graphics().setDepth(10);
+    this.selectTab('sets');
 
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       this.down = { x: p.worldX, y: p.worldY, t: this.time.now };
-      this.tweens.killTweensOf(this.strip);
+      this.downScroll = this.scroll;
+      if (this.tab === 'sets') this.tweens.killTweensOf(this.strip);
     });
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => this.onMove(p));
     this.input.on('pointerup', (p: Phaser.Input.Pointer) => this.onUp(p));
@@ -125,6 +153,19 @@ export class Book extends Phaser.Scene {
         self.goTo(i);
         self.select();
       },
+      get tab(): string {
+        return self.tab;
+      },
+      selectTab(t: string): void {
+        self.selectTab(t === 'friends' ? 'friends' : 'sets');
+      },
+      equip(id: string): boolean {
+        return self.equipFriend(id);
+      },
+      cellOf(id: string): { x: number; y: number } | null {
+        const c = self.cells.find((k) => k.def.id === id);
+        return c ? { x: c.x, y: c.y - self.scroll } : null;
+      },
     };
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       delete (window as unknown as Record<string, unknown>).__book;
@@ -144,6 +185,10 @@ export class Book extends Phaser.Scene {
 
   private onMove(p: Phaser.Input.Pointer): void {
     if (!this.down || !p.isDown) return;
+    if (this.tab === 'friends') {
+      this.setScroll(this.downScroll - (p.worldY - this.down.y));
+      return;
+    }
     let dx = p.worldX - this.down.x;
     if (Math.abs(dx) < Math.abs(p.worldY - this.down.y)) return;
     // Gummiband i kanterna.
@@ -158,6 +203,20 @@ export class Book extends Phaser.Scene {
     const dx = p.worldX - down.x;
     const dy = p.worldY - down.y;
     const dt = Math.max(1, this.time.now - down.t);
+    const tap = Math.abs(dx) < SW.tapMaxPx && Math.abs(dy) < SW.tapMaxPx && dt < SW.tapMaxMs;
+    const tab = tap ? this.tabAt(p.worldX, p.worldY) : null;
+    if (tab) {
+      if (tab !== this.tab) playSound('ui');
+      this.selectTab(tab);
+      return;
+    }
+    if (this.tab === 'friends') {
+      if (!tap) return;
+      const c = BK.close;
+      if (Math.abs(p.worldX - c.x) <= c.hit / 2 && Math.abs(p.worldY - c.y) <= c.hit / 2) this.close();
+      else this.tapFriend(p.worldX, p.worldY);
+      return;
+    }
     if (dy > SW.minPx && dy > Math.abs(dx)) {
       this.close();
       return;
@@ -171,6 +230,149 @@ export class Book extends Phaser.Scene {
     }
     if (Math.abs(dx) > SW.minPx || Math.abs(dx) / dt > SW.minVelocity) this.goTo(this.page + (dx < 0 ? 1 : -1));
     else this.snap();
+  }
+
+  // ---------------------------------------------------------------- flikar
+
+  private tabAt(x: number, y: number): Tab | null {
+    const T = FR.tabs;
+    if (Math.abs(y - T.y) > T.hit / 2) return null;
+    if (Math.abs(x - T.xSet) <= T.hit / 2) return 'sets';
+    if (Math.abs(x - T.xFriends) <= T.hit / 2) return 'friends';
+    return null;
+  }
+
+  private selectTab(t: Tab): void {
+    this.tab = t;
+    const sets = t === 'sets';
+    this.strip.setVisible(sets);
+    this.dots.setVisible(sets);
+    this.bar?.setVisible(sets);
+    this.friends.setVisible(!sets);
+    this.band.setVisible(!sets);
+    this.drawTabs();
+  }
+
+  /** Två ikoner utan text: bok (set) och ansikte (kompisar). Aktiv: full färg + streck under. */
+  private drawTabs(): void {
+    const T = FR.tabs;
+    const g = this.tabIcons;
+    const s = T.icon / 2;
+    g.clear();
+    const on = (t: Tab): number => (this.tab === t ? 1 : 0.45);
+    // Bok: två sidor och en rygg.
+    g.lineStyle(3, INT.accent, on('sets'));
+    g.strokeRoundedRect(T.xSet - s, T.y - s * 0.75, s, s * 1.5, 3);
+    g.strokeRoundedRect(T.xSet, T.y - s * 0.75, s, s * 1.5, 3);
+    // Kompis: huvud med ögon och leende.
+    g.lineStyle(3, INT.accent, on('friends'));
+    g.strokeCircle(T.xFriends, T.y, s * 0.85);
+    g.fillStyle(INT.accent, on('friends'));
+    g.fillCircle(T.xFriends - s * 0.3, T.y - s * 0.15, 2.5);
+    g.fillCircle(T.xFriends + s * 0.3, T.y - s * 0.15, 2.5);
+    g.beginPath();
+    g.arc(T.xFriends, T.y + s * 0.05, s * 0.4, 0.3, Math.PI - 0.3, false);
+    g.strokePath();
+    g.fillStyle(INT.accent, 1);
+    g.fillRoundedRect((this.tab === 'sets' ? T.xSet : T.xFriends) - s, T.y + s + 6, s * 2, 3, 1.5);
+  }
+
+  // ---------------------------------------------------------------- kompisar
+
+  /** Odds-burk + rutnät 6 kolumner per raritet. Byggs en gång; valet ritas om vid equip. */
+  private buildFriends(): void {
+    const d = cached();
+    const av = d.avatars;
+    const c = this.add.container(0, 0).setDepth(5);
+    this.friends = c;
+    this.cells = [];
+    this.scroll = 0;
+
+    // Odds-burken: 25 pärlor i raritetsfärger, vanligast längst ner.
+    const J = FR.jar;
+    const jar = this.add.graphics();
+    jar.fillStyle(INT.jarGlass, 0.6);
+    jar.fillRoundedRect(J.x - J.w / 2, J.y - J.h / 2, J.w, J.h, 16);
+    jar.lineStyle(3, INT.jarEdge, 1);
+    jar.strokeRoundedRect(J.x - J.w / 2, J.y - J.h / 2, J.w, J.h, 16);
+    jar.lineBetween(J.x - J.w / 2 - 4, J.y - J.h / 2 - 6, J.x + J.w / 2 + 4, J.y - J.h / 2 - 6);
+    const counts = pearlCounts(currentOdds(av.owned), J.pearls);
+    let k = 0;
+    for (const r of RARITY.order) {
+      jar.fillStyle(hexToInt(RARITY.color[r]), 1);
+      for (let i = 0; i < counts[r]; i++, k++) {
+        const col = k % J.cols;
+        const row = Math.floor(k / J.cols);
+        jar.fillCircle(J.x + (col - (J.cols - 1) / 2) * J.pitch, J.y + J.h / 2 - 16 - row * J.pitch, J.pearlR);
+      }
+    }
+    c.add(jar);
+
+    const pitch = FR.cell + FR.gap;
+    const left = (W - (FR.cols * FR.cell + (FR.cols - 1) * FR.gap)) / 2 + FR.cell / 2;
+    const g = this.add.graphics();
+    c.add(g);
+    let y = FR.gridTop;
+    for (const r of RARITY.order) {
+      const list = AVATARS.filter((a) => a.rarity === r);
+      const color = hexToInt(RARITY.color[r]);
+      g.lineStyle(2, color, 0.6);
+      g.lineBetween(left - FR.cell / 2, y, W - left + FR.cell / 2, y);
+      y += FR.gap;
+      list.forEach((def, i) => {
+        const x = left + (i % FR.cols) * pitch;
+        const cy = y + Math.floor(i / FR.cols) * pitch + FR.cell / 2;
+        this.cells.push({ def, x, y: cy });
+        const ay = cy - 5;
+        if (!av.owned.includes(def.id)) {
+          g.fillStyle(INT.hudDim, FR.silhouetteAlpha);
+          g.fillCircle(x, ay, FR.avatarR);
+          return;
+        }
+        c.add(addAvatarBadge(this, x, ay, FR.avatarR, def));
+        g.lineStyle(FR.ringW, color, 1);
+        g.strokeCircle(x, ay, FR.avatarR + FR.ringW);
+        drawPearls(g, x, cy + FR.avatarR + 2, av.level[def.id] ?? 1, 3, FR.levelPearlR, FR.levelPearlPitch, color);
+      });
+      y += Math.ceil(list.length / FR.cols) * pitch + FR.groupGap;
+    }
+    this.friendSel = this.add.graphics();
+    c.add(this.friendSel);
+    this.drawFriendSel();
+    this.maxScroll = Math.max(0, y + FR.bottomPad - THEME.layout.height);
+  }
+
+  /** Vald avatar: accent-ring utanför raritetsringen. */
+  private drawFriendSel(): void {
+    const g = this.friendSel;
+    g.clear();
+    const cell = this.cells.find((k) => k.def.id === cached().avatars.equipped);
+    if (!cell) return;
+    g.lineStyle(3, INT.accent, 1);
+    g.strokeRoundedRect(cell.x - FR.cell / 2, cell.y - FR.cell / 2, FR.cell, FR.cell + 4, 10);
+  }
+
+  private setScroll(v: number): void {
+    this.scroll = Phaser.Math.Clamp(v, 0, this.maxScroll);
+    this.friends.y = -this.scroll;
+  }
+
+  private tapFriend(x: number, y: number): void {
+    const half = FR.cell / 2 + FR.gap / 2;
+    const cell = this.cells.find((k) => Math.abs(k.x - x) <= half && Math.abs(k.y - this.scroll - y) <= half);
+    if (cell) this.equipFriend(cell.def.id);
+  }
+
+  /** Tryck på ägd avatar: vald från nästa runda, sparas direkt. */
+  private equipFriend(id: string): boolean {
+    const av = cached().avatars;
+    if (av.equipped === id) return true;
+    if (!equip(av, id)) return false;
+    void save();
+    this.drawFriendSel();
+    playSound('ui');
+    vibrate(10);
+    return true;
   }
 
   private close(): void {

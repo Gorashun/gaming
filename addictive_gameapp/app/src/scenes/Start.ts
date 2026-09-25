@@ -1,12 +1,19 @@
 import Phaser from 'phaser';
 import { INT, THEME, hexToInt } from '../data/theme';
-import { META, META_COLORS } from '../data/themes';
+import { CATCH_STEPS, META, META_COLORS, META_SOUND, themeSetById } from '../data/themes';
+import { AVATARS, RARITY } from '../data/avatarsIndex';
+import { BOX_FX } from '../data/boxes';
+import { openBox, type BoxResult } from '../systems/boxes';
+import { mulberry32 } from '../systems/rng';
+import { Juice } from '../systems/juice';
+import { drawShell } from '../ui/shell';
+import { addAvatarBadge, drawPearls } from '../ui/avatarBadge';
 import { ballTextureKey, scaleForBodyRadius, useSet } from '../ui/textures';
 import { nextSetProgress } from '../systems/unlocks';
 import { drawBackground } from '../ui/background';
 import { iconTextureKey, type IconKey } from '../ui/icons';
 import { cached, save } from '../systems/save';
-import { playSound, setCalm, setSoundEnabled, unlockAudio } from '../systems/audio';
+import { playSound, playTone, setCalm, setSoundEnabled, unlockAudio } from '../systems/audio';
 import { setHapticsEnabled, vibrate } from '../systems/haptics';
 
 const L = THEME.layout;
@@ -14,6 +21,11 @@ const TOUCH = THEME.touch.minLogical;
 /** Minsta mellanrum mellan två träffytor (UI.md §2.3). */
 const ICON_GAP = 8;
 const SH = META.shelf;
+const BS = BOX_FX.shelf;
+const OP = BOX_FX.open;
+const TEST_HOOK = import.meta.env.DEV || new URLSearchParams(location.search).has('test');
+/** Senast öppnade musslan (testhook), överlever scenomstart. */
+let lastBox: BoxResult | null = null;
 
 interface Toggle {
   img: Phaser.GameObjects.Image;
@@ -25,6 +37,8 @@ interface Toggle {
 /** Startskärm enligt UI.md §7.1. Ingen text utöver logotypen och highscore-siffran. */
 export class Start extends Phaser.Scene {
   private toggles: Toggle[] = [];
+  /** Öppningsflödet pågår eller visas (ett tryck stänger det). */
+  private opening = false;
 
   constructor() {
     super('Start');
@@ -35,13 +49,34 @@ export class Start extends Phaser.Scene {
     useSet(this, cached().activeSet);
     drawBackground(this);
     this.toggles = [];
+    this.opening = false;
     this.drawLogo();
     this.drawPlay();
     this.drawShelf();
     this.drawIcons();
 
+    if (TEST_HOOK) {
+      const self = this;
+      (window as unknown as Record<string, unknown>).__start = {
+        get lastBox(): BoxResult | null {
+          return lastBox;
+        },
+        get opening(): boolean {
+          return self.opening;
+        },
+      };
+      this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+        delete (window as unknown as Record<string, unknown>).__start;
+      });
+    }
+
     this.input.on('pointerdown', () => unlockAudio());
     this.input.on('pointerup', (p: Phaser.Input.Pointer) => {
+      // Öppningen visas: ett tryck hoppar över/stänger. Nästa mussla kräver ett nytt tryck.
+      if (this.opening) {
+        this.scene.restart();
+        return;
+      }
       const hit = this.toggles.find(
         (t) => Math.abs(p.worldX - t.img.x) <= TOUCH / 2 && Math.abs(p.worldY - t.img.y) <= TOUCH / 2,
       );
@@ -54,6 +89,14 @@ export class Start extends Phaser.Scene {
         return;
       }
       if (p.worldY > 540) return; // ikonraden: ingen oavsiktlig start
+      if (
+        cached().avatars.pendingBoxes > 0 &&
+        Math.abs(p.worldX - BS.x) <= BS.hit / 2 &&
+        Math.abs(p.worldY - BS.y) <= BS.hit / 2
+      ) {
+        this.openNext();
+        return;
+      }
       // Hela hyllan är träffyta för boken.
       if (
         p.worldX >= SH.hit.x &&
@@ -171,6 +214,8 @@ export class Start extends Phaser.Scene {
       });
     }
 
+    this.drawShells();
+
     // Stapel mot nästa set (bara tidsspåret). Döljs när alla set är upplåsta.
     const v = nextSetProgress(data.stats.merges, data.unlockedSets.length);
     if (v !== null) {
@@ -194,6 +239,82 @@ export class Start extends Phaser.Scene {
         fontStyle: THEME.type.weightHeavy,
       })
       .setOrigin(0, 0.5);
+  }
+
+  // ---------------------------------------------------------------- musslor
+
+  /** Oöppnade musslor på hyllan, utan siffra. Främsta andas 0,5 Hz. */
+  private drawShells(): void {
+    const n = Math.min(cached().avatars.pendingBoxes, BS.maxShown);
+    if (n <= 0) return;
+    const c = this.add.container(BS.x, BS.y);
+    for (let i = n - 1; i >= 0; i--) {
+      c.add(drawShell(this.add.graphics(), BS.size).setPosition(i * BS.dx, i * BS.dy));
+    }
+    this.tweens.add({
+      targets: c,
+      scale: BOX_FX.pulse.scale,
+      duration: BOX_FX.pulse.halfCycleMs,
+      ease: 'Sine.easeInOut',
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  /** Öppnar en mussla: sparas direkt, sedan 1,2 s fast visning. */
+  private openNext(): void {
+    const av = cached().avatars;
+    const res = openBox(av, mulberry32((Date.now() ^ Math.imul(av.boxesOpened + 1, 0x9e3779b1)) >>> 0));
+    if (!res) av.pendingBoxes = 0;
+    lastBox = res;
+    void save();
+    if (res) this.playOpening(res);
+    else this.scene.restart();
+  }
+
+  private playOpening(res: BoxResult): void {
+    this.opening = true;
+    const def = AVATARS.find((a) => a.id === res.avatarId)!;
+    const color = RARITY.color[res.rarity];
+    const depth = 25;
+    const scrim = this.add
+      .rectangle(L.width / 2, L.height / 2, L.width, L.height, INT.scrim, OP.scrimAlpha)
+      .setDepth(depth)
+      .setAlpha(0);
+    this.tweens.add({ targets: scrim, alpha: 1, duration: OP.shellMs });
+
+    // 0–200 ms: musslan lyfter från hyllan till mitten och öppnas.
+    const shell = drawShell(this.add.graphics(), BS.size).setPosition(BS.x, BS.y).setDepth(depth + 1);
+    this.tweens.chain({
+      targets: shell,
+      tweens: [
+        { x: OP.x, y: OP.y, scale: OP.shellScale, duration: OP.shellMs, ease: 'Cubic.easeOut' },
+        { scale: OP.shellScale * 1.4, alpha: 0, duration: OP.shellMs, ease: 'Quad.easeIn' },
+      ],
+    });
+
+    // 200 ms: figuren, raritetsfärgen och pärlorna direkt. Ingen rullning.
+    this.time.delayedCall(OP.shellMs, () => {
+      const ring = this.add.graphics().setDepth(depth + 2);
+      ring.lineStyle(4, hexToInt(color), 1);
+      ring.strokeCircle(OP.x, OP.y, OP.avatarR + 8);
+      const badge = addAvatarBadge(this, OP.x, OP.y, OP.avatarR, def).setDepth(depth + 2).setScale(0);
+      this.tweens.add({ targets: badge, scale: 1, duration: OP.popMs, ease: 'Back.easeOut' });
+      const pearls = this.add.graphics().setDepth(depth + 2).setAlpha(0);
+      const k = RARITY.pearls[res.rarity];
+      drawPearls(pearls, OP.x, OP.pearlsY, k, k, OP.pearlR, OP.pearlPitch, hexToInt(color));
+      this.tweens.add({ targets: pearls, alpha: 1, duration: OP.popMs });
+
+      const settings = cached().settings;
+      const juice = new Juice(this, OP.x, OP.y, { ...settings }, themeSetById(cached().activeSet).particle);
+      juice.trigger('jackpot', OP.intensity[res.rarity], OP.x, OP.y, {
+        overlay: true,
+        color: hexToInt(color),
+        ring: { ...OP.ring, count: settings.calm ? 1 : OP.ring.count, color },
+      });
+      playTone(META_SOUND.shinyCatch, CATCH_STEPS[Math.min(RARITY.order.indexOf(res.rarity), CATCH_STEPS.length - 1)]);
+      vibrate(10);
+    });
   }
 
   // ---------------------------------------------------------------- ikoner

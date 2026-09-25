@@ -49,6 +49,9 @@ import {
 } from '../systems/collection';
 import { evaluateUnlocks, nextSetProgress } from '../systems/unlocks';
 import { cached, save, submitRun } from '../systems/save';
+import { addXp } from '../systems/avatars';
+import { boxesEarnedFor, grantBoxes, openBox } from '../systems/boxes';
+import { BOXES } from '../data/boxes';
 import type { RevealCatch, RevealData } from './GameOver';
 
 interface Ball {
@@ -183,6 +186,10 @@ export class Game extends Phaser.Scene {
   private lastDropAt = 0;
   private baseMerges = 0;
   private runMerges = 0;
+  /** Avataren som var vald vid rundstart (byte gäller från nästa runda, DESIGN §14.6). */
+  private runAvatar = '';
+  /** Merges som redan skrivits som XP (XP batchas till rundslut och visibilitychange). */
+  private xpFlushed = 0;
   private highscore = 0;
   private recordPulsing = false;
   private passedRecord = false;
@@ -267,6 +274,8 @@ export class Game extends Phaser.Scene {
     this.baseDoubleKlunks = data.stats.doubleKlunks;
     this.runDoubleKlunks = 0;
     this.runCatches = [];
+    this.runAvatar = data.avatars.equipped;
+    this.xpFlushed = 0;
     // Aktivt set gäller från rundstart och byts aldrig mitt i en runda (DESIGN §13.3).
     const set = themeSetById(data.activeSet);
     useSet(this, set.id);
@@ -454,6 +463,20 @@ export class Game extends Phaser.Scene {
       /** Lägger till merges på tidsspåret (räknas vid rundavslutet). */
       grantMerges(n: number): void {
         self.baseMerges += n;
+      },
+      // ---- kompisar (DESIGN §14)
+      get avatars(): unknown {
+        return JSON.parse(JSON.stringify(cached().avatars));
+      },
+      get pendingBoxes(): number {
+        return cached().avatars.pendingBoxes;
+      },
+      /** Öppnar en mussla direkt (även utan oöppnad på hyllan) och sparar. */
+      openBox(): unknown {
+        const av = cached().avatars;
+        const r = openBox(av, mulberry32((self.seedUsed ^ (av.boxesOpened * 0x9e3779b1)) >>> 0));
+        void save();
+        return r;
       },
       /** Väljer aktivt set (bara upplåsta). Gäller från nästa runda. */
       setActiveSet(id: string): boolean {
@@ -1483,9 +1506,18 @@ export class Game extends Phaser.Scene {
     };
   }
 
+  /** Skriver rundans merges som XP på avataren som var vald vid rundstart. */
+  private flushXp(): void {
+    if (this.runAvatar && this.runMerges > this.xpFlushed) {
+      addXp(cached().avatars, this.runAvatar, this.runMerges - this.xpFlushed);
+    }
+    this.xpFlushed = this.runMerges;
+  }
+
   private persist(): void {
+    this.flushXp();
     void save({ stats: this.runStats() });
-    void submitRun(this.score, this.bestLevel);
+    void submitRun(this.score, this.bestLevel, this.runAvatar);
   }
 
   /**
@@ -1503,6 +1535,14 @@ export class Game extends Phaser.Scene {
       mulberry32((this.seedUsed ^ 0x5e75) >>> 0),
     );
     const newSet = res.newSet ?? null;
+    // XP och musslor (DESIGN §14.3–14.4) skrivs i samma save som statistiken.
+    this.flushXp();
+    const earned = boxesEarnedFor(stats.merges!, BOXES, {
+      maxLevelEver: stats.maxLevelEver!,
+      doubleKlunks: stats.doubleKlunks!,
+      anyShiny: hasAnyShiny(d.collection),
+    });
+    const boxes = grantBoxes(d.avatars, earned);
     if (newSet) {
       if (!d.collection[newSet]) d.collection[newSet] = emptyPage();
       void save({ stats, unlockedSets: [...before, newSet], freshSet: newSet });
@@ -1516,6 +1556,7 @@ export class Game extends Phaser.Scene {
       barFrom: nextSetProgress(this.startMerges, before.length),
       barTo: nextSetProgress(stats.merges!, before.length),
       newSet,
+      boxes,
     };
   }
 
@@ -1528,7 +1569,7 @@ export class Game extends Phaser.Scene {
     const score = this.score;
     const bestLevel = this.bestLevel;
     const reveal = this.settleRun();
-    void submitRun(score, bestLevel).then((record) => {
+    void submitRun(score, bestLevel, this.runAvatar).then((record) => {
       this.scene.pause();
       this.scene.launch('GameOver', { score, bestLevel, record, highscore: cached().highscore, reveal });
     });

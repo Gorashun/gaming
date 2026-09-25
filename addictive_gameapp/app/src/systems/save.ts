@@ -2,6 +2,7 @@
 import { DEFAULT_SET } from '../data/collection';
 import { THEME_SET_IDS } from '../data/themes';
 import { countArray, emptyPage, normalizeCollection, type Collection } from './collection';
+import { defaultAvatars, normalizeAvatars, type AvatarState } from './avatars';
 
 export interface SaveData {
   highscore: number;
@@ -27,6 +28,10 @@ export interface SaveData {
   unlockedSets: string[];
   /** Nyupplåst set som inte visats (rundavslut eller bok). */
   freshSet: string | null;
+  /** Kompisar och musslor (DESIGN §14.7). */
+  avatars: AvatarState;
+  /** Avataren som var vald när rekordet sattes, '' om ingen. */
+  highscoreAvatar: string;
 }
 
 /** Patch där settings/stats får vara delvisa. */
@@ -61,6 +66,8 @@ export function defaultSave(): SaveData {
     activeSet: DEFAULT_SET,
     unlockedSets: [DEFAULT_SET],
     freshSet: null,
+    avatars: defaultAvatars(),
+    highscoreAvatar: '',
   };
 }
 
@@ -102,6 +109,8 @@ export function mergeWithDefaults(parsed: Partial<SaveData>): SaveData {
     activeSet,
     unlockedSets,
     freshSet,
+    avatars: normalizeAvatars(parsed.avatars),
+    highscoreAvatar: typeof parsed.highscoreAvatar === 'string' ? parsed.highscoreAvatar : '',
   };
 }
 
@@ -158,12 +167,13 @@ export async function save(patch: SavePatch = {}): Promise<void> {
   await adapter.set(KEY, JSON.stringify(cache));
 }
 
-/** Skriver highscore/bestLevel om de är bättre. Returnerar true vid nytt rekord. */
-export async function submitRun(score: number, bestLevel: number): Promise<boolean> {
+/** Skriver highscore/bestLevel (och rekordets avatar) om de är bättre. Returnerar true vid nytt rekord. */
+export async function submitRun(score: number, bestLevel: number, avatar?: string): Promise<boolean> {
   const record = score > cache.highscore;
   await save({
     highscore: Math.max(cache.highscore, score),
     bestLevel: Math.max(cache.bestLevel, bestLevel),
+    ...(record && avatar !== undefined ? { highscoreAvatar: avatar } : {}),
   });
   return record;
 }
