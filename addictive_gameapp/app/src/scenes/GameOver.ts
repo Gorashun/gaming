@@ -18,6 +18,8 @@ import { Juice } from '../systems/juice';
 import { AVATAR_SOUND, AVATAR_UI } from '../data/avatarsIndex';
 import { ABILITY_FX } from '../data/abilities';
 import { avatarIconKey } from '../ui/icons';
+import { markRestartTap } from '../systems/debug';
+import { clearBackHandler, setBackHandler } from '../systems/back';
 
 /** En plats som fylldes i rundan. */
 export interface RevealCatch {
@@ -123,23 +125,34 @@ export class GameOver extends Phaser.Scene {
     });
 
     // Hela ytan är knapp (DESIGN §7), från t = 0 – även mitt i rundavslutet.
+    const shownAt = performance.now();
     this.input.once('pointerup', () => {
+      const now = performance.now();
+      markRestartTap(now - shownAt, now);
       playSound('ui');
       this.scene.start('Game');
     });
+    // Bakåtknappen: till startskärmen (rundan är redan sparad).
+    const onBack = (): boolean => {
+      this.scene.stop('Game');
+      this.scene.start('Start');
+      return true;
+    };
+    setBackHandler(onBack);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => clearBackHandler(onBack));
     // Det som hann visas är inte längre "nytt"; resten ligger kvar som fresh till boken.
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => void save());
 
+    this.seqMs = 0;
     if (TEST_HOOK) {
       const self = this;
-      const t0 = this.time.now;
       (window as unknown as Record<string, unknown>).__reveal = {
         get landed(): number {
           return self.landed;
         },
-        /** Speltid (ms) sedan overlayen skapades. */
+        /** Speltid (ms) sedan sekvensen startade (overlayen skapades). */
         get elapsed(): number {
-          return self.time.now - t0;
+          return self.seqMs;
         },
       };
       this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -152,6 +165,15 @@ export class GameOver extends Phaser.Scene {
 
   /** Antal fångster som landat i boken (testhook). */
   private landed = 0;
+  /**
+   * Speltid sedan sekvensstart, summerad per frame. `time.now` i create() är inte uppdaterad
+   * för en nystartad scen, så den kan inte användas som nollpunkt.
+   */
+  private seqMs = 0;
+
+  override update(_time: number, delta: number): void {
+    this.seqMs += delta;
+  }
 
   /**
    * Rundavslut "nytt!" (UI.md §12.5) ovanpå förlustskärmen: bok-ikon, nyfångade flyger in,

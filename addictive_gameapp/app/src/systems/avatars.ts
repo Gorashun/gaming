@@ -42,6 +42,18 @@ export function equip(state: AvatarState, id: string): boolean {
   return true;
 }
 
+/** Debugpanelen: ger och väljer en kompis (samma väg som testhooken `equipForTest`, nivå I). */
+export function giveAvatar(state: AvatarState, id: string): void {
+  if (!state.owned.includes(id)) {
+    state.owned.push(id);
+    state.xp[id] = 0;
+    state.level[id] = 1;
+    state.fresh.push(id);
+    state.pendingBoxes = Math.min(state.pendingBoxes, AVATARS.length - state.owned.length);
+  }
+  state.equipped = id;
+}
+
 /** Kompisar-fliken har synts i 2 s: inget är nytt längre. Returnerar true om något ändrades. */
 export function markFriendsSeen(state: AvatarState): boolean {
   if (state.fresh.length === 0) return false;

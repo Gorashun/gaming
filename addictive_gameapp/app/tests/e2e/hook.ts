@@ -146,6 +146,10 @@ export interface StartHook {
   readonly opening: boolean;
   /** 'play' före 1 200 ms (tryck hoppar över), 'done' efter (tryck stänger). */
   readonly openPhase: string;
+  /** Debugpanelen är öppen (långtryck 2 s på logotypen). */
+  readonly debugOpen: boolean;
+  /** JSON från panelens "Kopiera JSON", null innan knappen tryckts. */
+  readonly debugExport: string | null;
 }
 
 declare global {

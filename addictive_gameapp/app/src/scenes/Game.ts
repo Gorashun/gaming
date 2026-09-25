@@ -59,6 +59,9 @@ import { ABILITY_FX } from '../data/abilities';
 import { AVATARS, AVATAR_UI, UPGRADE } from '../data/avatarsIndex';
 import { Buddy } from '../ui/buddy';
 import { AbilityFx } from '../ui/abilityFx';
+import { DEBUG } from '../data/debug';
+import { pushRun, setRestart, summarizeRun, takeRestartTap } from '../systems/debug';
+import { clearBackHandler, setBackHandler } from '../systems/back';
 
 interface Ball {
   body: MatterJS.BodyType;
@@ -110,6 +113,8 @@ const SPECIAL_FX = {
 
 /** Sätts av testhooken `seed(n)` så e2e-körningar blir deterministiska. */
 let SEED: number | null = null;
+/** Testhookens `setPacing` gäller även efter omstart (som SEED). */
+let PACING_OVERRIDE: PacingMode | null = null;
 const TEST_HOOK = import.meta.env.DEV || new URLSearchParams(location.search).has('test');
 
 export class Game extends Phaser.Scene {
@@ -227,7 +232,14 @@ export class Game extends Phaser.Scene {
   private baseAutoDrops = 0;
   /** Ringbuffert med ms från släppbar till drop (mätning, DESIGN §11). */
   private dropLatencies: number[] = [];
+  /** Regissörens läge per latens (index i DEBUG.modes), samma ringindex som dropLatencies. */
+  private latencyModes: number[] = [];
   private latencyIndex = 0;
+  /** Rundlogg för debugpanelen (PLAYTEST.md §3): drop per läge, starttid, första merge. */
+  private modeDrops: number[] = [0, 0, 0];
+  private runT0 = 0;
+  private runStartedAt = 0;
+  private firstMergeMs: number | null = null;
 
   // ---- kompisar och förmågor (DESIGN §14, UI.md §13.5/13.8). Allt skapas vid rundstart.
   private buddy: Buddy | null = null;
@@ -297,7 +309,12 @@ export class Game extends Phaser.Scene {
     this.nextMode = 'flow';
     this.autoDrops = 0;
     this.dropLatencies.length = 0;
+    this.latencyModes.length = 0;
     this.latencyIndex = 0;
+    this.modeDrops.fill(0);
+    this.runT0 = performance.now();
+    this.runStartedAt = Date.now();
+    this.firstMergeMs = null;
     this.runMerges = 0;
     this.recordPulsing = false;
     this.passedRecord = false;
@@ -313,6 +330,7 @@ export class Game extends Phaser.Scene {
     this.mergeable.clear();
 
     const data = cached();
+    this.pacingMode = data.debug.autoDropOff ? 'off' : (PACING_OVERRIDE ?? PACING.mode);
     const firstRun = data.stats.runs === 0;
     this.aimLineMode = data.settings.aimLine ? AIM.defaultMode : 'off';
     this.highscore = data.highscore;
@@ -449,6 +467,21 @@ export class Game extends Phaser.Scene {
     this.lastDropAt = this.time.now;
     if (firstRun) this.showHand();
 
+    // Omstart från förlustskärmen: rundan är spelbar nu (rundloggen).
+    const tap = takeRestartTap();
+    if (tap) {
+      setRestart(data.debug.runs, tap.afterLossMs, performance.now() - tap.tapAt);
+      void save();
+    }
+
+    // Bakåtknappen mitt i rundan: rundan avslutas som en förlust och spelet går till startskärmen.
+    const onBack = (): boolean => {
+      this.quitToStart();
+      return true;
+    };
+    setBackHandler(onBack);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => clearBackHandler(onBack));
+
     if (TEST_HOOK) this.installTestHook();
   }
 
@@ -521,6 +554,7 @@ export class Game extends Phaser.Scene {
       },
       setPacing(mode: string): void {
         self.pacingMode = mode === 'off' ? 'off' : 'flow';
+        PACING_OVERRIDE = self.pacingMode;
       },
       /** Auto-drop-tiden för det objekt som hänger nu (rampen, DESIGN §12). */
       get autoDropAtMs(): number {
@@ -1255,7 +1289,9 @@ export class Game extends Phaser.Scene {
     if (this.over || !this.hanging) return;
     const x = this.hanging.x;
     const ready = this.pacer.readySinceMs;
-    if (ready !== null) this.recordLatency(this.time.now - ready);
+    const mode = DEBUG.modes.indexOf(this.currentMode);
+    if (ready !== null) this.recordLatency(this.time.now - ready, mode);
+    this.modeDrops[mode]++;
     if (auto) this.autoDrops++;
     else this.manualDropped = true;
     this.dropsThisRun++;
@@ -1284,12 +1320,14 @@ export class Game extends Phaser.Scene {
   }
 
   /** Ringbuffert, max 500 poster. Allokerar bara tills bufferten är full. */
-  private recordLatency(ms: number): void {
+  private recordLatency(ms: number, mode: number): void {
     if (this.dropLatencies.length < LATENCY_MAX) {
       this.dropLatencies.push(ms);
+      this.latencyModes.push(mode);
       return;
     }
     this.dropLatencies[this.latencyIndex] = ms;
+    this.latencyModes[this.latencyIndex] = mode;
     this.latencyIndex = (this.latencyIndex + 1) % LATENCY_MAX;
   }
 
@@ -1572,6 +1610,7 @@ export class Game extends Phaser.Scene {
 
     const state = this.combo.merge(this.time.now, causedByMerge);
     this.runMerges++;
+    if (this.firstMergeMs === null) this.firstMergeMs = Math.round(performance.now() - this.runT0);
 
     let points: number;
     let target: Phaser.GameObjects.Image | undefined;
@@ -2077,6 +2116,47 @@ export class Game extends Phaser.Scene {
     };
   }
 
+  /** Rundloggen (debugpanelen): sammanfattas och sparas i samma skrivning som rundslutet. */
+  private logRun(ended: 'loss' | 'quit', boxes: number): void {
+    const d = cached();
+    pushRun(
+      d.debug.runs,
+      summarizeRun({
+        startedAt: this.runStartedAt,
+        durationMs: Math.round(performance.now() - this.runT0),
+        drops: this.dropsThisRun,
+        merges: this.runMerges,
+        autoDrops: this.autoDrops,
+        latencies: this.dropLatencies,
+        latencyModes: this.latencyModes,
+        modeDrops: this.modeDrops,
+        firstMergeMs: this.firstMergeMs,
+        boxesEarned: boxes,
+        score: this.score,
+        maxLevel: this.bestLevel,
+        activeSet: d.activeSet,
+        equipped: this.runAvatar,
+        pacingMode: this.pacingMode,
+        calm: d.settings.calm,
+        ended,
+      }),
+    );
+  }
+
+  /**
+   * Bakåtknappen mitt i rundan: avslutas som en förlust (poäng, fångster, upplåsningar och
+   * musslor via samma settleRun-väg), utan rundavslut, och spelet går till startskärmen.
+   */
+  private quitToStart(): void {
+    if (this.over) return;
+    this.over = true;
+    this.hideHand();
+    this.juice.endDanger();
+    const reveal = this.settleRun();
+    this.logRun('quit', reveal.boxes);
+    void submitRun(this.score, this.bestLevel, this.runAvatar).then(() => this.scene.start('Start'));
+  }
+
   private gameOver(): void {
     if (this.over) return;
     this.over = true;
@@ -2086,6 +2166,7 @@ export class Game extends Phaser.Scene {
     const score = this.score;
     const bestLevel = this.bestLevel;
     const reveal = this.settleRun();
+    this.logRun('loss', reveal.boxes);
     void submitRun(score, bestLevel, this.runAvatar).then((record) => {
       this.scene.pause();
       this.scene.launch('GameOver', { score, bestLevel, record, highscore: cached().highscore, reveal });

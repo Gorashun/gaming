@@ -49,11 +49,12 @@ export const ICONS = {
   hapticOff: (c = '#8FA3C8') =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect x="23" y="12" width="18" height="40" rx="5"/><path d="M10 26 L18 38 M18 26 L10 38 M46 26 L54 38 M54 26 L46 38"/></svg>`,
 
-  // Lugnt läge AV = taggig våg (full juice). PÅ = mjuk våg. Formen bär informationen.
+  // Lugnt läge AV = taggig våg (full juice). PÅ = mjuk våg, hud-vit som övriga på-lägen.
+  // Formen bär informationen.
   calmOff: (c = '#8FA3C8') =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="22"/><path d="M14 32 L22 20 L28 42 L36 18 L42 40 L50 32"/></svg>`,
 
-  calmOn: (c = '#7CF9FF') =>
+  calmOn: (c = '#EAF2FF') =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="22"/><path d="M14 32 q 9 -12 18 0 q 9 12 18 0"/></svg>`,
 
   // Siktlinje: liten boll överst + streckad lodrät linje, hud-vit som ljud/haptik (U1).

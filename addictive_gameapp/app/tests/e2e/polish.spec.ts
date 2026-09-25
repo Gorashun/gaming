@@ -80,6 +80,12 @@ test('(a) U1: startskärmens på-ikoner är hud-vita, även siktlinjen; av = hud
   expect(aimOff[0]).toBeLessThan(170);
   expect(aimOff[2]).toBeLessThan(220);
   await tap(page, 300, 580);
+  // Lugnt läge på: också hud-vit (beslut efter U1).
+  await tap(page, 220, 580);
+  await page.waitForTimeout(200);
+  const calmOn = await iconColor(page, 220, 580);
+  for (let i = 0; i < 3; i++) expect(Math.abs(calmOn[i] - sound[i])).toBeLessThanOrEqual(16);
+  await tap(page, 220, 580);
   expect(errors).toEqual([]);
 });
 

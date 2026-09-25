@@ -3,6 +3,7 @@ import { DEFAULT_SET } from '../data/collection';
 import { THEME_SET_IDS } from '../data/themes';
 import { countArray, emptyPage, normalizeCollection, type Collection } from './collection';
 import { defaultAvatars, normalizeAvatars, type AvatarState } from './avatars';
+import { defaultDebug, normalizeDebug, type DebugState } from './debug';
 
 export interface SaveData {
   highscore: number;
@@ -41,6 +42,8 @@ export interface SaveData {
   avatars: AvatarState;
   /** Avataren som var vald när rekordet sattes, '' om ingen. */
   highscoreAvatar: string;
+  /** Rundlogg och A/B-växlar för speltest (debugpanelen, PLAYTEST.md §3). */
+  debug: DebugState;
 }
 
 /** Patch där settings/stats får vara delvisa. */
@@ -77,6 +80,7 @@ export function defaultSave(): SaveData {
     freshSet: null,
     avatars: defaultAvatars(),
     highscoreAvatar: '',
+    debug: defaultDebug(),
   };
 }
 
@@ -120,6 +124,7 @@ export function mergeWithDefaults(parsed: Partial<SaveData>): SaveData {
     freshSet,
     avatars: normalizeAvatars(parsed.avatars),
     highscoreAvatar: typeof parsed.highscoreAvatar === 'string' ? parsed.highscoreAvatar : '',
+    debug: normalizeDebug(parsed.debug),
   };
 }
 
@@ -173,6 +178,12 @@ export async function save(patch: SavePatch = {}): Promise<void> {
     settings: { ...cache.settings, ...patch.settings },
     stats: { ...cache.stats, ...patch.stats },
   };
+  await adapter.set(KEY, JSON.stringify(cache));
+}
+
+/** Debugpanelens "Nollställ sparfil": allt tillbaka till en ny sparfil. */
+export async function resetSave(): Promise<void> {
+  cache = defaultSave();
   await adapter.set(KEY, JSON.stringify(cache));
 }
 

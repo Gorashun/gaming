@@ -76,8 +76,9 @@ test('rundavslut: 200 merges låser upp ett nytt set, tryck mitt i sekvensen sta
   });
   await page.waitForFunction(() => window.__game!.collection.glimtarna.caught[4] === true, undefined, { timeout: 15_000 });
   await page.evaluate(() => window.__game!.forceLoss());
-  // Tryck inifrån sidan när overlayen kört 300 ms speltid (stripen är inne, flygaren landar
-  // först vid 840 ms). Mät från pointerup till att en ny runda finns, utan Playwrights rundresor.
+  // Tryck mitt i sekvensen: 600 ms speltid efter sekvensstart är stripen inne och flygaren i
+  // luften (lyfter 420 ms, landar 840 ms). Mät från pointerup till att en ny runda finns.
+  // `elapsed` summeras per frame från sekvensstart.
   await page.waitForFunction(() => window.__reveal !== undefined, undefined, { timeout: 5_000 });
   const res = await page.evaluate(
     () =>
@@ -90,7 +91,7 @@ test('rundavslut: 200 merges låser upp ett nytt set, tryck mitt i sekvensen sta
         let landed = -1;
         const poll = (): void => {
           const rv = window.__reveal;
-          if (t0 === 0 && rv && rv.elapsed >= 300) {
+          if (t0 === 0 && rv && rv.elapsed >= 600) {
             landed = rv.landed;
             canvas.dispatchEvent(new MouseEvent('mousedown', at));
             t0 = performance.now();

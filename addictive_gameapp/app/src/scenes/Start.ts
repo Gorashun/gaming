@@ -25,6 +25,8 @@ import { cached, save } from '../systems/save';
 import { playSound, playTone, setCalm, setSoundEnabled, unlockAudio } from '../systems/audio';
 import { setHapticsEnabled, vibrate } from '../systems/haptics';
 import { clearBackHandler, setBackHandler } from '../systems/back';
+import { DEBUG } from '../data/debug';
+import { DebugPanel } from '../ui/debugPanel';
 
 const L = THEME.layout;
 const TOUCH = THEME.touch.minLogical;
@@ -58,6 +60,13 @@ export class Start extends Phaser.Scene {
   private openFigure: Phaser.GameObjects.Image | null = null;
   private openScrim: Phaser.GameObjects.Rectangle | null = null;
   private openUpdate: (() => void) | null = null;
+  /** Debugpanelen (långtryck 2 s på logotypen). */
+  private debug: DebugPanel | null = null;
+  /** Långtryckets timer i realtid (spelklockan går långsammare vid låg fps). */
+  private pressTimer: number | null = null;
+  private pressAt = { x: 0, y: 0 };
+  /** Fingret som öppnade panelen är fortfarande nere: dess pointerup ignoreras. */
+  private debugJustOpened = false;
 
   constructor() {
     super('Start');
@@ -73,6 +82,9 @@ export class Start extends Phaser.Scene {
     this.openFinal = null;
     this.openFigure = null;
     this.openUpdate = null;
+    this.debug = null;
+    this.pressTimer = null;
+    this.debugJustOpened = false;
     this.drawLogo();
     this.drawPlay();
     this.drawShelf();
@@ -91,6 +103,13 @@ export class Start extends Phaser.Scene {
         get openPhase(): string {
           return self.openPhase;
         },
+        get debugOpen(): boolean {
+          return self.debug !== null;
+        },
+        /** JSON från debugpanelens "Kopiera JSON" (null innan knappen tryckts). */
+        get debugExport(): string | null {
+          return self.debug?.lastExport ?? null;
+        },
       };
       this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
         delete (window as unknown as Record<string, unknown>).__start;
@@ -99,6 +118,10 @@ export class Start extends Phaser.Scene {
 
     // Bakåtknappen stänger öppningen (annars standardbeteendet).
     const onBack = (): boolean => {
+      if (this.debug) {
+        this.scene.restart();
+        return true;
+      }
       if (!this.opening) return false;
       if (this.openPhase === 'play') this.skipOpening();
       this.closeOpening();
@@ -107,8 +130,34 @@ export class Start extends Phaser.Scene {
     setBackHandler(onBack);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => clearBackHandler(onBack));
 
-    this.input.on('pointerdown', () => unlockAudio());
+    this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      unlockAudio();
+      const r = DEBUG.logoHit;
+      if (this.opening || this.debug) return;
+      if (p.worldX < r.x || p.worldX > r.x + r.w || p.worldY < r.y || p.worldY > r.y + r.h) return;
+      this.pressAt = { x: p.worldX, y: p.worldY };
+      this.cancelPress();
+      this.pressTimer = window.setTimeout(() => {
+        this.pressTimer = null;
+        if (!this.sys.isActive()) return;
+        this.debugJustOpened = true;
+        // Stäng = starta om startskärmen, så att nollställning och ny kompis syns direkt.
+        this.debug = new DebugPanel(this, () => this.scene.restart());
+      }, DEBUG.longPressMs);
+    });
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.cancelPress());
+    this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
+      if (this.pressTimer !== null && Math.hypot(p.worldX - this.pressAt.x, p.worldY - this.pressAt.y) > DEBUG.moveCancelPx) {
+        this.cancelPress();
+      }
+    });
     this.input.on('pointerup', (p: Phaser.Input.Pointer) => {
+      if (this.debug) {
+        if (this.debugJustOpened) this.debugJustOpened = false;
+        else this.debug.tap(p.worldX, p.worldY);
+        return;
+      }
+      this.cancelPress();
       // Öppningen visas: ett tryck hoppar över, nästa stänger. Nästa mussla kräver ett nytt tryck.
       if (this.opening) {
         if (this.openPhase === 'play') this.skipOpening();
@@ -149,6 +198,11 @@ export class Start extends Phaser.Scene {
       playSound('ui');
       this.scene.start('Game');
     });
+  }
+
+  private cancelPress(): void {
+    if (this.pressTimer !== null) window.clearTimeout(this.pressTimer);
+    this.pressTimer = null;
   }
 
   // ---------------------------------------------------------------- logotyp

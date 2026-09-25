@@ -40,7 +40,7 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 
 ## Fas 5 – Speltest och balans
 - [x] P5.1 Testprotokoll för barn 7–10 och vuxna: `docs/PLAYTEST.md`.
-- [ ] P5.1a Debugpanel bakom långtryck på logotypen: rundlogg (tid till första merge, återstart, mussla-tider), Kopiera JSON, Nollställ, Ge kompis, Auto-drop av/på. Bara i testbygge-flagga eller alltid dold bakom långtryck 2 s.
+- [x] P5.1a Debugpanel bakom långtryck på logotypen: rundlogg (tid till första merge, återstart, mussla-tider), Kopiera JSON, Nollställ, Ge kompis, Auto-drop av/på. Bara i testbygge-flagga eller alltid dold bakom långtryck 2 s.
 - [ ] P5.2 Balansera regissören i data efter test. (projektledare + programmerare)
 
 ## Fas 6 – iOS
@@ -71,3 +71,4 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [x] U10 Speltesta Siris kö-fördröjning och Havsdrottningens extra specialobjekt (drop 22/44).
 - [x] U11 Språk: `{en, sv}`-namn, i18n-modul, butikstext EN/SV.
 - [x] U12 Låt en engelsktalande läsa avatarnamnen ("Echo the Echo" är svagt).
+- [ ] U13 Debugpanel: sessionsfält firstBoxEarnedMs/firstBoxOpenedMs/firstBookOpenMs/firstFriendsTabMs (PLAYTEST §3).
