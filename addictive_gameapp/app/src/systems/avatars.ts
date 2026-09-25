@@ -14,10 +14,12 @@ export interface AvatarState {
   boxesEarned: number;
   boxesOpened: number;
   pendingBoxes: number;
+  /** Nyöppnade kompisar som inte visats i boken (puls tills fliken synts i 2 s). */
+  fresh: string[];
 }
 
 export function defaultAvatars(): AvatarState {
-  return { owned: [], level: {}, xp: {}, equipped: '', boxesEarned: 0, boxesOpened: 0, pendingBoxes: 0 };
+  return { owned: [], level: {}, xp: {}, equipped: '', boxesEarned: 0, boxesOpened: 0, pendingBoxes: 0, fresh: [] };
 }
 
 export function levelFor(xp: number, cfg: { xpII: number; xpIII: number } = UPGRADE): AvatarLevel {
@@ -37,6 +39,13 @@ export function addXp(state: AvatarState, id: string, merges: number): AvatarLev
 export function equip(state: AvatarState, id: string): boolean {
   if (!state.owned.includes(id)) return false;
   state.equipped = id;
+  return true;
+}
+
+/** Kompisar-fliken har synts i 2 s: inget är nytt längre. Returnerar true om något ändrades. */
+export function markFriendsSeen(state: AvatarState): boolean {
+  if (state.fresh.length === 0) return false;
+  state.fresh.length = 0;
   return true;
 }
 
@@ -61,5 +70,8 @@ export function normalizeAvatars(raw: unknown): AvatarState {
   out.boxesEarned = nonNegInt(src.boxesEarned);
   out.boxesOpened = Math.max(nonNegInt(src.boxesOpened), out.owned.length);
   out.pendingBoxes = Math.min(nonNegInt(src.pendingBoxes), AVATARS.length - out.owned.length);
+  if (Array.isArray(src.fresh)) {
+    for (const id of src.fresh) if (out.owned.includes(id) && !out.fresh.includes(id)) out.fresh.push(id);
+  }
   return out;
 }

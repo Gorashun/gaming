@@ -7,7 +7,16 @@ import { defaultAvatars, normalizeAvatars, type AvatarState } from './avatars';
 export interface SaveData {
   highscore: number;
   bestLevel: number;
-  settings: { sound: boolean; haptics: boolean; calm: boolean; aimLine: boolean };
+  settings: {
+    sound: boolean;
+    haptics: boolean;
+    calm: boolean;
+    aimLine: boolean;
+    /** Bokens svep-ledtråd har visats (en gång, UI.md §12.4). */
+    bookHintSeen: boolean;
+    /** Kompisar-flikens scroll-ledtråd: spelaren har scrollat en gång (UI.md §13.4). */
+    friendsHintSeen: boolean;
+  };
   stats: {
     runs: number;
     merges: number;
@@ -52,7 +61,7 @@ export function defaultSave(): SaveData {
   return {
     highscore: 0,
     bestLevel: 0,
-    settings: { sound: true, haptics: true, calm: false, aimLine: true },
+    settings: { sound: true, haptics: true, calm: false, aimLine: true, bookHintSeen: false, friendsHintSeen: false },
     stats: {
       runs: 0,
       merges: 0,

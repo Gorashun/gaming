@@ -86,7 +86,7 @@ test('inställningsikonerna går att stänga av och sparas', async ({ page }) =>
   const settings = await page.evaluate(
     () => JSON.parse(localStorage.getItem('klunk.save.v1')!).settings,
   );
-  expect(settings).toEqual({ sound: false, haptics: false, calm: true, aimLine: false });
+  expect(settings).toMatchObject({ sound: false, haptics: false, calm: true, aimLine: false });
   // Spelet ska inte ha startat av ett tryck på ikonraden.
   expect(await page.evaluate(() => window.__game === undefined)).toBe(true);
   expect(errors, errors.join('\n')).toEqual([]);

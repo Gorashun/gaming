@@ -13,7 +13,7 @@ import {
 import { drawBackground } from '../ui/background';
 import { iconTextureKey, setIconKey } from '../ui/icons';
 import { cached, save } from '../systems/save';
-import { filledSlots, slotIndex } from '../systems/collection';
+import { filledSlots, markPageSeen, slotIndex } from '../systems/collection';
 import { nextSetProgress } from '../systems/unlocks';
 import { playSound, playTimbre, playTone } from '../systems/audio';
 import { vibrate } from '../systems/haptics';
@@ -28,7 +28,8 @@ import {
   type AvatarDef,
   type Rarity,
 } from '../data/avatarsIndex';
-import { equip } from '../systems/avatars';
+import { equip, markFriendsSeen } from '../systems/avatars';
+import { clearBackHandler, setBackHandler } from '../systems/back';
 import { BG_GLOW } from '../ui/textures';
 import { avatarIconKey } from '../ui/icons';
 import {
@@ -53,7 +54,7 @@ const TEST_HOOK = import.meta.env.DEV || new URLSearchParams(location.search).ha
 const MARK = { ringW: 4, dash: 6, badgeDx: 27, badgeDy: -27, badgeR: 10, selectMs: 240, badgeMs: 200, arpMs: 90 };
 /** Låst sida: skaka ±6 px två gånger på 240 ms, stapeln pulsar 1,1 på 300 ms. */
 const LOCKED_FB = { px: 6, ms: 240, barScale: 1.1, barMs: 300 };
-/** "Nytt sedan sist" nollställs när sidan har synts så här länge. */
+/** "Nytt sedan sist" nollställs när sidan (eller Kompisar-fliken) har synts så här länge. */
 const SEEN_MS = 2000;
 const AB = AVATAR_UI.book;
 const GR = AB.grid;
@@ -65,6 +66,8 @@ interface FriendCell {
   def: AvatarDef;
   x: number;
   y: number;
+  /** Ej ägd: siluett + streckad ram i en egen container, så att bara cellen skakar. */
+  node: Phaser.GameObjects.Container | null;
 }
 
 /** Platsens position i rutnätet 4-4-3 (nivå 0–3, 4–7, 8–10). */
@@ -96,6 +99,8 @@ interface Pulse {
  */
 export class Book extends Phaser.Scene {
   private strip!: Phaser.GameObjects.Container;
+  /** Bokens bakgrund (Kompisar-fliken syns mot den). */
+  private bg!: Phaser.GameObjects.Container;
   private page = 0;
   private locked: boolean[] = [];
   private marks: (Phaser.GameObjects.Graphics | null)[] = [];
@@ -122,6 +127,14 @@ export class Book extends Phaser.Scene {
   private stageRig: AvatarRig | null = null;
   private stageId = '';
   private showcasing = false;
+  /** Pulser på nyöppnade kompisar (tills fliken synts i 2 s). */
+  private friendPulses: Pulse[] = [];
+  /** Svep-ledtrådens hand (första öppningen någonsin), null när den är klar. */
+  private hintHand: Phaser.GameObjects.Image | null = null;
+  private hintShown = false;
+  /** Scroll-ledtråden i Kompisar: pil i nederkant tills första scroll. */
+  private scrollHint: Phaser.GameObjects.Graphics | null = null;
+  private peekShown = false;
 
   constructor() {
     super('Book');
@@ -129,13 +142,19 @@ export class Book extends Phaser.Scene {
 
   create(data?: { tab?: Tab }): void {
     const d = cached();
-    drawBackground(this, undefined, { still: true });
+    this.bg = this.add.container(0, 0).setDepth(-10);
+    drawBackground(this, undefined, { still: true, into: this.bg });
     this.locked = THEME_SETS.map((s) => !d.unlockedSets.includes(s.id));
     this.marks = [];
     this.badges = [];
     this.pulses = THEME_SETS.map(() => []);
     this.seenTimer = null;
     this.down = null;
+    this.friendPulses = [];
+    this.hintHand = null;
+    this.hintShown = false;
+    this.scrollHint = null;
+    this.peekShown = false;
     this.page = this.startPage();
 
     this.strip = this.add.container(-this.page * W, 0);
@@ -152,19 +171,32 @@ export class Book extends Phaser.Scene {
     this.tabIcons = this.add.graphics().setDepth(11);
     this.tabSetImg = this.add.image(AB.tabs.set.x, AB.tabs.set.y, avatarIconKey('tabSetOn')).setDepth(12);
     this.tabFriendsImg = this.add.image(AB.tabs.friends.x, AB.tabs.friends.y, avatarIconKey('tabFriendsOff')).setDepth(12);
-    this.selectTab(data?.tab === 'friends' ? 'friends' : 'sets');
+    // Ny kompis som inte visats: boken öppnar på Kompisar (UI.md §13.4).
+    const friendsFirst = data?.tab === 'friends' || d.avatars.fresh.length > 0;
+    this.tab = friendsFirst ? 'friends' : 'sets';
+    this.selectTab(this.tab, true);
 
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       this.down = { x: p.worldX, y: p.worldY, t: this.time.now };
       this.downScroll = this.scroll;
       this.vel = 0;
       this.lastMoveY = p.worldY;
-      if (this.tab === 'sets') this.tweens.killTweensOf(this.strip);
+      if (this.tab === 'sets') {
+        this.endHint();
+        this.tweens.killTweensOf(this.strip);
+      }
     });
     this.events.on(Phaser.Scenes.Events.UPDATE, this.tick, this);
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => this.onMove(p));
     this.input.on('pointerup', (p: Phaser.Input.Pointer) => this.onUp(p));
-    this.onPageShown();
+
+    // Androids bakåtknapp (och Escape i testbygget) stänger boken.
+    const onBack = (): boolean => {
+      this.close();
+      return true;
+    };
+    setBackHandler(onBack);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => clearBackHandler(onBack));
 
     if (TEST_HOOK) this.installTestHook();
   }
@@ -211,6 +243,21 @@ export class Book extends Phaser.Scene {
       get stageId(): string {
         return self.stageId;
       },
+      /** Nyöppnade kompisar som pulsar just nu. */
+      get pulsingFriends(): number {
+        return self.friendPulses.length;
+      },
+      /** Svep-ledtråden visades i den här öppningen / pågår. */
+      get hintShown(): boolean {
+        return self.hintShown;
+      },
+      get hintActive(): boolean {
+        return self.hintHand !== null;
+      },
+      /** Scroll-ledtrådens pil i Kompisar syns. */
+      get scrollHint(): boolean {
+        return self.scrollHint !== null && self.scrollHint.visible && self.tab === 'friends';
+      },
     };
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       delete (window as unknown as Record<string, unknown>).__book;
@@ -235,6 +282,7 @@ export class Book extends Phaser.Scene {
       this.vel = this.lastMoveY - p.worldY;
       this.lastMoveY = p.worldY;
       this.setScroll(this.downScroll - (p.worldY - this.down.y), true);
+      if (Math.abs(p.worldY - this.down.y) >= SW.tapMaxPx) this.hideScrollHint();
       return;
     }
     let dx = p.worldX - this.down.x;
@@ -254,8 +302,10 @@ export class Book extends Phaser.Scene {
     const tap = Math.abs(dx) < SW.tapMaxPx && Math.abs(dy) < SW.tapMaxPx && dt < SW.tapMaxMs;
     const tab = tap ? this.tabAt(p.worldX, p.worldY) : null;
     if (tab) {
-      if (tab !== this.tab) playSound('ui');
-      this.selectTab(tab);
+      if (tab !== this.tab) {
+        playSound('ui');
+        this.selectTab(tab);
+      }
       return;
     }
     if (this.tab === 'friends') {
@@ -299,9 +349,10 @@ export class Book extends Phaser.Scene {
     return null;
   }
 
-  private selectTab(t: Tab): void {
+  private selectTab(t: Tab, initial = false): void {
     const changed = this.tab !== t;
     this.tab = t;
+    this.endHint();
     const sets = t === 'sets';
     this.strip.setVisible(sets);
     this.dots.setVisible(sets);
@@ -317,6 +368,108 @@ export class Book extends Phaser.Scene {
       }
     }
     this.drawTabs();
+    if (!changed && !initial) return;
+    // "Nytt sedan sist" räknas bara medan fliken syns.
+    this.seenTimer?.remove();
+    this.seenTimer = null;
+    if (sets) {
+      this.strip.x = -this.page * W;
+      this.onPageShown();
+      this.startHint();
+    } else {
+      if (this.friendPulses.length > 0) this.seenTimer = this.time.delayedCall(SEEN_MS, () => this.markFriendsSeen());
+      this.startScrollHint();
+    }
+  }
+
+  /** Nyöppnade kompisar har synts i 2 s: pulsen slutar och `avatars.fresh` töms. */
+  private markFriendsSeen(): void {
+    for (const p of this.friendPulses) {
+      p.tween.remove();
+      p.target.setScale(p.base);
+    }
+    this.friendPulses.length = 0;
+    if (markFriendsSeen(cached().avatars)) void save();
+  }
+
+  /**
+   * Svep-ledtråd, första öppningen någonsin (UI.md §12.4): efter 500 ms glider sidan 36 px åt
+   * vänster och tillbaka medan en hand visar svepet. En gång; sparas direkt.
+   */
+  private startHint(): void {
+    const s = cached().settings;
+    if (s.bookHintSeen) return;
+    s.bookHintSeen = true;
+    void save({ settings: { bookHintSeen: true } });
+    this.hintShown = true;
+    const P = BK.peek;
+    const H = P.hand;
+    const x0 = -this.page * W;
+    // Sista sidan: glid åt andra hållet så att gummibandet inte döljer rörelsen.
+    const dir = this.page < THEME_SETS.length - 1 ? 1 : -1;
+    const hand = this.add.image(H.x, H.y, iconTextureKey('hand')).setDisplaySize(H.size, H.size).setDepth(13).setAlpha(0);
+    this.hintHand = hand;
+    this.tweens.add({ targets: this.strip, x: x0 - dir * P.px, duration: P.ms / 2, delay: P.delayMs, ease: 'Sine.easeInOut', yoyo: true });
+    this.tweens.chain({
+      targets: hand,
+      tweens: [
+        { alpha: 1, duration: H.inMs, delay: P.delayMs - H.inMs },
+        { x: H.x + dir * H.dx, duration: P.ms / 2, ease: 'Sine.easeInOut' },
+        { alpha: 0, duration: H.outMs },
+      ],
+      onComplete: () => this.endHint(),
+    });
+  }
+
+  /** Avbryter/avslutar svep-ledtråden (tryck, bläddring eller flikbyte). */
+  private endHint(): void {
+    const h = this.hintHand;
+    if (!h) return;
+    this.hintHand = null;
+    this.tweens.killTweensOf(h);
+    h.destroy();
+    this.tweens.killTweensOf(this.strip);
+    this.strip.x = -this.page * W;
+  }
+
+  /**
+   * Scroll-ledtråd i Kompisar tills spelaren scrollat en gång (UI.md §13.4): en tonad pil i
+   * rutnätets nederkant, och första gången efter 500 ms glider innehållet 40 px och tillbaka.
+   */
+  private startScrollHint(): void {
+    if (cached().settings.friendsHintSeen || this.maxScroll <= 0) return;
+    if (!this.scrollHint) {
+      const g = this.add.graphics();
+      const y = GR.bottom - 14;
+      g.lineStyle(4, INT.hudDim, 0.8);
+      g.strokePoints([{ x: W / 2 - 12, y: y - 5 }, { x: W / 2, y: y + 5 }, { x: W / 2 + 12, y: y - 5 }], false);
+      this.friendsTop.add(g);
+      this.scrollHint = g;
+    }
+    if (this.peekShown) return;
+    this.peekShown = true;
+    const S = AB.scroll;
+    const from = this.scroll;
+    const to = from + S.peekPx <= this.maxScroll ? from + S.peekPx : from - S.peekPx;
+    this.tweens.addCounter({
+      from,
+      to,
+      delay: BK.peek.delayMs,
+      duration: S.peekMs / 2,
+      ease: 'Sine.easeInOut',
+      yoyo: true,
+      onUpdate: (tw) => {
+        if (!this.down && this.tab === 'friends') this.setScroll(tw.getValue() ?? from);
+      },
+    });
+  }
+
+  private hideScrollHint(): void {
+    const g = this.scrollHint;
+    if (!g || cached().settings.friendsHintSeen) return;
+    cached().settings.friendsHintSeen = true;
+    void save({ settings: { friendsHintSeen: true } });
+    this.tweens.add({ targets: g, alpha: 0, duration: 300, onComplete: () => g.setVisible(false) });
   }
 
   /** Två bokmärkesband: aktivt längre och fyllt, inaktivt kortare. Formen bär informationen. */
@@ -396,8 +549,7 @@ export class Book extends Phaser.Scene {
       list.forEach((def, i) => {
         const x = GR.x0 + (i % GR.cols) * GR.pitchX;
         const cy = y + Math.floor(i / GR.cols) * GR.rowPitch + GR.cell / 2 + 4;
-        this.cells.push({ def, x, y: cy });
-        this.drawCell(g, def, x, cy, av.owned.includes(def.id));
+        this.cells.push({ def, x, y: cy, node: this.drawCell(g, def, x, cy, av.owned.includes(def.id)) });
       });
       y += Math.ceil(list.length / GR.cols) * GR.rowPitch + GR.groupGap;
     }
@@ -405,19 +557,41 @@ export class Book extends Phaser.Scene {
     c.add(this.friendSel);
     this.drawFriendSel();
     this.maxScroll = Math.max(0, y - GR.bottom);
-    // Startposition: raden med den valda kompisen, centrerad.
-    const sel = this.cells.find((k) => k.def.id === av.equipped);
+    // Startposition: raden med en ny kompis om det finns en, annars den valda, centrerad.
+    const sel = this.cells.find((k) => av.fresh.includes(k.def.id)) ?? this.cells.find((k) => k.def.id === av.equipped);
     if (sel) this.setScroll(sel.y - (GR.top + GR.bottom) / 2);
+
+    // Tonad överkant (12 px): en remsa av själva bakgrunden, alpha 1 → 0 nedåt (hörn-alpha),
+    // så att rutnätet glider in under scenen i stället för att klippas hårt.
+    const fade = this.add.renderTexture(0, GR.top, W, GR.fadePx).setOrigin(0);
+    fade.draw(this.bg, 0, -GR.top);
+    fade.setAlpha(1, 1, 0, 0);
+    this.friendsTop.add(fade);
   }
 
-  private drawCell(g: Phaser.GameObjects.Graphics, def: AvatarDef, x: number, y: number, owned: boolean): void {
+  /** Ritar en cell. Ej ägd: returnerar cellens egen container (siluett + ram) för skakningen. */
+  private drawCell(g: Phaser.GameObjects.Graphics, def: AvatarDef, x: number, y: number, owned: boolean): Phaser.GameObjects.Container | null {
     const half = GR.cell / 2;
     const av = cached().avatars;
     if (owned) {
       g.fillStyle(rarityInt(def.rarity), GR.ownedFillAlpha);
       g.fillRoundedRect(x - half, y - half, GR.cell, GR.cell, GR.cellR);
       strokeRarityRoundRect(g, x - half, y - half, GR.cell, GR.cell, GR.cellR, GR.frameW, def.rarity);
-      this.friends.add(addAvatarImage(this, x, y + gripToCenter(GR.avatarPx), def.id, GR.avatarPx));
+      const img = addAvatarImage(this, x, y + gripToCenter(GR.avatarPx), def.id, GR.avatarPx);
+      this.friends.add(img);
+      // Nytt sedan sist: skalpuls 0,5 Hz tills fliken synts i 2 s.
+      if (av.fresh.includes(def.id)) {
+        const base = img.scale;
+        const tween = this.tweens.add({
+          targets: img,
+          scale: base * AB.freshPulse.scale,
+          duration: AB.freshPulse.halfCycleMs,
+          ease: 'Sine.easeInOut',
+          yoyo: true,
+          repeat: -1,
+        });
+        this.friendPulses.push({ target: img, base, tween });
+      }
       // Uppgradering: två rombplatser under cellen.
       const lvl = av.level[def.id] ?? 1;
       const xp = av.xp[def.id] ?? 0;
@@ -430,28 +604,31 @@ export class Book extends Phaser.Scene {
         const pct = next ? Phaser.Math.Clamp((xp - from) / (to - from), 0, 1) : 0;
         drawRomb(g, rx, y + GR.rombY, GR.rombW, GR.rombH, reached, pct, INT.hud, INT.hudDim);
       }
-      return;
+      return null;
     }
-    // Ej ägd: siluett + streckad ram.
-    const sil = addAvatarImage(this, x, y + gripToCenter(GR.avatarPx), def.id, GR.avatarPx, true)
+    // Ej ägd: siluett + streckad ram, i cellens egen container (origo i cellens mitt).
+    const sil = addAvatarImage(this, 0, gripToCenter(GR.avatarPx), def.id, GR.avatarPx, true)
       .setTint(INT.hudDim)
       .setAlpha(GR.silAlpha);
-    this.friends.add(sil);
-    g.lineStyle(2, INT.hudDim, GR.emptyFrameAlpha);
+    const fg = this.add.graphics();
+    const node = this.add.container(x, y, [sil, fg]);
+    this.friends.add(node);
+    fg.lineStyle(2, INT.hudDim, GR.emptyFrameAlpha);
     const e = [
-      [x - half, y - half, x + half, y - half],
-      [x + half, y - half, x + half, y + half],
-      [x + half, y + half, x - half, y + half],
-      [x - half, y + half, x - half, y - half],
+      [-half, -half, half, -half],
+      [half, -half, half, half],
+      [half, half, -half, half],
+      [-half, half, -half, -half],
     ];
     for (const [x0, y0, x1, y1] of e) {
       const len = Math.hypot(x1 - x0, y1 - y0);
       for (let d = 0; d < len; d += 10) {
         const t0 = d / len;
         const t1 = Math.min(len, d + 5) / len;
-        g.lineBetween(x0 + (x1 - x0) * t0, y0 + (y1 - y0) * t0, x0 + (x1 - x0) * t1, y0 + (y1 - y0) * t1);
+        fg.lineBetween(x0 + (x1 - x0) * t0, y0 + (y1 - y0) * t0, x0 + (x1 - x0) * t1, y0 + (y1 - y0) * t1);
       }
     }
+    return node;
   }
 
   /** Odds-burken: 25 pärlor i raritetsfärger, vanlig längst ner, mytisk överst (UI.md §13.4). */
@@ -595,12 +772,14 @@ export class Book extends Phaser.Scene {
     if (!this.equipFriend(cell.def.id)) this.lockedCell(cell);
   }
 
-  /** Tryck på siluett: skakar ±4 px två gånger och ljudet `locked`. Inget mer. */
+  /** Tryck på siluett: bara cellen skakar ±4 px två gånger på 240 ms, och ljudet `locked`. */
   private lockedCell(cell: FriendCell): void {
     playTone(META_SOUND.locked);
-    const c = this.friends;
-    this.tweens.add({ targets: c, x: 4, duration: 60, yoyo: true, repeat: 1, ease: 'Sine.easeInOut', onComplete: () => c.setX(0) });
-    void cell;
+    const n = cell.node;
+    if (!n) return;
+    this.tweens.killTweensOf(n);
+    n.x = cell.x;
+    this.tweens.add({ targets: n, x: cell.x + 4, duration: 60, yoyo: true, repeat: 1, ease: 'Sine.easeInOut', onComplete: () => n.setX(cell.x) });
   }
 
   /** Tryck på ägd kompis: vald från nästa runda, sparas direkt, scenen byter figur. */
@@ -636,6 +815,8 @@ export class Book extends Phaser.Scene {
       return;
     }
     this.page = next;
+    this.endHint();
+    this.tweens.killTweensOf(this.strip);
     playTone(META_SOUND.pageTurn);
     this.tweens.add({ targets: this.strip, x: -next * W, duration: SW.pageMs, ease: 'Cubic.easeOut' });
     this.drawDots();
@@ -697,18 +878,13 @@ export class Book extends Phaser.Scene {
 
   private markSeen(i: number): void {
     if (this.locked[i]) return;
-    const d = cached();
-    const id = THEME_SETS[i].id;
-    const page = d.collection[id];
-    const had = d.freshSet === id || (page?.fresh.some(Boolean) ?? false);
-    if (!had) return;
-    page?.fresh.fill(false);
+    if (!markPageSeen(cached(), THEME_SETS[i].id)) return;
     for (const p of this.pulses[i]) {
       p.tween.remove();
       p.target.setScale(p.base);
     }
     this.pulses[i].length = 0;
-    void save({ freshSet: d.freshSet === id ? null : d.freshSet });
+    void save();
   }
 
   // ---------------------------------------------------------------- bygg

@@ -381,8 +381,7 @@ export class GameOver extends Phaser.Scene {
     // "Hör den nya världen": setets egen klang på 392 och 587 Hz.
     playTimbre(set.sound, 0, META_SOUND.newSetPreviewAtMs);
     playTimbre(set.sound, 7, META_SOUND.newSetPreviewAtMs + 120);
-    const d = cached();
-    if (d.freshSet === id) d.freshSet = null;
+    // `freshSet` ligger kvar tills setets sida har visats i boken i 2 s (DESIGN §13.4).
   }
 
   /** Streckad guldring, endast vid nytt rekord. */

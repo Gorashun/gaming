@@ -21,6 +21,7 @@ import {
   SPECIAL_BOMB,
   SPECIAL_RAINBOW,
   ballTextureKey,
+  particleTextureKey,
   scaleForBodyRadius,
   silhouetteTextureKey,
   useSet,
@@ -261,6 +262,12 @@ export class Game extends Phaser.Scene {
   private photoLevel = 0;
   private photos: string[] = [];
   private snapQueue: number[] = [];
+  /** Guldstjärnor (skimrande skapas) och "?"-tändningens partiklar i setets form (UI.md §12.2–12.3). */
+  private starFx!: Phaser.GameObjects.Particles.ParticleEmitter;
+  private chainFx!: Phaser.GameObjects.Particles.ParticleEmitter;
+  private calm = false;
+  /** Testhook: antal utbrott i rundan. */
+  private fxCounts = { stars: 0, chainFirst: 0 };
 
   private onHide = (): void => {
     if (document.visibilityState === 'hidden') this.persist();
@@ -391,6 +398,34 @@ export class Game extends Phaser.Scene {
     this.buildHud();
     this.juice = new Juice(this, L.hud.scoreX, L.hud.scoreY, { ...data.settings }, set.particle);
     this.afx = new AbilityFx(this, this.abil, data.settings.calm, this.juice);
+    this.calm = data.settings.calm;
+    this.fxCounts.stars = 0;
+    this.fxCounts.chainFirst = 0;
+    const ST = META.shiny.stars;
+    this.starFx = this.add
+      .particles(0, 0, particleTextureKey('star'), {
+        lifespan: ST.lifeMs,
+        speed: { min: ST.speedMin, max: ST.speedMax },
+        angle: { min: 0, max: 360 },
+        scale: { start: ST.scale, end: 0 },
+        alpha: { start: 1, end: 0 },
+        rotate: { start: 0, end: ST.spinDeg },
+        emitting: false,
+        maxAliveParticles: META.shiny.sparks * 4,
+      })
+      .setDepth(5.6);
+    const CF = CH.first;
+    this.chainFx = this.add
+      .particles(0, 0, particleTextureKey(set.particle.shape), {
+        lifespan: CF.lifeMs,
+        speed: { min: CF.speedMin, max: CF.speedMax },
+        angle: { min: 0, max: 360 },
+        scale: { start: CF.scale, end: 0 },
+        alpha: { start: 1, end: 0 },
+        emitting: false,
+        maxAliveParticles: CF.particles * 6,
+      })
+      .setDepth(5.6);
     if (AVATARS.some((a) => a.id === this.runAvatar)) {
       this.buddy = new Buddy(this, this.runAvatar, avLevel, data.settings.calm, this.juice);
     }
@@ -601,6 +636,14 @@ export class Game extends Phaser.Scene {
       /** Nivån på objektet som hänger nu (-1 = specialobjekt). */
       get hangingLevel(): number {
         return self.currentSpecial ? -1 : self.currentLevel;
+      },
+      /** Utbrott i rundan: guldstjärnor (skimrande) och "?"-tändningar i kedjan. */
+      get fxCounts(): { stars: number; chainFirst: number } {
+        return { ...self.fxCounts };
+      },
+      /** Lisas oljemätare syns (Lykt-Lisa). */
+      get lanternMeterVisible(): boolean {
+        return self.afx.lanternMeterVisible;
       },
       /** Antal objekt med synlig lyktring (Lykt-Lisa). */
       get lampsVisible(): number {
@@ -845,21 +888,32 @@ export class Game extends Phaser.Scene {
         onComplete: () => q.setVisible(false).setScale(1),
       });
     }
-    const ring = this.add
-      .image(img.x, img.y, FX_RING)
-      .setTint(this.levelColors[level])
-      .setScale(r / FX_RING_R)
-      .setAlpha(0);
-    this.chain.add(ring);
-    this.tweens.add({
-      targets: ring,
-      scale: (r * CH.ring.toR) / FX_RING_R,
-      alpha: { from: CH.ring.alpha, to: 0 },
-      delay: CH.lightDelayMs,
-      duration: CH.ring.ms,
-      ease: CH.ring.ease,
-      onComplete: () => ring.destroy(),
-    });
+    // "?" tänds: ringen dubbleras (andra 100 ms senare) och 3 partiklar i setets form.
+    const rings = first ? CH.first.rings : 1;
+    for (let k = 0; k < rings; k++) {
+      const ring = this.add
+        .image(img.x, img.y, FX_RING)
+        .setTint(this.levelColors[level])
+        .setScale(r / FX_RING_R)
+        .setAlpha(0);
+      this.chain.add(ring);
+      this.tweens.add({
+        targets: ring,
+        scale: (r * CH.ring.toR) / FX_RING_R,
+        alpha: { from: CH.ring.alpha, to: 0 },
+        delay: CH.lightDelayMs + k * CH.first.ringStepMs,
+        duration: CH.ring.ms,
+        ease: CH.ring.ease,
+        onComplete: () => ring.destroy(),
+      });
+    }
+    if (first) {
+      this.fxCounts.chainFirst++;
+      this.time.delayedCall(CH.lightDelayMs, () => {
+        this.chainFx.setParticleTint(this.levelColors[level]);
+        this.chainFx.emitParticleAt(img.x, img.y, CH.first.particles);
+      });
+    }
     playTone(first ? META_SOUND.chainFirst : META_SOUND.chainLight, CHAIN_STEPS[level]);
     this.updateChainGoal();
   }
@@ -893,6 +947,7 @@ export class Game extends Phaser.Scene {
     }
     if (r.shiny) {
       this.makeShiny(ball);
+      this.shinyStars(ball.body.position.x, ball.body.position.y);
       this.chainShiny(ball.level);
       playTone(COLLECTION_FX.sound.shiny);
     }
@@ -921,6 +976,17 @@ export class Game extends Phaser.Scene {
         playTone(META_SOUND.chainLight, CHAIN_STEPS[level]);
       });
     }
+  }
+
+  /** Sex guldstjärnor (varannan vit) när en skimrande skapas, oavsett set. Lugnt läge: hälften. */
+  private shinyStars(x: number, y: number): void {
+    const n = this.calm ? Math.ceil(META.shiny.sparks / 2) : META.shiny.sparks;
+    const gold = Math.ceil(n / 2);
+    this.starFx.setParticleTint(INT.gold);
+    this.starFx.emitParticleAt(x, y, gold);
+    this.starFx.setParticleTint(INT.hud);
+    this.starFx.emitParticleAt(x, y, n - gold);
+    this.fxCounts.stars++;
   }
 
   private makeShiny(ball: Ball): void {
@@ -1701,6 +1767,7 @@ export class Game extends Phaser.Scene {
       this.afx.onComboEnd();
     }
     this.buddy?.update(delta, this.pending?.img ?? null);
+    if (this.buddy) this.afx.lantern(this.buddy.img);
     if (this.bubbleBall && this.bubble) this.bubble.setPosition(this.bubbleBall.img.x, this.bubbleBall.img.y);
     if (this.landing && this.frame % 2 === 0) this.drawLanding();
     if (this.abil.key === 'magnetPull') this.updateMagnet(now);

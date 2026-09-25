@@ -116,6 +116,7 @@ export function openBox(
   state.xp[a.id] = 0;
   state.level[a.id] = 1;
   state.boxesOpened++;
+  if (!state.fresh.includes(a.id)) state.fresh.push(a.id);
   state.pendingBoxes = Math.max(0, state.pendingBoxes - 1);
   if (!state.equipped) state.equipped = a.id;
   return { avatarId: a.id, rarity };

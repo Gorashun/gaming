@@ -47,7 +47,7 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [ ] P6.1 `npx cap add ios`, macos-26-workflow, TestFlight. Blockerad av Apple-konto och Mac-frågan.
 
 ## v1.1-kandidater (från speltest)
-- [ ] U1 Siktlinje-ikonens på-läge ritas i accent (cyan) medan de tre andra är hud-vita. Harmonisera (ui-designer).
+- [x] U1 Siktlinje-ikonens på-läge ritas i accent (cyan) medan de tre andra är hud-vita. Harmonisera (ui-designer).
 - [ ] U2 Rampen räknar alla drops i rundan, även i Torka. Utvärdera om bara Flöde-drops ska räknas efter speltest.
 
 ## Fas 7 – Meta-lager v1.1 (DESIGN §13)
@@ -56,18 +56,18 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [x] M3 Samlarbok: datamodell, fångst, skimrande med garanti, boksida med bläddring, ingång från hyllan. AK: unit-tester för p och pity, e2e öppnar boken. (programmerare)
 - [x] M4 Temaset: 5 set i data, upplåsningslogik (två spår), val av aktivt set, texturer/ljud/partiklar per set. AK: unit-tester för upplåsning, e2e byter set. (programmerare)
 - [x] M5 Rundavslut "nytt!" ovanpå förlustskärmen, avbrytbart. AK: omstart <0,5 s även mitt i sekvensen. (programmerare)
-- [ ] U3 `freshSet` ska pulsa i boken tills boken besökts, inte nollställas i rundavslutet.
-- [ ] U4 Svep-ledtråd första gången boken öppnas; Androids bakåtknapp stänger boken.
-- [ ] U5 Sex guldstjärnor när skimrande skapas; dubbelring vid "?"-tändning (UI.md §12).
+- [x] U3 `freshSet` ska pulsa i boken tills boken besökts, inte nollställas i rundavslutet.
+- [x] U4 Svep-ledtråd första gången boken öppnas; Androids bakåtknapp stänger boken.
+- [x] U5 Sex guldstjärnor när skimrande skapas; dubbelring vid "?"-tändning (UI.md §12).
 
 ## Fas 8 – Kompisar v1.2 (DESIGN §14)
 - [x] K1 UI: 48 avatarer som ritrecept i `data/avatars.ts` (Släpparen-figur, raritet, kosmetik, animationsrecept), musslans öppning, odds-burk, fliken Kompisar, uppgraderingspärlor, förhandsbild. (ui-designer)
 - [x] K2 Logik: musslor (intjäning, odds, ingen dubblett, ingen pity), inventarie, XP/nivåer, sparning, öppningsflöde på startskärmen, fliken Kompisar. (programmerare)
 - [x] K3 Rendering av Släpparen + alla kosmetiska effekter + förmågor (sällsynt–mytisk) med nivåskalning. (programmerare)
-- [ ] U6 Lisas lykta ska krympa synligt när tiden tar slut.
-- [ ] U7 Boken: scroll-ledtråd, puls på nya kompisar, öppna på Kompisar-fliken när ny kompis finns.
-- [ ] U8 Tryck på siluett skakar bara cellen; tonad överkant på rutnätet.
+- [x] U6 Lisas lykta ska krympa synligt när tiden tar slut.
+- [x] U7 Boken: scroll-ledtråd, puls på nya kompisar, öppna på Kompisar-fliken när ny kompis finns.
+- [x] U8 Tryck på siluett skakar bara cellen; tonad överkant på rutnätet.
 - [ ] U9 Mät öppningens 1,2 s på riktig telefon (räknas i speltid).
-- [ ] U10 Speltesta Siris kö-fördröjning och Havsdrottningens extra specialobjekt (drop 22/44).
+- [x] U10 Speltesta Siris kö-fördröjning och Havsdrottningens extra specialobjekt (drop 22/44).
 - [x] U11 Språk: `{en, sv}`-namn, i18n-modul, butikstext EN/SV.
-- [ ] U12 Låt en engelsktalande läsa avatarnamnen ("Echo the Echo" är svagt).
+- [x] U12 Låt en engelsktalande läsa avatarnamnen ("Echo the Echo" är svagt).

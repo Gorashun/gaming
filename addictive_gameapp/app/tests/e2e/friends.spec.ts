@@ -84,9 +84,11 @@ test('mussla: 50 merges ger en mussla på hyllan, öppning ger sällsynt, fliken
   await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 10_000 });
   await page.waitForTimeout(800);
 
-  // (b) Boken → fliken Kompisar → tryck på den andra = vald, sparad.
+  // (b) Boken öppnar på Kompisar (nya kompisar som inte visats) → tryck på den andra = vald, sparad.
   await tap(page, 238, 444);
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
+  expect(await page.evaluate(() => window.__book!.tab)).toBe('friends');
+  await tap(page, 32, 40);
   expect(await page.evaluate(() => window.__book!.tab)).toBe('sets');
   await tap(page, 120, 40);
   expect(await page.evaluate(() => window.__book!.tab)).toBe('friends');

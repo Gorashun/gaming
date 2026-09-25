@@ -63,6 +63,7 @@ export interface GameHook {
     boxesEarned: number;
     boxesOpened: number;
     pendingBoxes: number;
+    fresh: string[];
   };
   readonly pendingBoxes: number;
   /** Öppnar en mussla direkt och sparar. null när alla ägs. */
@@ -77,6 +78,10 @@ export interface GameHook {
   readonly hangingLevel: number;
   /** Antal objekt med synlig lyktring (Lykt-Lisa). */
   readonly lampsVisible: number;
+  /** Lisas oljemätare vid Släpparen syns. */
+  readonly lanternMeterVisible: boolean;
+  /** Utbrott i rundan: guldstjärnor (skimrande skapas) och "?"-tändningar i kedjan. */
+  readonly fxCounts: { stars: number; chainFirst: number };
   /** Ett objekt med statisk kropp (sitter fast), för farogräns-scenarier. */
   pin(level: number, x: number, y: number): void;
 }
@@ -115,6 +120,14 @@ export interface BookHook {
   cellOf(id: string): { x: number; y: number } | null;
   /** Kompisen på bokens scen ('' = ingen). */
   readonly stageId: string;
+  /** Nyöppnade kompisar som pulsar just nu. */
+  readonly pulsingFriends: number;
+  /** Svep-ledtråden visades i den här öppningen av boken. */
+  readonly hintShown: boolean;
+  /** Svep-ledtrådens hand syns just nu. */
+  readonly hintActive: boolean;
+  /** Scroll-ledtrådens pil i Kompisar syns. */
+  readonly scrollHint: boolean;
 }
 
 /** Rundavslutet (GameOver-overlayen) på `window.__reveal`. */

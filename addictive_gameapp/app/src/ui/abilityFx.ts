@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { THEME, hexToInt } from '../data/theme';
 import { CAN, INNER_LEFT, INNER_RIGHT } from '../data/physics';
 import { ABILITY_FX as FX } from '../data/abilities';
-import { avatarById } from '../data/avatarsIndex';
+import { AVATAR_BOX, AVATAR_GRIP, AVATAR_UI, avatarById } from '../data/avatarsIndex';
 import type { Abilities } from '../systems/abilities';
 import type { Juice } from '../systems/juice';
 import { playTone, resetAudioOverrides, setDangerStyle, setMergeEcho, setMergeLayer, setMergeMelody } from '../systems/audio';
@@ -30,6 +30,9 @@ export class AbilityFx {
   private discoAt = -Infinity;
   private bands: Phaser.GameObjects.Image[] = [];
   private auroraOn = false;
+  /** Lisas oljemätare runt lyktan (null för alla andra). */
+  private meter: Phaser.GameObjects.Graphics | null = null;
+  private meterStep = -1;
 
   constructor(scene: Phaser.Scene, ab: Abilities, calm: boolean, juice: Juice) {
     this.scene = scene;
@@ -123,10 +126,50 @@ export class AbilityFx {
         }
         break;
       }
+      case 'sameLevelGlow':
+        this.meter = scene.add.graphics().setDepth(AVATAR_UI.slapparen.depth + 0.1);
+        break;
       case 'queenRound':
         if (ab.o.orchestra) setMergeLayer(FX.queen.strings, FX.queen.stringsSemitones);
         break;
     }
+  }
+
+  get lanternMeterVisible(): boolean {
+    return this.meter !== null && this.meter.visible && this.meter.alpha > 0;
+  }
+
+  /**
+   * Lisa (UI.md §13.8): bågen runt lyktan krymper när siktningen förbrukar oljan och tonas bort
+   * vid 0. Följer figuren varje frame; ritas bara om när bågen ändrats ett steg. Inga allokeringar.
+   */
+  lantern(img: Phaser.GameObjects.Image): void {
+    const g = this.meter;
+    if (!g || !g.visible) return;
+    const M = FX.lisa.meter;
+    const full = this.ab.param('seconds') * 1000;
+    const step = full > 0 ? Math.ceil((this.ab.lisaOilMs / full) * M.steps) : 0;
+    const k = AVATAR_UI.slapparen.displayPx / AVATAR_BOX;
+    const ox = (M.box[0] - AVATAR_GRIP[0]) * k * img.scaleX;
+    const oy = (M.box[1] - AVATAR_GRIP[1]) * k * img.scaleY;
+    const c = Math.cos(img.rotation);
+    const sn = Math.sin(img.rotation);
+    g.setPosition(img.x + ox * c - oy * sn, img.y + ox * sn + oy * c);
+    g.setVisible(img.visible);
+    if (step === this.meterStep) return;
+    this.meterStep = step;
+    if (step <= 0) {
+      this.scene.tweens.add({ targets: g, alpha: 0, scale: 0.4, duration: M.outMs, onComplete: () => g.setVisible(false) });
+      return;
+    }
+    const col = hexToInt(M.color);
+    g.clear();
+    g.lineStyle(M.width, col, M.trackAlpha);
+    g.strokeCircle(0, 0, M.r);
+    g.lineStyle(M.width, col, 1);
+    g.beginPath();
+    g.arc(0, 0, M.r, -Math.PI / 2, -Math.PI / 2 + (step / M.steps) * Math.PI * 2, false);
+    g.strokePath();
   }
 
   private makeEmitter(shape: 'star' | 'drop', speed: number, gravityY: number, life: number): Phaser.GameObjects.Particles.ParticleEmitter {

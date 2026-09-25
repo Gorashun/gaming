@@ -32,7 +32,16 @@ export const ABILITY_FX = {
   /** Nora: norrskensband över burkens hals (ADD), vajar 0,3 Hz. */
   aurora: { colors: ['#6EE7A0', '#5AA9FF', '#B98CFF'] as readonly string[], y: 150, spacing: 34, width: 22, swayPx: 14, swayHz: 0.3, inMs: 300, outMs: 600 },
   /** Lisa: stilla ring runt objekt av samma nivå medan man siktar. */
-  lisa: { ringR: 1.18, inMs: 120, color: '#EAF2FF' },
+  lisa: {
+    ringR: 1.18,
+    inMs: 120,
+    color: '#EAF2FF',
+    /**
+     * Oljemätaren: båge runt lyktan (box-koordinater i 56-boxen) som krymper medan siktningen
+     * förbrukar oljan och försvinner vid 0. Ritas om högst `steps` gånger per runda.
+     */
+    meter: { box: [-9, -21] as readonly [number, number], r: 8, width: 3, color: '#FFF1A8', trackAlpha: 0.25, steps: 48, outMs: 250 },
+  },
   /** Siri: objektet efter nästa, till vänster om förhandsvisningen. */
   siri: { x: 250, y: 44, frame: 44 },
   /** Sixten: prickens och konturens färg. */

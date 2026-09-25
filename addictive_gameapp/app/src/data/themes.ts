@@ -693,6 +693,8 @@ export const META = {
     firstRunFadeMs: 300,
     /** "?" krymper bort när nivån tänds första gången. */
     qmarkOutMs: 120,
+    /** "?" tänds första gången: ringen dubbleras (andra 100 ms senare) + 3 partiklar i setets form. */
+    first: { rings: 2, ringStepMs: 100, particles: 3, speedMin: 20, speedMax: 45, lifeMs: 420, scale: 0.55 },
   },
   book: {
     close: { x: 320, y: 44, icon: 48, hit: 72 },
@@ -711,7 +713,13 @@ export const META = {
     bar: { x0: 64, x1: 282, y: 604, h: 8, iconX: 304, iconSize: 28 },
     swipe: { minPx: 60, minVelocity: 0.45, pageMs: 240, snapMs: 180, rubber: 0.35, tapMaxPx: 12, tapMaxMs: 350 },
     /** Första öppningen någonsin: sidan glider 36 px och tillbaka (svep-ledtråd). */
-    peek: { px: 36, ms: 600, delayMs: 500 },
+    peek: {
+      px: 36,
+      ms: 600,
+      delayMs: 500,
+      /** Handen som visar svepet: tonas in, följer sidan åt vänster, tonas ut. En gång. */
+      hand: { x: 236, y: 300, size: 56, dx: -84, inMs: 150, outMs: 250 },
+    },
     /** "Nytt sedan sist": skalpuls 0,5 Hz tills platsen synts i 2 s. */
     freshPulse: { scale: 1.1, halfCycleMs: 1000 },
     glitterSpinDegPerSec: 20,
@@ -748,6 +756,8 @@ export const META = {
     spinDegPerSec: 30,
     popInMs: 260,
     sparks: 6,
+    /** Guldstjärnorna (`fx-p-star`) när en skimrande skapas: varannan guld, varannan vit. Lugnt läge: hälften. */
+    stars: { speedMin: 40, speedMax: 90, lifeMs: 560, scale: 0.9, spinDeg: 120 },
   },
 } as const
 

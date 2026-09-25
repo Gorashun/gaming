@@ -56,10 +56,11 @@ test('rundavslut: 200 merges låser upp ett nytt set, tryck mitt i sekvensen sta
   const s = await page.evaluate(() => ({ u: window.__game!.unlockedSets, f: window.__game!.freshSet }));
   expect(s.u[0]).toBe('glimtarna');
   expect(s.f).toBe(s.u[1]);
-  // Hela sekvensen (≤2,5 s speltid): nytt set visas, freshSet nollställs när ikonen visats.
-  await page.waitForFunction(() => window.__game!.freshSet === null, undefined, { timeout: 20_000 });
-  await page.waitForTimeout(250);
+  // Hela sekvensen (≤2,5 s speltid). freshSet ligger kvar tills setets sida visats i boken (U3).
+  await page.waitForFunction(() => (window.__reveal?.landed ?? 0) >= 1, undefined, { timeout: 20_000 });
+  await page.waitForTimeout(1200);
   await page.screenshot({ path: 'tests/e2e/screenshots/reveal-newset.png' });
+  expect(await page.evaluate(() => window.__game!.freshSet)).toBe(s.u[1]);
   const fresh = await page.evaluate(() => window.__game!.collection.glimtarna.fresh);
   expect(fresh[3]).toBe(false);
 

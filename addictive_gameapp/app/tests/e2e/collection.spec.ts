@@ -89,7 +89,11 @@ test('forceShiny(2) + merge ger skimrande nivå 2 med glitter', async ({ page })
     caught: window.__game!.collection.glimtarna.caught,
     glitter: window.__game!.glitterVisible,
     lit: window.__game!.chainLit,
+    fx: window.__game!.fxCounts,
   }));
+  // Sex guldstjärnor vid skapandet; nivå 2 var "?" och fick dubbelring + partiklar (U5).
+  expect(state.fx.stars).toBe(1);
+  expect(state.fx.chainFirst).toBeGreaterThanOrEqual(1);
   expect(state.shiny[2]).toBe(true);
   expect(state.caught[2]).toBe(true);
   expect(state.lit[2]).toBe(true);

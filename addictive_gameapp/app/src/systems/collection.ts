@@ -80,6 +80,19 @@ export function onLevelCreated(
   return { caught, shiny, newShiny };
 }
 
+/**
+ * Sidan har visats i boken i 2 s: dess platser och ett nyupplåst set (`freshSet`) är inte
+ * längre nya (DESIGN §13.4, §13.6). Muterar `d`. Returnerar true om något ändrades.
+ */
+export function markPageSeen(d: { collection: Collection; freshSet: string | null }, setId: string): boolean {
+  const page = d.collection[setId];
+  const had = d.freshSet === setId || (page?.fresh.some(Boolean) ?? false);
+  if (!had) return false;
+  page?.fresh.fill(false);
+  if (d.freshSet === setId) d.freshSet = null;
+  return true;
+}
+
 /** Ny sida: nivå 0 vanlig är ifylld från start (endowed progress). */
 export function emptyPage(): CollectionPage {
   const caught = new Array<boolean>(LEVEL_COUNT).fill(false);

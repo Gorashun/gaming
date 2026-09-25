@@ -6,10 +6,13 @@ import { Game } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
 import { Bench } from './scenes/Bench';
 import { Book } from './scenes/Book';
+import { installBackButton } from './systems/back';
 
 document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 
-const bench = new URLSearchParams(location.search).has('bench');
+const params = new URLSearchParams(location.search);
+const bench = params.has('bench');
+installBackButton(import.meta.env.DEV || params.has('test'));
 
 new Phaser.Game({
   type: Phaser.AUTO,

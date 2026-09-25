@@ -24,6 +24,7 @@ import { iconTextureKey, type IconKey } from '../ui/icons';
 import { cached, save } from '../systems/save';
 import { playSound, playTone, setCalm, setSoundEnabled, unlockAudio } from '../systems/audio';
 import { setHapticsEnabled, vibrate } from '../systems/haptics';
+import { clearBackHandler, setBackHandler } from '../systems/back';
 
 const L = THEME.layout;
 const TOUCH = THEME.touch.minLogical;
@@ -95,6 +96,16 @@ export class Start extends Phaser.Scene {
         delete (window as unknown as Record<string, unknown>).__start;
       });
     }
+
+    // Bakåtknappen stänger öppningen (annars standardbeteendet).
+    const onBack = (): boolean => {
+      if (!this.opening) return false;
+      if (this.openPhase === 'play') this.skipOpening();
+      this.closeOpening();
+      return true;
+    };
+    setBackHandler(onBack);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => clearBackHandler(onBack));
 
     this.input.on('pointerdown', () => unlockAudio());
     this.input.on('pointerup', (p: Phaser.Input.Pointer) => {
@@ -229,7 +240,10 @@ export class Start extends Phaser.Scene {
     const book = this.add
       .image(SH.book.x, SH.book.y, iconTextureKey('book'))
       .setDisplaySize(SH.book.size, SH.book.size);
-    const fresh = data.freshSet !== null || Object.values(data.collection).some((p) => p.fresh.some(Boolean));
+    const fresh =
+      data.freshSet !== null ||
+      data.avatars.fresh.length > 0 ||
+      Object.values(data.collection).some((p) => p.fresh.some(Boolean));
     if (fresh) {
       this.add.circle(SH.badge.x, SH.badge.y, SH.badge.r, INT.gold);
       this.tweens.add({
