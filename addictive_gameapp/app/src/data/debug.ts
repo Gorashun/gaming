@@ -30,6 +30,8 @@ export const DEBUG = {
     px: 10,
     lineH: 13,
     listY: 40,
+    /** Raden "Zoom: 2 (auto)" ovanför statusraden. */
+    zoomY: 336,
     statusY: 356,
     /** Knappar 160×52 i två kolumner. */
     buttons: [
@@ -37,7 +39,8 @@ export const DEBUG = {
       { id: 'reset', label: 'Nollställ sparfil', x: 266, y: 410 },
       { id: 'gift', label: 'Ge kompis', x: 94, y: 474 },
       { id: 'autodrop', label: 'Auto-drop', x: 266, y: 474 },
-      { id: 'close', label: 'Stäng', x: 180, y: 538 },
+      { id: 'zoom', label: 'Zoom: auto', x: 94, y: 538 },
+      { id: 'close', label: 'Stäng', x: 266, y: 538 },
     ] as const,
     buttonW: 160,
     buttonH: 52,

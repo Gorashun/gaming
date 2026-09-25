@@ -11,12 +11,23 @@ import { zoomFor } from '../systems/zoom';
 
 const params = new URLSearchParams(location.search);
 
-export const Z = zoomFor(window.devicePixelRatio, ART.maxZoom, params.get('zoom'));
-
-export const ART_MODE: 'v1' | 'v2' = params.get('art') === 'v1' ? 'v1' : ART.mode;
-
-/** Baktider och texturbudget loggas i dev och testbygget. */
+/** Dev och testbygget (`?test`): loggar baktider; `?zoom=` och `?art=v1` gäller bara här. */
 export const ART_LOG = import.meta.env.DEV || params.has('test');
+
+/** Spelets zoom. Sätts av initZoom() innan Phaser.Game skapas och ändras inte under sessionen. */
+export let Z = 1;
+
+/** Z utan fps-vaktens tak (för debugpanelen). */
+export let Z_AUTO = 1;
+
+/** Anropas en gång vid appstart med sparat `settings.zoomCap` (null = auto). */
+export function initZoom(cap: number | null): void {
+  const override = ART_LOG ? params.get('zoom') : null;
+  Z_AUTO = zoomFor(window.devicePixelRatio, ART.maxZoom, override);
+  Z = zoomFor(window.devicePixelRatio, ART.maxZoom, override, cap);
+}
+
+export const ART_MODE: 'v1' | 'v2' = ART_LOG && params.get('art') === 'v1' ? 'v1' : ART.mode;
 
 /** Först i varje scens create(). */
 export function fitCamera(scene: Phaser.Scene): void {

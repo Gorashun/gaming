@@ -96,6 +96,10 @@ export interface GameHook {
   readonly buddy: { id: string; x: number; y: number; visible: boolean } | null;
   /** Nivån på det hängande objektet (-1 = specialobjekt). */
   readonly hangingLevel: number;
+  /** Fps-vakten (DESIGN §17). null = inaktiv (Z = 1 eller tak redan satt). */
+  readonly perf: { windows: number[]; low: number; tripped: boolean; z: number; zoomCap: number | null } | null;
+  /** Matar vakten med `ms` ms frames i `fps`. */
+  perfSimulate(fps: number, ms: number): void;
   /** Det hängande objektets x i logiska px (-1 utan objekt). */
   readonly hangingX: number;
   /** Nivåset i full upplösning i TextureManager, t.ex. ['glimtarna']. */

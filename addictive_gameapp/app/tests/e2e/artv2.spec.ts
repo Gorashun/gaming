@@ -159,3 +159,59 @@ test('(e) öppningen av en mussla i DPR 2', async ({ page }) => {
   await page.screenshot({ path: 'tests/e2e/screenshots/artv2-open.png' });
   expect(errors, errors.join('\n')).toEqual([]);
 });
+
+test('fps-vakt: två låga fönster sparar zoomCap 1, Z = 1 från nästa appstart, debugpanelen nollställer', async ({ page }) => {
+  const errors = collectErrors(page);
+  await seedSave(page);
+  const canvasW = (): Promise<number> => page.evaluate(() => document.querySelector('canvas')!.width);
+  const savedCap = (): Promise<number | null> =>
+    page.evaluate(() => JSON.parse(localStorage.getItem('klunk.save.v1')!).settings?.zoomCap ?? null);
+
+  // ?zoom gäller bara i testbygget.
+  await page.goto('/?zoom=1');
+  await page.waitForTimeout(800);
+  expect(await canvasW()).toBe(720);
+
+  await page.goto('/?test=1');
+  await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 20_000 });
+  await page.waitForTimeout(1200);
+  await tap(page, 180, 330);
+  await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 20_000 });
+  const before = await page.evaluate(() => window.__game!.perf);
+  expect(before).toMatchObject({ z: 2, zoomCap: null });
+
+  // Låg fps simuleras genom samma väg som update(): uppvärmning 2 s + två fönster à 3 s på 30 fps.
+  await page.evaluate(() => window.__game!.perfSimulate(30, 9000));
+  const perf = (await page.evaluate(() => window.__game!.perf))!;
+  console.log(`[e2e] perf ${JSON.stringify(perf)}`);
+  expect(perf.tripped).toBe(true);
+  expect(perf.windows.length).toBeGreaterThanOrEqual(2);
+  for (const f of perf.windows.slice(-2)) expect(f).toBeLessThan(45);
+  expect(perf.zoomCap).toBe(1);
+  await page.waitForFunction(() => JSON.parse(localStorage.getItem('klunk.save.v1')!).settings.zoomCap === 1);
+  // Inget byte mitt i rundan.
+  expect(await canvasW()).toBe(720);
+
+  // Nästa appstart: Z = 1, vakten är av.
+  await page.reload();
+  await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 20_000 });
+  expect(await canvasW()).toBe(360);
+  await page.waitForTimeout(1200);
+
+  // Debugpanelen: långtryck på logotypen, knappen nollställer taket.
+  const [lx, ly] = await toCss(page, 180, 160);
+  await page.mouse.move(lx, ly);
+  await page.mouse.down();
+  await page.waitForTimeout(2300);
+  await page.mouse.up();
+  expect(await page.evaluate(() => window.__start!.debugOpen)).toBe(true);
+  await page.waitForTimeout(200);
+  await page.screenshot({ path: 'tests/e2e/screenshots/debug-zoom.png' });
+  await tap(page, 94, 538);
+  await page.waitForFunction(() => JSON.parse(localStorage.getItem('klunk.save.v1')!).settings.zoomCap === null);
+  expect(await savedCap()).toBeNull();
+  await page.reload();
+  await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 20_000 });
+  expect(await canvasW()).toBe(720);
+  expect(errors, errors.join('\n')).toEqual([]);
+});

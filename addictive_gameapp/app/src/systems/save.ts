@@ -20,6 +20,8 @@ export interface SaveData {
     bookHintSeen: boolean;
     /** Kompisar-flikens scroll-ledtråd: spelaren har scrollat en gång (UI.md §13.4). */
     friendsHintSeen: boolean;
+    /** Tak för spelets zoom Z, satt av fps-vakten (DESIGN §17). null = auto. Gäller från nästa appstart. */
+    zoomCap: number | null;
   };
   stats: {
     runs: number;
@@ -73,7 +75,7 @@ export function defaultSave(): SaveData {
     schema: SAVE_SCHEMA,
     highscore: 0,
     bestLevel: 0,
-    settings: { sound: true, haptics: true, calm: false, aimLine: true, bookHintSeen: false, friendsHintSeen: false },
+    settings: { sound: true, haptics: true, calm: false, aimLine: true, bookHintSeen: false, friendsHintSeen: false, zoomCap: null },
     stats: {
       runs: 0,
       merges: 0,

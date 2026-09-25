@@ -74,7 +74,9 @@ import { AbilityFx } from '../ui/abilityFx';
 import { DEBUG } from '../data/debug';
 import { pushRun, setRestart, summarizeRun, takeRestartTap } from '../systems/debug';
 import { clearBackHandler, setBackHandler } from '../systems/back';
-import { Z, fitCamera } from '../ui/view';
+import { ART_LOG, Z, fitCamera } from '../ui/view';
+import { ART } from '../data/art';
+import { PerfGuard } from '../systems/perfGuard';
 
 interface Ball {
   body: MatterJS.BodyType;
@@ -152,6 +154,8 @@ export class Game extends Phaser.Scene {
   private combo!: ComboTracker;
   private dangerTracker!: DangerTracker;
   private juice!: Juice;
+  /** Fps-vakten (DESIGN §17). Bara när Z > 1 och inget tak är satt; ny per runda (egen uppvärmning). */
+  private perf: PerfGuard | null = null;
 
   private hanging: Phaser.GameObjects.Image | null = null;
   private aimLine!: Phaser.GameObjects.Graphics;
@@ -310,6 +314,7 @@ export class Game extends Phaser.Scene {
 
   create(): void {
     fitCamera(this);
+    this.perf = Z > 1 && cached().settings.zoomCap === null ? new PerfGuard(ART.perfGuard) : null;
     this.balls.length = 0;
     this.byId.clear();
     this.pool.length = 0;
@@ -733,6 +738,15 @@ export class Game extends Phaser.Scene {
         return b ? { id: b.def.id, x: b.img.x, y: b.img.y, visible: b.img.visible } : null;
       },
       /** Nivån på objektet som hänger nu (-1 = specialobjekt). */
+      /** Fps-vakten: fönstrens medel-fps, fönster i rad under gränsen, utlöst. null = inaktiv (Z = 1 eller tak satt). */
+      get perf(): { windows: number[]; low: number; tripped: boolean; z: number; zoomCap: number | null } | null {
+        const p = self.perf;
+        return p && { windows: p.recent.slice(), low: p.low, tripped: p.tripped, z: Z, zoomCap: cached().settings.zoomCap };
+      },
+      /** Matar vakten med `ms` millisekunder frames i `fps` (samma väg som update). */
+      perfSimulate(fps: number, ms: number): void {
+        for (let t = 0; t < ms; t += 1000 / fps) self.feedPerf(1000 / fps);
+      },
       /** Det hängande objektets x (logiska px), -1 utan objekt. */
       get hangingX(): number {
         return self.hanging ? self.hanging.x : -1;
@@ -1825,7 +1839,15 @@ export class Game extends Phaser.Scene {
 
   // ---------------------------------------------------------------- loop
 
+  /** Låg fps i Z > 1 ⇒ tak Z = cap från nästa appstart (aldrig mitt i rundan). */
+  private feedPerf(delta: number): void {
+    if (!this.perf?.feed(delta)) return;
+    void save({ settings: { zoomCap: ART.perfGuard.cap } });
+    if (ART_LOG) console.log(`[perf] fps-vakt: ${this.perf.recent.map((f) => f.toFixed(1)).join(', ')} ⇒ zoomCap ${ART.perfGuard.cap}`);
+  }
+
   override update(_time: number, delta: number): void {
+    this.feedPerf(delta);
     if (this.over) return;
     const now = this.time.now;
 

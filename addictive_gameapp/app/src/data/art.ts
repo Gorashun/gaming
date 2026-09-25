@@ -22,6 +22,12 @@ export const ART = {
   maxZoom: 2,
   /** 'v2' = material (Canvas2D, bakat i Z). 'v1' = gamla Graphics-vägen i 1× (lågprestandaläge, `?art=v1`). */
   mode: 'v2' as 'v1' | 'v2',
+  /**
+   * Fps-vakt (systems/perfGuard.ts): i Game-scenen, efter `warmupMs`, mäts medel-fps i på varandra
+   * följande fönster om `windowMs`. `windows` fönster i rad under `minFps` (och Z > 1) ⇒ sparas
+   * `settings.zoomCap = cap`, som gäller från nästa appstart. Nollställs bara från debugpanelen.
+   */
+  perfGuard: { warmupMs: 2000, windowMs: 3000, minFps: 45, windows: 2, cap: 1 },
   /** Högst så här många nivåset (11 nivåer + siluetter) i full upplösning samtidigt. Det aktiva frigörs aldrig. */
   maxSets: 2,
   /** Bakningsupplösning: min(devicePixelRatio, maxDpr). Texturen visas med setScale(1/dpr). */

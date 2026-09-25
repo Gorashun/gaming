@@ -35,3 +35,4 @@ Se PROPOSAL.md §10: go/no-go, Mac, Google Play-konto och dess ålder, Apple-kon
 | 2026-09-25 | Meta-lager v1.1 klart: kedja i HUD, samlarbok med skimrande, 5 temaset med upplåsning på två spår, rundavslut "nytt!". 113 unit + 23 e2e gröna. **Testversion 4.** |
 | 2026-09-25 | Kompisar v1.2 klart: 48 avatarer i 6 rariteter, musslor utan pity/dubbletter, XP-nivåer I–III, 20 unika förmågor. 147 unit + 32 e2e gröna. **Testversion 5.** |
 | 2026-09-25 | Engelska primärspråk + svensk lokalisering, butikstext EN/SV, polish-omgång, bakåtknapp, testprotokoll (`docs/PLAYTEST.md`) och debugpanel (långtryck 2 s på logotypen). 168 unit + 39 e2e gröna. **Testversion 6.** |
+| 2026-09-25 | Ekonomi v1.3 (pärlor, stjärnsand, tre musslor i butik, uppgradering mot kostnad, förmågetext EN/SV), Art v2 med hi-DPI (tak 2×) och fps-vakt, nystart via schema 2. 214 unit + 47 e2e gröna. **Testversion 7.** |

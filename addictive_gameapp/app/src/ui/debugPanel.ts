@@ -7,6 +7,8 @@ import { giveAvatar } from '../systems/avatars';
 import { exportJson, nextGift, type RunLog } from '../systems/debug';
 import { setCalm, setSoundEnabled } from '../systems/audio';
 import { setHapticsEnabled } from '../systems/haptics';
+import { Z, Z_AUTO } from './view';
+import { zoomLine } from '../systems/zoom';
 
 const P = DEBUG.panel;
 /** "Ge kompis" fortsätter i cykeln så länge appen är igång. */
@@ -58,6 +60,7 @@ export class DebugPanel {
   private readonly root: Phaser.GameObjects.Container;
   private readonly list: Phaser.GameObjects.Text;
   private readonly status: Phaser.GameObjects.Text;
+  private readonly zoom: Phaser.GameObjects.Text;
   private readonly labels = new Map<DebugButton, Phaser.GameObjects.Text>();
   private readonly onClose: () => void;
   private confirmUntil = 0;
@@ -73,8 +76,9 @@ export class DebugPanel {
     const title = scene.add.text(10, 14, 'DEBUG · rundlogg (senaste först)', { ...style, color: P.accent, fontSize: '12px' });
     this.list = scene.add.text(6, P.listY, '', { ...style, lineSpacing: P.lineH - P.px - 2 });
     this.status = scene.add.text(W / 2, P.statusY, '', { ...style, color: P.dim, align: 'center', wordWrap: { width: W - 20 } }).setOrigin(0.5, 0);
+    this.zoom = scene.add.text(10, P.zoomY, '', { ...style, color: P.accent });
     const g = scene.add.graphics();
-    this.root = scene.add.container(0, 0, [bg, title, this.list, this.status, g]).setDepth(P.depth);
+    this.root = scene.add.container(0, 0, [bg, title, this.list, this.zoom, this.status, g]).setDepth(P.depth);
     for (const b of P.buttons) {
       g.lineStyle(2, hexToInt(P.accent), 1);
       g.strokeRoundedRect(b.x - P.buttonW / 2, b.y - P.buttonH / 2, P.buttonW, P.buttonH, 10);
@@ -93,6 +97,8 @@ export class DebugPanel {
     for (let i = runs.length - 1; i >= 0; i--) lines.push(runLine(runs[i], d.stats.runs - (runs.length - 1 - i)));
     if (runs.length === 0) lines.push('  (inga rundor ännu)');
     this.list.setText(lines.join('\n'));
+    this.zoom.setText(zoomLine(Z, Z_AUTO, d.settings.zoomCap));
+    this.labels.get('zoom')?.setText(d.settings.zoomCap === null ? 'Zoom: auto' : 'Zoom: nollställ');
     this.labels.get('autodrop')?.setText(`Auto-drop: ${d.debug.autoDropOff ? 'AV' : 'på'}`);
     this.labels.get('reset')?.setText(this.scene.time.now < this.confirmUntil ? 'Tryck igen!' : 'Nollställ sparfil');
   }
@@ -154,6 +160,14 @@ export class DebugPanel {
         d.debug.autoDropOff = !d.debug.autoDropOff;
         void save();
         this.say(`Auto-drop ${d.debug.autoDropOff ? 'AV' : 'på'} från nästa runda.`);
+        break;
+      case 'zoom':
+        if (d.settings.zoomCap === null) {
+          this.say('Fps-vakten har inte satt något tak.');
+          break;
+        }
+        await save({ settings: { zoomCap: null } });
+        this.say(`Zoom-taket nollställt: ${Z_AUTO} (auto) från nästa appstart.`);
         break;
       case 'close':
         this.onClose();

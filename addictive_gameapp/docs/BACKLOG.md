@@ -79,5 +79,6 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [x] E3 Integration i bok, rundavslut och startskärm; tester; testversion 7. (programmerare)
 
 ## Fas 10 – Art v2 (DESIGN §17)
-- [ ] A1 Koppla artv2 till CanvasTexture, hi-DPI-rendering med tak 2×, bakning av aktivt set + kompisar, fallback v1. (programmerare)
+- [x] A1 Koppla artv2 till CanvasTexture, hi-DPI-rendering med tak 2×, bakning av aktivt set + kompisar, fallback v1. (programmerare)
 - [ ] A2 v2 på bomb, regnbåge, pärlor, romber, musslor, partiklar. Glöd som gemensam sprite.
+- [ ] U14 e2e `artv2.spec (d,e)` flakar under parallell last i DPR 2 (grön ensam). Gör den robust eller kör serial.
