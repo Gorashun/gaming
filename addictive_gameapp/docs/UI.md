@@ -1,6 +1,6 @@
 # UI.md – KLUNK visuell spec, ljudkarta och game feel
 
-Version 1.1 · 2026-09-25 (§12 meta-lager tillagt) · Ägare: ui-designer. Underordnad `DESIGN.md` (spelregler) och `TECH.md` (stack).
+Version 1.2 · 2026-09-25 (§12 meta-lager, §13 Kompisar) · Ägare: ui-designer. Underordnad `DESIGN.md` (spelregler) och `TECH.md` (stack).
 Implementation av tokens: `app/src/data/theme.ts`. Granskningsbild: `docs/ui-preview.png` (nivåark, spel, start, förlust).
 
 ---
@@ -613,3 +613,336 @@ Det passar som enhetstest (`tests/unit/themes.test.ts`). Programmerarna äger te
 3. **Combo-prickarna flyttas** från y 86 till y 97 (§12.2). Det är en liten ändring i Game.ts som programmerarna gör.
 4. **Stapeln** visar bara tidsspåret (merges mot nästa tröskel). Skicklighetsspåret (första nivå 8 osv.) förblir en överraskning. Bekräfta att det är avsikten.
 5. **Frostisarna** har medvetet låg kulörskillnad mellan nivå 0 och 1 (ΔE 23). Storlek, ansikte och iskristallerna bär skillnaden. Speltesta med barn innan det låses.
+
+---
+
+## 13. Kompisar v1.2
+
+Underordnad DESIGN §14. Data och tillgångar: `app/src/data/avatars.ts` (ersätter `avatars.stub.ts`, samma exportnamn och nycklar: `AVATARS`, `RARITY`, `UPGRADE`, `Rarity`, `AvatarDef`). Dessutom `AVATAR_UI` (layout och tider), `AVATAR_SOUND`, `AVATAR_PARTICLE_GEOM`, `oddsPearls()`, `avatarById()` och ikonsträngarna. Ren TS utan Phaser, typkollad med `app/tsconfig.json`. Granskningsbild: `docs/ui-preview-avatars.png`, Canvas2D i Chromium med samma primitivsemantik som nedan.
+
+**Känslan i en mening:** en kompis är *någon som håller i din boll*. Den syns hela rundan, gör små saker när du gör saker och tar aldrig över skärmen. Raritet märks på vad den **kan**, inte på hur mycket den blinkar.
+
+### 13.1 Figurerna (48 st)
+
+**Stil (skiljer kompisar från glimtar på en blick):**
+- Egen kropp med armar, vantar, öron, hattar och fenor. Glimtarna är klot.
+- Mörk kontur `edge` 2,8 box-enheter, platt fyllning och ett vitt topp-ljus med alpha 0,26, alltså samma familj som objekten.
+- **Vitt ljusglint i varje öga.** Objekten har aldrig glint. Det är det tysta tecknet för "levande kompis".
+- Ansikten i `ink`. Undantag: Stjärnvalen, som har mörk kropp, får ljusa drag `#FFF4C0` (4,8:1) och ljus kontur.
+- Palett per figur, aldrig mättad röd. Krabban är korall `#FF9A6B` och magneten rosa `#FF6FA8`.
+
+**Ritgrammatik (`AvatarOp`, 56×56-box, origo i mitten, y nedåt):**
+
+| op | Ritas som | Not |
+|---|---|---|
+| `circle`, `ellipse` | fyllning (`color`, `alpha`), sedan `edge` som streck ovanpå (`edgeW`, default 2,8) | `stroke` satt ⇒ bara streck. `ellipse.rot` i radianer (rita som 24-punktspolygon) |
+| `poly` | fylld polygon + `edge` | `open` + `stroke` ⇒ polylinje |
+| `curve` | kvadratisk bezier, runda ändar | `edge` ⇒ underlag först med bredd `width + 2·edgeW` (tvåpass som §3.1 steg 7) |
+| `line` | rakt streck | som `curve` |
+| `scatter` | seedad mulberry32 som `background.ts` | används sparsamt |
+| `noSil: true` | tas inte med i siluetten | gnistor, ekon, glöd |
+
+Alla mått, även linjebredder, skalas med `displayPx / 56`. Baka **en textur per figur och storlek** vid behov: 40 px i spel, 40 px i boken, 80 px på scenen, 112 px i öppningen och 30 px vid rekordet. Lägg 2 box-enheter pad för konturen. Siluetten bakas i **vitt** utan `noSil`-lagren, med alla alpha = 1, och tintas: `hudDim` alpha 0,25 i boken, som §12.4.
+
+**Greppunkten** är (0, 24) i boxen. `setOrigin(0.5, AVATAR_ORIGIN_Y)` med `AVATAR_ORIGIN_Y` = 52/56 ≈ 0,929. Positionen är då greppunkten, och rotation och squash sker kring den, alltså kring det figuren håller i. Alla figurer har vantar, fenor, tentakler eller snöre vid (±9, 22,4).
+
+**Rörelserecept (`AnimRecipe`):** en lista med `TweenStep` där varje steg har målvärden relativt viloläget:
+- `dx`/`dy` i box-enheter · skala, `sx`/`sy` som multiplikatorer och `rot` i grader.
+- Ett värde som saknas betyder vila (0 eller 1). Ett steg med bara `ms`/`ease` går alltså tillbaka till vila.
+- |rot| ≥ 360 är en hel snurr: nollställ vinkeln efter steget.
+
+Stegen spelas i följd och `loop` upprepar hela listan. Personligheterna (`bouncy`, `floaty`, `heavy`, `zippy`, `springy`, `stately`) sätter standardrecepten, och varje figur byter ut 0–2 av dem.
+
+| Trigger | Recept | Prioritet |
+|---|---|---|
+| objektet hänger | `idle` (loop, ≤1 Hz) | lägst |
+| drop | `drop` (en gång) eller `cosmetic.gesture` om `on: 'drop'` | 2 |
+| merge | `merge`. Hoppas över om `merge`/`chain` redan spelas | 3 |
+| kedja ≥3 | `chain`, avbryter merge | 4 |
+| fara | `danger` (loop, ≤1 Hz) ersätter `idle`. Ut: 200 ms Sine.easeOut till vila | loop |
+| `cosmetic.gesture.on` = land/combo3/record/klunk/newLevel | gestens recept | 3 |
+
+**Alla 48** (genererat ur `avatars.ts`):
+
+| id | Namn | Raritet | Känsla | Kosmetik / förmåga |
+|---|---|---|---|---|
+| `common-1` | Snäckan Sigge | Vanlig | Liten havssnäcka som bär sitt hus: långsam, trygg, lämnar pärlor efter sig. | spår dot, ljud land |
+| `common-2` | Maneten Molly | Vanlig | Svävande manet: allt hon gör är mjukt och långsamt, som i vatten. | spår bubble |
+| `common-3` | Krabban Krille | Vanlig | Kaxig liten krabba som klickar med klorna varje gång han släpper. | ljud drop, gest vid drop |
+| `common-4` | Sjöstjärnan Stina | Vanlig | Glad sjöstjärna som gör varje merge till en liten stjärnregn. | partikel star |
+| `common-5` | Bläckfisken Bosse | Vanlig | Mjuk bläckfisk med åtta armar i luften – sprutar lila bläckprickar av glädje. | partikel drop |
+| `common-6` | Fisken Fenja | Vanlig | Nyfiken fisk som aldrig tar ögonen från det du släpper. | spår bubble, ögon följer |
+| `common-7` | Pingvinen Pim | Vanlig | Pingvin i stickad mössa som nickar belåtet efter varje släpp. | ljud drop, gest vid drop |
+| `common-8` | Grodan Gurra | Vanlig | Bred glad groda som kväker när det går bra (combo 3). | ljud combo3, gest vid combo3 |
+| `common-9` | Sälen Selma | Vanlig | Sälen som balanserar bollar – hon är född till att hålla saker. | ljud merge, gest vid merge |
+| `common-10` | Musen Mio | Vanlig | Pigg mus med stora öron som piper när något landar. | ljud land, gest vid land |
+| `common-11` | Snigeln Sally | Vanlig | Långsam snigel som lämnar ett glittrande slemspår efter allt hon släpper. | spår dot |
+| `common-12` | Humlan Humle | Vanlig | Rund humla som surrar till när hon släpper. | ljud drop |
+| `common-13` | Blåsfisken Puff | Vanlig | Taggig blåsfisk som blåser upp sig av förtjusning vid varje merge. | gest vid merge |
+| `common-14` | Sköldpaddan Tuss | Vanlig | Lugn sköldpadda – ingenting stressar henne, inte ens fara. | ljud land, gest vid drop |
+| `common-15` | Räkan Räkel | Vanlig | Spralligt böjd räka med långa spröt som darrar av iver. | gest vid merge |
+| `common-16` | Sjöborren Borre | Vanlig | Taggig men snäll sjöborre – ser farlig ut, är världens mjukaste. | partikel shard |
+| `uncommon-1` | Sjöhästen Harry | Ovanlig | Stolt sjöhäst som håller objektet med svansen; partiklarna skiftar färg med combon. | spår dot, partikel dot (combofärg) |
+| `uncommon-2` | Kometen Kim | Ovanlig | En liten komet: allt han släpper får en eldsvans. | spår dot, ljud drop |
+| `uncommon-3` | Snögubben Snö | Ovanlig | Snögubbe som får det att snöa och frosta i kanterna vid merge. | spår dot, partikel star, ljud merge |
+| `uncommon-4` | Robotten Bip | Ovanlig | Liten robot: alla merge-ljud blir robotpip i skala. | partikel confetti, ljud merge |
+| `uncommon-5` | Draken Dunder | Ovanlig | Liten drake som puffar rök när han släpper – aldrig eld, bara puff. | spår ring, ljud drop, gest vid drop |
+| `uncommon-6` | Katten Kurre | Ovanlig | Randig katt som spinner när kedjan i HUD tänds. | partikel heart, ljud newLevel, gest vid newLevel |
+| `uncommon-7` | Ballongen Bella | Ovanlig | Ballong som håller objektet i snöret och släpper konfetti när rekordet närmar sig. | partikel confetti, ljud record, gest vid record |
+| `uncommon-8` | Pirat-Pelle | Ovanlig | Pirat med lapp för ögat: "Arrr!" och en skattkista-gest vid Klunk. | partikel star, ljud klunk, gest vid klunk |
+| `uncommon-9` | Spöket Svischa | Ovanlig | Snällt spöke: allt hon släpper lämnar genomskinliga efterbilder. | spår dot, ljud drop |
+| `uncommon-10` | Trumslagaren Trumma | Ovanlig | Levande trumma: varje drop är ett trumslag och combon bygger takten. | ljud drop, gest vid drop |
+| `uncommon-11` | Narvalen Nisse | Ovanlig | Narval med spiralhorn som sjunger en liten valsång vid kedjor. | partikel bubble, ljud chain |
+| `uncommon-12` | Axolotln Axel | Ovanlig | Ständigt leende axolotl vars gälar fladdrar när något landar. | partikel heart, ljud land, gest vid land |
+| `muller` | Åskmolnet Muller | Sällsynt | Buttert åskmoln som mullrar till och slår små blixtar när kedjan går. | **thunderChain** · partikel bolt |
+| `maestro` | Dirigenten Maestro | Sällsynt | Liten fågeldirigent med taktpinne: combon spelar en riktig melodi. | **comboMelody** · partikel note |
+| `tick` | Tidsugglan Tick | Sällsynt | Uggla med klockögon: faran blir sepiatonad och tickar lugnt i stället för att brumma. | **dangerStyle** |
+| `fia` | Fyrverkeri-Fia | Sällsynt | Liten rosa raket som skjuter upp egna fyrverkerier när du slår rekord. | **recordFanfare** · partikel star |
+| `vulle` | Vulkanen Vulle | Sällsynt | Varm liten vulkan: stora merges (nivå ≥8) sprutar lava och en djup bas. | **lavaMerge** · partikel drop |
+| `disco` | Discokulan Disco | Sällsynt | Coolaste discokulan: bakgrunden gungar mjukt i takt med combon. | **discoBg** · partikel confetti (combofärg) |
+| `eko` | Ekot Eko | Sällsynt | Ropar in i en grotta: varje merge ekar tillbaka som i en katedral. | **echoMerge** · partikel ring |
+| `klick` | Kameran Klick | Sällsynt | Glad retrokamera som tar en polaroid av rundans största kedja. | **polaroid** |
+| `nora` | Norrsken-Nora | Sällsynt | Fjällräv med norrskenssvans: långa kedjor tänder norrsken över burken. | **auroraChain** · spår dot |
+| `lisa` | Lykt-Lisa | Episk | Marulk från djupet med en lykta på pannan: den lyser upp de som passar ihop. | **sameLevelGlow** |
+| `siri` | Spådamen Siri | Episk | Spådam som håller objektet som en kristallkula och ser två steg fram. | **queuePeek** |
+| `sixten` | Sikt-Sixten | Episk | Keps och kikarsikte: han visar exakt var det du släpper landar. | **landingDot** |
+| `bubbel` | Bubblan Bubbel | Episk | En levande såpbubbla: rundans första drop landar mjukt utan studs. | **noBounceStart** · spår bubble |
+| `ekko` | Ekolodet Ekko | Episk | Liten ubåt med ekolod: när en ny nivå tänds pingar alla av den nivån. | **sonarNewLevel** |
+| `kajsa` | Kikaren Kajsa | Episk | Surikat på utkik med kikare: hon ser nästan-träffar långt innan du gör det. | **nearMissFrom** |
+| `maja` | Magnet-Maja | Legendarisk | Hästskomagnet som håller objektet mellan polerna och en gång per runda drar ihop två lika. | **magnetPull** · partikel bolt |
+| `rut` | Regnbågs-Rut | Legendarisk | En regnbåge med molnfötter som alltid har en regnbåge med sig till rundan. | **startRainbow** · partikel star (combofärg) |
+| `vala` | Andrums-Vala | Legendarisk | Stor lugn val som blåser en fontän: ger dig ett extra andetag när burken blir full. | **breath** · partikel drop |
+| `havsdrottningen` | Havsdrottningen | Mytisk | Havets drottning med pärlhalsband och krona: hela burken blir guld och orkestern spelar. | **queenRound** · spår star, partikel star |
+| `stjärnvalen` | Stjärnvalen | Mytisk | En val gjord av natthimmel: stjärnor i kroppen, månskära på huvudet, allt i burken glöder. | **starWhale** · spår star, partikel star |
+
+Vanlig och ovanlig är ren kosmetik. Ovanlig är rikare: fler kanaler per figur (spår + partikel + ljud + gest). Uppgradering av kosmetik: `UPGRADE.cosmeticParticleMul` 1 / 1,15 / 1,3 och `cosmeticTrailMul` 1 / 1,25 / 1,5 (spårets `lifeMs`).
+
+Nya partikelformer i `AVATAR_PARTICLE_GEOM` är polygoner i 16×16, bakas vita och tintas som §12.1.3: `heart`, `note`, `confetti`, `drop`, `bolt`. Spår (`TrailDef`) emitteras från det fallande objektet var `everyPx` px fram till första kontakten.
+
+### 13.2 Raritet (`RARITY`)
+
+| Raritet | Nyckel | Färg | Kontrast mot bg | Pärlor | Odds | Juice vid öppning | Ringar |
+|---|---|---|---|---|---|---|---|
+| Vanlig | `common` | `#A9B4C8` grå | 9,1:1 | 1 | 44 % | 0,30 | 0 |
+| Ovanlig | `uncommon` | `#6EE7A0` grön | 12,3:1 | 2 | 28 % | 0,42 | 1 |
+| Sällsynt | `rare` | `#5AA9FF` blå | 7,7:1 | 3 | 16 % | 0,54 | 2 |
+| Episk | `epic` | `#B98CFF` lila | 7,4:1 | 4 | 8 % | 0,66 | 3 |
+| Legendarisk | `legendary` | `#FFD75E` guld | 13,6:1 | 5 | 3 % | 0,78 | 3 + 8 strålar |
+| Mytisk | `mythic` | regnbåge `RARITY.rainbow` (reserv `#FF9CF0`) | 10,2:1 | 6 | 1 % | 0,90 | 3 + 12 strålar |
+
+- **Aldrig bara färg.** Raritet visas alltid också som **antal pärlor**, i öppningen och som gruppens rubrik i boken, och som **grupp** i rutnätet.
+- Mytisk ritas som sex färgsegment: ramen i segment, pärlan i ränder. Den kan alltså inte förväxlas med någon enfärgad raritet.
+- Grönt och blått ligger nära varandra för deuteranoper. Därför bär pärlantalet (2 mot 3) informationen där.
+- Ingen raritetsfärg är röd.
+- `accent` (`#7CF9FF`) används inte som raritetsfärg. Blått `#5AA9FF` ligger 2,0:1 från accent i ljushet och har en annan kulör.
+
+### 13.3 Musslans öppning (DESIGN §14.3)
+
+Känsla: **"titta vem som kom!"** En fast, lugn ceremoni. Musslan ser likadan ut oavsett innehåll, öppnar sig på samma sätt varje gång och låter likadant fram till det ögonblick figuren syns. Först där skiljer sig rariteterna, i **antal kanaler** (ringar, strålar, ljudets rikedom), aldrig i spänning före. Ingen rullning, inga kandidater, ingen stegvis uppgradering och inget "nästan".
+
+Layout 360×640 på startskärmen. Tider från trycket (`AVATAR_UI.open`):
+
+| t (ms) | Händelse | Ease | Ljud / haptik |
+|---|---|---|---|
+| 0 | Scrim `bg` 0 → 0,86 på 200 ms över hela startskärmen. Musslan lämnar hyllan (92, 450) och flyger längs kvadratisk bezier via (150, 360) till (180, 300). Skala 1 → 2,6 (48 → 125 px), rot 0 → +6° → −6° → 0 (en vickning, samma för alla) | Cubic.easeOut, 280 ms | `ui` |
+| 280 | Övre skalhalvan (`SHELL_TOP_SVG`, origin i gångjärnet vid y 38/64) tippar bakåt: scaleY 1 → 0,45. Vid 0,75 byts texturen till insidan (`SHELL_TOP_SVG(edge, '#FFF3F8', '#F4C8DA')`, pärlemor), så att locket syns öppet ovanför gångjärnet | Back.easeOut, 180 ms | `shellOpen` (samma för alla) |
+| 300 | Glöd i raritetsfärg bakom figuren: radial `bg-glow`-textur tintad, r 0 → 96, alpha 0 → 0,42. **En** ljusökning, ingen blixt | Cubic.easeOut, 260 ms | – |
+| 320 | **Figuren** (112 px, centrum) stiger från skalet (y 300) till y 228, skala 0,35 → 1 med överslag 1,8. **Alla pärlor samtidigt** på y 374 (r 7, 20 px mellanrum), scale 0 → 1. Två tomma uppgraderingsrombar på y 398. Ringar i raritetsfärg (0–3 st, r 56 → 128, 640 ms, 120 ms isär, alpha 0,85 → 0). Legendarisk och mytisk: 8/12 strålar bakom (r 44–132, alpha 0,18, roterar 12°/s). Partiklar `6 + 24·juice` i figurens `particleShape`/`particleTint` (setets form om den saknas) | Back.easeOut 260 ms / Cubic.easeOut | `AVATAR_SOUND.reveal[rarity]`, haptik 10/10/30/30/60/60 ms |
+| 580 | Figuren gör sin **showcase** en gång (`showcase.anim` + `fx` vid `fxAtMs` + `sound`). Tidsskala `min(1, 620 / längd)` så att den är klar vid 1 200 | enligt recept | `showcase.sound` |
+| 1 200 | Klart. Figur, pärlor, rombar och glöd ligger kvar och strålarna fortsätter rotera | – | – |
+| tryck | Figuren krymper till 0,3 och flyger till bokikonen (246, 444). Scrimmen tonas ut på 200 ms. Nästa mussla (om det finns) ligger kvar och andas | Cubic.easeIn, 320 ms | `equip`-plinget |
+
+- **Hoppa över:** ett tryck före 1 200 sätter slutläget direkt (kill tweens, sätt slutvärden, ingen showcase). Nästa tryck stänger.
+- **`juice.trigger('jackpot', RARITY.juice[r])`** med shake, zoom och hit-stop **av**, som vid nytt set (DESIGN §13.6). Max 0,9.
+- **Lugnt läge:** högst 1 ring, inga strålar, halva partiklarna, haptik 10 ms.
+- **Den öppnade figuren är inte automatiskt vald.** Den väljs i boken. Undantag: den allra första musslan väljs automatiskt, eftersom spelaren annars inte har någon kompis. Se §13.13, fråga 1.
+
+**Oöppnade musslor på hyllan** (`AVATAR_UI.shelf.box`, `SHELL_ICON`):
+- Stängd mussla, 48 px, pärlemorrosa med **accent-kontur**, eftersom den är tryckbar.
+- Alla ser exakt likadana ut. Formen avslöjar ingenting.
+- Upp till 3 ritas som en hög: var och en förskjuts (−9, −7), skala 0,86 och alpha 0,8 bakåt. Ingen siffra, ingen röd prick.
+- Den främsta andas: skala 1,00 ↔ 1,06, halvcykel 1 000 ms (0,5 Hz).
+- Tryck öppnar den främsta. Ingen "öppna alla".
+
+### 13.4 Fliken Kompisar i boken (DESIGN §14.3–14.4)
+
+Känsla: **"mina kompisar på rad"**. Samma lugna pärm som §12.4, men med en scen högst upp där den valda kompisen står och visar vad den kan.
+
+| Element | Position och utseende (`AVATAR_UI.book`) |
+|---|---|
+| **Flikar** | Två bokmärkesband som hänger från överkanten. Set x 32, Kompisar x 96, bredd 48. Aktiv: 72 lång, fylld accent 0,16, kontur 3 px `accent`, ikon `accent`. Inaktiv: 58 lång, `jarWall` 0,7, kontur 2 px `hudDim`, ikon `hudDim`. Ikon 32 px vid y 36. **Form (längd + fyllning) bär informationen, inte färgen** |
+| Flikarnas träffyta | 56×72: x 4–60 och 68–124, 8 px mellanrum. **18 px till setikonens ring** (x 142), vilket svarar på programmerarens fråga. Under 64 men ≥48 med 8 px mellanrum (UI-regeln för trånga lägen) |
+| Stäng | oförändrad (320, 44), 72×72 |
+| **Scen** | Vald kompis 80 px med greppet vid (104, 152). Den håller en nivå 2-glimt i aktivt set (r 18, centrum (104, 166), alltså greppet 4 px under ovankanten som i spel). Radial glöd i raritetsfärg bakom (r 46, alpha 0,25). Uppgraderingsrombar på axeln som i spel. Träffyta x 16–192, y 80–196: **tryck = spela showcase igen** |
+| **Odds-burk** | Glasburk centrum (268, 134), 88×96, lock 10 px, `jarEdge` 3 px, glas `jarGlass` 0,55. **25 pärlor** r 6,5 i rader 6-5-6-5-3 nedifrån (bottenrad y 172, 13,6 × 11,8 px), ordnade efter raritet **nedifrån och upp: vanlig längst ner, mytisk överst**, så att den sällsynta pärlan ligger som körsbäret på toppen. Antal = `oddsPearls(kvar per raritet)` |
+| Rutnät | Viewport y 204–632, klipps. 12 px toning i överkant. **Rarast överst** (mytisk → vanlig), samma riktning som burken |
+| Grupprubrik | 28 px hög: N pärlor (r 4,5, 12 px mellanrum) från x 22, linje i raritetsfärg alpha 0,5 fram till x 300, `ägda/antal` 16 px/800 `hud` högerställt vid x 340 (siffror är tillåtna) |
+| Celler | 6 kolumner, centrum x = 40 + 56·k, radavstånd 72. Ram 48×48, hörnradie 12. **Träffyta 48×56** (ram + rombar), 8 px mellanrum i sidled, 16 px i höjdled |
+| Ägd | ram 3 px i raritetsfärg (mytisk: 6 regnbågssegment), fyllning raritetsfärg alpha 0,14, figuren 40 px |
+| Ej ägd | figurens **siluett** i `hudDim` alpha 0,25 och streckad ram (5/5) i `hudDim` alpha 0,35. Formen syns och gör en att vilja ha den, men inga färger och inga förmågor |
+| Vald | yttre ram 56×56 (pad 4), 3 px `accent` + bockbricka r 8 vid (+22, −22), fylld `accent` med bock i `ink`. Samma språk som aktivt set i §12.4 |
+| Uppgradering | **2 rombplatser** under cellen (y +32, 14 px isär, 8×10). Uppnådd nivå: fylld `hud` med `ink`-kant. Nästa: kontur i `hudDim`, fylls nedifrån med alpha 0,6 i takt med XP. Nivå I: två tomma (den första fylls mot 150 XP). Nivå III: två fyllda |
+| Nytt sedan sist | skalpuls 1,00 ↔ 1,10, 0,5 Hz, tills cellen har synts i 2 s (`freshPulse`) |
+
+**Interaktion (inga långtryck, se §10.5):**
+- **Tryck på ägd cell** väljer kompisen:
+  - Bockbrickan flyttas: den gamla krymper på 120 ms, den nya ploppar in på 200 ms (Back.easeOut).
+  - På scenen faller den gamla figuren ner och ut (160 ms Quad.easeIn) och den nya poppar in (240 ms Back.easeOut). Direkt därefter gör den nya sin showcase i normal takt.
+  - Ljud `equip` följt av `showcase.sound`. Haptik 10 ms.
+  - Bytet gäller från nästa runda (DESIGN §14.6).
+- **Tryck på scenen** spelar showcase igen. Tryck under pågående showcase ignoreras.
+- **Tryck på siluett:** cellen skakar ±4 px två gånger på 240 ms och ljudet `locked` (§12.7) spelas. Inget mer. Ingen information om vad som krävs.
+- **Scroll:** vertikalt drag följer fingret 1:1. Vid släpp fortsätter rörelsen med friktion 0,94 per frame. I kanterna gäller gummiband 0,35. Tryck räknas som tryck om fingret rör sig < 12 px på < 350 ms (samma som §12.4).
+- **Första öppningen av fliken:** efter 500 ms glider innehållet 40 px upp och tillbaka på 700 ms (Sine.easeInOut). Det är scroll-ledtråden, utan text.
+- **Startposition:** raden med en ny kompis om det finns en, annars raden med den valda, centrerad i viewporten.
+- **Flikbyte:** tryck på ett band. Innehållet korstonas på 160 ms och ljudet `tab` spelas. Horisontellt svep i Set-fliken bläddrar sidor som förut och byter aldrig flik.
+- Boken öppnas på Kompisar om det finns en ny kompis som inte har visats, annars på Set.
+
+**Burkens matte.** `oddsPearls`:
+1. Omnormera oddsen bland rariteter som har figurer kvar och räkna 25 · andel.
+2. Floor, men **minst 1 per levande raritet**.
+3. Fördela resten efter största decimaldel. Blir det för många tas överskottet från den största gruppen.
+
+Full pool ger 10/7/4/2/1/1. **Mytisk har alltid minst en pärla så länge den finns kvar** (beslut). Tom pool ger en tom burk med `SHELL_OPEN_ICON` i botten, "allt är öppnat".
+
+### 13.5 Släpparen i spel (DESIGN §14.1)
+
+Känsla: **en kompis som bär din boll till kanten och släpper den åt dig.** Den ska synas i ögonvrån men aldrig skymma siktet.
+
+| | Värde (`AVATAR_UI.slapparen`) |
+|---|---|
+| Storlek | 40 px (skala 40/56). Det räcker för silhuetten på 320 dp, och figuren blir aldrig bredare än nivå 3-objektet den oftast håller |
+| Position | x = det hängande objektets x, varje frame (samma lerp som `aim`). y: greppunkten = objektets ovankant + 4 px = `spawnY − r + 4`. Figuren sitter alltså ovanpå objektet med vantarna över dess hjässa. Nivå 0 ger greppet på y 54 och figuren mellan y 17 och 57. Nivå 4 ger greppet på y 37 och figuren mellan y 0 och 40. Håller sig inom 0–60 |
+| Håll | figurens egna vantar/fenor/snöre ligger på greppunkten. Inget extra ritas |
+| Luta | rot = klamp(Δx per frame · 0,35°, ±8°), tillbaka till 0 på 180 ms när fingret står still. Den "lutar in i" rörelsen |
+| Nytt objekt | greppets y tweenas till nya `spawnY − r + 4` på 220 ms Back.easeOut, samtidigt med `queueSlide` |
+| Mellan drop och nästa objekt | figuren står kvar där den släppte med tomma vantar och spelar `drop`, sedan `idle` |
+| Pacing-vickning (§11) | figuren roterar med 0,5 × objektets vickvinkel kring greppet ("trötta armar") |
+| Depth | **6,5**: över hängande objekt (6), HUD-kedjan (5,5) och glitter (5,2), under HUD (10), förhandsvisningen (10) och combo-prickarna (10). Poängen syns alltid ovanpå figuren |
+| Uppgraderingsromb | på figurens högra axel, box (18, −18), 9×12 box-enheter (≈ 6×9 px), `hud`-vit med `ink`-kant 2 och en vit reflex. **II = 1 romb, III = 2 romber** (den andra 10 enheter nedanför). Nivå I: ingen. Samma romb som i boken, så sambandet syns utan text |
+| Ingen kompis vald | ingen figur. Objektet hänger som i v1.1 |
+| Lugnt läge | `dy`/`rot` i alla recept × 0,5. `chain` spelas som `merge`. Spår och partiklar × 0,5 |
+| Specialobjekt | figuren håller dem som vanligt. Förhandsvisningens puls (§4) påverkar inte figuren |
+
+### 13.6 Hyllan på startskärmen
+
+Hyllan byggs ut åt vänster så att musslorna får en egen plats. Bästa objektet och boken flyttas lite åt höger (`AVATAR_UI.shelf`, ersätter `META.shelf.best/book/hit/badge`):
+
+| Element | Position |
+|---|---|
+| Hyllinje | x 48 → 312, y 470, konsoler vid x 60 och 300 |
+| Musslor | (92, 450), 48 px, hög om upp till 3. Träffyta x 60–124, y 408–484 (64×76) |
+| Vald kompis (om ingen mussla väntar) | sitter på hyllan: greppunkt (92, 470), 48 px, idle-loop. Samma träffyta: **tryck öppnar boken på Kompisar** |
+| Bästa objekt | (166, 436), r 34 |
+| Bok | (246, 444), 48 px. Träffyta x 132–312, y 396–484. 8 px till musslans yta |
+| Nytt-prick | (266, 422), r 6 `gold` |
+| **Rekordets kompis** | vänster om kronan: centrum (110, 496), figur 30 px i en ring r 17 (2 px raritetsfärg, fyllning raritetsfärg alpha 0,15). Visas bara om `highscoreAvatar` finns. Rekord från före v1.2 visas utan figur |
+| Krona + siffra | oförändrade (140, 498) och x 172 |
+
+### 13.7 Rundavslutet: ny mussla (DESIGN §14.3)
+
+- Musslan (`SHELL_ICON`, 40 px) poppar in i stripen vid (304, 56) när den sista flygaren har landat + 80 ms (eller vid 420 ms om inget fångades). Scale 0 → 1 på 140 ms, Back.easeOut, ljud `boxEarned`, haptik 10 ms.
+- 300 ms senare flyger den mot nederkanten, mot (92, 640), där hyllan kommer att vara: 260 ms Cubic.easeIn, skala → 0,6.
+- Nytt set samma runda: musslan kommer **före** set-ceremonin, så att den senare inte avbryts. Allt ryms fortfarande inom 2 500 ms.
+- Flera musslor i samma runda visas som en: 2–3 musslor staplade enligt hyllans regel. Ingen siffra.
+- Omstart är aktiv hela tiden (<0,5 s).
+
+### 13.8 Förmågor (`ability.key` + parametrar I/II/III)
+
+Programmeraren implementerar beteendet. Värdena ligger i `avatars.ts`, en kommentar per figur.
+
+| Raritet | Nyckel | Figur | Beteende | I → II → III |
+|---|---|---|---|---|
+| Sällsynt | `thunderChain` | Muller | kedja ≥3: shake × mul (tak 8 px, **av i Lugnt läge**), sicksackblixtar som streck (ingen skärmblixt), mullerljud | mul 1,2/1,3/1,4, blixtar 3/3/4 |
+| Sällsynt | `comboMelody` | Maestro | combo-steg n spelar ton n i "Blinka lilla" (trad.) i stället för halvtonstrappan | II + kvint, III + bas |
+| Sällsynt | `dangerStyle` | Tick | fara: samma slow-mo, sepiaoverlay i stället för desaturering, tick-tack 2 Hz (ljud) i stället för brummet, statisk klockring | sepia 0,22/0,25/0,28 |
+| Sällsynt | `recordFanfare` | Fia | newRecord: raketer stiger och slår ut i stjärnringar (partiklar), egen fanfar | raketer 3/3/4 |
+| Sällsynt | `lavaMerge` | Vulle | merge till nivå ≥8: lavadroppar (korall/bärnsten) + 55 Hz sub | droppar 10/12/13 |
+| Sällsynt | `discoBg` | Disco | färgfläckar på bakgrunden roterar 20°/s, alpha stiger med combo, puls **max 1 per 500 ms** | fläckar 12/14/16, tak 0,10/0,12/0,13 |
+| Sällsynt | `echoMerge` | Eko | delay-eko på merge-ljudet + fördröjda ringar | feedback 0,35/0,40/0,45 |
+| Sällsynt | `polaroid` | Klick | ögonblicksbild av burken när längsta kedjan toppar, polaroid i rundavslutet. Slutaren är två lameller, **aldrig vitblixt** | foton 1/1/2 |
+| Sällsynt | `auroraChain` | Nora | kedja ≥3: norrskensband över burkens hals (ADD, vajar 0,3 Hz) | band 2/3/3, håll 1,5/1,8/1,95 s |
+| Episk | `sameLevelGlow` | Lisa | medan man siktar: objekt av samma nivå får en stilla ring (alpha 0,35). "Olja" räcker N s siktning per runda, och lyktan på Lisa krymper när den tar slut | 6/8/10 s |
+| Episk | `queuePeek` | Siri | förhandsvisningen visar även objektet efter nästa (vid x 250, ram 44) | r 12/14/15, alpha 0,6/0,7/0,78 |
+| Episk | `landingDot` | Sixten | siktlinjen (även i läge av) slutar i en prick där objektet landar. II–III: streckad kontur på landningsplatsen | prick 5/6/6,5, kontur 0/0,15/0,2 |
+| Episk | `noBounceStart` | Bubbel | rundans första N drop har restitution 0, med bubbelhinna tills landning | 10/12/15 |
+| Episk | `sonarNewLevel` | Ekko | ny nivå tänds i HUD-kedjan: alla av den nivån får en expanderande ring, 1 Hz | pingar 2/2/3 |
+| Episk | `nearMissFrom` | Kajsa | near-miss-pulsen (äkta) visas från lägre nivå | ≥6/≥5/≥4 |
+| Legendarisk | `magnetPull` | Maja | N gånger per runda: två lika (ej nivå 10) med gap < range i 400 ms dras ihop på 300 ms, med fältlinjer. Aldrig under fara | 1/1/2 gånger, 40/46/46 px |
+| Legendarisk | `startRainbow` | Rut | regnbåge som drop nr N. III: också en bomb som drop 12 | drop 3/2/2, bomb nej/nej/ja |
+| Legendarisk | `breath` | Vala | N gånger per runda: förlustgränsen 2,5 s i stället för 1,5 s. Vala andas in och en fontän syns i halsen. Räknaren visas aldrig | 1/2/2, 2,5/2,5/2,8 s |
+| Mytisk | `queenRound` | Havsdrottningen | guldburk, stråklager på merge-klangen, regnbåge i varje runda + extra specialobjekt | extra 1/1/2 |
+| Mytisk | `starWhale` | Stjärnvalen | stjärnhimmel som bakgrund, +0,1 glow på alla objekt, chansen för skimrande × mul (garantin oförändrad) | × 2/2,5/3 |
+
+**Avvikelse från ~30 %-regeln (DESIGN §14.4):** de heltal DESIGN §14.5 själv anger ger större steg: Lisa 6 → 10 s, Bubbel 10 → 15, Kajsa 6 → 4, Maja 1 → 2, Vala 1 → 2, Drottningen 1 → 2 och Stjärnvalen 2 → 3. Jag har följt §14.5. Mina egna känslo-parametrar (antal blixtar, raketer, band, ringar) är kosmetik och får därför bli rikare. Parametrar som påverkar spelet håller sig inom 30 % (Maja range +15 %, Vala grace +12 %).
+
+### 13.9 Mappning mot platshållarna i `boxes.ts` (`BOX_FX`)
+
+| `BOX_FX` | Ersätts av |
+|---|---|
+| `shellColor`, `shellEdge` | `SHELL_ICON()` / `SHELL_TOP_SVG()` / `SHELL_BOTTOM_SVG()` (fyllning `#FFD9E8`, räfflor `#E79AC0`, kontur accent på hyllan och `#5C2A43` i öppningen) |
+| `shelf.{x,y,size,maxShown,dx,dy,hit}` | `AVATAR_UI.shelf.box` (92, 450, 48, 3, −9, −7, 64×76-yta) |
+| `pulse` | `AVATAR_UI.shelf.boxPulse` (1,06, 1 000 ms) |
+| `fly` | `AVATAR_UI.reveal` (304, 56, 40 px, 140 + 260 ms, mot (92, 640)) |
+| `open.x/y`, `shellMs`, `shellScale` | `open.center`, `open.fly.ms` 280, `open.fly.toScale` 2,6 |
+| `open.avatarR`, `popMs` | `open.figure.displayPx` 112 (centrum y 228), `open.figure.ms` 260 |
+| `open.pearlsY/R/Pitch` | `open.pearls` (374, 7, 20) |
+| `open.scrimAlpha` | `open.scrim.alpha` 0,86 |
+| `open.intensity` | `RARITY.juice` (samma värden) |
+| `open.ring` | `open.rings[rarity]` (0–3) + `open.ring` |
+| `friends.tabs` | `AVATAR_UI.book.tabs` (x 32/96, y 36, 48 bred, yta 56×72) |
+| `friends.headerH`, `gridTop` | scen + burk upptar y 0–196; `grid.top` 204 |
+| `friends.cols/cell/gap` | `grid.cols` 6, `grid.cell` 48, `grid.pitchX` 56 |
+| `friends.avatarR`, `ringW` | `grid.avatarPx` 40, `grid.frameW` 3 |
+| `friends.levelPearlR/Pitch` | **rombar**: `grid.rombW/H/Pitch/Y` (8, 10, 14, +32) |
+| `friends.groupGap` | `grid.headerH` 28 + `grid.groupGap` 8 |
+| `friends.jar` | `AVATAR_UI.book.jar` (268, 134, 88×96, 25 pärlor, rader 6-5-6-5-3) |
+| `friends.silhouetteAlpha` | `grid.silAlpha` 0,25 |
+
+### 13.10 Ljud (`AVATAR_SOUND` + per figur)
+
+| Ljud | Karaktär |
+|---|---|
+| `shellOpen` | triangel 220 → 330 Hz, 0,12 s, samma för alla: ett mjukt "klonk-upp" |
+| `reveal.common` | enkel ton E5 + kvint |
+| `reveal.uncommon` | två toner 0/+7 |
+| `reveal.rare` | treklang 0/4/7 |
+| `reveal.epic` | 0/4/7/12 med svagt vibrato |
+| `reveal.legendary` | 0/4/7/12/16 (som nytt set) |
+| `reveal.mythic` | 0/4/7/11/14/19, längre svans, vibrato. **Rikare, inte högre eller snabbare.** Ingen myntklang, inget snurrljud, inget trumvirvel-uppbygge före |
+| `boxEarned` | sinus 784 → 1 047 Hz, kort "blipp" när musslan dyker upp |
+| `equip` | kort uppåtglid när man väljer kompis |
+| `tab` | samma som `pageTurn` |
+| Figurernas egna | `cosmetic.sound[trigger]`, t.ex. Krilles kastanjetter vid drop, Gurras kväk vid combo 3, Trummans trumslag. `merge`-ljud transponeras med `playTone(def, combo)` |
+| Showcase | `showcase.sound` en gång i öppningen och vid tryck på scenen |
+
+Alla är `ToneDef`-kompatibla (`AvatarTone`) och spelas med `playTone`. Gain ligger på 0,07–0,35 under merge-plinget, så att kompisen aldrig överröstar spelet.
+
+### 13.11 Ikoner (i `avatars.ts`, viewBox 64)
+
+| Ikon | Export | Form |
+|---|---|---|
+| Mussla stängd | `SHELL_ICON(edge, fill, rib)` | musselskal framifrån, fem räfflor, vågig kant, accent-kontur (tryckbar) |
+| Mussla öppen | `SHELL_OPEN_ICON()` | uppfälld övre halva med pärlemor, tom |
+| Musslans halvor | `SHELL_TOP_SVG()`, `SHELL_BOTTOM_SVG()` | för öppningen. Gångjärnet ligger vid y 38 |
+| Flik Set | `TAB_SET_ICON(c)` | 2×2 cirklar, en fylld ("samling"). Stroke 6 som §9 |
+| Flik Kompisar | `TAB_FRIENDS_ICON(c)` | figur som håller en boll (Släpparen). Stroke 6 |
+| Pärla | `PEARL_ICON(c)`, `PEARL_MYTHIC_ICON()` | fylld cirkel, `ink`-kant, vit högdager. Mytisk i sex ränder |
+| Romb | `ROMB_ICON(c, filled, fillPct)` | fylld med reflex, eller kontur som fylls nedifrån efter XP |
+
+### 13.12 Tillgänglighet och flash-guard
+
+- Alla loopar är ≤1 Hz (kontrollerat i data): idle, danger, musselpuls 0,5 Hz, "ny"-puls 0,5 Hz och strålarnas rotation. En del showcase-gester är snabbare **rörelser** en gång, men de ändrar aldrig ljusstyrkan.
+- Ljusökningar sker en gång per händelse: glöd i öppningen och ringar som tonas ut. Inga vitblixtar, även Klicks slutare är mörk. Disco pulserar högst 2 gånger per sekund med alpha ≤0,13. Ekko pingar 1 Hz.
+- Raritet bärs av pärlantal, grupp och färg. Uppgradering bärs av antal fyllda romber. Vald kompis visas med bock och accentram. Ägd mot ej ägd skiljs åt som färgfigur mot siluett.
+- Inga långtryck och inga dolda gester. Allt nås med ett tryck. Scroll är det enda draget, och det har en ledtråd.
+- Figurkroppar ≥3,6:1 mot bakgrunden. Stjärnvalens mörka kropp (3,6:1) har en ljus kontur (15,3:1). Ansikten ≥5,1:1 mot kroppen, till exempel Lisa `ink` på `#8F7CFF`.
+- Lägg till `AVATAR_UI.shelf.boxPulse` och `book.freshPulse` i flash-guard-testets lista (`JUICE.pulseHalfCycleMs`).
+
+### 13.13 Öppna frågor
+
+1. **Vilken kompis har man från start?** DESIGN §14 säger inget. Jag föreslår **ingen**: innan första musslan hänger objektet som i v1.1, och första musslan (alltid sällsynt, efter 50 merges) väljs automatiskt. "En kompis kommer" blir då första stora ögonblicket. Alternativet är en neutral startkompis som inte ingår i de 48.
+2. **Pärlor mot romber.** DESIGN §14.4 säger "pärlor under avataren" för uppgradering. Jag använder **romber** för uppgradering, i boken och på Släpparen, och låter pärlor betyda **bara raritet**. Två betydelser av samma form vore förvirrande för en 7-åring. Bekräfta.
+3. **Lykt-Lisa "6/8/10 s"** har jag tolkat som en siktningsbudget per runda (lyktans olja). Om det i stället ska vara "de första N sekunderna av varje siktning" byts bara betydelsen av `seconds`.
+4. **~30 %-regeln** krockar med de heltal §14.5 anger, se §13.8. Jag har följt §14.5.
+5. **Rundavslutets mussla** tar ungefär 700 ms av 2,5 s-budgeten. Med nytt set, 6 flygare och en mussla samma runda blir det trångt. Jag föreslår att flygarna då körs i `flyersFast` (§12.5).

@@ -191,3 +191,10 @@ Aldrig rött (rött = fara). Vanlig/ovanlig namnges och ritas av UI-designern me
 
 ### 14.7 Sparformat
 `avatars: { owned: string[], level: Record<id, 1|2|3>, xp: Record<id, number>, equipped: string, boxesEarned: number, boxesOpened: number, pendingBoxes: number }`, `stats.merges` återanvänds för intjäning. `highscoreAvatar: string`.
+
+### 14.8 Förtydliganden (2026-09-25)
+- Uppgraderingsnivå visas med romber (0–2), pärlor betyder bara raritet.
+- Ingen startkompis; objektet hänger som förut tills första musslan (alltid sällsynt), som väljs automatiskt. Senare öppnade väljs inte automatiskt.
+- Lykt-Lisa: parametern är antal sekunders siktning per runda som lyktan räcker.
+- Rundavslut med mussla + nytt set + många fångster: flygarna körs i snabbläge så budgeten 2,5 s håller.
+- Data: `app/src/data/avatars.ts` (ersätter stubben), spec UI.md §13.
