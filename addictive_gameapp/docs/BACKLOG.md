@@ -48,3 +48,10 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 ## v1.1-kandidater (från speltest)
 - [ ] U1 Siktlinje-ikonens på-läge ritas i accent (cyan) medan de tre andra är hud-vita. Harmonisera (ui-designer).
 - [ ] U2 Rampen räknar alla drops i rundan, även i Torka. Utvärdera om bara Flöde-drops ska räknas efter speltest.
+
+## Fas 7 – Meta-lager v1.1 (DESIGN §13)
+- [ ] M1 UI-spec: kedja i HUD, samlarbok (sida, platser, bläddring), rundavslut-sekvens, 4 nya temaset med palett/ljud/partiklar/dekor. (ui-designer)
+- [ ] M2 Kedjan i HUD + `stats.createdPerLevel`. AK: siluetter tänds, "?" för aldrig nådda. (programmerare)
+- [ ] M3 Samlarbok: datamodell, fångst, skimrande med garanti, boksida med bläddring, ingång från hyllan. AK: unit-tester för p och pity, e2e öppnar boken. (programmerare)
+- [ ] M4 Temaset: 5 set i data, upplåsningslogik (två spår), val av aktivt set, texturer/ljud/partiklar per set. AK: unit-tester för upplåsning, e2e byter set. (programmerare)
+- [ ] M5 Rundavslut "nytt!" ovanpå förlustskärmen, avbrytbart. AK: omstart <0,5 s även mitt i sekvensen. (programmerare)

@@ -111,3 +111,33 @@ Regeln "ingen tidspress i UI:t" omformuleras till: **ingen synlig nedräkning oc
 ## 12. Ramp och siktlinje (beslut 2026-09-20)
 - **Ramp**: auto-drop-tiden minskar med antal drops i rundan. `autoDropAtMs` går linjärt från 6000 ms vid drop 0 till 3500 ms vid drop 60, sedan konstant (golv). `nudgeAtMs` är alltid halva auto-drop-tiden. Övriga regler i §11 gäller oförändrat (bara Flöde, efter första egna drop, aldrig fara/slow-mo/special/Lugnt läge). Konfig i `data/pacing.ts`: `rampStartMs`, `rampEndMs`, `rampDrops`.
 - **Siktlinje**: tre lägen i `data/aim.ts`: `always` | `aiming` | `off`. Default `aiming`: linjen visas bara medan fingret är nere och siktar, tonar in på 80 ms och ut på 120 ms. Inställning på startskärmen: en fjärde ikon (siktlinje) med två lägen, på = `aiming`, av = `off`. Av-läge ritas överkryssat i hudDim enligt UI.md. Sparas i `settings.aimLine`. `always` finns bara som konfig för test.
+
+## 13. Meta-lager v1.1 (beslut 2026-09-25, källa: research/meta-layer-research.md)
+Mål: "mer att komma tillbaka till" utan timers, streaks, notiser, dubbletter eller köp. Slumpen avgör bara *vad*, aldrig *om* eller *när*. Upplåsningar ger aldrig poäng.
+
+### 13.1 Kedjan i HUD
+- 11 små siluetter i en rad under poängen. Nivåer som skapats i rundan tänds (fylld, egen färg). Nivåer som aldrig skapats i något spel visas som mörk siluett med "?". Övriga: mörk siluett utan "?".
+- Tänds med scale-punch 0,3 och ett kort pling när ny nivå skapas i rundan. Ingen text.
+
+### 13.2 Samlarbok
+- En sida per temaset (v1.1: 5 sidor). 22 platser per sida: 11 vanliga + 11 skimrande. Nivå 0 vanlig är ifylld från start på varje sida (endowed progress).
+- **Fångst**: en Glimt fångas när nivån *skapas* genom merge (eller regnbåge) i det aktiva setet. Drop från kön räknas inte.
+- **Skimrande**: avgörs med seedad RNG vid skapande. Ren kosmetik: glittrande ring runt objektet + egen ton (kvint upp), inga poäng. Sannolikhet per nivå i `data/collection.ts`: nivå 0–4: 1/60, 5–6: 1/30, 7–8: 1/12, 9–10: 1/5. **Garanti**: räknare per nivå, garanterad skimrande efter 3/p skapade utan träff. Första skimrande garanteras senast i runda 3 på nivå ≥2.
+- Boken öppnas från hyllan på startskärmen. Bläddring mellan sidor med svep. Låsta platser syns som siluetter med alpha 0,25. Ingen text utöver siffror.
+- Sparformat: `collection: { [setId]: { caught: number[11 bitmask eller boolean[]], shiny: boolean[11] } }`, `stats.createdPerLevel: number[11]`, `stats.shinyPity: number[11]`.
+
+### 13.3 Temaset
+- 5 set: Glimtarna (bas) + 4 nya. Varje set: egen palett per nivå, egen dekorstil, egen klangfärg på merge-ljudet (vågform/filter), egen partikelform, egen bakgrundsdetalj. **Ansikten per nivå är samma i alla set** (färg får inte vara enda informationsbärare). Reglerna ändras aldrig.
+- **Upplåsning**, det som kommer först:
+  - Tidsspår: ackumulerade merges 200 / 600 / 1 500 / 3 000 (startvärden, mät `merges per runda`).
+  - Skicklighetsspår: första nivå 8, första nivå 10, första dubbel-Klunk, första fulla boksida.
+- Vilket set som låses upp dras slumpvis bland återstående, inga dubbletter. Stapel mot nästa set visas på startskärmen och i rundavslutet.
+- Aktivt set väljs i boken (tryck på sidan). Byte av set byter texturer, ljud och partiklar vid nästa runda.
+
+### 13.4 Rundavslut "nytt!"
+- Spelas ovanpå förlustskärmen, aldrig i stället för. Ett tryck var som helst startar om direkt (<0,5 s), och avbryter animationen.
+- Sekvens (max 2,5 s totalt): poäng → nyfångade Glimtar flyger en i taget in i en bok-ikon (skimrande med glitter) → sidans mätare (x/22) → stapel mot nästa set → om nytt set: setets ikon med guldringar (`jackpot`-juice, intensitet 0,9).
+- Nytt set eller ny skimrande som hoppas över visas i boken nästa gång med en puls (≤1 Hz).
+
+### 13.5 Skjuts till v1.2
+Ikonuppdrag, funktionella Glimtar ("Lyktan"). Beslut efter speltest.
