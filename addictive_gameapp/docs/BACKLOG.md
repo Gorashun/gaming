@@ -39,7 +39,8 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [ ] P4.4 Prestandamätning på riktig mellanklasstelefon. AK: ≥55 fps i kaskad.
 
 ## Fas 5 – Speltest och balans
-- [ ] P5.1 Testprotokoll för barn 7–10 och vuxna. (researcher)
+- [x] P5.1 Testprotokoll för barn 7–10 och vuxna: `docs/PLAYTEST.md`.
+- [ ] P5.1a Debugpanel bakom långtryck på logotypen: rundlogg (tid till första merge, återstart, mussla-tider), Kopiera JSON, Nollställ, Ge kompis, Auto-drop av/på. Bara i testbygge-flagga eller alltid dold bakom långtryck 2 s.
 - [ ] P5.2 Balansera regissören i data efter test. (projektledare + programmerare)
 
 ## Fas 6 – iOS
