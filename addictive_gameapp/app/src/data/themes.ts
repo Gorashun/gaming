@@ -686,6 +686,12 @@ export const META = {
     ring: { toR: 2.4, ms: 320, alpha: 0.9, ease: 'Cubic.easeOut' },
     /** Målpuls på nästa "?" ovanför högsta tända nivå. 0,5 Hz. */
     goalPulse: { scale: 1.12, halfCycleMs: 1000, ease: 'Sine.easeInOut' },
+    /** Undanflyttning: hängande objekt vars x ≤ right + r tonar ned raden (siktet går före). */
+    dim: { right: 213, alpha: 0.35, inMs: 120, outMs: 200 },
+    /** Allra första rundan: raden tonas in vid första merge. */
+    firstRunFadeMs: 300,
+    /** "?" krymper bort när nivån tänds första gången. */
+    qmarkOutMs: 120,
   },
   book: {
     close: { x: 320, y: 44, icon: 48, hit: 72 },

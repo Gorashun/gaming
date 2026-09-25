@@ -132,11 +132,12 @@ test('hyllan öppnar samlarboken, stäng-ikonen och svep ner stänger', async ({
     pages: window.__book!.pages,
     filled: window.__book!.filled,
   }));
-  expect(book).toEqual({ page: 0, pages: 1, filled: 5 });
+  // Fem sidor (ett per temaset), bara grundsetet upplåst; 4 vanliga + 1 skimrande av 21.
+  expect(book).toEqual({ page: 0, pages: 5, filled: 5 });
   expect(await page.evaluate(() => window.__game)).toBeUndefined();
   await page.screenshot({ path: 'tests/e2e/screenshots/book.png' });
 
-  // Svep i sidled med bara en sida: stannar kvar.
+  // Svep i sidled: nästa sida (låst).
   const box = (await page.locator('canvas').boundingBox())!;
   const sx = (wx: number): number => box.x + (wx * box.width) / 360;
   const sy = (wy: number): number => box.y + (wy * box.height) / 640;
@@ -145,7 +146,7 @@ test('hyllan öppnar samlarboken, stäng-ikonen och svep ner stänger', async ({
   await page.mouse.move(sx(80), sy(300), { steps: 6 });
   await page.mouse.up();
   await page.waitForTimeout(300);
-  expect(await page.evaluate(() => window.__book?.page)).toBe(0);
+  expect(await page.evaluate(() => window.__book?.page)).toBe(1);
 
   // Stäng-ikonen.
   await tap(page, 316, 44);

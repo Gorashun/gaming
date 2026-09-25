@@ -3,12 +3,19 @@
  * Anropas en gång per nivå som SKAPAS (merge eller regnbåge), aldrig för drop från kön.
  */
 import type { Rng } from './rng';
-import { LEVEL_COUNT, type CollectionConfig } from '../data/collection';
+import { LEVEL_COUNT, SLOTS_PER_PAGE, type CollectionConfig } from '../data/collection';
 
-/** En boksida: 11 vanliga + 11 skimrande platser. */
+/** En boksida: 11 vanliga + 10 skimrande platser (shiny[0] används aldrig). */
 export interface CollectionPage {
   caught: boolean[];
   shiny: boolean[];
+  /** Nytt sedan sist, per plats (index enligt `slotIndex`). Nollställs när sidan visats. */
+  fresh: boolean[];
+}
+
+/** Platsindex 0–20: vanliga nivå 0–10 = 0–10, skimrande nivå 1–10 = 11–20. */
+export function slotIndex(level: number, shiny: boolean): number {
+  return shiny ? LEVEL_COUNT - 1 + level : level;
 }
 
 export type Collection = Record<string, CollectionPage>;
@@ -49,6 +56,8 @@ export function onLevelCreated(
   state.createdPerLevel[level]++;
   const caught = !state.page.caught[level];
   state.page.caught[level] = true;
+  // Nytt sedan sist tills rundavslutet eller boken har visat det (DESIGN §13.4).
+  if (caught) state.page.fresh[level] = true;
   // Nivå 0 skapas aldrig genom merge; den blir aldrig skimrande.
   if (level < 1) return { caught, shiny: false, newShiny: false };
 
@@ -62,6 +71,7 @@ export function onLevelCreated(
     state.shinyPity[level] = 0;
     state.everShiny = true;
     state.page.shiny[level] = true;
+    if (newShiny) state.page.fresh[slotIndex(level, true)] = true;
   } else {
     state.shinyPity[level]++;
   }
@@ -72,12 +82,16 @@ export function onLevelCreated(
 export function emptyPage(): CollectionPage {
   const caught = new Array<boolean>(LEVEL_COUNT).fill(false);
   caught[0] = true;
-  return { caught, shiny: new Array<boolean>(LEVEL_COUNT).fill(false) };
+  return {
+    caught,
+    shiny: new Array<boolean>(LEVEL_COUNT).fill(false),
+    fresh: new Array<boolean>(SLOTS_PER_PAGE).fill(false),
+  };
 }
 
-function boolArray(raw: unknown): boolean[] {
-  const out = new Array<boolean>(LEVEL_COUNT).fill(false);
-  if (Array.isArray(raw)) for (let i = 0; i < LEVEL_COUNT; i++) out[i] = raw[i] === true;
+function boolArray(raw: unknown, n = LEVEL_COUNT): boolean[] {
+  const out = new Array<boolean>(n).fill(false);
+  if (Array.isArray(raw)) for (let i = 0; i < n; i++) out[i] = raw[i] === true;
   return out;
 }
 
@@ -87,8 +101,13 @@ export function normalizeCollection(raw: unknown, sets: readonly string[]): Coll
   const out: Collection = {};
   for (const id of Object.keys(src)) {
     const p = src[id] ?? {};
-    const page = { caught: boolArray(p.caught), shiny: boolArray(p.shiny) };
+    const page = {
+      caught: boolArray(p.caught),
+      shiny: boolArray(p.shiny),
+      fresh: boolArray(p.fresh, SLOTS_PER_PAGE),
+    };
     page.caught[0] = true;
+    page.shiny[0] = false;
     out[id] = page;
   }
   for (const id of sets) if (!out[id]) out[id] = emptyPage();
@@ -107,12 +126,12 @@ export function countArray(raw: unknown): number[] {
   return out;
 }
 
-/** Ifyllda platser på sidan, 0–22. */
+/** Ifyllda platser på sidan, 1–21. */
 export function filledSlots(page: CollectionPage): number {
   let n = 0;
   for (let i = 0; i < LEVEL_COUNT; i++) {
     if (page.caught[i]) n++;
-    if (page.shiny[i]) n++;
+    if (i > 0 && page.shiny[i]) n++;
   }
   return n;
 }

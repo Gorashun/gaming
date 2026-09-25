@@ -11,15 +11,19 @@ import {
 import { MAX_LEVEL, TOP_PAIR_SCORE, radiusOf, scoreForCreating, scoreOf } from '../data/levels';
 import { FEEL, JUICE, mergeIntensity } from '../data/juice';
 import { DIRECTOR, SPECIALS, type SpecialType } from '../data/director';
-import { INT, LEVEL_COLORS, THEME } from '../data/theme';
+import { INT, THEME, hexToInt } from '../data/theme';
+import { CHAIN_STEPS, META, META_COLORS, META_SOUND, setPalette, themeSetById } from '../data/themes';
 import {
   FX_GLITTER,
   FX_GLITTER_R,
+  FX_RING,
+  FX_RING_R,
   SPECIAL_BOMB,
   SPECIAL_RAINBOW,
   ballTextureKey,
   scaleForBodyRadius,
   silhouetteTextureKey,
+  useSet,
 } from '../ui/textures';
 import { drawBackground } from '../ui/background';
 import { iconTextureKey } from '../ui/icons';
@@ -32,17 +36,20 @@ import { autoDropMsForDrop, createPacer, type Pacer, type PacerInput } from '../
 import { createComboTracker, type ComboTracker } from '../systems/combo';
 import { createDangerTracker, type DangerTracker } from '../systems/danger';
 import { Juice } from '../systems/juice';
-import { playTone, unlockAudio } from '../systems/audio';
+import { playTone, setMergeTimbre, timbrePlayCount, unlockAudio } from '../systems/audio';
 import { mulberry32, type Rng } from '../systems/rng';
 import { COLLECTION, COLLECTION_FX, LEVEL_COUNT } from '../data/collection';
 import {
   emptyPage,
+  filledSlots,
   hasAnyShiny,
   onLevelCreated,
   pityThreshold,
   type CollectionState,
 } from '../systems/collection';
+import { evaluateUnlocks, nextSetProgress } from '../systems/unlocks';
 import { cached, save, submitRun } from '../systems/save';
+import type { RevealCatch, RevealData } from './GameOver';
 
 interface Ball {
   body: MatterJS.BodyType;
@@ -69,7 +76,7 @@ interface Ball {
 
 const L = THEME.layout;
 const GL = COLLECTION_FX.glitter;
-const CH = COLLECTION_FX.chain;
+const CH = META.chain;
 const PREVIEW_R = 24;
 const DEG = Math.PI / 180;
 /** Tak för mätbufferten i testhooken (DESIGN §11). */
@@ -137,6 +144,24 @@ export class Game extends Phaser.Scene {
   private chainLit: boolean[] = new Array<boolean>(LEVEL_COUNT).fill(false);
   private chainImgs: Phaser.GameObjects.Image[] = [];
   private chainQ: Phaser.GameObjects.Text[] = [];
+  private chainGlitter: boolean[] = new Array<boolean>(LEVEL_COUNT).fill(false);
+  private chain!: Phaser.GameObjects.Container;
+  /** Raden är osynlig tills första merge (allra första rundan). */
+  private chainHidden = false;
+  private chainDim = false;
+  private chainDimTween: Phaser.Tweens.Tween | null = null;
+  private chainGoalIdx = -1;
+  private chainGoalTween: Phaser.Tweens.Tween | null = null;
+
+  // ---- temaset och rundavslut (DESIGN §13.3–13.4)
+  private levelColors: number[] = [];
+  private seedUsed = 0;
+  private startMerges = 0;
+  private baseDoubleKlunks = 0;
+  private runDoubleKlunks = 0;
+  private filledAtStart = 0;
+  /** Platser som fyllts i rundan, i ordning (flyger in i boken i rundavslutet). */
+  private runCatches: RevealCatch[] = [];
 
   private currentLevel = 0;
   private currentSpecial: SpecialType | null = null;
@@ -233,10 +258,20 @@ export class Game extends Phaser.Scene {
     this.mergeable.clear();
 
     const data = cached();
+    const firstRun = data.stats.runs === 0;
     this.aimLineMode = data.settings.aimLine ? AIM.defaultMode : 'off';
     this.highscore = data.highscore;
     this.baseMerges = data.stats.merges;
+    this.startMerges = data.stats.merges;
     this.baseAutoDrops = data.stats.autoDrops;
+    this.baseDoubleKlunks = data.stats.doubleKlunks;
+    this.runDoubleKlunks = 0;
+    this.runCatches = [];
+    // Aktivt set gäller från rundstart och byts aldrig mitt i en runda (DESIGN §13.3).
+    const set = themeSetById(data.activeSet);
+    useSet(this, set.id);
+    setMergeTimbre(set.sound);
+    this.levelColors = set.levels.map((l) => hexToInt(l.color));
     void save({
       stats: {
         runs: data.stats.runs + 1,
@@ -246,6 +281,7 @@ export class Game extends Phaser.Scene {
     });
 
     const seed = SEED ?? ((Date.now() ^ 0x9e3779b9) >>> 0);
+    this.seedUsed = seed;
     this.director = createDirector(mulberry32(seed));
     // Egen ström för skimrande så regissörens sekvens inte påverkas.
     this.colRng = mulberry32((seed ^ 0x5eed5) >>> 0);
@@ -257,18 +293,25 @@ export class Game extends Phaser.Scene {
       run: data.stats.runs + 1,
       everShiny: hasAnyShiny(data.collection),
     };
+    this.filledAtStart = filledSlots(this.col.page);
     this.chainLit.fill(false);
     this.chainLit[0] = true;
+    this.chainGlitter.fill(false);
     this.chainImgs.length = 0;
     this.chainQ.length = 0;
+    this.chainHidden = firstRun;
+    this.chainDim = false;
+    this.chainDimTween = null;
+    this.chainGoalIdx = -1;
+    this.chainGoalTween = null;
     this.combo = createComboTracker();
     this.dangerTracker = createDangerTracker();
     this.takeNext();
 
-    drawBackground(this);
-    this.buildCan();
+    drawBackground(this, set.id, { still: data.settings.calm });
+    this.buildCan(setPalette(set));
     this.buildHud();
-    this.juice = new Juice(this, L.hud.scoreX, L.hud.scoreY, { ...data.settings });
+    this.juice = new Juice(this, L.hud.scoreX, L.hud.scoreY, { ...data.settings }, set.particle);
 
     this.input.on('pointerdown', this.onPointerDown, this);
     this.input.on('pointermove', this.onPointerMove, this);
@@ -287,7 +330,7 @@ export class Game extends Phaser.Scene {
 
     this.spawnHanging();
     this.lastDropAt = this.time.now;
-    if (data.stats.runs === 0) this.showHand();
+    if (firstRun) this.showHand();
 
     if (TEST_HOOK) this.installTestHook();
   }
@@ -398,30 +441,58 @@ export class Game extends Phaser.Scene {
       forceShiny(level: number): void {
         self.col.shinyPity[level] = pityThreshold(level, COLLECTION) - 1;
       },
+      // ---- temaset (DESIGN §13.3)
+      get activeSet(): string {
+        return cached().activeSet;
+      },
+      get unlockedSets(): string[] {
+        return cached().unlockedSets.slice();
+      },
+      get freshSet(): string | null {
+        return cached().freshSet;
+      },
+      /** Lägger till merges på tidsspåret (räknas vid rundavslutet). */
+      grantMerges(n: number): void {
+        self.baseMerges += n;
+      },
+      /** Väljer aktivt set (bara upplåsta). Gäller från nästa runda. */
+      setActiveSet(id: string): boolean {
+        if (!cached().unlockedSets.includes(id)) return false;
+        void save({ activeSet: id });
+        return true;
+      },
+      /** Texturnyckeln för objektet som hänger nu, t.ex. 'ball-planeterna-2'. */
+      get textureKey(): string {
+        return (self.hanging ?? self.preview).texture.key;
+      },
+      /** Antal merge-klanger som spelats (ljudvägen per set körs). */
+      get timbrePlays(): number {
+        return timbrePlayCount();
+      },
     };
   }
 
   // ---------------------------------------------------------------- burk
 
-  private buildCan(): void {
+  private buildCan(pal: { jarGlass: string; jarWall: string; floor: string; jarEdge: string; jarShine: string }): void {
     const t = CAN.wallThickness;
     const h = CAN.floorY - CAN.topY;
     const g = this.add.graphics().setDepth(-5);
-    g.fillStyle(INT.jarGlass, 0.55);
+    g.fillStyle(hexToInt(pal.jarGlass), 0.55);
     g.fillRect(INNER_LEFT, CAN.topY, INNER_RIGHT - INNER_LEFT, h);
-    g.fillStyle(INT.jarWall, 1);
+    g.fillStyle(hexToInt(pal.jarWall), 1);
     g.fillRect(CAN_LEFT, CAN.topY, t, h + t);
     g.fillRect(INNER_RIGHT, CAN.topY, t, h + t);
-    g.fillStyle(INT.floor, 1);
+    g.fillStyle(hexToInt(pal.floor), 1);
     g.fillRect(CAN_LEFT, CAN.floorY, CAN.outerWidth, t);
-    g.lineStyle(3, INT.jarEdge, 1);
+    g.lineStyle(3, hexToInt(pal.jarEdge), 1);
     g.strokeRoundedRect(CAN_LEFT + 1.5, CAN.topY, CAN.outerWidth - 3, h + t, L.jar.cornerRadius);
 
     // Två diagonala reflexstreck (UI.md §7.2)
     const shine = this.add.graphics().setDepth(2);
-    shine.lineStyle(8, INT.jarShine, 0.12);
+    shine.lineStyle(8, hexToInt(pal.jarShine), 0.12);
     shine.lineBetween(44, 120, 80, 300);
-    shine.lineStyle(4, INT.jarShine, 0.12);
+    shine.lineStyle(4, hexToInt(pal.jarShine), 0.12);
     shine.lineBetween(62, 150, 88, 290);
 
     this.matter.add.rectangle(CAN_LEFT + t / 2, CAN.topY + h / 2, t, h, { isStatic: true });
@@ -485,7 +556,7 @@ export class Game extends Phaser.Scene {
 
     for (let i = 0; i < FEEL.combo.maxDots; i++) {
       this.comboDots.push(
-        this.add.circle(22 + i * 14, 86, 4, INT.accent).setDepth(10).setVisible(false),
+        this.add.circle(22 + i * 14, CH.comboDotsY, 4, INT.accent).setDepth(10).setVisible(false),
       );
     }
 
@@ -501,49 +572,147 @@ export class Game extends Phaser.Scene {
     this.buildChain();
   }
 
-  /** Kedjan (DESIGN §13.1): 11 siluetter i en rad under poängen. Byggs en gång per runda. */
+  /** Kedjans kroppsradie per nivå: 5,0 … 8,5 px (UI.md §12.2). */
+  private chainR(level: number): number {
+    return CH.r0 + CH.rStep * level;
+  }
+
+  /**
+   * Kedjan (DESIGN §13.1, UI.md §12.2): 11 siluetter vänsterställda under highscore-markören.
+   * Siluetterna är vita texturer som tintas. Byggs en gång per runda.
+   */
   private buildChain(): void {
-    const step = CH.size + CH.gap;
-    const x0 = CH.cx - (LEVEL_COUNT * step - CH.gap) / 2 + CH.size / 2;
     const created = this.col.createdPerLevel;
+    const sil = hexToInt(META_COLORS.silhouette);
+    this.chain = this.add.container(0, 0).setDepth(5.5).setAlpha(this.chainHidden ? 0 : 1);
     for (let i = 0; i < LEVEL_COUNT; i++) {
-      const x = x0 + i * step;
+      const x = CH.x0 + CH.pitch * i;
       const lit = this.chainLit[i];
       const img = this.add
         .image(x, CH.y, lit ? ballTextureKey(i) : silhouetteTextureKey(i))
-        .setScale(scaleForBodyRadius(i, CH.bodyR))
-        .setAlpha(lit ? 1 : CH.unlitAlpha)
-        .setDepth(5.5);
+        .setScale(scaleForBodyRadius(i, this.chainR(i)));
+      if (!lit) img.setTint(sil);
       const q = this.add
         .text(x, CH.y, '?', {
           fontFamily: THEME.type.family,
-          fontSize: '12px',
-          color: THEME.palette.hud,
+          fontSize: `${CH.qmarkPx}px`,
+          color: META_COLORS.qmark,
           fontStyle: THEME.type.weightHeavy,
+          stroke: THEME.palette.bg,
+          strokeThickness: 2,
         })
         .setOrigin(0.5)
-        .setDepth(5.6)
-        .setVisible(!lit && i > 0 && created[i] === 0);
+        .setVisible(!lit && created[i] === 0);
+      this.chain.add([img, q]);
       this.chainImgs.push(img);
       this.chainQ.push(q);
     }
+    this.updateChainGoal();
   }
 
-  /** Tänder en nivå i kedjan: scale-punch 0,3 + kort pling. */
+  /** Målpuls (0,5 Hz) på nästa "?" ovanför högsta tända nivå. Bara en plats åt gången. */
+  private updateChainGoal(): void {
+    let top = 0;
+    for (let i = 0; i < LEVEL_COUNT; i++) if (this.chainLit[i]) top = i;
+    let goal = -1;
+    for (let i = top + 1; i < LEVEL_COUNT; i++) {
+      if (this.chainQ[i].visible) {
+        goal = i;
+        break;
+      }
+    }
+    if (goal === this.chainGoalIdx) return;
+    this.chainGoalTween?.remove();
+    this.chainGoalTween = null;
+    const old = this.chainGoalIdx;
+    if (old >= 0 && !this.chainLit[old]) this.chainImgs[old].setScale(scaleForBodyRadius(old, this.chainR(old)));
+    this.chainGoalIdx = goal;
+    if (goal < 0) return;
+    const base = scaleForBodyRadius(goal, this.chainR(goal));
+    this.chainGoalTween = this.tweens.add({
+      targets: this.chainImgs[goal],
+      scale: base * CH.goalPulse.scale,
+      duration: CH.goalPulse.halfCycleMs,
+      ease: CH.goalPulse.ease,
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  /** Raden tonas ned när det hängande objektet ligger över den (siktet går före HUD). */
+  private updateChainDim(): void {
+    if (!this.hanging || this.chainHidden) return;
+    const r = this.radiusFor(this.currentSpecial, this.currentLevel);
+    const over = this.hanging.x <= CH.dim.right + r;
+    if (over === this.chainDim) return;
+    this.chainDim = over;
+    this.chainDimTween?.remove();
+    this.chainDimTween = this.tweens.add({
+      targets: this.chain,
+      alpha: over ? CH.dim.alpha : 1,
+      duration: over ? CH.dim.inMs : CH.dim.outMs,
+    });
+  }
+
+  /** Tänder en nivå i kedjan: punch 0,6 → 1,3 → 1,0, ring i nivåns färg och pling. */
   private lightChain(level: number): void {
     this.chainLit[level] = true;
     const img = this.chainImgs[level];
-    const base = scaleForBodyRadius(level, CH.bodyR);
-    img.setTexture(ballTextureKey(level)).setAlpha(1);
-    this.chainQ[level].setVisible(false);
+    const q = this.chainQ[level];
+    const first = q.visible;
+    const r = this.chainR(level);
+    const base = scaleForBodyRadius(level, r);
+    if (this.chainGoalIdx === level) {
+      this.chainGoalTween?.remove();
+      this.chainGoalTween = null;
+      this.chainGoalIdx = -1;
+    }
     this.tweens.killTweensOf(img);
-    this.tweens.add({
+    img.setTexture(ballTextureKey(level)).clearTint().setScale(base * 0.6);
+    this.tweens.chain({
       targets: img,
-      scale: { from: base * (1 + CH.punch), to: base },
-      duration: CH.punchMs,
-      ease: THEME.anim.mergePunch.ease,
+      tweens: [
+        { scale: base * CH.punch.peak, duration: CH.punch.upMs, ease: CH.punch.easeUp, delay: CH.lightDelayMs },
+        { scale: base, duration: CH.punch.downMs, ease: CH.punch.easeDown },
+      ],
     });
-    playTone(COLLECTION_FX.sound.chain, level);
+    if (first) {
+      this.tweens.add({
+        targets: q,
+        scale: 0,
+        duration: CH.qmarkOutMs,
+        onComplete: () => q.setVisible(false).setScale(1),
+      });
+    }
+    const ring = this.add
+      .image(img.x, img.y, FX_RING)
+      .setTint(this.levelColors[level])
+      .setScale(r / FX_RING_R)
+      .setAlpha(0);
+    this.chain.add(ring);
+    this.tweens.add({
+      targets: ring,
+      scale: (r * CH.ring.toR) / FX_RING_R,
+      alpha: { from: CH.ring.alpha, to: 0 },
+      delay: CH.lightDelayMs,
+      duration: CH.ring.ms,
+      ease: CH.ring.ease,
+      onComplete: () => ring.destroy(),
+    });
+    playTone(first ? META_SOUND.chainFirst : META_SOUND.chainLight, CHAIN_STEPS[level]);
+    this.updateChainGoal();
+  }
+
+  /** Statisk mini-glitterring på kedjeplatsen när en skimrande skapats i rundan. */
+  private chainShiny(level: number): void {
+    if (this.chainGlitter[level]) return;
+    this.chainGlitter[level] = true;
+    const img = this.chainImgs[level];
+    this.chain.add(
+      this.add
+        .image(img.x, img.y, FX_GLITTER)
+        .setScale((this.chainR(level) * GL.ringRadius) / FX_GLITTER_R),
+    );
   }
 
   /**
@@ -552,11 +721,18 @@ export class Game extends Phaser.Scene {
    */
   private registerCreated(ball: Ball): boolean {
     const r = onLevelCreated(ball.level, this.col, this.colRng, COLLECTION);
+    if (this.chainHidden) {
+      this.chainHidden = false;
+      this.tweens.add({ targets: this.chain, alpha: 1, duration: CH.firstRunFadeMs });
+    }
     if (!this.chainLit[ball.level]) this.lightChain(ball.level);
     if (r.shiny) {
       this.makeShiny(ball);
+      this.chainShiny(ball.level);
       playTone(COLLECTION_FX.sound.shiny);
     }
+    if (r.caught) this.runCatches.push({ level: ball.level, shiny: false });
+    if (r.newShiny) this.runCatches.push({ level: ball.level, shiny: true });
     // Fångst skrivs direkt: progression får aldrig tappas.
     if (r.caught || r.newShiny) void save();
     return r.shiny;
@@ -715,6 +891,7 @@ export class Game extends Phaser.Scene {
     const cx = Phaser.Math.Clamp(x, INNER_LEFT + r, INNER_RIGHT - r);
     this.hanging.x = cx;
     this.aimLine.x = cx;
+    this.updateChainDim();
   }
 
   private spawnHanging(): void {
@@ -745,6 +922,7 @@ export class Game extends Phaser.Scene {
     this.drawAimLine(r);
     this.aimLine.x = x;
     this.refreshAimLine();
+    this.updateChainDim();
   }
 
   /** Streckad siktlinje, ritas om bara när radien ändras (aldrig per frame). */
@@ -1004,6 +1182,7 @@ export class Game extends Phaser.Scene {
    */
   private fuse(level: number, x: number, y: number, intensity: number): void {
     if (level >= MAX_LEVEL) {
+      this.runDoubleKlunks++;
       this.addScore(TOP_PAIR_SCORE);
       this.juice.trigger('jackpot', 1, x, y, { color: INT.gold, score: TOP_PAIR_SCORE });
       return;
@@ -1017,7 +1196,7 @@ export class Game extends Phaser.Scene {
     const bonus = shiny ? COLLECTION_FX.shinyIntensityBonus : 0;
     this.juice.trigger(jackpot ? 'jackpot' : 'special', jackpot ? 1 : Math.min(1, intensity + bonus), x, y, {
       target: created.img,
-      color: LEVEL_COLORS[level + 1],
+      color: this.levelColors[level + 1],
       score: points,
     });
   }
@@ -1078,6 +1257,7 @@ export class Game extends Phaser.Scene {
     let shiny = false;
     if (level >= MAX_LEVEL) {
       points = TOP_PAIR_SCORE;
+      this.runDoubleKlunks++;
     } else {
       newLevel = level + 1;
       const created = this.addBall(x, y, newLevel, true);
@@ -1090,7 +1270,7 @@ export class Game extends Phaser.Scene {
     this.updateComboDots();
 
     const jackpot = newLevel >= MAX_LEVEL;
-    const color = jackpot ? INT.gold : LEVEL_COLORS[newLevel];
+    const color = jackpot ? INT.gold : this.levelColors[newLevel];
     const chain = state.chain >= FEEL.chain.minLength;
     const event = jackpot ? 'jackpot' : chain ? 'chain' : 'merge';
     const base = jackpot
@@ -1291,15 +1471,52 @@ export class Game extends Phaser.Scene {
 
   // ---------------------------------------------------------------- slut
 
+  /** Rundans statistik som absoluta värden (tål att skrivas flera gånger). */
+  private runStats(): Partial<ReturnType<typeof cached>['stats']> {
+    const d = cached();
+    return {
+      runs: d.stats.runs,
+      merges: this.baseMerges + this.runMerges,
+      autoDrops: this.baseAutoDrops + this.autoDrops,
+      doubleKlunks: this.baseDoubleKlunks + this.runDoubleKlunks,
+      maxLevelEver: Math.max(d.stats.maxLevelEver, this.bestLevel),
+    };
+  }
+
   private persist(): void {
-    void save({
-      stats: {
-        runs: cached().stats.runs,
-        merges: this.baseMerges + this.runMerges,
-        autoDrops: this.baseAutoDrops + this.autoDrops,
-      },
-    });
+    void save({ stats: this.runStats() });
     void submitRun(this.score, this.bestLevel);
+  }
+
+  /**
+   * Upplåsning vid rundslut (DESIGN §13.3), innan rundavslutet visas. Returnerar det som
+   * rundavslutet ska spela upp (DESIGN §13.4).
+   */
+  private settleRun(): RevealData {
+    const d = cached();
+    const stats = this.runStats();
+    const before = d.unlockedSets;
+    const res = evaluateUnlocks(
+      { merges: stats.merges!, maxLevelEver: stats.maxLevelEver!, doubleKlunks: stats.doubleKlunks! },
+      d.collection,
+      before,
+      mulberry32((this.seedUsed ^ 0x5e75) >>> 0),
+    );
+    const newSet = res.newSet ?? null;
+    if (newSet) {
+      if (!d.collection[newSet]) d.collection[newSet] = emptyPage();
+      void save({ stats, unlockedSets: [...before, newSet], freshSet: newSet });
+    } else {
+      void save({ stats });
+    }
+    return {
+      setId: d.activeSet,
+      catches: this.runCatches.slice(),
+      filledBefore: this.filledAtStart,
+      barFrom: nextSetProgress(this.startMerges, before.length),
+      barTo: nextSetProgress(stats.merges!, before.length),
+      newSet,
+    };
   }
 
   private gameOver(): void {
@@ -1310,16 +1527,10 @@ export class Game extends Phaser.Scene {
     this.juice.trigger('loss', 0.5, WORLD.width / 2, CAN.dangerY);
     const score = this.score;
     const bestLevel = this.bestLevel;
-    void save({
-      stats: {
-        runs: cached().stats.runs,
-        merges: this.baseMerges + this.runMerges,
-        autoDrops: this.baseAutoDrops + this.autoDrops,
-      },
-    });
+    const reveal = this.settleRun();
     void submitRun(score, bestLevel).then((record) => {
       this.scene.pause();
-      this.scene.launch('GameOver', { score, bestLevel, record, highscore: cached().highscore });
+      this.scene.launch('GameOver', { score, bestLevel, record, highscore: cached().highscore, reveal });
     });
   }
 }

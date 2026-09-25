@@ -5,6 +5,7 @@
 import { THEME } from './theme';
 import { MAX_LEVEL } from './levels';
 import { SPECIALS } from './director';
+import { META } from './themes';
 
 export type JuiceEvent =
   | 'drop'
@@ -114,6 +115,10 @@ export const JUICE = {
     preview: THEME.anim.previewPulse.durationMs,
     nearMiss: THEME.anim.nearMiss.durationMs,
     restart: THEME.anim.recordPulse.durationMs,
+    // Meta-lagret (UI.md §12.8)
+    chainGoal: META.chain.goalPulse.halfCycleMs,
+    bookFresh: META.book.freshPulse.halfCycleMs,
+    shiny: META.shiny.halfCycleMs,
   },
   /**
    * Alla färger som ingår i en ljusstyrkeväxling. Ingen mättad röd, ingen ren vit blixt.
@@ -129,6 +134,8 @@ export const JUICE = {
 export interface RingWave {
   /** Antal ringar. */
   count: number;
+  /** Startradie i px (utelämnad = nästan 0). */
+  fromR?: number;
   /** Radie i px som ringen växer till. */
   maxR: number;
   durationMs: number;

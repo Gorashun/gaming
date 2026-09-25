@@ -5,8 +5,11 @@
 /** Antal nivåer per boksida (0–10). */
 export const LEVEL_COUNT = 11;
 
-/** Enda setet tills temaseten (src/data/themes.ts) pluggas in. */
+/** Grundsetet, alltid upplåst (DESIGN §13.3). */
 export const DEFAULT_SET = 'glimtarna';
+
+/** Platser per boksida: 11 vanliga + 10 skimrande (nivå 1–10), DESIGN §13.2. */
+export const SLOTS_PER_PAGE = 21;
 
 export interface CollectionConfig {
   /** Sannolikhet för skimrande per skapad nivå (index = nivå). */
@@ -45,36 +48,6 @@ export const COLLECTION_FX = {
     scaleAmp: 0.06,
     spinDegPerSec: 30,
   },
-  chain: {
-    /** Rad centrerad under poängen (reserv tills UI.md §12 finns). */
-    cx: 180,
-    y: 88,
-    size: 20,
-    gap: 4,
-    /** Kroppsradie i px för tänd siluett (dekor ryms inom size). */
-    bodyR: 8,
-    unlitAlpha: 0.35,
-    punch: 0.3,
-    punchMs: 220,
-  },
-  book: {
-    litAlpha: 1,
-    lockedAlpha: 0.25,
-    cols: 6,
-    pitch: 56,
-    bodyR: 20,
-    normalY: 222,
-    shinyY: 372,
-    iconY: 88,
-    iconR: 34,
-    meterY: 150,
-    dotsY: 528,
-    closeX: 316,
-    closeY: 44,
-    /** Svep: minsta förflyttning i px för att räknas. */
-    swipePx: 60,
-    pageMs: 260,
-  },
   sound: {
     /** Kvint upp över merge-tonen (392 Hz · 2^(7/12)). */
     shiny: {
@@ -87,7 +60,5 @@ export const COLLECTION_FX = {
       harmonicGain: 0.3,
       delayMs: 70,
     },
-    /** Kort pling när en nivå tänds i kedjan, stiger en halvton per nivå. */
-    chain: { wave: 'sine', baseHz: 1046.5, attack: 0.002, decay: 0.09, gain: 0.1, delayMs: 0 },
   },
 } as const;

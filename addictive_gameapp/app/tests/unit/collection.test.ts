@@ -5,6 +5,7 @@ import {
   filledSlots,
   onLevelCreated,
   pityThreshold,
+  slotIndex,
   type CollectionState,
 } from '../../src/systems/collection';
 import { mergeWithDefaults } from '../../src/systems/save';
@@ -84,11 +85,24 @@ describe('första skimrande', () => {
 });
 
 describe('fångst', () => {
-  it('ny sida har nivå 0 vanlig ifylld, 1/22', () => {
+  it('ny sida har nivå 0 vanlig ifylld, 1/21', () => {
     const p = emptyPage();
     expect(p.caught[0]).toBe(true);
     expect(p.shiny.every((v) => !v)).toBe(true);
     expect(filledSlots(p)).toBe(1);
+  });
+
+  it('fångst och ny skimrande markeras som nytt sedan sist (fresh)', () => {
+    const s = state();
+    s.shinyPity[4] = pityThreshold(4, COLLECTION) - 1;
+    onLevelCreated(3, s, never, COLLECTION);
+    onLevelCreated(4, s, never, COLLECTION);
+    expect(s.page.fresh).toHaveLength(21);
+    expect(s.page.fresh[3]).toBe(true);
+    expect(s.page.fresh[4]).toBe(true);
+    expect(s.page.fresh[slotIndex(4, true)]).toBe(true);
+    expect(slotIndex(4, true)).toBe(14);
+    expect(s.page.fresh.filter(Boolean)).toHaveLength(3);
   });
 
   it('första skapandet fångar, andra gör det inte', () => {

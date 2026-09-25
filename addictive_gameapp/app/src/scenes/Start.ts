@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
-import { INT, THEME } from '../data/theme';
-import { ballTextureKey, scaleForBodyRadius } from '../ui/textures';
+import { INT, THEME, hexToInt } from '../data/theme';
+import { META, META_COLORS } from '../data/themes';
+import { ballTextureKey, scaleForBodyRadius, useSet } from '../ui/textures';
+import { nextSetProgress } from '../systems/unlocks';
 import { drawBackground } from '../ui/background';
 import { iconTextureKey, type IconKey } from '../ui/icons';
 import { cached, save } from '../systems/save';
@@ -11,8 +13,7 @@ const L = THEME.layout;
 const TOUCH = THEME.touch.minLogical;
 /** Minsta mellanrum mellan två träffytor (UI.md §2.3). */
 const ICON_GAP = 8;
-/** Hyllans träffyta (bästa objekt + highscore) öppnar samlarboken. */
-const SHELF_HIT = { x0: 70, x1: 290, y0: 396, y1: 516 };
+const SH = META.shelf;
 
 interface Toggle {
   img: Phaser.GameObjects.Image;
@@ -30,6 +31,8 @@ export class Start extends Phaser.Scene {
   }
 
   create(): void {
+    // Bästa objektet visas i aktivt sets skinn (UI.md §12.4).
+    useSet(this, cached().activeSet);
     drawBackground(this);
     this.toggles = [];
     this.drawLogo();
@@ -51,11 +54,12 @@ export class Start extends Phaser.Scene {
         return;
       }
       if (p.worldY > 540) return; // ikonraden: ingen oavsiktlig start
+      // Hela hyllan är träffyta för boken.
       if (
-        p.worldX >= SHELF_HIT.x0 &&
-        p.worldX <= SHELF_HIT.x1 &&
-        p.worldY >= SHELF_HIT.y0 &&
-        p.worldY <= SHELF_HIT.y1
+        p.worldX >= SH.hit.x &&
+        p.worldX <= SH.hit.x + SH.hit.w &&
+        p.worldY >= SH.hit.y &&
+        p.worldY <= SH.hit.y + SH.hit.h
       ) {
         playSound('ui');
         this.scene.start('Book');
@@ -147,8 +151,39 @@ export class Start extends Phaser.Scene {
     g.lineBetween(268, 470, 268, 482);
 
     this.add
-      .image(180, 436, ballTextureKey(data.bestLevel))
-      .setScale(scaleForBodyRadius(data.bestLevel, 34));
+      .image(SH.best.x, SH.best.y, ballTextureKey(data.bestLevel))
+      .setScale(scaleForBodyRadius(data.bestLevel, SH.best.r));
+
+    // Bok-ikonen på hyllan. Nytt i boken: guldprick + andning 0,5 Hz.
+    const book = this.add
+      .image(SH.book.x, SH.book.y, iconTextureKey('book'))
+      .setDisplaySize(SH.book.size, SH.book.size);
+    const fresh = data.freshSet !== null || Object.values(data.collection).some((p) => p.fresh.some(Boolean));
+    if (fresh) {
+      this.add.circle(SH.badge.x, SH.badge.y, SH.badge.r, INT.gold);
+      this.tweens.add({
+        targets: book,
+        scale: book.scale * 1.08,
+        duration: META.book.freshPulse.halfCycleMs,
+        ease: 'Sine.easeInOut',
+        yoyo: true,
+        repeat: -1,
+      });
+    }
+
+    // Stapel mot nästa set (bara tidsspåret). Döljs när alla set är upplåsta.
+    const v = nextSetProgress(data.stats.merges, data.unlockedSets.length);
+    if (v !== null) {
+      const b = SH.bar;
+      const bar = this.add.graphics();
+      bar.fillStyle(hexToInt(META_COLORS.barTrack), 1);
+      bar.fillRoundedRect(b.x0, b.y - b.h / 2, b.x1 - b.x0, b.h, b.h / 2);
+      if (v > 0) {
+        bar.fillStyle(hexToInt(META_COLORS.barFill), 1);
+        bar.fillRoundedRect(b.x0, b.y - b.h / 2, Math.max(b.h, (b.x1 - b.x0) * v), b.h, b.h / 2);
+      }
+      this.add.image(b.iconX, b.y, iconTextureKey('qmark')).setDisplaySize(b.iconSize, b.iconSize);
+    }
 
     this.add.image(140, 498, iconTextureKey('crown')).setDisplaySize(26, 26);
     this.add

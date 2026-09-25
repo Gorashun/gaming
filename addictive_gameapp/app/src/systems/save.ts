@@ -1,5 +1,6 @@
 /** Persistens. localStorage nu, Capacitor Preferences senare via adaptern. */
 import { DEFAULT_SET } from '../data/collection';
+import { THEME_SET_IDS } from '../data/themes';
 import { countArray, emptyPage, normalizeCollection, type Collection } from './collection';
 
 export interface SaveData {
@@ -14,10 +15,18 @@ export interface SaveData {
     createdPerLevel: number[];
     /** Skapade i rad utan skimrande, per nivå. */
     shinyPity: number[];
+    /** Två nivå 10 som slagits ihop (skicklighetsspåret, DESIGN §13.3). */
+    doubleKlunks: number;
+    /** Högsta nivå någonsin i burken. */
+    maxLevelEver: number;
   };
-  /** Samlarboken, en sida per temaset (DESIGN §13.2). */
+  /** Samlarboken, en sida per upplåst temaset (DESIGN §13.2). */
   collection: Collection;
   activeSet: string;
+  /** Upplåsta set i upplåsningsordning, grundsetet först. */
+  unlockedSets: string[];
+  /** Nyupplåst set som inte visats (rundavslut eller bok). */
+  freshSet: string | null;
 }
 
 /** Patch där settings/stats får vara delvisa. */
@@ -45,16 +54,37 @@ export function defaultSave(): SaveData {
       autoDrops: 0,
       createdPerLevel: countArray(null),
       shinyPity: countArray(null),
+      doubleKlunks: 0,
+      maxLevelEver: 0,
     },
     collection: { [DEFAULT_SET]: emptyPage() },
     activeSet: DEFAULT_SET,
+    unlockedSets: [DEFAULT_SET],
+    freshSet: null,
   };
+}
+
+function nonNegInt(v: unknown): number {
+  return typeof v === 'number' && Number.isFinite(v) && v > 0 ? Math.floor(v) : 0;
+}
+
+/** Bara kända set, inga dubbletter, grundsetet alltid först. */
+function normalizeUnlocked(raw: unknown): string[] {
+  const out = [DEFAULT_SET];
+  if (Array.isArray(raw)) {
+    for (const id of raw) if (typeof id === 'string' && THEME_SET_IDS.includes(id) && !out.includes(id)) out.push(id);
+  }
+  return out;
 }
 
 /** Defaults-merge: gamla sparfiler får nya fält utan att tappa något. */
 export function mergeWithDefaults(parsed: Partial<SaveData>): SaveData {
   const d = defaultSave();
-  const activeSet = typeof parsed.activeSet === 'string' ? parsed.activeSet : d.activeSet;
+  const unlockedSets = normalizeUnlocked(parsed.unlockedSets);
+  const activeSet =
+    typeof parsed.activeSet === 'string' && unlockedSets.includes(parsed.activeSet) ? parsed.activeSet : d.activeSet;
+  const freshSet =
+    typeof parsed.freshSet === 'string' && unlockedSets.includes(parsed.freshSet) ? parsed.freshSet : null;
   return {
     ...d,
     ...parsed,
@@ -64,9 +94,14 @@ export function mergeWithDefaults(parsed: Partial<SaveData>): SaveData {
       ...parsed.stats,
       createdPerLevel: countArray(parsed.stats?.createdPerLevel),
       shinyPity: countArray(parsed.stats?.shinyPity),
+      doubleKlunks: nonNegInt(parsed.stats?.doubleKlunks),
+      // Gamla sparfiler: bästa objektet är den högsta nivå som funnits.
+      maxLevelEver: Math.max(nonNegInt(parsed.stats?.maxLevelEver), nonNegInt(parsed.bestLevel)),
     },
-    collection: normalizeCollection(parsed.collection, [DEFAULT_SET, activeSet]),
+    collection: normalizeCollection(parsed.collection, unlockedSets),
     activeSet,
+    unlockedSets,
+    freshSet,
   };
 }
 

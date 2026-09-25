@@ -12,10 +12,11 @@ export class Boot extends Phaser.Scene {
   }
 
   async create(): Promise<void> {
-    bakeTextures(this);
-    await loadIcons(this.textures);
     installStorageAdapter();
     const data = await load();
+    // Texturerna för det aktiva setet (UI.md §12.4). Andra set bakas vid behov.
+    bakeTextures(this, data.activeSet);
+    await loadIcons(this.textures);
     setSoundEnabled(data.settings.sound);
     setHapticsEnabled(data.settings.haptics);
     setCalm(data.settings.calm);

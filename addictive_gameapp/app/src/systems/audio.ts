@@ -5,6 +5,7 @@
  */
 import { THEME } from '../data/theme';
 import type { JuiceEvent } from '../data/juice';
+import type { SetSound } from '../data/themes';
 
 export interface ToneDef {
   readonly wave: string;
@@ -34,6 +35,10 @@ let master: GainNode | null = null;
 let noise: AudioBuffer | null = null;
 let enabled = true;
 let calm = false;
+/** Merge-ljudets klangfärg (aktivt set). null = THEME.sound.merge. */
+let timbre: SetSound | null = null;
+/** Antal spelade klang-toner (testhooken verifierar att ljudvägen körs). */
+let timbrePlays = 0;
 
 let dangerOsc: OscillatorNode | null = null;
 let dangerGain: GainNode | null = null;
@@ -166,6 +171,91 @@ function playNoise(def: ToneDef, vol: number, at: number): void {
   tone({ wave: 'sine', baseHz: def.baseHz, attack: 0.001, decay: def.decay, gain: def.gain * 0.8 }, def.baseHz, vol, at);
 }
 
+/**
+ * Setets klangfärg (UI.md §12.1.5): ett oscillatorlager per `layers[i]` → summa →
+ * valfritt lågpass (med svep) → envelope → master. Glid underifrån och brusklick valfritt.
+ */
+function timbreAt(s: SetSound, f: number, vol: number, at: number): void {
+  const c = ctx!;
+  const end = at + s.attack + s.decay;
+  const env = c.createGain();
+  env.gain.setValueAtTime(0.0001, at);
+  env.gain.linearRampToValueAtTime(Math.max(0.0002, s.gain * vol), at + s.attack);
+  env.gain.exponentialRampToValueAtTime(0.0001, end);
+  env.connect(master!);
+  let sum: AudioNode = env;
+  if (s.lowpassHz) {
+    const lp = c.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.Q.value = s.lowpassQ ?? 0.7;
+    lp.frequency.setValueAtTime(s.lowpassHz, at);
+    if (s.lowpassToHz) lp.frequency.exponentialRampToValueAtTime(s.lowpassToHz, end);
+    lp.connect(env);
+    sum = lp;
+  }
+  for (const layer of s.layers) {
+    const osc = c.createOscillator();
+    osc.type = layer.wave;
+    const fl = f * semi(layer.semitones);
+    if (s.bendSemitones && s.bendMs) {
+      osc.frequency.setValueAtTime(fl * semi(s.bendSemitones), at);
+      osc.frequency.exponentialRampToValueAtTime(fl, at + s.bendMs / 1000);
+    } else {
+      osc.frequency.setValueAtTime(fl, at);
+    }
+    if (layer.detuneCents) osc.detune.value = layer.detuneCents;
+    if (s.vibratoHz && s.vibratoCents) {
+      const lfo = c.createOscillator();
+      lfo.frequency.value = s.vibratoHz;
+      const depth = c.createGain();
+      depth.gain.value = s.vibratoCents;
+      lfo.connect(depth);
+      depth.connect(osc.detune);
+      lfo.start(at);
+      lfo.stop(end + 0.02);
+    }
+    const g = c.createGain();
+    g.gain.value = layer.gain;
+    osc.connect(g);
+    g.connect(sum);
+    osc.start(at);
+    osc.stop(end + 0.02);
+  }
+  if (s.noise) {
+    const src = c.createBufferSource();
+    src.buffer = noiseBuffer(c);
+    const lp = c.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = s.noise.lowpassHz;
+    const g = c.createGain();
+    g.gain.setValueAtTime(Math.max(0.0002, s.noise.gain * vol), at);
+    g.gain.exponentialRampToValueAtTime(0.0001, at + s.noise.decay);
+    src.connect(lp);
+    lp.connect(g);
+    g.connect(master!);
+    src.start(at);
+    src.stop(at + s.noise.decay + 0.02);
+  }
+  timbrePlays++;
+}
+
+/** Aktivt sets klangfärg för merge-ljudet. Sätts vid rundstart, aldrig mitt i en runda. */
+export function setMergeTimbre(s: SetSound | null): void {
+  timbre = s;
+}
+
+export function timbrePlayCount(): number {
+  return timbrePlays;
+}
+
+/** Ett sets merge-klang på 392 Hz · 2^(semitones/12), t.ex. arpeggio i boken och rundavslutet. */
+export function playTimbre(s: SetSound, semitones = 0, delayMs = 0, intensity = 1): void {
+  if (!ready()) return;
+  const m = S.merge;
+  const vol = 0.55 + 0.45 * Math.min(1, Math.max(0, intensity));
+  timbreAt(s, m.baseHz * semi(semitones), vol, ctx!.currentTime + delayMs / 1000);
+}
+
 export interface PlayOpts {
   /** 0..1, skalar volymen. */
   intensity?: number;
@@ -195,6 +285,10 @@ export function playSound(event: JuiceEvent | 'bomb' | 'ui', opts: PlayOpts = {}
     const m = S.merge as ToneDef & { comboCap: number; semitonePerCombo: number };
     const steps = Math.min(opts.combo ?? 0, m.comboCap);
     const f = m.baseHz * semi(steps * (m.semitonePerCombo ?? 1));
+    if (timbre) {
+      timbreAt(timbre, f, vol, now);
+      return;
+    }
     tone(m, f, vol, now);
     if (m.harmonicSemitones) {
       tone(m, f * semi(m.harmonicSemitones), vol * (m.harmonicGain ?? 0.4), now);
@@ -226,9 +320,13 @@ export function playTone(
   if (!ready()) return;
   const at = ctx!.currentTime + (def.delayMs ?? 0) / 1000;
   const vol = 0.55 + 0.45 * Math.min(1, Math.max(0, intensity));
-  const f = def.baseHz * semi(semitones);
-  tone(def, f, vol, at);
-  if (def.harmonicSemitones) tone(def, f * semi(def.harmonicSemitones), vol * (def.harmonicGain ?? 0.3), at);
+  const steps = def.steps && def.stepMs ? def.steps : [0];
+  for (let i = 0; i < steps.length; i++) {
+    const t = at + (i * (def.stepMs ?? 0)) / 1000;
+    const f = def.baseHz * semi(semitones + steps[i]);
+    tone(def, f, vol, t);
+    if (def.harmonicSemitones) tone(def, f * semi(def.harmonicSemitones), vol * (def.harmonicGain ?? 0.3), t);
+  }
 }
 
 /** Dov sågtandston som loopar medan faran pågår. */

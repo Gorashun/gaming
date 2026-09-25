@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { EVENTS, JUICE, FEEL, RINGS, SOUND_ALIAS, type JuiceEvent, type RingWave } from '../data/juice';
 import { THEME, hexToInt } from '../data/theme';
-import { FX_DOT, FX_RING, FX_RING_R } from '../ui/textures';
+import { THEME_SETS, type ParticleShape, type SetParticles } from '../data/themes';
+import { FX_RING, FX_RING_R, particleTextureKey } from '../ui/textures';
 import { playSound, startDanger, stopDanger } from './audio';
 import { hapticForIntensity } from './haptics';
 
@@ -23,6 +24,13 @@ export interface TriggerOpts {
   combo?: number;
   /** Poäng som ska flyga till HUD. */
   score?: number;
+  /**
+   * Ovanpå en overlay (rundavslutet): ingen shake, zoom, hit-stop eller slow-mo och inget
+   * eget ljud – anroparen spelar sitt eget (UI.md §12.5).
+   */
+  overlay?: boolean;
+  /** Ersätter eventets ringvåg. */
+  ring?: RingWave;
 }
 
 export interface JuiceSettings {
@@ -39,6 +47,11 @@ export class Juice {
   private readonly hudX: number;
   private readonly hudY: number;
   private emitter: Phaser.GameObjects.Particles.ParticleEmitter | null = null;
+  /** Andra partikeltypen i samma utbrott (t.ex. Glödens glödprickar). */
+  private mixEmitter: Phaser.GameObjects.Particles.ParticleEmitter | null = null;
+  private readonly pc: SetParticles;
+  private readonly lightTint = hexToInt(THEME.palette.hud);
+  private readonly mixTint: number;
   private readonly pops: Phaser.GameObjects.Text[] = [];
   private popIndex = 0;
   private readonly rings: Phaser.GameObjects.Image[] = [];
@@ -59,25 +72,52 @@ export class Juice {
   private stopped = false;
   private slowmoTween: Phaser.Tweens.Tween | null = null;
 
-  constructor(scene: Phaser.Scene, hudX: number, hudY: number, settings: JuiceSettings) {
+  constructor(
+    scene: Phaser.Scene,
+    hudX: number,
+    hudY: number,
+    settings: JuiceSettings,
+    particles: SetParticles = THEME_SETS[0].particle,
+  ) {
     this.scene = scene;
     this.cam = scene.cameras.main;
     this.hudX = hudX;
     this.hudY = hudY;
     this.calm = settings.calm;
+    this.pc = particles;
+    this.mixTint = particles.mix ? hexToInt(particles.mix.tint) : 0;
 
-    this.emitter = scene.add
-      .particles(0, 0, FX_DOT, {
-        lifespan: JUICE.particles.lifespanMs,
-        speed: { min: JUICE.particles.speedMin, max: JUICE.particles.speedMax },
-        angle: { min: 0, max: 360 },
-        scale: { start: JUICE.particles.scaleStart, end: JUICE.particles.scaleEnd },
-        alpha: { start: 1, end: 0 },
-        blendMode: 'ADD',
-        emitting: false,
-        maxAliveParticles: JUICE.particles.poolSize,
-      })
-      .setDepth(30);
+    // Partikelform per set (UI.md §12.1.3), bakad textur per form.
+    const p = JUICE.particles;
+    const mk = (
+      shape: ParticleShape,
+      gravityY: number,
+      scale: { start: number; end: number },
+      alpha: { start: number; end: number },
+    ): Phaser.GameObjects.Particles.ParticleEmitter =>
+      scene.add
+        .particles(0, 0, particleTextureKey(shape), {
+          lifespan: particles.lifespanMs,
+          speed: { min: p.speedMin * particles.speedScale, max: p.speedMax * particles.speedScale },
+          angle: { min: 0, max: 360 },
+          scale,
+          alpha,
+          rotate: { start: 0, end: (particles.spinDegPerSec * particles.lifespanMs) / 1000 },
+          gravityY,
+          blendMode: particles.blend,
+          emitting: false,
+          maxAliveParticles: p.poolSize,
+        })
+        .setDepth(30);
+    this.emitter = mk(particles.shape, particles.gravityY, particles.scale, particles.alpha);
+    if (particles.mix) {
+      this.mixEmitter = mk(
+        particles.mix.shape,
+        particles.mix.gravityY,
+        { start: p.scaleStart, end: p.scaleEnd },
+        { start: 1, end: 0 },
+      );
+    }
 
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.destroy());
   }
@@ -98,7 +138,8 @@ export class Juice {
     let i = Phaser.Math.Clamp(intensity, 0, 1);
     if (this.calm) i *= JUICE.calm.intensityScale;
 
-    playSound(SOUND_ALIAS[event] ?? event, { intensity: i, combo: opts.combo });
+    const overlay = opts.overlay === true;
+    if (!overlay) playSound(SOUND_ALIAS[event] ?? event, { intensity: i, combo: opts.combo });
     if (ch.haptics) hapticForIntensity(i);
 
     if (event === 'danger') {
@@ -108,15 +149,15 @@ export class Juice {
       return;
     }
 
-    if (ch.hitStop) this.hitStop(i);
+    if (ch.hitStop && !overlay) this.hitStop(i);
     if (opts.target) this.punch(opts.target, i);
     if (ch.particles > 0) this.burst(x, y, i * ch.particles, opts);
-    if (ch.shake > 0) this.shake(x, y, i * ch.shake);
+    if (ch.shake > 0 && !overlay) this.shake(x, y, i * ch.shake);
     if (ch.scorePop && opts.score) this.scorePop(x, y, opts.score);
-    if (ch.zoom) this.zoom(i);
-    const ring = RINGS[event];
+    if (ch.zoom && !overlay) this.zoom(i);
+    const ring = opts.ring ?? RINGS[event];
     if (ring) this.ringWave(x, y, ring);
-    if (event === 'jackpot') this.jackpot();
+    if (event === 'jackpot') this.jackpot(overlay);
   }
 
   /** Faran är över: tillbaka till 1,0× och tyst. */
@@ -160,19 +201,39 @@ export class Juice {
     const e = this.emitter;
     if (!e) return;
     const p = JUICE.particles;
-    const count = Math.min(p.max, Math.round(p.base + p.perIntensity * i));
+    const count = Math.min(p.max, Math.round((p.base + p.perIntensity * i) * this.pc.countScale));
     if (count <= 0) return;
-    e.setParticleTint(opts.color ?? Phaser.Display.Color.HexStringToColor(THEME.palette.accent).color);
+    const color = opts.color ?? hexToInt(THEME.palette.accent);
+    const nMix = this.mixEmitter && this.pc.mix ? Math.round(count * this.pc.mix.share) : 0;
+    const n = count - nMix;
+    // 'levelLight': varannan partikel i hud-vit (glittrigt utan att något blinkar).
+    const nLight = this.pc.tint === 'levelLight' ? Math.floor(n / 2) : 0;
+    this.emit(e, x, y, n - nLight, color, opts);
+    this.emit(e, x, y, nLight, this.lightTint, opts);
+    if (this.mixEmitter) this.emit(this.mixEmitter, x, y, nMix, this.mixTint, opts);
+  }
+
+  private emit(
+    e: Phaser.GameObjects.Particles.ParticleEmitter,
+    x: number,
+    y: number,
+    count: number,
+    tint: number,
+    opts: TriggerOpts,
+  ): void {
+    if (count <= 0) return;
+    e.setParticleTint(tint);
     e.emitParticleAt(x, y, count);
     const vx = opts.vx ?? 0;
     const vy = opts.vy ?? 0;
     if (vx === 0 && vy === 0) return;
     // Partiklarna ärver objektets hastighet.
     // `alive` finns i runtime men saknas i Phasers typer.
+    const k0 = JUICE.particles.inheritVelocity;
     const alive = (e as unknown as { alive: Phaser.GameObjects.Particles.Particle[] }).alive;
     for (let k = Math.max(0, alive.length - count); k < alive.length; k++) {
-      alive[k].velocityX += vx * p.inheritVelocity;
-      alive[k].velocityY += vy * p.inheritVelocity;
+      alive[k].velocityX += vx * k0;
+      alive[k].velocityY += vy * k0;
     }
   }
 
@@ -239,7 +300,7 @@ export class Juice {
         .setPosition(x, y)
         .setTint(hexToInt(cfg.color))
         .setAlpha(cfg.alpha)
-        .setScale(0.08)
+        .setScale((cfg.fromR ?? 0) / FX_RING_R || 0.08)
         .setVisible(true);
       this.scene.tweens.add({
         targets: img,
@@ -265,7 +326,7 @@ export class Juice {
   }
 
   /** Jackpot: guldton över hela burken + slow-mo. Enda tidsändringen utanför fara. */
-  private jackpot(): void {
+  private jackpot(overlay: boolean): void {
     const j = JUICE.jackpot;
     if (!this.tint) {
       this.tint = this.scene.add
@@ -291,7 +352,7 @@ export class Juice {
       onComplete: () => tint.setAlpha(0),
     });
 
-    if (this.dangerActive) return;
+    if (this.dangerActive || overlay) return;
     this.jackpotSlowmo = true;
     this.startSlowmo();
     this.scene.time.delayedCall(j.slowmoMs, () => {
@@ -370,6 +431,7 @@ export class Juice {
     this.cam.setScroll(0, 0);
     this.cam.setZoom(1);
     this.emitter = null;
+    this.mixEmitter = null;
     this.pops.length = 0;
     this.rings.length = 0;
     this.tint = null;

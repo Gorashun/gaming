@@ -1,6 +1,17 @@
 import Phaser from 'phaser';
 import { LEVELS } from '../data/levels';
-import { THEME, hexToInt, type Deco, type Face, type LevelSkin } from '../data/theme';
+import { THEME, hexToInt, type Deco, type Face } from '../data/theme';
+import { DEFAULT_SET } from '../data/collection';
+import {
+  SET_DECO_GEOM,
+  themeSetById,
+  type DecoGeom,
+  type NewDeco,
+  type ParticleShape,
+  type SetDeco,
+  type SetLevelSkin,
+  type SpotStyle,
+} from '../data/themes';
 
 /**
  * Bakar en textur per nivå (och per specialobjekt) EN gång vid boot,
@@ -24,20 +35,25 @@ const DECO_EXTENT: Record<Deco, number> = {
   bands: 1,
 };
 
-/** Halva texturbredden per nivå (kropp + halo + dekor). */
-const BALL_PAD: number[] = [];
+function decoExtent(d: SetDeco): number {
+  return d in SET_DECO_GEOM ? SET_DECO_GEOM[d as NewDeco].extent : DECO_EXTENT[d as Deco];
+}
 
-export function ballTextureKey(level: number): string {
-  return `ball-${level}`;
+/** Setet vars texturer används av `ballTextureKey(level)` utan set-argument. */
+let currentSet = DEFAULT_SET;
+
+export function activeTextureSet(): string {
+  return currentSet;
+}
+
+/** Texturnyckeln har setet som prefix: `ball-{setId}-{level}` (UI.md §12.4). */
+export function ballTextureKey(level: number, setId: string = currentSet): string {
+  return `ball-${setId}-${level}`;
 }
 
 /** Skala så att objektets KROPP får radien `wanted` på skärmen. */
 export function scaleForBodyRadius(level: number, wanted: number): number {
   return wanted / LEVELS[level].radius;
-}
-
-export function ballPad(level: number): number {
-  return BALL_PAD[level] ?? LEVELS[level].radius;
 }
 
 export const FX_DOT = 'fx-dot';
@@ -49,9 +65,14 @@ export const FX_GLITTER = 'fx-glitter';
 export const FX_GLITTER_R = 52;
 export const SPECIAL_BOMB = 'special-bomb';
 
-/** Siluett av nivån (kropp + dekor, ingen färg/ansikte). Samma pad som bolltexturen. */
-export function silhouetteTextureKey(level: number): string {
-  return `sil-${level}`;
+/** Siluett av nivån (kropp + dekor) i VITT, tintas vid användning. Samma pad som bolltexturen. */
+export function silhouetteTextureKey(level: number, setId: string = currentSet): string {
+  return `sil-${setId}-${level}`;
+}
+
+/** Vita 16×16-partiklar som tintas (UI.md §12.1.3). */
+export function particleTextureKey(shape: ParticleShape): string {
+  return shape === 'dot' ? FX_DOT : `fx-p-${shape}`;
 }
 export const SPECIAL_RAINBOW = 'special-rainbow';
 
@@ -186,6 +207,113 @@ function drawDeco(
     const end = strokes[0][strokes[0].length - 1];
     g.fillStyle(light, 1);
     g.fillCircle(end.x, end.y, 0.15 * r);
+  }
+}
+
+/** Dekor ur SET_DECO_GEOM (UI.md §12.1.1). part 'back' ritas före kroppen, 'front' efter. */
+function drawGeomDeco(
+  g: Phaser.GameObjects.Graphics,
+  cx: number,
+  cy: number,
+  r: number,
+  geom: DecoGeom,
+  part: 'back' | 'front',
+  light: number,
+  dark: number,
+): void {
+  const lw = Math.max(2, (geom.widthR ?? 0.07) * r);
+  const under = lw + Math.max(2.5, 0.09 * r);
+  const pts = (line: readonly (readonly [number, number])[]): Pt[] =>
+    line.map(([x, y]) => ({ x: cx + x * r, y: cy + y * r }));
+  const lines = (part === 'back' ? geom.back ?? [] : geom.strokes ?? []).map(pts);
+  const tris = part === 'front' ? (geom.tris ?? []).map(pts) : [];
+  const dots = part === 'front' ? geom.dots ?? [] : [];
+
+  for (const [pass, w, c] of [[0, under, dark], [1, lw, light]] as const) {
+    g.lineStyle(w, c, 1);
+    for (const l of lines) g.strokePoints(l, false);
+    for (const t of tris) {
+      if (pass === 1) {
+        g.fillStyle(c, 1);
+        g.fillTriangle(t[0].x, t[0].y, t[1].x, t[1].y, t[2].x, t[2].y);
+      }
+      g.strokeTriangle(t[0].x, t[0].y, t[1].x, t[1].y, t[2].x, t[2].y);
+    }
+    g.fillStyle(c, 1);
+    for (const d of dots) g.fillCircle(cx + d.x * r, cy + d.y * r, d.r * r + (pass === 0 ? under / 2 : 0));
+  }
+}
+
+/** Dekor i rätt ritsteg, gamla (theme.ts) och nya (themes.ts) dekorer. */
+function drawAnyDeco(
+  g: Phaser.GameObjects.Graphics,
+  cx: number,
+  cy: number,
+  r: number,
+  deco: SetDeco,
+  part: 'back' | 'front',
+  light: number,
+  dark: number,
+): void {
+  if (deco in SET_DECO_GEOM) {
+    drawGeomDeco(g, cx, cy, r, SET_DECO_GEOM[deco as NewDeco], part, light, dark);
+  } else if (part === 'front') {
+    drawDeco(g, cx, cy, r, deco as Deco, light, dark);
+  }
+}
+
+/** Steg 5 per set (UI.md §12.1.2). Positioner som i §3.1, färg alltid color2. */
+function drawSpots(g: Phaser.GameObjects.Graphics, cx: number, cy: number, r: number, n: number, style: SpotStyle, c: number): void {
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2 + 0.7;
+    const d = (0.46 + (i % 2 === 0 ? 0.16 : -0.16)) * r;
+    const x = cx + Math.cos(a) * d;
+    const y = cy + Math.sin(a) * d;
+    switch (style) {
+      case 'dot':
+        g.fillStyle(c, 0.32);
+        g.fillCircle(x, y, 0.11 * r);
+        break;
+      case 'crater':
+        g.fillStyle(c, 0.18);
+        g.fillCircle(x, y, 0.12 * r);
+        g.lineStyle(0.045 * r, c, 0.45);
+        g.strokeCircle(x, y, 0.12 * r);
+        break;
+      case 'flake':
+        g.lineStyle(Math.max(1, 0.035 * r), c, 0.45);
+        for (let k = 0; k < 3; k++) {
+          const b = (k * Math.PI) / 3;
+          const dx = Math.cos(b) * 0.1 * r;
+          const dy = Math.sin(b) * 0.1 * r;
+          g.lineBetween(x - dx, y - dy, x + dx, y + dy);
+        }
+        break;
+      case 'sprinkle': {
+        const w = Math.max(1.5, 0.07 * r);
+        const dx = Math.cos(a + 0.9) * 0.1 * r;
+        const dy = Math.sin(a + 0.9) * 0.1 * r;
+        g.lineStyle(w, c, 0.5);
+        g.lineBetween(x - dx, y - dy, x + dx, y + dy);
+        g.fillStyle(c, 0.5);
+        g.fillCircle(x - dx, y - dy, w / 2);
+        g.fillCircle(x + dx, y + dy, w / 2);
+        break;
+      }
+      case 'crack': {
+        const ca = Math.cos(a);
+        const sa = Math.sin(a);
+        const zz: Pt[] = [
+          [-0.12, 0.04],
+          [-0.04, -0.04],
+          [0.04, 0.04],
+          [0.12, -0.04],
+        ].map(([px, py]) => ({ x: x + (px * ca - py * sa) * r, y: y + (px * sa + py * ca) * r }));
+        g.lineStyle(Math.max(1, 0.04 * r), c, 0.45);
+        g.strokePoints(zz, false);
+        break;
+      }
+    }
   }
 }
 
@@ -343,7 +471,8 @@ function drawSkin(
   cx: number,
   cy: number,
   r: number,
-  skin: LevelSkin,
+  skin: SetLevelSkin,
+  spotStyle: SpotStyle,
 ): void {
   const color = hexToInt(skin.color);
   const color2 = hexToInt(skin.color2);
@@ -357,6 +486,9 @@ function drawSkin(
   g.fillCircle(cx, cy, r * (1 + 0.66 * skin.glow));
   g.fillStyle(color, 0.14);
   g.fillCircle(cx, cy, r * (1 + 0.33 * skin.glow));
+
+  // 1,5. DEKOR BAKOM KROPPEN (t.ex. saturnusringens bakre halva)
+  drawAnyDeco(g, cx, cy, r, skin.deco ?? 'none', 'back', color, color2);
 
   // 2. KROPP
   g.fillStyle(color, 1);
@@ -372,22 +504,15 @@ function drawSkin(
     g.strokeCircle(cx, cy, 0.72 * r);
   }
 
-  // 5. PRICKAR
-  if (skin.spots) {
-    g.fillStyle(color2, 0.32);
-    for (let i = 0; i < skin.spots; i++) {
-      const a = (i / skin.spots) * Math.PI * 2 + 0.7;
-      const d = (0.46 + (i % 2 === 0 ? 0.16 : -0.16)) * r;
-      g.fillCircle(cx + Math.cos(a) * d, cy + Math.sin(a) * d, 0.11 * r);
-    }
-  }
+  // 5. PRICKAR (stil per set)
+  if (skin.spots) drawSpots(g, cx, cy, r, skin.spots, spotStyle, color2);
 
   // 6. KONTUR
   g.lineStyle(Math.max(2, 0.09 * r), color2, 1);
   g.strokeCircle(cx, cy, r);
 
   // 7. DEKOR
-  drawDeco(g, cx, cy, r, skin.deco ?? 'none', color, color2);
+  drawAnyDeco(g, cx, cy, r, skin.deco ?? 'none', 'front', color, color2);
 
   // 8. ANSIKTE
   drawFace(g, cx, cy, r, skin.face, ink, accent2);
@@ -395,27 +520,40 @@ function drawSkin(
 
 // ---------------------------------------------------------------- bakning
 
-function bakeLevels(scene: Phaser.Scene): void {
+/**
+ * Bakar setets 11 nivåer + vita siluetter. Idempotent och cachat per set: ett byte av set
+ * kostar bara första gången. Anropas vid rundstart/boot och när boken visar en sida.
+ */
+export function bakeSet(scene: Phaser.Scene, setId: string): void {
+  const set = themeSetById(setId);
   for (const def of LEVELS) {
-    const skin = THEME.levels[def.level] as LevelSkin;
-    const r = def.radius;
-    const extent = Math.max(1 + skin.glow, DECO_EXTENT[skin.deco ?? 'none']);
-    const pad = Math.ceil(r * extent + Math.max(3, 0.12 * r));
-    BALL_PAD[def.level] = pad;
-    const key = ballTextureKey(def.level);
+    const key = ballTextureKey(def.level, set.id);
     if (scene.textures.exists(key)) continue;
+    const skin = set.levels[def.level];
+    const r = def.radius;
+    const deco = skin.deco ?? 'none';
+    const extent = Math.max(1 + skin.glow, decoExtent(deco));
+    const pad = Math.ceil(r * extent + Math.max(3, 0.12 * r));
     const g = scene.make.graphics({ x: 0, y: 0 }, false);
-    drawSkin(g, pad, pad, r, skin);
+    drawSkin(g, pad, pad, r, skin, set.spotStyle);
     g.generateTexture(key, pad * 2, pad * 2);
     g.destroy();
     const sil = scene.make.graphics({ x: 0, y: 0 }, false);
-    const c = hexToInt(THEME.palette.hudDim);
-    drawDeco(sil, pad, pad, r, skin.deco ?? 'none', c, c);
+    const c = 0xffffff;
+    drawAnyDeco(sil, pad, pad, r, deco, 'back', c, c);
+    drawAnyDeco(sil, pad, pad, r, deco, 'front', c, c);
     sil.fillStyle(c, 1);
     sil.fillCircle(pad, pad, r);
-    sil.generateTexture(silhouetteTextureKey(def.level), pad * 2, pad * 2);
+    sil.generateTexture(silhouetteTextureKey(def.level, set.id), pad * 2, pad * 2);
     sil.destroy();
   }
+}
+
+/** Gör setet till det som `ballTextureKey(level)` pekar på. Anropas aldrig mitt i en runda. */
+export function useSet(scene: Phaser.Scene, setId: string): void {
+  const id = themeSetById(setId).id;
+  bakeSet(scene, id);
+  currentSet = id;
 }
 
 function bakeSpecials(scene: Phaser.Scene): void {
@@ -486,6 +624,37 @@ function bakeFx(scene: Phaser.Scene): void {
     g.generateTexture(FX_RING, 128, 128);
     g.destroy();
   }
+  // Partikelformer per set (UI.md §12.1.3), vita 16×16.
+  const shapes: Record<Exclude<ParticleShape, 'dot'>, (g: Phaser.GameObjects.Graphics) => void> = {
+    star: (g) => {
+      const pts: Pt[] = [];
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2 - Math.PI / 2;
+        const rr = i % 2 === 0 ? 7 : 2;
+        pts.push({ x: 8 + Math.cos(a) * rr, y: 8 + Math.sin(a) * rr });
+      }
+      g.fillPoints(pts, true);
+    },
+    shard: (g) => g.fillTriangle(8, 0, 10.5, 16, 5.5, 16),
+    bubble: (g) => {
+      g.lineStyle(1.6, 0xffffff, 1);
+      g.strokeCircle(8, 8, 6);
+      g.fillCircle(5.5, 5.5, 1.6);
+    },
+    ring: (g) => {
+      g.lineStyle(2.4, 0xffffff, 1);
+      g.strokeCircle(8, 8, 6.5);
+    },
+  };
+  for (const [shape, draw] of Object.entries(shapes)) {
+    const key = particleTextureKey(shape as ParticleShape);
+    if (scene.textures.exists(key)) continue;
+    const g = scene.make.graphics({ x: 0, y: 0 }, false);
+    g.fillStyle(0xffffff, 1);
+    draw(g);
+    g.generateTexture(key, 16, 16);
+    g.destroy();
+  }
 }
 
 /** Tunn guldring med åtta fyrudds-gnistor. Ingen blixt: pulsen görs med alpha ≤1 Hz. */
@@ -520,10 +689,10 @@ function bakeBackground(scene: Phaser.Scene): void {
   const canvas = scene.textures.createCanvas(BG_GLOW, size, size);
   const ctx = canvas?.getContext();
   if (!canvas || !ctx) return;
-  const c = THEME.palette.bgGlow;
-  const r = parseInt(c.slice(1, 3), 16);
-  const g = parseInt(c.slice(3, 5), 16);
-  const b = parseInt(c.slice(5, 7), 16);
+  // Vit: tintas med setets bgGlow i ui/background.ts.
+  const r = 255;
+  const g = 255;
+  const b = 255;
   const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
   grad.addColorStop(0, `rgba(${r},${g},${b},1)`);
   grad.addColorStop(0.55, `rgba(${r},${g},${b},0.45)`);
@@ -533,9 +702,9 @@ function bakeBackground(scene: Phaser.Scene): void {
   canvas.refresh();
 }
 
-/** Bakar allt vid boot. Idempotent. */
-export function bakeTextures(scene: Phaser.Scene): void {
-  bakeLevels(scene);
+/** Bakar allt vid boot (nivåerna för aktivt set). Idempotent. */
+export function bakeTextures(scene: Phaser.Scene, setId: string = currentSet): void {
+  useSet(scene, setId);
   bakeSpecials(scene);
   bakeFx(scene);
   bakeGlitter(scene);

@@ -1,4 +1,5 @@
 /** Ikoner enligt docs/UI.md §9. En stil: viewBox 64×64, stroke 6, rundade ändar. */
+import { BOOK_ICON, QMARK_ICON, SPARKLE_ICON, THEME_SETS } from '../data/themes';
 
 export const ICONS = {
   play: (c = '#7CF9FF') =>
@@ -44,6 +45,11 @@ export const ICONS = {
   close: (c = '#7CF9FF') =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18 L46 46 M46 18 L18 46"/></svg>`,
 
+  // Meta-lagret (UI.md §12.6)
+  book: (c = '#7CF9FF') => BOOK_ICON(c),
+  qmark: () => QMARK_ICON(),
+  sparkle: () => SPARKLE_ICON(),
+
   // Rörelsespår under handen
   swipe: (c = '#7CF9FF') =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="${c}" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 9"><path d="M8 32 H56"/></svg>`,
@@ -67,7 +73,15 @@ export const ICON_KEYS: readonly IconKey[] = [
   'hand',
   'swipe',
   'close',
+  'book',
+  'qmark',
+  'sparkle',
 ];
+
+/** Setikonen (UI.md §12.6), laddas tillsammans med övriga ikoner. */
+export function setIconKey(setId: string): string {
+  return `icon-set-${setId}`;
+}
 
 /** Rastrerar SVG-strängen till en HTMLImageElement (2× för skärpa). */
 function toImage(svg: string, scale: number): Promise<HTMLImageElement> {
@@ -90,12 +104,15 @@ export async function loadIcons(
   textures: { exists(k: string): boolean; addImage(k: string, img: HTMLImageElement): unknown },
   scale = 2,
 ): Promise<void> {
+  const all: [string, string][] = [
+    ...ICON_KEYS.map((k): [string, string] => [iconTextureKey(k), ICONS[k]()]),
+    ...THEME_SETS.map((s): [string, string] => [setIconKey(s.id), s.icon]),
+  ];
   await Promise.all(
-    ICON_KEYS.map(async (k) => {
-      const key = iconTextureKey(k);
+    all.map(async ([key, svg]) => {
       if (textures.exists(key)) return;
       try {
-        const img = await toImage(ICONS[k](), scale);
+        const img = await toImage(svg, scale);
         textures.addImage(key, img);
       } catch {
         /* ikonen saknas hellre än att hela boot fastnar */

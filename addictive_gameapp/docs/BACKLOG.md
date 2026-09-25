@@ -53,5 +53,8 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [x] M1 UI-spec: kedja i HUD, samlarbok (sida, platser, bläddring), rundavslut-sekvens, 4 nya temaset med palett/ljud/partiklar/dekor. (ui-designer)
 - [x] M2 Kedjan i HUD + `stats.createdPerLevel`. AK: siluetter tänds, "?" för aldrig nådda. (programmerare)
 - [x] M3 Samlarbok: datamodell, fångst, skimrande med garanti, boksida med bläddring, ingång från hyllan. AK: unit-tester för p och pity, e2e öppnar boken. (programmerare)
-- [ ] M4 Temaset: 5 set i data, upplåsningslogik (två spår), val av aktivt set, texturer/ljud/partiklar per set. AK: unit-tester för upplåsning, e2e byter set. (programmerare)
-- [ ] M5 Rundavslut "nytt!" ovanpå förlustskärmen, avbrytbart. AK: omstart <0,5 s även mitt i sekvensen. (programmerare)
+- [x] M4 Temaset: 5 set i data, upplåsningslogik (två spår), val av aktivt set, texturer/ljud/partiklar per set. AK: unit-tester för upplåsning, e2e byter set. (programmerare)
+- [x] M5 Rundavslut "nytt!" ovanpå förlustskärmen, avbrytbart. AK: omstart <0,5 s även mitt i sekvensen. (programmerare)
+- [ ] U3 `freshSet` ska pulsa i boken tills boken besökts, inte nollställas i rundavslutet.
+- [ ] U4 Svep-ledtråd första gången boken öppnas; Androids bakåtknapp stänger boken.
+- [ ] U5 Sex guldstjärnor när skimrande skapas; dubbelring vid "?"-tändning (UI.md §12).
