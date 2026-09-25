@@ -1,6 +1,6 @@
 # UI.md – KLUNK visuell spec, ljudkarta och game feel
 
-Version 1.3 · 2026-09-25 (§12 meta-lager, §13 Kompisar, §14 Ekonomi) · Ägare: ui-designer. Underordnad `DESIGN.md` (spelregler) och `TECH.md` (stack).
+Version 1.4 · 2026-09-25 (§12 meta-lager, §13 Kompisar, §14 Ekonomi, §15 Art v2) · Ägare: ui-designer. Underordnad `DESIGN.md` (spelregler) och `TECH.md` (stack).
 Implementation av tokens: `app/src/data/theme.ts`. Granskningsbild: `docs/ui-preview.png` (nivåark, spel, start, förlust).
 
 ---
@@ -361,6 +361,8 @@ Laddning: `'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)` → `t
 | `app/src/ui/icons.ts` | programmerare | klistra in §9 rakt av |
 | `app/src/systems/juice.ts` | programmerare | läser `THEME.anim`, `THEME.haptics`, `THEME.a11y` |
 | `app/src/systems/audio.ts` | programmerare | läser `THEME.sound` |
+| `app/src/data/art.ts` | ui-designer | Art v2-parametrar (§15), ingen Phaser-import |
+| `app/src/ui/artv2.ts` | ui-designer (referens) → programmerare kopplar | Canvas2D-renderare för nivåer och kompisar (§15.5) |
 
 `theme.ts` är typkollad med `tsc --strict` (TS 6) och med projektets egen `app/tsconfig.json` utan fel.
 
@@ -1098,3 +1100,122 @@ Om regelverk kräver det byts slumpen ut mot ett synligt val. Hyllan ser likadan
 4. **Tidsbudgeten:** med 6 flygare (utan snabbläge) slutar sandens räkning vid ≈ 2 560 ms, alltså 60 ms över 2 500. Förslag: med sand och ≥ 5 flygare används `flyersFast`, eller så startar sanden samtidigt med pärlorna.
 5. **Mini-burken överdriver sällsynta rariteter:** minst en pärla per levande raritet (beslut §13.4) ger mytisk 4 % i burken mot 0,5 % i vanlig mussla. Det är samma avvägning som förut ("mytisk syns alltid"), men skillnaden är nu större. Alternativ: tillåt 0 pärlor när oddsen är under 2 %, med en streckad plats överst som betyder "finns, men mycket sällsynt".
 6. **`ECONOMY_UI` ligger i en egen fil** (`economyUi.ts`), eftersom `economy.ts` redan fanns hos programmeraren. Slå ihop eller re-exportera.
+
+---
+
+## 15. Art v2 – djup och material utan bildfiler
+
+Data: `app/src/data/art.ts` (`ART`, alla parametrar). Referensrenderare: `app/src/ui/artv2.ts` (ren TS och Canvas2D, ingen Phaser). Granskningsbild: `docs/ui-preview-artv2.png`, Chromium. Den visar 12 kompisar (två per raritet) i tre rader: v1 1×, v2 1× och v2 3×. Därefter kommer Glimtarna 0–10 före och efter, spelskärmen före och efter, och närbilder på öppningen och på nivå 4 och 7. Mobilkontroll: spelskärmen i v2 i 390×844 med DPR 3.
+
+**Känslan i en mening:** figurerna ska se ut som **små gjutna leksaker av mjuk, blank plast** som lyser i mörkret. De ska kännas som något man vill ta upp, inte som klistermärken. "Snyggare" betyder här ljus, djup och skarpa kanter. Det betyder inte fler detaljer. Siluetter, färger och ansikten är desamma som i v1.
+
+### 15.1 Diagnos: varför v1 ser platt ut
+
+1. **1× upplösning, två gånger om.** Spelets canvas är 360×640 och skalas upp med CSS (`Scale.FIT`). På en telefon med DPR 3 förstoras allt ungefär 3,25× bilinjärt, så varje kant blir suddig. Dessutom bakas texturerna i logiska px, så en kompis på 40 px är en bild på 60×60 px. Det här är det största enskilda felet.
+2. **Bara platta fyllningar.** Phaser Graphics saknar gradienter, så kroppen har en enda kulör och formen ser ut som en utklippt skiva i stället för ett klot.
+3. **Ingen skuggsida.** Allt är lika ljust överallt. Det finns ingen nederkant som vänder sig bort från ljuset, så ögat kan inte avgöra om formen är konvex.
+4. **Topp-ljuset har en hård kant** (vit ellips med alpha 0,20–0,26). Det ser ut som en påmålad fläck, inte som en reflex.
+5. **Konturen är likformig.** Den har samma bredd, alpha och ton runt hela formen. Den säger ingenting om var ljuset kommer ifrån och gör allt lika grafiskt.
+6. **Delarna har inget djup mellan sig.** Huvud, vantar och hatt ligger bara ovanpå varandra, utan kontaktskugga. Kompisarna ser ihopklistrade ut.
+7. **Glöden är trappstegad.** Tre koncentriska cirklar ger synliga ringar (tydligast på nivå 8–10) i stället för mjukt ljus.
+8. **Ansiktena är hål utan kant.** Ink ligger direkt på färgen och ögonvitorna är platta, så ansiktet sitter på ytan i stället för att vara format i den.
+
+### 15.2 Förutsättning: hi-DPI-canvas (programmerare)
+
+Utan detta ger v2 bara materialet, alltså raden "v2, 1×" i granskningsbilden. Den skarpa raden "v2, 3×" kräver att spelet renderar i skärmens upplösning:
+
+```
+const Z = Math.min(window.devicePixelRatio || 1, ART.maxDpr)   // ev. tak 2 på svaga enheter
+new Phaser.Game({ scale: { mode: FIT, width: 360 * Z, height: 640 * Z }, ... })
+// varje scen: this.cameras.main.setZoom(Z).centerOn(180, 320)
+// input: pointer.worldX/worldY (inte pointer.x/y); Text: setResolution(Z)
+```
+
+**Bakningsfaktorn är `Z`, spelets zoom, inte `devicePixelRatio`.** Visa texturen med `setScale(1 / info.dpr)`. Fysik, levels.ts och alla logiska mått är oförändrade.
+
+### 15.3 Materiallagret (parametrar i `ART`)
+
+Enhet `h` = delens halvstorlek (för nivåer h = r). Parametrarna är relativa, så samma material ser likadant ut på en vante, en kropp och Klunken. Ett ljus uppe till vänster, samma håll som burkens reflexer. Kantljus uppe till höger, som glöd från havet.
+
+| Steg | Teknik (Canvas2D) | Parametrar |
+|---|---|---|
+| Färgderivering | HSL ur `color`: **hi** = L+16, S−6 · **lo** = L−12, S+10 · **shade** = L−22, S+6 · **rim** = (L+30, S−10) blandad 35 % mot vitt. Mörka kulörer (L < 30) mörkas relativt: L·0,7 | `ART.base`, `ART.inner`, `ART.rim` |
+| 1. Basgradient | elliptisk radial i delens bbox, centrum (−0,38h, −0,46h), radie 1,55h. Stopp: hi 0, **color 0,66**, lo 1. Mittstoppet ligger långt ut, så ansiktszonen aldrig blir mörkare än `color` (se §15.6) | `ART.base` |
+| 2. Inre skugga | "utsidan" (stor rektangel minus formen, evenodd) fylls med skugga, klippt till formen. Förskjutning uppåt = halva konturen + 0,16h, blur 0,2h, shade alpha 0,5 | `ART.inner` (avatarer: bara delar med h ≥ 5 box-enheter) |
+| 3. Kantljus | samma teknik, men utsidan flyttas ned-vänster (−0,62; 0,78) · (halva konturen + 0,08h), blur 0,05h, rim alpha 0,72 | `ART.rim` |
+| 4. Speglingsljus | mjuk ellips: v1:s topp-ljus på samma plats och i samma storlek, men som radiell gradient (alpha 0,42 för nivåer, 0,55 för avatarernas `shine`). Hård prick: vit alpha 0,9, r 0,075h vid (−0,44h, −0,54h) | `ART.spec` (avatarer: prick först vid h ≥ 7,5) |
+| 5. Kontur | samma bredd som v1. Linjär gradient topp-vänster → botten-höger: (edge L+10, alpha 0,8) → (edge, alpha 1). Nivåer: innerkanten flyttas upp 0,45·lw/2, så att konturen blir **tjockare nedtill** (tyngd) | `ART.edge` |
+| 6. Kontaktskugga | varje materialdel kastar en mjuk skugga (0,3; 1,2) med blur 1,6 box-enheter och alpha 0,3 **bara på det som redan är ritat** (`source-atop`) | `ART.contact` |
+| 7. Drop shadow | hela figuren ritas i ett lager och läggs på med skugga: avatar (0,4; 1,6) med blur 2,4 box-enheter och alpha 0,55; nivå (0,02r; 0,07r) med blur 0,1r och alpha 0,42. Glöden ligger utanför lagret och får ingen skugga | `ART.drop` |
+| 8. Ansikten | **formen är identisk** (samma mått, butt-ändar). Före varje ink-drag ritas samma drag i vitt med alpha 0,3, förskjutet 0,55 box-enheter resp. 0,022r nedåt (`source-atop`). Det blir en ljus underläpp, så draget ser **intryckt** ut. Ink förblir platt `#14202E` | `ART.face` |
+| Ögon (bara avatarer) | ögonvita: sfärisk gradient vit → `#CFDBEF` + ögonlockets inre skugga uppifrån (alpha 0,28). Glint: mjuk gloria 2× med alpha 0,4 runt den befintliga vita pricken | `ART.face` |
+| Kinder | radiell rodnad (toppalpha 0,72 → 0) i stället för platt ellips med alpha 0,55 | `ART.cheek` |
+| Glöd | **en** radial från 0,9r till r(1+glow): alpha 0,34 → 0,14 (vid 40 %) → 0 | `ART.halo` |
+| Ring (nivåer) | graverad fåra: color2 alpha 0,42 + ljus underkant (hi, alpha 0,32, 0,4 av bredden, 0,028r ned) | `ART.groove` |
+| Prickar `dot`/`crater` | gropar: ljus underkant (hi, alpha 0,3) under den mörka pricken | `ART.dimple` |
+| Rör (spröt, tentakler, ben) | mörkt underlag (som v1) + färg + smal högdager (0,34 av bredden, L+22, alpha 0,6) förskjuten upp-vänster | `ART.tube` |
+| Dekortrianglar (fenor, krona, is, lågor) | mörk understroke, linjär gradient hi → color → lo, kontaktskugga | – |
+
+### 15.4 Så klassas avatarernas ops (ingen ändring i `avatars.ts`)
+
+Renderaren läser samma `AvatarOp`-listor och väljer material efter egenskaper, i den här ordningen:
+
+| Op | Behandling |
+|---|---|
+| `curve`/`line` med `edge` | rör |
+| streck (curve/line/`stroke`) i ink | inset-ansiktsdrag |
+| vit ellips, alpha ≤ 0,5, utan edge (`shine`) | mjukt speglingsljus |
+| ellips, alpha 0,4–0,7, utan edge, inte vit (`cheeks`) | rodnad |
+| vit cirkel **med** edge | ögonvita |
+| vit cirkel utan edge, r ≤ 1,8 | glint med gloria |
+| fylld form i ink (luminans < 0,02) utan edge | inset-ansiktsdrag |
+| fylld form med `edge` | **material** (steg 1–6) |
+| övrigt (fläckar, mage, stjärnor, scatter) | platt, som tryck på materialet |
+
+Stjärnvalens ljusa drag (`#FFF4C0`) räknas som tryck och förblir platta, med samma kontrast som i v1.
+
+### 15.5 API och koppling
+
+```
+avatarBakeInfo(displayPx, dpr, mode?) → { px, dpr, logical, originY }
+levelBakeInfo(skin, radius, dpr, mode?) → { px, dpr, logical, originY: 0.5 }
+renderAvatar(ctx, def, displayPx, { dpr, mode?, part?, rombs?, sil?, shadow?, scratch? })
+renderLevel(ctx, skin, radius, { dpr, spotStyle?, mode?, sil?, shadow?, scratch? })
+```
+
+- `ctx` = `CanvasTexture.getContext()` med identitetstransform. Skuggor räknas i enhetspixlar, och renderaren tar hänsyn till det.
+- `mode: 'v1'` ritar exakt dagens platta recept i Canvas2D. Det används för före/efter och som **lågprestandaläge**.
+- `sil: true` ger platt vit siluett, samma som i dag.
+- Pad: avatarer 5 box-enheter (v1: 2), så att drop shadow ryms. **`originY` kommer ur `avatarBakeInfo`**, inte ur `AVATAR_TEX_ORIGIN_Y`.
+- Arbetsyta för lagret: `OffscreenCanvas`, annars `<canvas>`. Den kan bytas med `scratch`.
+- Alla 5 set och alla 48 kompisar är renderade utan fel.
+
+### 15.6 Prestanda och texturbudget
+
+- **Bakas en gång per textur, aldrig per frame.** Inga `shadowBlur`, gradienter eller filter i `update()`. Samma cache-nycklar som i dag, plus dpr: `ball-{set}-{lvl}@{dpr}` och `av-{id}-{px}@{dpr}`.
+- Uppmätt i Chromium på skrivbordsdator: alla 11 nivåer i 3× tar 87 ms, alla 48 kompisar i 40 px 3× tar 84 ms. Räkna med 4–6× längre tid på en billig Android, alltså cirka 0,5 s för ett set. Baka **aktivt set vid boot**, övriga set först när boken visar sidan, och kompisar vid behov, som i dag.
+- Minne per set (11 nivåer, RGBA): v1 1× **1,2 MB** · v2 2× **5,2 MB** · v2 3× **11,8 MB**. Den största sidan är 936 px (nivå 10, 3×). `ART.maxTexSide` 1 024 sänker dpr för större texturer. Kompis 40 px 3×: 144² = 81 kB. Öppningen 112 px 3×: 396² = 613 kB. Den tas bort efter öppningen.
+- **Budget:** högst 2 set i full upplösning samtidigt (aktivt + glow-varianten), ≤ 24 MB. Bokens små objekt bakas i sin visade storlek. Siluetter kan stanna i 1×, eftersom de är tonade och små.
+- **Nedväxling:** om `navigator.deviceMemory ≤ 2`, eller om första nivån tar > 25 ms att baka, används Z = 2. Hjälper inte det används `mode: 'v1'` i Z.
+
+### 15.7 Tillgänglighet
+
+- **Kontrasten mellan ansikte och kropp är minst lika hög som i dag på alla nivåer.** Mätt som median av kroppspixlar 0,1r från varje ink-drag (DPR 2):
+
+| nivå | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| v1 | 13,2 | 9,9 | 12,3 | 11,6 | 8,1 | 5,9 | 5,8 | 6,1 | 5,3 | 14,5 | 11,9 |
+| v2 | 13,4 | 10,1 | 12,5 | 12,0 | 8,6 | 6,8 | 6,9 | 7,7 | 6,8 | 15,0 | 12,5 |
+
+  Det beror på två saker: gradientens mittstopp ligger utanför ansiktszonen, och underläppen ljusar upp precis under dragen. En ljusare ink-gradient provades och förkastades, eftersom den sänkte nivå 5 till 3,8:1.
+- Konturen har kvar sin bredd och mörka ton i skuggsidan, så siluetten mot bakgrunden är minst lika tydlig. Kulörerna ändras högst ±16 L runt `color`, så nivåernas färgordning är densamma.
+- **Ingen ny rörelse, ingen blinkning.** Allt är statiskt och bakat, så flash-guard påverkas inte.
+- Objekten får **aldrig** glint i ögonen. Glinten är fortfarande kompisarnas tecken (§13.1). Uppdragets "pupill med highlight" gäller därför bara kompisar.
+
+### 15.8 Öppna frågor
+
+1. **Hi-DPI-canvasen (§15.2) är beslutet som lyfter mest.** Den rör `main.ts`, alla scener (zoom, `worldX`) och Text-upplösningen. Behöver ett beslut från programmeraren och projektledaren, plus ett fillrate-test på billig Android med Z = 2 mot Z = 3.
+2. **Specialobjekten (bomb och regnbåge), pärlor, rombar, musslor och partiklar** har ännu inte v2. Renderaren klarar redan `spikes` och `angry`, men inte `bands`. Nästa steg om v2 godkänns.
+3. **Glöden kunde ligga utanför texturen**, som en delad tonad `bg-glow`-sprite med ADD. Då krymper nivåtexturerna med cirka 35 % och glöden kan skalas fritt. Det kräver en ändring i scenen.
+4. **Hur blank?** Nu är det blank plast. Sätts `spec.dot.alpha` till 0 och `spec.levelSoftAlpha` till 0,25 blir uttrycket mattare, mer som gummi. Det är ett smakval och en enradsändring i `art.ts`.
+

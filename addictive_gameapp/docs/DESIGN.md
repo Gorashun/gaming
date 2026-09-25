@@ -250,3 +250,9 @@ Källa: research/economy-research.md §5. Ersätter §14.3 (intjäning) och §14
 - Rundavslut: snabbläge för flygare när det finns sand och ≥5 flygare.
 - Mini-oddsburk: minst en pärla per raritet som finns kvar, även om det överdriver mytisk. Raritetsmarkeringen kallas "stjärnor" om den någonsin behöver benämnas i text; "pärlor" är valutan.
 - **Schemaversion**: `save.schema = 2`. Sparfiler med lägre/saknad version raderas helt en gång (beslut Anders: nystart för testversion 7). Därefter migreras normalt.
+
+## 17. Art v2 (beslut 2026-09-25, spec UI.md §15)
+- Canvas2D-bakning med material (basgradient, inre skugga, kantljus, spegling, kontaktskugga, mjuk drop shadow, inset-ansikten). Samma ritrecept och former som förut.
+- **Spelet ritar i skärmens upplösning med tak 2×** (bredd/höjd × Z, kamerazoom Z, pointer.worldX, setResolution på text). Texturer bakas i Z.
+- Aktivt set bakas vid start, övriga vid behov. Budget: max 2 set i full upplösning (≤ ~11 MB vid 2×). `mode: 'v1'` som fallback för svaga enheter.
+- Bomb, regnbåge, pärlor, romber, musslor och partiklar får v2 i steg två. Glöd som gemensam sprite: backlog.
