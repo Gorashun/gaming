@@ -142,3 +142,11 @@ Mål: "mer att komma tillbaka till" utan timers, streaks, notiser, dubbletter el
 
 ### 13.5 Skjuts till v1.2
 Ikonuppdrag, funktionella Glimtar ("Lyktan"). Beslut efter speltest.
+
+### 13.6 Förtydliganden (2026-09-25)
+- Kedjan tänds bara av merge/regnbåge. Nivå 0 alltid tänd. Position enligt UI.md §12 (`META.chain`), combo-prickar flyttas till y 97.
+- Sparformat utökas: `collection[setId].fresh: boolean[21]` (nytt sedan sist, per plats) och `freshSet: string | null` (nyupplåst set som inte visats i boken).
+- Stapeln mot nästa set visar bara tidsspåret (merges). Skicklighetsspåret är en överraskning.
+- Nytt set i rundavslutet: `jackpot`-juice utan shake, zoom och hit-stop.
+- Frostisarna nivå 0/1 har ΔE 23, speltestas med barn.
+- Set: Glimtarna, Planeterna, Frostisarna, Godisarna, Glöden (`app/src/data/themes.ts`).

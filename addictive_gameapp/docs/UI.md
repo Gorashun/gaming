@@ -1,6 +1,6 @@
 # UI.md – KLUNK visuell spec, ljudkarta och game feel
 
-Version 1.0 · 2026-09-20 · Ägare: ui-designer. Underordnad `DESIGN.md` (spelregler) och `TECH.md` (stack).
+Version 1.1 · 2026-09-25 (§12 meta-lager tillagt) · Ägare: ui-designer. Underordnad `DESIGN.md` (spelregler) och `TECH.md` (stack).
 Implementation av tokens: `app/src/data/theme.ts`. Granskningsbild: `docs/ui-preview.png` (nivåark, spel, start, förlust).
 
 ---
@@ -381,3 +381,235 @@ Plus `hexToInt(hex)` för egna konverteringar. När `ui/textures.ts` och scenern
 3. Kosmetiska teman i v1.1 (PROPOSAL §5) bygger på att `THEME.levels` byts ut i sin helhet – strukturen är redan förberedd för det.
 
 > Mobilverifiering: `docs/ui-preview-mobile.png` – spelskärmen med onboarding-handen, FIT-skalad i viewport 390×844 (Chromium, DPR 2).
+
+---
+
+## 12. Meta-lager v1.1
+
+Underordnad DESIGN §13. Data: `app/src/data/themes.ts` (`THEME_SETS`, `SET_DECO_GEOM`, `META`, `META_SOUND`, `META_COLORS`, ikonsträngar). Granskningsbilder: `docs/ui-preview-sets.png` (5 set × nivå 0–10 + spelskärm per set), `docs/ui-preview-meta.png` (HUD-kedja, hylla, bok, rundavslut vid 1,2 s och 2,3 s), `docs/ui-preview-book-mobile.png` (boken FIT-skalad i 390×844, DPR 2, med 72 px-målet för stäng utritat).
+
+**Känslan i en mening:** meta-lagret är *tyst tills det har något att säga*. I spel syns bara en liten rad siluetter. Allt stort händer efter rundan, ovanpå förlustskärmen, och det går alltid att trycka förbi.
+
+### 12.1 Temaset
+
+| # | id | Känsla (motivering) | Bakgrund | Dekorstil | `spotStyle` | Partikel | Klang |
+|---|---|---|---|---|---|---|---|
+| 0 | `glimtarna` | Neon mot svart hav. Basen som allt annat jämförs med. | `#0B1020` | spröt, tofs, tentakler, fenor | `dot` | `dot` (ADD) | triangel + kvint, "pling" |
+| 1 | `planeterna` | Matta, dammiga planeter i violett stjärnmörker: lugnt och svävande i stället för elektriskt. | `#0E0B1F` | måne, antenn, **saturnusring**, raketfenor | `crater` | `star`, snurrar | 2 sinus med 9 cents chorus, lång svans, "uuu-blopp" |
+| 2 | `frostisarna` | Nästan vita iskristaller under norrsken, med skarpa mörkblå konturer: kallt och krispigt, och ljudet klingar som glas. | `#081624` | **iskristaller**, **istappar**, isvingar | `flake` | `shard`, faller | sinus + deltoner +24/+31, "ting" |
+| 3 | `godisarna` | Mättade sockerfärger i en plommonburk med strössel och papperssnurrar: poppigt och studsigt. | `#1A0B1F` | **karamellpapper**, **klubbpinne** | `sprinkle` | `bubble`, stiger | filtrerad fyrkant som glider upp 4 halvtoner, "blopp" |
+| 4 | `gloden` | Vulkanstenar och kristaller på kolsvart botten med kopparglas: varmt, tungt och knastrande. | `#150C0B` | **lågor**, ångtofs, kristaller | `crack` | `ring` + glöd-`dot`, stiger | sågtand + sub-oktav, filtret sveper nedåt, knaster, "vomp" |
+
+**Regler som gäller alla set**
+- `face` kopieras alltid ur `THEME.levels` via `skin()` i themes.ts, så ansiktet är per konstruktion identiskt i alla set.
+- Nivå 10 har alltid `ring` + `crown` och en guldton. "Kronan är toppen" ska gälla oavsett set.
+- Bara burk- och bakgrundstokens byts (`SetPalette`: bg, bgDeep, bgGlow, jarGlass, jarWall, jarEdge, jarShine, floor). `danger`, `hud`, `hudDim`, `accent`, `accent2`, `gold`, `ink` och `scrim` byts **aldrig**. Det spelaren kan röra och det som varnar ser alltså likadant ut i alla set.
+- Ingen mättad röd som huvudfärg. Magman i Glöden är korall `#FF8766`, glödkolet är bärnsten.
+
+**Uppmätt kontrast** (WCAG relativ luminans, kropp mot både `bg` och burkens blandade glasfärg). Skriptet ligger i §12.9.
+
+| Set | Ansikte/kropp min | Kropp/bakgrund min | jarEdge/bg | Minsta ΔE (Lab) mellan grannivåer |
+|---|---|---|---|---|
+| glimtarna | 5,3:1 | 5,6:1 | 5,6:1 | 30 |
+| planeterna | 7,9:1 | 8,8:1 | 5,8:1 | 38 |
+| frostisarna | 8,2:1 | 8,3:1 | 8,5:1 | 23 (0→1, avsiktligt bleka, men nivå 1 har iskristaller) |
+| godisarna | 7,1:1 | 7,6:1 | 7,6:1 | 51 |
+| gloden | 7,0:1 | 7,9:1 | 6,9:1 | 25 |
+
+Krav: ansiktet ≥4,5:1, kroppen ≥3:1. Tumregel för nya färger: kroppens relativa luminans ska vara ≥0,24. Då klarar `ink` 4,5:1 automatiskt.
+
+#### 12.1.1 Nya dekorer (`SET_DECO_GEOM`, enheter i r)
+
+Geometrin ligger som **data**, så `textures.ts` behöver bara en generisk ritare: `tris` fylls och strokas, `strokes` och `back` är polylinjer och `dots` är fyllda cirklar. Samma tvåpass som §3.1 steg 7 gäller: först mörk understroke i `color2` med bredden `lw + max(2,5; 0,09r)`, sedan ljus fyllning eller överstroke i `color` med bredden `lw = max(2; widthR·r)` (default `widthR` 0,07). `back` ritas **före** kroppen (steg 1,5), allt annat efter. `extent` används för texturens pad.
+
+| Dekor | Konstruktion | Set/nivå |
+|---|---|---|
+| `orbit` | lutad ellips, centrum (0; 0,30), rx 1,42, ry 0,34, lutning −0,16 rad. Bakre halvan före kroppen, främre efter. Främre bågen passerar kroppskanten vid y ≈ 0,54r, alltså under munnen | Planeterna 6 |
+| `moon` | cirkel (0,92; −0,90) r 0,20 + (−1,08; −0,50) r 0,10 | Planeterna 1 |
+| `shards` | 3 taggar från 0,90r, vinklar −0,42/0/0,38 rad, spetsar 1,30/1,46/1,34, halvbas 0,10 | Frost 1 och 6, Glöden 6 |
+| `icicles` | 3 taggar nedåt (π−0,45 / π−0,08 / π+0,32), spetsar 1,28/1,36/1,24 | Frost 4 |
+| `wrapper` | trianglar (±0,90; 0) → (±1,42; ∓0,38) → (±1,42; ±0,38) | Godis 3 och 6 |
+| `stick` | linje (0; 0,96) → (0; 1,48), `widthR` 0,16 | Godis 1 och 7 |
+| `flames` | 3 taggar med sidolut 0,12–0,14, halvbas 0,16–0,18, spetsar 1,28/1,44/1,30 | Glöden 3 och 7 |
+
+`SetLevelSkin.deco` har typen `SetDeco = Deco | NewDeco`. `theme.ts` rörs inte, så `DECO_EXTENT` i textures.ts kan läsa `SET_DECO_GEOM[d].extent` för de nya dekorerna.
+
+#### 12.1.2 `spotStyle` (ersätter steg 5 i §3.1 per set)
+
+Positionerna är desamma som idag (vinkel `i/n·2π + 0,7`, avstånd 0,46r ± 0,16r). Färg alltid `color2`.
+
+| Stil | Ritning |
+|---|---|
+| `dot` | som idag: fylld cirkel 0,11r, alpha 0,32 |
+| `crater` | fylld 0,12r alpha 0,18 + stroke 0,045r alpha 0,45 |
+| `flake` | 3 streck genom punkten, var 60°, halvlängd 0,10r, bredd max(1; 0,035r), alpha 0,45 |
+| `sprinkle` | ett streck, halvlängd 0,10r, vinkel a+0,9, bredd max(1,5; 0,07r), runda ändar, alpha 0,5 |
+| `crack` | sicksack (−0,12; 0,04) → (−0,04; −0,04) → (0,04; 0,04) → (0,12; −0,04), roterad a, bredd max(1; 0,04r), alpha 0,45 |
+
+#### 12.1.3 Partiklar (`ThemeSet.particle`)
+
+Bakas en gång som vita 16×16-texturer som tintas: `fx-dot` (finns), `fx-p-star` (fyrudds-stjärna, spetsradie 7 och innerradie 2), `fx-p-shard` (triangel (8,0), (10,5; 16), (5,5; 16)), `fx-p-bubble` (stroke r 6, bredd 1,6, plus högdager r 1,6 vid (5,5; 5,5)), `fx-p-ring` (stroke r 6,5, bredd 2,4). Antalet blir `(6 + 24·i) · countScale` med taket 40 kvar. `mix` delar upp utbrottet: Glödens 60 % glöd-prickar stiger långsammare än rökringarna. `tint: 'levelLight'` betyder att varannan partikel ritas i `hud`-vit. Det gör skärvorna och stjärnorna "glittriga" utan att något blinkar.
+
+#### 12.1.4 Bakgrund (`ThemeSet.backdrop`)
+
+Primitiverna `circle`, `ellipse`, `poly`, `curve`, `line` och `scatter` (seedad mulberry32) ritas i ordning till **en** RenderTexture 360×640 vid rundstart, efter gradient + `bg-glow`. `scatter` med `vy` ritas i stället som eget lager som flyttas och wrappar i y (snö faller 8 px/s, bubblor och glöd stiger 10–12 px/s, vaggning ≤0,4 Hz). Alla färger är valda så att den lokala bakgrundsluminansen stannar under ≈0,03, och det håller kontrasten i §12.1. I Lugnt läge är rörelselagren stilla.
+
+#### 12.1.5 Klangfärg (`ThemeSet.sound`)
+
+Pitch-logiken är oförändrad (392 Hz · 2^(combo/12), tak 12). Bara klangen byts. Ljudkedja: ett `OscillatorNode` per `layers[i]` (frekvens `f·2^(semitones/12)`, `detune` i cent, egen gain) → summa → valfritt `BiquadFilter` lågpass (`lowpassHz`, `lowpassQ`, ramp till `lowpassToHz` över decay) → envelope (`attack`/`decay`, toppvärde `gain`) → master. `bendSemitones`/`bendMs`: starta så många halvtoner under och glid exponentiellt upp till `f`. `noise`: kort brusbuffert genom lågpass, parallellt. Gains är satta så att seten upplevs lika starka. Justera på gehör, men behåll relationerna mellan dem.
+
+### 12.2 Kedjan i HUD (DESIGN §13.1)
+
+Känsla: "en rad klistermärken du fyller under rundan". Liten kick, aldrig i vägen.
+
+| | Värde (`META.chain`) |
+|---|---|
+| Position | vänsterställd under highscore-markören: centrum x = 25 + 18·k, y = 78 |
+| Storlek | kroppsradie 5,0 + 0,35·k (5,0 → 8,5 px). **Storleken växer med nivån**, alltså samma signal som i burken. Dekoren syns i siluetten |
+| Bredd | x 20 → 213. Krockar inte med förhandsvisningen (x ≥ 266) |
+| Combo-prickar | **flyttas** från y 86 till y 97 (r 4, samma x) |
+| Tänd | nivåns riktiga textur i aktivt set, skalad till radien ovan |
+| Mörk (skapad förut, inte i denna runda) | siluett i `META_COLORS.silhouette` `#56688F` (3,4:1 mot bg) |
+| "?" (aldrig skapad, `stats.createdPerLevel[k] === 0`) | mörk siluett + "?" 10 px/800 i `#EAF2FF`, 1 px kant i `bg` (4,9:1 mot siluetten) |
+| Nivå 0 | alltid tänd (den kan inte skapas genom merge) |
+| Skimrande skapad i rundan | platsen får en statisk mini-glitterring (r·1,28, ingen puls i HUD) |
+| Målpuls | nästa "?" ovanför högsta tända nivå andas: skala 1,00 ↔ 1,12, halvcykel 1 000 ms (0,5 Hz). Bara en plats åt gången |
+| Undanflyttning | när det hängande objektets bredd överlappar raden (x ≤ 213 + r): alpha 1 → 0,35 på 120 ms, tillbaka på 200 ms. Siktet är viktigare än HUD |
+| Allra första rundan | raden tonas in (300 ms) vid rundans första merge, så att den inte stör 10-sekunders-onboardingen |
+
+**Tändning** (när nivå k skapas för första gången i rundan):
+```
+t+0     vänta 80 ms (efter hit-stop), flera tändningar i samma kedja: 90 ms isär
+t+80    textur byts siluett → tänd; scale 0,6 → 1,30 (90 ms Quad.easeOut) → 1,00 (160 ms Back.easeOut)
+t+80    FX_RING i nivåns färg: r → 2,4r, alpha 0,9 → 0, 320 ms Cubic.easeOut
+        ljud: META_SOUND.chainLight, playTone(def, CHAIN_STEPS[k])   (pentatoniskt, 60 ms efter merge-ljudet)
+om "?"  "?" krymper till 0 på 120 ms; ringen dubbleras (andra 100 ms senare);
+        3 partiklar i setets form; ljud chainFirst (med kvint)
+```
+
+**Reservvärden som ersätts:** `COLLECTION_FX.chain` i `data/collection.ts` (centrerad rad vid y 88 och storlek 20) krockar med combo-prickarna och förhandsvisningens ram (y 8–80). Använd `META.chain`.
+
+### 12.3 Skimrande i spel (DESIGN §13.2)
+
+Känsla: "den här är speciell". Den ska synas i periferin utan att dra blicken hela tiden.
+
+- Ett glitterring-sprite (`FX_GLITTER`, finns redan i textures.ts) följer kroppen varje frame. Skala = r·1,28 / FX_GLITTER_R. Ringen snurrar **kontinuerligt** 30°/s, oberoende av kroppens rotation.
+- Puls: ringens alpha 0,55 ↔ 1,0 och skala ±6 %, synkront, halvcykel 600 ms (0,83 Hz), Sine.easeInOut. **Kroppen själv ändrar aldrig ljusstyrka eller skala.**
+- Vid skapandet ploppar ringen in med scale 0 → 1 på 260 ms (Back.easeOut). 6 guldstjärnor (`fx-p-star`, tint `gold`/vit) oavsett set: guldgnistor är det universella "skimrande"-språket. Ljud: `META_SOUND.shinyCreate`, en kvint över merge-tonen (`playTone(def, combo)`), 70 ms efter. Juice-intensiteten +0,2 på mergen (`shinyIntensityBonus`). Ingen extra shake.
+- Skimrande är **inte ärftligt**. När en skimrande slås ihop släpps ringen tillbaka till poolen och det nya objektet slår sin egen tärning.
+- Värdena i `META.shiny` är desamma som programmerarnas `COLLECTION_FX.glitter`. De är godkända.
+
+### 12.4 Samlarboken och hyllan (DESIGN §13.2)
+
+Känsla: "min pärm". Lugn, ordnad, inga effekter utom det som är nytt.
+
+**Ingång från startskärmen** (`META.shelf`): hyllan får en **bok-ikon** (48 px, `accent` = tryckbar) som står på hyllan vid (238, 444). Bästa objektet flyttas till (156, 436), r 34, och ritas i **aktivt sets** skinn. Så syns det valda setet på startskärmen utan text. **Hela hyllan** (x 80–280, y 396–484) är träffytan. Finns något nytt i boken: guldprick r 6 vid (258, 422) och bok-ikonen andas 1,00 ↔ 1,08 i 0,5 Hz. Stapeln mot nästa set ligger på y 526, x 110–250, 6 px hög, med en "?"-ikon på 22 px vid (268, 526). Den döljs när alla 5 set är upplåsta.
+
+**En sida (360×640, `META.book`)**
+
+| Element | Position och utseende |
+|---|---|
+| Bakgrund | setets gradient + backdrop (stilla) + `bg` alpha 0,35 över, för läsbarhet |
+| Stäng | ikon 48 px vid (320, 44), träffyta 72×72. Androids bakåtknapp gör samma sak |
+| Setikon | 56 px vid (180, 58) |
+| Aktivt set | heldragen ring r 38, 4 px, `accent` + bock-bricka r 10 vid (207, 31) (fylld `accent`, bock i `ink`) |
+| Upplåst men inte aktivt | streckad ring r 38, 6/6, `hudDim`, ingen bricka. **Form (hel/streckad + bock) bär informationen, inte färgen** |
+| Mätare | `x/22` 24 px/800 vid (180, 118) |
+| Vanliga | 11 platser, rader y 178/246/314. Kolumner x 72/144/216/288 och sista raden x 108/180/252 (4-4-3, nivå 0–3, 4–7, 8–10) |
+| Avdelare | y 354: linje i `jarWall` x 40–160 och 200–320, gnista 22 px `gold` i mitten |
+| Skimrande | samma rutnät på rader y 394/462/530 |
+| Objektstorlek | kroppsradie 14 + k (14 → 24). Storleken bär nivån även här |
+| Fångad | riktig textur. Skimrande: textur + glitterring som snurrar 20°/s **utan puls** |
+| Ej fångad | setets siluett (med dekor) i `hudDim`, alpha **0,25**. Skimrande plats: dessutom streckad ring r·1,28 alpha 0,25, så att man ser att det finns en skimrande plats där |
+| Nytt sedan sist | skalpuls 1,00 ↔ 1,10, 0,5 Hz, tills platsen har synts i 2 s |
+| Sidindikator | y 574, 5 punkter med 22 px mellanrum. Aktuell sida: r 6 `hud`. Upplåst: r 4 fylld `hudDim`. Låst: r 4 **ring** `hudDim`. Aktivt set: extra ring r 9,5 runt punkten |
+| Stapel mot nästa set | y 604, x 64–282, 8 px, spår `barTrack`, fyllning `barFill`, "?"-ikon 28 px vid (304, 604) |
+
+**Låst sida:** Glimtarnas bakgrund utan backdrop, `QMARK_ICON` i stället för setikonen och ingen ring. Rutnätet visar **enkla cirklar** (ingen dekor), så att det inte avslöjar vilket set som kommer. Upplåsningsordningen slumpas och alla låsta sidor ser likadana ut. Sidordning: upplästa set i den ordning de låstes upp, sedan de låsta.
+
+**Svep** (`META.book.swipe`): sidorna ligger i en container med 360 px mellanrum och följer fingret 1:1. Byt sida om |dx| > 60 px eller hastigheten är > 0,45 px/ms: 240 ms Cubic.easeOut plus `pageTurn`-ljud. Annars snäpp tillbaka på 180 ms Back.easeOut. I kanterna gummiband med faktor 0,35. **Första öppningen någonsin:** efter 500 ms glider sidan 36 px åt vänster och tillbaka (600 ms Sine.easeInOut). Det är svep-ledtråden, utan text.
+
+**Välja set:** tryck (< 12 px rörelse, < 350 ms) var som helst på sidan utom stäng.
+- Upplåst och inte aktivt: ringen ritas in som båge 0 → 360° på 240 ms (Cubic.easeOut), brickan ploppar in (200 ms Back.easeOut), setets egen merge-klang spelar ett arpeggio 0/+4/+7 med 90 ms mellanrum och haptik 10 ms. Det gamla setets ring blir streckad. Bytet gäller från nästa runda (DESIGN §13.3).
+- Låst sida: sidan skakar ±6 px två gånger på 240 ms, ljudet `locked` spelas och stapeln pulsar 1,0 → 1,1 → 1,0 (300 ms). Det är ett "inte än, så här når du dit". Tonen är aldrig bestraffande.
+
+Boken öppnas på den sida som har något nytt, annars på aktivt set.
+
+**Texturer:** baka aktivt set i full storlek vid rundstart (`ball-{setId}-{level}`), och Glimtarna direkt vid boot. Bokens sidor bakas i boksstorlek (r ≤ 24) när boken öppnas. Minnet stannar då runt dagens nivå. Siluetter bör bakas i **vitt** och tintas: `silhouette` i HUD, `hudDim` i boken. Programmerarnas `sil-*` bakas i dag i `hudDim`, och tint multiplicerar, så vitt behövs för att båda nyanserna ska gå att nå.
+
+### 12.5 Rundavslut "nytt!" (DESIGN §13.4)
+
+Känsla: "skörden". Medelstor kick som staplas: varje landning är ett litet pling, stapeln är löftet och ett nytt set är jackpotten. Allt ligger **ovanpå** förlustskärmen, inget är interaktivt, och helskärmszonen för omstart är aktiv från t = 0. Ett tryck gör `scene.start('Game')` direkt, vilket dödar alla tweens. Det som hoppades över markeras som "nytt sedan sist" i boken (§12.4).
+
+Strip (`META.reveal`): bok 56 px vid (148, 56), mätaren `x/22` 24 px vänsterställd från x 178, y 56, stapeln på y 94 (x 110–250, 6 px) och "?" 20 px vid (268, 94). Allt ligger ovanför poängen (y ≥ 158) och innanför rekordringens överkant (y 110).
+
+| t (ms) | Händelse | Ease | Ljud/haptik |
+|---|---|---|---|
+| 0 | `overlayIn` + poäng, highscore, bästa objekt och omstart (befintligt) | – | `loss` |
+| 200 | Strip in: boken scale 0 → 1 (220 ms), mätaren och stapeln tonas in med **gamla** värden | Back.easeOut | – |
+| 420 + i·160 | Flygare i (max 6) lyfter från sin kedjeplats (25 + 18k, 78), kvadratisk bezier via (mitt-x, 18) till boken, 420 ms. Radie: kedjeradie → 16 (mitten) → 6. Skimrande har glitterringen med sig | Sine.easeInOut | – |
+| ankomst i | boken punchar 1,18 (180 ms), mätaren +1 punchar 1,25, skimrande: 4 guldgnistor | Back.easeOut | `catch` / `shinyCatch`, `playTone(def, CATCH_STEPS[i])`, haptik 10 ms |
+| fler än 6 fångster | flygare 6 bär resten som en hög: mätaren hoppar +n direkt vid ankomsten | – | ett `catch` |
+| sista ankomst + 80 | stapeln fylls från gammalt till nytt värde, 360 ms | Quad.easeOut | – |
+| **om nytt set** | stripen tonas till 0 (200 ms), setikonen 72 px vid (180, 76) scale 0 → 1 (300 ms, overshoot 2), 3 guldringar r 36 → 80 (640 ms, 120 ms isär, alpha 0,85 → 0), 24 partiklar i setets form och färger, `jackpot`-juice 0,9 **utan** shake, zoom och hit-stop | Back.easeOut / Cubic.easeOut | `newSet`-fanfar, efter 520 ms setets egen merge-klang på 392 och 587 Hz (120 ms isär), haptik 60 ms |
+| ≤ 2 500 | Allt är klart. Stripen och ikonen ligger kvar statiska tills tryck | – | – |
+
+**Tidsbudget.** Utan nytt set, 6 flygare: 420 + 5·160 + 420 + 80 + 360 = 2 080 ms. Med nytt set komprimeras flygarna (`flyersFast`: 110 ms isär, 340 ms flygtid, stapeln 200 ms): 420 + 550 + 340 + 80 + 200 = 1 590 ms, plus sista ringen 240 + 640, totalt 2 470 ms. Hoppa över allt som inte har hänt: ingen fångst ger bara stapeln (klar vid ≈ 800 ms). Alla set upplåsta och inget nytt ger ingen strip alls.
+
+Varför flygarna startar i HUD-kedjan: spelaren såg dem tändas under rundan. När de lyfter från samma plats blir sambandet "det jag gjorde → min bok" synligt utan text.
+
+Lugnt läge: 1 ring i stället för 3, halva antalet partiklar, haptik 10 ms.
+
+### 12.6 Ikoner (`themes.ts`, samma stil som §9: viewBox 64, stroke 6, rundade ändar, 48 px i 72 px mål)
+
+| Ikon | Export | Färg | Form |
+|---|---|---|---|
+| Bok | `BOOK_ICON(c)` | `accent` (tryckbar) | uppslagen bok + fylld glimt på högersidan |
+| Stäng | `CLOSE_ICON(c)` = `ICONS.close` (finns redan) | `accent` | X |
+| "?"-siluett | `QMARK_ICON(fill, edge, mark)` | `silhouette` / `hudDim` / `hud` | cirkel r 24 + frågetecken (stroke) + prick |
+| Skimrande | `SPARKLE_ICON(c)` | `gold` | fylld fyrudds-gnista |
+| Set 0–4 | `THEME_SETS[i].icon` | setets signatur + mörk kontur | manet med tentakler / ringplanet / snöflinga (6 armar med V-grenar, mörk understroke) / karamell med papper / låga med vit kärna |
+
+Setikonerna är tvåfärgade och fyllda, precis som objekten: signaturfärgen har 8,1–15,3:1 mot bg och den mörka kanten skiljer ikonen från bakgrunden. De renderas i `docs/ui-preview-sets.png` (vänsterkolumnen). Lägg till nycklarna i `ICON_KEYS` och ladda dem som vanliga ikontexturer.
+
+### 12.7 Ljud för meta-lagret (`META_SOUND`, form som `ToneDef` → `playTone`)
+
+| Ljud | Vågform | Frekvens | A/D (s) | Karaktär |
+|---|---|---|---|---|
+| `chainLight` | sinus | 523 Hz + `CHAIN_STEPS[k]` (pentatoniskt, upp till 2 093 Hz) | 0,002 / 0,09 | tyst pling under merge-ljudet, gain 0,10, 60 ms fördröjning |
+| `chainFirst` | sinus + kvint | d:o | 0,002 / 0,16 | "?" tänds: samma pling fast öppnare |
+| `shinyCreate` | triangel + oktav, vibrato 7 Hz / 15 cent | 587 Hz · 2^(combo/12) = **kvint över merge-tonen** | 0,004 / 0,42 | skimrande svans efter merge-plinget |
+| `catch` | triangel + oktav | 1 047 Hz + `CATCH_STEPS[i]` | 0,003 / 0,12 | stigande "mynt" per landning |
+| `shinyCatch` | triangel + kvint, vibrato | d:o | 0,003 / 0,30 | samma trappa med skimmer |
+| `newSet` | triangel + oktav, arpeggio 0/4/7/12/16, 90 ms | 523 Hz | 0,004 / 0,32 | fanfar, därefter setets egen klang ("hör den nya världen") |
+| `pageTurn` | sinus 900 → 620 Hz | – | 0,001 / 0,07 | "fwip" |
+| `locked` | triangel 330 → 247 Hz | – | 0,004 / 0,14 | mjukt "inte än" |
+
+`playTone` i audio.ts hanterar redan `baseHz`, `harmonicSemitones`, `delayMs`, `glideTo`, `vibrato*` och transponering (via `tone()`). Bara `steps` (newSet) saknas och behöver samma gren som i `playSound`.
+
+### 12.8 Tillgänglighet och flash-guard
+
+- Alla nya loopar går på 0,5–0,83 Hz: målpuls 0,5, "nytt"-puls 0,5, bokens bricka 0,5 och glitter 0,83. Rotation och rörelse är kontinuerliga. Inga vitblixtar. Guldringar och `FX_RING` är expanderande streck som tonas ut en gång.
+- Ingen information bärs enbart av färg: tänd kontra mörk (textur med ansikte mot siluett), "?" (glyf), aktivt set (hel ring + bock mot streckad), låst sida (ring-punkt mot fylld, "?"-ikon), skimrande (glitterringens form + gnistor).
+- Ljud är aldrig nödvändigt: varje ljud i §12.7 har en bildmotsvarighet.
+- Lägg till `META.chain.goalPulse`, `META.book.freshPulse` och `META.shiny.halfCycleMs` i `JUICE.pulseHalfCycleMs` så att flash-guard-testet täcker dem.
+
+### 12.9 Kontrastkontroll
+
+```js
+// L = WCAG relativ luminans; cr(a,b) = (max+0,05)/(min+0,05)
+for (const s of THEME_SETS) for (const l of s.levels) {
+  assert(cr('#14202E', l.color) >= 4.5)           // ansikte mot kropp
+  assert(cr(l.color, (s.palette ?? THEME.palette).bg) >= 3) // kropp mot bakgrund
+  assert(l.face === THEME.levels[l.id].face)       // ansikten identiska
+}
+```
+Det passar som enhetstest (`tests/unit/themes.test.ts`). Programmerarna äger testfilerna.
+
+### 12.10 Öppna frågor
+
+1. **Kedjan tänds bara av merge?** Jag har tolkat "skapats i rundan" som merge och regnbåge, samma som fångst. Nivå 0 är alltid tänd. Om droppar från kön också ska tända nivå 1–4 blir kedjan fullare men mindre värd.
+2. **"Nytt sedan sist"** kräver en flagga per plats i sparfilen, t.ex. `collection[setId].fresh: boolean[22]` plus `freshSet: string | null`. Det saknas i DESIGN §13.2:s sparformat.
+3. **Combo-prickarna flyttas** från y 86 till y 97 (§12.2). Det är en liten ändring i Game.ts som programmerarna gör.
+4. **Stapeln** visar bara tidsspåret (merges mot nästa tröskel). Skicklighetsspåret (första nivå 8 osv.) förblir en överraskning. Bekräfta att det är avsikten.
+5. **Frostisarna** har medvetet låg kulörskillnad mellan nivå 0 och 1 (ΔE 23). Storlek, ansikte och iskristallerna bär skillnaden. Speltesta med barn innan det låses.
