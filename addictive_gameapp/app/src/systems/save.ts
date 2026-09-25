@@ -4,6 +4,7 @@ import { THEME_SET_IDS } from '../data/themes';
 import { countArray, emptyPage, normalizeCollection, type Collection } from './collection';
 import { defaultAvatars, normalizeAvatars, type AvatarState } from './avatars';
 import { defaultDebug, normalizeDebug, type DebugState } from './debug';
+import { defaultEconomy, milestoneFlags, normalizeEconomy, reachedMilestones, type EconomyState } from './economy';
 
 export interface SaveData {
   highscore: number;
@@ -42,6 +43,8 @@ export interface SaveData {
   avatars: AvatarState;
   /** Avataren som var vald när rekordet sattes, '' om ingen. */
   highscoreAvatar: string;
+  /** Pärlor, stjärnsand, gratismusslor och milstolpar (DESIGN §16). */
+  economy: EconomyState;
   /** Rundlogg och A/B-växlar för speltest (debugpanelen, PLAYTEST.md §3). */
   debug: DebugState;
 }
@@ -80,6 +83,7 @@ export function defaultSave(): SaveData {
     freshSet: null,
     avatars: defaultAvatars(),
     highscoreAvatar: '',
+    economy: defaultEconomy(),
     debug: defaultDebug(),
   };
 }
@@ -105,25 +109,32 @@ export function mergeWithDefaults(parsed: Partial<SaveData>): SaveData {
     typeof parsed.activeSet === 'string' && unlockedSets.includes(parsed.activeSet) ? parsed.activeSet : d.activeSet;
   const freshSet =
     typeof parsed.freshSet === 'string' && unlockedSets.includes(parsed.freshSet) ? parsed.freshSet : null;
+  const stats: SaveData['stats'] = {
+    ...d.stats,
+    ...parsed.stats,
+    createdPerLevel: countArray(parsed.stats?.createdPerLevel),
+    shinyPity: countArray(parsed.stats?.shinyPity),
+    doubleKlunks: nonNegInt(parsed.stats?.doubleKlunks),
+    // Gamla sparfiler: bästa objektet är den högsta nivå som funnits.
+    maxLevelEver: Math.max(nonNegInt(parsed.stats?.maxLevelEver), nonNegInt(parsed.bestLevel)),
+  };
+  const collection = normalizeCollection(parsed.collection, unlockedSets);
   return {
     ...d,
     ...parsed,
     settings: { ...d.settings, ...parsed.settings },
-    stats: {
-      ...d.stats,
-      ...parsed.stats,
-      createdPerLevel: countArray(parsed.stats?.createdPerLevel),
-      shinyPity: countArray(parsed.stats?.shinyPity),
-      doubleKlunks: nonNegInt(parsed.stats?.doubleKlunks),
-      // Gamla sparfiler: bästa objektet är den högsta nivå som funnits.
-      maxLevelEver: Math.max(nonNegInt(parsed.stats?.maxLevelEver), nonNegInt(parsed.bestLevel)),
-    },
-    collection: normalizeCollection(parsed.collection, unlockedSets),
+    stats,
+    collection,
     activeSet,
     unlockedSets,
     freshSet,
     avatars: normalizeAvatars(parsed.avatars),
     highscoreAvatar: typeof parsed.highscoreAvatar === 'string' ? parsed.highscoreAvatar : '',
+    // Före §16: baseline = nuvarande merges, nådda milstolpar räknas som utbetalda (ingen retroaktiv utbetalning).
+    economy: normalizeEconomy(parsed.economy, {
+      merges: nonNegInt(stats.merges),
+      reached: reachedMilestones(milestoneFlags(stats, collection)),
+    }),
     debug: normalizeDebug(parsed.debug),
   };
 }

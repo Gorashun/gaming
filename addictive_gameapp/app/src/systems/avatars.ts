@@ -1,14 +1,14 @@
 /**
- * Kompisarnas inventarie, XP och nivåer (DESIGN §14.4, §14.7). Ren logik, ingen Phaser.
+ * Kompisarnas inventarie och nivåer (DESIGN §14.7, §16.3). Ren logik, ingen Phaser.
+ * Nivåer köps med pärlor/sand (systems/economy.ts); XP finns inte längre.
  */
-import { AVATARS, UPGRADE } from '../data/avatarsIndex';
+import { AVATARS } from '../data/avatarsIndex';
 
 export type AvatarLevel = 1 | 2 | 3;
 
 export interface AvatarState {
   owned: string[];
   level: Record<string, AvatarLevel>;
-  xp: Record<string, number>;
   /** Vald avatar, '' innan första musslan. */
   equipped: string;
   boxesEarned: number;
@@ -19,20 +19,13 @@ export interface AvatarState {
 }
 
 export function defaultAvatars(): AvatarState {
-  return { owned: [], level: {}, xp: {}, equipped: '', boxesEarned: 0, boxesOpened: 0, pendingBoxes: 0, fresh: [] };
+  return { owned: [], level: {}, equipped: '', boxesEarned: 0, boxesOpened: 0, pendingBoxes: 0, fresh: [] };
 }
 
-export function levelFor(xp: number, cfg: { xpII: number; xpIII: number } = UPGRADE): AvatarLevel {
-  return xp >= cfg.xpIII ? 3 : xp >= cfg.xpII ? 2 : 1;
-}
-
-/** XP = merges medan avataren är vald. Returnerar nivån efteråt (0 om avataren inte ägs). */
-export function addXp(state: AvatarState, id: string, merges: number): AvatarLevel | 0 {
-  if (!state.owned.includes(id)) return 0;
-  const xp = (state.xp[id] ?? 0) + Math.max(0, Math.floor(merges));
-  state.xp[id] = xp;
-  state.level[id] = levelFor(xp);
-  return state.level[id];
+/** Gamla sparfiler (före DESIGN §16): nivån följde XP, II vid 150 och III vid 450 (§14.4). Bara migrering. */
+const LEGACY_XP = { xpII: 150, xpIII: 450 } as const;
+function legacyLevel(xp: number): AvatarLevel {
+  return xp >= LEGACY_XP.xpIII ? 3 : xp >= LEGACY_XP.xpII ? 2 : 1;
 }
 
 /** Väljer en ägd avatar. Gäller från nästa runda. */
@@ -46,7 +39,6 @@ export function equip(state: AvatarState, id: string): boolean {
 export function giveAvatar(state: AvatarState, id: string): void {
   if (!state.owned.includes(id)) {
     state.owned.push(id);
-    state.xp[id] = 0;
     state.level[id] = 1;
     state.fresh.push(id);
     state.pendingBoxes = Math.min(state.pendingBoxes, AVATARS.length - state.owned.length);
@@ -65,7 +57,10 @@ function nonNegInt(v: unknown): number {
   return typeof v === 'number' && Number.isFinite(v) && v > 0 ? Math.floor(v) : 0;
 }
 
-/** Tål gamla/korrupta sparfiler: bara kända id, inga dubbletter, nivå följer XP. */
+/**
+ * Tål gamla/korrupta sparfiler: bara kända id, inga dubbletter, nivå 1–3. Gamla filer med `xp`
+ * behåller sin nivå (den högsta av sparad nivå och nivån XP gav); `xp` tas bort (DESIGN §16.3).
+ */
 export function normalizeAvatars(raw: unknown): AvatarState {
   const src = (raw && typeof raw === 'object' ? raw : {}) as Partial<AvatarState>;
   const out = defaultAvatars();
@@ -73,10 +68,12 @@ export function normalizeAvatars(raw: unknown): AvatarState {
   if (Array.isArray(src.owned)) {
     for (const id of src.owned) if (typeof id === 'string' && known.has(id) && !out.owned.includes(id)) out.owned.push(id);
   }
-  const xpSrc = (src.xp && typeof src.xp === 'object' ? src.xp : {}) as Record<string, unknown>;
+  const legacy = src as { xp?: unknown };
+  const xpSrc = (legacy.xp && typeof legacy.xp === 'object' ? legacy.xp : {}) as Record<string, unknown>;
+  const lvSrc = (src.level && typeof src.level === 'object' ? src.level : {}) as Record<string, unknown>;
   for (const id of out.owned) {
-    out.xp[id] = nonNegInt(xpSrc[id]);
-    out.level[id] = levelFor(out.xp[id]);
+    const stored = Math.min(3, Math.max(1, nonNegInt(lvSrc[id])));
+    out.level[id] = Math.max(stored, legacyLevel(nonNegInt(xpSrc[id]))) as AvatarLevel;
   }
   out.equipped = typeof src.equipped === 'string' && out.owned.includes(src.equipped) ? src.equipped : (out.owned[0] ?? '');
   out.boxesEarned = nonNegInt(src.boxesEarned);

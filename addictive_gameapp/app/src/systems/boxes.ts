@@ -1,52 +1,27 @@
 /**
- * Musslor (DESIGN §14.3): intjäning och öppning. Ren logik, ingen Phaser: seedbar och testbar.
- * Inga dubbletter, ingen pity. Första musslan är alltid `cfg.firstRarity`.
+ * Musslor (DESIGN §16.2): öppning, en funktion med odds och golv per typ. Ren logik, ingen
+ * Phaser: seedbar och testbar. Inga dubbletter, ingen pity. Första musslan i livet är alltid
+ * sällsynt. Intjäning och köp: systems/economy.ts.
  */
 import type { Rng } from './rng';
 import { AVATARS, RARITY, type AvatarDef, type Rarity } from '../data/avatarsIndex';
-import { BOXES, type BoxConfig } from '../data/boxes';
+import { ECONOMY, type ShellType } from '../data/economy';
 import type { AvatarState } from './avatars';
 
-/** Villkor för skicklighetsmusslorna. Alla är monotona, så varje ger exakt en mussla. */
-export interface SkillFlags {
-  maxLevelEver: number;
-  doubleKlunks: number;
-  anyShiny: boolean;
-}
-
-/** Tröskeln (ackumulerade merges) för mussla nummer k ≥ 1. */
-export function boxThreshold(k: number, cfg: BoxConfig = BOXES): number {
-  return Math.round(cfg.base * Math.pow(k, cfg.exp));
-}
-
-/** Antal intjänade musslor totalt: merge-kurvan plus skicklighetsmusslor. */
-export function boxesEarnedFor(merges: number, cfg: BoxConfig = BOXES, skill?: SkillFlags): number {
-  let k = 0;
-  while (boxThreshold(k + 1, cfg) <= merges) k++;
-  if (!skill) return k;
-  for (const lvl of cfg.skillLevels) if (skill.maxLevelEver >= lvl) k++;
-  if (skill.doubleKlunks >= 1) k++;
-  if (skill.anyShiny) k++;
-  return k;
-}
-
-/**
- * Bokför intjänade musslor (skillnad mot `boxesEarned`). Oöppnade musslor kapas till antalet
- * figurer som finns kvar, så att en mussla på hyllan alltid går att öppna. Returnerar nya musslor.
- */
-export function grantBoxes(state: AvatarState, earned: number, total = AVATARS.length): number {
-  const fresh = Math.max(0, earned - state.boxesEarned);
-  state.boxesEarned = Math.max(state.boxesEarned, earned);
-  const before = state.pendingBoxes;
-  state.pendingBoxes = Math.min(before + fresh, total - state.owned.length);
-  return Math.max(0, state.pendingBoxes - before);
+/** Typens vikter per raritet, noll under golvet (DESIGN §16.2). */
+export function shellOdds(type: ShellType = 'common'): Record<Rarity, number> {
+  const def = ECONOMY.shells[type];
+  const floor = RARITY.order.indexOf(def.floor);
+  const out = {} as Record<Rarity, number>;
+  RARITY.order.forEach((r, i) => (out[r] = i >= floor ? def.odds[i] ?? 0 : 0));
+  return out;
 }
 
 /** Aktuella odds (andel 0–1) per raritet, omnormerade bland rariteter med figurer kvar. */
 export function currentOdds(
   owned: readonly string[],
   avatars: readonly AvatarDef[] = AVATARS,
-  odds: Readonly<Record<Rarity, number>> = RARITY.odds,
+  odds: Readonly<Record<Rarity, number>> = shellOdds('common'),
 ): Record<Rarity, number> {
   const out = {} as Record<Rarity, number>;
   let sum = 0;
@@ -86,19 +61,19 @@ export interface BoxResult {
 }
 
 /**
- * Öppnar en mussla och lägger figuren i inventariet (muterar `state`). Första avataren väljs
- * automatiskt. Returnerar null när alla figurer redan ägs.
+ * Drar en figur ur musslan av typen och lägger den i inventariet (muterar `state`). Första
+ * avataren väljs automatiskt. Returnerar null när inget finns kvar över typens golv.
  */
-export function openBox(
+export function drawShell(
   state: AvatarState,
   rng: Rng,
+  type: ShellType = 'common',
   avatars: readonly AvatarDef[] = AVATARS,
-  cfg: BoxConfig = BOXES,
 ): BoxResult | null {
-  const odds = currentOdds(state.owned, avatars);
+  const odds = currentOdds(state.owned, avatars, shellOdds(type));
   let rarity: Rarity | null = null;
-  if (state.owned.length === 0 && odds[cfg.firstRarity] > 0) {
-    rarity = cfg.firstRarity;
+  if (ECONOMY.firstShellRare && state.owned.length === 0 && avatars.some((a) => a.rarity === ECONOMY.firstRarity)) {
+    rarity = ECONOMY.firstRarity;
   } else {
     const roll = rng.next();
     let acc = 0;
@@ -112,12 +87,22 @@ export function openBox(
   if (!rarity) return null;
   const pool = avatars.filter((a) => a.rarity === rarity && !state.owned.includes(a.id));
   const a = rng.pick(pool);
-  state.owned.push(a.id);
-  state.xp[a.id] = 0;
-  state.level[a.id] = 1;
-  state.boxesOpened++;
-  if (!state.fresh.includes(a.id)) state.fresh.push(a.id);
-  state.pendingBoxes = Math.max(0, state.pendingBoxes - 1);
-  if (!state.equipped) state.equipped = a.id;
+  addOwned(state, a.id);
   return { avatarId: a.id, rarity };
+}
+
+/** Lägger till en figur på nivå I. Första avataren väljs automatiskt. */
+export function addOwned(state: AvatarState, id: string): void {
+  state.owned.push(id);
+  state.level[id] = 1;
+  state.boxesOpened++;
+  if (!state.fresh.includes(id)) state.fresh.push(id);
+  if (!state.equipped) state.equipped = id;
+}
+
+/** Öppnar en mussla från hyllan (vanlig typ, DESIGN §16.2). Returnerar null när alla figurer ägs. */
+export function openBox(state: AvatarState, rng: Rng, avatars: readonly AvatarDef[] = AVATARS): BoxResult | null {
+  const r = drawShell(state, rng, 'common', avatars);
+  state.pendingBoxes = Math.max(0, state.pendingBoxes - 1);
+  return r;
 }

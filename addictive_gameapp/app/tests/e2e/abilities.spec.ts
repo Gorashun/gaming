@@ -52,7 +52,7 @@ test('(a) första musslan: Släpparen håller objektet i nästa runda', async ({
   expect(await page.evaluate(() => window.__game!.buddy)).toBeNull();
 
   await page.evaluate(() => {
-    window.__game!.grantMerges(50);
+    window.__game!.grantMerges(120);
     window.__game!.forceLoss();
   });
   await page.waitForFunction(() => window.__game!.pendingBoxes === 1, undefined, { timeout: 10_000 });

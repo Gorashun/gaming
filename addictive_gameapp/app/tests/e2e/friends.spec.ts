@@ -40,15 +40,15 @@ interface SavedAvatars {
 const saved = (page: Page): Promise<SavedAvatars> =>
   page.evaluate(() => JSON.parse(localStorage.getItem('klunk.save.v1')!).avatars);
 
-test('mussla: 50 merges ger en mussla på hyllan, öppning ger sällsynt, fliken Kompisar väljer avatar', async ({ page }) => {
+test('mussla: 120 merges ger en gratismussla på hyllan, öppning ger sällsynt, fliken Kompisar väljer avatar', async ({ page }) => {
   const errors = collectErrors(page);
   await seedSave(page);
   await page.goto('/?test=1');
   await startGame(page);
 
-  // (a) 50 merges + förlust ⇒ en oöppnad mussla.
+  // (a) 120 merges från baseline + förlust ⇒ en oöppnad gratismussla (DESIGN §16.2).
   await page.evaluate(() => {
-    window.__game!.grantMerges(50);
+    window.__game!.grantMerges(120);
     window.__game!.forceLoss();
   });
   await page.waitForFunction(() => window.__game!.pendingBoxes === 1, undefined, { timeout: 10_000 });
@@ -138,5 +138,46 @@ test('48 öppningar via hooken ger 48 unika, sedan null', async ({ page }) => {
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   await page.evaluate(() => window.__book!.selectTab('friends'));
   await page.waitForTimeout(200);
+  expect(errors).toEqual([]);
+});
+
+test('ekonomi via hooken: pärlor/sand, köp, uppgradering och pick3 sparas (DESIGN §16)', async ({ page }) => {
+  const errors = collectErrors(page);
+  await seedSave(page);
+  await page.goto('/?test=1');
+  await startGame(page);
+  const res = await page.evaluate(() => {
+    const g = window.__game!;
+    const start = g.economy;
+    const poor = g.buyShell('common');
+    g.grantPearls(1000);
+    g.grantSand(60);
+    const first = g.buyShell('gold')!;
+    const common = g.buyShell('common')!;
+    const up = g.upgrade(first.avatarId);
+    const upIII = g.upgrade(first.avatarId); // kräver 10 sand, finns 10
+    g.setShopMode('pick3');
+    g.grantPearls(300);
+    const offer = g.offerPick3('common');
+    const picked = g.buyPick('common', offer[0]);
+    return { start, poor, first, common, up, upIII, offer, picked, mode: g.shopMode, eco: g.economy, av: g.avatars };
+  });
+  expect(res.start).toEqual({ pearls: 0, sand: 0, mergesBaseline: 0, freeShellsClaimed: 0, milestones: [] });
+  expect(res.poor).toBeNull();
+  expect(res.first.rarity).toBe('rare');
+  expect(res.common).not.toBeNull();
+  expect(res.up && res.upIII).toBe(true);
+  expect(res.av.level[res.first.avatarId]).toBe(3);
+  expect(res.mode).toBe('pick3');
+  expect(new Set(res.offer).size).toBe(3);
+  expect(res.picked?.avatarId).toBe(res.offer[0]);
+  // Pärlor: 1000 − 300 (vanlig) − 150 (II) − 400 (III) + 300 − 300 (pick3) = 150. Sand: 60 − 50 (guld) − 10 (III) = 0.
+  expect(res.eco).toMatchObject({ pearls: 150, sand: 0 });
+  await page.reload();
+  await page.waitForTimeout(800);
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('klunk.save.v1')!));
+  expect(saved.economy).toMatchObject({ pearls: 150, sand: 0 });
+  expect(saved.avatars.level[res.first.avatarId]).toBe(3);
+  expect(saved.avatars).not.toHaveProperty('xp');
   expect(errors).toEqual([]);
 });

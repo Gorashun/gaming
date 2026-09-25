@@ -22,7 +22,6 @@ import {
   AVATAR_SOUND,
   AVATAR_UI,
   RARITY,
-  UPGRADE,
   avatarById,
   oddsPearls,
   type AvatarDef,
@@ -593,16 +592,11 @@ export class Book extends Phaser.Scene {
         this.friendPulses.push({ target: img, base, tween });
       }
       // Uppgradering: två rombplatser under cellen.
+      // XP finns inte längre (DESIGN §16.3); uppgraderingsstapeln kommer i E3.
       const lvl = av.level[def.id] ?? 1;
-      const xp = av.xp[def.id] ?? 0;
       for (let k = 0; k < 2; k++) {
         const rx = x + (k - 0.5) * GR.rombPitch;
-        const reached = lvl >= k + 2;
-        const next = lvl === k + 1;
-        const from = k === 0 ? 0 : UPGRADE.xpII;
-        const to = k === 0 ? UPGRADE.xpII : UPGRADE.xpIII;
-        const pct = next ? Phaser.Math.Clamp((xp - from) / (to - from), 0, 1) : 0;
-        drawRomb(g, rx, y + GR.rombY, GR.rombW, GR.rombH, reached, pct, INT.hud, INT.hudDim);
+        drawRomb(g, rx, y + GR.rombY, GR.rombW, GR.rombH, lvl >= k + 2, 0, INT.hud, INT.hudDim);
       }
       return null;
     }

@@ -50,13 +50,24 @@ import {
 } from '../systems/collection';
 import { evaluateUnlocks, nextSetProgress } from '../systems/unlocks';
 import { cached, save, submitRun } from '../systems/save';
-import { addXp } from '../systems/avatars';
-import { boxesEarnedFor, grantBoxes, openBox } from '../systems/boxes';
-import { BOXES } from '../data/boxes';
+import { openBox } from '../systems/boxes';
+import {
+  buyPick,
+  buyShell,
+  claimFreeShells,
+  earnForRun,
+  milestoneFlags,
+  offerPick3,
+  setShopMode,
+  shopMode,
+  upgrade,
+  type Earned,
+} from '../systems/economy';
+import type { ShellType, ShopMode } from '../data/economy';
 import type { RevealCatch, RevealData } from './GameOver';
 import { Abilities, findMagnetPair, type AbilityLevel, type MagnetItem } from '../systems/abilities';
 import { ABILITY_FX } from '../data/abilities';
-import { AVATARS, AVATAR_UI, UPGRADE } from '../data/avatarsIndex';
+import { AVATARS, AVATAR_UI } from '../data/avatarsIndex';
 import { Buddy } from '../ui/buddy';
 import { AbilityFx } from '../ui/abilityFx';
 import { DEBUG } from '../data/debug';
@@ -202,7 +213,11 @@ export class Game extends Phaser.Scene {
   /** Avataren som var vald vid rundstart (byte gäller från nästa runda, DESIGN §14.6). */
   private runAvatar = '';
   /** Merges som redan skrivits som XP (XP batchas till rundslut och visibilitychange). */
-  private xpFlushed = 0;
+  /** Rundans räknare för stjärnsand (DESIGN §16.1) och vad rundan redan fått utbetalt. */
+  private runShinies = 0;
+  private runChains3 = 0;
+  private runLevel10s = 0;
+  private runPaid = { pearls: 0, sand: 0 };
   private highscore = 0;
   private recordPulsing = false;
   private passedRecord = false;
@@ -341,7 +356,10 @@ export class Game extends Phaser.Scene {
     this.runDoubleKlunks = 0;
     this.runCatches = [];
     this.runAvatar = data.avatars.equipped;
-    this.xpFlushed = 0;
+    this.runShinies = 0;
+    this.runChains3 = 0;
+    this.runLevel10s = 0;
+    this.runPaid = { pearls: 0, sand: 0 };
     // Förmågan (DESIGN §14.5) för kompisen som var vald vid rundstart, på dess nivå.
     const avLevel = (data.avatars.level[this.runAvatar] ?? 1) as AbilityLevel;
     this.abil = new Abilities(this.runAvatar, avLevel, PHYSICS.lossGraceMs);
@@ -620,6 +638,44 @@ export class Game extends Phaser.Scene {
         void save();
         return r;
       },
+      // ---- ekonomi (DESIGN §16)
+      get economy(): unknown {
+        return JSON.parse(JSON.stringify(cached().economy));
+      },
+      grantPearls(n: number): void {
+        cached().economy.pearls += Math.max(0, Math.floor(n));
+        void save();
+      },
+      grantSand(n: number): void {
+        cached().economy.sand += Math.max(0, Math.floor(n));
+        void save();
+      },
+      buyShell(type: string): unknown {
+        const d = cached();
+        const r = buyShell(d, type as ShellType, mulberry32((self.seedUsed ^ Math.imul(d.avatars.boxesOpened + 1, 0x9e3779b1)) >>> 0));
+        void save();
+        return r;
+      },
+      upgrade(id: string): boolean {
+        const ok = upgrade(cached(), id);
+        void save();
+        return ok;
+      },
+      get shopMode(): string {
+        return shopMode();
+      },
+      setShopMode(m: string): void {
+        setShopMode(m as ShopMode);
+      },
+      offerPick3(type: string): string[] {
+        const d = cached();
+        return offerPick3(d, type as ShellType, mulberry32((self.seedUsed ^ Math.imul(d.avatars.boxesOpened + 7, 0x9e3779b1)) >>> 0)).map((a) => a.id);
+      },
+      buyPick(type: string, id: string): unknown {
+        const r = buyPick(cached(), type as ShellType, id);
+        void save();
+        return r;
+      },
       /** Väljer aktivt set (bara upplåsta). Gäller från nästa runda. */
       setActiveSet(id: string): boolean {
         if (!cached().unlockedSets.includes(id)) return false;
@@ -640,7 +696,6 @@ export class Game extends Phaser.Scene {
         const av = cached().avatars;
         if (!av.owned.includes(id)) av.owned.push(id);
         const lv = (level >= 3 ? 3 : level === 2 ? 2 : 1) as AbilityLevel;
-        av.xp[id] = lv === 3 ? UPGRADE.xpIII : lv === 2 ? UPGRADE.xpII : 0;
         av.level[id] = lv;
         av.equipped = id;
         void save();
@@ -970,6 +1025,8 @@ export class Game extends Phaser.Scene {
    */
   private registerCreated(ball: Ball): boolean {
     const r = onLevelCreated(ball.level, this.col, this.colRng, COLLECTION);
+    if (r.shiny) this.runShinies++;
+    if (ball.level >= MAX_LEVEL) this.runLevel10s++;
     if (this.chainHidden) {
       this.chainHidden = false;
       this.tweens.add({ targets: this.chain, alpha: 1, duration: CH.firstRunFadeMs });
@@ -1610,6 +1667,7 @@ export class Game extends Phaser.Scene {
 
     const state = this.combo.merge(this.time.now, causedByMerge);
     this.runMerges++;
+    if (state.chainTriggered) this.runChains3++;
     if (this.firstMergeMs === null) this.firstMergeMs = Math.round(performance.now() - this.runT0);
 
     let points: number;
@@ -2060,16 +2118,28 @@ export class Game extends Phaser.Scene {
     };
   }
 
-  /** Skriver rundans merges som XP på avataren som var vald vid rundstart. */
-  private flushXp(): void {
-    if (this.runAvatar && this.runMerges > this.xpFlushed) {
-      addXp(cached().avatars, this.runAvatar, this.runMerges - this.xpFlushed);
-    }
-    this.xpFlushed = this.runMerges;
+  /**
+   * Pärlor och stjärnsand för rundan hittills (DESIGN §16.1). Tål flera anrop: bara det rundan
+   * inte redan fått betalas ut, så att bakgrundsläggning mitt i rundan aldrig tappar något.
+   */
+  private bankRun(): Earned {
+    const d = cached();
+    const stats = this.runStats();
+    return earnForRun(
+      {
+        merges: this.runMerges,
+        shinies: this.runShinies,
+        chains3: this.runChains3,
+        level10s: this.runLevel10s,
+        ...milestoneFlags({ maxLevelEver: stats.maxLevelEver!, doubleKlunks: stats.doubleKlunks! }, d.collection),
+      },
+      d,
+      this.runPaid,
+    );
   }
 
   private persist(): void {
-    this.flushXp();
+    this.bankRun();
     void save({ stats: this.runStats() });
     void submitRun(this.score, this.bestLevel, this.runAvatar);
   }
@@ -2089,14 +2159,9 @@ export class Game extends Phaser.Scene {
       mulberry32((this.seedUsed ^ 0x5e75) >>> 0),
     );
     const newSet = res.newSet ?? null;
-    // XP och musslor (DESIGN §14.3–14.4) skrivs i samma save som statistiken.
-    this.flushXp();
-    const earned = boxesEarnedFor(stats.merges!, BOXES, {
-      maxLevelEver: stats.maxLevelEver!,
-      doubleKlunks: stats.doubleKlunks!,
-      anyShiny: hasAnyShiny(d.collection),
-    });
-    const boxes = grantBoxes(d.avatars, earned);
+    // Pärlor, sand och gratismusslor (DESIGN §16) skrivs i samma save som statistiken.
+    this.bankRun();
+    const boxes = claimFreeShells({ economy: d.economy, avatars: d.avatars, stats: { merges: stats.merges! } }).shells;
     if (newSet) {
       if (!d.collection[newSet]) d.collection[newSet] = emptyPage();
       void save({ stats, unlockedSets: [...before, newSet], freshSet: newSet });

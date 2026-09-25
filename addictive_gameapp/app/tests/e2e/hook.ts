@@ -58,7 +58,6 @@ export interface GameHook {
   readonly avatars: {
     owned: string[];
     level: Record<string, number>;
-    xp: Record<string, number>;
     equipped: string;
     boxesEarned: number;
     boxesOpened: number;
@@ -68,6 +67,20 @@ export interface GameHook {
   readonly pendingBoxes: number;
   /** Öppnar en mussla direkt och sparar. null när alla ägs. */
   openBox(): { avatarId: string; rarity: string } | null;
+  /** Ekonomin (DESIGN §16), kopia av sparat läge. */
+  readonly economy: { pearls: number; sand: number; mergesBaseline: number; freeShellsClaimed: number; milestones: string[] };
+  grantPearls(n: number): void;
+  grantSand(n: number): void;
+  /** Köper och öppnar en mussla ('common' | 'silver' | 'gold'). null = räcker inte eller ospelbar. */
+  buyShell(type: string): { avatarId: string; rarity: string } | null;
+  /** Uppgraderar en ägd kompis ett steg. false = räcker inte / redan III. */
+  upgrade(id: string): boolean;
+  /** 'random' | 'pick3' (reservflaggan). */
+  readonly shopMode: string;
+  setShopMode(m: string): void;
+  /** pick3: tre erbjudna id (ändrar ingenting). */
+  offerPick3(type: string): string[];
+  buyPick(type: string, id: string): { avatarId: string; rarity: string } | null;
   /** Äger och väljer kompisen på nivån (1–3, default 1) och startar om rundan. */
   equipForTest(id: string, level?: number): void;
   /** Förmågans tillstånd i rundan (DESIGN §14.5). */
