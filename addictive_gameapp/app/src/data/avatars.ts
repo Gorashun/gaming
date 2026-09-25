@@ -188,10 +188,27 @@ export interface Ability {
   readonly params: { readonly I: AbilityParams; readonly II: AbilityParams; readonly III: AbilityParams };
 }
 
+/**
+ * Etikett per uppgraderingsnivå (I/II/III) under stapeln i boken. ≤9 tecken per etikett.
+ *  - `param`: värdet hämtas ur `ability.params[I|II|III][param]`, gånger `scale` (default 1), och ersätter `{v}`.
+ *    `format: 'level'` ⇒ värdet är en objektnivå: rita nivåns objekt (r 7) där `{v}` står i stället för siffran.
+ *  - `texts`: fasta etiketter per nivå (när värdet inte är ett enkelt tal).
+ */
+export type LevelHint =
+  | { readonly param: string; readonly text: LocalizedName; readonly scale?: number; readonly format?: 'number' | 'level' }
+  | { readonly texts: readonly [LocalizedName, LocalizedName, LocalizedName] };
+
 export interface AvatarDef {
   readonly id: string;
   /** Visningsnamn, engelska primärt (DESIGN §15). Visas bara där text införs (bok, öppning, butik). */
   readonly names: LocalizedName;
+  /**
+   * Förmågetext i boken (DESIGN §16.4, UI.md §14.5): vad som händer, barnvänligt, ≤60 tecken per språk.
+   * Engelska först. Kosmetik beskrivs också. Visas under namnet, max 2 rader.
+   */
+  readonly desc: LocalizedName;
+  /** Värdet per uppgraderingsnivå under stapeln (UI.md §14.5). Saknas ⇒ bara segment. */
+  readonly levelHint?: LevelHint;
   readonly rarity: Rarity;
   /** = RARITY.color[rarity] */
   readonly rarityColor: string;
@@ -249,12 +266,17 @@ export const UPGRADE = {
  * Varje raritet med figurer kvar får MINST en pärla (mytisk syns alltid tills den är tagen).
  * Largest remainder; överskott tas från den största gruppen. Tom pool ⇒ alla 0.
  */
-export function oddsPearls(remaining: Readonly<Record<Rarity, number>>, total = 25): Record<Rarity, number> {
-  const live = RARITY.order.filter((r) => remaining[r] > 0);
+export function oddsPearls(
+  remaining: Readonly<Record<Rarity, number>>,
+  total = 25,
+  /** Vikter per raritet. Default RARITY.odds. Butiken (UI.md §14.3): musslans vikter, 0 under golvet. */
+  weights: Readonly<Record<Rarity, number>> = RARITY.odds,
+): Record<Rarity, number> {
+  const live = RARITY.order.filter((r) => remaining[r] > 0 && weights[r] > 0);
   const out = { common: 0, uncommon: 0, rare: 0, epic: 0, legendary: 0, mythic: 0 } as Record<Rarity, number>;
   if (live.length === 0) return out;
-  const sum = live.reduce((s, r) => s + RARITY.odds[r], 0);
-  const exact = live.map((r) => ({ r, v: (RARITY.odds[r] / sum) * total }));
+  const sum = live.reduce((s, r) => s + weights[r], 0);
+  const exact = live.map((r) => ({ r, v: (weights[r] / sum) * total }));
   for (const e of exact) out[e.r] = Math.max(1, Math.floor(e.v));
   let left = total - live.reduce((s, r) => s + out[r], 0);
   const byRem = [...exact].sort((a, b) => (b.v - Math.floor(b.v)) - (a.v - Math.floor(a.v)));
@@ -542,6 +564,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-1',
     names: { en: 'Sheldon the Shell', sv: 'Snäckan Sigge' },
+    desc: { en: 'Leaves a pearl trail and goes plop on landing.', sv: 'Lämnar ett pärlspår och säger plopp vid landning.' },
     rarity: 'common',
     idea: 'Liten havssnäcka som bär sitt hus: långsam, trygg, lämnar pärlor efter sig.',
     draw: [
@@ -565,6 +588,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-2',
     names: { en: 'Jilly the Jellyfish', sv: 'Maneten Molly' },
+    desc: { en: 'Leaves a trail of floating purple bubbles.', sv: 'Lämnar ett spår av svävande lila bubblor.' },
     rarity: 'common',
     idea: 'Svävande manet: allt hon gör är mjukt och långsamt, som i vatten.',
     draw: [
@@ -588,6 +612,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-3',
     names: { en: 'Cody the Crab', sv: 'Krabban Krille' },
+    desc: { en: 'Clicks his claws every time he drops.', sv: 'Klickar med klorna varje gång han släpper.' },
     rarity: 'common',
     idea: 'Kaxig liten krabba som klickar med klorna varje gång han släpper.',
     draw: [
@@ -620,6 +645,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-4',
     names: { en: 'Stella the Starfish', sv: 'Sjöstjärnan Stina' },
+    desc: { en: 'Merges sparkle with little gold stars.', sv: 'Sammanslagningar gnistrar av små guldstjärnor.' },
     rarity: 'common',
     idea: 'Glad sjöstjärna som gör varje merge till en liten stjärnregn.',
     draw: [
@@ -641,6 +667,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-5',
     names: { en: 'Otto the Octopus', sv: 'Bläckfisken Bosse' },
+    desc: { en: 'Merges splash purple ink drops.', sv: 'Sammanslagningar stänker lila bläckdroppar.' },
     rarity: 'common',
     idea: 'Mjuk bläckfisk med åtta armar i luften – sprutar lila bläckprickar av glädje.',
     draw: [
@@ -665,6 +692,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-6',
     names: { en: 'Finley the Fish', sv: 'Fisken Fenja' },
+    desc: { en: 'Watches every drop and leaves bubbles.', sv: 'Följer varje släpp med blicken och bubblar.' },
     rarity: 'common',
     idea: 'Nyfiken fisk som aldrig tar ögonen från det du släpper.',
     draw: [
@@ -691,6 +719,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-7',
     names: { en: 'Pim the Penguin', sv: 'Pingvinen Pim' },
+    desc: { en: 'Nods and peeps after every drop.', sv: 'Nickar och piper efter varje släpp.' },
     rarity: 'common',
     idea: 'Pingvin i stickad mössa som nickar belåtet efter varje släpp.',
     draw: [
@@ -713,6 +742,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-8',
     names: { en: 'Freddie the Frog', sv: 'Grodan Gurra' },
+    desc: { en: 'Croaks and hops after 3 quick merges.', sv: 'Kväker och hoppar efter 3 snabba sammanslagningar.' },
     rarity: 'common',
     idea: 'Bred glad groda som kväker när det går bra (combo 3).',
     draw: [
@@ -735,6 +765,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-9',
     names: { en: 'Selma the Seal', sv: 'Sälen Selma' },
+    desc: { en: 'Claps and barks at every merge.', sv: 'Klappar och skäller vid varje sammanslagning.' },
     rarity: 'common',
     idea: 'Sälen som balanserar bollar – hon är född till att hålla saker.',
     draw: [
@@ -761,6 +792,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-10',
     names: { en: 'Milo the Mouse', sv: 'Musen Mio' },
+    desc: { en: 'Squeaks and jumps when things land.', sv: 'Piper och skuttar när något landar.' },
     rarity: 'common',
     idea: 'Pigg mus med stora öron som piper när något landar.',
     draw: [
@@ -787,6 +819,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-11',
     names: { en: 'Sally the Snail', sv: 'Snigeln Sally' },
+    desc: { en: 'Leaves a glittery slime trail.', sv: 'Lämnar ett glittrigt slemspår.' },
     rarity: 'common',
     idea: 'Långsam snigel som lämnar ett glittrande slemspår efter allt hon släpper.',
     draw: [
@@ -812,6 +845,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-12',
     names: { en: 'Bea the Bumblebee', sv: 'Humlan Humle' },
+    desc: { en: 'Buzzes every time she drops.', sv: 'Surrar till varje gång hon släpper.' },
     rarity: 'common',
     idea: 'Rund humla som surrar till när hon släpper.',
     draw: [
@@ -837,6 +871,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-13',
     names: { en: 'Puff the Pufferfish', sv: 'Blåsfisken Puff' },
+    desc: { en: 'Puffs up with joy at every merge.', sv: 'Blåser upp sig av glädje vid sammanslagning.' },
     rarity: 'common',
     idea: 'Taggig blåsfisk som blåser upp sig av förtjusning vid varje merge.',
     draw: [
@@ -870,6 +905,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-14',
     names: { en: 'Tess the Turtle', sv: 'Sköldpaddan Tuss' },
+    desc: { en: 'Drops slowly and calmly, then goes plop.', sv: 'Släpper lugnt och långsamt, sedan plopp.' },
     rarity: 'common',
     idea: 'Lugn sköldpadda – ingenting stressar henne, inte ens fara.',
     draw: [
@@ -893,6 +929,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-15',
     names: { en: 'Skip the Shrimp', sv: 'Räkan Räkel' },
+    desc: { en: 'Does a happy wiggle at every merge.', sv: 'Gör en glad vickning vid varje sammanslagning.' },
     rarity: 'common',
     idea: 'Spralligt böjd räka med långa spröt som darrar av iver.',
     draw: [
@@ -918,6 +955,7 @@ const COMMON: AvatarDef[] = [
   def({
     id: 'common-16',
     names: { en: 'Urban the Urchin', sv: 'Sjöborren Borre' },
+    desc: { en: 'Merges burst into soft lilac spikes.', sv: 'Sammanslagningar blir mjuka lila taggar.' },
     rarity: 'common',
     idea: 'Taggig men snäll sjöborre – ser farlig ut, är världens mjukaste.',
     draw: [
@@ -951,6 +989,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-1',
     names: { en: 'Stanley the Seahorse', sv: 'Sjöhästen Harry' },
+    desc: { en: 'Sparkles change color as your combo grows.', sv: 'Gnistorna byter färg när din combo växer.' },
     rarity: 'uncommon',
     idea: 'Stolt sjöhäst som håller objektet med svansen; partiklarna skiftar färg med combon.',
     draw: [
@@ -977,6 +1016,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-2',
     names: { en: 'Kit the Comet', sv: 'Kometen Kim' },
+    desc: { en: 'Everything he drops gets a fiery tail.', sv: 'Allt han släpper får en eldsvans.' },
     rarity: 'uncommon',
     idea: 'En liten komet: allt han släpper får en eldsvans.',
     draw: [
@@ -999,6 +1039,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-3',
     names: { en: 'Snowy the Snowman', sv: 'Snögubben Snö' },
+    desc: { en: 'Makes it snow, and merges chime like ice.', sv: 'Snö när han släpper, isklang vid sammanslagning.' },
     rarity: 'uncommon',
     idea: 'Snögubbe som får det att snöa och frosta i kanterna vid merge.',
     draw: [
@@ -1031,6 +1072,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-4',
     names: { en: 'Bip the Bot', sv: 'Robotten Bip' },
+    desc: { en: 'Merges beep like a robot, with confetti.', sv: 'Robotpip och konfetti vid sammanslagning.' },
     rarity: 'uncommon',
     idea: 'Liten robot: alla merge-ljud blir robotpip i skala.',
     draw: [
@@ -1056,6 +1098,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-5',
     names: { en: 'Dexter the Dragon', sv: 'Draken Dunder' },
+    desc: { en: 'Puffs smoke rings when he drops. Never fire!', sv: 'Puffar rökringar när han släpper. Aldrig eld!' },
     rarity: 'uncommon',
     idea: 'Liten drake som puffar rök när han släpper – aldrig eld, bara puff.',
     draw: [
@@ -1087,6 +1130,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-6',
     names: { en: 'Cosmo the Cat', sv: 'Katten Kurre' },
+    desc: { en: 'Purrs and sends hearts for each new size.', sv: 'Spinner och skickar hjärtan för varje ny storlek.' },
     rarity: 'uncommon',
     idea: 'Randig katt som spinner när kedjan i HUD tänds.',
     draw: [
@@ -1121,6 +1165,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-7',
     names: { en: 'Bella the Balloon', sv: 'Ballongen Bella' },
+    desc: { en: 'Spins and throws confetti near your record.', sv: 'Snurrar och kastar konfetti nära ditt rekord.' },
     rarity: 'uncommon',
     idea: 'Ballong som håller objektet i snöret och släpper konfetti när rekordet närmar sig.',
     draw: [
@@ -1145,6 +1190,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-8',
     names: { en: 'Pirate Pete', sv: 'Pirat-Pelle' },
+    desc: { en: 'Shouts "Arrr!" when two giants meet.', sv: 'Ropar "Arrr!" när två jättar möts.' },
     rarity: 'uncommon',
     idea: 'Pirat med lapp för ögat: "Arrr!" och en skattkista-gest vid Klunk.',
     draw: [
@@ -1174,6 +1220,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-9',
     names: { en: 'Gracie the Ghost', sv: 'Spöket Svischa' },
+    desc: { en: 'Leaves see-through ghost copies. Wooo!', sv: 'Lämnar genomskinliga spökkopior. Uuuh!' },
     rarity: 'uncommon',
     idea: 'Snällt spöke: allt hon släpper lämnar genomskinliga efterbilder.',
     draw: [
@@ -1200,6 +1247,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-10',
     names: { en: 'Dilly the Drum', sv: 'Trumslagaren Trumma' },
+    desc: { en: 'Every drop is a drum beat.', sv: 'Varje släpp blir ett trumslag.' },
     rarity: 'uncommon',
     idea: 'Levande trumma: varje drop är ett trumslag och combon bygger takten.',
     draw: [
@@ -1227,6 +1275,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-11',
     names: { en: 'Ned the Narwhal', sv: 'Narvalen Nisse' },
+    desc: { en: 'Sings a little whale song on chains.', sv: 'Sjunger en liten valsång vid kedjor.' },
     rarity: 'uncommon',
     idea: 'Narval med spiralhorn som sjunger en liten valsång vid kedjor.',
     draw: [
@@ -1254,6 +1303,7 @@ const UNCOMMON: AvatarDef[] = [
   def({
     id: 'uncommon-12',
     names: { en: 'Axel the Axolotl', sv: 'Axolotln Axel' },
+    desc: { en: 'Blubs when things land, merges make hearts.', sv: 'Blubbar vid landning, hjärtan vid sammanslagning.' },
     rarity: 'uncommon',
     idea: 'Ständigt leende axolotl vars gälar fladdrar när något landar.',
     draw: [
@@ -1291,6 +1341,9 @@ const RARE: AvatarDef[] = [
   def({
     id: 'muller',
     names: { en: 'Theo the Thundercloud', sv: 'Åskmolnet Muller' },
+    desc: { en: 'Chains of 3 bring thunder and lightning.', sv: 'Kedjor på 3 ger åska och blixtar.' },
+
+    levelHint: { param: 'bolts', text: { en: '{v} bolts', sv: '{v} blixtar' } },
     rarity: 'rare',
     idea: 'Buttert åskmoln som mullrar till och slår små blixtar när kedjan går.',
     draw: [
@@ -1319,6 +1372,9 @@ const RARE: AvatarDef[] = [
   def({
     id: 'maestro',
     names: { en: 'Conrad the Conductor', sv: 'Dirigenten Maestro' },
+    desc: { en: 'Your combo plays a real melody.', sv: 'Din combo spelar en riktig melodi.' },
+
+    levelHint: { texts: [{ en: 'Melody', sv: 'Melodi' }, { en: '+ chord', sv: '+ ackord' }, { en: '+ bass', sv: '+ bas' }] },
     rarity: 'rare',
     idea: 'Liten fågeldirigent med taktpinne: combon spelar en riktig melodi.',
     draw: [
@@ -1360,6 +1416,7 @@ const RARE: AvatarDef[] = [
   def({
     id: 'tick',
     names: { en: 'Tick the Time Owl', sv: 'Tidsugglan Tick' },
+    desc: { en: 'Danger ticks calmly, like a clock.', sv: 'Fara tickar lugnt, som en klocka.' },
     rarity: 'rare',
     idea: 'Uggla med klockögon: faran blir sepiatonad och tickar lugnt i stället för att brumma.',
     draw: [
@@ -1405,6 +1462,7 @@ const RARE: AvatarDef[] = [
   def({
     id: 'fia',
     names: { en: 'Firework Faye', sv: 'Fyrverkeri-Fia' },
+    desc: { en: 'Fireworks when you beat your record.', sv: 'Fyrverkerier när du slår ditt rekord.' },
     rarity: 'rare',
     idea: 'Liten rosa raket som skjuter upp egna fyrverkerier när du slår rekord.',
     draw: [
@@ -1444,6 +1502,9 @@ const RARE: AvatarDef[] = [
   def({
     id: 'vulle',
     names: { en: 'Vinnie the Volcano', sv: 'Vulkanen Vulle' },
+    desc: { en: 'Big merges spray lava and rumble.', sv: 'Stora sammanslagningar sprutar lava och mullrar.' },
+
+    levelHint: { param: 'drops', text: { en: '{v} drops', sv: '{v} dropp' } },
     rarity: 'rare',
     idea: 'Varm liten vulkan: stora merges (nivå ≥8) sprutar lava och en djup bas.',
     draw: [
@@ -1482,6 +1543,9 @@ const RARE: AvatarDef[] = [
   def({
     id: 'disco',
     names: { en: 'Dizzy the Disco Ball', sv: 'Discokulan Disco' },
+    desc: { en: 'The background dances with your combo.', sv: 'Bakgrunden dansar i takt med din combo.' },
+
+    levelHint: { param: 'spots', text: { en: '{v} spots', sv: '{v} ljus' } },
     rarity: 'rare',
     idea: 'Coolaste discokulan: bakgrunden gungar mjukt i takt med combon.',
     draw: [
@@ -1527,6 +1591,7 @@ const RARE: AvatarDef[] = [
   def({
     id: 'eko',
     names: { en: 'Echo the Echo', sv: 'Ekot Eko' },
+    desc: { en: 'Every merge echoes like in a cave.', sv: 'Varje sammanslagning ekar som i en grotta.' },
     rarity: 'rare',
     idea: 'Ropar in i en grotta: varje merge ekar tillbaka som i en katedral.',
     draw: [
@@ -1563,6 +1628,9 @@ const RARE: AvatarDef[] = [
   def({
     id: 'klick',
     names: { en: 'Clicky the Camera', sv: 'Kameran Klick' },
+    desc: { en: 'Snaps a photo of your best chain.', sv: 'Tar ett foto av din bästa kedja.' },
+
+    levelHint: { texts: [{ en: '1 photo', sv: '1 foto' }, { en: '1 photo', sv: '1 foto' }, { en: '2 photos', sv: '2 foton' }] },
     rarity: 'rare',
     idea: 'Glad retrokamera som tar en polaroid av rundans största kedja.',
     draw: [
@@ -1606,6 +1674,9 @@ const RARE: AvatarDef[] = [
   def({
     id: 'nora',
     names: { en: 'Aurora the Arctic Fox', sv: 'Norrsken-Nora' },
+    desc: { en: 'Chains of 3 light up the northern lights.', sv: 'Kedjor på 3 tänder norrsken över burken.' },
+
+    levelHint: { param: 'holdMs', scale: 0.001, text: { en: '{v} s', sv: '{v} s' } },
     rarity: 'rare',
     idea: 'Fjällräv med norrskenssvans: långa kedjor tänder norrsken över burken.',
     draw: [
@@ -1653,6 +1724,9 @@ const EPIC: AvatarDef[] = [
   def({
     id: 'lisa',
     names: { en: 'Lantern Lucy', sv: 'Lykt-Lisa' },
+    desc: { en: 'Lights up matching pieces while you aim.', sv: 'Lyser upp likadana medan du siktar.' },
+
+    levelHint: { param: 'seconds', text: { en: '{v} s', sv: '{v} s' } },
     rarity: 'epic',
     idea: 'Marulk från djupet med en lykta på pannan: den lyser upp de som passar ihop.',
     draw: [
@@ -1685,6 +1759,7 @@ const EPIC: AvatarDef[] = [
   def({
     id: 'siri',
     names: { en: 'Sybil the Seer', sv: 'Spådamen Siri' },
+    desc: { en: 'See two pieces ahead in the queue.', sv: 'Se två steg fram i kön.' },
     rarity: 'epic',
     idea: 'Spådam som håller objektet som en kristallkula och ser två steg fram.',
     draw: [
@@ -1728,6 +1803,7 @@ const EPIC: AvatarDef[] = [
   def({
     id: 'sixten',
     names: { en: 'Spotter Sam', sv: 'Sikt-Sixten' },
+    desc: { en: 'Shows exactly where your piece will land.', sv: 'Visar precis var biten landar.' },
     rarity: 'epic',
     idea: 'Keps och kikarsikte: han visar exakt var det du släpper landar.',
     draw: [
@@ -1761,6 +1837,9 @@ const EPIC: AvatarDef[] = [
   def({
     id: 'bubbel',
     names: { en: 'Bobby the Bubble', sv: 'Bubblan Bubbel' },
+    desc: { en: 'Your first drops land softly, no bounce.', sv: 'Dina första släpp landar mjukt, utan studs.' },
+
+    levelHint: { param: 'drops', text: { en: '{v} drops', sv: '{v} släpp' } },
     rarity: 'epic',
     idea: 'En levande såpbubbla: rundans första drop landar mjukt utan studs.',
     draw: [
@@ -1793,6 +1872,9 @@ const EPIC: AvatarDef[] = [
   def({
     id: 'ekko',
     names: { en: 'Sonny the Sonar', sv: 'Ekolodet Ekko' },
+    desc: { en: 'New sizes ping so you can find them.', sv: 'Nya storlekar pingar så att du hittar dem.' },
+
+    levelHint: { param: 'pulses', text: { en: '{v} pings', sv: '{v} ping' } },
     rarity: 'epic',
     idea: 'Liten ubåt med ekolod: när en ny nivå tänds pingar alla av den nivån.',
     draw: [
@@ -1831,6 +1913,9 @@ const EPIC: AvatarDef[] = [
   def({
     id: 'kajsa',
     names: { en: 'Mira the Meerkat', sv: 'Kikaren Kajsa' },
+    desc: { en: 'Spots near-misses, even on smaller pieces.', sv: 'Ser nästan-träffar, även på mindre bitar.' },
+
+    levelHint: { param: 'minLevel', format: 'level', text: { en: '{v}+', sv: '{v}+' } },
     rarity: 'epic',
     idea: 'Surikat på utkik med kikare: hon ser nästan-träffar långt innan du gör det.',
     draw: [
@@ -1892,6 +1977,9 @@ const LEGENDARY: AvatarDef[] = [
   def({
     id: 'maja',
     names: { en: 'Magnet Maya', sv: 'Magnet-Maja' },
+    desc: { en: 'Pulls two matching pieces together.', sv: 'Drar ihop två likadana bitar.' },
+
+    levelHint: { param: 'uses', text: { en: '{v}×', sv: '{v}×' } },
     rarity: 'legendary',
     idea: 'Hästskomagnet som håller objektet mellan polerna och en gång per runda drar ihop två lika.',
     draw: [
@@ -1927,6 +2015,9 @@ const LEGENDARY: AvatarDef[] = [
   def({
     id: 'rut',
     names: { en: 'Rainbow Rosie', sv: 'Regnbågs-Rut' },
+    desc: { en: 'Brings a rainbow piece to every round.', sv: 'Har med sig en regnbåge till varje runda.' },
+
+    levelHint: { texts: [{ en: 'Drop 3', sv: 'Släpp 3' }, { en: 'Drop 2', sv: 'Släpp 2' }, { en: '+ bomb', sv: '+ bomb' }] },
     rarity: 'legendary',
     idea: 'En regnbåge med molnfötter som alltid har en regnbåge med sig till rundan.',
     draw: [
@@ -1966,6 +2057,9 @@ const LEGENDARY: AvatarDef[] = [
   def({
     id: 'vala',
     names: { en: 'Willow the Whale', sv: 'Andrums-Vala' },
+    desc: { en: 'Gives you an extra breath when the jar is full.', sv: 'Ger ett extra andetag när burken är full.' },
+
+    levelHint: { param: 'uses', text: { en: '{v}×', sv: '{v}×' } },
     rarity: 'legendary',
     idea: 'Stor lugn val som blåser en fontän: ger dig ett extra andetag när burken blir full.',
     draw: [
@@ -2016,6 +2110,9 @@ const MYTHIC: AvatarDef[] = [
   def({
     id: 'havsdrottningen',
     names: { en: 'The Sea Queen', sv: 'Havsdrottningen' },
+    desc: { en: 'Golden jar, orchestra and a rainbow each round.', sv: 'Guldburk, orkester och regnbåge varje runda.' },
+
+    levelHint: { param: 'extraSpecials', text: { en: '+{v} extra', sv: '+{v} extra' } },
     rarity: 'mythic',
     idea: 'Havets drottning med pärlhalsband och krona: hela burken blir guld och orkestern spelar.',
     draw: [
@@ -2060,6 +2157,9 @@ const MYTHIC: AvatarDef[] = [
   def({
     id: 'stjärnvalen',
     names: { en: 'The Star Whale', sv: 'Stjärnvalen' },
+    desc: { en: 'Starry sky, glowing pieces, more shiny ones.', sv: 'Stjärnhimmel, glödande bitar, fler skimrande.' },
+
+    levelHint: { param: 'shinyMul', text: { en: '×{v}', sv: '×{v}' } },
     rarity: 'mythic',
     idea: 'En val gjord av natthimmel: stjärnor i kroppen, månskära på huvudet, allt i burken glöder.',
     draw: [
@@ -2110,6 +2210,28 @@ export const AVATARS: readonly AvatarDef[] = [...COMMON, ...UNCOMMON, ...RARE, .
 
 export function avatarById(id: string): AvatarDef | undefined {
   return AVATARS.find((a) => a.id === id);
+}
+
+/**
+ * Etiketten för uppgraderingsnivå `lvl` (1–3) på språket `locale`, eller null om figuren saknar levelHint.
+ * `levelIcon` satt ⇒ rita objektet på den nivån där `{v}` stod (text = resten, t.ex. "+").
+ * Decimaltal: svenska med komma, engelska med punkt. Ingen avrundning utöver två decimaler.
+ */
+export function levelHintLabel(
+  def: AvatarDef,
+  lvl: 1 | 2 | 3,
+  locale: 'en' | 'sv',
+): { readonly text: string; readonly levelIcon?: number } | null {
+  const h = def.levelHint;
+  if (!h) return null;
+  const key = (['I', 'II', 'III'] as const)[lvl - 1];
+  if ('texts' in h) return { text: h.texts[lvl - 1][locale] };
+  const raw = def.ability?.params[key][h.param];
+  if (typeof raw !== 'number') return null;
+  const v = Math.round(raw * (h.scale ?? 1) * 100) / 100;
+  if (h.format === 'level') return { text: h.text[locale].replace('{v}', '').trim(), levelIcon: v };
+  const num = locale === 'sv' ? String(v).replace('.', ',') : String(v);
+  return { text: h.text[locale].replace('{v}', num) };
 }
 
 // ---------------------------------------------------------------- partikelformer (vita 16×16, tintas)

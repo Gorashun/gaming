@@ -1,6 +1,6 @@
 # UI.md – KLUNK visuell spec, ljudkarta och game feel
 
-Version 1.2 · 2026-09-25 (§12 meta-lager, §13 Kompisar) · Ägare: ui-designer. Underordnad `DESIGN.md` (spelregler) och `TECH.md` (stack).
+Version 1.3 · 2026-09-25 (§12 meta-lager, §13 Kompisar, §14 Ekonomi) · Ägare: ui-designer. Underordnad `DESIGN.md` (spelregler) och `TECH.md` (stack).
 Implementation av tokens: `app/src/data/theme.ts`. Granskningsbild: `docs/ui-preview.png` (nivåark, spel, start, förlust).
 
 ---
@@ -946,3 +946,155 @@ Alla är `ToneDef`-kompatibla (`AvatarTone`) och spelas med `playTone`. Gain lig
 3. **Lykt-Lisa "6/8/10 s"** har jag tolkat som en siktningsbudget per runda (lyktans olja). Om det i stället ska vara "de första N sekunderna av varje siktning" byts bara betydelsen av `seconds`.
 4. **~30 %-regeln** krockar med de heltal §14.5 anger, se §13.8. Jag har följt §14.5.
 5. **Rundavslutets mussla** tar ungefär 700 ms av 2,5 s-budgeten. Med nytt set, 6 flygare och en mussla samma runda blir det trångt. Jag föreslår att flygarna då körs i `flyersFast` (§12.5).
+
+---
+
+## 14. Ekonomi v1.3 (DESIGN §16)
+
+Data och tillgångar: `app/src/data/economyUi.ts` (`ECONOMY_UI`, `ECONOMY_SOUND`, `ECONOMY_COLORS`, ikonerna, `formatAmount`). Priser, odds, golv och intjäning ägs av `ECONOMY` i `data/economy.ts` och dupliceras inte. Förmågetexterna ligger i `avatars.ts` (`desc`, `levelHint`, `levelHintLabel()`). `oddsPearls()` tar nu musslans vikter som tredje argument. Granskningsbild: `docs/ui-preview-economy.png` (A–F nedan).
+
+**Känslan i en mening:** en lugn affär vid havsbotten. Man ser vad saker kostar, hur långt man har kvar och vad som finns i varje mussla. Inget blinkar, inget räknar ned och inget lockar med "nästan". Priset står alltid som ikon plus siffra, och inga andra etiketter behövs.
+
+### 14.1 Två valutor som inte går att förväxla
+
+| | Valutapärla | Stjärnsand | Raritetspärla (finns, §13.2) |
+|---|---|---|---|
+| Ikon | `PEARL_COIN_ICON`: pärlemorgradient `#FFEAF3` → `#F3BBD3`, dubbel högdager, liten vit gnista | `SAND_ICON`: liten hög (`#E8A95C`) med tre femuddiga stjärnkorn (`#FFD39B`) | platt fylld cirkel i raritetsfärg |
+| Kontrast mot bg | 16,5:1 | 13,6:1 | 7,4–13,6:1 |
+| Står alltid med | en siffra | en siffra | aldrig en siffra, alltid i rad eller i burk |
+
+Formen bär skillnaden: rund med gnista, stjärnor på en hög och platt prick. Valutapärlan är alltid ensam och har alltid en siffra bredvid sig. Raritetspärlor står alltid i grupp. Se §14.10, fråga 1.
+
+### 14.2 Resursräknare (`ECONOMY_UI.counters`)
+
+Samma plats och samma utseende i bokens överkant och på startskärmen (panel A och E), så att "min pung" alltid finns uppe till höger.
+
+| Element | Position |
+|---|---|
+| Pärlor | ikon 20 px vid (148, 30), siffra 16 px/800 `hud` vänsterställd från x 161 |
+| Sand | ikon 20 px vid (232, 30), siffra från x 245 |
+| Format | `formatAmount`: smalt mellanslag som tusentalsavgränsare ("1 240"), tabulära siffror (§2.2) |
+
+- Räknarna är **inte tryckbara** och ritas därför inte i accent. I boken ligger de mellan flikarna (slutar x 124) och stängknappens yta (börjar x 284).
+- **Köp och uppgradering:** siffran räknas ned på 300 ms (Quad.easeOut) medan 6 valutaikoner (12 px) flyger från räknaren till musslan eller knappen (20 ms isär, 240 ms, Cubic.easeIn). Man ser alltså var pengarna tar vägen.
+- **Räcker inte:** ikonen för den resurs som fattas punchar 1,0 → 1,18 → 1,0 en gång (220 ms). Det visar vad som saknas, utan text.
+- **Startskärmen:** räknarna ligger på y 30 ovanför logotypen. Resten av §13.6 är oförändrat. Se avvikelsen i §14.10, fråga 2.
+
+### 14.3 Butikshyllan (`ECONOMY_UI.shop`, panel A–C)
+
+Hyllan ligger högst upp i fliken Kompisar, på y 76–172. Den gamla stora oddsburken (268, 134) tas bort och varje mussla får en egen liten burk. Rutnätet flyttas ned till `grid.top` 346.
+
+| Element | Position och utseende |
+|---|---|
+| Hyllinje | x 16 → 344, y 140, 3 px `jarEdge`, konsoler vid x 28 och 332 (8 px) |
+| Platser | cx 66 / 180 / 294: vanlig, silver, guld. Billigast till vänster |
+| Mussla | `SHELL_TYPE_ICON(type, state)`, 48 px vid (cx − 20, 116). Samma silhuett som `SHELL_ICON`. **Typen syns i formen:** vanlig är slät och rosa, silver har två vita glintar på ljust silver, guld har en stjärna (stjärnsandens korn) på gult |
+| Mini-oddsburk | 40×42 vid (cx + 27, 118), lock 5 px, glas `jarGlass` 0,55, kant 2 px `jarEdge`. **25 pärlor** r 2,9 i rader 6-5-6-5-3 nedifrån, vanlig längst ner och mytisk överst. Antal = `oddsPearls(kvar, 25, musslans vikter)`, där vikterna kommer från `ECONOMY.shells[type].odds` och rariteter under golvet har vikt 0. Därför syns det direkt att silverburken inte har några grå pärlor och att guldburken bara har blå och uppåt |
+| Pris | y 158, centrerat på cx: resursikon 16 px + 7 px + siffra 15 px/800 |
+| Träffyta | cx ± 53 × y 80–172 (106×92), 8 px mellanrum |
+
+**Tillstånd per plats:**
+
+| Tillstånd | Villkor | Mussla | Pris | Burk |
+|---|---|---|---|---|
+| **Räcker** | resursen ≥ pris och `shellAvailable` | full färg, kant `accent` 4 (tryckbar) | ikon + siffra i `hud` | full |
+| **Räcker inte** | resursen < pris | alpha 0,55, kant `hudDim` | siffra i `hudDim` + **fyllnadsring** runt ikonen (r 10,5, 2,5 px, spår `hudDim` 0,35, båge `hud` = have/pris från kl. 12). Ringen visar hur nära man är, och formen (ringen) bär informationen | full |
+| **Tomt** | `!shellAvailable` (inget kvar över golvet) | grå `#5B6780` + bockbricka (r 11 i ikonens 64-box, `hudDim` med `ink`-bock) | inget pris | tom burk med `SHELL_OPEN_ICON` i `hudDim` |
+| **Full bok** | alla 48 ägs | musslorna ersätts av `BOOK_ICON` i `gold`, 48 px vid (180, 112), och tre stilla `SPARKLE_ICON` (12/10/8 px) | – | – |
+
+Butiken väntar alltid på spelaren. Inga pulser på "Räcker" (ingen press), inga röda markeringar och inga "!".
+
+### 14.4 Köpflöde (två tryck, `ECONOMY_UI.wake` och `buy`)
+
+Känsla: **"vill du ha den här?"** Musslan vaknar och tittar upp, och först när man trycker igen händer något. Det skyddar mot misstag (barn, fickan, dubbeltryck) utan en dialogruta med text.
+
+| t (ms) | Händelse | Ease | Ljud / haptik |
+|---|---|---|---|
+| tryck 1 | Musslan **vaknar**: y −6, skala 1,12, övre halvan glipar (`SHELL_TOP_SVG` scaleY 0,82) så att man ser pärlemor. Priset får en accentram (chip 24 px hög, radie 12, 2 px, fyllning accent 0,16) och siffran blir `accent`, eftersom det nu är knappen. Övriga musslor tonas till 0,45 | Back.easeOut, 300 ms | `wake`, haptik 10 ms |
+| 300 → | Vaken mussla andas 1,00 ↔ 1,15 **på ringen runt priset**, halvcykel 1 000 ms (0,5 Hz). Ingen ljusstyrkeändring | Sine.easeInOut | – |
+| tryck 2 på samma mussla (≥ 250 ms efter tryck 1) | **Köp.** Valutaikonerna flyger från räknaren till musslan och räknaren räknas ned (§14.2) | Cubic.easeIn, 240 ms | `buy`, haptik 30 ms |
+| +360 | **Öppningen enligt §13.3**, med start i musslans hyllplats i stället för (92, 450): scrim, flygning till (180, 300), locket, figuren, pärlorna, ringarna, showcase. Alla tider är desamma. Musslans färg följer typen, men **öppningen ser likadan ut för alla typer och innehåll** fram till att figuren syns | enligt §13.3 | enligt §13.3 |
+| tryck efter 1 200 | Figuren krymper och flyger till (180, 346), rutnätets överkant. Rutnätet scrollar till figurens rad (240 ms Cubic.easeOut) och cellen får `freshPulse`. Den nya figuren väljs inte automatiskt (§13.3), förutom den allra första | Cubic.easeIn 320 ms | `equip` |
+
+- **Somna:** tryck utanför musslan, flikbyte, scroll eller 3 000 ms utan tryck. Musslan går tillbaka på 200 ms och ingenting kostar. Tryck på en annan mussla väcker den i stället.
+- **Tryck 1 på "Räcker inte":** ingen väckning. Musslan skakar ±4 px två gånger på 240 ms, ljudet `notEnough` spelas och räknarens ikon punchar (§14.2). Fyllnadsringen syns redan.
+- **Tryck på "Tomt":** musslan nickar (y +3 och tillbaka, 200 ms). Inget ljud. Bocken säger "klar".
+- Tryck under ceremonin följer §13.3 (hoppa över eller stäng). Hyllan är inte tryckbar medan scrimmen ligger på.
+
+### 14.5 Vald kompis: text, stapel och uppgradering (`ECONOMY_UI.stage`, panel A–C)
+
+Scenen ligger på y 180–340 under en avdelare (y 176, 2 px `jarWall`, x 16–344).
+
+| Element | Position och utseende |
+|---|---|
+| Figur | 60 px, centrum (52, 214), med en nivå 1-glimt r 10 i greppet och raritetsglöd r 38 (alpha 0,25). Uppgraderingsrombar på axeln (§13.5). Träffyta x 8–96, y 180–280: **tryck = showcase igen** (som §13.4) |
+| Raritetspärlor | y 274, r 3,5, 10 px isär, centrerade under figuren |
+| Namn | (104, 194), 17 px/800 `hud`, en rad. Om namnet är bredare än 240 px krymps det till minst 14 px. Bredaste namnet mäter 222 px vid 17 px |
+| **Förmågetext** | `desc[locale]`, (104, 212), **14 px/700**, radhöjd 17, färg `desc` `#C9D6EE` (12,9:1), max bredd 240, **max 2 rader**, radbrytning vid ord och ingen avstavning. Alla 96 texter är uppmätta i Chromium och ryms på två rader. Den tredje raden klipps med "…" som skydd om en översättning någonsin blir för lång |
+| **Stapel** | 3 segment x 104 → 344 (76 px breda, 6 px mellanrum), y 262, 10 px höga, radie 5. Uppnådd nivå: fylld raritetsfärg (mytisk: regnbåge per segment) + 1,5 px `ink`-kant. Nästa: kontur 2 px `hud`. Senare: kontur 2 px `hudDim` alpha 0,5. **Nivå I är alltid fylld** (man äger kompisen). Fylld mot kontur bär informationen, inte färgen |
+| Värde per nivå | under varje segment på y 278, 11 px/800, `levelHintLabel(def, lvl, locale)`. Uppnådda nivåer i `hud`. **Nästa nivå** i `hud` med `UPGRADE_ICON` (10 px) före. Senare i `hudDim`. `levelIcon` betyder att nivåns objekt ritas (r 7) där `{v}` stod (Kajsa: objekt + "+"). Utan `levelHint` visas bara segmenten. Etiketterna är ≤9 tecken och ryms i 76 px (uppmätt) |
+| **Uppgraderingsknapp** | 240×48 i centrum (224, 314), radie 14, träffyta 240×56. Innehåll centrerat: `UPGRADE_ICON` 24 px, sedan per resurs ikon 16 px + 7 px + siffra 16 px/800, med 12 px mellan resurserna. Pris = `upgradeCost(rarity, level)` |
+
+**Knappens tillstånd:**
+
+| Tillstånd | Utseende |
+|---|---|
+| Räcker | fyllning accent 0,14, kant 3 px `accent`, pil `accent`, siffror `hud` |
+| Vaken (tryck 1) | fyllning accent 0,26, kant 4 px, pilen lyfts 3 px (300 ms Back.easeOut), **nästa segment förhandsfylls** med alpha 0,35 (panel C). Samma andning, somningsregler och `wake`-ljud som musslan |
+| Tryck 2 = köp | valutan flyger till knappen och räknaren räknas ned. Segmentet fylls 0 → 1 på 280 ms (Cubic.easeOut), 12 partiklar i raritetsfärg sprids från segmentet (70 px/s, 460 ms), rombarna på figuren poppar (200 ms Back.easeOut) och figuren gör sin showcase. Ljud `upgrade`, haptik 30 ms |
+| Räcker inte | ingen fyllning, **streckad** kant 2 px `hudDim` (6/5), pil `hudDim`. Den resurs som fattas får siffran i `hudDim` och fyllnadsringen runt ikonen, den som räcker behåller `hud`. Tryck: skakning ±4 px, `notEnough` och räknarens punch. Streckningen och ringen bär informationen |
+| Nivå III | ingen knapp. `CHECK_ICON` 28 px i `hudDim` alpha 0,8, centrerad på knappens plats, inte tryckbar. Alla tre segment är fyllda |
+| Ingen kompis ännu | stapel och knapp döljs. Scenen visar `TAB_FRIENDS_ICON` 60 px i `hudDim` 0,5. Normalt händer det aldrig, eftersom första musslan väljs automatiskt |
+
+### 14.6 Rundavslutet: resursräkning (`ECONOMY_UI.tally`, panel D)
+
+Känsla: **"skörden i fickan".** Ett snabbt, stigande tickande som alltid kommer. Den lilla kicken efter varje runda, oavsett resultat.
+
+- **Plats:** stripens vänsterkant (§12.5). Pärlor: ikon 22 px vid (30, 56) och "+62" 20 px/800 `hud` från x 44. Sand: samma sak på y 94. Det krockar varken med boken (148, 56), stapeln (x 110–250), musslan (304, 56), rekordringen (y ≥ 110) eller set-ceremonin (ringarna når x ≥ 100). Utan sand i rundan visas bara pärlraden. Utan merges visas ingen rad.
+- **Tid:** raden poppar in (140 ms Back.easeOut) och räknas upp från +0 **när mätaren är klar**, alltså sista flygaren landat + 80 ms, samma ögonblick som stapeln börjar fyllas. Utan fångster startar den vid 420 ms. Uppräkningen tar **600 ms** (Quad.easeOut). Sanden startar 120 ms efter pärlorna, så att de hörs som två lager.
+- **Ljud:** `tallyPearl` / `tallySand`, högst 12 tick per rad och minst 45 ms isär, `playTone(def, round(12 · andel))`, alltså en stigande oktav. Vid slutet `tallyEnd` och ikonen punchar 1,2 (180 ms).
+- **Tidsbudget:** 6 flygare ger start 1 720 och slut 2 440 (sand 2 560, se fråga 4). Snabbläget ger start 1 390 och slut 2 110. Inga fångster ger 420 → 1 140. Ett tryck startar om direkt som förut (<0,5 s).
+- **Råd-ledtråd (`affordHint`):** om pärlorna efter rundan precis har passerat priset för en vanlig mussla (före < 300 ≤ efter) poppar en liten `SHELL_TYPE_ICON('common', 'ok')` (24 px) in vid (104, 56) när räkningen är klar, med `boxEarned`-ljudet. Ingen puls, ingen text, ingen upprepning. Det är ett "nu räcker det", aldrig ett "köp nu".
+- Totalsaldot visas inte här. Det finns på startskärmen och i boken.
+
+### 14.7 Ljud (`ECONOMY_SOUND`, ToneDef → `playTone`)
+
+| Ljud | Karaktär |
+|---|---|
+| `wake` | sinus 660 → 990 Hz, 0,1 s: "hm?", nyfiket uppåt |
+| `buy` | triangel C6 + kvint (0/+7, 60 ms) med oktav: två pärlor som läggs i en skål. Därefter `shellOpen` i ceremonin |
+| `upgrade` | triangel D5, fyrklang 0/4/7/12 med 70 ms, svagt vibrato. Varmare och kortare än `reveal.epic` |
+| `notEnough` | sinus G4 → E4 (0/−3, 90 ms), lågpass 1,4 kHz, gain 0,10: ett mjukt "hm-m". **Aldrig** surr, buzzer eller sjunkande glissando |
+| `tallyPearl` | sinus E6, 35 ms, gain 0,07, stiger en oktav under räkningen |
+| `tallySand` | triangel A6 + kvint, 60 ms: glittrigare än pärlan |
+| `tallyEnd` | sinus C6 → G6-glid, 0,12 s |
+
+Alla ljud ligger under merge-plinget i gain (0,07–0,26).
+
+### 14.8 Reservläge "välj 1 av 3" (`SHOP.mode: 'pick3'`, panel F)
+
+Om regelverk kräver det byts slumpen ut mot ett synligt val. Hyllan ser likadan ut (musslor, pris och burk, där burken visar hur kandidaterna dras).
+
+1. **Tryck på en mussla** (kostar ingenting, ett tryck räcker): scrim 0,86, musslan flyger till (180, 120) i 72 px och öppnar sig som i §13.3. Tre kort stiger upp ur den, 260 ms Back.easeOut och 90 ms isär.
+2. **Korten:** cx 72/180/288, y 176–340, 100×164, radie 16. Ram 3 px i raritetsfärg och fyllning raritetsfärg 0,14. Figur 72 px, raritetspärlor på y 292 och namn 13 px/800 (max 2 rader) från y 314. Inga förmågeikoner och ingen "bäst"-markering.
+3. **Tryck på ett kort = välj:** kortet lyfts 8 px, får en 4 px `accent`-ram och en bockbricka r 9. Dess `desc` visas under korten (y 366, 15 px/700, `desc`, max 2 rader, centrerad). Ljud `wake`.
+4. **Köpknapp** 200×64 vid (180, 448), accent, med valutaikon 24 px + pris 20 px. Den är grå och streckad med fyllnadsring om det inte räcker (§14.5). Valet av kort är den första bekräftelsen och knappen den andra.
+5. **Köp:** de två andra korten sjunker tillbaka ned i musslan (200 ms). Det valda kortet gör figurens del av ceremonin: glöd, ringar enligt raritet, showcase, med samma tider som §13.3 från t = 300.
+6. **Stäng** (X vid (320, 44) eller bakåt): korten sjunker ned. **Samma tre kandidater ligger kvar tills man köper en**, så att det inte går att dra om genom att stänga och öppna. Det kräver att erbjudandet sparas (§14.10, fråga 3).
+
+### 14.9 Tillgänglighet och flash-guard
+
+- **Kontrast:** valutaikoner 16,5 / 13,6:1, förmågetext 12,9:1, namn 16,8:1, `hudDim`-siffror 7,4:1. Den gråa tomma musslan (3,3:1) bärs av bocken (`hudDim` med `ink`, 7,4:1).
+- **Aldrig bara färg:** musseltyp = form (slät, glintar, stjärna) + resursikon + burkens innehåll. Räcker inte = fyllnadsring + streckad kant + tonad form. Vaken = lyft och glipa + ram runt priset. Nivå = fyllt mot kontur i stapeln + rombar på figuren.
+- **Flash-guard:** en loop, den vakna musslans prisring på 0,5 Hz. Allt annat sker en gång. Inga vitblixtar och ingen ljusstyrkeväxling. Lägg `ECONOMY_UI.wake.breath.halfCycleMs` i `JUICE.pulseHalfCycleMs`.
+- **Motorik:** alla mål ≥ 92 px höga, utom uppgraderingsknappen (56 px hög, 240 bred, ≥ 8 px till grannar). Inga långtryck. Två tryck i stället för dialogruta.
+- **Ingen press:** ingen nedräkning, inga "erbjudanden", inga röda prickar i butiken. Det enda som rör sig av sig självt är den vakna musslan man själv har tryckt på.
+
+### 14.10 Öppna frågor
+
+1. **"Pärlor" betyder tre saker:** valutan, raritetspärlorna (§13.2) och nivå 9-objektet "Pärlan". Jag har skilt dem åt visuellt (§14.1), men för en 7-åring vore det tydligare att döpa om **raritetsmarkeringen**. Den kan heta "stjärnor" i texten, men formen bör vara kvar. Beslut för projektledaren. Det påverkar inte data, bara ord i framtida text.
+2. **Räknarna på startskärmen ligger i överkanten (y 30), inte på hyllan.** Hyllans rader är fulla (musslor, bästa objekt, bok, krona och rekord, set-stapeln på y 526, inställningar från y 544). Samma plats som i boken ger dessutom en fast "pung". Säg till om de ändå ska in på hyllan, då behöver set-stapeln flyttas.
+3. **pick3: `offerPick3` ändrar ingenting** och drar nya kandidater vid varje anrop. Om erbjudandet inte sparas (t.ex. `economy.pick3Offer[type]: string[]`) kan man dra om genom att stänga och öppna, vilket gör valet till en gratis spelautomat. Det behöver sparas.
+4. **Tidsbudgeten:** med 6 flygare (utan snabbläge) slutar sandens räkning vid ≈ 2 560 ms, alltså 60 ms över 2 500. Förslag: med sand och ≥ 5 flygare används `flyersFast`, eller så startar sanden samtidigt med pärlorna.
+5. **Mini-burken överdriver sällsynta rariteter:** minst en pärla per levande raritet (beslut §13.4) ger mytisk 4 % i burken mot 0,5 % i vanlig mussla. Det är samma avvägning som förut ("mytisk syns alltid"), men skillnaden är nu större. Alternativ: tillåt 0 pärlor när oddsen är under 2 %, med en streckad plats överst som betyder "finns, men mycket sällsynt".
+6. **`ECONOMY_UI` ligger i en egen fil** (`economyUi.ts`), eftersom `economy.ts` redan fanns hos programmeraren. Slå ihop eller re-exportera.
