@@ -27,7 +27,7 @@ async function tap(page: Page, wx: number, wy: number): Promise<void> {
 function seedSave(page: Page, extra: Record<string, unknown> = {}): Promise<void> {
   return page.addInitScript((x) => {
     if (localStorage.getItem('klunk.save.v1')) return;
-    localStorage.setItem('klunk.save.v1', JSON.stringify({ highscore: 500, bestLevel: 4, stats: { runs: 4, merges: 0 }, ...x }));
+    localStorage.setItem('klunk.save.v1', JSON.stringify({ schema: 2, highscore: 500, bestLevel: 4, stats: { runs: 4, merges: 0 }, ...x }));
   }, extra);
 }
 

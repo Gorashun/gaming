@@ -19,10 +19,12 @@ export interface EconomyState {
   freeShellsClaimed: number;
   /** Utbetalda engångsmilstolpar: 'level7'…'level10', 'shiny', 'doubleKlunk', 'page:<setId>'. */
   milestones: string[];
+  /** pick3: erbjudna figurer per musseltyp, ligger kvar tills köp (DESIGN §16.5, går inte att dra om). */
+  pick3Offer: Partial<Record<ShellType, string[]>>;
 }
 
 export function defaultEconomy(mergesBaseline = 0): EconomyState {
-  return { pearls: 0, sand: 0, mergesBaseline, freeShellsClaimed: 0, milestones: [] };
+  return { pearls: 0, sand: 0, mergesBaseline, freeShellsClaimed: 0, milestones: [], pick3Offer: {} };
 }
 
 function nonNegInt(v: unknown): number {
@@ -44,12 +46,19 @@ export function normalizeEconomy(raw: unknown, migrate: { merges: number; reache
   if (Array.isArray(src.milestones)) {
     for (const m of src.milestones) if (typeof m === 'string' && !milestones.includes(m)) milestones.push(m);
   }
+  const pick3Offer: Partial<Record<ShellType, string[]>> = {};
+  const offers = (src.pick3Offer && typeof src.pick3Offer === 'object' ? src.pick3Offer : {}) as Record<string, unknown>;
+  for (const type of Object.keys(ECONOMY.shells) as ShellType[]) {
+    const list = offers[type];
+    if (Array.isArray(list)) pick3Offer[type] = list.filter((id): id is string => typeof id === 'string').slice(0, 3);
+  }
   return {
     pearls: nonNegInt(src.pearls),
     sand: nonNegInt(src.sand),
     mergesBaseline: nonNegInt(src.mergesBaseline),
     freeShellsClaimed: nonNegInt(src.freeShellsClaimed),
     milestones,
+    pick3Offer,
   };
 }
 
@@ -235,16 +244,20 @@ export function setShopMode(m: ShopMode): void {
   mode = m === 'pick3' ? 'pick3' : 'random';
 }
 
-/** Upp till tre unika, ej ägda figurer dragna med typens odds och golv. Ändrar ingenting. */
+/**
+ * Upp till tre unika, ej ägda figurer dragna med typens odds och golv. Ändrar ingenting.
+ * `keep`: redan erbjudna som ligger kvar; bara resten dras.
+ */
 export function offerPick3(
   state: { avatars: AvatarState },
   type: ShellType,
   rng: Rng,
   avatars: readonly AvatarDef[] = AVATARS,
+  keep: readonly AvatarDef[] = [],
 ): AvatarDef[] {
   const pool = eligible(state.avatars.owned, type, avatars);
-  const taken = [...state.avatars.owned];
-  const out: AvatarDef[] = [];
+  const out: AvatarDef[] = keep.slice(0, 3);
+  const taken = [...state.avatars.owned, ...out.map((a) => a.id)];
   while (out.length < 3) {
     const odds = currentOdds(taken, pool, shellOdds(type));
     const roll = rng.next();
@@ -264,6 +277,26 @@ export function offerPick3(
   return out;
 }
 
+/**
+ * Det sparade erbjudandet för typen (DESIGN §16.5): samma kandidater tills köp. Kandidater som
+ * blivit ägda (t.ex. köpta ur en annan typ) byts ut, resten ligger kvar. Muterar `economy.pick3Offer`.
+ */
+export function pick3Offer(
+  state: { economy: EconomyState; avatars: AvatarState },
+  type: ShellType,
+  rng: Rng,
+): AvatarDef[] {
+  const pool = eligible(state.avatars.owned, type, AVATARS);
+  const keep: AvatarDef[] = [];
+  for (const id of state.economy.pick3Offer[type] ?? []) {
+    const a = pool.find((x) => x.id === id);
+    if (a) keep.push(a);
+  }
+  const offer = keep.length >= Math.min(3, pool.length) ? keep : offerPick3(state, type, rng, AVATARS, keep);
+  state.economy.pick3Offer[type] = offer.map((a) => a.id);
+  return offer;
+}
+
 /** Köper den valda figuren. null = räcker inte eller figuren går inte att få ur typen. */
 export function buyPick(
   state: { economy: EconomyState; avatars: AvatarState },
@@ -274,6 +307,7 @@ export function buyPick(
   const a = eligible(state.avatars.owned, type, AVATARS).find((x) => x.id === id);
   if (!a) return null;
   pay(state.economy, ECONOMY.shells[type].price);
+  delete state.economy.pick3Offer[type];
   addOwned(state.avatars, a.id);
   return { avatarId: a.id, rarity: a.rarity };
 }

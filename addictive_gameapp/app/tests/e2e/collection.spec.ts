@@ -118,6 +118,7 @@ test('hyllan öppnar samlarboken, stäng-ikonen och svep ner stänger', async ({
     localStorage.setItem(
       'klunk.save.v1',
       JSON.stringify({
+        schema: 2,
         highscore: 840,
         bestLevel: 4,
         settings: { sound: false, haptics: false, calm: false },

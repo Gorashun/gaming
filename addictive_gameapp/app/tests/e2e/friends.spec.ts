@@ -27,7 +27,7 @@ async function startGame(page: Page): Promise<void> {
 function seedSave(page: Page): Promise<void> {
   return page.addInitScript(() => {
     if (localStorage.getItem('klunk.save.v1')) return;
-    localStorage.setItem('klunk.save.v1', JSON.stringify({ highscore: 500, bestLevel: 4, stats: { runs: 4, merges: 0 } }));
+    localStorage.setItem('klunk.save.v1', JSON.stringify({ schema: 2, highscore: 500, bestLevel: 4, stats: { runs: 4, merges: 0 } }));
   });
 }
 
@@ -162,7 +162,7 @@ test('ekonomi via hooken: pärlor/sand, köp, uppgradering och pick3 sparas (DES
     const picked = g.buyPick('common', offer[0]);
     return { start, poor, first, common, up, upIII, offer, picked, mode: g.shopMode, eco: g.economy, av: g.avatars };
   });
-  expect(res.start).toEqual({ pearls: 0, sand: 0, mergesBaseline: 0, freeShellsClaimed: 0, milestones: [] });
+  expect(res.start).toEqual({ pearls: 0, sand: 0, mergesBaseline: 0, freeShellsClaimed: 0, milestones: [], pick3Offer: {} });
   expect(res.poor).toBeNull();
   expect(res.first.rarity).toBe('rare');
   expect(res.common).not.toBeNull();

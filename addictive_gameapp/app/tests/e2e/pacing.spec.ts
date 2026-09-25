@@ -121,6 +121,7 @@ test('Lugnt läge stänger av auto-drop helt', async ({ page }) => {
     localStorage.setItem(
       'klunk.save.v1',
       JSON.stringify({
+        schema: 2,
         highscore: 0,
         bestLevel: 0,
         settings: { sound: false, haptics: false, calm: true },

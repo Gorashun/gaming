@@ -23,11 +23,16 @@ import {
   AVATAR_UI,
   RARITY,
   avatarById,
-  oddsPearls,
+  levelHintLabel,
   type AvatarDef,
-  type Rarity,
 } from '../data/avatarsIndex';
+import { ECONOMY_COLORS, ECONOMY_ICON_KEYS, ECONOMY_SOUND, ECONOMY_UI, formatAmount } from '../data/economyUi';
 import { equip, markFriendsSeen } from '../systems/avatars';
+import { canUpgrade, upgrade, upgradeCost } from '../systems/economy';
+import { getLocale, t, type Locale } from '../systems/i18n';
+import { Counters } from '../ui/counters';
+import { FriendsShop, dashedRoundRect, priceParts, progressRing } from '../ui/friendsShop';
+import { ECO_EXTRA_KEYS } from '../ui/icons';
 import { clearBackHandler, setBackHandler } from '../systems/back';
 import { BG_GLOW } from '../ui/textures';
 import { avatarIconKey } from '../ui/icons';
@@ -37,11 +42,13 @@ import {
   bakeAvatar,
   bakeAvatarParticles,
   drawPearl,
+  drawPearlRow,
   drawRomb,
   gripToCenter,
   rarityInt,
   strokeRarityRoundRect,
 } from '../ui/avatarArt';
+import { FX_DOT } from '../ui/textures';
 import { AvatarRig } from '../ui/avatarRig';
 import { playFxCue } from '../ui/avatarFx';
 
@@ -57,7 +64,30 @@ const LOCKED_FB = { px: 6, ms: 240, barScale: 1.1, barMs: 300 };
 const SEEN_MS = 2000;
 const AB = AVATAR_UI.book;
 const GR = AB.grid;
-const ST = AB.stage;
+/** Scenen med vald kompis, text, stapel och uppgradering (UI.md §14.5). */
+const ES = ECONOMY_UI.stage;
+const SF = ES.figure;
+/** Rutnätet ligger under butiken och scenen (UI.md §14.3). */
+const GRID_TOP = ECONOMY_UI.grid.top;
+const STAGE_GRIP_Y = SF.cy + gripToCenter(SF.displayPx);
+const ICON_PX = 128;
+const HUD = THEME.palette.hud;
+const HUD_DIM = THEME.palette.hudDim;
+
+/** Sätter texten, max `maxLines` rader; en tredje rad klipps med "…" (skydd för långa översättningar). */
+function setClamped(txt: Phaser.GameObjects.Text, value: string, maxLines: number): void {
+  txt.setText(value);
+  if (txt.getWrappedText(value).length <= maxLines) return;
+  const words = value.split(' ');
+  while (words.length > 1) {
+    words.pop();
+    const v = `${words.join(' ')}…`;
+    if (txt.getWrappedText(v).length <= maxLines) {
+      txt.setText(v);
+      return;
+    }
+  }
+}
 
 type Tab = 'sets' | 'friends';
 
@@ -123,6 +153,17 @@ export class Book extends Phaser.Scene {
   private vel = 0;
   private lastMoveY = 0;
   private stageImg: Phaser.GameObjects.Image | null = null;
+  private stageGlow: Phaser.GameObjects.Image | null = null;
+  /** Namn, text, stapel och uppgraderingsknapp; byggs om vid byte/uppgradering. */
+  private stageInfo!: Phaser.GameObjects.Container;
+  private upBtn: Phaser.GameObjects.Container | null = null;
+  /** Uppgraderingsknappen vaken sedan (speltid), -1 = sover. */
+  private upAwakeAt = -1;
+  private upSleepTimer: Phaser.Time.TimerEvent | null = null;
+  /** Romber per ägd cell i rutnätet (ritas om vid uppgradering). */
+  private rombG!: Phaser.GameObjects.Graphics;
+  private shop!: FriendsShop;
+  private counters!: Counters;
   private stageRig: AvatarRig | null = null;
   private stageId = '';
   private showcasing = false;
@@ -154,6 +195,13 @@ export class Book extends Phaser.Scene {
     this.hintShown = false;
     this.scrollHint = null;
     this.peekShown = false;
+    this.stageImg = null;
+    this.stageRig = null;
+    this.stageGlow = null;
+    this.upBtn = null;
+    this.upAwakeAt = -1;
+    this.upSleepTimer = null;
+    this.showcasing = false;
     this.page = this.startPage();
 
     this.strip = this.add.container(-this.page * W, 0);
@@ -166,7 +214,7 @@ export class Book extends Phaser.Scene {
       .setDisplaySize(BK.close.icon, BK.close.icon)
       .setDepth(10);
     this.buildFriends();
-    this.band = this.add.rectangle(W / 2, GR.top / 2, W, GR.top, INT.bg, 0.001).setDepth(4);
+    this.band = this.add.rectangle(W / 2, GRID_TOP / 2, W, GRID_TOP, INT.bg, 0.001).setDepth(4);
     this.tabIcons = this.add.graphics().setDepth(11);
     this.tabSetImg = this.add.image(AB.tabs.set.x, AB.tabs.set.y, avatarIconKey('tabSetOn')).setDepth(12);
     this.tabFriendsImg = this.add.image(AB.tabs.friends.x, AB.tabs.friends.y, avatarIconKey('tabFriendsOff')).setDepth(12);
@@ -191,6 +239,7 @@ export class Book extends Phaser.Scene {
 
     // Androids bakåtknapp (och Escape i testbygget) stänger boken.
     const onBack = (): boolean => {
+      if (this.shop.back()) return true;
       this.close();
       return true;
     };
@@ -235,7 +284,7 @@ export class Book extends Phaser.Scene {
         const c = self.cells.find((k) => k.def.id === id);
         if (!c) return null;
         self.vel = 0;
-        self.setScroll(c.y - (GR.top + GR.bottom) / 2);
+        self.setScroll(c.y - (GRID_TOP + GR.bottom) / 2);
         return { x: c.x, y: c.y - self.scroll };
       },
       /** Kompisen på bokens scen. */
@@ -257,6 +306,27 @@ export class Book extends Phaser.Scene {
       get scrollHint(): boolean {
         return self.scrollHint !== null && self.scrollHint.visible && self.tab === 'friends';
       },
+      /** Butiken (UI.md §14.3): priser, tillstånd, vaken mussla, pick3-erbjudande, ceremoni. */
+      get shop(): unknown {
+        return self.shop.snapshot();
+      },
+      /** Köper musslan (samma väg som andra trycket). pick3: öppnar erbjudandet, returnerar null. */
+      buy(type: string): unknown {
+        return self.shop.buy(type as 'common' | 'silver' | 'gold');
+      },
+      /** pick3: väljer kort i och trycker på köpknappen. */
+      pick(i: number): unknown {
+        self.shop.select(i);
+        return self.shop.confirmPick();
+      },
+      /** Uppgraderar vald kompis (samma väg som andra trycket på knappen). */
+      upgradeSelected(): boolean {
+        return self.doUpgrade();
+      },
+      /** Scenens vald kompis: nivå, visad text, nivåetiketter och knappens tillstånd. */
+      get stage(): unknown {
+        return self.stageSnapshot();
+      },
     };
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       delete (window as unknown as Record<string, unknown>).__book;
@@ -277,11 +347,14 @@ export class Book extends Phaser.Scene {
   private onMove(p: Phaser.Input.Pointer): void {
     if (!this.down || !p.isDown) return;
     if (this.tab === 'friends') {
-      if (this.down.y < GR.top) return;
+      if (this.down.y < GRID_TOP || this.shop.blocking) return;
       this.vel = this.lastMoveY - p.worldY;
       this.lastMoveY = p.worldY;
       this.setScroll(this.downScroll - (p.worldY - this.down.y), true);
-      if (Math.abs(p.worldY - this.down.y) >= SW.tapMaxPx) this.hideScrollHint();
+      if (Math.abs(p.worldY - this.down.y) >= SW.tapMaxPx) {
+        this.hideScrollHint();
+        this.sleepAll();
+      }
       return;
     }
     let dx = p.worldX - this.down.x;
@@ -299,6 +372,10 @@ export class Book extends Phaser.Scene {
     const dy = p.worldY - down.y;
     const dt = Math.max(1, this.time.now - down.t);
     const tap = Math.abs(dx) < SW.tapMaxPx && Math.abs(dy) < SW.tapMaxPx && dt < SW.tapMaxMs;
+    if (this.tab === 'friends' && this.shop.blocking) {
+      if (tap) this.shop.tap(p.worldX, p.worldY);
+      return;
+    }
     const tab = tap ? this.tabAt(p.worldX, p.worldY) : null;
     if (tab) {
       if (tab !== this.tab) {
@@ -309,7 +386,7 @@ export class Book extends Phaser.Scene {
     }
     if (this.tab === 'friends') {
       if (!tap) {
-        if (down.y < GR.top) return;
+        if (down.y < GRID_TOP) return;
         this.setScroll(this.scroll);
         return;
       }
@@ -350,6 +427,7 @@ export class Book extends Phaser.Scene {
 
   private selectTab(t: Tab, initial = false): void {
     const changed = this.tab !== t;
+    if (changed) this.sleepAll();
     this.tab = t;
     this.endHint();
     const sets = t === 'sets';
@@ -503,7 +581,7 @@ export class Book extends Phaser.Scene {
 
   // ---------------------------------------------------------------- kompisar
 
-  /** Scen, odds-burk och rutnät (UI.md §13.4). Byggs en gång; valet ritas om vid equip. */
+  /** Räknare, butik, scen och rutnät (UI.md §13.4, §14). Byggs en gång; valet ritas om vid equip. */
   private buildFriends(): void {
     const av = cached().avatars;
     bakeAvatarParticles(this);
@@ -517,15 +595,19 @@ export class Book extends Phaser.Scene {
     // Rutnätet klipps till viewporten.
     const maskG = this.make.graphics({ x: 0, y: 0 }, false);
     maskG.fillStyle(0xffffff, 1);
-    maskG.fillRect(0, GR.top, W, GR.bottom - GR.top);
+    maskG.fillRect(0, GRID_TOP, W, GR.bottom - GRID_TOP);
     c.setMask(maskG.createGeometryMask());
 
-    this.buildJar(av.owned);
+    const eco = cached().economy;
+    this.counters = new Counters(this, eco.pearls, eco.sand, 10, this.friendsTop);
+    this.shop = new FriendsShop(this, this.friendsTop, this.counters, () => this.scene.restart({ tab: 'friends' }));
     this.buildStage();
 
     const g = this.add.graphics();
     c.add(g);
-    let y = GR.top;
+    this.rombG = this.add.graphics();
+    c.add(this.rombG);
+    let y = GRID_TOP;
     for (const r of GR.order) {
       const list = AVATARS.filter((a) => a.rarity === r);
       const owned = list.filter((a) => av.owned.includes(a.id)).length;
@@ -555,15 +637,16 @@ export class Book extends Phaser.Scene {
     this.friendSel = this.add.graphics();
     c.add(this.friendSel);
     this.drawFriendSel();
+    this.drawGridRombs();
     this.maxScroll = Math.max(0, y - GR.bottom);
     // Startposition: raden med en ny kompis om det finns en, annars den valda, centrerad.
     const sel = this.cells.find((k) => av.fresh.includes(k.def.id)) ?? this.cells.find((k) => k.def.id === av.equipped);
-    if (sel) this.setScroll(sel.y - (GR.top + GR.bottom) / 2);
+    if (sel) this.setScroll(sel.y - (GRID_TOP + GR.bottom) / 2);
 
     // Tonad överkant (12 px): en remsa av själva bakgrunden, alpha 1 → 0 nedåt (hörn-alpha),
     // så att rutnätet glider in under scenen i stället för att klippas hårt.
-    const fade = this.add.renderTexture(0, GR.top, W, GR.fadePx).setOrigin(0);
-    fade.draw(this.bg, 0, -GR.top);
+    const fade = this.add.renderTexture(0, GRID_TOP, W, GR.fadePx).setOrigin(0);
+    fade.draw(this.bg, 0, -GRID_TOP);
     fade.setAlpha(1, 1, 0, 0);
     this.friendsTop.add(fade);
   }
@@ -590,13 +673,6 @@ export class Book extends Phaser.Scene {
           repeat: -1,
         });
         this.friendPulses.push({ target: img, base, tween });
-      }
-      // Uppgradering: två rombplatser under cellen.
-      // XP finns inte längre (DESIGN §16.3); uppgraderingsstapeln kommer i E3.
-      const lvl = av.level[def.id] ?? 1;
-      for (let k = 0; k < 2; k++) {
-        const rx = x + (k - 0.5) * GR.rombPitch;
-        drawRomb(g, rx, y + GR.rombY, GR.rombW, GR.rombH, lvl >= k + 2, 0, INT.hud, INT.hudDim);
       }
       return null;
     }
@@ -625,49 +701,47 @@ export class Book extends Phaser.Scene {
     return node;
   }
 
-  /** Odds-burken: 25 pärlor i raritetsfärger, vanlig längst ner, mytisk överst (UI.md §13.4). */
-  private buildJar(owned: readonly string[]): void {
-    const J = AB.jar;
-    const g = this.add.graphics();
-    const left = J.x - J.w / 2;
-    const top = J.y - J.h / 2;
-    g.fillStyle(INT.jarGlass, 0.55);
-    g.fillRoundedRect(left, top, J.w, J.h, 14);
-    g.lineStyle(3, INT.jarEdge, 1);
-    g.strokeRoundedRect(left, top, J.w, J.h, 14);
-    g.fillStyle(INT.jarEdge, 1);
-    g.fillRoundedRect(left - 4, top - J.lidH, J.w + 8, J.lidH, 4);
-    this.friendsTop.add(g);
-    const remaining = {} as Record<Rarity, number>;
-    for (const r of RARITY.order) remaining[r] = AVATARS.filter((a) => a.rarity === r && !owned.includes(a.id)).length;
-    const counts = oddsPearls(remaining, J.rows.reduce((a, b) => a + b, 0));
-    const seq: Rarity[] = [];
-    for (const r of RARITY.order) for (let i = 0; i < counts[r]; i++) seq.push(r);
-    if (seq.length === 0) {
-      this.friendsTop.add(this.add.image(J.x, J.bottomY - 8, avatarIconKey('shellOpen')).setScale(40 / 128));
-      return;
-    }
-    let k = 0;
-    J.rows.forEach((n, row) => {
-      for (let i = 0; i < n && k < seq.length; i++, k++) {
-        const x = J.x + (i - (n - 1) / 2) * J.pitchX;
-        drawPearl(g, x, J.bottomY - row * J.pitchY, J.pearlR, seq[k]);
+  /** Uppgradering: två rombplatser under varje ägd cell (UI.md §13.4). */
+  private drawGridRombs(): void {
+    const g = this.rombG;
+    const av = cached().avatars;
+    g.clear();
+    for (const cell of this.cells) {
+      if (!av.owned.includes(cell.def.id)) continue;
+      const lvl = av.level[cell.def.id] ?? 1;
+      for (let k = 0; k < 2; k++) {
+        const rx = cell.x + (k - 0.5) * GR.rombPitch;
+        drawRomb(g, rx, cell.y + GR.rombY, GR.rombW, GR.rombH, lvl >= k + 2, 0, INT.hud, INT.hudDim);
       }
-    });
+    }
   }
 
-  /** Scenen: vald kompis 80 px som håller en nivå 2-glimt, glöd i raritetsfärg bakom. */
+  /** Scenen (UI.md §14.5): vald kompis 60 px som håller en nivå 1-glimt, glöd i raritetsfärg bakom. */
   private buildStage(): void {
     const def = avatarById(cached().avatars.equipped);
     this.stageId = def?.id ?? '';
-    if (!def) return;
-    const glow = this.add.image(ST.x, ST.gripY - gripToCenter(ST.displayPx), BG_GLOW)
-      .setDisplaySize(ST.glowR * 2 * 2, ST.glowR * 2 * 2)
+    const S = ES.separator;
+    const sep = this.add.graphics();
+    sep.lineStyle(S.w, INT.jarWall, 1);
+    sep.lineBetween(S.x0, S.y, S.x1, S.y);
+    this.friendsTop.add(sep);
+    this.stageInfo = this.add.container(0, 0);
+    if (!def) {
+      // Ingen kompis ännu: stapel och knapp döljs.
+      this.friendsTop.add(this.add.image(SF.x, SF.cy, avatarIconKey('tabFriendsOff')).setScale(SF.displayPx / ICON_PX).setAlpha(0.5));
+      this.friendsTop.add(this.stageInfo);
+      return;
+    }
+    this.stageGlow = this.add.image(SF.x, SF.cy, BG_GLOW)
+      .setDisplaySize(SF.glowR * 4, SF.glowR * 4)
       .setTint(rarityInt(def.rarity))
-      .setAlpha(0.25);
-    const ball = this.add.image(ST.x, ST.gripY + 14, ballTextureKey(2)).setScale(scaleForBodyRadius(2, ST.objR));
-    this.friendsTop.add([glow, ball]);
+      .setAlpha(SF.glowAlpha);
+    const ball = this.add
+      .image(SF.x, STAGE_GRIP_Y + SF.objR - 4, ballTextureKey(SF.objLevel, cached().activeSet))
+      .setScale(scaleForBodyRadius(SF.objLevel, SF.objR));
+    this.friendsTop.add([this.stageGlow, ball, this.stageInfo]);
     this.setStageFigure(def, false);
+    this.drawStageInfo(def);
   }
 
   private setStageFigure(def: AvatarDef, animate: boolean): void {
@@ -678,10 +752,10 @@ export class Book extends Phaser.Scene {
       this.tweens.add({ targets: old, y: old.y + 40, alpha: 0, duration: 160, ease: 'Quad.easeIn', onComplete: () => old.destroy() });
     }
     const img = this.add
-      .image(ST.x, ST.gripY, bakeAvatar(this, def.id, ST.displayPx, false, 'full', lvl - 1))
+      .image(SF.x, STAGE_GRIP_Y, bakeAvatar(this, def.id, SF.displayPx, false, 'full', lvl - 1))
       .setOrigin(0.5, AVATAR_TEX_ORIGIN_Y);
     this.friendsTop.add(img);
-    const rig = new AvatarRig(this, def, ST.displayPx, cached().settings.calm);
+    const rig = new AvatarRig(this, def, SF.displayPx, cached().settings.calm);
     this.stageImg = img;
     this.stageRig = rig;
     this.stageId = def.id;
@@ -699,6 +773,250 @@ export class Book extends Phaser.Scene {
     });
   }
 
+  /** Namn, förmågetext (max 2 rader), raritetspärlor, stapel, nivåetiketter och knapp. */
+  private drawStageInfo(def: AvatarDef, opts: { awake?: boolean; animLevel?: number } = {}): void {
+    const c = this.stageInfo;
+    c.removeAll(true);
+    this.upBtn = null;
+    const locale = getLocale();
+    const lvl = cached().avatars.level[def.id] ?? 1;
+    const g = this.add.graphics();
+    c.add(g);
+    const RP = ES.rarityPearls;
+    drawPearlRow(g, SF.x, RP.y, RARITY.pearls[def.rarity], RP.r, RP.pitch, def.rarity);
+    const N = ES.name;
+    const name = this.add
+      .text(N.x, N.y, t(def.names, locale), { fontFamily: THEME.type.family, fontSize: `${N.px}px`, color: HUD, fontStyle: '800' })
+      .setOrigin(0, 0.5);
+    for (let px = N.px; name.width > N.maxW && px > N.minPx; ) name.setFontSize(--px);
+    const D = ES.desc;
+    const desc = this.add
+      .text(D.x, D.y, '', {
+        fontFamily: THEME.type.family,
+        fontSize: `${D.px}px`,
+        color: ECONOMY_COLORS.desc,
+        fontStyle: '700',
+        wordWrap: { width: D.maxW },
+      })
+      .setOrigin(0, 0);
+    setClamped(desc, t(def.desc, locale), D.maxLines);
+    c.add([name, desc]);
+
+    // Stapel i tre segment: uppnådd fylld, nästa kontur hud, senare kontur hudDim.
+    const B = ES.bar;
+    const segW = (B.x1 - B.x0 - 2 * B.gap) / 3;
+    const top = B.y - B.h / 2;
+    for (let i = 0; i < 3; i++) {
+      const lv = i + 1;
+      const x = B.x0 + i * (segW + B.gap);
+      const col = rarityInt(def.rarity, i * 2);
+      if (lv <= lvl) {
+        const sg = lv === opts.animLevel ? this.add.graphics().setPosition(x, top) : g;
+        const ox = sg === g ? x : 0;
+        const oy = sg === g ? top : 0;
+        sg.fillStyle(col, 1);
+        sg.fillRoundedRect(ox, oy, segW, B.h, B.r);
+        sg.lineStyle(1.5, INT.ink, 1);
+        sg.strokeRoundedRect(ox, oy, segW, B.h, B.r);
+        if (sg !== g) {
+          c.add(sg);
+          sg.scaleX = 0;
+          const U = ES.upgraded;
+          this.tweens.add({ targets: sg, scaleX: 1, duration: U.fillMs, ease: U.fillEase });
+          this.upgradeParticles(x + segW / 2, B.y, col);
+        }
+      } else if (lv === lvl + 1) {
+        if (opts.awake) {
+          g.fillStyle(col, 0.35);
+          g.fillRoundedRect(x, top, segW, B.h, B.r);
+        }
+        g.lineStyle(B.outlineW, INT.hud, 1);
+        g.strokeRoundedRect(x, top, segW, B.h, B.r);
+      } else {
+        g.lineStyle(B.outlineW, INT.hudDim, 0.5);
+        g.strokeRoundedRect(x, top, segW, B.h, B.r);
+      }
+      this.drawHint(def, lv as 1 | 2 | 3, lvl, x + segW / 2, locale);
+    }
+    this.drawUpgradeButton(def, lvl, opts.awake === true);
+  }
+
+  /** Värdet per nivå under segmentet (levelHintLabel). Nästa nivå får uppgraderingspilen före. */
+  private drawHint(def: AvatarDef, lv: 1 | 2 | 3, lvl: number, cx: number, locale: Locale): void {
+    const label = levelHintLabel(def, lv, locale);
+    if (!label) return;
+    const H = ES.hint;
+    const next = lv === lvl + 1;
+    const color = lv <= lvl || next ? HUD : HUD_DIM;
+    const parts: Phaser.GameObjects.Components.Transform[] = [];
+    const widths: number[] = [];
+    if (next) {
+      parts.push(this.add.image(0, H.y, ECO_EXTRA_KEYS.upgradeHud).setScale(H.arrowPx / ICON_PX));
+      widths.push(H.arrowPx);
+    }
+    if (label.levelIcon !== undefined) {
+      const lvIcon = label.levelIcon;
+      parts.push(this.add.image(0, H.y, ballTextureKey(lvIcon, cached().activeSet)).setScale(scaleForBodyRadius(lvIcon, H.levelIconR)));
+      widths.push(H.levelIconR * 2);
+    }
+    if (label.text) {
+      const txt = this.add.text(0, H.y, label.text, { fontFamily: THEME.type.family, fontSize: `${H.px}px`, color, fontStyle: '800' }).setOrigin(0.5);
+      parts.push(txt);
+      widths.push(txt.width);
+    }
+    const total = widths.reduce((a, b) => a + b, 0) + 2 * (widths.length - 1);
+    let x = cx - total / 2;
+    parts.forEach((o, i) => {
+      o.x = x + widths[i] / 2;
+      x += widths[i] + 2;
+    });
+    this.stageInfo.add(parts as unknown as Phaser.GameObjects.GameObject[]);
+  }
+
+  /** Uppgraderingsknapp 240×48 med pris (UI.md §14.5). Nivå III: bock, inte tryckbar. */
+  private drawUpgradeButton(def: AvatarDef, lvl: number, awake: boolean): void {
+    const b = ES.button;
+    const c = this.add.container(b.cx, b.cy);
+    this.stageInfo.add(c);
+    this.upBtn = c;
+    if (lvl >= 3) {
+      c.add(this.add.image(0, 0, ECONOMY_ICON_KEYS.check).setScale(28 / ICON_PX).setAlpha(0.8));
+      return;
+    }
+    const cost = upgradeCost(def.rarity, lvl)!;
+    const eco = cached().economy;
+    const ok = canUpgrade(cached(), def.id);
+    const g = this.add.graphics();
+    if (ok) {
+      g.fillStyle(INT.accent, awake ? 0.26 : 0.14);
+      g.fillRoundedRect(-b.w / 2, -b.h / 2, b.w, b.h, b.r);
+      g.lineStyle(awake ? 4 : 3, INT.accent, 1);
+      g.strokeRoundedRect(-b.w / 2, -b.h / 2, b.w, b.h, b.r);
+    } else {
+      g.lineStyle(2, INT.hudDim, 1);
+      dashedRoundRect(g, -b.w / 2, -b.h / 2, b.w, b.h, b.r, 6, 5);
+    }
+    c.add(g);
+    const arrow = this.add.image(0, awake ? -3 : 0, ok ? ECONOMY_ICON_KEYS.upgrade : ECO_EXTRA_KEYS.upgradeDim).setScale(b.iconPx / ICON_PX);
+    const items: [Phaser.GameObjects.Components.Transform & Phaser.GameObjects.GameObject, number][] = [[arrow, b.iconPx]];
+    for (const [r, amount] of priceParts(cost)) {
+      const lack = eco[r] < amount;
+      const icon = this.add.image(0, 0, r === 'pearls' ? ECONOMY_ICON_KEYS.pearlCoin : ECONOMY_ICON_KEYS.sand).setScale(b.priceIconPx / ICON_PX);
+      const txt = this.add
+        .text(0, 0, formatAmount(amount), { fontFamily: THEME.type.family, fontSize: `${b.textPx}px`, color: lack ? HUD_DIM : HUD, fontStyle: '800' })
+        .setOrigin(0.5);
+      items.push([icon, b.priceIconPx], [txt, txt.width]);
+      if (lack) (icon as unknown as { lack: number }).lack = eco[r] / amount;
+    }
+    // Pil, sedan per resurs ikon + 7 px + siffra, 12 px mellan resurserna.
+    const gapAfter = (i: number): number => (i === 0 ? 12 : i % 2 === 1 ? b.gap : 12);
+    const total = items.reduce((a, [, w], i) => a + w + (i < items.length - 1 ? gapAfter(i) : 0), 0);
+    let x = -total / 2;
+    items.forEach(([o, w], i) => {
+      o.x = x + w / 2;
+      x += w + gapAfter(i);
+      const lack = (o as unknown as { lack?: number }).lack;
+      if (lack !== undefined) progressRing(g, o.x, 0, lack);
+      c.add(o);
+    });
+    if (awake) {
+      this.tweens.add({ targets: arrow, scale: arrow.scale * ECONOMY_UI.wake.breath.scale, duration: ECONOMY_UI.wake.breath.halfCycleMs, delay: ECONOMY_UI.wake.ms, ease: ECONOMY_UI.wake.breath.ease, yoyo: true, repeat: -1 });
+    }
+  }
+
+  /** 12 partiklar i raritetsfärg från segmentet som fylldes. */
+  private upgradeParticles(x: number, y: number, color: number): void {
+    const U = ES.upgraded;
+    const dist = (U.particleSpeed * U.lifeMs) / 1000;
+    for (let i = 0; i < U.particles; i++) {
+      const a = (i / U.particles) * Math.PI * 2;
+      const p = this.add.image(x, y, FX_DOT).setTint(color).setDepth(8).setScale(0.5);
+      this.tweens.add({ targets: p, x: x + Math.cos(a) * dist, y: y + Math.sin(a) * dist, alpha: 0, duration: U.lifeMs, ease: 'Cubic.easeOut', onComplete: () => p.destroy() });
+    }
+  }
+
+  /** Tryck på uppgraderingsknappen: väck, andra trycket köper; räcker inte = skakning. */
+  private tapUpgrade(): void {
+    const def = avatarById(this.stageId);
+    if (!def) return;
+    const lvl = cached().avatars.level[def.id] ?? 1;
+    if (lvl >= 3) return;
+    if (!canUpgrade(cached(), def.id)) {
+      this.sleepAll();
+      if (this.upBtn) this.shop.poor(this.upBtn, upgradeCost(def.rarity, lvl)!);
+      return;
+    }
+    if (this.upAwakeAt >= 0) {
+      if (this.time.now - this.upAwakeAt >= ECONOMY_UI.wake.minGapMs) this.doUpgrade();
+      return;
+    }
+    this.shop.sleep();
+    this.upAwakeAt = this.time.now;
+    this.drawStageInfo(def, { awake: true });
+    this.upSleepTimer = this.time.delayedCall(ECONOMY_UI.wake.sleepAfterMs, () => this.sleepUpgrade());
+    playTone(ECONOMY_SOUND.wake);
+    vibrate(10);
+  }
+
+  private sleepUpgrade(): void {
+    this.upSleepTimer?.remove();
+    this.upSleepTimer = null;
+    if (this.upAwakeAt < 0) return;
+    this.upAwakeAt = -1;
+    const def = avatarById(this.stageId);
+    if (def) this.drawStageInfo(def);
+  }
+
+  /** Allt vaket somnar (tryck utanför, scroll, flikbyte). */
+  private sleepAll(): void {
+    this.shop?.sleep();
+    this.sleepUpgrade();
+  }
+
+  /** Köper nästa nivå för vald kompis. false = räcker inte / nivå III / ingen kompis. */
+  private doUpgrade(): boolean {
+    const def = avatarById(this.stageId);
+    if (!def || this.shop.blocking) return false;
+    const lvl = cached().avatars.level[def.id] ?? 1;
+    const cost = upgradeCost(def.rarity, lvl);
+    if (!cost || !upgrade(cached(), def.id)) return false;
+    this.upSleepTimer?.remove();
+    this.upAwakeAt = -1;
+    void save();
+    this.shop.paid(ES.button.cx, ES.button.cy, cost, ECONOMY_SOUND.upgrade);
+    this.drawStageInfo(def, { animLevel: lvl + 1 });
+    this.drawGridRombs();
+    // Figuren får sina romber (poppar) och gör sin showcase.
+    const img = this.stageImg;
+    const rig = this.stageRig;
+    if (img && rig) {
+      img.setTexture(bakeAvatar(this, def.id, SF.displayPx, false, 'full', lvl));
+      rig.base = 0.7;
+      this.tweens.add({ targets: rig, base: 1, duration: ES.upgraded.rombPopMs, ease: 'Back.easeOut' });
+    }
+    this.showcasing = false;
+    this.playStageShowcase();
+    return true;
+  }
+
+  private stageSnapshot(): unknown {
+    const def = avatarById(this.stageId);
+    if (!def) return null;
+    const lvl = cached().avatars.level[def.id] ?? 1;
+    const texts = this.stageInfo.list.filter((o): o is Phaser.GameObjects.Text => o instanceof Phaser.GameObjects.Text).map((o) => o.text);
+    return {
+      id: def.id,
+      level: lvl,
+      /** Romber på scenfiguren (texturnyckeln "-rN"). */
+      rombs: Number(/-r(\d)$/.exec(this.stageImg?.texture.key ?? '')?.[1] ?? 0),
+      name: texts[0] ?? '',
+      desc: texts[1] ?? '',
+      hints: texts.slice(2),
+      button: lvl >= 3 ? 'max' : canUpgrade(cached(), def.id) ? (this.upAwakeAt >= 0 ? 'awake' : 'ok') : 'poor',
+      cost: upgradeCost(def.rarity, lvl),
+    };
+  }
+
   /** Scenens showcase i normal takt. Tryck under pågående showcase ignoreras. */
   private playStageShowcase(): void {
     const rig = this.stageRig;
@@ -711,15 +1029,15 @@ export class Book extends Phaser.Scene {
       this.showcasing = false;
       rig.resumeLoop();
     });
-    const k = ST.displayPx / 56;
+    const k = SF.displayPx / 56;
     this.time.delayedCall(sc.fxAtMs, () =>
-      playFxCue(this, sc.fx, ST.x, ST.gripY - gripToCenter(ST.displayPx), k, 7, cached().settings.calm),
+      playFxCue(this, sc.fx, SF.x, SF.cy, k, 7, cached().settings.calm),
     );
   }
 
   /** Varje frame: scenens pose och scrollens tröghet. Inga allokeringar. */
   private tick(): void {
-    if (this.stageImg && this.stageRig) this.stageRig.apply(this.stageImg, ST.x, ST.gripY);
+    if (this.stageImg && this.stageRig) this.stageRig.apply(this.stageImg, SF.x, STAGE_GRIP_Y);
     if (this.tab !== 'friends' || this.down || Math.abs(this.vel) < 0.1) return;
     this.vel *= AB.scroll.friction;
     this.setScroll(this.scroll + this.vel);
@@ -755,12 +1073,22 @@ export class Book extends Phaser.Scene {
   }
 
   private tapFriend(x: number, y: number): void {
-    const S = ST.hit;
+    if (this.shop.tap(x, y)) {
+      this.sleepUpgrade();
+      return;
+    }
+    const U = ES.button;
+    if (this.upBtn && Math.abs(x - U.cx) <= U.w / 2 && Math.abs(y - U.cy) <= U.hit.h / 2) {
+      this.tapUpgrade();
+      return;
+    }
+    this.sleepUpgrade();
+    const S = ES.hit;
     if (x >= S.x && x <= S.x + S.w && y >= S.y && y <= S.y + S.h) {
       this.playStageShowcase();
       return;
     }
-    if (y < GR.top || y > GR.bottom) return;
+    if (y < GRID_TOP || y > GR.bottom) return;
     const cell = this.cells.find((k) => Math.abs(k.x - x) <= GR.cell / 2 && Math.abs(k.y - this.scroll - y) <= (GR.cell + 8) / 2 + 4);
     if (!cell) return;
     if (!this.equipFriend(cell.def.id)) this.lockedCell(cell);
@@ -788,7 +1116,9 @@ export class Book extends Phaser.Scene {
     const def = avatarById(id);
     if (def) {
       this.showcasing = false;
+      this.stageGlow?.setTint(rarityInt(def.rarity));
       this.setStageFigure(def, true);
+      this.drawStageInfo(def);
     }
     return true;
   }

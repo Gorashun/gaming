@@ -68,7 +68,14 @@ export interface GameHook {
   /** Öppnar en mussla direkt och sparar. null när alla ägs. */
   openBox(): { avatarId: string; rarity: string } | null;
   /** Ekonomin (DESIGN §16), kopia av sparat läge. */
-  readonly economy: { pearls: number; sand: number; mergesBaseline: number; freeShellsClaimed: number; milestones: string[] };
+  readonly economy: {
+    pearls: number;
+    sand: number;
+    mergesBaseline: number;
+    freeShellsClaimed: number;
+    milestones: string[];
+    pick3Offer: Record<string, string[]>;
+  };
   grantPearls(n: number): void;
   grantSand(n: number): void;
   /** Köper och öppnar en mussla ('common' | 'silver' | 'gold'). null = räcker inte eller ospelbar. */
@@ -141,6 +148,39 @@ export interface BookHook {
   readonly hintActive: boolean;
   /** Scroll-ledtrådens pil i Kompisar syns. */
   readonly scrollHint: boolean;
+  /** Butiken i Kompisar (UI.md §14.3). */
+  readonly shop: ShopSnapshot;
+  /** Köper musslan (samma väg som andra trycket). pick3: öppnar erbjudandet och returnerar null. */
+  buy(type: string): { avatarId: string; rarity: string } | null;
+  /** pick3: väljer kort i och trycker på köpknappen. */
+  pick(i: number): { avatarId: string; rarity: string } | null;
+  /** Uppgraderar vald kompis (samma väg som andra trycket). */
+  upgradeSelected(): boolean;
+  /** Scenen: vald kompis, null utan kompis. */
+  readonly stage: {
+    id: string;
+    level: number;
+    rombs: number;
+    name: string;
+    desc: string;
+    hints: string[];
+    button: 'ok' | 'awake' | 'poor' | 'max';
+    cost: { pearls: number; sand: number } | null;
+  } | null;
+}
+
+export interface ShopSnapshot {
+  mode: string;
+  pearls: number;
+  sand: number;
+  full: boolean;
+  slots: { type: string; price: { pearls?: number; sand?: number }; state: 'ok' | 'poor' | 'empty' }[];
+  awake: string | null;
+  offer: string[] | null;
+  picked: string | null;
+  opening: boolean;
+  openPhase: string | null;
+  lastBuy: { avatarId: string; rarity: string } | null;
 }
 
 /** Rundavslutet (GameOver-overlayen) på `window.__reveal`. */
@@ -149,6 +189,8 @@ export interface RevealHook {
   readonly landed: number;
   /** Speltid (ms) sedan overlayen skapades. */
   readonly elapsed: number;
+  /** Resursräkningen (UI.md §14.6): visade värden, antal rader och om den är klar. */
+  readonly tally: { pearls: number; sand: number; done: boolean; rows: number };
 }
 
 /** Startskärmen på `window.__start`. */

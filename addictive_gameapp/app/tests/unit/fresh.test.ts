@@ -63,6 +63,7 @@ describe('settings.bookHintSeen / friendsHintSeen', () => {
     setStorageAdapter({
       get: async (k) => mem.get(k) ?? null,
       set: async (k, v) => void mem.set(k, v),
+      remove: async (k) => void mem.delete(k),
     });
     await save({ settings: { bookHintSeen: true } });
     const back = await load();

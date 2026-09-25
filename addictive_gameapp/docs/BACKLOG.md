@@ -74,6 +74,10 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [ ] U13 Debugpanel: sessionsfält firstBoxEarnedMs/firstBoxOpenedMs/firstBookOpenMs/firstFriendsTabMs (PLAYTEST §3).
 
 ## Fas 9 – Ekonomi v1.3 (DESIGN §16)
-- [ ] E1 UI: butikshylla i Kompisar (tre musslor, pris, oddsburk var), resursikoner pärla/stjärnsand, förmågetext-yta, uppgraderingsknapp + stapel, rundavslutets resursräkning; text `desc: {en, sv}` ≤60 tecken för alla 48. (ui-designer)
-- [ ] E2 Logik: resurser, intjäning, gratismussla från baseline, tre musseltyper med odds/golv, köp, uppgradering med kostnad, migrering utan retroaktivitet, pick3-flagga. (programmerare)
-- [ ] E3 Integration i bok, rundavslut och startskärm; tester; testversion 7. (programmerare)
+- [x] E1 UI: butikshylla i Kompisar (tre musslor, pris, oddsburk var), resursikoner pärla/stjärnsand, förmågetext-yta, uppgraderingsknapp + stapel, rundavslutets resursräkning; text `desc: {en, sv}` ≤60 tecken för alla 48. (ui-designer)
+- [x] E2 Logik: resurser, intjäning, gratismussla från baseline, tre musseltyper med odds/golv, köp, uppgradering med kostnad, migrering utan retroaktivitet, pick3-flagga. (programmerare)
+- [x] E3 Integration i bok, rundavslut och startskärm; tester; testversion 7. (programmerare)
+
+## Fas 10 – Art v2 (DESIGN §17)
+- [ ] A1 Koppla artv2 till CanvasTexture, hi-DPI-rendering med tak 2×, bakning av aktivt set + kompisar, fallback v1. (programmerare)
+- [ ] A2 v2 på bomb, regnbåge, pärlor, romber, musslor, partiklar. Glöd som gemensam sprite.

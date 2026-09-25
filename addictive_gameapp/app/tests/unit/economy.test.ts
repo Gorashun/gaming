@@ -13,6 +13,7 @@ import {
   earnForRun,
   freeShellsDue,
   offerPick3,
+  pick3Offer,
   shellAvailable,
   upgrade,
   upgradeCost,
@@ -270,6 +271,24 @@ describe('pick3 (reservläge)', () => {
   });
 });
 
+describe('pick3: sparat erbjudande (DESIGN §16.5)', () => {
+  it('samma kandidater tills köp, oavsett rng; köp tömmer; ägd kandidat byts ut', () => {
+    const w = wallet(2000, 0, [ids((r) => r === 'rare')[0]]);
+    const a = pick3Offer(w, 'common', mulberry32(1)).map((x) => x.id);
+    expect(a.length).toBe(3);
+    expect(w.economy.pick3Offer.common).toEqual(a);
+    expect(pick3Offer(w, 'common', mulberry32(999)).map((x) => x.id)).toEqual(a);
+    // En kandidat blir ägd på annat sätt: bara den byts ut.
+    w.avatars.owned.push(a[0]);
+    const b = pick3Offer(w, 'common', mulberry32(2)).map((x) => x.id);
+    expect(b.slice(0, 2)).toEqual(a.slice(1));
+    expect(b.length).toBe(3);
+    expect(b).not.toContain(a[0]);
+    expect(buyPick(w, 'common', b[1])?.avatarId).toBe(b[1]);
+    expect(w.economy.pick3Offer.common).toBeUndefined();
+  });
+});
+
 describe('uppgradering (DESIGN §16.3)', () => {
   it('kostnader per raritet', () => {
     const table: Record<Rarity, [number, number, number]> = {
@@ -336,7 +355,7 @@ describe('migrering (DESIGN §16.2–16.3)', () => {
     expect(d.avatars).not.toHaveProperty('xp');
     expect(d.avatars.level).toEqual({ [a]: 3, [b]: 2 });
     expect(d.avatars).toMatchObject({ owned: [a, b], equipped: b, pendingBoxes: 3 });
-    expect(d.economy).toEqual({ pearls: 0, sand: 0, mergesBaseline: 1500, freeShellsClaimed: 0, milestones: ['level7', 'level8'] });
+    expect(d.economy).toEqual({ pearls: 0, sand: 0, mergesBaseline: 1500, freeShellsClaimed: 0, milestones: ['level7', 'level8'], pick3Offer: {} });
     // Ingen retroaktiv utbetalning: redan nådda milstolpar ger inget, nästa ger.
     const e = earnForRun({ ...quiet, maxLevelEver: 9 }, d);
     expect(e.milestones).toEqual(['level9']);
@@ -353,6 +372,6 @@ describe('migrering (DESIGN §16.2–16.3)', () => {
     expect(mergeWithDefaults({}).economy).toEqual(defaultEconomy(0));
     const e = { pearls: 12, sand: 3, mergesBaseline: 7, freeShellsClaimed: 1, milestones: ['shiny', 'shiny', 4] };
     const d = mergeWithDefaults({ economy: e, stats: { merges: 9000 } } as never);
-    expect(d.economy).toEqual({ pearls: 12, sand: 3, mergesBaseline: 7, freeShellsClaimed: 1, milestones: ['shiny'] });
+    expect(d.economy).toEqual({ pearls: 12, sand: 3, mergesBaseline: 7, freeShellsClaimed: 1, milestones: ['shiny'], pick3Offer: {} });
   });
 });

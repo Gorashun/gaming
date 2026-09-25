@@ -7,6 +7,8 @@ import { defaultDebug, normalizeDebug, type DebugState } from './debug';
 import { defaultEconomy, milestoneFlags, normalizeEconomy, reachedMilestones, type EconomyState } from './economy';
 
 export interface SaveData {
+  /** Sparformatets version (DESIGN §16.5). Lägre eller saknad ⇒ filen raderas en gång vid laddning. */
+  schema: number;
   highscore: number;
   bestLevel: number;
   settings: {
@@ -58,13 +60,17 @@ export type SavePatch = Partial<Omit<SaveData, 'settings' | 'stats'>> & {
 export interface StorageAdapter {
   get(key: string): Promise<string | null>;
   set(key: string, value: string): Promise<void>;
+  remove(key: string): Promise<void>;
 }
 
 const KEY = 'klunk.save.v1';
+/** Nuvarande sparformat. Filer med lägre (eller utan) version raderas helt (beslut: nystart testversion 7). */
+export const SAVE_SCHEMA = 2;
 
 /** Ny default varje gång: arrayer och sidor får aldrig delas mellan instanser. */
 export function defaultSave(): SaveData {
   return {
+    schema: SAVE_SCHEMA,
     highscore: 0,
     bestLevel: 0,
     settings: { sound: true, haptics: true, calm: false, aimLine: true, bookHintSeen: false, friendsHintSeen: false },
@@ -122,6 +128,7 @@ export function mergeWithDefaults(parsed: Partial<SaveData>): SaveData {
   return {
     ...d,
     ...parsed,
+    schema: SAVE_SCHEMA,
     settings: { ...d.settings, ...parsed.settings },
     stats,
     collection,
@@ -154,6 +161,13 @@ const localStorageAdapter: StorageAdapter = {
       /* full eller blockerad storage: tappa hellre en skrivning än krascha */
     }
   },
+  async remove(key) {
+    try {
+      globalThis.localStorage?.removeItem(key);
+    } catch {
+      /* blockerad storage */
+    }
+  },
 };
 
 let adapter: StorageAdapter = localStorageAdapter;
@@ -170,11 +184,25 @@ export function cached(): SaveData {
   return cache;
 }
 
+/** Sparfil från före schema 2 (eller utan version)? Då raderas den (DESIGN §16.5). */
+export function isLegacySave(parsed: unknown): boolean {
+  const v = (parsed as { schema?: unknown } | null)?.schema;
+  return typeof v !== 'number' || v < SAVE_SCHEMA;
+}
+
 export async function load(): Promise<SaveData> {
   const raw = await adapter.get(KEY);
   if (raw) {
     try {
-      cache = mergeWithDefaults(JSON.parse(raw) as Partial<SaveData>);
+      const parsed = JSON.parse(raw) as Partial<SaveData>;
+      if (isLegacySave(parsed)) {
+        // Nystart en gång: gamla filen bort helt, ny fil med schema 2 skrivs direkt.
+        cache = defaultSave();
+        await adapter.remove(KEY);
+        await adapter.set(KEY, JSON.stringify(cache));
+      } else {
+        cache = mergeWithDefaults(parsed);
+      }
     } catch {
       /* korrupt data: behåll default */
     }

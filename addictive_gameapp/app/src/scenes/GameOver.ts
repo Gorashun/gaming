@@ -19,6 +19,9 @@ import { AVATAR_SOUND, AVATAR_UI } from '../data/avatarsIndex';
 import { ABILITY_FX } from '../data/abilities';
 import { avatarIconKey } from '../ui/icons';
 import { markRestartTap } from '../systems/debug';
+import { ECONOMY } from '../data/economy';
+import { ECONOMY_ICON_KEYS, ECONOMY_SOUND, ECONOMY_UI } from '../data/economyUi';
+import type { AvatarTone } from '../data/avatarsIndex';
 import { clearBackHandler, setBackHandler } from '../systems/back';
 
 /** En plats som fylldes i rundan. */
@@ -38,6 +41,10 @@ export interface RevealData {
   newSet: string | null;
   /** Nya musslor i rundan (DESIGN §14.3). */
   boxes: number;
+  /** Pärlor och stjärnsand rundan gav, och pärlsaldot före rundan (DESIGN §16.1, UI.md §14.6). */
+  pearls?: number;
+  sand?: number;
+  pearlsBefore?: number;
   /** Kameran Klick: texturnycklar till rundans polaroider (förmåga). */
   photos?: string[];
   /** Ram i raritetsfärg (Klick II–III). */
@@ -154,17 +161,25 @@ export class GameOver extends Phaser.Scene {
         get elapsed(): number {
           return self.seqMs;
         },
+        /** Resursräkningen: visade värden och om den är klar. */
+        get tally(): { pearls: number; sand: number; done: boolean; rows: number } {
+          return { ...self.tally };
+        },
       };
       this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
         delete (window as unknown as Record<string, unknown>).__reveal;
       });
     }
     this.landed = 0;
+    this.tally = { pearls: 0, sand: 0, done: false, rows: 0 };
     if (data.reveal) this.playReveal(data.reveal);
   }
 
   /** Antal fångster som landat i boken (testhook). */
   private landed = 0;
+  /** Resursräkningens visade värden (testhook). */
+  private tally = { pearls: 0, sand: 0, done: false, rows: 0 };
+  private tallyLeft = 0;
   /**
    * Speltid sedan sekvensstart, summerad per frame. `time.now` i create() är inte uppdaterad
    * för en nystartad scen, så den kan inte användas som nollpunkt.
@@ -181,10 +196,13 @@ export class GameOver extends Phaser.Scene {
    */
   private playReveal(rv: RevealData): void {
     const n = rv.catches.length;
-    if (n === 0 && rv.barFrom === null && !rv.newSet && rv.boxes === 0) return;
+    const pearls = rv.pearls ?? 0;
+    const sand = rv.sand ?? 0;
+    if (n === 0 && rv.barFrom === null && !rv.newSet && rv.boxes === 0 && pearls === 0 && sand === 0) return;
     const page = cached().collection[rv.setId];
-    // Snabbläge när nytt set (och ev. mussla + många fångster) ska rymmas i 2,5 s (UI.md §13.7).
-    const fast = rv.newSet !== null || (rv.boxes > 0 && n >= R.flyers.max);
+    // Snabbläge när nytt set (och ev. mussla + många fångster) ska rymmas i 2,5 s (UI.md §13.7),
+    // och när sanden ska räknas efter ≥5 flygare (DESIGN §16.5).
+    const fast = rv.newSet !== null || (rv.boxes > 0 && n >= R.flyers.max) || (sand > 0 && n >= 5);
     const fly = fast ? { ...R.flyers, ...R.flyersFast } : R.flyers;
     const m = Math.min(n, R.flyers.max);
     const depth = 23;
@@ -264,6 +282,13 @@ export class GameOver extends Phaser.Scene {
       );
     }
 
+    // Pärlor och sand räknas upp när mätaren är klar (UI.md §14.6).
+    const T = ECONOMY_UI.tally;
+    const tallyAt = m > 0 ? barAt : R.flyStartMs;
+    this.tallyLeft = (pearls > 0 ? 1 : 0) + (sand > 0 ? 1 : 0);
+    if (pearls > 0) this.time.delayedCall(tallyAt, () => this.tallyRow(strip, 'pearls', pearls, rv.pearlsBefore ?? -1));
+    if (sand > 0) this.time.delayedCall(tallyAt + (pearls > 0 ? T.sandDelayMs : 0), () => this.tallyRow(strip, 'sand', sand, -1));
+
     // Musslan poppar in när sista flygaren landat + 80 ms (420 ms om inget fångades) och flyger
     // 300 ms senare mot hyllan. Den kommer FÖRE set-ceremonin, som startar när musslan lyfter.
     const RV = AVATAR_UI.reveal;
@@ -279,6 +304,65 @@ export class GameOver extends Phaser.Scene {
       });
     }
     if (rv.photos && rv.photos.length > 0) this.polaroids(rv.photos, rv.photoTint === true, depth + 1);
+  }
+
+  /**
+   * En räknarrad i stripens vänsterkant: ikon + "+N", räknas upp på 600 ms med stigande tick
+   * (högst 12, minst 45 ms isär), sedan `tallyEnd` och en punch. Pärlraden visar `affordHint`
+   * om saldot precis passerade priset för en vanlig mussla.
+   */
+  private tallyRow(strip: Phaser.GameObjects.Container, r: 'pearls' | 'sand', amount: number, before: number): void {
+    const T = ECONOMY_UI.tally;
+    const pos = T[r];
+    const icon = this.add.image(pos.iconX, pos.y, r === 'pearls' ? ECONOMY_ICON_KEYS.pearlCoin : ECONOMY_ICON_KEYS.sand);
+    const k = T.iconPx / 128;
+    const text = this.add
+      .text(pos.textX, pos.y, '+0', { fontFamily: THEME.type.family, fontSize: `${T.textPx}px`, color: THEME.palette.hud, fontStyle: '800' })
+      .setOrigin(0, 0.5);
+    strip.add([icon, text]);
+    icon.setScale(0);
+    text.setScale(0);
+    this.tally.rows++;
+    this.tweens.add({ targets: icon, scale: k, duration: T.popMs, ease: 'Back.easeOut' });
+    this.tweens.add({ targets: text, scale: 1, duration: T.popMs, ease: 'Back.easeOut' });
+    const def: AvatarTone = r === 'pearls' ? ECONOMY_SOUND.tallyPearl : ECONOMY_SOUND.tallySand;
+    const ticks = Math.min(T.maxTicks, amount);
+    let tick = 0;
+    let lastTickAt = -Infinity;
+    this.tweens.addCounter({
+      from: 0,
+      to: amount,
+      duration: T.countMs,
+      ease: T.countEase,
+      onUpdate: (tw) => {
+        const v = Math.round(tw.getValue() ?? amount);
+        this.tally[r] = v;
+        text.setText(`+${v}`);
+        const now = this.seqMs;
+        if (tick < ticks && v >= ((tick + 1) * amount) / ticks && now - lastTickAt >= T.minTickGapMs) {
+          tick++;
+          lastTickAt = now;
+          playTone(def, Math.round((12 * v) / amount));
+        }
+      },
+      onComplete: () => {
+        this.tally[r] = amount;
+        text.setText(`+${amount}`);
+        playTone(ECONOMY_SOUND.tallyEnd);
+        this.tweens.add({ targets: icon, scale: k * T.endPunch.scale, duration: T.endPunch.ms / 2, yoyo: true });
+        this.tallyLeft--;
+        this.tally.done = this.tallyLeft <= 0;
+        if (r !== 'pearls' || before < 0) return;
+        const price = ECONOMY.shells.common.price.pearls ?? 0;
+        if (before < price && before + amount >= price) {
+          const A = T.affordHint;
+          const hint = this.add.image(A.x, A.y, ECONOMY_ICON_KEYS.shell('common', 'ok')).setScale(0);
+          strip.add(hint);
+          this.tweens.add({ targets: hint, scale: A.px / 128, duration: A.popMs, ease: 'Back.easeOut' });
+          playTone(AVATAR_SOUND.boxEarned);
+        }
+      },
+    });
   }
 
   /** Mussla (1–3 staplade, ingen siffra) i stripen, sedan mot hyllan (UI.md §13.7). */

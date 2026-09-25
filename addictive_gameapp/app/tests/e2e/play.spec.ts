@@ -101,6 +101,7 @@ test('highscore överlever omladdning och rekordjakten triggar', async ({ page }
     localStorage.setItem(
       'klunk.save.v1',
       JSON.stringify({
+        schema: 2,
         highscore: 30,
         bestLevel: 5,
         settings: { sound: true, haptics: true, calm: false },

@@ -218,6 +218,8 @@ export class Game extends Phaser.Scene {
   private runChains3 = 0;
   private runLevel10s = 0;
   private runPaid = { pearls: 0, sand: 0 };
+  /** Allt rundan betalat ut (inkl. milstolpar), för rundavslutets räkning (UI.md §14.6). */
+  private runEarned = { pearls: 0, sand: 0 };
   private highscore = 0;
   private recordPulsing = false;
   private passedRecord = false;
@@ -360,6 +362,7 @@ export class Game extends Phaser.Scene {
     this.runChains3 = 0;
     this.runLevel10s = 0;
     this.runPaid = { pearls: 0, sand: 0 };
+    this.runEarned = { pearls: 0, sand: 0 };
     // Förmågan (DESIGN §14.5) för kompisen som var vald vid rundstart, på dess nivå.
     const avLevel = (data.avatars.level[this.runAvatar] ?? 1) as AbilityLevel;
     this.abil = new Abilities(this.runAvatar, avLevel, PHYSICS.lossGraceMs);
@@ -2125,7 +2128,7 @@ export class Game extends Phaser.Scene {
   private bankRun(): Earned {
     const d = cached();
     const stats = this.runStats();
-    return earnForRun(
+    const e = earnForRun(
       {
         merges: this.runMerges,
         shinies: this.runShinies,
@@ -2136,6 +2139,9 @@ export class Game extends Phaser.Scene {
       d,
       this.runPaid,
     );
+    this.runEarned.pearls += e.pearls;
+    this.runEarned.sand += e.sand;
+    return e;
   }
 
   private persist(): void {
@@ -2176,6 +2182,9 @@ export class Game extends Phaser.Scene {
       barTo: nextSetProgress(stats.merges!, before.length),
       newSet,
       boxes,
+      pearls: this.runEarned.pearls,
+      sand: this.runEarned.sand,
+      pearlsBefore: d.economy.pearls - this.runEarned.pearls,
       photos: this.photos.slice().sort().slice(0, Math.max(0, this.abil.param('photos'))),
       photoTint: this.abil.flag('frameTint'),
     };

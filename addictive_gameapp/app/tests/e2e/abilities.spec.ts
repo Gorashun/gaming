@@ -33,7 +33,7 @@ async function startGame(page: Page): Promise<void> {
 function seedSave(page: Page): Promise<void> {
   return page.addInitScript(() => {
     if (localStorage.getItem('klunk.save.v1')) return;
-    localStorage.setItem('klunk.save.v1', JSON.stringify({ highscore: 500, bestLevel: 4, stats: { runs: 4, merges: 0 } }));
+    localStorage.setItem('klunk.save.v1', JSON.stringify({ schema: 2, highscore: 500, bestLevel: 4, stats: { runs: 4, merges: 0 } }));
   });
 }
 

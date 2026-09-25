@@ -1,28 +1,20 @@
 import Phaser from 'phaser';
 import { INT, THEME, hexToInt } from '../data/theme';
-import { META, META_COLORS, themeSetById } from '../data/themes';
-import { AVATAR_SOUND, AVATAR_UI, RARITY, avatarById, type AvatarDef } from '../data/avatarsIndex';
+import { META, META_COLORS } from '../data/themes';
+import { AVATAR_UI, avatarById } from '../data/avatarsIndex';
 import { openBox, type BoxResult } from '../systems/boxes';
 import { mulberry32 } from '../systems/rng';
-import { Juice } from '../systems/juice';
-import { BG_GLOW, FX_RING, FX_RING_R, ballTextureKey, scaleForBodyRadius, useSet } from '../ui/textures';
+import { ballTextureKey, scaleForBodyRadius, useSet } from '../ui/textures';
 import { avatarIconKey } from '../ui/icons';
-import {
-  addAvatarImage,
-  avatarParticleKey,
-  bakeAvatarParticles,
-  drawPearlRow,
-  drawRomb,
-  gripToCenter,
-  rarityInt,
-} from '../ui/avatarArt';
+import { addAvatarImage, gripToCenter, rarityInt } from '../ui/avatarArt';
 import { AvatarRig } from '../ui/avatarRig';
-import { playFxCue } from '../ui/avatarFx';
+import { ShellOpening } from '../ui/shellOpening';
+import { Counters } from '../ui/counters';
 import { nextSetProgress } from '../systems/unlocks';
 import { drawBackground } from '../ui/background';
 import { iconTextureKey, type IconKey } from '../ui/icons';
 import { cached, save } from '../systems/save';
-import { playSound, playTone, setCalm, setSoundEnabled, unlockAudio } from '../systems/audio';
+import { playSound, setCalm, setSoundEnabled, unlockAudio } from '../systems/audio';
 import { setHapticsEnabled, vibrate } from '../systems/haptics';
 import { clearBackHandler, setBackHandler } from '../systems/back';
 import { DEBUG } from '../data/debug';
@@ -34,7 +26,6 @@ const TOUCH = THEME.touch.minLogical;
 const ICON_GAP = 8;
 const SH = AVATAR_UI.shelf;
 const BS = SH.box;
-const OP = AVATAR_UI.open;
 /** Stängd mussla: SVG-ikonen rastreras i 128 px (2×). */
 const ICON_PX = 128;
 const TEST_HOOK = import.meta.env.DEV || new URLSearchParams(location.search).has('test');
@@ -51,15 +42,8 @@ interface Toggle {
 /** Startskärm enligt UI.md §7.1. Ingen text utöver logotypen och highscore-siffran. */
 export class Start extends Phaser.Scene {
   private toggles: Toggle[] = [];
-  /** Öppningsflödet pågår eller visas (ett tryck stänger det). */
-  private opening = false;
-  /** Öppningen: 'play' före 1 200 ms (tryck = hoppa över), 'done' efter (tryck = stäng). */
-  private openPhase: 'play' | 'done' = 'play';
-  private openObjs: Phaser.GameObjects.GameObject[] = [];
-  private openFinal: (() => void) | null = null;
-  private openFigure: Phaser.GameObjects.Image | null = null;
-  private openScrim: Phaser.GameObjects.Rectangle | null = null;
-  private openUpdate: (() => void) | null = null;
+  /** Öppningen pågår eller visas (ett tryck hoppar över/stänger). null = ingen. */
+  private opening: ShellOpening | null = null;
   /** Debugpanelen (långtryck 2 s på logotypen). */
   private debug: DebugPanel | null = null;
   /** Långtryckets timer i realtid (spelklockan går långsammare vid låg fps). */
@@ -77,14 +61,12 @@ export class Start extends Phaser.Scene {
     useSet(this, cached().activeSet);
     drawBackground(this);
     this.toggles = [];
-    this.opening = false;
-    this.openObjs = [];
-    this.openFinal = null;
-    this.openFigure = null;
-    this.openUpdate = null;
+    this.opening = null;
     this.debug = null;
     this.pressTimer = null;
     this.debugJustOpened = false;
+    // Resursräknare i överkanten, y 30 (UI.md §14.2, DESIGN §16.5).
+    new Counters(this, cached().economy.pearls, cached().economy.sand);
     this.drawLogo();
     this.drawPlay();
     this.drawShelf();
@@ -97,11 +79,11 @@ export class Start extends Phaser.Scene {
           return lastBox;
         },
         get opening(): boolean {
-          return self.opening;
+          return self.opening !== null;
         },
         /** 'play' före 1 200 ms (tryck hoppar över), 'done' efter (tryck stänger). */
         get openPhase(): string {
-          return self.openPhase;
+          return self.opening?.phase ?? 'play';
         },
         get debugOpen(): boolean {
           return self.debug !== null;
@@ -123,8 +105,8 @@ export class Start extends Phaser.Scene {
         return true;
       }
       if (!this.opening) return false;
-      if (this.openPhase === 'play') this.skipOpening();
-      this.closeOpening();
+      this.opening.tap();
+      this.opening?.tap();
       return true;
     };
     setBackHandler(onBack);
@@ -160,8 +142,7 @@ export class Start extends Phaser.Scene {
       this.cancelPress();
       // Öppningen visas: ett tryck hoppar över, nästa stänger. Nästa mussla kräver ett nytt tryck.
       if (this.opening) {
-        if (this.openPhase === 'play') this.skipOpening();
-        else this.closeOpening();
+        this.opening.tap();
         return;
       }
       const hit = this.toggles.find(
@@ -391,204 +372,15 @@ export class Start extends Phaser.Scene {
     if (!res) av.pendingBoxes = 0;
     lastBox = res;
     void save();
-    if (res) this.playOpening(res);
-    else this.scene.restart();
-  }
-
-  /** Lägger till ett objekt i öppningen (så att "hoppa över" kan döda dess tweens). */
-  private op<T extends Phaser.GameObjects.GameObject>(o: T): T {
-    this.openObjs.push(o);
-    return o;
-  }
-
-  /**
-   * Musslans öppning (UI.md §13.3), fast 1 200 ms. Musslan ser likadan ut och låter likadant
-   * fram till att figuren syns; först där skiljer sig rariteterna i antal kanaler.
-   */
-  private playOpening(res: BoxResult): void {
-    this.opening = true;
-    this.openPhase = 'play';
-    const def = avatarById(res.avatarId)!;
-    const r = res.rarity;
-    const settings = cached().settings;
-    const calm = settings.calm;
-    const depth = 25;
-    const C = OP.center;
-    const F = OP.figure;
-    const scale0 = BS.size / ICON_PX;
-    const scale1 = scale0 * OP.fly.toScale;
-    bakeAvatarParticles(this);
-
-    const scrim = this.op(this.add.rectangle(L.width / 2, L.height / 2, L.width, L.height, INT.scrim, 1).setDepth(depth).setAlpha(0));
-    this.openScrim = scrim;
-    this.tweens.add({ targets: scrim, alpha: OP.scrim.alpha, duration: OP.scrim.inMs });
-
-    // Strålar (legendarisk/mytisk) och glöd bakom figuren.
-    const nRays = calm ? 0 : r === 'legendary' ? OP.rays.legendary : r === 'mythic' ? OP.rays.mythic : 0;
-    const rays = this.op(this.add.graphics().setPosition(C.x, F.toY).setDepth(depth + 1).setAlpha(0));
-    for (let i = 0; i < nRays; i++) {
-      const a = (i / nRays) * Math.PI * 2;
-      const w = Math.PI / nRays / 2;
-      rays.fillStyle(rarityInt(r, i), OP.rays.alpha);
-      rays.fillTriangle(
-        Math.cos(a - w) * OP.rays.innerR, Math.sin(a - w) * OP.rays.innerR,
-        Math.cos(a) * OP.rays.outerR, Math.sin(a) * OP.rays.outerR,
-        Math.cos(a + w) * OP.rays.innerR, Math.sin(a + w) * OP.rays.innerR,
-      );
+    if (!res) {
+      this.scene.restart();
+      return;
     }
-    if (nRays > 0) this.tweens.add({ targets: rays, angle: 360, duration: (360 / OP.rays.degPerSec) * 1000, repeat: -1 });
-    const glow = this.op(this.add.image(C.x, F.toY, BG_GLOW).setTint(rarityInt(r)).setDepth(depth + 1).setAlpha(0).setScale(0));
-    const glowScale = (OP.glow.r * 2) / 256;
-
-    // Musslan: undre halvan + övre halvan med origin i gångjärnet (y 38/64).
-    const bottom = this.add.image(0, 0, avatarIconKey('shellBottom'));
-    const top = this.add.image(0, (38 / 64 - 0.5) * ICON_PX, avatarIconKey('shellTop')).setOrigin(0.5, 38 / 64);
-    const shell = this.op(this.add.container(BS.x, BS.y, [bottom, top]).setDepth(depth + 2).setScale(scale0));
-    const path = { t: 0 };
-    this.tweens.add({
-      targets: path,
-      t: 1,
-      duration: OP.fly.ms,
-      ease: OP.fly.ease,
-      onUpdate: () => {
-        const t = path.t;
-        const u = 1 - t;
-        shell.x = u * u * BS.x + 2 * u * t * OP.fly.ctrlX + t * t * C.x;
-        shell.y = u * u * BS.y + 2 * u * t * OP.fly.ctrlY + t * t * C.y;
-        shell.setScale(scale0 + (scale1 - scale0) * t);
-      },
+    this.opening = new ShellOpening(this, res, {
+      from: { x: BS.x, y: BS.y, px: BS.size },
+      closeTo: { x: SH.book.x, y: SH.book.y },
+      onClosed: () => this.scene.restart(),
     });
-    const wd = OP.fly.wobbleDeg;
-    this.tweens.chain({
-      targets: shell,
-      tweens: [
-        { angle: wd, duration: OP.fly.ms / 3 },
-        { angle: -wd, duration: OP.fly.ms / 3 },
-        { angle: 0, duration: OP.fly.ms / 3 },
-      ],
-    });
-    playTone(AVATAR_SOUND.shellOpen);
-    playSound('ui');
-
-    // Figur, pärlor och romber (skapas nu, visas vid 320 ms).
-    const px = F.displayPx;
-    const g2c = gripToCenter(px);
-    const fig = this.op(addAvatarImage(this, C.x, F.fromY + g2c, def.id, px).setDepth(depth + 3).setScale(0));
-    this.openFigure = fig;
-    const rig = new AvatarRig(this, def, px, calm);
-    const figPos: { y: number; s: number } = { y: F.fromY, s: 0 };
-    const applyFig = (): void => {
-      rig.base = figPos.s;
-      rig.apply(fig, C.x, figPos.y + g2c);
-    };
-    this.events.on(Phaser.Scenes.Events.UPDATE, applyFig);
-    this.openUpdate = applyFig;
-    const pearls = this.op(this.add.graphics().setPosition(C.x, OP.pearls.y).setDepth(depth + 3).setScale(0));
-    drawPearlRow(pearls, 0, 0, RARITY.pearls[r], OP.pearls.r, OP.pearls.pitch, r);
-    const rombs = this.op(this.add.graphics().setDepth(depth + 3).setAlpha(0));
-    const RB = OP.rombs;
-    drawRomb(rombs, C.x - RB.pitch / 2, RB.y, RB.w, RB.h, false, 0, INT.hud, INT.hudDim);
-    drawRomb(rombs, C.x + RB.pitch / 2, RB.y, RB.w, RB.h, false, 0, INT.hud, INT.hudDim);
-
-    const at = (ms: number, fn: () => void): void => void this.time.delayedCall(ms, fn);
-    at(OP.shellOpenAt, () => {
-      let swapped = false;
-      this.tweens.add({
-        targets: top,
-        scaleY: OP.shellOpen.toScaleY,
-        duration: OP.shellOpen.ms,
-        ease: OP.shellOpen.ease,
-        onUpdate: () => {
-          if (!swapped && top.scaleY <= OP.shellOpen.swapAtScaleY) {
-            swapped = true;
-            top.setTexture(avatarIconKey('shellTopInside'));
-          }
-        },
-      });
-    });
-    at(OP.glowAt, () => {
-      this.tweens.add({ targets: glow, scale: glowScale, alpha: OP.glow.alpha, duration: OP.glow.ms, ease: OP.glow.ease });
-      if (nRays > 0) this.tweens.add({ targets: rays, alpha: 1, duration: OP.glow.ms });
-    });
-    at(OP.figureAt, () => {
-      this.tweens.add({ targets: figPos, y: F.toY, duration: F.ms, ease: F.ease });
-      figPos.s = F.fromScale;
-      this.tweens.add({ targets: figPos, s: 1, duration: F.ms, ease: F.ease, easeParams: [F.overshoot] });
-      this.tweens.add({ targets: pearls, scale: 1, duration: OP.pearls.ms, ease: OP.pearls.ease });
-      this.tweens.add({ targets: rombs, alpha: 1, duration: OP.pearls.ms });
-      // Ringar i raritetsfärg + partiklar i figurens form (jackpot utan shake/zoom/hit-stop).
-      const nRings = calm ? Math.min(1, OP.rings[r]) : OP.rings[r];
-      const RG = OP.ring;
-      for (let i = 0; i < nRings; i++) {
-        const ring = this.op(this.add.image(C.x, F.toY, FX_RING).setTint(rarityInt(r, i * 2)).setDepth(depth + 2).setAlpha(0));
-        ring.setScale(RG.fromR / FX_RING_R);
-        this.tweens.add({ targets: ring, scale: RG.toR / FX_RING_R, alpha: { from: RG.alpha, to: 0 }, delay: i * RG.stepMs, duration: RG.ms, ease: RG.ease });
-      }
-      const juice = new Juice(this, C.x, F.toY, { ...settings }, themeSetById(cached().activeSet).particle);
-      const c = def.cosmetic;
-      juice.setAvatarParticles({
-        texture: c.particleShape ? avatarParticleKey(c.particleShape) : null,
-        tint: c.particleTint && c.particleTint !== 'level' && c.particleTint !== 'combo' ? c.particleTint : RARITY.color[r],
-        countMul: 1,
-      });
-      juice.trigger('jackpot', RARITY.juice[r], C.x, F.toY, { overlay: true, avatarParticles: true, noTint: true, ring: { count: 0, maxR: 0, durationMs: 0, stepMs: 0, color: RARITY.color[r], alpha: 0 } });
-      playTone(AVATAR_SOUND.reveal[r]);
-      vibrate(calm ? 10 : OP.haptic[r]);
-    });
-    // Showcase en gång, tidsskalad så att den är klar vid 1 200 ms.
-    const len = AvatarRig.lengthMs(def.showcase.anim);
-    const ts = Math.min(1, (OP.doneAt - OP.showcaseAt) / Math.max(1, len));
-    at(OP.showcaseAt, () => this.showcase(def, rig, ts, C.x, F.toY, px / 56, depth + 4, calm));
-    at(OP.doneAt, () => {
-      this.openPhase = 'done';
-    });
-
-    // Slutläget (hoppa över): allt på plats, ingen showcase.
-    this.openFinal = (): void => {
-      this.time.removeAllEvents();
-      this.tweens.killTweensOf([scrim, glow, shell, top, pearls, rombs, figPos, path, rig.st]);
-      rig.stop();
-      rig.st.dx = 0;
-      rig.st.dy = 0;
-      rig.st.sx = 1;
-      rig.st.sy = 1;
-      rig.st.rot = 0;
-      scrim.setAlpha(OP.scrim.alpha);
-      glow.setScale(glowScale).setAlpha(OP.glow.alpha);
-      rays.setAlpha(1);
-      shell.setPosition(C.x, C.y).setScale(scale1).setAngle(0);
-      top.setScale(1, OP.shellOpen.toScaleY).setTexture(avatarIconKey('shellTopInside'));
-      figPos.y = F.toY;
-      figPos.s = 1;
-      pearls.setScale(1);
-      rombs.setAlpha(1);
-      this.openPhase = 'done';
-    };
-  }
-
-  /** Figurens showcase: recept + effekt vid fxAtMs + ljud. */
-  private showcase(def: AvatarDef, rig: AvatarRig, ts: number, x: number, cy: number, k: number, depth: number, calm: boolean): void {
-    const sc = def.showcase;
-    rig.play(sc.anim, 3, ts, () => undefined);
-    playTone(sc.sound);
-    this.time.delayedCall(sc.fxAtMs * ts, () => playFxCue(this, sc.fx, x, cy, k, depth, calm));
-  }
-
-  private skipOpening(): void {
-    this.openFinal?.();
-  }
-
-  /** Tryck efter 1 200 ms: figuren krymper och flyger till bokikonen, scrimmen tonas ut. */
-  private closeOpening(): void {
-    const fig = this.openFigure;
-    const C = OP.close;
-    playTone(AVATAR_SOUND.equip);
-    this.opening = false;
-    for (const o of this.openObjs) if (o !== fig && o !== this.openScrim) this.tweens.add({ targets: o, alpha: 0, duration: C.scrimOutMs });
-    if (this.openScrim) this.tweens.add({ targets: this.openScrim, alpha: 0, duration: C.scrimOutMs });
-    if (this.openUpdate) this.events.off(Phaser.Scenes.Events.UPDATE, this.openUpdate);
-    if (fig) this.tweens.add({ targets: fig, x: SH.book.x, y: SH.book.y, scale: 0.3, duration: C.ms, ease: C.ease });
-    this.time.delayedCall(C.ms, () => this.scene.restart());
   }
 
   // ---------------------------------------------------------------- ikoner

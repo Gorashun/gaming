@@ -10,6 +10,17 @@ import {
   TAB_SET_ICON,
 } from '../data/avatarsIndex';
 
+import {
+  CHECK_ICON,
+  ECONOMY_COLORS,
+  ECONOMY_ICON_KEYS,
+  PEARL_COIN_ICON,
+  SAND_ICON,
+  SHELL_TYPE_ICON,
+  UPGRADE_ICON,
+} from '../data/economyUi';
+import type { ShellType } from '../data/economy';
+
 const SHELL_DARK = '#5C2A43';
 const HUD_DIM = '#8FA3C8';
 const INSIDE = AVATAR_UI.open.shellOpen.inside;
@@ -31,6 +42,37 @@ export type AvatarIconKey = keyof typeof AVATAR_ICONS;
 
 export function avatarIconKey(k: AvatarIconKey): string {
   return `icon-av-${k}`;
+}
+
+const SHELL_TYPES: readonly ShellType[] = ['common', 'silver', 'gold'];
+
+/** Musslans halvor per typ i öppningen (färgen följer typen, UI.md §14.4). Vanlig = AVATAR_ICONS. */
+export function shellHalfKey(type: ShellType, half: 'top' | 'bottom'): string {
+  if (type === 'common') return avatarIconKey(half === 'top' ? 'shellTop' : 'shellBottom');
+  return `eco-shell-${half}-${type}`;
+}
+
+/** Ekonomins ikoner (UI.md §14): valutor, musslor per typ och tillstånd, uppgradering, bock, guldbok. */
+export const ECO_EXTRA_KEYS = { upgradeDim: 'eco-upgrade-dim', upgradeHud: 'eco-upgrade-hud', bookGold: 'eco-book-gold' } as const;
+function ecoIcons(): [string, string][] {
+  const K = ECONOMY_ICON_KEYS;
+  const out: [string, string][] = [
+    [K.pearlCoin, PEARL_COIN_ICON()],
+    [K.sand, SAND_ICON()],
+    [K.upgrade, UPGRADE_ICON()],
+    [ECO_EXTRA_KEYS.upgradeDim, UPGRADE_ICON(HUD_DIM)],
+    [ECO_EXTRA_KEYS.upgradeHud, UPGRADE_ICON('#EAF2FF')],
+    [K.check, CHECK_ICON()],
+    [ECO_EXTRA_KEYS.bookGold, BOOK_ICON('#FFD75E')],
+  ];
+  for (const t of SHELL_TYPES) {
+    for (const st of ['ok', 'poor', 'empty'] as const) out.push([K.shell(t, st), SHELL_TYPE_ICON(t, st)]);
+    if (t === 'common') continue;
+    const c = ECONOMY_COLORS.shell[t];
+    out.push([shellHalfKey(t, 'top'), SHELL_TOP_SVG(SHELL_DARK, c.fill, c.rib)]);
+    out.push([shellHalfKey(t, 'bottom'), SHELL_BOTTOM_SVG(SHELL_DARK, c.fill, INSIDE.fill, c.rib)]);
+  }
+  return out;
 }
 
 export const ICONS = {
@@ -142,6 +184,7 @@ export async function loadIcons(
     ...ICON_KEYS.map((k): [string, string] => [iconTextureKey(k), ICONS[k]()]),
     ...THEME_SETS.map((s): [string, string] => [setIconKey(s.id), s.icon]),
     ...(Object.keys(AVATAR_ICONS) as AvatarIconKey[]).map((k): [string, string] => [avatarIconKey(k), AVATAR_ICONS[k]()]),
+    ...ecoIcons(),
   ];
   await Promise.all(
     all.map(async ([key, svg]) => {

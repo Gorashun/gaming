@@ -19,5 +19,8 @@ export function installStorageAdapter(): void {
     async set(key, value) {
       await Preferences.set({ key, value });
     },
+    async remove(key) {
+      await Preferences.remove({ key });
+    },
   });
 }

@@ -29,7 +29,7 @@ function seedSave(page: Page, extra: Record<string, unknown> = {}): Promise<void
     if (localStorage.getItem('klunk.save.v1')) return;
     localStorage.setItem(
       'klunk.save.v1',
-      JSON.stringify({ highscore: 500, bestLevel: 4, stats: { runs: 4, merges: 20 }, ...x }),
+      JSON.stringify({ schema: 2, highscore: 500, bestLevel: 4, stats: { runs: 4, merges: 20 }, ...x }),
     );
   }, extra);
 }
