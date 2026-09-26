@@ -305,3 +305,11 @@ Status: **proposed**. Waiting for simulation (balance-analyst, RETENTION §6), c
   - Child-safety review `reviews/2026-09-26-retention.md` (PASS WITH CHANGES): R1–R18 are folded into RETENTION.md and marked "applied (Rn)".
   - Batch B is gated on a simulated casual-profile check: T8 ≤ 35 % and T9 ≤ 0.8 at 4/7 and 7/7 days played (R12).
   - Legal renames: Pearl Pool / Pärlpölen, never "Journey Pass", Captain Anchor / Kapten Ankare, The Snowglows / Isbitarna, Vera the Seer / Spådamen Vera, Figgy the Frog (RETENTION §9).
+
+## 23. Art direction decisions (2026-09-26, producer; source docs/ART_DIRECTION.md)
+- Test version 8 scored 2.4/5 against the premium bar; art sign-off pending the polish batches.
+- **P1 full-bleed world:** separate environment canvas behind a transparent game canvas (fills the black bars, never cuts between scenes). Height expansion of the play area later.
+- Build order: (1) P4 Fredoka everywhere + HUD polish, P16 first frame, P15 icon/splash review; (2) P1+P2+P3 world, per-set environment, glass jar + caustics; (3) P5 shared glow + merge/chain VFX, P6 jackpot, P10 bomb/rainbow material, P11 danger state; (4) P7 round summary + P8 pickup tokens with the retention build; (5) P9 transitions, P12–P14 book/shop/shell/upgrade polish.
+- Pouch position per RETENTION §10 for now; pearl tokens without trail, sand tokens with a 3-ghost trail.
+- Fps guard trip also degrades art: motes 12, one caustic layer, no contact shadows or jackpot beams, environment baked at 1×.
+- Layering bugs found by the audit go to docs/BUGS.md via QA.
