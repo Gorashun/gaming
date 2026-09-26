@@ -29,6 +29,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true });
   page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
   page.on('console', (m) => m.type() === 'error' && errors.push(`console: ${m.text()}`));
+  page.on('response', (r) => r.status() >= 400 && errors.push(`http ${r.status()}: ${r.url()}`));
   const t0 = Date.now();
   await page.goto(`http://localhost:${port}/?test=1`);
   await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 30_000 });
