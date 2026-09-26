@@ -96,6 +96,9 @@ func load_zone(zone_id: String, seed_value := -1) -> void:
 
 # ------------------------------------------------------------------ setup
 func _setup_environment() -> void:
+	# Owned by art (ART_BIBLE §2/§4): every value comes from the biome "env" block.
+	# Depth fog starts just behind the hero plane so actors stay crisp and the room edges fall
+	# off into the act colour; optional height fog = ground-hugging bog/mine haze.
 	var e: Dictionary = biome.get("env", {})
 	env = WorldEnvironment.new()
 	var en = Environment.new()
@@ -106,26 +109,43 @@ func _setup_environment() -> void:
 	en.ambient_light_energy = float(e.get("ambient_energy", 1.0))
 	en.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	en.tonemap_exposure = float(e.get("exposure", 1.0))
+	en.tonemap_white = float(e.get("white", 6.0))
 	en.fog_enabled = true
-	en.fog_light_color = Color(e.get("fog", "#141220"))
-	en.fog_density = float(e.get("fog_density", 0.018))
+	var fog_col = Color(e.get("fog", "#141220"))
+	if zone.has("fog_tint"):   # Deepdark modifiers / event zones tint the fog
+		fog_col = fog_col.lerp(Color(zone.fog_tint), 0.5)
+	en.fog_light_color = fog_col
+	en.fog_light_energy = float(e.get("fog_energy", 1.0))
 	en.fog_sky_affect = 1.0
-	en.glow_enabled = true
+	en.fog_mode = Environment.FOG_MODE_DEPTH
+	en.fog_depth_begin = float(e.get("fog_begin", 14.0))
+	en.fog_depth_end = float(e.get("fog_end", 42.0))
+	en.fog_depth_curve = float(e.get("fog_curve", 1.2))
+	en.fog_density = float(e.get("fog_density", 0.6))
+	en.fog_height = float(e.get("fog_height", -10.0))
+	en.fog_height_density = float(e.get("fog_height_density", 0.0))
+	en.glow_enabled = float(e.get("glow", 0.6)) > 0.0
 	en.glow_intensity = float(e.get("glow", 0.6))
-	en.glow_bloom = 0.05
-	en.glow_hdr_threshold = 1.0
+	en.glow_strength = float(e.get("glow_strength", 1.0))
+	en.glow_bloom = float(e.get("bloom", 0.02))
+	en.glow_hdr_threshold = float(e.get("glow_threshold", 1.0))
+	en.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
 	en.adjustment_enabled = true
-	en.adjustment_saturation = float(e.get("saturation", 1.05))
-	en.adjustment_contrast = float(e.get("contrast", 1.08))
+	en.adjustment_brightness = float(e.get("brightness", 1.0))
+	en.adjustment_saturation = float(e.get("saturation", 1.0))
+	en.adjustment_contrast = float(e.get("contrast", 1.1))
 	env.environment = en
 	add_child(env)
 	sun = DirectionalLight3D.new()
 	sun.light_color = Color(e.get("sun", "#8f9bd6"))
 	sun.light_energy = float(e.get("sun_energy", 0.55))
-	sun.rotation_degrees = Vector3(-58, float(e.get("sun_yaw", 30)), 0)
-	sun.shadow_enabled = true
+	sun.rotation_degrees = Vector3(-float(e.get("sun_pitch", 55.0)), float(e.get("sun_yaw", 30.0)), 0)
+	sun.shadow_enabled = sun.light_energy > 0.05
+	sun.shadow_opacity = float(e.get("shadow_opacity", 0.8))
+	sun.shadow_blur = 1.5
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
-	sun.directional_shadow_max_distance = 40.0
+	sun.directional_shadow_max_distance = 30.0
+	sun.light_specular = 0.2
 	add_child(sun)
 
 func _setup_astar() -> void:

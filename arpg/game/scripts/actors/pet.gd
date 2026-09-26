@@ -36,7 +36,7 @@ func setup(id: String, p: Player) -> void:
 		if rec.has("tint"):
 			_tint_meshes(_visual, tint)
 	else:
-		_visual = _make_wisp(tint, float(rec.get("scale", 1.0)))
+		_visual = make_wisp(tint, float(rec.get("scale", 1.0)))
 		_flying = true
 	add_child(_visual)
 	top_level = true
@@ -55,7 +55,7 @@ func _tint_meshes(n: Node, tint: Color) -> void:
 				(mi as MeshInstance3D).set_surface_override_material(si, m)
 
 ## Procedural wisp: emissive core + soft halo + a few motes (no real light — light budget).
-func _make_wisp(col: Color, sc: float) -> Node3D:
+static func make_wisp(col: Color, sc: float) -> Node3D:
 	var root = Node3D.new()
 	var core = MeshInstance3D.new()
 	var sm = SphereMesh.new()
