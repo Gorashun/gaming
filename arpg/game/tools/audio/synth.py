@@ -12,6 +12,7 @@ from scipy import signal
 
 SR = 44100
 TAU = 2.0 * np.pi
+_RNG = np.random.default_rng(12345)  # deterministic default when no rng is passed
 
 
 # ---------------------------------------------------------------- basics
@@ -193,7 +194,7 @@ def additive(f0: float, dur: float, partials) -> np.ndarray:
 
 # ---------------------------------------------------------------- noise
 def noise(dur: float, color: str = "white", rng=None) -> np.ndarray:
-    rng = rng or np.random.default_rng()
+    rng = rng or _RNG
     n = n_samples(dur)
     w = rng.standard_normal(n)
     if color == "white":
@@ -212,7 +213,7 @@ def noise(dur: float, color: str = "white", rng=None) -> np.ndarray:
 
 def crackle(dur: float, density: float = 30.0, rng=None) -> np.ndarray:
     """Sparse random impulses (fire crackle, glitter, pebbles)."""
-    rng = rng or np.random.default_rng()
+    rng = rng or _RNG
     n = n_samples(dur)
     out = np.zeros(n)
     k = rng.poisson(density * dur)
@@ -304,7 +305,7 @@ def formant(x, vowel: str = "oo"):
 # ---------------------------------------------------------------- physical-ish instruments
 def pluck(f0: float, dur: float, bright: float = 0.6, damp: float = 0.996, rng=None) -> np.ndarray:
     """Karplus-Strong via a single IIR (lfilter), so it is fast."""
-    rng = rng or np.random.default_rng()
+    rng = rng or _RNG
     n = n_samples(dur)
     period = SR / f0
     N = max(2, int(np.floor(period)) - 1)

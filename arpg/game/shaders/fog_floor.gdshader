@@ -1,21 +1,21 @@
 shader_type spatial;
 // Soft drifting ground mist layer (cheap alternative to volumetric fog on mobile).
+// Two scrolling noise fetches; thins out near the hero so the ground under the player reads.
 render_mode blend_mix, unshaded, cull_disabled, depth_draw_never, shadows_disabled;
 
 uniform vec4 color : source_color = vec4(0.4, 0.45, 0.6, 1.0);
 uniform float density = 0.35;
-
-float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-float noise(vec2 p) {
-	vec2 i = floor(p); vec2 f = fract(p);
-	float a = hash(i), b = hash(i + vec2(1, 0)), c = hash(i + vec2(0, 1)), d = hash(i + vec2(1, 1));
-	vec2 u = f * f * (3.0 - 2.0 * f);
-	return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
-}
+uniform float scale = 0.05;
+uniform sampler2D noise_tex : hint_default_white, filter_linear_mipmap, repeat_enable;
+global uniform vec3 wick_player_pos;
 
 void fragment() {
-	vec2 w = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xz * 0.08;
-	float n = noise(w + vec2(TIME * 0.03, TIME * 0.02)) * 0.6 + noise(w * 2.3 - vec2(TIME * 0.05, 0.0)) * 0.4;
+	vec3 w = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	vec2 uv = w.xz * scale;
+	float n = texture(noise_tex, uv + vec2(TIME * 0.012, TIME * 0.008)).r * 0.6
+		+ texture(noise_tex, uv * 2.3 - vec2(TIME * 0.02, 0.0)).g * 0.4;
+	n = smoothstep(0.3, 0.85, n);
+	float clear = smoothstep(1.5, 4.5, length(w.xz - wick_player_pos.xz));
 	ALBEDO = color.rgb;
-	ALPHA = clamp(n * density, 0.0, 1.0);
+	ALPHA = clamp(n * density * (0.35 + 0.65 * clear), 0.0, 1.0);
 }
