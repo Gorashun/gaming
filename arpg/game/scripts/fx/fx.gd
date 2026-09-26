@@ -310,7 +310,7 @@ func _take_particles(r: Node3D) -> CPUParticles3D:
 	r.add_child(n)
 	return n
 
-func _release(p: CPUParticles3D) -> void:
+func _release(p) -> void:   # untyped: the bound particle may be freed
 	if is_instance_valid(p):
 		p.emitting = false
 		_pool.append(p)
@@ -1209,7 +1209,7 @@ func _halo_rings(d: Node3D, col: Color) -> void:
 			mi.position.y = 0.3 + u * 8.7
 			m.set_shader_parameter("alpha", 1.0 - u), 0.0, 1.0, 3.0)
 
-func _decorate_fx_node(n: Node) -> void:
+func _decorate_fx_node(n) -> void:   # untyped: may receive a freed object
 	if not is_instance_valid(n) or n.has_meta("fx"):
 		return
 	if n is Projectile:

@@ -70,35 +70,26 @@ func _fade_in() -> void:
 
 var screen_arg = ""        # "crafting:smith" → screen "crafting", screen_arg "smith"
 
+## Opens scripts/ui/<name>_screen.gd. "name:arg" (e.g. "crafting:smith") passes arg as screen_arg and
+## ScreenBase.context {arg, tab, npc}. Known names include inventory, skills, map, menu, character,
+## crafting, stash, vendor, curio, pets, mounts, stable, quests, bounties, lore, inn, codex, deeds,
+## wardrobe, starmap, settings, credits, hall, collection.
 func open_screen(which: String) -> void:
-	if screen and is_instance_valid(screen):
-		screen.queue_free()
 	screen_arg = ""
 	if which.contains(":"):
 		var parts = which.split(":", true, 1)
 		which = parts[0]
 		screen_arg = parts[1]
-	var path = {"inventory": "res://scripts/ui/inventory_screen.gd", "skills": "res://scripts/ui/skills_screen.gd",
-		"map": "res://scripts/ui/map_screen.gd", "menu": "res://scripts/ui/menu_screen.gd", "credits": "res://scripts/ui/credits_screen.gd",
-		"character": "res://scripts/ui/character_screen.gd", "crafting": "res://scripts/ui/crafting_screen.gd",
-		"stash": "res://scripts/ui/stash_screen.gd", "vendor": "res://scripts/ui/vendor_screen.gd"}.get(which, "")
-	if path == "" and which.is_valid_identifier():
-		path = "res://scripts/ui/%s_screen.gd" % which   # generic: quests, upgrade, pets, stable, inn, curio, starmap...
-	if path == "" or not ResourceLoader.exists(path):
+	which = SCREEN_ALIASES.get(which, which)
+	var path = "res://scripts/ui/%s_screen.gd" % which
+	if not which.is_valid_identifier() or not ResourceLoader.exists(path):
 		Events.toast.emit("Coming soon", UiTheme.MUTED)
 		return
-	var s: ScreenBase = load(path).new()
-	s.session = self
-	if "screen_arg" in s:
+	var s = ScreenBase.open(self, which, {"arg": screen_arg, "tab": screen_arg, "npc": current_npc})
+	if s and "screen_arg" in s:
 		s.screen_arg = screen_arg
-	ui_layer.add_child(s)
-	screen = s
-	get_tree().paused = true
-	s.closed.connect(func():
-		get_tree().paused = false
-		if world and world.player:
-			world.player.sync_from_character()
-		Game.save_character())
+
+const SCREEN_ALIASES := {"hero": "character", "bag": "inventory", "achievements": "deeds", "journal": "quests"}
 
 func open_station(which: String) -> void:
 	open_screen(which)
@@ -528,3 +519,15 @@ func set_flag(key: String) -> void:
 	ch.track(key)
 	if key.begins_with("secret:"):
 		ch.track("secrets")
+
+func bounty_status() -> Dictionary:
+	return Quests.bounty_status(Game.character)
+
+func bounties(act_id := "") -> Array:
+	return Quests.bounties_for(Game.character, act_id if act_id != "" else Game.character.current_act)
+
+## The Cauldron: {material_id: count} or [ids]. Nothing is consumed unless a recipe matches.
+func cauldron_stir(items) -> Dictionary:
+	var r = Crafting.cauldron_stir(Game.character, items)
+	Game.save_character()
+	return _result(r.ok, r.message, r)

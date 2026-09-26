@@ -59,6 +59,10 @@ func setup(c: Actor, effect: Dictionary, m: float, el: String, t: Array, col: Co
 func _physics_process(delta: float) -> void:
 	var now = Time.get_ticks_msec() / 1000.0
 	if now > until or caster == null or not is_instance_valid(caster):
+		if caster and is_instance_valid(caster) and caster is Player and Hooks.has(caster.ch, "zone_expire_burst") and not e.get("_burst", false):
+			Fx.ring(global_position, radius, Color(1, 0.7, 0.3), 0.35)
+			for t in Game.world.enemies_in_radius(caster, global_position, radius):
+				Game.world.deal_damage(caster, t, mult * float(Hooks.param(caster.ch, "zone_expire_burst", "mult", 1.5)), element, tags, e)
 		queue_free()
 		return
 	if until - now < 0.5:

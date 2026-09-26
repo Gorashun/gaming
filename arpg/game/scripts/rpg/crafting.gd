@@ -291,3 +291,51 @@ static func forge_named(named_id: String, ilvl: int) -> Dictionary:
 	item.kindle_max = int(Content.get_rec("rarities", item.rarity).get("kindle", 10))
 	item.kindle = item.kindle_max
 	return item
+
+const SUPPORTED_KINDS := ["kindle_upgrade", "kindle_reroll", "kindle_add", "add_socket", "forge", "forge_unique",
+	"forge_named", "upgrade_item", "reroll_implicit", "brew", "transmute", "combine", "unsocket", "gem_convert",
+	"reroll_values", "remove_affix", "seal_affix", "reroll_all", "imprint_power", "make_greater", "restore_kindle", "cauldron"]
+
+## True when craft() implements this recipe kind (UI hides the rest).
+static func supports_kind(kind: String) -> bool:
+	return SUPPORTED_KINDS.has(kind)
+
+## True when the recipe needs an item to be chosen.
+static func needs_item(kind: String) -> bool:
+	return ITEM_KINDS.has(kind)
+
+## The Cauldron: throw materials in ({id: count} or [ids]). If they match a cauldron recipe's inputs
+## exactly (same ids, at least the counts), that recipe is made and discovered. Nothing is consumed
+## when nothing matches (welfare: the Cauldron never destroys items). Returns {ok, discovered, recipe, message}.
+static func cauldron_stir(ch: CharacterData, items) -> Dictionary:
+	var given = {}
+	if items is Dictionary:
+		for k in items:
+			given[str(k)] = int(items[k])
+	elif items is Array:
+		for k in items:
+			given[str(k)] = int(given.get(str(k), 0)) + 1
+	if given.is_empty():
+		return {"ok": false, "discovered": false, "recipe": "", "message": "The Cauldron is empty"}
+	if not ch.has_materials(given):
+		return {"ok": false, "discovered": false, "recipe": "", "message": "You don't have those"}
+	for r in Content.all("recipes"):
+		if str(r.get("kind", "")) != "cauldron":
+			continue
+		var cost: Dictionary = r.get("cost", {})
+		if cost.keys().size() != given.keys().size():
+			continue
+		var ok = true
+		for k in cost:
+			if int(given.get(k, 0)) < int(cost[k]):
+				ok = false
+				break
+		if not ok:
+			continue
+		var was_known = ch.recipes_known.has(r.id)
+		var res = craft(ch, r, null)
+		if not res.ok:
+			return {"ok": false, "discovered": false, "recipe": r.id, "message": res.message}
+		return {"ok": true, "discovered": not was_known, "recipe": r.id,
+			"message": ("Discovery! " if not was_known else "") + res.message}
+	return {"ok": false, "discovered": false, "recipe": "", "message": "The Cauldron bubbles... and nothing happens. Your things are safe."}

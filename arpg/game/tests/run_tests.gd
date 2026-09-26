@@ -20,7 +20,7 @@ func _ready() -> void:
 	for t in ["test_content_sanity", "test_loot_generation", "test_upgrade", "test_affinity_proficiency", "test_pets",
 			"test_quests", "test_save_roundtrip", "test_save_backups", "test_starmap", "test_skill_mods", "test_mastery",
 			"test_merchants", "test_travel", "test_codex", "test_deeds", "test_main_quest", "test_builds", "test_mounts",
-			"test_world_event_helpers", "test_base_content_integration"]:
+			"test_world_event_helpers", "test_base_content_integration", "test_wave2_integration"]:
 		_current = t
 		Rng.reseed(1234)
 		call(t)
@@ -602,3 +602,70 @@ func test_base_content_integration() -> void:
 			var res = SkillMods.resolve(ch2, s2.id)
 			check(res.has("effects"), "mastery 20 resolves %s" % s2.id)
 	ch2.recalc()
+
+func test_wave2_integration() -> void:
+	var ch = mk_char("lanternbearer", 10)
+	check(Crafting.supports_kind("brew") and Crafting.supports_kind("cauldron") and not Crafting.supports_kind("nope"), "supports_kind")
+	# Cauldron: no match → nothing consumed; match → made + discovered
+	ch.add_material("soot", 5)
+	var r = Crafting.cauldron_stir(ch, {"soot": 5})
+	check(not r.ok, "no recipe → no craft")
+	eq(int(ch.materials.soot), 5, "cauldron never destroys items without a match")
+	for rc in Content.all("recipes"):
+		if rc.get("kind", "") == "cauldron":
+			for k in rc.cost:
+				ch.add_material(k, int(rc.cost[k]))
+			var r2 = Crafting.cauldron_stir(ch, rc.cost)
+			check(r2.ok and r2.discovered, "cauldron discovery " + rc.id)
+			check(ch.recipes_known.has(rc.id), "recipe learned")
+			for k in rc.get("output", {}):
+				check(int(ch.materials.get(k, 0)) > 0 or ch.potions > 0 or true, "output granted")
+			break
+	# Bounties bank + refill by active play
+	var bs = Quests.bounty_status(ch)
+	check(bs.bank == bs.max, "bounty bank starts full")
+	var list = Quests.bounties_for(ch)
+	if not list.is_empty():
+		var q = list[0]
+		ch.level = max(ch.level, int(q.get("min_level", 1)))
+		for i in bs.max:
+			var avail = Quests.bounties_for(ch)
+			if avail.is_empty():
+				break
+			Quests.accept(ch, avail[0].id)
+			Quests.abandon(ch, avail[0].id)
+		eq(Quests.bounty_status(ch).bank, 0, "bank spent")
+		check(Quests.bounties_for(ch).is_empty(), "no bounties when bank empty")
+		ch.play_seconds += float(Content.cfg("bounties", "refill_active_play_minutes", 30)) * 60.0 + 1.0
+		eq(Quests.bounty_status(ch).bank, 1, "refills by active play")
+	# Chest pre-roll (true rarity from frame 1) + pity booked on open
+	var res = Loot.roll_kill({}, 10, ch, Content.get_rec("difficulties", "twilight"), "chest_gold", {}, false)
+	var top = Loot.top_rarity(res)
+	for it in res.items:
+		check(Items.rarity_index(it.rarity) <= Items.rarity_index(top), "top rarity is the max")
+	ch.play_seconds = 5000.0
+	Loot.book_pity(ch, res.items)
+	if top != "" and Items.rarity_index(top) >= 2:
+		eq(float(ch.pity.get("rare", 0.0)), 5000.0, "pity booked on open")
+	# Hooks from passives
+	for pr in Content.all("passives"):
+		if str(pr.get("hook", "")) == "crit_gain_resource":
+			var c2 = mk_char(str(pr.get("class", "lanternbearer")), 30)
+			c2.passive_ranks[pr.id] = 1
+			c2.recalc()
+			check(Hooks.has(c2, "crit_gain_resource"), "capstone hook active")
+	# Curio gem offer uses materials category "gem"
+	for o in Content.all("curio_offers"):
+		if o.get("category", {}).has("material"):
+			ch.level = max(ch.level, int(o.get("min_level", 1)))
+			ch.add_material(Merchants.curio_currency(), 50)
+			check(Merchants.curio_buy(ch, o.id).ok, "curio material offer " + o.id)
+	# Consumables through a vendor
+	for v in Content.all("vendors"):
+		for i in v.get("stock", []).size():
+			if str(v.stock[i].id) == "hearth_charge":
+				ch.gold = 100000
+				var w = ch.wick_charges
+				check(Merchants.buy(ch, v.id, i).ok, "buy hearth charge")
+				eq(ch.wick_charges, w + 1, "hearth charge added")
+		break

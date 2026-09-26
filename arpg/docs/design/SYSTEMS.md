@@ -167,3 +167,12 @@ python3 tools/sim_upgrade.py                      # gold/material sinks
 4. Unique stat scaling (`scale_with_ilvl`), `forge_named` and the new recipe kinds, `hooks.first_magic_s` / `first_legendary_s`.
 5. Events: `count`, `portal`, act/zone filters (`*_future` fields); zone `minibosses`.
 6. Passive/capstone `hook`s and future stats (`hook: "future"` in stats.json).
+
+## Changelog — gameplay-programmer tuning (2026-09-26, Wave 2 integration)
+- **Sunken Bellringer (Twilight a1_boss):** bot runs had a level-8 Stitcher going down ~13×/60 s (≈80 dps incoming vs ~290 life).
+  `dmg_mult` 1.5 → 1.15, basic `attack.mult` 1.4 → 1.2, `toll` 2.2 → 1.8, `peal` 0.9 → 0.6 (14 projectiles), `lunge` 1.8 → 1.5,
+  `raise` count 5 → 3. Telegraphs unchanged (≥1.0 s). Nightfall+ still scale via difficulty multipliers.
+- **hearth_charge** price 0 → 150 gold (vendors + consumables): a free charge skipped the 5-min Homeward Wick cooldown entirely.
+- Code notes: open items 2–6 above are implemented (see ARCHITECTURE/CONTENT_SCHEMA); implemented passive hooks:
+  crit_gain_resource, low_life_buff, bonus_vs_status, chain_bonus_jumps, dodge_next_crit, aoe_repeat_chance,
+  quake_stun_bonus, minion_death_burst, block_casts, holy_area_leaves_zone, zone_expire_burst.

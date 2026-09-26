@@ -4,7 +4,8 @@ extends RefCounted
 
 ## Returns { items:[...], gold:int, materials:{id:count} }
 ## `fallback_cfg` is used when config/loot.kinds has no entry for `kind` (new sources tolerate missing data).
-static func roll_kill(monster: Dictionary, monster_level: int, ch: CharacterData, tier: Dictionary, kind := "normal", fallback_cfg := {}) -> Dictionary:
+## use_pity=false: pre-rolled containers (chests) — pity is booked when opened (book_pity()).
+static func roll_kill(monster: Dictionary, monster_level: int, ch: CharacterData, tier: Dictionary, kind := "normal", fallback_cfg := {}, use_pity := true) -> Dictionary:
 	var out = {"items": [], "gold": 0, "materials": {}}
 	var kind_cfg: Dictionary = Content.get_rec("config", "loot").get("kinds", {}).get(kind, fallback_cfg)
 	var drop_chance = float(kind_cfg.get("item_chance", 0.18)) * float(monster.get("loot_mult", 1.0))
@@ -17,12 +18,14 @@ static func roll_kill(monster: Dictionary, monster_level: int, ch: CharacterData
 	var ctx = rarity_context(ch, tier, monster_level, kind_cfg)
 	for i in n:
 		var rarity = Items.roll_rarity(ctx)
-		rarity = _apply_pity(ch, rarity, monster_level)
+		if use_pity:
+			rarity = _apply_pity(ch, rarity, monster_level)
 		var smart = Rng.chance("loot", float(Content.cfg("loot", "smart_loot", 0.75)))
 		var item = Items.generate(monster_level, rarity, ch.class_id if smart else "")
 		if not item.is_empty():
 			out.items.append(item)
-	_apply_hooks(ch, out, monster_level)
+	if use_pity:
+		_apply_hooks(ch, out, monster_level)
 	# Uniques from boss tables
 	for u in monster.get("uniques", []):
 		if Rng.chance("loot", float(u.get("chance", 0.025)) * float(tier.get("unique_mult", 1.0))):
@@ -127,6 +130,25 @@ static func _apply_pity(ch: CharacterData, rarity: String, monster_level: int) -
 	if Items.rarity_index(result) != rank:
 		Events.toast.emit("The light favours you!", Items.rarity_color(result))
 	return result
+
+## Books pity for items obtained outside roll_kill's pity path (e.g. a pre-rolled chest being opened).
+static func book_pity(ch: CharacterData, items: Array) -> void:
+	var best = -1
+	for it in items:
+		best = max(best, Items.rarity_index(it.rarity))
+	for r in Content.all("rarities"):
+		if int(r.rank) <= best and float(r.get("pity_seconds", 0)) > 0:
+			ch.pity[r.id] = ch.play_seconds
+
+## Highest rarity id in a roll result ("" if no items).
+static func top_rarity(res: Dictionary) -> String:
+	var best = -1
+	var id = ""
+	for it in res.get("items", []):
+		if Items.rarity_index(it.rarity) > best:
+			best = Items.rarity_index(it.rarity)
+			id = it.rarity
+	return id
 
 ## Pity progress 0..1 for UI.
 static func pity_progress(ch: CharacterData, rarity_id: String) -> float:

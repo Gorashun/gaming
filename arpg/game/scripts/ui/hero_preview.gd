@@ -56,8 +56,9 @@ func _update_camera() -> void:
 	if heroes.size() > 0 and focus_index >= 0 and focus_index < heroes.size():
 		cx = heroes[focus_index].root.position.x
 	cam.fov = fov
-	cam.position = Vector3(cx, camera_height, camera_distance)
-	cam.look_at(Vector3(cx, look_height, 0))
+	var pos = Vector3(cx, camera_height, camera_distance)
+	# Works before the camera is in the tree (look_at() requires it)
+	cam.transform = Transform3D(Basis.looking_at(Vector3(cx, look_height, 0) - pos, Vector3.UP), pos)
 
 ## Add one hero. `ch` (CharacterData) → equipment props; otherwise class defaults.
 func add_hero(class_id: String, ch: Object = null, x := 0.0) -> Actor:

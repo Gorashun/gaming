@@ -49,6 +49,10 @@ static func buy(ch: CharacterData, vendor_id: String, entry) -> Dictionary:
 			ch.add_item(it)
 			out.item = it
 			out.message = "Bought %s" % it.name
+		"pet":
+			if not Pets.grant_pet(ch, id):
+				return {"ok": false, "message": "Already your friend"}
+			out.message = "%s joins you!" % Pets.rec(id).get("name", id)
 		"material":
 			if not Content.has_rec("materials", id):
 				return {"ok": false, "message": "Not for sale"}
@@ -173,7 +177,8 @@ static func curio_buy(ch: CharacterData, offer_id: String) -> Dictionary:
 static func _curio_material(ch: CharacterData, o: Dictionary, price: int, cur: String) -> Dictionary:
 	var kind = str(o.category.material)
 	var max_tier = 1 + ch.level / 20
-	var pool = Content.all("materials").filter(func(m): return (m.get(kind, false) == true or str(m.get("kind", "")) == kind) and int(m.get("tier", 1)) <= max_tier)
+	var pool = Content.all("materials").filter(func(m): return (str(m.get("category", "")) == kind or m.get(kind, false) == true or str(m.get("kind", "")) == kind) \
+		and int(m.get("grade", m.get("tier", 1))) <= max_tier)
 	if pool.is_empty():
 		return {"ok": false, "message": "The cart has nothing of that kind", "item": {}}
 	ch.spend_materials({cur: price})

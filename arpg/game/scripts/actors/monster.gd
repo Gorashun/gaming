@@ -162,9 +162,10 @@ func _attack() -> void:
 		anim_name = anim_name[randi() % anim_name.size()]
 	face_towards(target.global_position)
 	play(str(anim_name), windup + 0.35, float(atk.get("anim_speed", 1.0)), true)
-	var t = target
+	var t_ref = weakref(target)
 	if atk.has("projectile"):
-		get_tree().create_timer(windup, false).timeout.connect(func():
+		after(windup, func():
+			var t = t_ref.get_ref()
 			if is_instance_valid(self) and alive and is_instance_valid(t):
 				var dir = (t.global_position - global_position)
 				dir.y = 0
@@ -172,7 +173,8 @@ func _attack() -> void:
 		return
 	# Melee: short telegraph flash on the monster, then hit if still in range/arc
 	flash(Color(1, 0.3, 0.2), 0.35)
-	get_tree().create_timer(windup, false).timeout.connect(func():
+	after(windup, func():
+		var t = t_ref.get_ref()
 		if not (is_instance_valid(self) and alive and is_instance_valid(t) and t.alive):
 			return
 		var r = float(atk.get("range", 1.6)) + t.radius + 0.4
@@ -207,7 +209,7 @@ func _use_ability(ab: Dictionary) -> void:
 			var at: Vector3 = global_position if ab.get("at", "target") == "self" else pos
 			var r = float(ab.get("radius", 3.0))
 			Fx.telegraph(at, r, tel, Color("#ff2b2b"))
-			get_tree().create_timer(tel, false).timeout.connect(func():
+			after(tel, func():
 				if not (is_instance_valid(self) and alive):
 					return
 				Fx.ring(at, r, Color(1, 0.4, 0.2), 0.4)
@@ -219,7 +221,7 @@ func _use_ability(ab: Dictionary) -> void:
 					Game.world.monster_hit(self, p, float(ab.get("mult", 2.0)), ab.get("element", "physical")))
 		"volley":
 			var n = int(ab.get("count", 5))
-			get_tree().create_timer(tel * 0.5, false).timeout.connect(func():
+			after(tel * 0.5, func():
 				if not (is_instance_valid(self) and alive):
 					return
 				var base_dir = (pos - global_position)
@@ -232,14 +234,14 @@ func _use_ability(ab: Dictionary) -> void:
 		"nova_ring":
 			# Expanding ring of projectiles around the caster
 			var n = int(ab.get("count", 12))
-			get_tree().create_timer(tel, false).timeout.connect(func():
+			after(tel, func():
 				if not (is_instance_valid(self) and alive):
 					return
 				for i in n:
 					var dir = Vector3.FORWARD.rotated(Vector3.UP, TAU * i / n)
 					Game.world.spawn_projectile(self, dir, ab.get("projectile", {"speed": 7.0, "range": 12.0}), float(ab.get("mult", 0.7)), ab.get("element", "shadow"), [], Color("#ff2b2b")))
 		"summon":
-			get_tree().create_timer(tel, false).timeout.connect(func():
+			after(tel, func():
 				if not (is_instance_valid(self) and alive):
 					return
 				for i in int(ab.get("count", 3)):
@@ -248,7 +250,7 @@ func _use_ability(ab: Dictionary) -> void:
 		"charge":
 			var dest: Vector3 = pos
 			Fx.telegraph(global_position.lerp(dest, 0.5), 1.2, tel, Color("#ff2b2b"))
-			get_tree().create_timer(tel, false).timeout.connect(func():
+			after(tel, func():
 				if not (is_instance_valid(self) and alive):
 					return
 				var start = global_position
@@ -265,14 +267,14 @@ func _use_ability(ab: Dictionary) -> void:
 					p.apply_knockback(global_position, 10.0)
 				Fx.shake(0.25))
 		"heal_allies":
-			get_tree().create_timer(tel, false).timeout.connect(func():
+			after(tel, func():
 				if not (is_instance_valid(self) and alive):
 					return
 				for m in Game.world.monsters_near(global_position, float(ab.get("radius", 7.0))):
 					Game.world.heal_actor(m, m.max_life * float(ab.get("pct", 0.2)))
 				Fx.ring(global_position, float(ab.get("radius", 7.0)), Color(0.4, 1, 0.5), 0.6))
 		"teleport":
-			get_tree().create_timer(tel * 0.5, false).timeout.connect(func():
+			after(tel * 0.5, func():
 				if not (is_instance_valid(self) and alive):
 					return
 				Fx.soul_puff(global_position, Color(0.6, 0.4, 1.0))

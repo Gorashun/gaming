@@ -35,6 +35,18 @@ func _init() -> void:
 	collision_mask = 1
 	motion_mode = CharacterBody3D.MOTION_MODE_FLOATING
 
+## Runs `cb` after `delay` seconds of (pausable) game time, via a child Timer: if this actor is freed
+## first, the callback is dropped with it (no "lambda capture was freed" errors).
+func after(delay: float, cb: Callable) -> void:
+	var tm = Timer.new()
+	tm.one_shot = true
+	tm.wait_time = max(0.001, delay)
+	add_child(tm)
+	tm.timeout.connect(func():
+		tm.queue_free()
+		cb.call())
+	tm.start()
+
 func time_now() -> float:
 	return Time.get_ticks_msec() / 1000.0
 

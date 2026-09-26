@@ -70,6 +70,7 @@ var counters: Dictionary:
 		return stats_tracking
 
 var stats = StatBlock.new()
+var hooks = {}              # runtime: active behaviour hooks {hook: params} (systems/hooks.gd), not saved
 
 func _init() -> void:
 	inventory.resize(40)
@@ -130,6 +131,7 @@ func recalc() -> void:
 	stats.set_source("mastery", SkillMastery.stat_bonuses(self))
 	stats.set_source("pet", Pets.stat_bonuses(self))
 	stats.set_source("deeds", Deeds.stat_bonuses(self))
+	hooks = Hooks.active(self)
 	stats.clear_prefix("elixir:")
 	for b in buffs.keys():
 		if float(buffs[b].get("until", 0.0)) > play_seconds:

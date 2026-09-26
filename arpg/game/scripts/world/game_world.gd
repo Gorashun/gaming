@@ -36,6 +36,7 @@ var return_portal: Node3D
 var world_events: WorldEvents
 var zone_deaths = 0              # deaths during this zone visit (Lantern's Blessing)
 var blessing_pct = 0.0
+var _legendary_slowmo_done = false
 
 const PATH_RES := 2.0
 
@@ -102,6 +103,7 @@ func load_zone(zone_id: String, seed_value := -1) -> void:
 	Deeds.check_all(ch)
 	MainQuest.notify(ch, "reach_zone", zone_id)
 	_place_story_object()
+	_place_secrets()
 	Events.zone_entered.emit(zone_id)
 
 # ------------------------------------------------------------------ setup
@@ -294,15 +296,34 @@ func _place_chests() -> void:
 		n.global_position = c.pos
 		n.rotation.y = c.rot
 		var gold = String(c.model).contains("gold")
-		interactables.append({"node": n, "pos": c.pos, "radius": 1.8, "label": "Open", "action": func(): _open_chest(n, gold)})
+		# Welfare (research #26): contents are rolled now, and the chest glows its TRUE top rarity
+		# from the first frame — no reveal that could read as a near-miss.
+		var res = Loot.roll_kill({"loot_mult": 1.0}, monster_level, Game.character, Game.tier(), "chest_gold" if gold else "chest", {}, false)
+		var top = Loot.top_rarity(res)
+		var rank = Items.rarity_index(top) if top != "" else -1
+		if rank >= 1:
+			var beam = Fx.beam(n, Items.rarity_color(top), 1.5 + rank * 0.9, 0.25 + rank * 0.06)
+			if beam:
+				beam.set_meta("chest_glow", true)
+		n.set_meta("loot", res)
+		interactables.append({"node": n, "pos": c.pos, "radius": 1.8, "label": "Open", "once": true, "action": func(): _open_chest(n, gold)})
 
 func _open_chest(n: Node3D, golden: bool) -> void:
+	if not is_instance_valid(n) or not n.has_meta("loot"):
+		return
+	var res: Dictionary = n.get_meta("loot")
+	n.remove_meta("loot")
+	var top = Loot.top_rarity(res)
+	var col = Items.rarity_color(top) if top != "" else Color(1, 0.85, 0.4)
 	Sfx.play("chest_open")
-	Fx.burst(n.global_position + Vector3(0, 0.8, 0), Color(1, 0.85, 0.4), 24, 5.0, 0.1, 0.8)
-	Fx.flash_light(n.global_position + Vector3(0, 1, 0), Color(1, 0.8, 0.4), 3.0, 0.5)
-	var fake = {"loot_mult": 1.0}
-	var res = Loot.roll_kill(fake, monster_level, Game.character, Game.tier(), "chest_gold" if golden else "chest")
+	UiTheme.haptic(25, 0.6)
+	Fx.burst(n.global_position + Vector3(0, 0.8, 0), col, 24, 5.0, 0.1, 0.8)
+	Fx.flash_light(n.global_position + Vector3(0, 1, 0), col, 3.0, 0.5)
+	Loot.book_pity(Game.character, res.items)
 	_spawn_loot(res, n.global_position)
+	for b in n.get_children():
+		if b.has_meta("chest_glow"):
+			b.queue_free()
 	var t = n.create_tween()
 	t.tween_property(n, "scale", Vector3(1.2, 0.8, 1.2), 0.08)
 	t.tween_property(n, "scale", Vector3.ONE, 0.2).set_trans(Tween.TRANS_BACK)
@@ -454,6 +475,110 @@ func interact_npc(n: Npc) -> void:
 			if is_instance_valid(sess) and is_instance_valid(self):
 				sess.open_screen(scr))
 
+# ------------------------------------------------------------------ zone secrets
+## zones[].secrets[{id, kind, hint, lore, reward{material|pet|mount|lore|portal|gold|item_rarity|title}}].
+## Interact-style kinds become a faint sparkle to find; "stand_still" (30 s without moving) and "ride"
+## (reach the sparkle mounted) add a condition. Other condition kinds (moon, rain, riddles…) are not
+## spawned yet. Portal secrets stay available after discovery; others are found once (flag secret:<id>).
+const SECRET_CONDITIONS := ["stand_still", "ride"]
+const SECRET_SKIP := ["moon_night", "rain_walk", "no_hit_phase", "silence", "story_complete", "rekindle", "maze", "third_mirror", "talk_chain", "riddles"]
+var _still_t = 0.0
+var _still_secret = {}
+
+func _place_secrets() -> void:
+	var ch = Game.character
+	var rooms = range(layout.rooms.size())
+	if rooms.size() > 1:
+		rooms.erase(layout.start_room)
+	for sc in zone.get("secrets", []):
+		var sid = str(sc.get("id", ""))
+		var found = int(ch.stats_tracking.get("secret:" + sid, 0)) > 0
+		var portal = str(sc.get("reward", {}).get("portal", ""))
+		if SECRET_SKIP.has(str(sc.get("kind", ""))) or (found and portal == ""):
+			continue
+		if str(sc.get("kind", "")) == "stand_still":
+			_still_secret = sc
+			continue
+		var ri: int = rooms[Rng.int_on("world", 0, rooms.size() - 1)]
+		var cells = layout.room_cells(ri)
+		var pos = layout.cell_to_world(cells[Rng.int_on("world", 0, cells.size() - 1)])
+		var n = Node3D.new()
+		add_child(n)
+		n.global_position = pos
+		var p = CPUParticles3D.new()
+		p.amount = 6
+		p.lifetime = 1.6
+		p.emission_shape = CPUParticles3D.EMISSION_SHAPE_SPHERE
+		p.emission_sphere_radius = 0.4
+		p.gravity = Vector3(0, 0.4, 0)
+		p.scale_amount_min = 0.03
+		p.scale_amount_max = 0.06
+		var sm = SphereMesh.new()
+		sm.radius = 0.5
+		sm.height = 1.0
+		sm.radial_segments = 4
+		sm.rings = 2
+		var m = StandardMaterial3D.new()
+		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		m.albedo_color = Color(0.85, 0.95, 1.0)
+		sm.material = m
+		p.mesh = sm
+		p.position.y = 0.6
+		n.add_child(p)
+		var entry = {"node": n, "pos": pos, "radius": 1.6, "label": "Look closer", "once": portal == ""}
+		entry.action = func():
+			if str(sc.get("kind", "")) == "ride" and not player.mounted:
+				Events.toast.emit(str(sc.get("hint", "Something here wants a rider...")), Color(0.8, 0.9, 1.0))
+				return
+			found_secret(sc, pos)
+		interactables.append(entry)
+
+func found_secret(sc: Dictionary, at: Vector3) -> void:
+	var ch = Game.character
+	var sid = str(sc.get("id", ""))
+	var first = int(ch.stats_tracking.get("secret:" + sid, 0)) == 0
+	var r: Dictionary = sc.get("reward", {})
+	if str(r.get("portal", "")) != "":
+		spawn_zone_portal(str(r.portal), at, Color("#ff9ed8"))
+	if first:
+		get_tree().call_group("session", "set_flag", "secret:" + sid)
+		if int(ch.stats_tracking.get("secret:" + sid, 0)) == 0:   # no session (tests)
+			ch.track("secret:" + sid)
+			ch.track("secrets")
+		if r.has("material"):
+			ch.add_material(str(r.material), int(r.get("count", 1)))
+		if r.has("gold"):
+			ch.gold += int(r.gold)
+			Events.gold_changed.emit(ch.gold)
+		if r.has("item_rarity"):
+			_spawn_loot({"items": [Items.generate(monster_level, str(r.item_rarity), ch.class_id)], "gold": 0, "materials": {}}, at)
+		if str(r.get("pet", "")) != "" and Pets.grant_pet(ch, str(r.pet)):
+			spawn_pet()
+		if str(r.get("mount", "")) != "":
+			Mounts.grant_mount(ch, str(r.mount))
+		if r.has("title") and not ch.titles.has(str(r.title)):
+			ch.titles.append(str(r.title))
+		var lore = str(r.get("lore", sc.get("lore", "")))
+		if lore != "" and not ch.discoveries.has("lore:" + lore):
+			ch.discoveries.append("lore:" + lore)
+		Fx.burst(at + Vector3(0, 0.8, 0), Color(0.85, 0.95, 1.0), 30, 4.0, 0.1, 1.0, 1.0)
+		Sfx.play("quest_done", -4.0)
+		Events.surprise_event.emit("secret:" + sid)
+		Events.toast.emit("A secret! " + str(sc.get("hint", "")), Color(0.85, 0.95, 1.0))
+		Game.save_character()
+
+func _update_still_secret(delta: float) -> void:
+	if _still_secret.is_empty() or player == null:
+		return
+	if player.intent_move.length() > 0.1 or not player.alive:
+		_still_t = 0.0
+		return
+	_still_t += delta
+	if _still_t >= float(_still_secret.get("seconds", 30.0)):
+		var sc = _still_secret
+		_still_secret = {}
+		found_secret(sc, player.global_position)
+
 ## Main-quest "solve" objectives: a glowing object to interact with somewhere in this zone.
 func _place_story_object() -> void:
 	_place_story_escort()
@@ -578,6 +703,17 @@ func pet_dig() -> void:
 		{"item_chance": 0.25, "max_items": 1, "gold_chance": 1.0, "gold_mult": 2.0, "materials": [{"id": "soot", "chance": 0.8, "min": 1, "max": 3}, {"id": "wickthread", "chance": 0.25}]})
 	_spawn_loot(res, at)
 
+## block_casts hook: a block releases a free skill (internal cooldown).
+func _block_hook(p: Player) -> void:
+	if not Hooks.has(p.ch, "block_casts") or p.time_now() < float(p.get_meta("block_cast_cd", 0.0)):
+		return
+	var sid = str(Hooks.param(p.ch, "block_casts", "skill", ""))
+	if not Content.has_rec("skills", sid):
+		return
+	p.set_meta("block_cast_cd", p.time_now() + float(Hooks.param(p.ch, "block_casts", "cooldown", 2.0)))
+	var t = nearest_enemy(p, p.global_position, 8.0, [])
+	SkillEffects.execute(p, p.skill_def(sid), max(1, p.skill_rank(sid)), t.global_position if t else p.global_position + p.facing * 2.0)
+
 ## Lantern's Blessing (research #23): optional assist after repeated deaths in a zone. Never in
 ## Hardcore; framed positively. config/assist {damage_taken_reduction_pct, per_death_pct, cap_pct,
 ## allowed_in_hardcore, min_deaths}.
@@ -610,7 +746,20 @@ func deal_damage(src: Actor, target: Actor, mult: float, element: String, tags: 
 		src_ctx.weapon = src.owner_actor.ch.weapon()
 		src_ctx.primary = src.owner_actor.ch.cls().get("primary", "might")
 		mult *= float(src.rec.get("owner_damage_mult", 0.5))
+	var owner: Actor = src.owner_actor if (src is Monster and src.owner_actor) else src
 	var hit = Combat.roll_player_hit(src_ctx, mult, element, tags)
+	if owner is Player and not is_dot:
+		# dodge_next_crit: the hit after a dodge is a guaranteed critical
+		if not hit.crit and owner.has_meta("next_crit"):
+			hit.crit = true
+			hit.amount = float(hit.amount) * (1.5 + owner.stats.get_stat("crit_damage") / 100.0)
+		if owner.has_meta("next_crit"):
+			owner.remove_meta("next_crit")
+	if owner is Player and Hooks.has(owner.ch, "bonus_vs_status"):
+		for stid in Hooks.param(owner.ch, "bonus_vs_status", "statuses", []):
+			if target.has_status(str(stid)):
+				hit.amount = float(hit.amount) * (1.0 + float(Hooks.param(owner.ch, "bonus_vs_status", "more", 25)) / 100.0)
+				break
 	var def = {"stats": target.stats, "level": target.level}
 	var amount = Combat.mitigate(hit, def, src.level)
 	if target is Monster and target.shield_active():
@@ -618,7 +767,6 @@ func deal_damage(src: Actor, target: Actor, mult: float, element: String, tags: 
 		Sfx.play("shield_block", -10.0)
 	_apply_damage(target, amount, hit.crit, element, src)
 	# On-hit effects
-	var owner: Actor = src.owner_actor if (src is Monster and src.owner_actor) else src
 	# Skill mastery XP: effects carry "_skill"; minions remember the skill that summoned them
 	var sk = str(e.get("_skill", ""))
 	if sk == "" and src is Monster and src.has_meta("skill_id"):
@@ -633,6 +781,8 @@ func deal_damage(src: Actor, target: Actor, mult: float, element: String, tags: 
 			owner.ch.track("hits:tag:" + str(t))
 		if hit.crit:
 			owner.ch.track("crits")
+			if Hooks.has(owner.ch, "crit_gain_resource"):
+				owner.gain_resource(float(Hooks.param(owner.ch, "crit_gain_resource", "amount", 5)))
 		if src != owner and not target.alive:
 			owner.ch.track("minion_kills")
 	if owner is Player and not is_dot:
@@ -647,12 +797,17 @@ func deal_damage(src: Actor, target: Actor, mult: float, element: String, tags: 
 	if e.has("status"):
 		var st: Dictionary = e.status
 		if Rng.chance("combat", float(st.get("chance", 1.0))):
-			target.add_status(st.id, float(st.get("duration", 1.0)), float(st.get("value", 0.3)))
+			var dur = float(st.get("duration", 1.0))
+			if st.id == "stun" and owner is Player and Hooks.has(owner.ch, "quake_stun_bonus"):
+				dur += float(Hooks.param(owner.ch, "quake_stun_bonus", "seconds", 0.5))
+			target.add_status(st.id, dur, float(st.get("value", 0.3)))
 			if st.id == "stun" and owner is Player:
 				owner.ch.track("stuns")
 			if st.id == "freeze" or st.id == "stun":
 				target.flash(Color(0.6, 0.85, 1.0), 0.6)
 	if hit.crit and not is_dot:
+		if src is Player:
+			UiTheme.haptic(15, 0.4)
 		Fx.sparks(target.global_position, Color(1, 0.9, 0.4))
 		Sfx.play("crit", -3.0)
 	elif not is_dot:
@@ -670,6 +825,7 @@ func monster_hit(src: Actor, target: Actor, mult: float, element: String) -> voi
 		if Rng.chance("combat", clampf(target.stats.get_stat("block") / 100.0, 0.0, 0.6)):
 			amount *= 0.3
 			target.ch.track("blocks")
+			_block_hook(target)
 			Fx.float_text(target.global_position, "Block", Color(0.8, 0.9, 1.0), 32)
 			target.gain_resource(float(target.ch.cls().get("resource_on_block", 0.0)))
 		target.gain_resource(float(target.ch.cls().get("resource_on_hurt", 0.0)))
@@ -688,6 +844,8 @@ func _apply_damage(target: Actor, amount: float, crit: bool, element: String, sr
 	if amount <= 0.0:
 		if target is Player:
 			target.ch.track("dodges")
+			if Hooks.has(target.ch, "dodge_next_crit"):
+				target.set_meta("next_crit", true)
 		Fx.float_text(target.global_position, "Dodge", Color(0.8, 0.8, 0.8), 30)
 		return
 	target.on_damaged(amount, crit, src)
@@ -722,6 +880,11 @@ func _on_monster_died(a: Actor) -> void:
 	minions.erase(a)
 	if m == null:
 		return
+	if m.kind == "minion" and m.owner_actor is Player and is_instance_valid(m.owner_actor) and Hooks.has(m.owner_actor.ch, "minion_death_burst"):
+		var r = float(Hooks.param(m.owner_actor.ch, "minion_death_burst", "radius", 2.5))
+		Fx.ring(m.global_position, r, Color(1, 0.85, 0.6), 0.35)
+		for t in enemies_in_radius(m.owner_actor, m.global_position, r):
+			deal_damage(m.owner_actor, t, float(Hooks.param(m.owner_actor.ch, "minion_death_burst", "mult", 0.8)), "physical", ["minion"], {}, true)
 	if m.kind == "minion":
 		Fx.soul_puff(m.global_position, Color(1.0, 0.8, 0.6))
 		get_tree().create_timer(0.6).timeout.connect(m.queue_free)
@@ -809,11 +972,13 @@ func _on_monster_died(a: Actor) -> void:
 		exit_portal.visible = true
 		Events.toast.emit("%s is rekindled!" % m.display_name, Color(1, 0.85, 0.4))
 	Events.actor_died.emit(m, player)
+	var mref = weakref(m)
 	get_tree().create_timer(1.4).timeout.connect(func():
-		if is_instance_valid(m):
-			var t = m.create_tween()
-			t.tween_property(m, "scale", Vector3(0.01, 0.01, 0.01), 0.3)
-			t.tween_callback(m.queue_free))
+		var m2 = mref.get_ref()
+		if is_instance_valid(m2):
+			var t = m2.create_tween()
+			t.tween_property(m2, "scale", Vector3(0.01, 0.01, 0.01), 0.3)
+			t.tween_callback(m2.queue_free))
 	if monsters.filter(func(x): return x.kind != "minion").is_empty() and not cleared:
 		cleared = true
 		exit_portal.visible = true
@@ -862,8 +1027,15 @@ func _spawn_loot(res: Dictionary, at: Vector3) -> void:
 			Events.golden_moment.emit(it)
 			Sfx.play("drop_" + it.rarity, 0.0, 0.0)
 			ch.track("found_" + it.rarity)
+			UiTheme.haptic(60, 1.0)
+			# Slow-mo only for the first Legendary+ of this zone visit (research #26)
+			if not _legendary_slowmo_done:
+				_legendary_slowmo_done = true
+				Fx.slowmo(0.5, 0.35)
 		elif rank >= 2:
 			Sfx.play("drop_" + it.rarity, -3.0, 0.0)
+		elif n <= 1:
+			Sfx.play("drop_" + it.rarity, -10.0, 0.0)
 	if res.gold > 0:
 		var d = Drop.new()
 		d.net_id = _nid()
@@ -1121,6 +1293,7 @@ func find_path(a: Vector3, b: Vector3) -> PackedVector3Array:
 func _process(delta: float) -> void:
 	if player == null:
 		return
+	_update_still_secret(delta)
 	_light_timer -= delta
 	if _light_timer <= 0.0:
 		_light_timer = 0.5

@@ -201,7 +201,7 @@
   "effect": {
    "hearth": true
   },
-  "price_gold": 0,
+  "price_gold": 150,
   "stack_max": 1,
   "desc": "Return to your bound town. Free and reusable (5 min cooldown); sold for 0 gold so nobody is ever stuck."
  },

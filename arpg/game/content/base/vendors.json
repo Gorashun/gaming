@@ -42,7 +42,7 @@
    {
     "kind": "consumable",
     "id": "hearth_charge",
-    "price_gold": 0
+    "price_gold": 150
    },
    {
     "kind": "item_base",
@@ -244,7 +244,7 @@
    {
     "kind": "consumable",
     "id": "hearth_charge",
-    "price_gold": 0
+    "price_gold": 150
    },
    {
     "kind": "item_base",
@@ -451,7 +451,7 @@
    {
     "kind": "consumable",
     "id": "hearth_charge",
-    "price_gold": 0
+    "price_gold": 150
    },
    {
     "kind": "item_base",
@@ -663,7 +663,7 @@
    {
     "kind": "consumable",
     "id": "hearth_charge",
-    "price_gold": 0
+    "price_gold": 150
    },
    {
     "kind": "item_base",
@@ -875,7 +875,7 @@
    {
     "kind": "consumable",
     "id": "hearth_charge",
-    "price_gold": 0
+    "price_gold": 150
    },
    {
     "kind": "item_base",

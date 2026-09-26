@@ -21,6 +21,8 @@ static func state(ch: CharacterData, id: String) -> String:
 		return "done"
 	if ch.level < int(q.get("min_level", 1)):
 		return "locked"
+	if q.get("bounty", false) and bounty_bank(ch) <= 0:
+		return "locked"
 	var req = str(q.get("requires", ""))
 	if req != "" and not ch.quests.done.has(req):
 		return "locked"
@@ -32,6 +34,43 @@ static func count(q: Dictionary) -> int:
 static func progress(ch: CharacterData, id: String) -> int:
 	var a = ch.quests.active.get(id)
 	return int(a.get("progress", 0)) if a is Dictionary else 0
+
+# ------------------------------------------------------------------ bounties (research #17)
+## Bounty board: a bank of up to bank_max bounties; one refills per refill_active_play_minutes of
+## ACTIVE play (play_seconds — absence never costs anything, nothing expires). config/bounties.
+static func _bcfg() -> Dictionary:
+	return Content.get_rec("config", "bounties")
+
+static func bounty_bank(ch: CharacterData) -> int:
+	var c = _bcfg()
+	var mx = int(c.get("bank_max", 3))
+	var period = float(c.get("refill_active_play_minutes", 30)) * 60.0
+	if not ch.quests.has("bounty_bank"):
+		ch.quests["bounty_bank"] = mx
+		ch.quests["bounty_clock"] = ch.play_seconds
+	var bank = int(ch.quests.bounty_bank)
+	var clock = float(ch.quests.get("bounty_clock", ch.play_seconds))
+	if bank >= mx:
+		ch.quests["bounty_clock"] = ch.play_seconds   # full bank: the timer does not run ahead
+		return mx
+	var n = int((ch.play_seconds - clock) / period)
+	if n > 0:
+		bank = min(mx, bank + n)
+		ch.quests["bounty_bank"] = bank
+		ch.quests["bounty_clock"] = clock + n * period
+	return bank
+
+## {bank, max, next_in_s} for the board UI.
+static func bounty_status(ch: CharacterData) -> Dictionary:
+	var c = _bcfg()
+	var bank = bounty_bank(ch)
+	var period = float(c.get("refill_active_play_minutes", 30)) * 60.0
+	var next_in = 0.0 if bank >= int(c.get("bank_max", 3)) else max(0.0, float(ch.quests.bounty_clock) + period - ch.play_seconds)
+	return {"bank": bank, "max": int(c.get("bank_max", 3)), "next_in_s": next_in}
+
+## Bounties offered on a town board (act of the town), as long as the bank is not empty.
+static func bounties_for(ch: CharacterData, act_id := "") -> Array:
+	return Content.all("quests").filter(func(q): return q.get("bounty", false) and (act_id == "" or str(q.get("act", "")) == act_id) and state(ch, q.id) == "available")
 
 ## Quests an NPC can offer right now.
 static func available_for(ch: CharacterData, npc_id: String) -> Array:
@@ -61,6 +100,8 @@ static func active_list(ch: CharacterData) -> Array:
 static func accept(ch: CharacterData, id: String) -> bool:
 	if state(ch, id) != "available":
 		return false
+	if rec(id).get("bounty", false):
+		ch.quests["bounty_bank"] = bounty_bank(ch) - 1
 	ch.quests.active[id] = {"progress": 0}
 	Events.quest_accepted.emit(id)
 	var q = rec(id)
@@ -159,6 +200,8 @@ static func turn_in(ch: CharacterData, id: String, world = null) -> Dictionary:
 		ch.skill_points += got.skill_points
 	ch.track("quests_done")
 	ch.track("side_quests_completed")
+	if q.get("bounty", false):
+		ch.track("bounties_completed")
 	ch.recalc()
 	Events.quest_completed.emit(id)
 	Events.inventory_changed.emit()

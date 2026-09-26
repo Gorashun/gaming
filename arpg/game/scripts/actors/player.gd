@@ -312,6 +312,13 @@ func _regen(delta: float) -> void:
 	var regen = float(cls.get("resource_regen", 0.0)) + stats.get_stat("resource_regen")
 	var decay = float(cls.get("resource_decay", 0.0))
 	resource = clampf(resource + (regen - decay) * dt, 0.0, rmax)
+	if Hooks.has(ch, "low_life_buff"):
+		var low = life < max_life * float(Hooks.param(ch, "low_life_buff", "below", 0.5))
+		if low != stats.sources.has("hook:low_life"):
+			if low:
+				stats.set_source("hook:low_life", Hooks.param(ch, "low_life_buff", "stats", {}))
+			else:
+				stats.remove_source("hook:low_life")
 	var lr = stats.get_stat("life_regen") + max_life * 0.004
 	if life < max_life:
 		life = min(max_life, life + lr * dt)
@@ -391,7 +398,7 @@ func _process_casts() -> void:
 	SkillMastery.on_cast(ch, s)
 	Events.skill_cast.emit(req.skill)
 	var windup = float(s.get("windup", 0.12)) / speed
-	get_tree().create_timer(windup, false).timeout.connect(func():
+	after(windup, func():
 		if is_instance_valid(self) and alive:
 			SkillEffects.execute(self, s, skill_rank(req.skill), pos))
 

@@ -64,6 +64,17 @@ static func _run(world, caster: Actor, skill: Dictionary, rank: int, e: Dictiona
 			for t in world.enemies_in_radius(caster, center, r):
 				world.deal_damage(caster, t, mult, element, tags, e)
 			Fx.shake(float(e.get("shake", 0.25)))
+			if caster is Player:
+				if element == "holy" and Hooks.has(caster.ch, "holy_area_leaves_zone"):
+					var hp: Dictionary = caster.ch.hooks.holy_area_leaves_zone
+					world.spawn_ground_zone(caster, center, {"type": "ground_zone", "radius": float(hp.get("radius", 2.0)), "duration": float(hp.get("duration", 2.5)), "tick": 0.5, "_skill": e.get("_skill", "")}, float(hp.get("mult", 0.25)) * mult, element, tags, col)
+				if not e.get("_repeat", false) and Hooks.has(caster.ch, "aoe_repeat_chance") and Rng.chance("combat", float(Hooks.param(caster.ch, "aoe_repeat_chance", "chance", 0.2))):
+					var e2 = e.duplicate()
+					e2["_repeat"] = true
+					e2.erase("telegraph")
+					await caster.get_tree().create_timer(0.3, false).timeout
+					if is_instance_valid(caster):
+						_run(world, caster, skill, rank, e2, target_pos)
 		"projectile":
 			var count = int(e.get("count", 1)) + int(caster.stats.get_stat("projectiles"))
 			var spread = float(e.get("spread", 12.0))
@@ -105,6 +116,8 @@ static func _run(world, caster: Actor, skill: Dictionary, rank: int, e: Dictiona
 				Fx.hitstop(50)
 		"chain":
 			var jumps = int(e.get("jumps", 3))
+			if caster is Player and Hooks.has(caster.ch, "chain_bonus_jumps"):
+				jumps += int(Hooks.param(caster.ch, "chain_bonus_jumps", "jumps", 2))
 			var rng = float(e.get("range", 6.0))
 			var from: Vector3 = caster.hit_center()
 			var hit_set = []
@@ -134,7 +147,7 @@ static func _run(world, caster: Actor, skill: Dictionary, rank: int, e: Dictiona
 			Fx.burst(caster.global_position + Vector3(0, 1, 0), col, 14, 2.5, 0.12, 0.7, 2.0)
 			if caster.has_method("on_buff_changed"):
 				caster.on_buff_changed()
-			caster.get_tree().create_timer(dur, false).timeout.connect(func():
+			caster.after(dur, func():
 				if is_instance_valid(caster):
 					caster.stats.remove_source("buff:" + skill.id)
 					if caster.has_method("on_buff_changed"):
