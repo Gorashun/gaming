@@ -272,3 +272,9 @@ Källa: research/economy-research.md §5. Ersätter §14.3 (intjäning) och §14
 - Daily lanes ship together in one release so the rating and store text change once. Store text is updated from PEGI 3 assumptions to PEGI 7.
 - No notifications in v1.
 - Source: `docs/research/retention-lanes.md`, safety patterns: `docs/reviews/2026-09-26-baseline.md`.
+
+## 21. Audio decisions (2026-09-26, producer; source docs/AUDIO.md)
+- §5 combo pitch rule changes to the **pentatonic ladder capped at combo 7, then "sparkle"** as proposed in AUDIO.md §2 (musical, never shrill, no endless climb).
+- Shell reveals get **richer, not louder**: loudness equal across rarities (±1 LU), rarity shown by timbre and layers. Needs child-safety sign-off with the audio batch.
+- Adaptive generative music: **on by default at low level**, separate Music toggle in the settings sheet, ducks under big moments, off in calm mode's quiet variant only if the player turns it off. Generative from rules, no stored melodies (legal check with the batch).
+- Master bus with working limiter, voice cap, one AudioContext (disable Phaser's), suspend on background.
