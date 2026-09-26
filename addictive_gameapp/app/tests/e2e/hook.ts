@@ -141,6 +141,8 @@ export interface BookHook {
   selectPage(i: number): void;
   /** 'sets' | 'friends'. */
   readonly tab: string;
+  /** Rutnätets scroll i Kompisar (0 = överst). */
+  readonly scroll: number;
   selectTab(t: string): void;
   /** Väljer en ägd avatar (samma väg som ett tryck). */
   equip(id: string): boolean;
@@ -215,6 +217,13 @@ export interface StartHook {
   readonly debugOpen: boolean;
   /** JSON från panelens "Kopiera JSON", null innan knappen tryckts. */
   readonly debugExport: string | null;
+  /** Inställningsarket är öppet. */
+  readonly sheetOpen: boolean;
+  /** Butik-kortet har badge (bara när en gratismussla väntar). */
+  readonly shopBadge: boolean;
+  readonly badges: { book: boolean; buddies: boolean; shop: boolean };
+  /** Synliga texter: play, book, buddies, shop, bookSub, buddiesSub, shopSub, setBar. */
+  readonly labels: Record<string, string>;
 }
 
 declare global {

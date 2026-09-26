@@ -18,12 +18,12 @@ test('30 drops ger poäng, inga JS-fel, skärmbilder av start/spel/förlust', as
   await expect(canvas).toBeVisible();
   const box = (await canvas.boundingBox())!;
 
-  // Startskärmen hinner rita logotyp, hylla och ikoner.
+  // Startskärmen hinner rita logotyp, hjälte och knappar.
   await page.waitForTimeout(1500);
   await page.screenshot({ path: 'tests/e2e/screenshots/start.png' });
 
   // Tryck på ▶.
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.move(box.x + box.width / 2, box.y + (box.height * 390) / 640); // SPELA (Start v2)
   await page.mouse.down();
   await page.mouse.up();
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });
@@ -74,20 +74,28 @@ test('inställningsikonerna går att stänga av och sparas', async ({ page }) =>
     y: box.y + offsetY + y * scale,
   });
 
-  for (const x of [60, 140, 220, 300]) {
-    const p = toWorld(x, 580);
+  const click = async (x: number, y: number): Promise<void> => {
+    const p = toWorld(x, y);
     await page.mouse.move(p.x, p.y);
     await page.mouse.down();
     await page.mouse.up();
+  };
+  // Kugghjulet öppnar inställningsarket; varje rad (y 404/468/532/596) växlar sin inställning.
+  await click(320, 36);
+  await page.waitForFunction(() => window.__start?.sheetOpen === true);
+  await page.waitForTimeout(400);
+  for (const y of [404, 468, 532, 596]) {
+    await click(180, y);
     await page.waitForTimeout(120);
   }
+  await page.waitForTimeout(200);
   await page.screenshot({ path: 'tests/e2e/screenshots/start-settings-off.png' });
 
   const settings = await page.evaluate(
     () => JSON.parse(localStorage.getItem('klunk.save.v1')!).settings,
   );
   expect(settings).toMatchObject({ sound: false, haptics: false, calm: true, aimLine: false });
-  // Spelet ska inte ha startat av ett tryck på ikonraden.
+  // Spelet ska inte ha startat av ett tryck i arket.
   expect(await page.evaluate(() => window.__game === undefined)).toBe(true);
   expect(errors, errors.join('\n')).toEqual([]);
 });
@@ -115,7 +123,7 @@ test('highscore överlever omladdning och rekordjakten triggar', async ({ page }
 
   const canvas = page.locator('canvas');
   const box = (await canvas.boundingBox())!;
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.move(box.x + box.width / 2, box.y + (box.height * 390) / 640); // SPELA (Start v2)
   await page.mouse.down();
   await page.mouse.up();
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });

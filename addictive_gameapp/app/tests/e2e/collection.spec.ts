@@ -20,7 +20,7 @@ async function tap(page: Page, wx: number, wy: number): Promise<void> {
 
 async function startGame(page: Page): Promise<void> {
   await page.waitForTimeout(1200);
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });
 }
 
@@ -129,7 +129,7 @@ test('hyllan öppnar samlarboken, stäng-ikonen och svep ner stänger', async ({
   });
   await page.goto('/?test=1');
   await page.waitForTimeout(1200);
-  await tap(page, 180, 440);
+  await tap(page, 66.5, 506);
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   await page.waitForTimeout(500);
   const book = await page.evaluate(() => ({
@@ -160,7 +160,7 @@ test('hyllan öppnar samlarboken, stäng-ikonen och svep ner stänger', async ({
   expect(await page.evaluate(() => window.__game)).toBeUndefined(); // tillbaka på Start, inte i spel
 
   // Svep ner stänger också.
-  await tap(page, 180, 440);
+  await tap(page, 66.5, 506);
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   await page.mouse.move(sx(180), sy(200));
   await page.mouse.down();
@@ -170,7 +170,7 @@ test('hyllan öppnar samlarboken, stäng-ikonen och svep ner stänger', async ({
 
   // Play startar fortfarande spelet.
   await page.waitForTimeout(300);
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 5_000 });
   expect(errors, errors.join('\n')).toEqual([]);
 });

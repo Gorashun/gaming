@@ -40,7 +40,7 @@ interface Saved {
 const saved = (page: Page): Promise<Saved> => page.evaluate(() => JSON.parse(localStorage.getItem('klunk.save.v1')!));
 
 async function startGame(page: Page): Promise<void> {
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__game !== undefined && !window.__game.over, undefined, { timeout: 10_000 });
 }
 
@@ -101,7 +101,7 @@ test('debugpanel: långtryck öppnar, JSON har senaste rundan, knapparna fungera
   await page.waitForTimeout(600);
 
   // Långtryck 2 s på logotypen öppnar panelen; fingrets pointerup startar inte spelet.
-  const logo = await toCanvas(page, 180, 160);
+  const logo = await toCanvas(page, 180, 96);
   await page.mouse.move(logo.x, logo.y);
   await page.mouse.down();
   await page.waitForTimeout(2300);

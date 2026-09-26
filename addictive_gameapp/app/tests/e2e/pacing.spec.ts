@@ -16,7 +16,7 @@ async function startGame(page: Page): Promise<void> {
   await expect(canvas).toBeVisible();
   const box = (await canvas.boundingBox())!;
   await page.waitForTimeout(1200);
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.move(box.x + box.width / 2, box.y + (box.height * 390) / 640); // SPELA (Start v2)
   await page.mouse.down();
   await page.mouse.up();
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });

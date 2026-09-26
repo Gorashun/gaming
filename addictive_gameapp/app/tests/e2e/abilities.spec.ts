@@ -26,7 +26,7 @@ async function tap(page: Page, wx: number, wy: number): Promise<void> {
 
 async function startGame(page: Page): Promise<void> {
   await page.waitForTimeout(1200);
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });
 }
 
@@ -59,10 +59,10 @@ test('(a) första musslan: Släpparen håller objektet i nästa runda', async ({
   await page.reload();
   await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 10_000 });
   await page.waitForTimeout(1000);
-  await tap(page, 92, 450);
+  await tap(page, 293.5, 506); // Butik-kortet med väntande mussla
   await page.waitForFunction(() => window.__start?.openPhase === 'done', undefined, { timeout: 10_000 });
   const first = await page.evaluate(() => window.__start!.lastBox!.avatarId);
-  await tap(page, 180, 330); // stänger öppningen
+  await tap(page, 180, 390); // stänger öppningen
   await page.waitForFunction(() => window.__start !== undefined && !window.__start.opening);
 
   await startGame(page);

@@ -62,3 +62,14 @@ export function nextSetProgress(merges: number, unlockedCount: number, total = T
   const v = (merges - from) / (t[i] - from);
   return v < 0 ? 0 : v > 1 ? 1 : v;
 }
+
+/**
+ * Set-stapelns text på startskärmen (UI.md §16.5): "n / m till nästa set", samma tröskel som
+ * nextSetProgress. n = ackumulerade merges (högst m). null när allt är upplåst.
+ */
+export function nextSetCount(merges: number, unlockedCount: number, total = THEME_SET_IDS.length): { n: number; m: number } | null {
+  if (unlockedCount >= total) return null;
+  const t = UNLOCKS.mergeThresholds;
+  const m = t[Math.min(unlockedCount - 1, t.length - 1)];
+  return { n: Math.min(Math.max(0, merges), m), m };
+}

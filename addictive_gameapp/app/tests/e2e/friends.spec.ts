@@ -19,7 +19,7 @@ async function tap(page: Page, wx: number, wy: number): Promise<void> {
 
 async function startGame(page: Page): Promise<void> {
   await page.waitForTimeout(1200);
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });
 }
 
@@ -60,7 +60,7 @@ test('mussla: 120 merges ger en gratismussla på hyllan, öppning ger sällsynt,
   await page.waitForTimeout(1200);
   await page.screenshot({ path: 'tests/e2e/screenshots/shelf-box.png' });
 
-  await tap(page, 92, 450);
+  await tap(page, 293.5, 506); // Butik-kortet med väntande mussla
   // Fast 1,2 s i speltid; vänta tills öppningen är klar (headless kan gå långsammare).
   await page.waitForFunction(() => window.__start?.openPhase === 'done', undefined, { timeout: 10_000 });
   await page.screenshot({ path: 'tests/e2e/screenshots/box-open.png' });
@@ -73,7 +73,7 @@ test('mussla: 120 merges ger en gratismussla på hyllan, öppning ger sällsynt,
   expect(await page.evaluate(() => window.__start!.opening)).toBe(true);
 
   // Ett tryck stänger öppningen.
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__start !== undefined && !window.__start.opening);
 
   // En andra avatar via hooken, så att det finns något att byta till.
@@ -84,8 +84,8 @@ test('mussla: 120 merges ger en gratismussla på hyllan, öppning ger sällsynt,
   await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 10_000 });
   await page.waitForTimeout(800);
 
-  // (b) Boken öppnar på Kompisar (nya kompisar som inte visats) → tryck på den andra = vald, sparad.
-  await tap(page, 238, 444);
+  // (b) Kompisar-kortet öppnar boken på Kompisar → tryck på den andra = vald, sparad.
+  await tap(page, 180, 506);
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   expect(await page.evaluate(() => window.__book!.tab)).toBe('friends');
   await tap(page, 32, 40);
@@ -134,7 +134,7 @@ test('48 öppningar via hooken ger 48 unika, sedan null', async ({ page }) => {
   // Boken med allt ägt: odds-burken är tom, inga fel vid rendering.
   await page.reload();
   await page.waitForTimeout(1200);
-  await tap(page, 238, 444);
+  await tap(page, 66.5, 506);
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   await page.evaluate(() => window.__book!.selectTab('friends'));
   await page.waitForTimeout(200);

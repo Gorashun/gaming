@@ -57,7 +57,7 @@ test('(a–c, e) DPR 2: canvas 720×1280, ▶ startar, drop vid x=100 hamnar vid
 
   // (b) Ett tryck på ▶ startar spelet.
   await page.waitForTimeout(1200);
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });
   await page.evaluate(() => window.__game!.setPacing('off'));
   await page.waitForTimeout(300);
@@ -90,6 +90,7 @@ test('(a–c, e) DPR 2: canvas 720×1280, ▶ startar, drop vid x=100 hamnar vid
 });
 
 test('(d, e) budget: ≤ 2 set i full upplösning efter alla 5 bokens sidor och tre setbyten', async ({ page }) => {
+  test.slow(); // fyra scenbyten med bakning i DPR 2; under last ~1 fps
   const errors = collectErrors(page);
   const logs: string[] = [];
   page.on('console', (m) => logs.push(m.text()));
@@ -99,31 +100,55 @@ test('(d, e) budget: ≤ 2 set i full upplösning efter alla 5 bokens sidor och 
     activeSet: 'glimtarna',
     collection: Object.fromEntries(ALL_SETS.map((id) => [id, { caught, shiny: [false, true, true] }])),
   });
+  // Allt nedan väntar på tillstånd via hookarna, inte på tid: i full e2e (parallella workers,
+  // DPR 2, mjukvarurendering) kan en frame ta över 1 s.
   await page.goto('/?test=1');
-  await page.waitForTimeout(1200);
-  await tap(page, 238, 444); // bok-ikonen på hyllan
-  await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
+  await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 20_000 });
+  await tap(page, 66.5, 506); // Bok-kortet
+  await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 20_000 });
+  // selectPage och bakningen är synkrona: budgeten gäller direkt efter anropet.
   for (let i = 0; i < ALL_SETS.length; i++) {
-    await page.evaluate((k) => window.__book!.selectPage(k), i);
-    await page.waitForTimeout(350);
-    expect((await page.evaluate(() => window.__book!.ballSets)).length).toBeLessThanOrEqual(2);
+    const sets = await page.evaluate((k) => {
+      window.__book!.selectPage(k);
+      return window.__book!.ballSets;
+    }, i);
+    expect(sets.length).toBeLessThanOrEqual(2);
   }
   await page.evaluate(() => window.__book!.selectPage(0));
-  await page.waitForTimeout(600);
+  expect(await page.evaluate(() => window.__book!.page)).toBe(0);
+  await page.waitForTimeout(600); // bara för skärmbilden (bläddringen ska hinna landa)
   await page.screenshot({ path: 'tests/e2e/screenshots/artv2-book.png' });
   expect(await page.evaluate(() => window.__book!.ballSets)).toEqual(['glimtarna']);
 
+  // Stäng via bakåtknappen (Escape, samma close() som stäng-ikonen). Ett mustryck tolkas inte
+  // som tryck när ned/upp hamnar mer än SW.tapMaxMs (350 ms) isär i scenklockan, vilket händer
+  // vid ~1 fps under last; stäng-ikonen testas i collection.spec.
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => window.__book === undefined && window.__start !== undefined, undefined, {
+    timeout: 20_000,
+  });
+  await tap(page, 180, 390);
+  await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 20_000 });
+
   // Tre rundor i tre andra set: äldsta frigörs, aldrig det aktiva.
-  await tap(page, 320, 44);
-  await page.waitForFunction(() => window.__book === undefined, undefined, { timeout: 5_000 });
-  await page.waitForTimeout(300);
-  await tap(page, 180, 330);
-  await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });
   for (const id of ['planeterna', 'frostisarna', 'gloden']) {
-    await page.evaluate((s) => window.__game!.setActiveSet(s), id);
-    await page.evaluate(() => window.__game!.seed(3));
-    await page.waitForTimeout(500);
-    await page.waitForFunction((s) => window.__game?.activeSet === s, id);
+    // seed() startar om scenen nästa frame; vänta på den nya hooken (ny Game-instans) och
+    // att setet är bakat, i stället för en fast väntetid.
+    await page.evaluate((s) => {
+      const w = window as unknown as { __prevGame?: unknown };
+      w.__prevGame = window.__game;
+      window.__game!.setActiveSet(s);
+      window.__game!.seed(3);
+    }, id);
+    await page.waitForFunction(
+      (s) => {
+        const g = window.__game;
+        const prev = (window as unknown as { __prevGame?: unknown }).__prevGame;
+        return g !== undefined && g !== prev && g.activeSet === s && g.ballSets.includes(s);
+      },
+      id,
+      { timeout: 20_000 },
+    );
     const sets = await page.evaluate(() => window.__game!.ballSets);
     expect(sets.length).toBeLessThanOrEqual(2);
     expect(sets).toContain(id);
@@ -138,24 +163,17 @@ test('(d, e) budget: ≤ 2 set i full upplösning efter alla 5 bokens sidor och 
 });
 
 test('(e) öppningen av en mussla i DPR 2', async ({ page }) => {
+  test.slow(); // DPR 2 med mjukvarurendering: under last ~1 fps
   const errors = collectErrors(page);
-  await seedSave(page, { stats: { runs: 4, merges: 0 } });
+  // Väntande gratismussla direkt i sparfilen (intjäningen testas i friends.spec). Allt nedan väntar på
+  // tillstånd via hooken, inte på tid. SPELA/Butik har ingen tidsgräns mellan ned och upp.
+  await seedSave(page, { stats: { runs: 4, merges: 0 }, avatars: { pendingBoxes: 1 } });
   await page.goto('/?test=1');
-  await page.waitForTimeout(1200);
-  await tap(page, 180, 330);
-  await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 20_000 });
-  await page.evaluate(() => {
-    window.__game!.grantMerges(120);
-    window.__game!.forceLoss();
-  });
-  await page.waitForFunction(() => window.__game!.pendingBoxes === 1, undefined, { timeout: 20_000 });
-  await page.waitForTimeout(2500);
-  await page.reload();
-  await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 20_000 });
-  await page.waitForTimeout(1200);
-  await tap(page, 92, 450);
-  await page.waitForFunction(() => window.__start?.openPhase === 'done', undefined, { timeout: 20_000 });
-  await page.waitForTimeout(300);
+  await page.waitForFunction(() => window.__start?.shopBadge === true, undefined, { timeout: 20_000 });
+  await tap(page, 293.5, 506); // Butik-kortet med väntande mussla
+  await page.waitForFunction(() => window.__start?.opening === true, undefined, { timeout: 20_000 });
+  await page.waitForFunction(() => window.__start?.openPhase === 'done', undefined, { timeout: 30_000 });
+  await page.waitForTimeout(300); // bara för skärmbilden
   await page.screenshot({ path: 'tests/e2e/screenshots/artv2-open.png' });
   expect(errors, errors.join('\n')).toEqual([]);
 });
@@ -175,7 +193,7 @@ test('fps-vakt: två låga fönster sparar zoomCap 1, Z = 1 från nästa appstar
   await page.goto('/?test=1');
   await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 20_000 });
   await page.waitForTimeout(1200);
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 20_000 });
   const before = await page.evaluate(() => window.__game!.perf);
   expect(before).toMatchObject({ z: 2, zoomCap: null });
@@ -199,7 +217,7 @@ test('fps-vakt: två låga fönster sparar zoomCap 1, Z = 1 från nästa appstar
   await page.waitForTimeout(1200);
 
   // Debugpanelen: långtryck på logotypen, knappen nollställer taket.
-  const [lx, ly] = await toCss(page, 180, 160);
+  const [lx, ly] = await toCss(page, 180, 96);
   await page.mouse.move(lx, ly);
   await page.mouse.down();
   await page.waitForTimeout(2300);

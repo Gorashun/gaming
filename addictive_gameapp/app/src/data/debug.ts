@@ -12,7 +12,8 @@ export const DEBUG = {
   /** Fingret rör sig mer än så: inget långtryck. */
   moveCancelPx: 12,
   /** Logotypens träffyta (logisk yta 360×640). */
-  logoHit: { x: 40, y: 110, w: 280, h: 96 },
+  /** Start v2: logotypen har baslinje y 116 (START_UI.logo), hjälten börjar på y 126. */
+  logoHit: { x: 40, y: 60, w: 280, h: 66 },
   /** Regissörens lägen i den ordning de räknas (index = kod). */
   modes: ['drought', 'flow', 'kick'] as const,
   /** "Ge kompis" cyklar genom rariteterna med förmågor. */

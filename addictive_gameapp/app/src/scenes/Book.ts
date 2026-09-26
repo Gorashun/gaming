@@ -177,12 +177,14 @@ export class Book extends Phaser.Scene {
   /** Scroll-ledtråden i Kompisar: pil i nederkant tills första scroll. */
   private scrollHint: Phaser.GameObjects.Graphics | null = null;
   private peekShown = false;
+  /** Öppnad från Butik-kortet: ingen scroll till vald/ny kompis. */
+  private focusShop = false;
 
   constructor() {
     super('Book');
   }
 
-  create(data?: { tab?: Tab }): void {
+  create(data?: { tab?: Tab; focus?: 'shop' }): void {
     fitCamera(this);
     const d = cached();
     // Scenens objekt och nivåikonen visar aktivt set i full upplösning; sidorna bakas i bokens storlek.
@@ -208,6 +210,8 @@ export class Book extends Phaser.Scene {
     this.upSleepTimer = null;
     this.showcasing = false;
     this.page = this.startPage();
+    // Butik-kortet på Start: Kompisar med scroll 0, butikshyllan överst (går före "ny kompis först").
+    this.focusShop = data?.focus === 'shop';
 
     this.strip = this.add.container(-this.page * W, 0);
     for (let i = 0; i < THEME_SETS.length; i++) this.buildPage(i);
@@ -223,8 +227,8 @@ export class Book extends Phaser.Scene {
     this.tabIcons = this.add.graphics().setDepth(11);
     this.tabSetImg = this.add.image(AB.tabs.set.x, AB.tabs.set.y, avatarIconKey('tabSetOn')).setDepth(12);
     this.tabFriendsImg = this.add.image(AB.tabs.friends.x, AB.tabs.friends.y, avatarIconKey('tabFriendsOff')).setDepth(12);
-    // Ny kompis som inte visats: boken öppnar på Kompisar (UI.md §13.4).
-    const friendsFirst = data?.tab === 'friends' || d.avatars.fresh.length > 0;
+    // Ny kompis som inte visats: boken öppnar på Kompisar (UI.md §13.4), utom när Set begärs (Bok-kortet).
+    const friendsFirst = data?.tab === 'friends' || (data?.tab !== 'sets' && d.avatars.fresh.length > 0);
     this.tab = friendsFirst ? 'friends' : 'sets';
     this.selectTab(this.tab, true);
 
@@ -277,6 +281,10 @@ export class Book extends Phaser.Scene {
       },
       get tab(): string {
         return self.tab;
+      },
+      /** Rutnätets scroll i Kompisar (0 = butikshyllan och scenen överst). */
+      get scroll(): number {
+        return self.scroll;
       },
       selectTab(t: string): void {
         self.selectTab(t === 'friends' ? 'friends' : 'sets');
@@ -650,7 +658,7 @@ export class Book extends Phaser.Scene {
     this.maxScroll = Math.max(0, y - GR.bottom);
     // Startposition: raden med en ny kompis om det finns en, annars den valda, centrerad.
     const sel = this.cells.find((k) => av.fresh.includes(k.def.id)) ?? this.cells.find((k) => k.def.id === av.equipped);
-    if (sel) this.setScroll(sel.y - (GRID_TOP + GR.bottom) / 2);
+    if (sel && !this.focusShop) this.setScroll(sel.y - (GRID_TOP + GR.bottom) / 2);
 
     // Tonad överkant (12 px): en remsa av själva bakgrunden, alpha 1 → 0 nedåt (hörn-alpha),
     // så att rutnätet glider in under scenen i stället för att klippas hårt.

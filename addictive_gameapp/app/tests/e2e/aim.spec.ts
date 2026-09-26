@@ -23,7 +23,7 @@ async function startGame(page: Page): Promise<void> {
   await expect(canvas).toBeVisible();
   await page.waitForTimeout(1200);
   const to = await mapper(page);
-  const play = to(180, 330);
+  const play = to(180, 390);
   await page.mouse.move(play.x, play.y);
   await page.mouse.down();
   await page.mouse.up();
@@ -76,28 +76,36 @@ test('siktlinjen syns aldrig i läge off', async ({ page }) => {
   expect(errors, errors.join('\n')).toEqual([]);
 });
 
-test('fjärde startikonen stänger av siktlinjen och sparas', async ({ page }) => {
+test('siktlinjen i inställningsarket stängs av och sparas', async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto('/?test=1');
   await page.waitForTimeout(1500);
   const to = await mapper(page);
+  const click = async (x: number, y: number): Promise<void> => {
+    const p = to(x, y);
+    await page.mouse.move(p.x, p.y);
+    await page.mouse.down();
+    await page.mouse.up();
+  };
+  // Kugghjulet öppnar arket; fjärde raden (y 596) är siktlinjen.
+  await click(320, 36);
+  await page.waitForFunction(() => window.__start?.sheetOpen === true);
+  await page.waitForTimeout(400);
   await page.screenshot({ path: 'tests/e2e/screenshots/start-four-icons.png' });
-
-  const icon = to(300, 580);
-  await page.mouse.move(icon.x, icon.y);
-  await page.mouse.down();
-  await page.mouse.up();
+  await click(180, 596);
   await page.waitForTimeout(200);
 
   const settings = await page.evaluate(
     () => JSON.parse(localStorage.getItem('klunk.save.v1')!).settings as { aimLine: boolean },
   );
   expect(settings.aimLine).toBe(false);
-  // Ett tryck på ikonraden får inte starta spelet.
+  // Ett tryck i arket får inte starta spelet.
   expect(await page.evaluate(() => window.__game === undefined)).toBe(true);
   await page.screenshot({ path: 'tests/e2e/screenshots/start-aim-off.png' });
 
-  // Inställningen slår igenom i spelet.
+  // Bakåt stänger arket; inställningen slår igenom i spelet.
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => window.__start?.sheetOpen === false);
   await startGame(page);
   expect(await page.evaluate(() => window.__game!.aimLineMode)).toBe('off');
 

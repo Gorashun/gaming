@@ -81,4 +81,9 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 ## Fas 10 – Art v2 (DESIGN §17)
 - [x] A1 Koppla artv2 till CanvasTexture, hi-DPI-rendering med tak 2×, bakning av aktivt set + kompisar, fallback v1. (programmerare)
 - [ ] A2 v2 på bomb, regnbåge, pärlor, romber, musslor, partiklar. Glöd som gemensam sprite.
-- [ ] U14 e2e `artv2.spec (d,e)` flakar under parallell last i DPR 2 (grön ensam). Gör den robust eller kör serial.
+- [x] U14 e2e `artv2.spec (d,e)` flakar under parallell last i DPR 2 (grön ensam). Gör den robust eller kör serial.
+
+## Fas 11 – Start v2 (DESIGN §18)
+- [x] S1 Start v2: resurspiller, kugghjul/inställningsark, hjälte, SPELA, tre kort, set-stapel, Fredoka.
+- [ ] S2 Utvärdera `Scale.EXPAND` på Start för att använda höjden på långa telefoner.
+- [ ] S3 Byt namn på/ta bort föråldrade skärmdumpar (start-shelf, start-four-icons, start-aim-off, start-settings-off, shelf-box).

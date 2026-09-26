@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { AVATARS } from '../../src/data/avatars';
 import { THEME_SETS } from '../../src/data/themes';
 import { THEME } from '../../src/data/theme';
-import { getLocale, localeFrom, STRINGS, t, type LocalizedName } from '../../src/systems/i18n';
+import { getLocale, localeFrom, str, STRINGS, t, type LocalizedName } from '../../src/systems/i18n';
+import { START_LABEL_KEYS, START_LABEL_MAX } from '../../src/data/startUi';
 
 function expectLocalized(group: readonly LocalizedName[], count: number): void {
   expect(group).toHaveLength(count);
@@ -46,6 +47,28 @@ describe('i18n: språkval', () => {
     const n = { en: 'The Glimmers', sv: 'Glimtarna' };
     expect(t(n, 'en')).toBe('The Glimmers');
     expect(t(n, 'sv')).toBe('Glimtarna');
-    expect(Object.keys(STRINGS)).toHaveLength(0);
+  });
+});
+
+describe('i18n: UI-strängar (UI.md §16.2)', () => {
+  it('alla nycklar har icke-tomma en/sv', () => {
+    expect(Object.keys(STRINGS).length).toBeGreaterThan(0);
+    for (const [k, v] of Object.entries(STRINGS)) {
+      for (const lang of ['en', 'sv'] as const) expect(v[lang].trim().length, `${k}.${lang}`).toBeGreaterThan(0);
+    }
+  });
+
+  it(`knappetiketterna är högst ${START_LABEL_MAX} tecken, övriga ryms på en rad (≤ 26)`, () => {
+    for (const k of START_LABEL_KEYS) {
+      for (const lang of ['en', 'sv'] as const) expect(STRINGS[k][lang].length, `${k}.${lang}`).toBeLessThanOrEqual(START_LABEL_MAX);
+    }
+    for (const [k, v] of Object.entries(STRINGS)) {
+      for (const lang of ['en', 'sv'] as const) expect(v[lang].length, `${k}.${lang}`).toBeLessThanOrEqual(26);
+    }
+  });
+
+  it('str() slår upp i STRINGS', () => {
+    expect(str('play', 'en')).toBe('Play');
+    expect(str('play', 'sv')).toBe('Spela');
   });
 });

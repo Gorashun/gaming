@@ -8,6 +8,7 @@ import { SPECIALS } from './director';
 import { META } from './themes';
 import { AVATAR_UI } from './avatarsIndex';
 import { ECONOMY_UI } from './economyUi';
+import { START_UI } from './startUi';
 
 export type JuiceEvent =
   | 'drop'
@@ -126,6 +127,11 @@ export const JUICE = {
     friendFresh: AVATAR_UI.book.freshPulse.halfCycleMs,
     // Ekonomi (UI.md §14.9)
     shopWake: ECONOMY_UI.wake.breath.halfCycleMs,
+    // Start v2 (UI.md §16.10): SPELA-pulsen, kortens "nytt"-andning (badge), musslans studs (cykel 2 s), Glimtens gupp.
+    playPulse: START_UI.play.pulse.halfCycleMs,
+    cardFresh: START_UI.cards.freshBreath.halfCycleMs,
+    shellPeek: (START_UI.cards.shop.peek.upMs + START_UI.cards.shop.peek.downMs + START_UI.cards.shop.peek.restMs) / 2,
+    heroBob: START_UI.hero.bob.halfCycleMs,
   },
   /**
    * Alla färger som ingår i en ljusstyrkeväxling. Ingen mättad röd, ingen ren vit blixt.

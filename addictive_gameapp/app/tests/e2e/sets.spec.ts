@@ -19,7 +19,7 @@ async function tap(page: Page, wx: number, wy: number): Promise<void> {
 
 async function startGame(page: Page): Promise<void> {
   await page.waitForTimeout(1200);
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });
 }
 
@@ -131,7 +131,7 @@ test('boken: låst sida är låst, upplåst sida kan väljas som aktiv och spara
   await page.goto('/?test=1');
   await page.waitForTimeout(1200);
   await page.screenshot({ path: 'tests/e2e/screenshots/start-shelf.png' });
-  await tap(page, 238, 444); // bok-ikonen på hyllan
+  await tap(page, 66.5, 506); // Bok-kortet
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   // Boken öppnas på det nya setet.
   expect(await page.evaluate(() => window.__book!.page)).toBe(2);
@@ -183,7 +183,7 @@ test('boken: låst sida är låst, upplåst sida kan väljas som aktiv och spara
   await tap(page, 320, 44);
   await page.waitForFunction(() => window.__book === undefined, undefined, { timeout: 5_000 });
   await page.waitForTimeout(300);
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 5_000 });
   expect(await page.evaluate(() => window.__game!.activeSet)).toBe('glimtarna');
   expect(errors, errors.join('\n')).toEqual([]);

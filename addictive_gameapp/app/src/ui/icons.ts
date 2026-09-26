@@ -20,6 +20,7 @@ import {
   UPGRADE_ICON,
 } from '../data/economyUi';
 import type { ShellType } from '../data/economy';
+import { startIcons } from '../data/startUi';
 
 const SHELL_DARK = '#5C2A43';
 const HUD_DIM = '#8FA3C8';
@@ -185,6 +186,7 @@ export async function loadIcons(
     ...THEME_SETS.map((s): [string, string] => [setIconKey(s.id), s.icon]),
     ...(Object.keys(AVATAR_ICONS) as AvatarIconKey[]).map((k): [string, string] => [avatarIconKey(k), AVATAR_ICONS[k]()]),
     ...ecoIcons(),
+    ...startIcons(),
   ];
   await Promise.all(
     all.map(async ([key, svg]) => {

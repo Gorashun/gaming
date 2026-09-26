@@ -22,7 +22,7 @@ async function tap(page: Page, wx: number, wy: number): Promise<void> {
 async function startGame(page: Page): Promise<void> {
   await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 10_000 });
   await page.waitForTimeout(600);
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });
 }
 
@@ -34,7 +34,7 @@ async function toStart(page: Page): Promise<void> {
 }
 
 async function openFriends(page: Page): Promise<void> {
-  await tap(page, 238, 444);
+  await tap(page, 180, 506); // Kompisar-kortet
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   await page.evaluate(() => window.__book!.selectTab('friends'));
   await page.waitForTimeout(300);

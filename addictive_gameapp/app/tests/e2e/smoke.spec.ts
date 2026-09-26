@@ -7,8 +7,9 @@ test('startar, tappar ett objekt och får en body i burken', async ({ page }) =>
   await expect(canvas).toBeVisible();
   const box = (await canvas.boundingBox())!;
 
-  // Tryck på ▶ (mitten av startskärmen).
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  // Tryck på SPELA (bara knappen startar en runda).
+  await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 10_000 });
+  await page.mouse.move(box.x + box.width / 2, box.y + (box.height * 390) / 640); // SPELA (Start v2)
   await page.mouse.down();
   await page.mouse.up();
 

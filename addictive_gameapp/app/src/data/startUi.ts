@@ -18,7 +18,7 @@
  */
 
 import type { AvatarTone } from './avatars';
-import type { LocalizedName } from '../systems/i18n';
+import type { StringKey } from '../systems/i18n';
 
 // ---------------------------------------------------------------- färger
 
@@ -409,10 +409,10 @@ export const START_UI = {
       subFree: 'free' as const,
       subFreeColor: GOLD,
       /**
-       * Badge (kortets läge 'badge' + guldprick): gratismussla väntar (pendingBoxes > 0) ELLER
-       * pärlor ≥ vanlig musslas pris och en vanlig finns kvar. "Gratis!" och den tittande musslan bara vid väntande.
+       * Badge (kortets läge 'badge' + guldprick): BARA när en gratismussla väntar (pendingBoxes > 0),
+       * aldrig för "har råd" (beslut DESIGN §18). Då visas också "Gratis!" och den tittande musslan.
        */
-      badge: 'shopReady' as const,
+      badge: 'pending' as const,
       /**
        * Väntande gratismussla: en liten mussla (SHELL_ICON, 36 px) tittar upp över kortets övre vänstra hörn,
        * lutad −14°. Studs: dy 0 → −6 (180 ms Quad.easeOut) → 0 (240 ms Bounce.easeOut), vila 1 580 ms
@@ -485,34 +485,9 @@ export const START_UI = {
 
 // ---------------------------------------------------------------- texter (EN primärt, SV lokalisering)
 
-/**
- * Knappetiketter ≤ 10 tecken (`START_LABEL_MAX`). Underrader och arkets hjälptexter är längre och har eget tak.
- * Ligger här i stället för i `STRINGS` (i18n.ts), eftersom `tests/unit/i18n.test.ts` kräver att STRINGS är tom.
- * Programmeraren flyttar dem dit och tar bort den kontrollen (eller re-exporterar). `{n}` och `{m}` ersätts.
- */
-export const START_STRINGS = {
-  play: { en: 'Play', sv: 'Spela' },
-  book: { en: 'Book', sv: 'Bok' },
-  buddies: { en: 'Buddies', sv: 'Kompisar' },
-  shop: { en: 'Shop', sv: 'Butik' },
-  shells: { en: 'Shells', sv: 'Musslor' },
-  free: { en: 'Free!', sv: 'Gratis!' },
-  sound: { en: 'Sound', sv: 'Ljud' },
-  haptics: { en: 'Vibration', sv: 'Vibration' },
-  calm: { en: 'Calm mode', sv: 'Lugnt läge' },
-  aimLine: { en: 'Aim line', sv: 'Siktlinje' },
-  /** Hjälptexter i arket (≤ 26 tecken, en rad i 240 px vid 14 px). */
-  soundHelp: { en: 'Music and effects', sv: 'Musik och effekter' },
-  hapticsHelp: { en: 'Buzz on merges', sv: 'Surr vid sammanslagning' },
-  calmHelp: { en: 'Less shake and flash', sv: 'Mindre skak och ljus' },
-  aimLineHelp: { en: 'Line where it falls', sv: 'Linje där den faller' },
-  /** Set-stapelns text. */
-  nextSet: { en: '{n} / {m} to next set', sv: '{n} / {m} till nästa set' },
-  /** Underrad med räknare (Bok, Kompisar). */
-  count: { en: '{n} / {m}', sv: '{n} / {m}' },
-} as const satisfies Record<string, LocalizedName>;
-
-export type StartStringKey = keyof typeof START_STRINGS;
+/** Etiketterna ligger i `STRINGS` (systems/i18n.ts). Alias för bakåtkompatibilitet. */
+export { STRINGS as START_STRINGS } from '../systems/i18n';
+export type StartStringKey = StringKey;
 
 /** Knappetiketter (play, book, buddies, shop, shells, free, och arkets rader) får vara högst så här långa. */
 export const START_LABEL_MAX = 10;

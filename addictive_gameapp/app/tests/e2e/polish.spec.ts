@@ -58,34 +58,37 @@ async function iconColor(page: Page, wx: number, wy: number): Promise<[number, n
   }, png.toString('base64'));
 }
 
-test('(a) U1: startskärmens på-ikoner är hud-vita, även siktlinjen; av = hudDim', async ({ page }) => {
+test('(a) U1: inställningsarkets på-ikoner är hud-vita, även siktlinjen; av = hudDim', async ({ page }) => {
   const errors = collectErrors(page);
   await seedSave(page);
   await page.goto('/?test=1');
   await page.waitForTimeout(1200);
-  // Ikonraden y 580: ljud, haptik, lugnt, siktlinje (x 60/140/220/300).
-  const sound = await iconColor(page, 60, 580);
-  const haptic = await iconColor(page, 140, 580);
-  const calmOff = await iconColor(page, 220, 580);
-  const aim = await iconColor(page, 300, 580);
+  await tap(page, 320, 36);
+  await page.waitForFunction(() => window.__start?.sheetOpen === true);
+  await page.waitForTimeout(500);
+  // Arkets rader y 404/468/532/596: ljud, haptik, lugnt, siktlinje. Ikonen står vid x 44.
+  const sound = await iconColor(page, 44, 404);
+  const haptic = await iconColor(page, 44, 468);
+  const calmOff = await iconColor(page, 44, 532);
+  const aim = await iconColor(page, 44, 596);
   console.log(`[e2e] ikoner: ljud ${sound} haptik ${haptic} lugnt(av) ${calmOff} sikt ${aim}`);
   // hud #EAF2FF: rött > 200. accent #7CF9FF hade rött ≈ 124.
   for (const c of [sound, haptic, aim]) expect(c[0]).toBeGreaterThan(200);
   for (let i = 0; i < 3; i++) expect(Math.abs(aim[i] - sound[i])).toBeLessThanOrEqual(16);
   // Av-läge: hudDim #8FA3C8.
   expect(calmOff[0]).toBeLessThan(170);
-  await tap(page, 300, 580);
+  await tap(page, 180, 596);
   await page.waitForTimeout(200);
-  const aimOff = await iconColor(page, 300, 580);
+  const aimOff = await iconColor(page, 44, 596);
   expect(aimOff[0]).toBeLessThan(170);
   expect(aimOff[2]).toBeLessThan(220);
-  await tap(page, 300, 580);
+  await tap(page, 180, 596);
   // Lugnt läge på: också hud-vit (beslut efter U1).
-  await tap(page, 220, 580);
+  await tap(page, 180, 532);
   await page.waitForTimeout(200);
-  const calmOn = await iconColor(page, 220, 580);
+  const calmOn = await iconColor(page, 44, 532);
   for (let i = 0; i < 3; i++) expect(Math.abs(calmOn[i] - sound[i])).toBeLessThanOrEqual(16);
-  await tap(page, 220, 580);
+  await tap(page, 180, 532);
   expect(errors).toEqual([]);
 });
 
@@ -94,7 +97,7 @@ test('(b) U7: boken öppnar på Kompisar när en ny kompis finns, pulsen slutar 
   await seedSave(page, { settings: { bookHintSeen: true }, avatars: { owned: ['lisa', 'siri'], equipped: 'siri', fresh: ['lisa'] } });
   await page.goto('/?test=1');
   await page.waitForTimeout(1200);
-  await tap(page, 246, 444);
+  await tap(page, 180, 506); // Kompisar-kortet
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   expect(await page.evaluate(() => window.__book!.tab)).toBe('friends');
   expect(await page.evaluate(() => window.__book!.pulsingFriends)).toBe(1);
@@ -125,7 +128,7 @@ test('(b) U7: boken öppnar på Kompisar när en ny kompis finns, pulsen slutar 
   await tap(page, 320, 44);
   await page.waitForFunction(() => window.__book === undefined, undefined, { timeout: 5_000 });
   await page.waitForTimeout(300);
-  await tap(page, 246, 444);
+  await tap(page, 66.5, 506);
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   expect(await page.evaluate(() => window.__book!.tab)).toBe('sets');
   expect(errors).toEqual([]);
@@ -136,7 +139,7 @@ test('(c) U4: svep-ledtråden visas första gången boken öppnas, inte andra', 
   await seedSave(page);
   await page.goto('/?test=1');
   await page.waitForTimeout(1200);
-  await tap(page, 246, 444);
+  await tap(page, 66.5, 506);
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   // Skärmdumpen fångas ~0,5 s efter anropet i headless: då är handen mitt i svepet.
   await page.screenshot({ path: 'tests/e2e/screenshots/book-hint.png' });
@@ -149,7 +152,7 @@ test('(c) U4: svep-ledtråden visas första gången boken öppnas, inte andra', 
   await page.waitForFunction(() => window.__book === undefined, undefined, { timeout: 5_000 });
   await page.reload();
   await page.waitForTimeout(1200);
-  await tap(page, 246, 444);
+  await tap(page, 66.5, 506);
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   await page.waitForTimeout(700);
   expect(await page.evaluate(() => window.__book!.hintShown)).toBe(false);
@@ -162,7 +165,7 @@ test('(d) U4: Escape (bakåtknappens fallback) stänger boken', async ({ page })
   await seedSave(page, { settings: { bookHintSeen: true } });
   await page.goto('/?test=1');
   await page.waitForTimeout(1200);
-  await tap(page, 246, 444);
+  await tap(page, 66.5, 506);
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => window.__book === undefined && window.__start !== undefined, undefined, { timeout: 5_000 });
@@ -179,7 +182,7 @@ test('(e) U6: Lisas oljemätare syns vid Släpparen och försvinner när oljan �
   await seedSave(page);
   await page.goto('/?test=1');
   await page.waitForTimeout(1200);
-  await tap(page, 180, 330);
+  await tap(page, 180, 390);
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });
   await page.evaluate(() => window.__game!.equipForTest('lisa'));
   await page.waitForFunction(() => window.__game?.abilityState.id === 'lisa', undefined, { timeout: 5_000 });

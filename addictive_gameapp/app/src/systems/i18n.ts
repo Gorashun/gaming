@@ -1,6 +1,7 @@
 /**
  * i18n.ts – språk (DESIGN §15). Engelska är primärspråk, svenska är lokalisering.
- * UI:t är textfritt; namn i data lagras som `LocalizedName` och slås upp med `t()`.
+ * Namn i data lagras som `LocalizedName` och slås upp med `t()`. Startskärmens korta etiketter
+ * (UI.md §16.2, DESIGN §18) ligger i `STRINGS` och slås upp med `str()`.
  * Ingen Phaser, inga sidoeffekter vid import.
  */
 
@@ -11,8 +12,33 @@ export interface LocalizedName {
   readonly sv: string;
 }
 
-/** Strängtabell för framtida UI-text. Tom i v1 (UI:t är textfritt). Mönster: `hello: { en: 'Hello', sv: 'Hej' }`. */
-export const STRINGS = {} as const satisfies Record<string, LocalizedName>;
+/**
+ * UI-text (EN primärt, SV lokalisering). Knappetiketter ≤ 10 tecken (`START_LABEL_MAX`, UI.md §16.2).
+ * Underrader och arkets hjälptexter är längre men ryms på en rad. `{n}` och `{m}` ersätts med fillString.
+ */
+export const STRINGS = {
+  play: { en: 'Play', sv: 'Spela' },
+  book: { en: 'Book', sv: 'Bok' },
+  buddies: { en: 'Buddies', sv: 'Kompisar' },
+  shop: { en: 'Shop', sv: 'Butik' },
+  shells: { en: 'Shells', sv: 'Musslor' },
+  free: { en: 'Free!', sv: 'Gratis!' },
+  sound: { en: 'Sound', sv: 'Ljud' },
+  haptics: { en: 'Vibration', sv: 'Vibration' },
+  calm: { en: 'Calm mode', sv: 'Lugnt läge' },
+  aimLine: { en: 'Aim line', sv: 'Siktlinje' },
+  /** Hjälptexter i arket (≤ 26 tecken, en rad i 240 px vid 14 px). */
+  soundHelp: { en: 'Music and effects', sv: 'Musik och effekter' },
+  hapticsHelp: { en: 'Buzz on merges', sv: 'Surr vid sammanslagning' },
+  calmHelp: { en: 'Less shake and flash', sv: 'Mindre skak och ljus' },
+  aimLineHelp: { en: 'Line where it falls', sv: 'Linje där den faller' },
+  /** Set-stapelns text. */
+  nextSet: { en: '{n} / {m} to next set', sv: '{n} / {m} till nästa set' },
+  /** Underrad med räknare (Bok, Kompisar). */
+  count: { en: '{n} / {m}', sv: '{n} / {m}' },
+} as const satisfies Record<string, LocalizedName>;
+
+export type StringKey = keyof typeof STRINGS;
 
 /** sv* → sv, allt annat (även tomt) → en. */
 export function localeFrom(language: string | null | undefined): Locale {
@@ -36,4 +62,9 @@ export function getLocale(
 
 export function t(name: LocalizedName, locale: Locale = getLocale()): string {
   return name[locale];
+}
+
+/** Slår upp en UI-sträng. */
+export function str(key: StringKey, locale: Locale = getLocale()): string {
+  return STRINGS[key][locale];
 }
