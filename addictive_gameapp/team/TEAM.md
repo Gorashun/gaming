@@ -1,30 +1,31 @@
-# Agentteam – addictive_gameapp
+# KLUNK studio
 
-Fyra roller. Definitionerna som Claude Code faktiskt laddar ligger i `/.claude/agents/` (repo-roten, det är kravet för att de ska kunna anropas). Denna fil är teamets översikt.
+Twelve roles. The definitions Claude Code loads live in `/.claude/agents/` at the repo root.
 
-| Roll | Agent | Ansvar | Äger |
-|---|---|---|---|
-| Projektledare | `game-project-manager` | Backlog, prioritering, delegering, scope-beslut, status | `docs/BACKLOG.md`, `docs/STATUS.md` |
-| Research & Development | `game-researcher` | Best practice, belägg, benchmark, plattformskrav | `docs/research/*.md` |
-| Programmerare | `game-programmer` | All kod, byggkedja, tester, prestanda | `app/`, `docs/TECH.md` |
-| UI-designer | `game-ui-designer` | Visuell stil, game feel/juice, onboarding, tillgångar | `docs/UI.md`, `app/src/assets` |
+| Role | Agent | Owns |
+|---|---|---|
+| Producer / project manager | `game-project-manager` (run by the main session) | `docs/BACKLOG.md`, `docs/STATUS.md`, `docs/STUDIO_PLAN.md`, decisions |
+| Research & development | `game-researcher` | `docs/research/*.md` |
+| Systems & retention design | `game-designer` | `docs/RETENTION.md`, numbered specs in `docs/DESIGN.md` |
+| Balance & economy | `balance-analyst` | `docs/sim/` simulations and reports |
+| Art direction | `art-director` | `docs/ART_DIRECTION.md`, visual sign-off |
+| UI / game feel | `game-ui-designer` | `docs/UI.md`, `app/src/data/*` visual data, pure renderers |
+| Audio | `audio-designer` | `docs/AUDIO.md`, synth data |
+| Programming | `game-programmer` | `app/src/**` scenes and systems, `docs/TECH.md` |
+| QA | `qa-tester` | `docs/BUGS.md`, test suites |
+| Release & performance | `release-engineer` | `.github/workflows/`, Android config, `docs/RELEASE.md` |
+| Child safety & compliance | `child-safety-reviewer` | `docs/reviews/` |
+| IP & legal risk | `legal-reviewer` | `docs/legal/` |
 
-## Arbetsflöde
+## Operating rules (set by Anders, 2026-09-26)
+1. **Design questions are not escalated to Anders.** The team decides from research: researcher and game designer propose, balance analyst simulates, art director and child-safety/legal review, producer decides and logs it in `DESIGN.md`. Anders is asked only about money, accounts, publishing, or a genuine change of direction.
+2. **Premium bar.** Every screen and moment must look and feel polished. Art director signs off visual changes.
+3. **Gates before build:** child-safety review for any retention/reward/randomness change; legal review for any new name, character, set, sound or store text.
+4. **Gates before a test release:** QA (three green full e2e runs, no open P1), release checklist, art sign-off on changed screens.
+5. **Guardrails for players 7+:** reward returning, never punish absence; no streak loss, expiring timers, limited-time exclusives, ads, real money, network or tracking; no push by default; odds visible; flash guard and calm mode.
 
-1. Anders ger ett mål till projektledaren.
-2. Projektledaren bryter ner i uppgifter med acceptanskriterier och delegerar.
-3. Researcher levererar underlag före beslut. Programmerare och UI-designer bygger parallellt mot `DESIGN.md`.
-4. Varje uppgift avslutas med verifiering (webbläsare på mobilviewport, `npm run build`) och en rad i `STATUS.md`.
-5. Irreversibla beslut och riktningsändringar går till Anders.
+## Flow per feature
+research → design spec (numbers) → simulation → safety + legal review → UI/art spec → implementation → QA → art sign-off → test release.
 
-## Så anropas en agent
-
-I Claude Code: "Använd game-researcher för att ..." eller via Agent-verktyget med `subagent_type: game-researcher`. Ge alltid: mål, avgränsning, vilka filer som gäller, vad som redan är beslutat.
-
-## Sanningskällor (läs i denna ordning)
-
-1. `docs/PROPOSAL.md` – vad vi bygger och varför
-2. `docs/DESIGN.md` – kärnloop, belöningssystem, progression
-3. `docs/TECH.md` – stack, byggkedja
-4. `docs/UI.md` – stil, känsla, tokens
-5. `docs/BACKLOG.md` / `docs/STATUS.md` – vad som pågår
+## Sources of truth (read in this order)
+`docs/STUDIO_PLAN.md`, `docs/DESIGN.md`, `docs/RETENTION.md`, `docs/ART_DIRECTION.md`, `docs/UI.md`, `docs/TECH.md`, `docs/BACKLOG.md` / `docs/STATUS.md`.
