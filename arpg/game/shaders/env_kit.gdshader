@@ -7,7 +7,8 @@ shader_type spatial;
 // GL Compatibility safe: no screen/depth textures, one texture fetch + one noise fetch.
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_disabled;
 
-uniform sampler2D albedo_tex : source_color, filter_linear_mipmap;
+uniform sampler2D albedo_tex : source_color, hint_default_white, filter_linear_mipmap;
+uniform float vertex_color_mix = 0.0;   // 1 for procedural meshes (vertex coloured)
 uniform sampler2D noise_tex : hint_default_white, filter_linear_mipmap, repeat_enable;
 uniform vec4 tint : source_color = vec4(1.0);
 uniform float saturation = 1.0;
@@ -59,6 +60,7 @@ void fragment() {
 		}
 	}
 	vec3 c = texture(albedo_tex, UV).rgb;
+	c = mix(c, c * COLOR.rgb, vertex_color_mix);
 	if (hue_shift != 0.0) {
 		c = max(hue_rotate(c, hue_shift), vec3(0.0));
 	}

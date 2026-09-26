@@ -2,6 +2,13 @@ extends Node
 ## Entry point: title screen (continue / new hero) or automated start from command-line args:
 ##   godot -- --autostart --class=<id> --zone=<id> --seed=<n> --tier=<id> --level=<n>
 ##           --screenshot=<path> --shot-after=<seconds> --quit-after=<seconds> --bot
+## UI capture flags (ui-ux):
+##   --title                 show the title flow even with --autostart (screenshots of the title)
+##   --title-page=create     open the class-select page directly
+##   --open-screen=<name>    after the session starts, wait 2 s then open that screen
+##                           (any res://scripts/ui/<name>_screen.gd; e.g. inventory, crafting, pets)
+##   --screen-ctx=<k:v,...>  context for that screen (e.g. tab:jeweler)
+##   --golden=<rarity>       queue a golden-moment card with a generated item (HUD capture)
 
 var args = {}
 var session: Session
@@ -12,7 +19,11 @@ func _ready() -> void:
 		if a.begins_with("--"):
 			var kv = a.substr(2).split("=", true, 1)
 			args[kv[0]] = kv[1] if kv.size() > 1 else "true"
-	if args.has("autostart"):
+	if args.has("title"):
+		Game.testing = true
+		_title()
+		_capture()
+	elif args.has("autostart"):
 		_autostart()
 	else:
 		_title()
@@ -37,11 +48,62 @@ func _autostart() -> void:
 			if not it.is_empty():
 				ch.equipment[s] = it
 		ch.recalc()
+	if args.has("open-screen") or args.has("golden"):
+		_seed_ui_demo(ch)
 	_start_session(args.get("zone", "a1_z1"), int(args.get("seed", "-1")))
 	if args.has("bot"):
 		var bot = load("res://tests/playtest_bot.gd").new()
 		bot.args = args
 		add_child(bot)
+	if args.has("open-screen"):
+		_open_screen_later(str(args["open-screen"]))
+	if args.has("golden"):
+		_golden_later(str(args["golden"]))
+	_capture()
+
+## Give a UI capture run something to show: a bag with mixed rarities, materials and gold.
+func _seed_ui_demo(ch: CharacterData) -> void:
+	var rar = ["common", "magic", "magic", "rare", "rare", "epic", "legendary", "magic", "rare", "common", "epic", "unique"]
+	for i in 18:
+		var r: String = rar[i % rar.size()]
+		var it = {}
+		if r == "unique":
+			var us = Content.all("uniques")
+			if us.size() > 0:
+				it = Items.from_unique(us[0].id, ch.level + 2, "test")
+		else:
+			it = Items.generate(max(1, ch.level + (i % 4)), r, ch.class_id if i % 3 != 0 else "", "", "", "test")
+		if not it.is_empty():
+			if i == 2:
+				it["locked"] = true
+			if i % 5 == 1:
+				it["upgrade"] = 3
+			ch.add_item(it)
+	for m in Content.all("materials"):
+		ch.add_material(m.id, 6 + (m.id.length() * 3) % 20)
+	ch.gold += 2450
+	ch.skill_points += 3
+	ch.potions = max(ch.potions, 3)
+
+func _open_screen_later(which: String) -> void:
+	await get_tree().create_timer(2.0, true, false, true).timeout
+	if session == null:
+		return
+	var ctx = {}
+	for kv in str(args.get("screen-ctx", "")).split(",", false):
+		var p = kv.split(":", true, 1)
+		if p.size() == 2:
+			ctx[p[0]] = p[1]
+	ScreenBase.open(session, which, ctx)
+
+func _golden_later(rarity: String) -> void:
+	await get_tree().create_timer(1.5, true, false, true).timeout
+	var ch = Game.character
+	var it = Items.generate(ch.level + 2, rarity, ch.class_id, "", "main_hand", "test")
+	if not it.is_empty():
+		Events.golden_moment.emit(it)
+
+func _capture() -> void:
 	if args.has("screenshot"):
 		var after = float(args.get("shot-after", "4"))
 		await get_tree().create_timer(after, true, false, true).timeout
@@ -64,6 +126,7 @@ func _autostart() -> void:
 func _start_session(zone: String, seed_value := -1) -> void:
 	if ui:
 		ui.queue_free()
+		ui = null
 	session = Session.new()
 	add_child(session)
 	session.travel(zone, seed_value)
@@ -77,10 +140,10 @@ func _title() -> void:
 
 func play_character(ch: CharacterData) -> void:
 	Game.character = ch
-	_start_session(ch.current_act_town() if ch.waypoints.is_empty() else ch.current_act_town())
+	_start_session(ch.current_act_town())
 
 func new_character(char_name: String, cls: String, hardcore: bool) -> void:
-	var ch = Game.new_character(char_name, cls, hardcore)
+	Game.new_character(char_name, cls, hardcore)
 	_start_session("a1_z1")
 
 func _dump(n: Node, depth: int) -> void:

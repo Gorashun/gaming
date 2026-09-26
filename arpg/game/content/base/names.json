@@ -1,0 +1,562 @@
+[
+ {
+  "id": "name_parts",
+  "first": [
+   "Ash",
+   "Bell",
+   "Bramble",
+   "Button",
+   "Candle",
+   "Cinder",
+   "Cobweb",
+   "Crow",
+   "Dew",
+   "Dim",
+   "Dusk",
+   "Echo",
+   "Fable",
+   "Fern",
+   "Flicker",
+   "Fog",
+   "Frost",
+   "Gloam",
+   "Gloom",
+   "Glimmer",
+   "Grim",
+   "Hob",
+   "Hollow",
+   "Hush",
+   "Kettle",
+   "Lantern",
+   "Lull",
+   "Marsh",
+   "Mire",
+   "Mist",
+   "Moon",
+   "Moss",
+   "Moth",
+   "Murk",
+   "Nettle",
+   "Owl",
+   "Pale",
+   "Pebble",
+   "Puddle",
+   "Pumpkin",
+   "Quill",
+   "Rattle",
+   "Rime",
+   "Rook",
+   "Rust",
+   "Sable",
+   "Shade",
+   "Silk",
+   "Slumber",
+   "Snuff",
+   "Soot",
+   "Spindle",
+   "Sprig",
+   "Tallow",
+   "Thimble",
+   "Thistle",
+   "Thorn",
+   "Toad",
+   "Twig",
+   "Umber",
+   "Vesper",
+   "Whisker",
+   "Whisper",
+   "Wick",
+   "Willow",
+   "Wisp",
+   "Wren",
+   "Yarrow",
+   "Bog"
+  ],
+  "second": [
+   "bloom",
+   "bramble",
+   "button",
+   "cap",
+   "chime",
+   "cloak",
+   "crown",
+   "drift",
+   "dream",
+   "drop",
+   "flare",
+   "flicker",
+   "gleam",
+   "glow",
+   "grin",
+   "hood",
+   "hoot",
+   "hop",
+   "howl",
+   "nip",
+   "hum",
+   "hush",
+   "jingle",
+   "knot",
+   "lace",
+   "lull",
+   "mantle",
+   "mend",
+   "mist",
+   "moss",
+   "murmur",
+   "nook",
+   "patch",
+   "pip",
+   "purr",
+   "quill",
+   "ring",
+   "root",
+   "rustle",
+   "shard",
+   "sip",
+   "snap",
+   "song",
+   "spark",
+   "spindle",
+   "sprout",
+   "step",
+   "stitch",
+   "sting",
+   "stride",
+   "tangle",
+   "thread",
+   "tide",
+   "tooth",
+   "tuft",
+   "twist",
+   "veil",
+   "ward",
+   "whisker",
+   "whisper",
+   "wick",
+   "wink",
+   "wisp",
+   "yawn",
+   "fang",
+   "claw",
+   "bell",
+   "tail",
+   "tuck",
+   "gust"
+  ],
+  "note": "Rare+ procedural names = first + second, e.g. Hushbloom, Mothwick. Mirrors config.name_parts."
+ },
+ {
+  "id": "pet_names",
+  "names": [
+   "Pudding",
+   "Sootkin",
+   "Button",
+   "Mothball",
+   "Pip",
+   "Dimple",
+   "Wicklet",
+   "Crumpet",
+   "Nibbles",
+   "Puddle",
+   "Squelch",
+   "Doughnut",
+   "Sir Wobble",
+   "Flurry",
+   "Dusty",
+   "Gravel",
+   "Pebble",
+   "Hoot",
+   "Biscuit",
+   "Muffin",
+   "Glim",
+   "Lanternbug",
+   "Bogsworth",
+   "Toffee",
+   "Wisp",
+   "Mumble",
+   "Fuzz",
+   "Snoot",
+   "Clover",
+   "Thimble",
+   "Pickle",
+   "Wobbles",
+   "Nutmeg",
+   "Sprocket",
+   "Marshmallow",
+   "Tuppenny",
+   "Quill",
+   "Snuggles",
+   "Jellybean",
+   "Cobble",
+   "Fidget",
+   "Sprout",
+   "Waffle",
+   "Bumble"
+  ]
+ },
+ {
+  "id": "mount_names",
+  "names": [
+   "Puddle (bog-newt)",
+   "Squelch (bog-newt)",
+   "Fern (moss-deer)",
+   "Gravel (rock-pony)",
+   "Pebble (rock-pony)",
+   "Flurry (snow-hare)",
+   "Sleet (snow-hare)",
+   "Mister Fluffington (snow-hare)",
+   "Dusty (great moth)",
+   "Lamplight (great moth)"
+  ]
+ },
+ {
+  "id": "legendary_ideas",
+  "items": [
+   {
+    "id": "u_bellringers_toll",
+    "name": "The Bellringer's Toll",
+    "type": "two-handed axe",
+    "class": "bellstriker",
+    "flavor": "It still rings, faintly, when no one is listening."
+   },
+   {
+    "id": "u_drowned_lantern",
+    "name": "Drowned Lantern",
+    "type": "amulet",
+    "class": "",
+    "flavor": "Wet, cold, and somehow still burning."
+   },
+   {
+    "id": "u_tollys_morning_note",
+    "name": "Tolly's Morning Note",
+    "type": "mace",
+    "class": "bellstriker",
+    "flavor": "One bright DONG. Everybody up!"
+   },
+   {
+    "id": "u_warden_helm",
+    "name": "The Warden's Big Helmet",
+    "type": "head",
+    "class": "lanternbearer",
+    "flavor": "Two sizes too big. You'll grow into it."
+   },
+   {
+    "id": "u_purls_scarf",
+    "name": "The Unfinished Scarf",
+    "type": "amulet",
+    "class": "stitcher",
+    "flavor": "Long enough for a whole village. Nearly."
+   },
+   {
+    "id": "u_bog_newt_boots",
+    "name": "Squelchstriders",
+    "type": "feet",
+    "class": "",
+    "flavor": "They squelch. Proudly."
+   },
+   {
+    "id": "u_candle_mages_last_wick",
+    "name": "The Last Warm Wick",
+    "type": "wand",
+    "class": "stargazer",
+    "flavor": "A Candle Mage gave it back. Politely."
+   },
+   {
+    "id": "u_rattlers_nightcap",
+    "name": "Rattler's Nightcap",
+    "type": "head",
+    "class": "",
+    "flavor": "Rattlebones sleep better in it. So do you."
+   },
+   {
+    "id": "u_mother_barks_jar",
+    "name": "Mother Bark's Shadow Jar",
+    "type": "off-hand",
+    "class": "stitcher",
+    "flavor": "Empty now. It hums a lullaby anyway."
+   },
+   {
+    "id": "u_birch_whisper",
+    "name": "Birchwhisper",
+    "type": "bow",
+    "class": "roofrunner",
+    "flavor": "Each arrow tells a rumour on the way."
+   },
+   {
+    "id": "u_owlcrow_eye",
+    "name": "The Owlcrow's Eye",
+    "type": "ring",
+    "class": "",
+    "flavor": "It always looks your way. Kindly, now."
+   },
+   {
+    "id": "u_puffcap_hood",
+    "name": "Puffcap Hood",
+    "type": "head",
+    "class": "stargazer",
+    "flavor": "Sneeze-proof. Sparkle-positive."
+   },
+   {
+    "id": "u_moss_hound_collar",
+    "name": "Good Dog Collar",
+    "type": "amulet",
+    "class": "",
+    "flavor": "For the goodest hound in the Whisperwood."
+   },
+   {
+    "id": "u_hobs_acorn",
+    "name": "Hob's Carved Acorn",
+    "type": "charm",
+    "class": "",
+    "flavor": "The rune on it says 'grow'. It's trying."
+   },
+   {
+    "id": "u_twigling_crown",
+    "name": "Crown of Sticks",
+    "type": "head",
+    "class": "",
+    "flavor": "Twiglings bow when they see it. Then they poke it."
+   },
+   {
+    "id": "u_digdeep_pick",
+    "name": "Dig Deep",
+    "type": "two-handed mace",
+    "class": "bellstriker",
+    "flavor": "It hums the first line of an old song."
+   },
+   {
+    "id": "u_digbright",
+    "name": "Dig Bright",
+    "type": "sword",
+    "class": "lanternbearer",
+    "flavor": "It hums the second line."
+   },
+   {
+    "id": "u_crystal_spider_silk",
+    "name": "Clinking Silk Gloves",
+    "type": "hands",
+    "class": "roofrunner",
+    "flavor": "If they go quiet, check the ceiling."
+   },
+   {
+    "id": "u_cart_six",
+    "name": "Cart Six's Wheel",
+    "type": "shield",
+    "class": "lanternbearer",
+    "flavor": "It always comes back."
+   },
+   {
+    "id": "u_echo_annies_shawl",
+    "name": "Annie's Shawl",
+    "type": "chest",
+    "class": "",
+    "flavor": "Warm. Warm."
+   },
+   {
+    "id": "u_salt_golem_heart",
+    "name": "Salty Heart",
+    "type": "belt",
+    "class": "",
+    "flavor": "Tough on the outside. Salty in the middle."
+   },
+   {
+    "id": "u_lou_levers_lever",
+    "name": "The Going-Up Lever",
+    "type": "staff",
+    "class": "stargazer",
+    "flavor": "Ding! Next stop: trouble."
+   },
+   {
+    "id": "u_toast_everlasting",
+    "name": "The Everlasting Toast",
+    "type": "wand",
+    "class": "stargazer",
+    "flavor": "Raised a year. Finished at last."
+   },
+   {
+    "id": "u_warmhearth_crown",
+    "name": "Warmhearth Crown",
+    "type": "head",
+    "class": "lanternbearer",
+    "flavor": "It thaws anyone who wears it. Especially inside."
+   },
+   {
+    "id": "u_mirror_butler_tray",
+    "name": "The Sorry Tray",
+    "type": "shield",
+    "class": "",
+    "flavor": "Serves trap tea. Deeply apologises."
+   },
+   {
+    "id": "u_porcelain_smile",
+    "name": "Porcelain Smile",
+    "type": "amulet",
+    "class": "stitcher",
+    "flavor": "It only moves when you're not looking."
+   },
+   {
+    "id": "u_tinwhistle_medal",
+    "name": "Tinwhistle's Medal",
+    "type": "charm",
+    "class": "",
+    "flavor": "For bravery. And for saluting anvils."
+   },
+   {
+    "id": "u_pips_tiara",
+    "name": "Pip's Bossy Tiara",
+    "type": "head",
+    "class": "",
+    "flavor": "Royal orders, kindly given."
+   },
+   {
+    "id": "u_rooftop_hood",
+    "name": "Chimney Kid's Hood",
+    "type": "head",
+    "class": "roofrunner",
+    "flavor": "Smells of soot and adventure."
+   },
+   {
+    "id": "u_frost_jester_bells",
+    "name": "Jin-Jin",
+    "type": "ring",
+    "class": "",
+    "flavor": "Frozen jester bells. They only get halfway."
+   },
+   {
+    "id": "u_nobodys_hat",
+    "name": "Nobody's Spare Hat",
+    "type": "head",
+    "class": "",
+    "flavor": "…  (It is a very good hat.)"
+   },
+   {
+    "id": "u_quiet_stair_boots",
+    "name": "Quiet Stair Slippers",
+    "type": "feet",
+    "class": "roofrunner",
+    "flavor": "Every step leaves a little light."
+   },
+   {
+    "id": "u_hollow_choir_bell",
+    "name": "The Hollow Choir's Bell",
+    "type": "off-hand",
+    "class": "",
+    "flavor": "Rings without a sound. The Hush hears it."
+   },
+   {
+    "id": "u_pells_trimmers",
+    "name": "Pell's Wick-Trimmers",
+    "type": "dagger",
+    "class": "roofrunner",
+    "flavor": "Snip. Snip. Every night. For so long."
+   },
+   {
+    "id": "u_ninety_nine_chairs",
+    "name": "The Ninety-Ninth Chair",
+    "type": "chest",
+    "class": "lanternbearer",
+    "flavor": "Someone finally sat in it."
+   },
+   {
+    "id": "u_lastlight_lens",
+    "name": "Lastlight Lens",
+    "type": "amulet",
+    "class": "stargazer",
+    "flavor": "Makes small lights look very, very big."
+   },
+   {
+    "id": "u_mother_simmers_ladle",
+    "name": "The Stirring Ladle",
+    "type": "mace",
+    "class": "",
+    "flavor": "Stir left for luck."
+   },
+   {
+    "id": "u_nibs_borrowing_glove",
+    "name": "Nib's Borrowing Glove",
+    "type": "hands",
+    "class": "roofrunner",
+    "flavor": "Borrows gold. Permanently. Legally."
+   },
+   {
+    "id": "u_magpie_hoard_key",
+    "name": "Magpie's Hoard Key",
+    "type": "charm",
+    "class": "",
+    "flavor": "Opens a door that isn't there. Sometimes."
+   },
+   {
+    "id": "u_moth_choir_cloak",
+    "name": "Cloak of a Thousand Wings",
+    "type": "chest",
+    "class": "stitcher",
+    "flavor": "Soft. Fluttery. Slightly ticklish."
+   },
+   {
+    "id": "u_first_spark",
+    "name": "The Wandering Spark",
+    "type": "ring",
+    "class": "",
+    "flavor": "The first thing that ever remembered."
+   },
+   {
+    "id": "u_long_shadow_mantle",
+    "name": "Mantle of the Long Shadow",
+    "type": "chest",
+    "class": "",
+    "flavor": "Every shadow wants to be close to a light."
+   }
+  ]
+ },
+ {
+  "id": "named_ideas",
+  "items": [
+   {
+    "id": "n_morning_never_came",
+    "name": "The Morning That Never Came",
+    "type": "sword",
+    "class": "lanternbearer",
+    "flavor": "Forged for a dawn that was cancelled. It is still waiting.",
+    "impossible_material": "Last Spark of the World-Lantern",
+    "how": "Rekindle all of Act V without your lantern going out once."
+   },
+   {
+    "id": "n_grandmothers_needles",
+    "name": "Grandmother's Needles",
+    "type": "twin daggers",
+    "class": "stitcher",
+    "flavor": "She knitted a scarf for every child in the village. The last one was never finished.",
+    "impossible_material": "Moonthread",
+    "how": "From the Tenth Lantern, on in-game full-moon nights."
+   },
+   {
+    "id": "n_bell_that_doesnt_ring",
+    "name": "The Bell That Doesn't Ring",
+    "type": "two-handed mace",
+    "class": "bellstriker",
+    "flavor": "The quietest bell in the world. The Snuffed hear it anyway.",
+    "impossible_material": "Echo of Stillness",
+    "how": "Stand still for 30 seconds while the Great Echo copies you."
+   },
+   {
+    "id": "n_owls_last_question",
+    "name": "The Owl's Last Question",
+    "type": "staff",
+    "class": "stargazer",
+    "flavor": "The answer isn't in any book. We checked. All the books.",
+    "impossible_material": "An Answer Nobody Knew",
+    "how": "Answer 50 Owlcrow riddles in a row, then say 'I don't know'."
+   },
+   {
+    "id": "n_frog_kings_croak",
+    "name": "The Frog King's Croak",
+    "type": "crossbow",
+    "class": "roofrunner",
+    "flavor": "Every bolt croaks. That's not a bug. It's tradition.",
+    "impossible_material": "A Frog That Never Jumped",
+    "how": "Find it on a Wickmire lily pad in the rain. Walk. Don't run."
+   }
+  ]
+ }
+]

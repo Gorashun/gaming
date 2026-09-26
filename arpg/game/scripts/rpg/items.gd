@@ -2,7 +2,7 @@ class_name Items
 extends RefCounted
 ## Item generation and description. Items are plain Dictionaries (serializable, network-friendly):
 ## { uid, base, name, rarity, ilvl, slot, level_req, implicit:{stat:v}, affixes:[{id,stat,value,tier,greater}],
-##   dmg_min, dmg_max, armor, aps, power, unique, named, kindle, kindle_max, sockets:[], stack }
+##   dmg_min, dmg_max, armor, aps, power, unique, named, kindle, kindle_max, sockets:[], stack, upgrade:int }
 
 const SLOTS := ["head", "chest", "hands", "legs", "feet", "main_hand", "off_hand", "amulet", "ring1", "ring2", "belt", "charm"]
 
@@ -22,12 +22,14 @@ static func rarity_color(rarity_id: String) -> Color:
 	return Color(Content.get_rec("rarities", rarity_id).get("color", "#cccccc"))
 
 ## Pick a base appropriate for ilvl, optionally biased to a class and slot.
-static func pick_base(ilvl: int, class_id := "", slot := "", stream := "loot") -> Dictionary:
+static func pick_base(ilvl: int, class_id := "", slot := "", stream := "loot", type_id := "") -> Dictionary:
 	var candidates = []
 	for b in Content.all("item_bases"):
 		if int(b.get("min_ilvl", 1)) > ilvl:
 			continue
 		if slot != "" and b.slot != slot:
+			continue
+		if type_id != "" and str(b.get("type", "")) != type_id:
 			continue
 		var w = float(b.get("weight", 10))
 		var classes: Array = b.get("classes", [])
@@ -61,15 +63,15 @@ static func roll_rarity(context: Dictionary, stream := "loot") -> String:
 	var pick = Rng.weighted(stream, entries)
 	return pick.id if pick else "common"
 
-static func generate(ilvl: int, rarity_id: String, class_id := "", base_id := "", slot := "", stream := "loot") -> Dictionary:
-	var base: Dictionary = Content.get_rec("item_bases", base_id) if base_id != "" else pick_base(ilvl, class_id, slot, stream)
+static func generate(ilvl: int, rarity_id: String, class_id := "", base_id := "", slot := "", stream := "loot", type_id := "") -> Dictionary:
+	var base: Dictionary = Content.get_rec("item_bases", base_id) if base_id != "" else pick_base(ilvl, class_id, slot, stream, type_id)
 	if base.is_empty():
 		return {}
 	var rar: Dictionary = Content.get_rec("rarities", rarity_id)
 	var item = {
 		"uid": new_uid(), "base": base.id, "name": base.name, "rarity": rarity_id, "ilvl": ilvl,
 		"slot": base.slot, "type": base.get("type", ""), "level_req": max(1, int(ilvl * 0.9) - 2),
-		"implicit": {}, "affixes": [], "sockets": [], "kindle": 0, "kindle_max": 0,
+		"implicit": {}, "affixes": [], "sockets": [], "kindle": 0, "kindle_max": 0, "upgrade": 0,
 	}
 	# Base numbers scale with ilvl within the base's band
 	var scale = 1.0 + (ilvl - int(base.get("min_ilvl", 1))) * float(Content.cfg("items", "ilvl_scaling", 0.045))
@@ -169,13 +171,14 @@ static func from_unique(unique_id: String, ilvl: int, stream := "loot") -> Dicti
 	item.kindle = item.kindle_max
 	return item
 
-## Aggregate stat contributions of an item.
+## Aggregate stat contributions of an item (upgrade level boosts implicits, affixes and armour).
 static func item_stats(item: Dictionary) -> Dictionary:
 	var s = {}
+	var um = Upgrade.item_mult(item)
 	for k in item.get("implicit", {}):
-		s[k] = float(s.get(k, 0.0)) + float(item.implicit[k])
+		s[k] = float(s.get(k, 0.0)) + float(item.implicit[k]) * um
 	for a in item.get("affixes", []):
-		s[a.stat] = float(s.get(a.stat, 0.0)) + float(a.value)
+		s[a.stat] = float(s.get(a.stat, 0.0)) + float(a.value) * um
 	for g in item.get("sockets", []):
 		if g != "":
 			var gem = Content.get_rec("materials", g)
@@ -183,12 +186,27 @@ static func item_stats(item: Dictionary) -> Dictionary:
 			for k in gem.get("socket", {}).get(slot_kind, {}):
 				s[k] = float(s.get(k, 0.0)) + float(gem.socket[slot_kind][k])
 	if item.has("armor"):
-		s["armor"] = float(s.get("armor", 0.0)) + float(item.armor)
+		s["armor"] = float(s.get("armor", 0.0)) + round(float(item.armor) * um)
 	if item.has("power"):
 		var p = Content.get_rec("powers", item.power)
 		for k in p.get("stats", {}):
 			s[k] = float(s.get(k, 0.0)) + float(p.stats[k])
 	return s
+
+## Weapon base damage [min, max] including the upgrade level.
+static func weapon_damage(item: Dictionary) -> Array:
+	if not item.has("dmg_min"):
+		return [0.0, 0.0]
+	var um = Upgrade.item_mult(item)
+	return [round(float(item.dmg_min) * um), round(float(item.dmg_max) * um)]
+
+## Name with the "+N " upgrade prefix (idempotent).
+static func upgraded_name(item: Dictionary) -> String:
+	var n = str(item.get("name", ""))
+	var re = RegEx.create_from_string("^\\+\\d+ ")
+	n = re.sub(n, "")
+	var lvl = int(item.get("upgrade", 0))
+	return ("+%d %s" % [lvl, n]) if lvl > 0 else n
 
 ## Rough "power score" for quick compare (green/red arrows).
 static func score(item: Dictionary, class_id := "") -> float:
@@ -203,7 +221,8 @@ static func score(item: Dictionary, class_id := "") -> float:
 			w = float(weights.get("primary", 2.0))
 		total += w * float(st[k])
 	if item.has("dmg_min"):
-		total += (float(item.dmg_min) + float(item.dmg_max)) * 0.5 * float(item.get("aps", 1.0)) * 3.0
+		var wd = weapon_damage(item)
+		total += (float(wd[0]) + float(wd[1])) * 0.5 * float(item.get("aps", 1.0)) * 3.0
 	if item.has("power"):
 		total += 60.0
 	return total
@@ -222,14 +241,18 @@ static func describe(item: Dictionary) -> Array:
 	var rar_name: String = Content.get_rec("rarities", item.rarity).get("name", item.rarity)
 	var base: Dictionary = Content.get_rec("item_bases", item.base)
 	lines.append(["%s %s" % [rar_name, base.get("type_name", base.get("type", ""))], col.darkened(0.15)])
+	if int(item.get("upgrade", 0)) > 0:
+		lines.append(["Upgrade +%d / +%d" % [int(item.upgrade), Upgrade.max_level()], Color(1.0, 0.85, 0.45)])
 	if item.has("dmg_min"):
-		lines.append(["%d–%d Damage  ·  %.2f attacks/s" % [item.dmg_min, item.dmg_max, item.aps], Color.WHITE])
+		var wd = weapon_damage(item)
+		lines.append(["%d–%d Damage  ·  %.2f attacks/s" % [wd[0], wd[1], item.aps], Color.WHITE])
 	if item.has("armor"):
-		lines.append(["%d Armor" % item.armor, Color.WHITE])
+		lines.append(["%d Armor" % round(float(item.armor) * Upgrade.item_mult(item)), Color.WHITE])
+	var um = Upgrade.item_mult(item)
 	for k in item.get("implicit", {}):
-		lines.append([stat_label(k, item.implicit[k]), Color(0.8, 0.8, 0.85)])
+		lines.append([stat_label(k, float(item.implicit[k]) * um), Color(0.8, 0.8, 0.85)])
 	for a in item.get("affixes", []):
-		var t = stat_label(a.stat, a.value)
+		var t = stat_label(a.stat, float(a.value) * um)
 		if a.get("greater", false):
 			t = "✦ " + t
 		lines.append([t, Color(0.55, 0.75, 1.0) if not a.get("greater", false) else Color(1.0, 0.8, 0.35)])

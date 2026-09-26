@@ -2,7 +2,7 @@ class_name InventoryOps
 extends RefCounted
 ## Pure inventory/equipment operations on a CharacterData.
 
-const TWO_HANDED := ["axe2h", "staff"]
+const TWO_HANDED := ["axe2h", "staff"]   # legacy; use Weapons.is_two_handed()
 const SALVAGE := {"common": {"soot": [1, 2]}, "magic": {"soot": [2, 4]}, "rare": {"wickthread": [1, 2], "soot": [1, 3]},
 	"epic": {"dusk_essence": [1, 2], "wickthread": [1, 2]}, "legendary": {"ember_heart": [1, 1], "dusk_essence": [1, 2]},
 	"mythic": {"ember_heart": [2, 3]}, "unique": {"dusk_essence": [2, 3]}, "named": {"ember_heart": [3, 4]}}
@@ -18,12 +18,11 @@ static func target_slot(ch: CharacterData, item: Dictionary) -> String:
 		return "ring1" if Items.score(ch.equipment.ring1, ch.class_id) <= Items.score(ch.equipment.ring2, ch.class_id) else "ring2"
 	return s
 
+## Any class can equip any weapon/armour (GDD v2.1 #19). `item_bases.classes` is only a smart-loot hint.
 static func can_equip(ch: CharacterData, item: Dictionary) -> bool:
-	if int(item.get("level_req", 1)) > ch.level:
+	if item.get("placeholder", false):
 		return false
-	var base = Content.get_rec("item_bases", item.base)
-	var classes: Array = base.get("classes", [])
-	return classes.is_empty() or classes.has(ch.class_id)
+	return int(item.get("level_req", 1)) <= ch.level
 
 static func equip_from_bag(ch: CharacterData, index: int) -> bool:
 	var item = ch.inventory[index]
@@ -33,14 +32,14 @@ static func equip_from_bag(ch: CharacterData, index: int) -> bool:
 	var old = ch.equipment.get(slot)
 	ch.inventory[index] = old
 	ch.equipment[slot] = item
-	if slot == "main_hand" and TWO_HANDED.has(item.get("type", "")) and ch.equipment.get("off_hand"):
+	if slot == "main_hand" and Weapons.is_two_handed(item) and ch.equipment.get("off_hand"):
 		var off = ch.equipment.off_hand
 		ch.equipment.erase("off_hand")
 		if not ch.add_item(off):
 			ch.stash.append(off)
 	if slot == "off_hand":
 		var mh = ch.equipment.get("main_hand")
-		if mh and TWO_HANDED.has(mh.get("type", "")):
+		if mh and Weapons.is_two_handed(mh):
 			ch.equipment.erase("main_hand")
 			if not ch.add_item(mh):
 				ch.stash.append(mh)
@@ -88,7 +87,7 @@ static func salvage(ch: CharacterData, index: int) -> Dictionary:
 	return y
 
 static func sell_value(item: Dictionary) -> int:
-	return int((5 + int(item.ilvl) * 2) * pow(2.2, Items.rarity_index(item.rarity)))
+	return int((5 + int(item.ilvl) * 2) * pow(2.2, Items.rarity_index(item.rarity)) * (1.0 + 0.1 * int(item.get("upgrade", 0))))
 
 static func sell(ch: CharacterData, index: int) -> int:
 	var item = ch.inventory[index]

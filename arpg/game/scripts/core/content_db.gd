@@ -10,11 +10,16 @@ signal content_loaded
 var tables: Dictionary = {}   # table -> { id -> record }
 var order: Dictionary = {}    # table -> [ids] in load order
 var packs: Array = []
+## Packs flagged `"dev_only": true` (e.g. content/dev_test) load only in tests or with --dev-content.
+var include_dev = false
 
 func _ready() -> void:
+	include_dev = OS.get_cmdline_user_args().has("--dev-content") or OS.get_cmdline_args().has("--dev-content")
 	reload()
 
-func reload() -> void:
+func reload(with_dev = null) -> void:
+	if with_dev != null:
+		include_dev = bool(with_dev)
 	tables.clear()
 	order.clear()
 	packs.clear()
@@ -29,6 +34,8 @@ func reload() -> void:
 			if FileAccess.file_exists(p):
 				var m = JSON.parse_string(FileAccess.get_file_as_string(p))
 				if m is Dictionary:
+					if m.get("dev_only", false) and not include_dev:
+						continue
 					m["_path"] = dir_path + "/" + sub
 					manifests.append(m)
 	manifests.sort_custom(func(a, b): return int(a.get("load_order", 0)) < int(b.get("load_order", 0)))

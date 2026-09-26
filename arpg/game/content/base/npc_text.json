@@ -1,0 +1,1774 @@
+[
+ {
+  "id": "npc_a1_smith",
+  "kind": "npc",
+  "name": "Brannoc Sparkwell",
+  "title": "Smith",
+  "role": "smith",
+  "town": "a1_town",
+  "quirk": "Huge, gentle, terrified of moths. Names every hammer.",
+  "greeting": "Big Bran's forge! Mind the sparks. And the moths. Mostly the moths.",
+  "barks": [
+   "This is Hammer Gerald. Say hello to Gerald.",
+   "Upgrading never breaks a thing. Not on my anvil.",
+   "Is that a moth? Tell me that's not a moth.",
+   "Bring me Soot Dust. I'll bring the shine.",
+   "Hot iron, warm heart. That's the rule.",
+   "Hammer Gerald's cousin is Hammer Gertrude. She's for fancy work.",
+   "Every sword remembers the hand that made it. Mine remember hugs."
+  ],
+  "bark_after_act": "You rang the old bell back to life! Gerald is so proud.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a1_alchemist",
+  "kind": "npc",
+  "name": "Nettle Pim",
+  "title": "Alchemist",
+  "role": "alchemist",
+  "town": "a1_town",
+  "quirk": "Tiny. Sneezes glitter when potions fizz.",
+  "greeting": "Oh! A customer! Hold on, I need to climb onto my stool.",
+  "barks": [
+   "Red potion: feel better. Blue potion: don't drink the blue one.",
+   "Ah— ah— ACHOO! Sorry. Glitter. It happens.",
+   "Bone Meal makes lovely potions. Don't ask how.",
+   "Tall people always knock over my shelves.",
+   "Fizzing means it's working! Or broken. Usually working.",
+   "Drink a potion when your light gets low. Easy!"
+  ],
+  "bark_after_act": "The bog lights came back! My potions fizz twice as happy now.",
+  "quest_ids": [
+   "q_a1_bone_meal"
+  ]
+ },
+ {
+  "id": "npc_a1_jeweler",
+  "kind": "npc",
+  "name": "Madame Glimmerwick",
+  "title": "Jeweler",
+  "role": "jeweler",
+  "town": "a1_town",
+  "quirk": "Wears 40 rings. Always looking for the one she's wearing.",
+  "greeting": "Welcome, darling! Have you seen my blue ring? …Oh. Found it.",
+  "barks": [
+   "Forty rings, and not one is the right one.",
+   "A gem in a socket is a little star in your pocket.",
+   "Candle Ruby for courage. Frost Sapphire for calm.",
+   "I polish my rings so often they polish me back.",
+   "Never trust a Magpie Imp near a jewellery box.",
+   "Darling, that amulet is SO you."
+  ],
+  "bark_after_act": "The Bellringer's rekindled! I shall wear my celebration ring. Where is it…",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a1_runecarver",
+  "kind": "npc",
+  "name": "Grandpa Knurl",
+  "title": "Runecarver",
+  "role": "runecarver",
+  "town": "a1_town",
+  "quirk": "Carves runes on everything, including his spoons.",
+  "greeting": "Hm? Oh, hello. Mind the table. I carved a rune on it.",
+  "barks": [
+   "This spoon has a rune for 'soup'. Very useful.",
+   "Runes are just words that remember to work.",
+   "Carve slow. The wood tells you where.",
+   "I once carved 'brave' on my boots. Didn't help.",
+   "When you reach Rimehall, find Master Quillon. He carves ice!",
+   "My chair says 'sit'. So I do."
+  ],
+  "bark_after_act": "I carved 'thank you' on my door for you. Go and see.",
+  "quest_ids": [
+   "q_a1_candle_mages"
+  ]
+ },
+ {
+  "id": "npc_a1_trader",
+  "kind": "npc",
+  "name": "Pocket Polly",
+  "title": "Trader",
+  "role": "trader",
+  "town": "a1_town",
+  "quirk": "Coat with a hundred pockets. Never the right one.",
+  "greeting": "Buying? Selling? Let me check my pockets. All of them.",
+  "barks": [
+   "Pocket forty-two… no, that's a frog. Sorry, frog.",
+   "I've got a pocket for everything. Finding it is extra.",
+   "I buy anything shiny. Except Magpie Imps. They buy back.",
+   "Fair prices, honest pockets!",
+   "One of my pockets hums at night. I don't check that one.",
+   "Something you don't need? I'll give you coins for it."
+  ],
+  "bark_after_act": "You're a hero now! I've made you your own pocket.",
+  "quest_ids": [
+   "q_a1_magpie"
+  ]
+ },
+ {
+  "id": "npc_a1_stash",
+  "kind": "npc",
+  "name": "Humphrey",
+  "title": "Stash Keeper",
+  "role": "stash",
+  "town": "a1_town",
+  "quirk": "A very old tortoise. Counts everything twice.",
+  "greeting": "Your… things… are… safe. One. One. Two. Two.",
+  "barks": [
+   "Nothing… lost… in… a hundred… years.",
+   "Slow… and… safe.",
+   "Your stash… follows you… to every… town. Clever… that.",
+   "I counted… your socks. Twice. All there.",
+   "Don't… rush. I never… do.",
+   "Shell… is also… a stash."
+  ],
+  "bark_after_act": "The… bell… rang. I… heard it. Twice.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a1_stablemaster",
+  "kind": "npc",
+  "name": "Hattie Hayloft",
+  "title": "Stablemaster",
+  "role": "stablemaster",
+  "town": "a1_town",
+  "quirk": "Rents giant bog-newts. Speaks for them.",
+  "greeting": "Hello! Puddle says hello too. Don't you, Puddle? She does.",
+  "barks": [
+   "Puddle says you look like a good rider.",
+   "A newt on the path is faster than two boots in the mud.",
+   "If something bonks you, you'll hop off. Newts are shy.",
+   "Squelch says he wants a snack. Squelch always wants a snack.",
+   "Riding's quicker in the zones and in town, dear.",
+   "Pat them on the nose. Gently. They like that."
+  ],
+  "bark_after_act": "Puddle says you're the bravest person she's ever carried.",
+  "quest_ids": [
+   "q_a1_newt_ride"
+  ]
+ },
+ {
+  "id": "npc_a1_petkeeper",
+  "kind": "npc",
+  "name": "Wren Whistleby",
+  "title": "Pet Keeper",
+  "role": "petkeeper",
+  "town": "a1_town",
+  "quirk": "Nine years old. Extremely serious about pets.",
+  "greeting": "State your pet's name and favourite snack, please.",
+  "barks": [
+   "Pets pick up loot for you. Very professional.",
+   "Pets get stronger when you go adventuring together.",
+   "Some pets dig up treasure. I'm not jealous. I'm a bit jealous.",
+   "Every pet deserves a good name. Not 'Pet'.",
+   "I've got a list of all the pets in Lumenholm. It's long.",
+   "Pets don't fight. They help. That's different."
+  ],
+  "bark_after_act": "My pets and I made you a medal. It's a leaf. It's a medal leaf.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a1_innkeeper",
+  "kind": "npc",
+  "name": "Mother Mabble",
+  "title": "Innkeeper",
+  "role": "innkeeper",
+  "town": "a1_town",
+  "quirk": "Runs The Soggy Candle. Believes soup fixes everything.",
+  "greeting": "Sit down, pet. Soup's hot. Everything's better after soup.",
+  "barks": [
+   "Rest here and the Homeward Wick will bring you back.",
+   "Resting makes your light glow brighter. That's just true.",
+   "Soup of the day: soup.",
+   "The roof leaks, but only on people who complain.",
+   "You look tired. Tired is allowed.",
+   "A warm bed, a warm bowl, a warm light. That's home."
+  ],
+  "bark_after_act": "Soup's on the house tonight. Well. Soup's always on the house.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a1_questgiver",
+  "kind": "npc",
+  "name": "Warden Hollis Reed",
+  "title": "Warden",
+  "role": "questgiver",
+  "town": "a1_town",
+  "quirk": "Last Lamplighter of Wickmire. Helmet two sizes too big.",
+  "greeting": "Wickbearer! Thank the light. I mean it. I really need help.",
+  "barks": [
+   "The helmet was my father's. I'll grow into it.",
+   "Stay in your light and you'll be alright.",
+   "The Rattlebones aren't bad. They're just lost.",
+   "Every lamp we tie down is one more we keep.",
+   "When you're tired, come back. The bog will wait.",
+   "I heard a bell under the water last night.",
+   "One step at a time. That's how you cross a bog."
+  ],
+  "bark_after_act": "Tolly's home. The lamps are down. You did that. We did that.",
+  "quest_ids": [
+   "q_a1_lost_rattlers",
+   "q_a1_warden_crypt",
+   "q_a1_bellringer"
+  ]
+ },
+ {
+  "id": "npc_a1_storyteller",
+  "kind": "npc",
+  "name": "Grandmother Purl",
+  "title": "Storyteller",
+  "role": "storyteller",
+  "town": "a1_town",
+  "quirk": "Knits while she talks. The scarf is never finished.",
+  "greeting": "Come sit, little light. Pass me that yarn and I'll tell you a tale.",
+  "barks": [
+   "Knit one, purl one, tell one story.",
+   "This scarf is for everyone in the village. It's a long scarf.",
+   "Once, the sky had a lantern, and nobody thought to thank it.",
+   "The Grey Guest knocked on my door once. I gave him tea.",
+   "My granddaughter sews dolls that talk back. Takes after me.",
+   "Every story is a light you can carry in your head.",
+   "Lost your way? Follow the lamps. They float toward home."
+  ],
+  "bark_after_act": "Tolly used to ring for my tea. He'll ring again now, you'll see.",
+  "quest_ids": [
+   "q_a1_purl_yarn"
+  ]
+ },
+ {
+  "id": "npc_a1_waypoint",
+  "kind": "npc",
+  "name": "Flicker",
+  "title": "Waypoint Keeper",
+  "role": "waypoint",
+  "town": "a1_town",
+  "quirk": "A small wisp. Flickers when it fibs.",
+  "greeting": "Hi! I'm Flicker! I'm not scared at all! *flicker*",
+  "barks": [
+   "Touch a waypoint once and you can come back any time!",
+   "Travelling to town is free. The rest costs a little gold.",
+   "I've been to every waypoint. *flicker* Okay, two.",
+   "Wisps like me show the way. Not like the bad wisps. We're nice.",
+   "Tap the map to go places!",
+   "I'm the brightest wisp in Wickmire! *flicker flicker*"
+  ],
+  "bark_after_act": "You did it! I wasn't worried. *flicker* I was a bit worried.",
+  "quest_ids": [
+   "q_a1_drowned_graves"
+  ]
+ },
+ {
+  "id": "npc_a2_smith",
+  "kind": "npc",
+  "name": "Tamsin Knotwood",
+  "title": "Smith",
+  "role": "smith",
+  "town": "a2_town",
+  "quirk": "Apologises to trees before using wood.",
+  "greeting": "Sorry, tree. Oh! Hello. Sorry. I talk to trees.",
+  "barks": [
+   "Sorry, log. This won't hurt a bit.",
+   "Wood remembers where it grew. Be kind to it.",
+   "Axe handles, bow staves, and one very nice spoon.",
+   "Upgrading here is just like Big Bran's. Only woodier.",
+   "The birches told me a secret about you. I didn't listen.",
+   "Every nick in a blade is a story."
+  ],
+  "bark_after_act": "The shadows are home! The trees are finally quiet. Well. Quieter.",
+  "quest_ids": [
+   "q_a2_gossip"
+  ]
+ },
+ {
+  "id": "npc_a2_alchemist",
+  "kind": "npc",
+  "name": "Professor Fennimore Puffcap",
+  "title": "Alchemist",
+  "role": "alchemist",
+  "town": "a2_town",
+  "quirk": "Part mushroom. Puffs sparkly spores when surprised.",
+  "greeting": "Ah, a student! Welcome to the finest laboratory in any tree. *puff*",
+  "barks": [
+   "Alchemy: turning 'oops' into 'ooh!'",
+   "Potions, elixirs, transmutes. All the -ions and -irs.",
+   "Don't startle me. *puff* See? Sparkles everywhere.",
+   "Two small things can become one useful thing. That's the trick.",
+   "Mushrooms are excellent listeners. Terrible at maths.",
+   "Let me show you the station. Just one little brew to start.",
+   "Elixirs last a while. Enjoy the glow."
+  ],
+  "bark_after_act": "Mother Bark sent me a thank-you note. Written on bark. Naturally. *puff*",
+  "quest_ids": [
+   "q_a2_spores"
+  ]
+ },
+ {
+  "id": "npc_a2_jeweler",
+  "kind": "npc",
+  "name": "Cress Dewdrop",
+  "title": "Jeweler",
+  "role": "jeweler",
+  "town": "a2_town",
+  "quirk": "Collects dewdrops as gems. They keep evaporating.",
+  "greeting": "Hello! Careful where you step. That's a jewel. Was a jewel.",
+  "barks": [
+   "My best gem evaporated this morning. Again.",
+   "Moss Emeralds don't evaporate. That's why I like them.",
+   "Put a gem in a socket and it helps you forever.",
+   "Dew is just tiny water that dreams of being a gem.",
+   "Pretty things are best shared.",
+   "I found a gem in an owl's nest. The owl found me."
+  ],
+  "bark_after_act": "The morning dew is back! My shop is full again!",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a2_runecarver",
+  "kind": "npc",
+  "name": "Hob Mossbeard",
+  "title": "Runecarver",
+  "role": "runecarver",
+  "town": "a2_town",
+  "quirk": "His beard grows moss. Carves runes on acorns.",
+  "greeting": "Mm. Welcome. Don't mind the beard. It's thriving.",
+  "barks": [
+   "A rune on an acorn grows into a rune on a tree.",
+   "Something is living in my beard. We have an agreement.",
+   "Slow carving, quick magic.",
+   "My brother Knurl carves spoons. Spoons. Honestly.",
+   "The forest has its own runes. You just have to read bark.",
+   "Beard's getting long. It's got a mushroom now."
+  ],
+  "bark_after_act": "My beard grew a flower when the shadows came home. Look!",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a2_trader",
+  "kind": "npc",
+  "name": "Mister Quibble",
+  "title": "Trader",
+  "role": "trader",
+  "town": "a2_town",
+  "quirk": "An owl-man who haggles in riddles.",
+  "greeting": "Whooo's buying? What has pockets but no coat? My shop!",
+  "barks": [
+   "What's cheaper than cheap? A good deal!",
+   "I sell by day, I sell by night. Well. Mostly night.",
+   "Riddle me this: what's worth more once you use it?",
+   "Everything here is lightly loved.",
+   "Hoo-hoo! Sharp eyes, fair prices.",
+   "The answer to every riddle is 'buy one'. Just kidding."
+  ],
+  "bark_after_act": "Whooo rekindled Mother Bark? You! That's not even a riddle.",
+  "quest_ids": [
+   "q_a2_trader_riddle"
+  ]
+ },
+ {
+  "id": "npc_a2_stash",
+  "kind": "npc",
+  "name": "Nutsy",
+  "title": "Stash Keeper",
+  "role": "stash",
+  "town": "a2_town",
+  "quirk": "A squirrel who buries your stash. Finds it. Mostly.",
+  "greeting": "Stash? STASH! Yes! I buried it! It's… somewhere! Good spot!",
+  "barks": [
+   "I remember EVERY hiding place! …Most of them!",
+   "Your stash is the same in every town. Magic! Or tunnels.",
+   "I found an acorn from last year! Snack!",
+   "Buried treasure is the best treasure!",
+   "Don't worry. I've never lost anything. Recently.",
+   "Chitter chitter! That means 'safe' in squirrel."
+  ],
+  "bark_after_act": "I buried a present for you! Somewhere! It's a surprise for both of us!",
+  "quest_ids": [
+   "q_a2_moss_hounds"
+  ]
+ },
+ {
+  "id": "npc_a2_stablemaster",
+  "kind": "npc",
+  "name": "Ferris Longstride",
+  "title": "Stablemaster",
+  "role": "stablemaster",
+  "town": "a2_town",
+  "quirk": "Rents moss-deer. Whistles instead of saying yes.",
+  "greeting": "*whistles* That means welcome. Want a deer?",
+  "barks": [
+   "*whistles* That means yes.",
+   "Moss-deer never trip on roots. Never.",
+   "Get bumped and you'll hop down. Deer don't like fights.",
+   "This one's Fern. That one's also Fern. They like it.",
+   "Faster through the woods, faster through the town.",
+   "*long whistle* That means 'have a good ride'."
+  ],
+  "bark_after_act": "*happy whistle* That means 'thank you', by the way.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a2_petkeeper",
+  "kind": "npc",
+  "name": "Juniper Fitch",
+  "title": "Pet Keeper",
+  "role": "petkeeper",
+  "town": "a2_town",
+  "quirk": "Raises owlets. Answers in hoots when distracted.",
+  "greeting": "Hello! Shh. Owlet nap time. Hoo. Sorry. Hello.",
+  "barks": [
+   "Owlets sleep all day. Best job ever.",
+   "Hoo? Oh, sorry. What did you ask?",
+   "A pet finds shiny things you'd walk right past.",
+   "Level up your pet by adventuring together.",
+   "Wren from Lamplight Hollow writes me pet letters!",
+   "This owlet is called Doughnut. Don't ask why. She knows why."
+  ],
+  "bark_after_act": "The owlets can see their shadows again. They keep jumping at them.",
+  "quest_ids": [
+   "q_a2_owlcrows"
+  ]
+ },
+ {
+  "id": "npc_a2_innkeeper",
+  "kind": "npc",
+  "name": "Bramble Hartwell",
+  "title": "Innkeeper",
+  "role": "innkeeper",
+  "town": "a2_town",
+  "quirk": "Runs The Hollow Knot. Every bed is a hammock.",
+  "greeting": "Welcome to The Hollow Knot! Beds are hammocks. Don't fall out.",
+  "barks": [
+   "All our beds rock. Literally.",
+   "Bind your Homeward Wick here and you'll always get home.",
+   "Nap in a hammock and the forest sings you to sleep.",
+   "A rest is not a stop. It's a refill.",
+   "Tea? It's acorn tea. It's a bit crunchy.",
+   "Nobody's fallen out of a hammock this week. Big week."
+  ],
+  "bark_after_act": "Whole forest's sleeping better since you came. Me too.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a2_questgiver",
+  "kind": "npc",
+  "name": "Ranger Sorrel Vane",
+  "title": "Ranger",
+  "role": "questgiver",
+  "town": "a2_town",
+  "quirk": "Jumps at every whisper. Brave anyway.",
+  "greeting": "AH! Oh. It's you. Sorry. The trees keep whispering.",
+  "barks": [
+   "Did you hear that? That was a whisper. Probably about me.",
+   "Brave doesn't mean not scared. I'm very brave.",
+   "The Owlcrows see everything. Even when you sneak.",
+   "The shadows are missing. Look at your feet in the woods.",
+   "Twiglings pretend to be sticks. Poke every stick.",
+   "When it gets too much, take a break. I do. Often."
+  ],
+  "bark_after_act": "The trees whispered 'thank you' today. I only jumped a little.",
+  "quest_ids": [
+   "q_a2_twiglings",
+   "q_a2_mother_bark"
+  ]
+ },
+ {
+  "id": "npc_a2_storyteller",
+  "kind": "npc",
+  "name": "Old Hoot",
+  "title": "Storyteller",
+  "role": "storyteller",
+  "town": "a2_town",
+  "quirk": "Very, very old owl. Answers questions with questions.",
+  "greeting": "Who comes to Old Hoot? And why? And who's asking?",
+  "barks": [
+   "What is a shadow, if not light's best friend?",
+   "Did you know my apprentice pulls stars from the sky? Did I teach her that?",
+   "Why do trees whisper? What would you say, if you were a tree?",
+   "Who blew out the Lantern? Why would anyone?",
+   "Is the dark empty, or just waiting?",
+   "What's heavier: a lantern, or carrying it alone?"
+  ],
+  "bark_after_act": "Who rekindled the oldest tree? And who will tell the story? Hm?",
+  "quest_ids": [
+   "q_a2_owl_towers"
+  ]
+ },
+ {
+  "id": "npc_a2_waypoint",
+  "kind": "npc",
+  "name": "Lumen the Glowworm",
+  "title": "Waypoint Keeper",
+  "role": "waypoint",
+  "town": "a2_town",
+  "quirk": "A big glowworm. Speaks in rhymes.",
+  "greeting": "Hello, hello, a traveller's here! Pick a place, and I'll steer.",
+  "barks": [
+   "Touch a stone, it's yours to keep. Travel there before you sleep!",
+   "To town is free, the rest a coin. Where would you like to join?",
+   "I glow, I glow, from tail to head. The map is where you go instead.",
+   "Waypoints shine like little stars. Near or far, the path is ours.",
+   "Lost in the wood? Don't make a fuss. Come back here and ride with us.",
+   "A rhyme a day keeps the Hush away!"
+  ],
+  "bark_after_act": "The wood is bright, the shadows home. Now pick a place wherever you roam!",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a3_smith",
+  "kind": "npc",
+  "name": "Dorra Anvilsong",
+  "title": "Smith",
+  "role": "smith",
+  "town": "a3_town",
+  "quirk": "Sings to the anvil. Bellstriker's aunt. Very loud.",
+  "greeting": "WELCOME TO THE FORGE! SORRY! IT'S A LOUD FORGE!",
+  "barks": [
+   "CLANG! That's the chorus.",
+   "My nephew's got a bell for a hammer. Runs in the family!",
+   "SING while you hammer and the metal sits up straight!",
+   "Upgrades never fail here. Loud AND reliable.",
+   "Mines are quiet now. Too quiet. Needs more CLANG.",
+   "If you see my nephew, tell him to wear a scarf."
+  ],
+  "bark_after_act": "THE MOUNTAIN'S SINGING AGAIN! I'M CRYING! IT'S LOUD CRYING!",
+  "quest_ids": [
+   "q_a3_crystal_spiders"
+  ]
+ },
+ {
+  "id": "npc_a3_alchemist",
+  "kind": "npc",
+  "name": "Fizzwick Drabb",
+  "title": "Alchemist",
+  "role": "alchemist",
+  "town": "a3_town",
+  "quirk": "Blows things up slightly. Eyebrows always regrowing.",
+  "greeting": "Welcome! Don't mind the smoke. Or the eyebrows. They're coming back.",
+  "barks": [
+   "Pop! That was supposed to happen. Mostly.",
+   "Salt makes everything better. Even potions. Especially potions.",
+   "Professor Puffcap taught me. He still sends me spore letters.",
+   "Safety goggles! I should wear those.",
+   "My eyebrows grow back faster every time. Science!",
+   "This one's a transmute. Tiny stuff into better stuff."
+  ],
+  "bark_after_act": "The Echo sang so loud my potion popped. Worth it.",
+  "quest_ids": [
+   "q_a3_salt"
+  ]
+ },
+ {
+  "id": "npc_a3_jeweler",
+  "kind": "npc",
+  "name": "Opaline Facet",
+  "title": "Jeweler",
+  "role": "jeweler",
+  "town": "a3_town",
+  "quirk": "Polishes everything, including you.",
+  "greeting": "Oh, you're a bit dusty. Hold still. *polish polish* There.",
+  "barks": [
+   "Every gem was once a bit of mountain dreaming.",
+   "Sockets, gems, rings, amulets. I do all of it. Shinily.",
+   "Let me show you the station. One gem, one socket, one smile.",
+   "Crystal Spiders are made of gems. Don't polish them.",
+   "Dust is just shine that's shy.",
+   "*polish* Sorry. Habit. Your elbow was dull."
+  ],
+  "bark_after_act": "The whole mountain is sparkling. I don't even need to polish. I will anyway.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a3_runecarver",
+  "kind": "npc",
+  "name": "Chisel",
+  "title": "Runecarver",
+  "role": "runecarver",
+  "town": "a3_town",
+  "quirk": "A small stone-golem child. Speaks one word at a time.",
+  "greeting": "Hello. Rune. Please.",
+  "barks": [
+   "Carve. Tap. Glow.",
+   "Stone. Friend.",
+   "Rune. Strong.",
+   "Me. Small. Rock. Big.",
+   "Quillon. Ice. Teacher. Far.",
+   "You. Nice."
+  ],
+  "bark_after_act": "Mountain. Song. Happy. Me. Happy.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a3_trader",
+  "kind": "npc",
+  "name": "Gus Two-Carts",
+  "title": "Trader",
+  "role": "trader",
+  "town": "a3_town",
+  "quirk": "One cart sells. The other 'buys back'.",
+  "greeting": "Left cart buys, right cart sells. Or the other way. Let's find out!",
+  "barks": [
+   "Two carts, twice the bargains!",
+   "Found it in the mines! It's basically new. Basically.",
+   "If one cart rolls away, the prices roll with it.",
+   "Sell me what you don't need. I'll find it a good home.",
+   "Best prices under the mountain! Only prices under the mountain!",
+   "Ever seen a cart with teeth? Don't buy that one."
+  ],
+  "bark_after_act": "I'm naming a third cart after you. I just need a third cart.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a3_stash",
+  "kind": "npc",
+  "name": "Pickett",
+  "title": "Stash Keeper",
+  "role": "stash",
+  "town": "a3_town",
+  "quirk": "Keeps stashes in mine carts. One rolls away daily. It comes back.",
+  "greeting": "Stash cart's ready! Wait. Where's cart six? Oh, there it goes.",
+  "barks": [
+   "Don't worry. The carts always come back. The track's a circle.",
+   "Your stash is safe in every town. Even on wheels.",
+   "Cart six is the adventurous one.",
+   "I oil the wheels every morning. Squeak-free stashing!",
+   "Everything you put in, stays in. Rails' honour.",
+   "Here comes cart six! Told you."
+  ],
+  "bark_after_act": "Cart six came back with a crystal in it. I think it's for you.",
+  "quest_ids": [
+   "q_a3_cart_mimic"
+  ]
+ },
+ {
+  "id": "npc_a3_stablemaster",
+  "kind": "npc",
+  "name": "Mags Rattlebridle",
+  "title": "Stablemaster",
+  "role": "stablemaster",
+  "town": "a3_town",
+  "quirk": "Rents rock-ponies. Knows the shortest way to everything.",
+  "greeting": "Need to get somewhere? I know a shortcut. I always know a shortcut.",
+  "barks": [
+   "Rock-ponies never get tired. They get sleepy. It's different.",
+   "Shortest way to the lift? Left, left, down, whee.",
+   "Get bonked and you're off the pony. Rules of the rocks.",
+   "This is Gravel. That's Pebble. That's Other Gravel.",
+   "Riding's faster. Walking's scenic. Your choice.",
+   "Shortcut to happiness? Pat a pony."
+  ],
+  "bark_after_act": "The shortest way to a hero's heart is a pony ride. Free one, for you.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a3_petkeeper",
+  "kind": "npc",
+  "name": "Tuppence",
+  "title": "Pet Keeper",
+  "role": "petkeeper",
+  "town": "a3_town",
+  "quirk": "Tiny and fearless. Best friends with a glow-mole.",
+  "greeting": "This is Dimple. She's a glow-mole. She likes you. I can tell.",
+  "barks": [
+   "Dimple digs up treasure! Some pets do that!",
+   "I'm not scared of anything. Except baths.",
+   "Pets help find materials. Dimple found a whole sandwich.",
+   "Echo bats make great pets. They copy your giggles.",
+   "Pets get better the more you explore together.",
+   "Dimple says hi. That was the hi. The wiggle."
+  ],
+  "bark_after_act": "Dimple did a happy dig. It's a tunnel. It spells your name. Nearly.",
+  "quest_ids": [
+   "q_a3_lamp_ghosts"
+  ]
+ },
+ {
+  "id": "npc_a3_innkeeper",
+  "kind": "npc",
+  "name": "Barnaby Ballast",
+  "title": "Innkeeper",
+  "role": "innkeeper",
+  "town": "a3_town",
+  "quirk": "Runs The Deep Breath. Laughs so loud the lift shakes.",
+  "greeting": "Welcome to The Deep Breath! HA HA! Sorry. Lift's fine. Probably.",
+  "barks": [
+   "We pump fresh air all the way down! Breathe deep!",
+   "Bind your Homeward Wick here. HA! Home is where the laugh is!",
+   "Rest up. A tired miner digs holes in the wrong places.",
+   "My laugh broke a crystal once. Now it's two crystals. Bonus!",
+   "Stew's got salt. Everything's got salt. It's a salt mine.",
+   "Stay as long as you like, friend."
+  ],
+  "bark_after_act": "HA HA HA! Sorry, happy laugh. The lift will stop shaking soon.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a3_questgiver",
+  "kind": "npc",
+  "name": "Foreman Hilda Pickwell",
+  "title": "Foreman",
+  "role": "questgiver",
+  "town": "a3_town",
+  "quirk": "Has a list of why they dig. The list is blank.",
+  "greeting": "Wickbearer. Good. I have a list of jobs. And a list of reasons. One's blank.",
+  "barks": [
+   "Why do we dig? It's on my list. The list is blank.",
+   "Diglings were my crew. They're not bad. They forgot.",
+   "Lamp ghosts wander the tunnels looking for their miners.",
+   "Keep your light up in the shafts. It's dark down there.",
+   "When your pack's full, come up. The mine's not going anywhere.",
+   "There used to be a song. I can almost hear it."
+  ],
+  "bark_after_act": "'Dig deep, dig bright.' That's it. That's why. I'm writing it down.",
+  "quest_ids": [
+   "q_a3_diglings",
+   "q_a3_great_echo"
+  ]
+ },
+ {
+  "id": "npc_a3_storyteller",
+  "kind": "npc",
+  "name": "Echo Annie",
+  "title": "Storyteller",
+  "role": "storyteller",
+  "town": "a3_town",
+  "quirk": "Repeats the last word of every sentence. Sentence.",
+  "greeting": "Sit down, dearie, and I'll tell you a story. Story.",
+  "barks": [
+   "The mountain used to sing to us. Us.",
+   "Every tunnel holds a memory. Memory.",
+   "When the lamps went out, the song went too. Too.",
+   "The Great Echo copies everything. Everything.",
+   "I've always done this. Nobody knows why. Why.",
+   "A quiet mountain is a lonely mountain. Mountain."
+  ],
+  "bark_after_act": "The song's back, dearie. The song. Song. Oh, I'm so happy. Happy.",
+  "quest_ids": [
+   "q_a3_annie_song"
+  ]
+ },
+ {
+  "id": "npc_a3_waypoint",
+  "kind": "npc",
+  "name": "Lou Lever",
+  "title": "Waypoint Keeper",
+  "role": "waypoint",
+  "town": "a3_town",
+  "quirk": "Runs the great lift. Announces every floor, even when there aren't any.",
+  "greeting": "Going up! Going down! Going sideways, if you like the map!",
+  "barks": [
+   "Floor one: waypoints. Floor two: also waypoints.",
+   "Mind the gap. There's no gap. Mind it anyway.",
+   "Town trips are free. Other stops cost a coin.",
+   "Ding! That's my lift bell. Not your nephew, Dorra.",
+   "Next stop: wherever you tap.",
+   "Doors closing! There are no doors."
+  ],
+  "bark_after_act": "Going up! All the way up! Well done, Wickbearer!",
+  "quest_ids": [
+   "q_a3_saltwhistle"
+  ]
+ },
+ {
+  "id": "npc_a4_smith",
+  "kind": "npc",
+  "name": "Corporal Tinwhistle",
+  "title": "Smith",
+  "role": "smith",
+  "town": "a4_town",
+  "quirk": "A retired tin soldier. Salutes everything, including the anvil.",
+  "greeting": "Attention! *salute* A visitor! *salute* To the anvil! *salute*",
+  "barks": [
+   "*salute* That was for the hammer.",
+   "Polished boots, polished blade, polished upgrade!",
+   "I was a soldier once. Now I'm a smith. Still saluting.",
+   "Upgrades succeed on first try. That is an order!",
+   "My old regiment froze in the hall. I'll wait for them.",
+   "Left, right, left, CLANG."
+  ],
+  "bark_after_act": "My regiment thawed! They saluted me! I saluted back! We're still going!",
+  "quest_ids": [
+   "q_a4_tin_soldiers"
+  ]
+ },
+ {
+  "id": "npc_a4_alchemist",
+  "kind": "npc",
+  "name": "Cook Dumplina",
+  "title": "Alchemist",
+  "role": "alchemist",
+  "town": "a4_town",
+  "quirk": "The castle cook. All her potions are soups.",
+  "greeting": "Hungry? Hurt? Same thing, pet. Have a soup.",
+  "barks": [
+   "Healing soup. Strength soup. Soup soup.",
+   "Every potion's a soup if you believe.",
+   "Mother Mabble in Wickmire? My cousin! Soup runs in families.",
+   "Don't drink it too hot. Or do. It's a warming soup.",
+   "The frozen guests haven't eaten in a year. I've kept the pot on.",
+   "Carrots help you see in the dark. Very useful now."
+  ],
+  "bark_after_act": "Everyone's thawed and everyone's HUNGRY. Pass the big ladle!",
+  "quest_ids": [
+   "q_a4_soup"
+  ]
+ },
+ {
+  "id": "npc_a4_jeweler",
+  "kind": "npc",
+  "name": "Lady Facetta Frostglass",
+  "title": "Jeweler",
+  "role": "jeweler",
+  "town": "a4_town",
+  "quirk": "Keeper of the crown jewels. Extremely proper. Secretly giggly.",
+  "greeting": "Good evening. One does jewels here. Properly. *tiny giggle*",
+  "barks": [
+   "A lady never giggles. *giggle* Oh dear.",
+   "The crown jewels are frozen. I polish them anyway.",
+   "Frost Sapphire. Terribly elegant. Terribly cold.",
+   "Please do not lick the ice. One has seen it happen.",
+   "A ring for the brave, a gem for the kind.",
+   "One's cousin Glimmerwick has too many rings. One has just enough."
+  ],
+  "bark_after_act": "The King said my name! He remembered my name! *giggle giggle*",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a4_runecarver",
+  "kind": "npc",
+  "name": "Master Quillon Rimecarve",
+  "title": "Runecarver",
+  "role": "runecarver",
+  "town": "a4_town",
+  "quirk": "Carves runes in ice. Hates warmth. Lives in a kitchen.",
+  "greeting": "Close the door. Warmth is getting in. Ugh. Kitchens.",
+  "barks": [
+   "Ice holds a rune perfectly. Until it melts. Hence: no kettles.",
+   "Enchant, reroll, refine. Precision is kindness.",
+   "Let me show you the station. One rune. Clean lines.",
+   "Chisel sends me letters. One word each. I treasure them.",
+   "Knurl carves spoons. I carve spoons too. In ice. Better spoons.",
+   "Someone put the kettle on again. *sigh*"
+  ],
+  "bark_after_act": "The castle is warm again. I hate it. I'm very happy. Both.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a4_trader",
+  "kind": "npc",
+  "name": "Crumbsworth",
+  "title": "Trader",
+  "role": "trader",
+  "town": "a4_town",
+  "quirk": "A mouse merchant who runs his shop from a teacup.",
+  "greeting": "Welcome to Crumbsworth's Teacup Emporium! Mind the handle.",
+  "barks": [
+   "Small shop. Big deals.",
+   "I accept gold, crumbs, and particularly good cheese.",
+   "Everything here fits in a teacup. Except that sword. Somehow.",
+   "The mirror butlers kept trying to serve my shop.",
+   "Sell anything! I'll squeeze it in. Squeak.",
+   "Crumbsworth's rule: never trade with a cat."
+  ],
+  "bark_after_act": "In honour of the King, cheese is half price! Wait, I sell cheese?",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a4_stash",
+  "kind": "npc",
+  "name": "Mister Ledger",
+  "title": "Stash Keeper",
+  "role": "stash",
+  "town": "a4_town",
+  "quirk": "The only butler who didn't freeze. Writes everything down.",
+  "greeting": "Good evening. Your belongings are catalogued. Page nine thousand.",
+  "barks": [
+   "Item received. Item noted. Item cherished.",
+   "I did not freeze because I was busy writing. Recommend it.",
+   "Your stash is shared in every town. I have the records.",
+   "One sock, blue, slightly heroic. Noted.",
+   "The mirror butlers were my colleagues. They serve tea wrongly now.",
+   "Everything in order. As always."
+  ],
+  "bark_after_act": "Entry: the King remembers. Underlined twice.",
+  "quest_ids": [
+   "q_a4_mirror_tea"
+  ]
+ },
+ {
+  "id": "npc_a4_stablemaster",
+  "kind": "npc",
+  "name": "Noll Frostmane",
+  "title": "Stablemaster",
+  "role": "stablemaster",
+  "town": "a4_town",
+  "quirk": "Rents snow-hares and sleds. Tells you to wrap up warm.",
+  "greeting": "Wrap up warm! Then pick a hare. Then wrap up warmer.",
+  "barks": [
+   "Snow-hares hop over drifts. Boots don't.",
+   "Scarf? Scarf. Put on a scarf.",
+   "Take a bump and you'll tumble off. Hares are gentle souls.",
+   "This one's Flurry. That's Sleet. That's Mister Fluffington.",
+   "Faster in the gardens, faster in the halls.",
+   "Did you wrap up warm? Just checking."
+  ],
+  "bark_after_act": "It's warm now! …Wrap up anyway. Habit.",
+  "quest_ids": [
+   "q_a4_gardens"
+  ]
+ },
+ {
+  "id": "npc_a4_petkeeper",
+  "kind": "npc",
+  "name": "Princess Pip",
+  "title": "Pet Keeper",
+  "role": "petkeeper",
+  "town": "a4_town",
+  "quirk": "The king's daughter, 8. Bossy, kind, misses her dad.",
+  "greeting": "I'm Princess Pip and I'm in charge of the royal pets. Bow. Or wave. Waving's fine.",
+  "barks": [
+   "The royal corgi-hare is called Sir Wobble. Salute him.",
+   "Pets need love, snacks, and adventures. In that order.",
+   "Kit taught me to climb roofs. Don't tell Nan Kettleby.",
+   "My dad forgot my name. I'll help him remember.",
+   "A pet can find treasure you'd never see.",
+   "I'm not sad. I'm just busy being brave."
+  ],
+  "bark_after_act": "He remembered me first. Before anyone. Before his own crown.",
+  "quest_ids": [
+   "q_a4_porcelain"
+  ]
+ },
+ {
+  "id": "npc_a4_innkeeper",
+  "kind": "npc",
+  "name": "Nan Kettleby",
+  "title": "Innkeeper",
+  "role": "innkeeper",
+  "town": "a4_town",
+  "quirk": "Keeps the great kettle boiling. Tea solves most things.",
+  "greeting": "Kettle's on, dearie. It's always on. Sit by the warm.",
+  "barks": [
+   "Tea for the cold, tea for the sad, tea for the tired.",
+   "Bind your Homeward Wick here. The kettle will be on.",
+   "A cup and a sit-down. Nothing's so bad after that.",
+   "Rest is how heroes get heroic.",
+   "Master Quillon hates my kettle. I make him tea anyway.",
+   "That child Pip is climbing the roof again, isn't she."
+  ],
+  "bark_after_act": "Kettle's never been so busy. Whole castle wants a cup. Bless you.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a4_questgiver",
+  "kind": "npc",
+  "name": "Chancellor Pellinore Snowdrop",
+  "title": "Chancellor",
+  "role": "questgiver",
+  "town": "a4_town",
+  "quirk": "Half his moustache is still frozen. Keeps lists of lists.",
+  "greeting": "Ah. You're on my list. My list of people who might help. It's short.",
+  "barks": [
+   "List of lists: item one, this list.",
+   "Half my moustache thawed. The other half is thinking about it.",
+   "His Majesty grows colder the less he remembers.",
+   "Letters of his name are scattered in the halls. Find them.",
+   "Mind the mirrors. Reflections here are running late.",
+   "Do take breaks. It's on my list. Near the top."
+  ],
+  "bark_after_act": "Item one: the King is himself again. Item two: I'm crying. Item three: tissues.",
+  "quest_ids": [
+   "q_a4_letters",
+   "q_a4_the_king"
+  ]
+ },
+ {
+  "id": "npc_a4_storyteller",
+  "kind": "npc",
+  "name": "Tumblewit the Jester",
+  "title": "Storyteller",
+  "role": "storyteller",
+  "town": "a4_town",
+  "quirk": "Tells sad stories funnily and funny stories sadly.",
+  "greeting": "A tale, a tale! Shall it be sad? It'll be funny. Or the other way.",
+  "barks": [
+   "Once there was a king with the warmest hall. …That's the sad part.",
+   "Why did the snowman cry? He was having a meltdown.",
+   "Jingle jingle. My bells are frozen. So they just go 'jin'.",
+   "The toast was never finished. That's the saddest joke I know.",
+   "Laughing keeps you warm. Try it! Ha. See?",
+   "Every king needs a fool. Every fool needs a friend."
+  ],
+  "bark_after_act": "The toast got finished. I laughed so hard I cried. Or the other way.",
+  "quest_ids": [
+   "q_a4_jester_joke"
+  ]
+ },
+ {
+  "id": "npc_a4_waypoint",
+  "kind": "npc",
+  "name": "Tick",
+  "title": "Waypoint Keeper",
+  "role": "waypoint",
+  "town": "a4_town",
+  "quirk": "A small clockwork girl. Ticks when she thinks.",
+  "greeting": "Hello. Tick. Tick. Where would you like to go?",
+  "barks": [
+   "Tick. Tick. Calculating route. Tick. Done.",
+   "Waypoints remember you once you've touched them.",
+   "Town is free. Other places: small fee. Tick.",
+   "I was built to keep time. Now I keep places.",
+   "Wind me up if I slow down. Please.",
+   "Tick tock. That's my happy noise."
+  ],
+  "bark_after_act": "Tick. Tick. Tick-tick-tick! That's my VERY happy noise.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a5_smith",
+  "kind": "npc",
+  "name": "Mae Coalbright",
+  "title": "Smith",
+  "role": "smith",
+  "town": "a5_town",
+  "quirk": "Forged the Guild's lanterns for 70 years. Still 'just learning'.",
+  "greeting": "Come in, come in. I'm still just learning, mind. Only seventy years.",
+  "barks": [
+   "I made your lantern's great-great-grandmother.",
+   "Upgrades never fail. After seventy years, I should hope not.",
+   "Every lantern needs a good cap, a good glass and a good friend.",
+   "Big Bran was my apprentice! He's still scared of moths.",
+   "Out here, the only colour is the one we make.",
+   "A good hammer is a patient hammer."
+  ],
+  "bark_after_act": "The Lantern's lit. I made its cap, you know. Seventy years ago. Still holds.",
+  "quest_ids": [
+   "q_a5_faded_knights"
+  ]
+ },
+ {
+  "id": "npc_a5_alchemist",
+  "kind": "npc",
+  "name": "Mother Simmer",
+  "title": "Cauldron Keeper",
+  "role": "alchemist",
+  "town": "a5_town",
+  "quirk": "Tends the Cauldron. Talks to it. It burbles back.",
+  "greeting": "Hello, dearie. The Cauldron says hello too. *burble*",
+  "barks": [
+   "Put anything in. See what comes out. The Cauldron never breaks a thing.",
+   "*burble* She likes you. She only burbles twice for friends.",
+   "Secret recipes are just surprises with instructions.",
+   "Every discovery goes in your journal. Keep it handy.",
+   "Let me show you. One little mix to start.",
+   "Stir left for luck. Stir right for soup."
+  ],
+  "bark_after_act": "The Cauldron burbled a whole song today. She's proud of you.",
+  "quest_ids": [
+   "q_a5_essence"
+  ]
+ },
+ {
+  "id": "npc_a5_jeweler",
+  "kind": "npc",
+  "name": "Twinkle",
+  "title": "Jeweler",
+  "role": "jeweler",
+  "town": "a5_town",
+  "quirk": "A fallen star the size of a teacup. Very sensitive about it.",
+  "greeting": "I'm a star! A real one! I'm just… compact.",
+  "barks": [
+   "Don't call me small. Call me concentrated.",
+   "I fell from the sky the night the Lantern went out.",
+   "Gems are just stars that decided to stay.",
+   "I can socket anything. With help. From a stool.",
+   "Stargazers keep trying to throw me. Please don't.",
+   "Big twinkle or small twinkle, still a twinkle."
+  ],
+  "bark_after_act": "I can see the sky again! My family's up there! Hi, everyone!",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a5_runecarver",
+  "kind": "npc",
+  "name": "Vesper Inkwell",
+  "title": "Runecarver",
+  "role": "runecarver",
+  "town": "a5_town",
+  "quirk": "Writes runes in light. They fade if you blink.",
+  "greeting": "Don't blink. There. You blinked. Let me write it again.",
+  "barks": [
+   "A rune of light lasts as long as someone reads it.",
+   "Ink, light, patience.",
+   "Quillon carves ice. I write light. We argue by letter.",
+   "Every rune is a small promise.",
+   "Read slowly. The words like it.",
+   "*writes* *you blink* *sigh* Again."
+  ],
+  "bark_after_act": "I wrote your name in light over the Landing. Nobody's blinked all day.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a5_trader",
+  "kind": "npc",
+  "name": "Nib",
+  "title": "Trader",
+  "role": "trader",
+  "town": "a5_town",
+  "quirk": "A reformed Magpie Imp. 'I don't steal. I borrow permanently.'",
+  "greeting": "Shinies! Lovely shinies! All borrowed! Permanently! Legally!",
+  "barks": [
+   "I used to be a Magpie Imp. Now I'm a magpie businessman.",
+   "You caught my cousin in Wickmire. She says hi. Grumpily.",
+   "Fair prices! Mostly fair! Fairly fair!",
+   "Ooh, is that shiny? Can I— no. No. I'm reformed.",
+   "The Hoard? Never heard of it. What Hoard.",
+   "Sell me your shinies and I'll give them a good home."
+  ],
+  "bark_after_act": "You relit the whole SKY? That's the shiniest thing anyone's ever done!",
+  "quest_ids": [
+   "q_a5_leftovers"
+  ]
+ },
+ {
+  "id": "npc_a5_stash",
+  "kind": "npc",
+  "name": "Keeper Stillwater",
+  "title": "Stash Keeper",
+  "role": "stash",
+  "town": "a5_town",
+  "quirk": "Perfectly calm. Has never hurried. Not even once.",
+  "greeting": "Welcome. Take your time. There is always time.",
+  "barks": [
+   "Nothing here is in a hurry. Least of all me.",
+   "Your stash is safe. Breathe in. Breathe out.",
+   "Hurrying makes you drop things. So I never hurry.",
+   "Everything you keep, I keep.",
+   "The Hush is quiet. So am I. We're different, though.",
+   "Rest is not wasted time."
+  ],
+  "bark_after_act": "The Lantern's lit. I'm very happy. You can tell by my… calm.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a5_stablemaster",
+  "kind": "npc",
+  "name": "Captain Loft",
+  "title": "Stablemaster",
+  "role": "stablemaster",
+  "town": "a5_town",
+  "quirk": "Rents great moths. Wears goggles indoors.",
+  "greeting": "Goggles on! Moths ready! Captain Loft, at your service!",
+  "barks": [
+   "Great moths fly toward light. That's you. Handy!",
+   "Bump into trouble and you'll hop off. Moths hate fuss.",
+   "Goggles indoors? Can't be too careful.",
+   "This is Dusty. She's very soft and very fast.",
+   "Faster on the islands. Faster through the Landing.",
+   "Big Bran's scared of my moths. Tell him they're friendly!"
+  ],
+  "bark_after_act": "Moths everywhere tonight! Must be the brightest night in history!",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a5_petkeeper",
+  "kind": "npc",
+  "name": "Tansy Glow",
+  "title": "Pet Keeper",
+  "role": "petkeeper",
+  "town": "a5_town",
+  "quirk": "Keeps fireflies in jars and lets them out every night.",
+  "greeting": "Hello! These are my fireflies. They're only visiting.",
+  "barks": [
+   "Every night I open the jars. Every morning they come back.",
+   "Pets are friends who choose to stay.",
+   "Mystery eggs hatch into all sorts. Carry one around!",
+   "A pet at full level is a proper best friend.",
+   "Juniper sends me owl feathers. I send her fireflies.",
+   "Light is better shared. Even firefly light."
+  ],
+  "bark_after_act": "All my fireflies came back at once and spelled 'THANKS'. Mostly.",
+  "quest_ids": []
+ },
+ {
+  "id": "npc_a5_innkeeper",
+  "kind": "npc",
+  "name": "Aunt Lumi",
+  "title": "Innkeeper",
+  "role": "innkeeper",
+  "town": "a5_town",
+  "quirk": "Runs The Last Lamp. Leaves a light in every window.",
+  "greeting": "Come in from the grey, love. There's a light in every window for you.",
+  "barks": [
+   "A lit window means someone's waiting for you.",
+   "Bind your Homeward Wick here. There'll always be a light on.",
+   "The Well is cold. The Last Lamp isn't.",
+   "Resting is part of carrying the light. Ada forgets that.",
+   "Sit. Warm up. The Well will still be there.",
+   "Nobody's too tired to be welcome."
+  ],
+  "bark_after_act": "Every window in the world is lit tonight. I cried into the tea.",
+  "quest_ids": [
+   "q_a5_ada_talk"
+  ]
+ },
+ {
+  "id": "npc_a5_questgiver",
+  "kind": "npc",
+  "name": "Ada Brightly",
+  "title": "Master Wickwright",
+  "role": "questgiver",
+  "town": "a5_town",
+  "quirk": "The last Guild master. Very old, very kind, very bad at rest.",
+  "greeting": "A Wickbearer. At last. Sit, sit. I'll stand. I always stand.",
+  "barks": [
+   "A light shared is not a light lost. That's the Guild's rule.",
+   "I knew the Grey Guest once. Before he was grey.",
+   "Ninety-nine chairs in our hall. Only one is ever sat in.",
+   "Down is up in the Well. Walk carefully.",
+   "I should rest more. Don't tell Aunt Lumi I said that.",
+   "Carry the light. Share it when you can. Rest when you need to."
+  ],
+  "bark_after_act": "Pell. Oh, Pell. I should have climbed the stair with you. …Thank you, Wickwright.",
+  "quest_ids": [
+   "q_a5_hushlings",
+   "q_a5_grey_guest"
+  ]
+ },
+ {
+  "id": "npc_a5_storyteller",
+  "kind": "npc",
+  "name": "The Moth Choir",
+  "title": "Storyteller",
+  "role": "storyteller",
+  "town": "a5_town",
+  "quirk": "A thousand moths. They sing. You'll have to lean in.",
+  "greeting": "*tiny chorus* Hellooo, little light! Lean in, lean in!",
+  "barks": [
+   "*sing* Once was a spark that wandered alone…",
+   "*sing* The Hush said nothing, and so it shone…",
+   "*hum* Where moths gather, secrets hide.",
+   "*sing* One keeper climbed, and nobody came…",
+   "*giggle* You're very bright. We like bright.",
+   "*sing* Carry the light, and then pass it on…"
+  ],
+  "bark_after_act": "*loudest tiny chorus ever* THE LANTERN! THE LANTERN! WE LOVE IT!",
+  "quest_ids": [
+   "q_a5_grey_moths"
+  ]
+ },
+ {
+  "id": "npc_a5_waypoint",
+  "kind": "npc",
+  "name": "Nobody",
+  "title": "Waypoint Keeper",
+  "role": "waypoint",
+  "town": "a5_town",
+  "quirk": "A friendly Hushling: just a hat and a polite silence.",
+  "greeting": "…  (Nobody tips its hat. The map glows.)",
+  "barks": [
+   "…  (Nobody points at the map. Politely.)",
+   "…  (Nobody waves. You think it's a wave.)",
+   "…  (A tiny, happy silence.)",
+   "…  (Nobody straightens its hat. It is very proud of the hat.)",
+   "…  (Nobody seems to be saying: town trips are free.)",
+   "…  (Somewhere, very quietly, a hum.)"
+  ],
+  "bark_after_act": "…!  (For the first time, Nobody makes a sound. It's a small 'yay'.)",
+  "quest_ids": [
+   "q_a5_quiet_stair"
+  ]
+ },
+ {
+  "id": "q_a1_lost_rattlers",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_questgiver",
+  "type": "kill",
+  "target": "rattler",
+  "count": 10,
+  "name": "Bedtime for Bones",
+  "text_offer": "The Rattlers climbed out of their graves and forgot why. Rekindle 10 and send them home to bed.",
+  "text_done": "Ten sleepy Rattlers, back in bed. They even said goodnight!"
+ },
+ {
+  "id": "q_a1_bone_meal",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_alchemist",
+  "type": "collect",
+  "target": "bone_meal",
+  "count": 8,
+  "name": "Glitter Ingredients",
+  "text_offer": "I need 8 Bone Meal for my potions. Don't ask. Ah— ACHOO! See? Very important. Well, a bit important. Whenever!",
+  "text_done": "Perfect! One potion coming up. Stand back. Glitter incoming."
+ },
+ {
+  "id": "q_a1_drowned_graves",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_waypoint",
+  "type": "explore",
+  "target": "a1_z1",
+  "count": 1,
+  "name": "Where the Graves Went",
+  "text_offer": "The old graveyard slid into the bog! Go and find the far end? I'd come too but *flicker*.",
+  "text_done": "You found it! And came back! I knew you would. *no flicker*"
+ },
+ {
+  "id": "q_a1_magpie",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_trader",
+  "type": "kill",
+  "target": "magpie_imp",
+  "count": 1,
+  "name": "Pocket Thief",
+  "text_offer": "A Magpie Imp nicked something from pocket nineteen! It's in the Bellcrypt Halls. Catch it!",
+  "text_done": "My thimble! And some extra gold? Keep that. The imp won't miss it. Much."
+ },
+ {
+  "id": "q_a1_candle_mages",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_runecarver",
+  "type": "kill",
+  "target": "candle_mage",
+  "count": 5,
+  "name": "Too Many Candles",
+  "text_offer": "Candle Mages keep lighting cold, grey candles. Wrong sort of light. Rekindle 5 of them?",
+  "text_done": "Proper warm light again. I carved you a rune. It says 'ta'."
+ },
+ {
+  "id": "q_a1_purl_yarn",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_storyteller",
+  "type": "talk",
+  "target": "npc_a1_jeweler",
+  "count": 1,
+  "name": "The Borrowed Yarn",
+  "text_offer": "Madame Glimmerwick borrowed my silver yarn for a ring. Could you ask for it back? Nicely.",
+  "text_done": "My silver yarn! The scarf grows another inch. Thank you, little light."
+ },
+ {
+  "id": "q_a1_warden_crypt",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_questgiver",
+  "type": "kill",
+  "target": "warden",
+  "count": 1,
+  "name": "The Warden Below",
+  "text_offer": "A Crypt Warden guards the Sunken Nave. It thinks it's still on duty. Relieve it of its shift.",
+  "text_done": "The old Warden's resting at last. So can you, if you like."
+ },
+ {
+  "id": "q_a1_bellringer",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_questgiver",
+  "type": "boss",
+  "target": "sunken_bellringer",
+  "count": 1,
+  "name": "The Bell Under the Water",
+  "text_offer": "Every DONG makes someone fall asleep in the bog. Climb the Belfry of the Drowned and stop that bell.",
+  "text_done": "It was Tolly. All this time, calling us home. And now he's home too."
+ },
+ {
+  "id": "q_a1_newt_ride",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_stablemaster",
+  "type": "explore",
+  "target": "a1_z2",
+  "count": 1,
+  "name": "Newt Test Drive",
+  "text_offer": "Puddle wants to stretch her legs! Ride through the Bellcrypt Halls and back. She says please.",
+  "text_done": "Puddle says that was the best day of her life. She says that every day."
+ },
+ {
+  "id": "q_a2_twiglings",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_questgiver",
+  "type": "kill",
+  "target": "twigling",
+  "count": 12,
+  "name": "Poke Every Stick",
+  "text_offer": "Twiglings pretend to be sticks, then jump out. Rekindle 12 before I jump out of my boots.",
+  "text_done": "Twelve sticks, twelve thank-yous. Only jumped nine times!"
+ },
+ {
+  "id": "q_a2_spores",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_alchemist",
+  "type": "collect",
+  "target": "dusk_essence",
+  "count": 3,
+  "name": "A Little Evening",
+  "text_offer": "I need 3 Dusk Essence for a new elixir. Bottled evening. Smells like cocoa. *puff*",
+  "text_done": "Marvellous! This elixir will be ever so glowy. *happy puff*"
+ },
+ {
+  "id": "q_a2_owl_towers",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_storyteller",
+  "type": "explore",
+  "target": "a2_z3",
+  "count": 1,
+  "name": "The Tower Question",
+  "text_offer": "What's at the top of the Owl Towers? Why don't you go and see? And who'll tell me after?",
+  "text_done": "You went. You saw. And now — what will you ask next?"
+ },
+ {
+  "id": "q_a2_owlcrows",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_petkeeper",
+  "type": "kill",
+  "target": "owlcrow",
+  "count": 8,
+  "name": "Hoo's Grumpy",
+  "text_offer": "The Snuffed Owlcrows scare my owlets. Rekindle 8? They'll be nicer after. Promise. Hoo.",
+  "text_done": "The owlets are napping again. Hoo. Thank you. Hoo."
+ },
+ {
+  "id": "q_a2_moss_hounds",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_stash",
+  "type": "kill",
+  "target": "moss_hound",
+  "count": 6,
+  "name": "Dig Dog Trouble",
+  "text_offer": "Moss Hounds keep digging up my buried stashes! Six of them! Help!",
+  "text_done": "Stashes safe! I buried a snack for you. Somewhere!"
+ },
+ {
+  "id": "q_a2_trader_riddle",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_trader",
+  "type": "talk",
+  "target": "npc_a2_runecarver",
+  "count": 1,
+  "name": "A Riddle for Hob",
+  "text_offer": "Riddle: what's green, grows on a face, and owes me money? Go ask Hob. Hoo-hoo!",
+  "text_done": "He paid in acorns! Carved acorns! What a fine deal."
+ },
+ {
+  "id": "q_a2_gossip",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_smith",
+  "type": "explore",
+  "target": "a2_z1",
+  "count": 1,
+  "name": "Hush, Birches",
+  "text_offer": "The Gossiping Birches keep telling rumours about my axe. Walk through and shine your light?",
+  "text_done": "Quiet at last. They only said one mean thing. Sorry, trees."
+ },
+ {
+  "id": "q_a2_mother_bark",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_questgiver",
+  "type": "boss",
+  "target": "mother_bark",
+  "count": 1,
+  "name": "The Shadow Pantry",
+  "text_offer": "Nobody in Whisperwood has a shadow. They're all in jars at Mother Bark's Pantry. Go gently.",
+  "text_done": "My shadow came home! It's shy. It's hiding behind me. Thank you."
+ },
+ {
+  "id": "q_a3_diglings",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_questgiver",
+  "type": "kill",
+  "target": "digling",
+  "count": 15,
+  "name": "The Forgetful Crew",
+  "text_offer": "My crew became Diglings. Rekindle 15 and maybe they'll remember why we dig.",
+  "text_done": "They're back! They still don't know why. But they know they're friends."
+ },
+ {
+  "id": "q_a3_crystal_spiders",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_smith",
+  "type": "kill",
+  "target": "crystal_spider",
+  "count": 8,
+  "name": "SPIDERS!",
+  "text_offer": "CRYSTAL SPIDERS IN THE GALLERY! My nephew won't go near them. Rekindle 8? THANK YOU!",
+  "text_done": "No more clinking in the dark! My nephew says thank you from under the bed."
+ },
+ {
+  "id": "q_a3_salt",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_alchemist",
+  "type": "collect",
+  "target": "wickthread",
+  "count": 5,
+  "name": "Wick Required",
+  "text_offer": "I need 5 Wickthread for a fuse. A safe fuse! A mostly safe fuse!",
+  "text_done": "It fizzled perfectly. Eyebrows intact. A good day!"
+ },
+ {
+  "id": "q_a3_cart_mimic",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_stash",
+  "type": "kill",
+  "target": "cart_mimic",
+  "count": 1,
+  "name": "That's Not Cart Six",
+  "text_offer": "Cart six came back with TEETH. That's not cart six! Find the real one on the Rattletrack Rails?",
+  "text_done": "The real cart six! And the toothy one ran home. Everyone's happy."
+ },
+ {
+  "id": "q_a3_annie_song",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_storyteller",
+  "type": "talk",
+  "target": "npc_a3_innkeeper",
+  "count": 1,
+  "name": "The First Line",
+  "text_offer": "Barnaby used to hum the old song. Ask him if he remembers a line. Line.",
+  "text_done": "'Dig deep.' Two words. Two whole words! Words."
+ },
+ {
+  "id": "q_a3_saltwhistle",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_waypoint",
+  "type": "explore",
+  "target": "a3_z1",
+  "count": 1,
+  "name": "Floor Unknown",
+  "text_offer": "The Saltwhistle Shafts aren't on my lift list. Go explore and I'll add a floor!",
+  "text_done": "New floor! Floor Saltwhistle! Ding! Everybody out!"
+ },
+ {
+  "id": "q_a3_lamp_ghosts",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_petkeeper",
+  "type": "kill",
+  "target": "lamp_ghost",
+  "count": 6,
+  "name": "Lost Lamps",
+  "text_offer": "Lamp ghosts are looking for their miners. Rekindle 6 so they can find their way home?",
+  "text_done": "Dimple saw them float up the shaft, all glowy. She did a happy wiggle."
+ },
+ {
+  "id": "q_a3_great_echo",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_questgiver",
+  "type": "boss",
+  "target": "great_echo",
+  "count": 1,
+  "name": "The Mountain's Voice",
+  "text_offer": "The Mouth of the Mountain copies everything, backwards. Go and give it something good to repeat.",
+  "text_done": "It's singing. The whole mountain. 'Dig deep, dig bright.' I remember now."
+ },
+ {
+  "id": "q_a4_letters",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_questgiver",
+  "type": "collect",
+  "target": "name_letter",
+  "count": 4,
+  "name": "The King's Letters",
+  "text_offer": "The letters of His Majesty's name are scattered in the halls. Please find all 4. It's item one.",
+  "text_done": "Four letters! A, L, D, R… the rest is up to you, I think."
+ },
+ {
+  "id": "q_a4_porcelain",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_petkeeper",
+  "type": "kill",
+  "target": "porcelain_doll",
+  "count": 10,
+  "name": "Who Moved?",
+  "text_offer": "The porcelain dolls only move when you don't look. Rekindle 10! That's a royal order. Please.",
+  "text_done": "Nobody moved! Except the right things! Sir Wobble says thank you."
+ },
+ {
+  "id": "q_a4_mirror_tea",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_stash",
+  "type": "kill",
+  "target": "mirror_butler",
+  "count": 6,
+  "name": "Tea Served Wrongly",
+  "text_offer": "My old colleagues, the Mirror Butlers, serve trap tea now. Rekindle 6. Kindly.",
+  "text_done": "Six butlers restored. One offered me proper tea. I wept. Discreetly."
+ },
+ {
+  "id": "q_a4_soup",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_alchemist",
+  "type": "collect",
+  "target": "soot",
+  "count": 20,
+  "name": "Stoking the Pot",
+  "text_offer": "The big pot needs stoking. 20 Soot Dust keeps it bubbling for the thawing guests!",
+  "text_done": "Bubbling beautifully! Have the first bowl, pet."
+ },
+ {
+  "id": "q_a4_gardens",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_stablemaster",
+  "type": "explore",
+  "target": "a4_z1",
+  "count": 1,
+  "name": "Hare Run",
+  "text_offer": "Flurry wants to see the Frosted Gardens. Ride through? Wrap up warm first!",
+  "text_done": "Flurry did twelve happy hops. Did you wrap up warm? Good."
+ },
+ {
+  "id": "q_a4_jester_joke",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_storyteller",
+  "type": "talk",
+  "target": "npc_a4_smith",
+  "count": 1,
+  "name": "A Joke for the Corporal",
+  "text_offer": "The Corporal hasn't laughed since the freeze. Tell him my best joke: 'Why did the soldier salute the fridge?'",
+  "text_done": "He laughed! Then saluted the laugh. That counts."
+ },
+ {
+  "id": "q_a4_tin_soldiers",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_smith",
+  "type": "kill",
+  "target": "tin_soldier",
+  "count": 12,
+  "name": "My Old Regiment",
+  "text_offer": "My regiment froze on parade. Rekindle 12 tin soldiers and they'll march again! *salute*",
+  "text_done": "They marched straight into the kitchen for soup. Good lads. *salute*"
+ },
+ {
+  "id": "q_a4_the_king",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_questgiver",
+  "type": "boss",
+  "target": "king_who_forgot",
+  "count": 1,
+  "name": "Who Are You?",
+  "text_offer": "His Majesty sits in the Throne of Frost, forgetting. Remind him who he is.",
+  "text_done": "'— and to all of you, who stayed.' He finished the toast. Item one: done."
+ },
+ {
+  "id": "q_a5_hushlings",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_questgiver",
+  "type": "kill",
+  "target": "hushling",
+  "count": 15,
+  "name": "Soft Shapes",
+  "text_offer": "Hushlings drift over the Upside-Down Stars. Rekindle 15. Give them a bit of sound back.",
+  "text_done": "Fifteen little hums. You can almost hear the Well breathing."
+ },
+ {
+  "id": "q_a5_grey_moths",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_storyteller",
+  "type": "kill",
+  "target": "grey_moth",
+  "count": 10,
+  "name": "Grey Wings",
+  "text_offer": "*sing* Some moths forgot their colours… Rekindle 10, little light, and bring them home!",
+  "text_done": "*loud tiny cheer* Ten new voices in the Choir!"
+ },
+ {
+  "id": "q_a5_leftovers",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_trader",
+  "type": "explore",
+  "target": "a5_z2",
+  "count": 1,
+  "name": "The Shiniest Leftovers",
+  "text_offer": "The Drift of Leftovers has bits of everywhere floating about. Go look! Not to borrow. Just look.",
+  "text_done": "You didn't borrow anything? Not even a tiny thing? …Respect."
+ },
+ {
+  "id": "q_a5_essence",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_alchemist",
+  "type": "collect",
+  "target": "dusk_essence",
+  "count": 6,
+  "name": "Feed the Cauldron",
+  "text_offer": "The Cauldron's peckish. 6 Dusk Essence, dearie? *burble*",
+  "text_done": "*burble burble* That's a very happy burble."
+ },
+ {
+  "id": "q_a5_quiet_stair",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_waypoint",
+  "type": "explore",
+  "target": "a5_z3",
+  "count": 1,
+  "name": "The Quiet Stair",
+  "text_offer": "…  (Nobody points down the Quiet Stair. Then at you. Then tips its hat.)",
+  "text_done": "…!  (Nobody does a tiny, silent dance.)"
+ },
+ {
+  "id": "q_a5_ada_talk",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_innkeeper",
+  "type": "talk",
+  "target": "npc_a5_questgiver",
+  "count": 1,
+  "name": "Make Her Sit",
+  "text_offer": "Ada hasn't sat down in forty years. Go and ask her to sit. Just for a minute.",
+  "text_done": "She sat! For a whole minute! Then stood up. It's a start, love."
+ },
+ {
+  "id": "q_a5_faded_knights",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_smith",
+  "type": "kill",
+  "target": "faded_knight",
+  "count": 6,
+  "name": "Old Guild Guards",
+  "text_offer": "Faded Knights were Guild guards once. Rekindle 6 and I'll make them new lanterns.",
+  "text_done": "Six new lanterns, six old friends back. Still learning, me."
+ },
+ {
+  "id": "q_a5_grey_guest",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_questgiver",
+  "type": "boss",
+  "target": "grey_guest",
+  "count": 1,
+  "name": "The Lantern Room",
+  "text_offer": "He's up there. Down there. In the Lantern Room. Don't fight to win, Wickbearer. Share your light.",
+  "text_done": "He's home. The Lantern's lit. And for once, nobody's carrying it alone."
+ }
+]

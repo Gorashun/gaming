@@ -114,7 +114,7 @@ Creatures whose wicks went out. They are not evil — they forgot. Each act has 
 | Act | Family | Members (suggested monster ids) | Flavour |
 |---|---|---|---|
 | 1 Wickmire | **Rattlebones** (+ bog critters) | `rattler`, `shieldbones`, `bog_archer`, `candle_mage`, `bonepile`, `warden`; bog extras `mud_frog`, `mist_snail`, `lily_ghost` | Old graveyard skeletons who forgot they were supposed to be sleeping. They rattle politely. |
-| 2 Whisperwood | **Twiglings** | `twigling`, `owlcrow`, `moss_hound`, `puffcap`, `thorn_sprite`, `stump_grumble` | Stick-folk and forest critters who whisper gossip about you. Most of it is wrong. |
+| 2 Whisperwood | **Twiglings** | `twigling`, `owlcrow`, `moss_hound`, `sporecap`, `thorn_sprite`, `stump_grumble` | Stick-folk and forest critters who whisper gossip about you. Most of it is wrong. |
 | 3 Echo Mines | **Diglings** | `digling`, `crystal_spider`, `cart_mimic`, `echo_bat`, `salt_golem`, `lamp_ghost` | Miners and mine-things who forgot why they dig. They keep digging anyway. |
 | 4 Rimehall | **The Frozen Court** | `porcelain_doll`, `tin_soldier`, `mirror_butler`, `frost_jester`, `ice_courtier`, `snow_hound` | A royal party frozen mid-toast. Very polite. Very cold. |
 | 5 Well of Hush | **Hushlings** | `hushling`, `sound_eater`, `grey_moth`, `faded_knight`, `hollow_choir`, `nobody_hat` | Shapes with no faces and no sound. Everything goes quiet near them. |
@@ -312,7 +312,7 @@ Twelve roles per town: smith, alchemist, jeweler, runecarver, trader, stash keep
 ### Lamplight Hollow (`a1_town`)
 | id | Name | Role | Quirk |
 |---|---|---|---|
-| npc_a1_smith | **Brannoc "Big Bran" Tinderhand** *(featured)* | Smith | Huge, gentle, terrified of moths. Names every hammer. |
+| npc_a1_smith | **Brannoc "Big Bran" Sparkwell** *(featured)* | Smith | Huge, gentle, terrified of moths. Names every hammer. |
 | npc_a1_alchemist | **Nettle Pim** | Alchemist | Tiny. Sneezes glitter when potions fizz. |
 | npc_a1_jeweler | **Madame Glimmerwick** | Jeweler | Wears 40 rings. Always looking for the one she's wearing. |
 | npc_a1_runecarver | **Grandpa Knurl** | Runecarver | Carves runes on everything, including his spoons. |
@@ -338,7 +338,7 @@ Twelve roles per town: smith, alchemist, jeweler, runecarver, trader, stash keep
 | npc_a2_petkeeper | **Juniper Fitch** | Pet keeper | Raises owlets. Answers in hoots when distracted. |
 | npc_a2_innkeeper | **Bramble Hartwell** | Innkeeper | Runs *The Hollow Knot*. Beds are hammocks. All of them. |
 | npc_a2_questgiver | **Ranger Sorrel Vane** | Quest-giver | Jumps at every whisper. Brave anyway. |
-| npc_a2_storyteller | **Old Hoot** | Storyteller | Ancient owl. Answers questions with questions. |
+| npc_a2_storyteller | **Old Hoot** | Storyteller | Very, very old owl. Answers questions with questions. |
 | npc_a2_waypoint | **Lumen the Glowworm** | Waypoint keeper | A big glowworm. Speaks in rhymes. |
 
 ### Clinkerton (`a3_town`)

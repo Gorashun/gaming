@@ -2,7 +2,7 @@ class_name CharacterData
 extends RefCounted
 ## Everything persistent about one hero. Serializes to a Dictionary (save file / future server).
 
-const SAVE_VERSION := 1
+const SAVE_VERSION := 2
 
 var id = ""
 var name = "Hero"
@@ -38,6 +38,23 @@ var rested_xp = 0.0
 var last_played_unix = 0
 var created_unix = 0
 var stats_tracking = {}     # kills, deaths, legendaries found, etc.
+# --- v2 (wave 2 systems) ---
+var proficiency = {}        # weapon_type -> {level, xp}
+var pets_owned = {}         # pet_id -> {level, xp}
+var active_pet = ""
+var pet_state = {}          # dig_kills, ferry_ready_at, ferry_back_at (play-seconds)
+var mounts_owned = []
+var active_mount = ""
+var mount_fed_until = 0.0   # play-seconds
+var bound_town = ""
+var hearth_ready_at = 0.0   # play-seconds (pauses when not playing — welfare)
+var wick_charges = 0        # consumable: skip the hearth cooldown once
+var return_portal = {}      # {zone, seed, pos:[x,z], tier} — "portal back" from town
+var quests = {"active": {}, "done": []}
+var skill_mods = {}         # skill_id -> [option ids]
+var skill_xp = {}           # skill_id -> mastery xp toward next rank
+var skill_mastery = {}      # skill_id -> mastery rank
+var loadouts = []           # up to 3 saved builds: {name, skill_ranks, skill_bar, skill_mods, gear:{slot: uid}}
 
 var stats = StatBlock.new()
 
@@ -86,6 +103,16 @@ func recalc() -> void:
 			stats.set_source("constellation:" + cons.id, cons.get("bonus", {}))
 	if pact != "":
 		stats.set_source("pact", Content.get_rec("passives", pact).get("stats", {}))
+	# Weapon affinity + proficiency, skill modifiers/mastery, pet bonuses
+	stats.set_source("affinity", Weapons.affinity_stats(self))
+	stats.set_source("proficiency", Weapons.proficiency_stats(self))
+	stats.clear_prefix("skillmod:")
+	for sid in skill_mods:
+		for opt in SkillMods.chosen_options(self, sid):
+			if not opt.get("stats", {}).is_empty():
+				stats.set_source("skillmod:%s:%s" % [sid, opt.get("id", "")], opt.stats)
+	stats.set_source("mastery", SkillMastery.stat_bonuses(self))
+	stats.set_source("pet", Pets.stat_bonuses(self))
 	# Primary attribute conversions
 	var conv: Dictionary = Content.get_rec("config", "attributes").get("conversions", {})
 	var derived = {}
@@ -166,6 +193,11 @@ func to_dict() -> Dictionary:
 		"progress": progress, "current_act": current_act, "waypoints": waypoints, "pity": pity,
 		"play_seconds": play_seconds, "rested_xp": rested_xp, "last_played_unix": last_played_unix,
 		"created_unix": created_unix, "stats_tracking": stats_tracking,
+		"proficiency": proficiency, "pets_owned": pets_owned, "active_pet": active_pet, "pet_state": pet_state,
+		"mounts_owned": mounts_owned, "active_mount": active_mount, "mount_fed_until": mount_fed_until,
+		"bound_town": bound_town, "hearth_ready_at": hearth_ready_at, "wick_charges": wick_charges,
+		"return_portal": return_portal, "quests": quests, "skill_mods": skill_mods, "skill_xp": skill_xp,
+		"skill_mastery": skill_mastery, "loadouts": loadouts,
 	}
 
 static func from_dict(d: Dictionary) -> CharacterData:
@@ -174,7 +206,9 @@ static func from_dict(d: Dictionary) -> CharacterData:
 	for k in d:
 		if k == "save_version":
 			continue
-		if k in c:
+		if k in c and k != "stats" and d[k] != null and typeof(d[k]) == typeof(c.get(k)):
+			c.set(k, d[k])
+		elif k in c and k != "stats" and d[k] != null and typeof(c.get(k)) in [TYPE_INT, TYPE_FLOAT] and typeof(d[k]) in [TYPE_INT, TYPE_FLOAT]:
 			c.set(k, d[k])
 	# JSON turns ints into floats; normalise key numerics
 	c.level = int(c.level); c.xp = int(c.xp); c.gold = int(c.gold)
@@ -184,8 +218,36 @@ static func from_dict(d: Dictionary) -> CharacterData:
 	c.recalc()
 	return c
 
+static func _mark_placeholder(it: Dictionary) -> void:
+	if not Content.has_rec("item_bases", str(it.get("base", ""))):
+		it["placeholder"] = true
+	elif it.has("placeholder"):
+		it.erase("placeholder")
+
+## Upgrades old save dictionaries step by step. Never drops data; new fields get defaults.
 static func migrate(d: Dictionary) -> Dictionary:
 	var v = int(d.get("save_version", 1))
-	# Future: if v < 2: ... ; v = 2
+	if v < 2:
+		# v2: proficiency, pets, mounts, travel, quests, skill mods/mastery, item upgrade levels
+		for k in ["proficiency", "pets_owned", "pet_state", "skill_mods", "skill_xp", "skill_mastery", "return_portal"]:
+			if not (d.get(k) is Dictionary):
+				d[k] = {}
+		for k in ["mounts_owned", "loadouts"]:
+			if not (d.get(k) is Array):
+				d[k] = []
+		if not (d.get("quests") is Dictionary):
+			d["quests"] = {"active": {}, "done": []}
+		for k in ["active_pet", "active_mount", "bound_town"]:
+			if not (d.get(k) is String):
+				d[k] = ""
+		d["hearth_ready_at"] = 0.0
+		for slot in d.get("equipment", {}):
+			var it = d.equipment[slot]
+			if it is Dictionary and not it.has("upgrade"):
+				it["upgrade"] = 0
+		for it in d.get("inventory", []):
+			if it is Dictionary and not it.has("upgrade"):
+				it["upgrade"] = 0
+		v = 2
 	d["save_version"] = v
 	return d

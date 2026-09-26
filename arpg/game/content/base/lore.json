@@ -1,1 +1,2088 @@
-[]
+[
+ {
+  "id": "act_intro_act1",
+  "kind": "act_intro",
+  "ref": "act1",
+  "title": "Act I — Wickmire",
+  "text": "The bells of Wickmire stopped ringing the night the Lantern went out. Now the lamps float away, one by one. Somebody has to tie them down."
+ },
+ {
+  "id": "act_intro_act2",
+  "kind": "act_intro",
+  "ref": "act2",
+  "title": "Act II — Whisperwood",
+  "text": "The trees of Whisperwood are whispering about you. Look down. Nobody here has a shadow."
+ },
+ {
+  "id": "act_intro_act3",
+  "kind": "act_intro",
+  "ref": "act3",
+  "title": "Act III — Echo Mines",
+  "text": "Deep in the mountain, the miners still dig. They just can't remember why. Listen. Something is copying your footsteps."
+ },
+ {
+  "id": "act_intro_act4",
+  "kind": "act_intro",
+  "ref": "act4",
+  "title": "Act IV — Rimehall",
+  "text": "A king raised his cup for a toast. Then the light went out, and everything froze. The party is still waiting for the end of his sentence."
+ },
+ {
+  "id": "act_intro_act5",
+  "kind": "act_intro",
+  "ref": "act5",
+  "title": "Act V — The Well of Hush",
+  "text": "Below everything is the Well of Hush. Down there, up is down, and the only colour is you. Somewhere at the bottom is the sky."
+ },
+ {
+  "id": "act_intro_deepdark",
+  "kind": "act_intro",
+  "ref": "deepdark",
+  "title": "The Deepdark",
+  "text": "The Lantern is lit again. But the Hush didn't vanish. It sank under everything. Time to tidy up after a very long night."
+ },
+ {
+  "id": "zone_intro_a1_town",
+  "kind": "zone_intro",
+  "ref": "a1_town",
+  "title": "Lamplight Hollow",
+  "text": "A village on stilts. Every lamp is tied down with string. Warm soup, warm beds, warm people."
+ },
+ {
+  "id": "zone_intro_a1_z1",
+  "kind": "zone_intro",
+  "ref": "a1_z1",
+  "title": "The Drowned Graves",
+  "text": "The old graveyard slid into the bog. The Rattlebones woke up. They're wet and confused."
+ },
+ {
+  "id": "zone_intro_a1_z2",
+  "kind": "zone_intro",
+  "ref": "a1_z2",
+  "title": "Bellcrypt Halls",
+  "text": "Crypts under the bell tower. Something giggles in the dark. It sounds like a coin purse."
+ },
+ {
+  "id": "zone_intro_a1_z3",
+  "kind": "zone_intro",
+  "ref": "a1_z3",
+  "title": "The Sunken Nave",
+  "text": "A bell rings under the water. Everyone near it starts to yawn."
+ },
+ {
+  "id": "zone_intro_a1_boss",
+  "kind": "zone_intro",
+  "ref": "a1_boss",
+  "title": "Belfry of the Drowned",
+  "text": "The top of the sunken tower. A stone figure holds a bell. It never stops ringing."
+ },
+ {
+  "id": "zone_intro_a2_town",
+  "kind": "zone_intro",
+  "ref": "a2_town",
+  "title": "Owlstead",
+  "text": "Treehouses and rope bridges, lit by jars of glowworms. Mind the gap. Mind the owlets."
+ },
+ {
+  "id": "zone_intro_a2_z1",
+  "kind": "zone_intro",
+  "ref": "a2_z1",
+  "title": "The Gossiping Birches",
+  "text": "The trees are talking about you. \"Nice boots.\" \"Scared of moths, I heard.\""
+ },
+ {
+  "id": "zone_intro_a2_z2",
+  "kind": "zone_intro",
+  "ref": "a2_z2",
+  "title": "Puffcap Hollow",
+  "text": "Giant glowing mushrooms. Puff! Sparkles. Something hides under every cap."
+ },
+ {
+  "id": "zone_intro_a2_z3",
+  "kind": "zone_intro",
+  "ref": "a2_z3",
+  "title": "The Owl Towers",
+  "text": "Old stone towers full of Owlcrows. Their heads turn all the way round. They always see you."
+ },
+ {
+  "id": "zone_intro_a2_boss",
+  "kind": "zone_intro",
+  "ref": "a2_boss",
+  "title": "Mother Bark's Pantry",
+  "text": "Shelves and shelves of jars. In every jar, a shadow. They press against the glass."
+ },
+ {
+  "id": "zone_intro_a3_town",
+  "kind": "zone_intro",
+  "ref": "a3_town",
+  "title": "Clinkerton",
+  "text": "A mining camp on a giant lift. It goes up. It goes down. Mostly it creaks."
+ },
+ {
+  "id": "zone_intro_a3_z1",
+  "kind": "zone_intro",
+  "ref": "a3_z1",
+  "title": "Saltwhistle Shafts",
+  "text": "White salt tunnels. The wind whistles a tune nobody remembers."
+ },
+ {
+  "id": "zone_intro_a3_z2",
+  "kind": "zone_intro",
+  "ref": "a3_z2",
+  "title": "The Glittering Gallery",
+  "text": "Crystal caves that clink. Crystal Spiders clink too. If it goes quiet, look up."
+ },
+ {
+  "id": "zone_intro_a3_z3",
+  "kind": "zone_intro",
+  "ref": "a3_z3",
+  "title": "Rattletrack Rails",
+  "text": "Mine-cart tracks in the dark. One of the carts has teeth. Which one?"
+ },
+ {
+  "id": "zone_intro_a3_boss",
+  "kind": "zone_intro",
+  "ref": "a3_boss",
+  "title": "The Mouth of the Mountain",
+  "text": "A cave so big it has weather. Whatever you do, it does too. Backwards."
+ },
+ {
+  "id": "zone_intro_a4_town",
+  "kind": "zone_intro",
+  "ref": "a4_town",
+  "title": "Kettlekeep",
+  "text": "The castle kitchens. The only warm rooms left. The big kettle is always on."
+ },
+ {
+  "id": "zone_intro_a4_z1",
+  "kind": "zone_intro",
+  "ref": "a4_z1",
+  "title": "The Frosted Gardens",
+  "text": "Hedges shaped like animals, frozen solid. Some of them aren't hedges."
+ },
+ {
+  "id": "zone_intro_a4_z2",
+  "kind": "zone_intro",
+  "ref": "a4_z2",
+  "title": "The Looking-Glass Gallery",
+  "text": "Halls of mirrors. Your reflection is a little bit late. Don't drink the tea."
+ },
+ {
+  "id": "zone_intro_a4_z3",
+  "kind": "zone_intro",
+  "ref": "a4_z3",
+  "title": "The Everlasting Toast",
+  "text": "Hundreds of frozen guests, cups raised, mid-cheer. They've been cheering for a year."
+ },
+ {
+  "id": "zone_intro_a4_boss",
+  "kind": "zone_intro",
+  "ref": "a4_boss",
+  "title": "The Throne of Frost",
+  "text": "An icy throne. A king who asks, \"Who are you?\" And then, \"Who am I?\""
+ },
+ {
+  "id": "zone_intro_a5_town",
+  "kind": "zone_intro",
+  "ref": "a5_town",
+  "title": "Lastlight Landing",
+  "text": "A lighthouse on the rim of the Well. The Guild's last hall. The only warm light for miles."
+ },
+ {
+  "id": "zone_intro_a5_z1",
+  "kind": "zone_intro",
+  "ref": "a5_z1",
+  "title": "The Upside-Down Stars",
+  "text": "You walk on the sky. The stars are under your feet. Some are fallen lanterns."
+ },
+ {
+  "id": "zone_intro_a5_z2",
+  "kind": "zone_intro",
+  "ref": "a5_z2",
+  "title": "The Drift of Leftovers",
+  "text": "Floating islands made of everything the Hush took. A bog stair. A birch. A ballroom door."
+ },
+ {
+  "id": "zone_intro_a5_z3",
+  "kind": "zone_intro",
+  "ref": "a5_z3",
+  "title": "The Quiet Stair",
+  "text": "A spiral stair going down to the sky. No sound at all. Your footsteps glow instead."
+ },
+ {
+  "id": "zone_intro_a5_boss",
+  "kind": "zone_intro",
+  "ref": "a5_boss",
+  "title": "The Lantern Room",
+  "text": "Inside the dark World-Lantern. A small grey figure sits by the cold wick."
+ },
+ {
+  "id": "zone_intro_deepdark",
+  "kind": "zone_intro",
+  "ref": "deepdark",
+  "title": "The Deepdark",
+  "text": "The underside of everything. Greyer. Quieter. The Snuffed down here are stubborn."
+ },
+ {
+  "id": "zone_intro_lightwell",
+  "kind": "zone_intro",
+  "ref": "lightwell",
+  "title": "A Lightwell",
+  "text": "Old light pooled at the bottom of this well. Gather what you can, then climb out and rest."
+ },
+ {
+  "id": "zone_intro_magpies_hoard",
+  "kind": "zone_intro",
+  "ref": "magpies_hoard",
+  "title": "The Magpie's Hoard",
+  "text": "A nest of glittering junk and real treasure. Shh. Grandmother Magpie is asleep."
+ },
+ {
+  "id": "zone_intro_candy_crypt",
+  "kind": "zone_intro",
+  "ref": "candy_crypt",
+  "title": "The Candy Crypt",
+  "text": "A crypt made of sweets. The Rattlebones here are sugar. They're very embarrassed."
+ },
+ {
+  "id": "zone_intro_tea_party",
+  "kind": "zone_intro",
+  "ref": "tea_party",
+  "title": "Behind the Waterfall",
+  "text": "A tea party. The guests are Snuffed. Nobody attacks. There's one empty chair."
+ },
+ {
+  "id": "boss_intro_sunken_bellringer",
+  "kind": "boss_intro",
+  "ref": "sunken_bellringer",
+  "title": "The Sunken Bellringer",
+  "text": "DONG. \"Come home… come home… the dark is coming…\" DONG."
+ },
+ {
+  "id": "boss_outro_sunken_bellringer",
+  "kind": "boss_outro",
+  "ref": "sunken_bellringer",
+  "title": "The Sunken Bellringer",
+  "text": "The stone cracks like an egg. A tiny old man blinks at you. \"Oh. Did everyone get home?\" He rings one bright note. Morning."
+ },
+ {
+  "id": "boss_intro_mother_bark",
+  "kind": "boss_intro",
+  "ref": "mother_bark",
+  "title": "Mother Bark",
+  "text": "\"Thief! Shadow-snatcher! You'll not have my little darks!\""
+ },
+ {
+  "id": "boss_outro_mother_bark",
+  "kind": "boss_outro",
+  "ref": "mother_bark",
+  "title": "Mother Bark",
+  "text": "Your light gives her a shadow for the first time in a year. She laughs, creaky and glad, and opens every jar. \"Go home, little darks.\""
+ },
+ {
+  "id": "boss_intro_great_echo",
+  "kind": "boss_intro",
+  "ref": "great_echo",
+  "title": "The Great Echo",
+  "text": "\"…olleh? …OLLEH?\" (It's saying hello. Backwards. Very loudly.)"
+ },
+ {
+  "id": "boss_outro_great_echo",
+  "kind": "boss_outro",
+  "ref": "great_echo",
+  "title": "The Great Echo",
+  "text": "\"Dig deep, dig bright…\" the miners sing. The mountain sings it back, the right way round. It isn't lonely any more."
+ },
+ {
+  "id": "boss_intro_king_who_forgot",
+  "kind": "boss_intro",
+  "ref": "king_who_forgot",
+  "title": "The King Who Forgot His Name",
+  "text": "\"Who are you? Who… am I? No matter. Everyone must stay. Stay FROZEN.\""
+ },
+ {
+  "id": "boss_outro_king_who_forgot",
+  "kind": "boss_outro",
+  "ref": "king_who_forgot",
+  "title": "The King Who Forgot His Name",
+  "text": "\"Aldric. My name is Aldric.\" The crown thaws. He raises his cup. \"— and to all of you, who stayed.\" Pip runs to him."
+ },
+ {
+  "id": "boss_intro_grey_guest",
+  "kind": "boss_intro",
+  "ref": "grey_guest",
+  "title": "The Grey Guest",
+  "text": "\"You came all this way. Please. Just let it stay dark. Then nobody has to carry it.\""
+ },
+ {
+  "id": "boss_outro_grey_guest",
+  "kind": "boss_outro",
+  "ref": "grey_guest",
+  "title": "The Grey Guest",
+  "text": "You share your light. His little lantern glows. Colour fills his coat. \"You carried it,\" says Pell. \"I thought no one would.\""
+ },
+ {
+  "id": "tip_001",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Dodge",
+  "text": "Tap Dodge to roll through danger. Red on the ground means \"move!\""
+ },
+ {
+  "id": "tip_002",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Red means move",
+  "text": "Red circles on the floor show where an attack will land. Step out of them."
+ },
+ {
+  "id": "tip_003",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Loot colours",
+  "text": "Grey, blue, yellow, purple, orange… The brighter the colour, the more it remembers."
+ },
+ {
+  "id": "tip_004",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Green crown",
+  "text": "A green crown means a Unique item. It remembers one special someone."
+ },
+ {
+  "id": "tip_005",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Sun symbol",
+  "text": "Cyan-white with a sun? That's a Named item. You can only craft those."
+ },
+ {
+  "id": "tip_006",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Best gear",
+  "text": "Not sure what to wear? Tap \"Best gear\" and your hero dresses up."
+ },
+ {
+  "id": "tip_007",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Simple mode",
+  "text": "Simple mode can auto-attack, auto-pickup and equip clear upgrades. Undo is always there."
+ },
+ {
+  "id": "tip_008",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Homeward Wick",
+  "text": "Use your Homeward Wick to go back to town from anywhere. It's free."
+ },
+ {
+  "id": "tip_009",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Bind your home",
+  "text": "Talk to an innkeeper to make that town your Homeward Wick home."
+ },
+ {
+  "id": "tip_010",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Waypoints",
+  "text": "Touch a waypoint once, and you can travel there any time from the map."
+ },
+ {
+  "id": "tip_011",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Free to town",
+  "text": "Travelling to a town is free. Other waypoints cost a little gold."
+ },
+ {
+  "id": "tip_012",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Upgrades",
+  "text": "The smith can upgrade items up to +15. It never fails. You see the cost first."
+ },
+ {
+  "id": "tip_013",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Kindle",
+  "text": "Kindle is the spark left in an item. Crafting spends it."
+ },
+ {
+  "id": "tip_014",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Salvage",
+  "text": "Don't need it? Salvage it into materials. The spark goes back into the world."
+ },
+ {
+  "id": "tip_015",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Any weapon",
+  "text": "Every hero can use every weapon. Some just like certain weapons a bit more."
+ },
+ {
+  "id": "tip_016",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Proficiency",
+  "text": "Use a weapon type a lot and you'll get better with it. For good."
+ },
+ {
+  "id": "tip_017",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Skill choices",
+  "text": "At skill rank 2 and 4, pick a change to how the skill works. Try them all!"
+ },
+ {
+  "id": "tip_018",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Free respec",
+  "text": "Changed your mind? Skill points are free to reset until level 20."
+ },
+ {
+  "id": "tip_019",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Pets",
+  "text": "Pets pick up loot for you. Some even dig up treasure."
+ },
+ {
+  "id": "tip_020",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Pet levels",
+  "text": "Your pet grows with you. Adventure together and it levels up."
+ },
+ {
+  "id": "tip_021",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Mounts",
+  "text": "Mounts make you faster. If something bumps you, you'll hop off."
+ },
+ {
+  "id": "tip_022",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Stablemasters",
+  "text": "Every town has a stablemaster. Ask about mounts!"
+ },
+ {
+  "id": "tip_023",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Elites",
+  "text": "Glowing rings under enemies mean elites. They're tougher, and they drop better loot."
+ },
+ {
+  "id": "tip_024",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Magpie Imp",
+  "text": "See a Magpie Imp? Catch it! It drops gold. Sometimes it leaves a door open…"
+ },
+ {
+  "id": "tip_025",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Potions",
+  "text": "Drink a potion when your light gets low."
+ },
+ {
+  "id": "tip_026",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Rested Glow",
+  "text": "Time away fills your Rested Glow. When you come back, you learn faster."
+ },
+ {
+  "id": "tip_027",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Good place to rest",
+  "text": "Each zone ends with a summary. It's a nice place to stop, or carry on."
+ },
+ {
+  "id": "tip_028",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Take a break",
+  "text": "Breaks are part of the adventure. Your hero will be right here."
+ },
+ {
+  "id": "tip_029",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Lantern meter",
+  "text": "The Lantern meter fills as you play. When it's full, something special drops."
+ },
+ {
+  "id": "tip_030",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Boss fragments",
+  "text": "Collect 10 boss fragments and they make a boss material."
+ },
+ {
+  "id": "tip_031",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Mailbox",
+  "text": "No room for a great item? Legendary and better ones wait for you in the mailbox."
+ },
+ {
+  "id": "tip_032",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Loot filter",
+  "text": "Too much loot? The loot filter can hide the items you don't need."
+ },
+ {
+  "id": "tip_033",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Brightness",
+  "text": "After level 60, every level makes your light brighter. Spend star points on the starmap."
+ },
+ {
+  "id": "tip_034",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Lightwells",
+  "text": "Lightwells are short dives for old light. Stop halfway and you still keep what you found."
+ },
+ {
+  "id": "tip_035",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Difficulty",
+  "text": "Finished the story? Try Nightfall. The Snuffed are tougher, the loot is better."
+ },
+ {
+  "id": "tip_036",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Last Flame",
+  "text": "Last Flame heroes have one life. Only try it if you really want to. Normal play loses nothing."
+ },
+ {
+  "id": "tip_037",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Crafting stations",
+  "text": "Each act has a new crafting station. The crafter there will show you how."
+ },
+ {
+  "id": "tip_038",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "The Cauldron",
+  "text": "Put things in the Cauldron to discover secret recipes. It never destroys an item."
+ },
+ {
+  "id": "tip_039",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Sockets",
+  "text": "Put a gem in a socket. Rubies, sapphires, topaz and emeralds each help differently."
+ },
+ {
+  "id": "tip_040",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Glow",
+  "text": "Lanternbearers build Glow by blocking and getting hit. Brave and bright!"
+ },
+ {
+  "id": "tip_041",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Fury",
+  "text": "Bellstrikers build Fury by hitting things. It fades if you stop. DING!"
+ },
+ {
+  "id": "tip_042",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Thread",
+  "text": "Stitchers spend Thread to sew dolls. Dolls fight so you don't have to be in front."
+ },
+ {
+  "id": "tip_043",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Combo points",
+  "text": "Roofrunners build combo points with quick hits, then spend them on big moves."
+ },
+ {
+  "id": "tip_044",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Mana",
+  "text": "Stargazers use Mana. It fills up again on its own."
+ },
+ {
+  "id": "tip_045",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Hold to aim",
+  "text": "Tap a skill to aim it for you. Hold it to aim it yourself."
+ },
+ {
+  "id": "tip_046",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Layout",
+  "text": "You can move your buttons around, or mirror them for left hands."
+ },
+ {
+  "id": "tip_047",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Light remembers",
+  "text": "In Lumenholm, light remembers. Where light falls, things keep their colour, their sound and their names."
+ },
+ {
+  "id": "tip_048",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "The Snuffed",
+  "text": "The Snuffed aren't bad. They forgot who they are. Your light helps them remember."
+ },
+ {
+  "id": "tip_049",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Rekindled",
+  "text": "When a Snuffed creature pops into sparks, it runs home. It says thank you, very quietly."
+ },
+ {
+  "id": "tip_050",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "The Hush",
+  "text": "The Hush isn't angry. It's just quiet. Too quiet, for too long."
+ },
+ {
+  "id": "tip_051",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Sparks",
+  "text": "Loot is made from sparks of the World-Lantern. That's why every item remembers something."
+ },
+ {
+  "id": "tip_052",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "The Guild",
+  "text": "\"A light shared is not a light lost.\" — motto of the Wickwright Guild."
+ },
+ {
+  "id": "tip_053",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Grey Guest",
+  "text": "Every town has a story about a tall grey stranger who asked to come in and sit down."
+ },
+ {
+  "id": "tip_054",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Tolly",
+  "text": "Wickmire's bellringer rang the evening bell for sixty years. Come home, come home."
+ },
+ {
+  "id": "tip_055",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Shadows",
+  "text": "A shadow only exists where there is light. Think about that, in Whisperwood."
+ },
+ {
+  "id": "tip_056",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Owlcrows",
+  "text": "Owlcrows sometimes ask riddles. Answer well. They remember."
+ },
+ {
+  "id": "tip_057",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "The song",
+  "text": "The miners of the Echo Mines had a song. \"Dig deep, dig bright…\" How did it go on?"
+ },
+ {
+  "id": "tip_058",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Mirror Butlers",
+  "text": "Mirror Butlers serve tea. The tea is a trap. They are very, very sorry."
+ },
+ {
+  "id": "tip_059",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "The toast",
+  "text": "In Rimehall, a king's toast was never finished. Everyone is still waiting."
+ },
+ {
+  "id": "tip_060",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Moths",
+  "text": "Where moths gather, something is hidden. Look around."
+ },
+ {
+  "id": "tip_061",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "The Tenth Lantern",
+  "text": "Nine lampposts in every town. And one empty bracket. Keep an eye on the moon."
+ },
+ {
+  "id": "tip_062",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Mailboxes",
+  "text": "There's an old mailbox in every act. Who keeps writing to you?"
+ },
+ {
+  "id": "tip_063",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Up is down",
+  "text": "In the Well of Hush, you climb down to reach the sky."
+ },
+ {
+  "id": "tip_064",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Magpies",
+  "text": "Magpie Imps don't steal. They \"borrow permanently\". Big difference, they say."
+ },
+ {
+  "id": "tip_065",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "The hub cat",
+  "text": "Every town has the same grey cat. It's always asleep. Nobody knows how."
+ },
+ {
+  "id": "tip_066",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Bran's moths",
+  "text": "Big Bran the smith is scared of moths. Please don't tell the Moth Choir."
+ },
+ {
+  "id": "tip_067",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Rest",
+  "text": "\"Carry the light. Share it when you can. Rest when you need to.\" — the Guild's rule."
+ },
+ {
+  "id": "tip_068",
+  "kind": "loading_tip",
+  "ref": "",
+  "title": "Colour",
+  "text": "In the Well of Hush, the world is grey. Every colour you see means something."
+ },
+ {
+  "id": "jr_before",
+  "kind": "journal",
+  "ref": "act5",
+  "title": "Before",
+  "text": "Before the Lantern, there was only the Hush. No colour. No sound. Not bad. Just nothing much, like a room after bedtime."
+ },
+ {
+  "id": "jr_wandering_spark",
+  "kind": "journal",
+  "ref": "act5",
+  "title": "The Wandering Spark",
+  "text": "One day a spark drifted in from nowhere. The Hush said nothing. So the spark kept glowing. It was the first thing that ever remembered."
+ },
+ {
+  "id": "jr_first_wickwrights",
+  "kind": "journal",
+  "ref": "act5",
+  "title": "The First Wickwrights",
+  "text": "Small folk built a lantern around the spark so it wouldn't blow away. They hung it high, so everyone could share. They called themselves Wickwrights."
+ },
+ {
+  "id": "jr_lightwells",
+  "kind": "journal",
+  "ref": "act1",
+  "title": "Why Towns Dig Wells",
+  "text": "Every town dug a Lightwell to catch spare light, like rain in a barrel. \"For a dark day,\" they said. Nobody thought the dark day would come."
+ },
+ {
+  "id": "jr_bell_log",
+  "kind": "journal",
+  "ref": "act1",
+  "title": "Tolly's Bell Log",
+  "text": "Rang evening bell. All home. Rang morning bell. All up. — Rang evening bell. All home. (Sixty years of the same page. He never got bored.)"
+ },
+ {
+  "id": "jr_last_log",
+  "kind": "journal",
+  "ref": "act1",
+  "title": "Tolly's Last Page",
+  "text": "Lantern out. Rang the bell. Nobody came. Rang again. Rang again. Rang ag—"
+ },
+ {
+  "id": "jr_bark_recipe",
+  "kind": "journal",
+  "ref": "act2",
+  "title": "Mother Bark's Jar Label",
+  "text": "\"Shadow of a small fox. Handle gently. Likes to be near the window.\""
+ },
+ {
+  "id": "jr_hoot_notes",
+  "kind": "journal",
+  "ref": "act2",
+  "title": "Old Hoot's Lesson",
+  "text": "What is a star? A lantern very far away. What is a lantern? A star someone decided to keep close."
+ },
+ {
+  "id": "jr_miner_list",
+  "kind": "journal",
+  "ref": "act3",
+  "title": "Foreman Pickwell's List",
+  "text": "Why we dig: 1. ______ 2. ______ 3. ______ (Someone has drawn a small, sad face.)"
+ },
+ {
+  "id": "jr_echo_song",
+  "kind": "journal",
+  "ref": "act3",
+  "title": "The Work-Song",
+  "text": "Dig deep, dig bright, bring the shine to light. Dig slow, dig true, the mountain sings for you."
+ },
+ {
+  "id": "jr_toast",
+  "kind": "journal",
+  "ref": "act4",
+  "title": "The King's Toast (Draft)",
+  "text": "To the Lantern, and to all of you — (He crossed out 'who came' and wrote 'who stayed'. He liked that better.)"
+ },
+ {
+  "id": "jr_pip_letter",
+  "kind": "journal",
+  "ref": "act4",
+  "title": "Pip's Letter",
+  "text": "Dear Dad. You forgot my name. That's okay. I remember it for both of us. It's Pip. Love, Pip."
+ },
+ {
+  "id": "jr_guild_rules",
+  "kind": "journal",
+  "ref": "act5",
+  "title": "Guild Rule Book, Page 1",
+  "text": "Rule 1: Carry the light. Rule 2: Share it when you can. Rule 3: Rest when you need to. (Rule 3 is underlined. Nobody listened.)"
+ },
+ {
+  "id": "jr_ada_note",
+  "kind": "journal",
+  "ref": "act5",
+  "title": "Ada's Note",
+  "text": "I meant to climb the stair and help him. Tomorrow, I said. For forty years, I said tomorrow."
+ },
+ {
+  "id": "jr_pell_1",
+  "kind": "journal",
+  "ref": "act1",
+  "title": "A Name, Part 1",
+  "text": "A torn scrap in grey ink: \"My name is P…\""
+ },
+ {
+  "id": "jr_pell_2",
+  "kind": "journal",
+  "ref": "act2",
+  "title": "A Name, Part 2",
+  "text": "Another scrap: \"…I trim the wick every night. Nobody asks who…\""
+ },
+ {
+  "id": "jr_pell_3",
+  "kind": "journal",
+  "ref": "act3",
+  "title": "A Name, Part 3",
+  "text": "\"…I am so tired. If it goes out, maybe someone else will have to…\""
+ },
+ {
+  "id": "jr_pell_4",
+  "kind": "journal",
+  "ref": "act4",
+  "title": "A Name, Part 4",
+  "text": "\"…I only wanted to sit down. Just for a moment. Just in someone's warm kitchen…\""
+ },
+ {
+  "id": "jr_pell_5",
+  "kind": "journal",
+  "ref": "act5",
+  "title": "A Name, Part 5",
+  "text": "\"…ell. My name is Pell. If you find this, please say it out loud. I've nearly forgotten it.\""
+ },
+ {
+  "id": "jr_deepdark",
+  "kind": "journal",
+  "ref": "deepdark",
+  "title": "Where the Hush Went",
+  "text": "The Hush didn't vanish. It sank under everything, like the night sinking under the morning. That's alright. Night is good, when morning comes."
+ },
+ {
+  "id": "flavor_u_bellringers_toll",
+  "kind": "item_flavor",
+  "ref": "u_bellringers_toll",
+  "title": "The Bellringer's Toll",
+  "text": "It still rings, faintly, when no one is listening."
+ },
+ {
+  "id": "flavor_u_drowned_lantern",
+  "kind": "item_flavor",
+  "ref": "u_drowned_lantern",
+  "title": "Drowned Lantern",
+  "text": "Wet, cold, and somehow still burning."
+ },
+ {
+  "id": "flavor_u_tollys_morning_note",
+  "kind": "item_flavor",
+  "ref": "u_tollys_morning_note",
+  "title": "Tolly's Morning Note",
+  "text": "One bright DONG. Everybody up!"
+ },
+ {
+  "id": "flavor_u_warden_helm",
+  "kind": "item_flavor",
+  "ref": "u_warden_helm",
+  "title": "The Warden's Big Helmet",
+  "text": "Two sizes too big. You'll grow into it."
+ },
+ {
+  "id": "flavor_u_purls_scarf",
+  "kind": "item_flavor",
+  "ref": "u_purls_scarf",
+  "title": "The Unfinished Scarf",
+  "text": "Long enough for a whole village. Nearly."
+ },
+ {
+  "id": "flavor_u_bog_newt_boots",
+  "kind": "item_flavor",
+  "ref": "u_bog_newt_boots",
+  "title": "Squelchstriders",
+  "text": "They squelch. Proudly."
+ },
+ {
+  "id": "flavor_u_candle_mages_last_wick",
+  "kind": "item_flavor",
+  "ref": "u_candle_mages_last_wick",
+  "title": "The Last Warm Wick",
+  "text": "A Candle Mage gave it back. Politely."
+ },
+ {
+  "id": "flavor_u_rattlers_nightcap",
+  "kind": "item_flavor",
+  "ref": "u_rattlers_nightcap",
+  "title": "Rattler's Nightcap",
+  "text": "Rattlebones sleep better in it. So do you."
+ },
+ {
+  "id": "flavor_u_mother_barks_jar",
+  "kind": "item_flavor",
+  "ref": "u_mother_barks_jar",
+  "title": "Mother Bark's Shadow Jar",
+  "text": "Empty now. It hums a lullaby anyway."
+ },
+ {
+  "id": "flavor_u_birch_whisper",
+  "kind": "item_flavor",
+  "ref": "u_birch_whisper",
+  "title": "Birchwhisper",
+  "text": "Each arrow tells a rumour on the way."
+ },
+ {
+  "id": "flavor_u_owlcrow_eye",
+  "kind": "item_flavor",
+  "ref": "u_owlcrow_eye",
+  "title": "The Owlcrow's Eye",
+  "text": "It always looks your way. Kindly, now."
+ },
+ {
+  "id": "flavor_u_puffcap_hood",
+  "kind": "item_flavor",
+  "ref": "u_puffcap_hood",
+  "title": "Puffcap Hood",
+  "text": "Sneeze-proof. Sparkle-positive."
+ },
+ {
+  "id": "flavor_u_moss_hound_collar",
+  "kind": "item_flavor",
+  "ref": "u_moss_hound_collar",
+  "title": "Good Dog Collar",
+  "text": "For the goodest hound in the Whisperwood."
+ },
+ {
+  "id": "flavor_u_hobs_acorn",
+  "kind": "item_flavor",
+  "ref": "u_hobs_acorn",
+  "title": "Hob's Carved Acorn",
+  "text": "The rune on it says 'grow'. It's trying."
+ },
+ {
+  "id": "flavor_u_twigling_crown",
+  "kind": "item_flavor",
+  "ref": "u_twigling_crown",
+  "title": "Crown of Sticks",
+  "text": "Twiglings bow when they see it. Then they poke it."
+ },
+ {
+  "id": "flavor_u_digdeep_pick",
+  "kind": "item_flavor",
+  "ref": "u_digdeep_pick",
+  "title": "Dig Deep",
+  "text": "It hums the first line of an old song."
+ },
+ {
+  "id": "flavor_u_digbright",
+  "kind": "item_flavor",
+  "ref": "u_digbright",
+  "title": "Dig Bright",
+  "text": "It hums the second line."
+ },
+ {
+  "id": "flavor_u_crystal_spider_silk",
+  "kind": "item_flavor",
+  "ref": "u_crystal_spider_silk",
+  "title": "Clinking Silk Gloves",
+  "text": "If they go quiet, check the ceiling."
+ },
+ {
+  "id": "flavor_u_cart_six",
+  "kind": "item_flavor",
+  "ref": "u_cart_six",
+  "title": "Cart Six's Wheel",
+  "text": "It always comes back."
+ },
+ {
+  "id": "flavor_u_echo_annies_shawl",
+  "kind": "item_flavor",
+  "ref": "u_echo_annies_shawl",
+  "title": "Annie's Shawl",
+  "text": "Warm. Warm."
+ },
+ {
+  "id": "flavor_u_salt_golem_heart",
+  "kind": "item_flavor",
+  "ref": "u_salt_golem_heart",
+  "title": "Salty Heart",
+  "text": "Tough on the outside. Salty in the middle."
+ },
+ {
+  "id": "flavor_u_lou_levers_lever",
+  "kind": "item_flavor",
+  "ref": "u_lou_levers_lever",
+  "title": "The Going-Up Lever",
+  "text": "Ding! Next stop: trouble."
+ },
+ {
+  "id": "flavor_u_toast_everlasting",
+  "kind": "item_flavor",
+  "ref": "u_toast_everlasting",
+  "title": "The Everlasting Toast",
+  "text": "Raised a year. Finished at last."
+ },
+ {
+  "id": "flavor_u_warmhearth_crown",
+  "kind": "item_flavor",
+  "ref": "u_warmhearth_crown",
+  "title": "Warmhearth Crown",
+  "text": "It thaws anyone who wears it. Especially inside."
+ },
+ {
+  "id": "flavor_u_mirror_butler_tray",
+  "kind": "item_flavor",
+  "ref": "u_mirror_butler_tray",
+  "title": "The Sorry Tray",
+  "text": "Serves trap tea. Deeply apologises."
+ },
+ {
+  "id": "flavor_u_porcelain_smile",
+  "kind": "item_flavor",
+  "ref": "u_porcelain_smile",
+  "title": "Porcelain Smile",
+  "text": "It only moves when you're not looking."
+ },
+ {
+  "id": "flavor_u_tinwhistle_medal",
+  "kind": "item_flavor",
+  "ref": "u_tinwhistle_medal",
+  "title": "Tinwhistle's Medal",
+  "text": "For bravery. And for saluting anvils."
+ },
+ {
+  "id": "flavor_u_pips_tiara",
+  "kind": "item_flavor",
+  "ref": "u_pips_tiara",
+  "title": "Pip's Bossy Tiara",
+  "text": "Royal orders, kindly given."
+ },
+ {
+  "id": "flavor_u_rooftop_hood",
+  "kind": "item_flavor",
+  "ref": "u_rooftop_hood",
+  "title": "Chimney Kid's Hood",
+  "text": "Smells of soot and adventure."
+ },
+ {
+  "id": "flavor_u_frost_jester_bells",
+  "kind": "item_flavor",
+  "ref": "u_frost_jester_bells",
+  "title": "Jin-Jin",
+  "text": "Frozen jester bells. They only get halfway."
+ },
+ {
+  "id": "flavor_u_nobodys_hat",
+  "kind": "item_flavor",
+  "ref": "u_nobodys_hat",
+  "title": "Nobody's Spare Hat",
+  "text": "…  (It is a very good hat.)"
+ },
+ {
+  "id": "flavor_u_quiet_stair_boots",
+  "kind": "item_flavor",
+  "ref": "u_quiet_stair_boots",
+  "title": "Quiet Stair Slippers",
+  "text": "Every step leaves a little light."
+ },
+ {
+  "id": "flavor_u_hollow_choir_bell",
+  "kind": "item_flavor",
+  "ref": "u_hollow_choir_bell",
+  "title": "The Hollow Choir's Bell",
+  "text": "Rings without a sound. The Hush hears it."
+ },
+ {
+  "id": "flavor_u_pells_trimmers",
+  "kind": "item_flavor",
+  "ref": "u_pells_trimmers",
+  "title": "Pell's Wick-Trimmers",
+  "text": "Snip. Snip. Every night. For so long."
+ },
+ {
+  "id": "flavor_u_ninety_nine_chairs",
+  "kind": "item_flavor",
+  "ref": "u_ninety_nine_chairs",
+  "title": "The Ninety-Ninth Chair",
+  "text": "Someone finally sat in it."
+ },
+ {
+  "id": "flavor_u_lastlight_lens",
+  "kind": "item_flavor",
+  "ref": "u_lastlight_lens",
+  "title": "Lastlight Lens",
+  "text": "Makes small lights look very, very big."
+ },
+ {
+  "id": "flavor_u_mother_simmers_ladle",
+  "kind": "item_flavor",
+  "ref": "u_mother_simmers_ladle",
+  "title": "The Stirring Ladle",
+  "text": "Stir left for luck."
+ },
+ {
+  "id": "flavor_u_nibs_borrowing_glove",
+  "kind": "item_flavor",
+  "ref": "u_nibs_borrowing_glove",
+  "title": "Nib's Borrowing Glove",
+  "text": "Borrows gold. Permanently. Legally."
+ },
+ {
+  "id": "flavor_u_magpie_hoard_key",
+  "kind": "item_flavor",
+  "ref": "u_magpie_hoard_key",
+  "title": "Magpie's Hoard Key",
+  "text": "Opens a door that isn't there. Sometimes."
+ },
+ {
+  "id": "flavor_u_moth_choir_cloak",
+  "kind": "item_flavor",
+  "ref": "u_moth_choir_cloak",
+  "title": "Cloak of a Thousand Wings",
+  "text": "Soft. Fluttery. Slightly ticklish."
+ },
+ {
+  "id": "flavor_u_first_spark",
+  "kind": "item_flavor",
+  "ref": "u_first_spark",
+  "title": "The Wandering Spark",
+  "text": "The first thing that ever remembered."
+ },
+ {
+  "id": "flavor_u_long_shadow_mantle",
+  "kind": "item_flavor",
+  "ref": "u_long_shadow_mantle",
+  "title": "Mantle of the Long Shadow",
+  "text": "Every shadow wants to be close to a light."
+ },
+ {
+  "id": "flavor_n_morning_never_came",
+  "kind": "item_flavor",
+  "ref": "n_morning_never_came",
+  "title": "The Morning That Never Came",
+  "text": "Forged for a dawn that was cancelled. It is still waiting."
+ },
+ {
+  "id": "secret_n_morning_never_came",
+  "kind": "secret",
+  "ref": "n_morning_never_came",
+  "title": "Last Spark of the World-Lantern",
+  "text": "Rekindle all of Act V without your lantern going out once."
+ },
+ {
+  "id": "flavor_n_grandmothers_needles",
+  "kind": "item_flavor",
+  "ref": "n_grandmothers_needles",
+  "title": "Grandmother's Needles",
+  "text": "She knitted a scarf for every child in the village. The last one was never finished."
+ },
+ {
+  "id": "secret_n_grandmothers_needles",
+  "kind": "secret",
+  "ref": "n_grandmothers_needles",
+  "title": "Moonthread",
+  "text": "From the Tenth Lantern, on in-game full-moon nights."
+ },
+ {
+  "id": "flavor_n_bell_that_doesnt_ring",
+  "kind": "item_flavor",
+  "ref": "n_bell_that_doesnt_ring",
+  "title": "The Bell That Doesn't Ring",
+  "text": "The quietest bell in the world. The Snuffed hear it anyway."
+ },
+ {
+  "id": "secret_n_bell_that_doesnt_ring",
+  "kind": "secret",
+  "ref": "n_bell_that_doesnt_ring",
+  "title": "Echo of Stillness",
+  "text": "Stand still for 30 seconds while the Great Echo copies you."
+ },
+ {
+  "id": "flavor_n_owls_last_question",
+  "kind": "item_flavor",
+  "ref": "n_owls_last_question",
+  "title": "The Owl's Last Question",
+  "text": "The answer isn't in any book. We checked. All the books."
+ },
+ {
+  "id": "secret_n_owls_last_question",
+  "kind": "secret",
+  "ref": "n_owls_last_question",
+  "title": "An Answer Nobody Knew",
+  "text": "Answer 50 Owlcrow riddles in a row, then say 'I don't know'."
+ },
+ {
+  "id": "flavor_n_frog_kings_croak",
+  "kind": "item_flavor",
+  "ref": "n_frog_kings_croak",
+  "title": "The Frog King's Croak",
+  "text": "Every bolt croaks. That's not a bug. It's tradition."
+ },
+ {
+  "id": "secret_n_frog_kings_croak",
+  "kind": "secret",
+  "ref": "n_frog_kings_croak",
+  "title": "A Frog That Never Jumped",
+  "text": "Find it on a Wickmire lily pad in the rain. Walk. Don't run."
+ },
+ {
+  "id": "flavor_soot",
+  "kind": "item_flavor",
+  "ref": "soot",
+  "title": "Soot Dust",
+  "text": "Cold soot from lamps that went out. It still dreams of being warm."
+ },
+ {
+  "id": "flavor_wickthread",
+  "kind": "item_flavor",
+  "ref": "wickthread",
+  "title": "Wickthread",
+  "text": "Unburnt wick. Every lantern starts with a little of this."
+ },
+ {
+  "id": "flavor_dusk_essence",
+  "kind": "item_flavor",
+  "ref": "dusk_essence",
+  "title": "Dusk Essence",
+  "text": "A bottle of evening. Smells faintly of cocoa."
+ },
+ {
+  "id": "flavor_ember_heart",
+  "kind": "item_flavor",
+  "ref": "ember_heart",
+  "title": "Ember Heart",
+  "text": "A warm little core. Hold it and your hands stop being cold."
+ },
+ {
+  "id": "flavor_bone_meal",
+  "kind": "item_flavor",
+  "ref": "bone_meal",
+  "title": "Bone Meal",
+  "text": "Rattlebones leave this behind when they run home to bed."
+ },
+ {
+  "id": "flavor_bell_shard",
+  "kind": "item_flavor",
+  "ref": "bell_shard",
+  "title": "Bell Shard",
+  "text": "A piece of Tolly's bell. Put ten together and it rings again."
+ },
+ {
+  "id": "sc_tenth_lantern",
+  "kind": "secret",
+  "ref": "a1_town",
+  "title": "The Tenth Lantern",
+  "text": "Nine lampposts. One empty bracket. On a full-moon night, a dark lantern hangs there. Light it."
+ },
+ {
+  "id": "sc_tenth_room",
+  "kind": "secret",
+  "ref": "a1_town",
+  "title": "Behind the Tenth Lantern",
+  "text": "A tiny room. A small fire. A grey figure in a chair. \"Oh. Hello. Sit down. I've heard about you.\""
+ },
+ {
+  "id": "sc_mailbox_1",
+  "kind": "secret",
+  "ref": "act1",
+  "title": "A Letter For You",
+  "text": "\"Dear you. Mind the imp in the crypt. It's faster than it looks. — (a small drawn lantern)\""
+ },
+ {
+  "id": "sc_mailbox_2",
+  "kind": "secret",
+  "ref": "act2",
+  "title": "Another Letter",
+  "text": "\"Dear you. Behind the waterfall, sit still. Trust me. — (a small drawn lantern)\""
+ },
+ {
+  "id": "sc_mailbox_3",
+  "kind": "secret",
+  "ref": "act3",
+  "title": "Another Letter",
+  "text": "\"Dear you. When the mountain copies you, give it nothing. — (a small drawn lantern)\""
+ },
+ {
+  "id": "sc_mailbox_4",
+  "kind": "secret",
+  "ref": "act4",
+  "title": "Another Letter",
+  "text": "\"Dear you. Mind the third mirror. Your reflection isn't late there. It's early. — (a small drawn lantern)\""
+ },
+ {
+  "id": "sc_mailbox_5",
+  "kind": "secret",
+  "ref": "act5",
+  "title": "Another Letter",
+  "text": "\"Dear you. Don't fight to win. You'll know what to do. — (a small drawn lantern)\""
+ },
+ {
+  "id": "sc_mailbox_last",
+  "kind": "secret",
+  "ref": "deepdark",
+  "title": "The Last Letter",
+  "text": "\"Dear you. Your light never went out, because I lit it. From the other side. Carry it well. — You.\""
+ },
+ {
+  "id": "sc_tea_party",
+  "kind": "secret",
+  "ref": "tea_party",
+  "title": "Snuffed, but Lovely",
+  "text": "You sat still for a whole minute. The Snuffed poured you tea. It was cold. It was the nicest tea you've ever had."
+ },
+ {
+  "id": "sc_frog",
+  "kind": "secret",
+  "ref": "act1",
+  "title": "The Frog That Never Jumped",
+  "text": "It sits on a lily pad in the rain. It has never jumped. Not once. Walk slowly. It's thinking about it."
+ },
+ {
+  "id": "sc_owlcrow",
+  "kind": "secret",
+  "ref": "act2",
+  "title": "The Last Riddle",
+  "text": "\"What is the answer to this question?\" The only right answer is \"I don't know.\" The Owlcrow looks very pleased."
+ },
+ {
+  "id": "sc_stillness",
+  "kind": "secret",
+  "ref": "a3_boss",
+  "title": "Echo of Stillness",
+  "text": "You stood still. The Echo had nothing to copy. It waited. Then it whispered: \"…oh. Quiet. Nice.\""
+ },
+ {
+  "id": "sc_candy_crypt",
+  "kind": "secret",
+  "ref": "candy_crypt",
+  "title": "The Candy Crypt",
+  "text": "A cracked wall in Bellcrypt Halls smells like toffee. Hit it. Go on."
+ },
+ {
+  "id": "sc_hub_cat",
+  "kind": "secret",
+  "ref": "a1_town",
+  "title": "The Grey Cat",
+  "text": "It's the same cat in every town. When the moon is full, it purrs. It is not the Grey Guest. Probably."
+ },
+ {
+  "id": "sc_chair",
+  "kind": "secret",
+  "ref": "a5_town",
+  "title": "The Ninety-Ninth Chair",
+  "text": "Ninety-nine chairs in the Guild hall. After the Lantern is lit, one of them has your name carved on it."
+ },
+ {
+  "id": "sc_egg",
+  "kind": "secret",
+  "ref": "",
+  "title": "A Warm Egg",
+  "text": "It's warm. It wiggles. Carry it on your adventures. What hatches depends on where you go."
+ },
+ {
+  "id": "bark_lanternbearer_1",
+  "kind": "npc_bark",
+  "ref": "lanternbearer",
+  "title": "Lanternbearer",
+  "text": "We've got this."
+ },
+ {
+  "id": "bark_lanternbearer_2",
+  "kind": "npc_bark",
+  "ref": "lanternbearer",
+  "title": "Lanternbearer",
+  "text": "Stay in the light. Stay close."
+ },
+ {
+  "id": "bark_lanternbearer_3",
+  "kind": "npc_bark",
+  "ref": "lanternbearer",
+  "title": "Lanternbearer",
+  "text": "Nothing to be scared of. …Mostly."
+ },
+ {
+  "id": "bark_lanternbearer_4",
+  "kind": "npc_bark",
+  "ref": "lanternbearer",
+  "title": "Lanternbearer",
+  "text": "Brighter together."
+ },
+ {
+  "id": "bark_lanternbearer_5",
+  "kind": "npc_bark",
+  "ref": "lanternbearer",
+  "title": "Lanternbearer",
+  "text": "Okay. Okay. Still glowing."
+ },
+ {
+  "id": "bark_bellstriker_1",
+  "kind": "npc_bark",
+  "ref": "bellstriker",
+  "title": "Bellstriker",
+  "text": "DING!"
+ },
+ {
+  "id": "bark_bellstriker_2",
+  "kind": "npc_bark",
+  "ref": "bellstriker",
+  "title": "Bellstriker",
+  "text": "Group hug after this!"
+ },
+ {
+  "id": "bark_bellstriker_3",
+  "kind": "npc_bark",
+  "ref": "bellstriker",
+  "title": "Bellstriker",
+  "text": "Is that a spider? THAT'S A SPIDER."
+ },
+ {
+  "id": "bark_bellstriker_4",
+  "kind": "npc_bark",
+  "ref": "bellstriker",
+  "title": "Bellstriker",
+  "text": "Everybody wake UP!"
+ },
+ {
+  "id": "bark_bellstriker_5",
+  "kind": "npc_bark",
+  "ref": "bellstriker",
+  "title": "Bellstriker",
+  "text": "Sorry! Too loud? Sorry!"
+ },
+ {
+  "id": "bark_stargazer_1",
+  "kind": "npc_bark",
+  "ref": "stargazer",
+  "title": "Stargazer",
+  "text": "Technically, that's a nebula."
+ },
+ {
+  "id": "bark_stargazer_2",
+  "kind": "npc_bark",
+  "ref": "stargazer",
+  "title": "Stargazer",
+  "text": "It's 'whom', actually."
+ },
+ {
+  "id": "bark_stargazer_3",
+  "kind": "npc_bark",
+  "ref": "stargazer",
+  "title": "Stargazer",
+  "text": "I read about this! The book didn't end well."
+ },
+ {
+  "id": "bark_stargazer_4",
+  "kind": "npc_bark",
+  "ref": "stargazer",
+  "title": "Stargazer",
+  "text": "Star light, star bright — duck!"
+ },
+ {
+  "id": "bark_stargazer_5",
+  "kind": "npc_bark",
+  "ref": "stargazer",
+  "title": "Stargazer",
+  "text": "Please hold still, I'm calculating."
+ },
+ {
+  "id": "bark_stitcher_1",
+  "kind": "npc_bark",
+  "ref": "stitcher",
+  "title": "Stitcher",
+  "text": "Say hello, Mister Buttons."
+ },
+ {
+  "id": "bark_stitcher_2",
+  "kind": "npc_bark",
+  "ref": "stitcher",
+  "title": "Stitcher",
+  "text": "Snip, snip, stitch!"
+ },
+ {
+  "id": "bark_stitcher_3",
+  "kind": "npc_bark",
+  "ref": "stitcher",
+  "title": "Stitcher",
+  "text": "The dolls say you're very brave."
+ },
+ {
+  "id": "bark_stitcher_4",
+  "kind": "npc_bark",
+  "ref": "stitcher",
+  "title": "Stitcher",
+  "text": "Nobody gets left unmended."
+ },
+ {
+  "id": "bark_stitcher_5",
+  "kind": "npc_bark",
+  "ref": "stitcher",
+  "title": "Stitcher",
+  "text": "Oh, she likes you!"
+ },
+ {
+  "id": "bark_roofrunner_1",
+  "kind": "npc_bark",
+  "ref": "roofrunner",
+  "title": "Roofrunner",
+  "text": "Saw that coming. Totally."
+ },
+ {
+  "id": "bark_roofrunner_2",
+  "kind": "npc_bark",
+  "ref": "roofrunner",
+  "title": "Roofrunner",
+  "text": "I once jumped over a whole castle. Twice."
+ },
+ {
+  "id": "bark_roofrunner_3",
+  "kind": "npc_bark",
+  "ref": "roofrunner",
+  "title": "Roofrunner",
+  "text": "Is this yours? Kidding! …Kidding."
+ },
+ {
+  "id": "bark_roofrunner_4",
+  "kind": "npc_bark",
+  "ref": "roofrunner",
+  "title": "Roofrunner",
+  "text": "Up and over!"
+ },
+ {
+  "id": "bark_roofrunner_5",
+  "kind": "npc_bark",
+  "ref": "roofrunner",
+  "title": "Roofrunner",
+  "text": "Quick, quiet, quality."
+ },
+ {
+  "id": "bark_rootweaver_1",
+  "kind": "npc_bark",
+  "ref": "rootweaver",
+  "title": "Rootweaver",
+  "text": "Mm? Oh. Yes. Fighting."
+ },
+ {
+  "id": "bark_rootweaver_2",
+  "kind": "npc_bark",
+  "ref": "rootweaver",
+  "title": "Rootweaver",
+  "text": "Slow roots, strong roots."
+ },
+ {
+  "id": "bark_rootweaver_3",
+  "kind": "npc_bark",
+  "ref": "rootweaver",
+  "title": "Rootweaver",
+  "text": "I remember when this was a seed. So was I."
+ },
+ {
+  "id": "bark_rootweaver_4",
+  "kind": "npc_bark",
+  "ref": "rootweaver",
+  "title": "Rootweaver",
+  "text": "Just resting my eyes… for a century."
+ },
+ {
+  "id": "bark_rootweaver_5",
+  "kind": "npc_bark",
+  "ref": "rootweaver",
+  "title": "Rootweaver",
+  "text": "The beetles know the way."
+ },
+ {
+  "id": "bark_npc_a1_smith",
+  "kind": "npc_bark",
+  "ref": "npc_a1_smith",
+  "title": "Brannoc Sparkwell",
+  "text": "This is Hammer Gerald. Say hello to Gerald."
+ },
+ {
+  "id": "bark_npc_a1_alchemist",
+  "kind": "npc_bark",
+  "ref": "npc_a1_alchemist",
+  "title": "Nettle Pim",
+  "text": "Red potion: feel better. Blue potion: don't drink the blue one."
+ },
+ {
+  "id": "bark_npc_a1_jeweler",
+  "kind": "npc_bark",
+  "ref": "npc_a1_jeweler",
+  "title": "Madame Glimmerwick",
+  "text": "Forty rings, and not one is the right one."
+ },
+ {
+  "id": "bark_npc_a1_runecarver",
+  "kind": "npc_bark",
+  "ref": "npc_a1_runecarver",
+  "title": "Grandpa Knurl",
+  "text": "This spoon has a rune for 'soup'. Very useful."
+ },
+ {
+  "id": "bark_npc_a1_trader",
+  "kind": "npc_bark",
+  "ref": "npc_a1_trader",
+  "title": "Pocket Polly",
+  "text": "Pocket forty-two… no, that's a frog. Sorry, frog."
+ },
+ {
+  "id": "bark_npc_a1_stash",
+  "kind": "npc_bark",
+  "ref": "npc_a1_stash",
+  "title": "Humphrey",
+  "text": "Nothing… lost… in… a hundred… years."
+ },
+ {
+  "id": "bark_npc_a1_stablemaster",
+  "kind": "npc_bark",
+  "ref": "npc_a1_stablemaster",
+  "title": "Hattie Hayloft",
+  "text": "Puddle says you look like a good rider."
+ },
+ {
+  "id": "bark_npc_a1_petkeeper",
+  "kind": "npc_bark",
+  "ref": "npc_a1_petkeeper",
+  "title": "Wren Whistleby",
+  "text": "Pets pick up loot for you. Very professional."
+ },
+ {
+  "id": "bark_npc_a1_innkeeper",
+  "kind": "npc_bark",
+  "ref": "npc_a1_innkeeper",
+  "title": "Mother Mabble",
+  "text": "Rest here and the Homeward Wick will bring you back."
+ },
+ {
+  "id": "bark_npc_a1_questgiver",
+  "kind": "npc_bark",
+  "ref": "npc_a1_questgiver",
+  "title": "Warden Hollis Reed",
+  "text": "The helmet was my father's. I'll grow into it."
+ },
+ {
+  "id": "bark_npc_a1_storyteller",
+  "kind": "npc_bark",
+  "ref": "npc_a1_storyteller",
+  "title": "Grandmother Purl",
+  "text": "Knit one, purl one, tell one story."
+ },
+ {
+  "id": "bark_npc_a1_waypoint",
+  "kind": "npc_bark",
+  "ref": "npc_a1_waypoint",
+  "title": "Flicker",
+  "text": "Touch a waypoint once and you can come back any time!"
+ },
+ {
+  "id": "bark_npc_a2_smith",
+  "kind": "npc_bark",
+  "ref": "npc_a2_smith",
+  "title": "Tamsin Knotwood",
+  "text": "Sorry, log. This won't hurt a bit."
+ },
+ {
+  "id": "bark_npc_a2_alchemist",
+  "kind": "npc_bark",
+  "ref": "npc_a2_alchemist",
+  "title": "Professor Fennimore Puffcap",
+  "text": "Alchemy: turning 'oops' into 'ooh!'"
+ },
+ {
+  "id": "bark_npc_a2_jeweler",
+  "kind": "npc_bark",
+  "ref": "npc_a2_jeweler",
+  "title": "Cress Dewdrop",
+  "text": "My best gem evaporated this morning. Again."
+ },
+ {
+  "id": "bark_npc_a2_runecarver",
+  "kind": "npc_bark",
+  "ref": "npc_a2_runecarver",
+  "title": "Hob Mossbeard",
+  "text": "A rune on an acorn grows into a rune on a tree."
+ },
+ {
+  "id": "bark_npc_a2_trader",
+  "kind": "npc_bark",
+  "ref": "npc_a2_trader",
+  "title": "Mister Quibble",
+  "text": "What's cheaper than cheap? A good deal!"
+ },
+ {
+  "id": "bark_npc_a2_stash",
+  "kind": "npc_bark",
+  "ref": "npc_a2_stash",
+  "title": "Nutsy",
+  "text": "I remember EVERY hiding place! …Most of them!"
+ },
+ {
+  "id": "bark_npc_a2_stablemaster",
+  "kind": "npc_bark",
+  "ref": "npc_a2_stablemaster",
+  "title": "Ferris Longstride",
+  "text": "*whistles* That means yes."
+ },
+ {
+  "id": "bark_npc_a2_petkeeper",
+  "kind": "npc_bark",
+  "ref": "npc_a2_petkeeper",
+  "title": "Juniper Fitch",
+  "text": "Owlets sleep all day. Best job ever."
+ },
+ {
+  "id": "bark_npc_a2_innkeeper",
+  "kind": "npc_bark",
+  "ref": "npc_a2_innkeeper",
+  "title": "Bramble Hartwell",
+  "text": "All our beds rock. Literally."
+ },
+ {
+  "id": "bark_npc_a2_questgiver",
+  "kind": "npc_bark",
+  "ref": "npc_a2_questgiver",
+  "title": "Ranger Sorrel Vane",
+  "text": "Did you hear that? That was a whisper. Probably about me."
+ },
+ {
+  "id": "bark_npc_a2_storyteller",
+  "kind": "npc_bark",
+  "ref": "npc_a2_storyteller",
+  "title": "Old Hoot",
+  "text": "What is a shadow, if not light's best friend?"
+ },
+ {
+  "id": "bark_npc_a2_waypoint",
+  "kind": "npc_bark",
+  "ref": "npc_a2_waypoint",
+  "title": "Lumen the Glowworm",
+  "text": "Touch a stone, it's yours to keep. Travel there before you sleep!"
+ },
+ {
+  "id": "bark_npc_a3_smith",
+  "kind": "npc_bark",
+  "ref": "npc_a3_smith",
+  "title": "Dorra Anvilsong",
+  "text": "CLANG! That's the chorus."
+ },
+ {
+  "id": "bark_npc_a3_alchemist",
+  "kind": "npc_bark",
+  "ref": "npc_a3_alchemist",
+  "title": "Fizzwick Drabb",
+  "text": "Pop! That was supposed to happen. Mostly."
+ },
+ {
+  "id": "bark_npc_a3_jeweler",
+  "kind": "npc_bark",
+  "ref": "npc_a3_jeweler",
+  "title": "Opaline Facet",
+  "text": "Every gem was once a bit of mountain dreaming."
+ },
+ {
+  "id": "bark_npc_a3_runecarver",
+  "kind": "npc_bark",
+  "ref": "npc_a3_runecarver",
+  "title": "Chisel",
+  "text": "Carve. Tap. Glow."
+ },
+ {
+  "id": "bark_npc_a3_trader",
+  "kind": "npc_bark",
+  "ref": "npc_a3_trader",
+  "title": "Gus Two-Carts",
+  "text": "Two carts, twice the bargains!"
+ },
+ {
+  "id": "bark_npc_a3_stash",
+  "kind": "npc_bark",
+  "ref": "npc_a3_stash",
+  "title": "Pickett",
+  "text": "Don't worry. The carts always come back. The track's a circle."
+ },
+ {
+  "id": "bark_npc_a3_stablemaster",
+  "kind": "npc_bark",
+  "ref": "npc_a3_stablemaster",
+  "title": "Mags Rattlebridle",
+  "text": "Rock-ponies never get tired. They get sleepy. It's different."
+ },
+ {
+  "id": "bark_npc_a3_petkeeper",
+  "kind": "npc_bark",
+  "ref": "npc_a3_petkeeper",
+  "title": "Tuppence",
+  "text": "Dimple digs up treasure! Some pets do that!"
+ },
+ {
+  "id": "bark_npc_a3_innkeeper",
+  "kind": "npc_bark",
+  "ref": "npc_a3_innkeeper",
+  "title": "Barnaby Ballast",
+  "text": "We pump fresh air all the way down! Breathe deep!"
+ },
+ {
+  "id": "bark_npc_a3_questgiver",
+  "kind": "npc_bark",
+  "ref": "npc_a3_questgiver",
+  "title": "Foreman Hilda Pickwell",
+  "text": "Why do we dig? It's on my list. The list is blank."
+ },
+ {
+  "id": "bark_npc_a3_storyteller",
+  "kind": "npc_bark",
+  "ref": "npc_a3_storyteller",
+  "title": "Echo Annie",
+  "text": "The mountain used to sing to us. Us."
+ },
+ {
+  "id": "bark_npc_a3_waypoint",
+  "kind": "npc_bark",
+  "ref": "npc_a3_waypoint",
+  "title": "Lou Lever",
+  "text": "Floor one: waypoints. Floor two: also waypoints."
+ },
+ {
+  "id": "bark_npc_a4_smith",
+  "kind": "npc_bark",
+  "ref": "npc_a4_smith",
+  "title": "Corporal Tinwhistle",
+  "text": "*salute* That was for the hammer."
+ },
+ {
+  "id": "bark_npc_a4_alchemist",
+  "kind": "npc_bark",
+  "ref": "npc_a4_alchemist",
+  "title": "Cook Dumplina",
+  "text": "Healing soup. Strength soup. Soup soup."
+ },
+ {
+  "id": "bark_npc_a4_jeweler",
+  "kind": "npc_bark",
+  "ref": "npc_a4_jeweler",
+  "title": "Lady Facetta Frostglass",
+  "text": "A lady never giggles. *giggle* Oh dear."
+ },
+ {
+  "id": "bark_npc_a4_runecarver",
+  "kind": "npc_bark",
+  "ref": "npc_a4_runecarver",
+  "title": "Master Quillon Rimecarve",
+  "text": "Ice holds a rune perfectly. Until it melts. Hence: no kettles."
+ },
+ {
+  "id": "bark_npc_a4_trader",
+  "kind": "npc_bark",
+  "ref": "npc_a4_trader",
+  "title": "Crumbsworth",
+  "text": "Small shop. Big deals."
+ },
+ {
+  "id": "bark_npc_a4_stash",
+  "kind": "npc_bark",
+  "ref": "npc_a4_stash",
+  "title": "Mister Ledger",
+  "text": "Item received. Item noted. Item cherished."
+ },
+ {
+  "id": "bark_npc_a4_stablemaster",
+  "kind": "npc_bark",
+  "ref": "npc_a4_stablemaster",
+  "title": "Noll Frostmane",
+  "text": "Snow-hares hop over drifts. Boots don't."
+ },
+ {
+  "id": "bark_npc_a4_petkeeper",
+  "kind": "npc_bark",
+  "ref": "npc_a4_petkeeper",
+  "title": "Princess Pip",
+  "text": "The royal corgi-hare is called Sir Wobble. Salute him."
+ },
+ {
+  "id": "bark_npc_a4_innkeeper",
+  "kind": "npc_bark",
+  "ref": "npc_a4_innkeeper",
+  "title": "Nan Kettleby",
+  "text": "Tea for the cold, tea for the sad, tea for the tired."
+ },
+ {
+  "id": "bark_npc_a4_questgiver",
+  "kind": "npc_bark",
+  "ref": "npc_a4_questgiver",
+  "title": "Chancellor Pellinore Snowdrop",
+  "text": "List of lists: item one, this list."
+ },
+ {
+  "id": "bark_npc_a4_storyteller",
+  "kind": "npc_bark",
+  "ref": "npc_a4_storyteller",
+  "title": "Tumblewit the Jester",
+  "text": "Once there was a king with the warmest hall. …That's the sad part."
+ },
+ {
+  "id": "bark_npc_a4_waypoint",
+  "kind": "npc_bark",
+  "ref": "npc_a4_waypoint",
+  "title": "Tick",
+  "text": "Tick. Tick. Calculating route. Tick. Done."
+ },
+ {
+  "id": "bark_npc_a5_smith",
+  "kind": "npc_bark",
+  "ref": "npc_a5_smith",
+  "title": "Mae Coalbright",
+  "text": "I made your lantern's great-great-grandmother."
+ },
+ {
+  "id": "bark_npc_a5_alchemist",
+  "kind": "npc_bark",
+  "ref": "npc_a5_alchemist",
+  "title": "Mother Simmer",
+  "text": "Put anything in. See what comes out. The Cauldron never breaks a thing."
+ },
+ {
+  "id": "bark_npc_a5_jeweler",
+  "kind": "npc_bark",
+  "ref": "npc_a5_jeweler",
+  "title": "Twinkle",
+  "text": "Don't call me small. Call me concentrated."
+ },
+ {
+  "id": "bark_npc_a5_runecarver",
+  "kind": "npc_bark",
+  "ref": "npc_a5_runecarver",
+  "title": "Vesper Inkwell",
+  "text": "A rune of light lasts as long as someone reads it."
+ },
+ {
+  "id": "bark_npc_a5_trader",
+  "kind": "npc_bark",
+  "ref": "npc_a5_trader",
+  "title": "Nib",
+  "text": "I used to be a Magpie Imp. Now I'm a magpie businessman."
+ },
+ {
+  "id": "bark_npc_a5_stash",
+  "kind": "npc_bark",
+  "ref": "npc_a5_stash",
+  "title": "Keeper Stillwater",
+  "text": "Nothing here is in a hurry. Least of all me."
+ },
+ {
+  "id": "bark_npc_a5_stablemaster",
+  "kind": "npc_bark",
+  "ref": "npc_a5_stablemaster",
+  "title": "Captain Loft",
+  "text": "Great moths fly toward light. That's you. Handy!"
+ },
+ {
+  "id": "bark_npc_a5_petkeeper",
+  "kind": "npc_bark",
+  "ref": "npc_a5_petkeeper",
+  "title": "Tansy Glow",
+  "text": "Every night I open the jars. Every morning they come back."
+ },
+ {
+  "id": "bark_npc_a5_innkeeper",
+  "kind": "npc_bark",
+  "ref": "npc_a5_innkeeper",
+  "title": "Aunt Lumi",
+  "text": "A lit window means someone's waiting for you."
+ },
+ {
+  "id": "bark_npc_a5_questgiver",
+  "kind": "npc_bark",
+  "ref": "npc_a5_questgiver",
+  "title": "Ada Brightly",
+  "text": "A light shared is not a light lost. That's the Guild's rule."
+ },
+ {
+  "id": "bark_npc_a5_storyteller",
+  "kind": "npc_bark",
+  "ref": "npc_a5_storyteller",
+  "title": "The Moth Choir",
+  "text": "*sing* Once was a spark that wandered alone…"
+ },
+ {
+  "id": "bark_npc_a5_waypoint",
+  "kind": "npc_bark",
+  "ref": "npc_a5_waypoint",
+  "title": "Nobody",
+  "text": "…  (Nobody points at the map. Politely.)"
+ }
+]

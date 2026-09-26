@@ -11,8 +11,12 @@ const ELEMENTS := ["physical", "fire", "cold", "lightning", "shadow", "holy"]
 static func roll_player_hit(src: Dictionary, skill_mult: float, element: String, tags: Array, stream := "combat") -> Dictionary:
 	var st: StatBlock = src.stats
 	var w: Dictionary = src.get("weapon", {})
-	var wmin = float(w.get("dmg_min", 2.0 + src.get("level", 1)))
-	var wmax = float(w.get("dmg_max", 4.0 + src.get("level", 1) * 1.5))
+	var wmin = 2.0 + src.get("level", 1)
+	var wmax = 4.0 + src.get("level", 1) * 1.5
+	if w.has("dmg_min"):
+		var wd = Items.weapon_damage(w)   # includes the item's upgrade level
+		wmin = float(wd[0])
+		wmax = float(wd[1])
 	var base = Rng.range_on(stream, wmin, wmax) + st.get_stat("damage")
 	var inc = st.get_stat("damage_pct") + st.get_stat(element + "_pct")
 	for t in tags:

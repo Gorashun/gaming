@@ -20,5 +20,5 @@ void fragment() {
 	float a = edge * 0.95 + inside * (0.18 + 0.22 * hatch) + front * 0.6 + late * 0.25 * (1.0 - r);
 	vec3 c = mix(color.rgb * 0.8, vec3(1.0, 0.75, 0.7), front * 0.5 + late * 0.3);
 	ALBEDO = c;
-	ALPHA = clamp(a * 0.4 / 0.4 * alpha, 0.0, 1.0) * mix(0.55, 1.0, edge);
+	ALPHA = clamp(a * alpha, 0.0, 1.0);
 }
