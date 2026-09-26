@@ -313,3 +313,11 @@ Status: **proposed**. Waiting for simulation (balance-analyst, RETENTION §6), c
 - Pouch position per RETENTION §10 for now; pearl tokens without trail, sand tokens with a 3-ghost trail.
 - Fps guard trip also degrades art: motes 12, one caustic layer, no contact shadows or jackpot beams, environment baked at 1×.
 - Layering bugs found by the audit go to docs/BUGS.md via QA.
+
+## 24. Balance decisions (2026-09-26, producer; source docs/sim/retention.md)
+- Adopt the analyst's numbers: first free shells at **60** and 400 merges (then every 750); missions pay **10/20/30 pearls (+1 sand at top tier)**; **Pearl Pool cap 30**; Daily Present #5 after the 12 decorations = 25 pearls, no sand. Shop prices unchanged.
+- T1 (stop moment) is a health signal, not a pass/fail target (R11); showing it often is fine.
+- T5/T6 are restated in days for the casual profile (daily lanes pay per day, not per hour).
+- **Reachability fix required:** a level 10 needs ≥212 drops in one round, out of reach at estimated merges. Mastery stars and trophies must be reachable by casual and engaged children within weeks: the game designer redefines them (e.g. cumulative goals, level 8/9 targets, per-set counts) and the analyst re-simulates.
+- Batch B proceeds with estimated numbers; merges/round is logged in the debug panel and all lane numbers are recalibrated after the first playtest (R12 fails only at −30 % merges).
+- After the collection is complete, pearls/sand keep flowing into upgrades and Aquarium decorations; no new sinks for now.
