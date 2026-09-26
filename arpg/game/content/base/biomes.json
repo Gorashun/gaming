@@ -16,8 +16,8 @@
   "floor_alt_chance": 0.2,
   "ground": "#2a2018",
   "tint": {
-   "saturation": 0.85,
-   "brightness": 0.95
+   "saturation": 0.6,
+   "brightness": 0.72
   },
   "boundary_props": [
    "hal:fence",
@@ -168,8 +168,8 @@
   ],
   "env": {
    "sky": "#120d10",
-   "ambient": "#5a4636",
-   "ambient_energy": 1.1,
+   "ambient": "#4a3a2c",
+   "ambient_energy": 1.0,
    "fog": "#2a1e16",
    "fog_begin": 24,
    "fog_end": 64,
@@ -354,7 +354,8 @@
    "contrast": 1.08,
    "outline": "#1c1208"
   },
-  "music": "town"
+  "music": "town",
+  "ambience": "amb_mine"
  },
  {
   "id": "town_frost",
@@ -516,7 +517,8 @@
   "music": "town",
   "floor_tint": {
    "top_amount": 0.35
-  }
+  },
+  "ambience": "amb_ice"
  },
  {
   "id": "town_hush",
@@ -646,7 +648,8 @@
    "saturation": 0.9,
    "outline": "#101012"
   },
-  "music": "town"
+  "music": "town",
+  "ambience": "amb_hush"
  },
  {
   "id": "graveyard",
@@ -860,7 +863,8 @@
    "contrast": 1.12,
    "outline": "#0c1416"
   },
-  "music": "graveyard"
+  "music": "graveyard",
+  "ambience": "amb_bog"
  },
  {
   "id": "bog",
@@ -1044,7 +1048,8 @@
    "contrast": 1.12,
    "outline": "#0a1412"
   },
-  "music": "graveyard"
+  "music": "graveyard",
+  "ambience": "amb_bog"
  },
  {
   "id": "crypt",
@@ -1482,7 +1487,8 @@
    "contrast": 1.12,
    "outline": "#120e1a"
   },
-  "music": "forest"
+  "music": "forest",
+  "ambience": "amb_forest"
  },
  {
   "id": "rootcellar",
@@ -1647,7 +1653,8 @@
    "contrast": 1.12,
    "outline": "#100c16"
   },
-  "music": "forest"
+  "music": "forest",
+  "ambience": "amb_forest"
  },
  {
   "id": "echo_mines",
@@ -1856,7 +1863,8 @@
    "contrast": 1.12,
    "outline": "#140e0a"
   },
-  "music": "mine"
+  "music": "mine",
+  "ambience": "amb_mine"
  },
  {
   "id": "echo_caverns",
@@ -2003,7 +2011,8 @@
    "contrast": 1.12,
    "outline": "#0a0c12"
   },
-  "music": "mine"
+  "music": "mine",
+  "ambience": "amb_mine"
  },
  {
   "id": "rimehall",
@@ -2189,7 +2198,8 @@
    "saturation": 0.95,
    "outline": "#1a2432"
   },
-  "music": "ice"
+  "music": "ice",
+  "ambience": "amb_ice"
  },
  {
   "id": "rime_court",
@@ -2379,7 +2389,8 @@
    "saturation": 0.95,
    "outline": "#1a2432"
   },
-  "music": "ice"
+  "music": "ice",
+  "ambience": "amb_ice"
  },
  {
   "id": "well_of_hush",
@@ -2524,7 +2535,8 @@
    "saturation": 0.85,
    "outline": "#0c0c0e"
   },
-  "music": "hush"
+  "music": "hush",
+  "ambience": "amb_hush"
  },
  {
   "id": "hush_wastes",
@@ -2670,7 +2682,8 @@
    "saturation": 0.85,
    "outline": "#0c0c0e"
   },
-  "music": "hush"
+  "music": "hush",
+  "ambience": "amb_hush"
  },
  {
   "id": "deepdark",
@@ -2828,6 +2841,7 @@
    "contrast": 1.15,
    "outline": "#08060e"
   },
-  "music": "hush"
+  "music": "hush",
+  "ambience": "amb_hush"
  }
 ]

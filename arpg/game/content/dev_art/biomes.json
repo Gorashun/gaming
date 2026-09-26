@@ -16,8 +16,8 @@
   "floor_alt_chance": 0.2,
   "ground": "#2a2018",
   "tint": {
-   "saturation": 0.85,
-   "brightness": 0.95
+   "saturation": 0.6,
+   "brightness": 0.72
   },
   "boundary_props": [
    "hal:fence",
@@ -85,8 +85,8 @@
   "critters": [],
   "env": {
    "sky": "#120d10",
-   "ambient": "#5a4636",
-   "ambient_energy": 1.1,
+   "ambient": "#4a3a2c",
+   "ambient_energy": 1.0,
    "fog": "#2a1e16",
    "fog_begin": 24,
    "fog_end": 64,

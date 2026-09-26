@@ -47,6 +47,5 @@ func setup(st: Dictionary) -> void:
 	l.modulate = col.lerp(Color.WHITE, 0.25)
 	l.no_depth_test = true
 	l.position.y = 3.3
-	if UiTheme.has_method("font_title"):
-		l.font = UiTheme.font_title()
+	l.font = UiTheme.font_heading()
 	add_child(l)
