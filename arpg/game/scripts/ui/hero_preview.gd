@@ -124,12 +124,6 @@ func apply_gear(index: int, ch: Object) -> void:
 	if ch:
 		mh = ch.equipment.get("main_hand")
 		oh = ch.equipment.get("off_hand")
-	# Gameplay code may own this (v2.1 §20); prefer it when present.
-	for m in ["apply_gear_visuals", "apply_equipment_visuals", "refresh_gear_visuals"]:
-		if ch and actor.has_method(m):
-			actor.call(m, ch)
-			_idle(index)
-			return
 	var mh_model = ItemIcons.model_for(mh) if mh else ""
 	var oh_model = ItemIcons.model_for(oh) if oh else ""
 	var keep = []
@@ -149,7 +143,8 @@ func apply_gear(index: int, ch: Object) -> void:
 	actor.show_only_attachments(keep)
 	_clear_props(actor)
 	if mh_model != "":
-		actor.attach_prop(mh_model, "handslot.r")
+		var bone = str(UiTheme.api_call("Weapons", "type_rec", [str(mh.get("type", ""))], {}).get("attach", "handslot.r"))
+		actor.attach_prop(mh_model, bone if bone.begins_with("handslot") else "handslot.r")
 	if oh_model != "":
 		actor.attach_prop(oh_model, "handslot.l")
 	_mark_props(actor)

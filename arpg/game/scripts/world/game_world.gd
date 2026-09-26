@@ -30,6 +30,12 @@ var _light_timer = 0.0
 var interactables: Array = []   # [{node, pos, radius, action:Callable, label}]
 var is_town = false
 var stats_session = {"kills": 0, "items": 0, "gold": 0, "xp": 0, "start": 0.0}
+var pet: Pet
+var npcs: Array = []
+var return_portal: Node3D
+var world_events: WorldEvents
+var zone_deaths = 0              # deaths during this zone visit (Lantern's Blessing)
+var blessing_pct = 0.0
 
 const PATH_RES := 2.0
 
@@ -65,6 +71,7 @@ func load_zone(zone_id: String, seed_value := -1) -> void:
 	builder.build(self, layout, biome, zone_seed)
 	_setup_astar()
 	_spawn_player()
+	spawn_pet()
 	rig = CameraRig.new()
 	add_child(rig)
 	rig.target = player
@@ -79,7 +86,12 @@ func load_zone(zone_id: String, seed_value := -1) -> void:
 		_place_chests()
 		_place_exit()
 		_maybe_surprise()
+		world_events = WorldEvents.new()
+		world_events.name = "WorldEvents"
+		add_child(world_events)
+		world_events.setup(self)
 	Sfx.play_music(zone.get("music", biome.get("music", "")))
+	Quests.notify(ch, "explore", zone_id)
 	Events.zone_entered.emit(zone_id)
 
 # ------------------------------------------------------------------ setup
@@ -287,14 +299,21 @@ func _maybe_surprise() -> void:
 				var m = spawn_monster(ev.monster, pos, monster_level, ev.get("kind", "normal"))
 				if m:
 					m.set_meta("event", ev.id)
+					if m.rec.get("ai", "") == "flee":
+						m.add_sparkle_trail(Color(ev.get("color", "#ffd84a")))
 			Game.character.discoveries.append("seen:" + ev.id)
 			Events.surprise_event.emit(ev.id)
 			Events.toast.emit(ev.get("announce", "Something stirs..."), Color(ev.get("color", "#ffd23f")))
 			break
 
 func _setup_town() -> void:
-	var stations: Array = zone.get("stations", [])
 	var center = layout.cell_to_world(layout.rooms[layout.start_room].center)
+	_place_return_portal(center)
+	var npc_recs = _town_npcs()
+	if not npc_recs.is_empty():
+		_spawn_npcs(npc_recs, center)
+		return
+	var stations: Array = zone.get("stations", [])
 	for i in stations.size():
 		var st: Dictionary = stations[i]
 		var ang = TAU * i / max(1, stations.size())
@@ -305,6 +324,140 @@ func _setup_town() -> void:
 		n.global_position = pos
 		n.setup(st)
 		interactables.append({"node": n, "pos": pos, "radius": 2.2, "label": st.get("name", "Use"), "action": func(): get_tree().call_group("session", "open_station", st.get("screen", ""))})
+
+## NPC records for this town: zone.npcs ids, else npcs whose `town` is this zone.
+func _town_npcs() -> Array:
+	var out = []
+	for id in zone.get("npcs", []):
+		var r = Content.get_rec("npcs", str(id))
+		if not r.is_empty():
+			out.append(r)
+	if out.is_empty() and not zone.has("npcs"):
+		for r in Content.all("npcs"):
+			if str(r.get("town", "")) == zone.id:
+				out.append(r)
+	return out
+
+func _spawn_npcs(recs: Array, center: Vector3) -> void:
+	for i in recs.size():
+		var r: Dictionary = recs[i]
+		var pos: Vector3
+		if r.get("pos") is Array and r.pos.size() >= 2:
+			pos = clamp_to_walkable(center, center + Vector3(float(r.pos[0]), 0, float(r.pos[1])))
+		else:
+			var ang = TAU * i / max(1, recs.size()) + 0.4
+			var rad = 5.0 + (i % 2) * 2.0
+			pos = clamp_to_walkable(center, center + Vector3(cos(ang), 0, sin(ang)) * rad)
+		var n = Npc.new()
+		actors_root.add_child(n)
+		n.global_position = pos
+		n.setup_npc(r)
+		n.face_towards(center)
+		n._base_rot = n.rotation.y
+		npcs.append(n)
+		interactables.append({"node": n, "pos": pos, "radius": 2.4, "label": "Talk to %s" % r.get("name", ""), "action": func(): interact_npc(n)})
+
+## Talking to an NPC: bark, quest turn-ins + talk progress, innkeeper binding, then its screen.
+func interact_npc(n: Npc) -> void:
+	var ch = Game.character
+	Events.npc_talked.emit(n.npc_id)
+	Quests.notify(ch, "talk", n.npc_id)
+	var done = Quests.ready_for(ch, n.npc_id)
+	for q in done:
+		var res = Quests.turn_in(ch, q.id, self)
+		if res.ok:
+			n.bark(res.message)
+			Fx.burst(player.global_position + Vector3(0, 1.2, 0), Color(1, 0.85, 0.4), 24, 4.0, 0.12, 0.9, 1.0)
+	if done.is_empty():
+		n.bark()
+	var sess = get_parent()
+	if sess and "current_npc" in sess:
+		sess.current_npc = n.npc_id
+	if n.role() == "innkeeper" and sess and sess.has_method("bind_town"):
+		sess.bind_town(zone.id)
+	var scr = str(n.rec.get("screen", ""))
+	if scr == "" and not Quests.available_for(ch, n.npc_id).is_empty():
+		scr = "quests"
+	if scr != "" and sess and sess.has_method("open_screen"):
+		get_tree().create_timer(0.6).timeout.connect(func():
+			if is_instance_valid(sess) and is_instance_valid(self):
+				sess.open_screen(scr))
+
+## "Portal back": after hearthing/travelling to town, a portal leads back to where you left.
+func _place_return_portal(center: Vector3) -> void:
+	var rp: Dictionary = Game.character.return_portal
+	if rp.is_empty() or Content.get_rec("zones", str(rp.get("zone", ""))).is_empty():
+		return
+	var pos = clamp_to_walkable(center, center + Vector3(-3.0, 0, 3.0))
+	return_portal = preload("res://scripts/world/portal.gd").new()
+	add_child(return_portal)
+	return_portal.global_position = pos
+	return_portal.setup(Color(1.0, 0.75, 0.35))
+	var zname = Content.get_rec("zones", str(rp.zone)).get("name", "")
+	interactables.append({"node": return_portal, "pos": pos, "radius": 2.0, "label": "Return to " + zname,
+		"action": func(): get_tree().call_group("session", "portal_back")})
+
+## Companion follower for the active pet (call again after changing pets).
+func spawn_pet() -> void:
+	if pet and is_instance_valid(pet):
+		pet.queue_free()
+	pet = null
+	var ch = Game.character
+	if ch.active_pet == "" or Pets.rec(ch.active_pet).is_empty():
+		return
+	pet = Pet.new()
+	add_child(pet)
+	pet.setup(ch.active_pet, player)
+
+## Removes a monster without a kill (escaped Magpie, despawned event actors).
+func remove_monster(m: Node) -> void:
+	monsters.erase(m)
+	minions.erase(m)
+	if world_events:
+		world_events.on_monster_removed(m)
+
+func spawn_gold(at: Vector3, amount: int) -> void:
+	if amount <= 0:
+		return
+	var d = Drop.new()
+	d.net_id = _nid()
+	drops_root.add_child(d)
+	d.setup_gold(amount)
+	d.toss(at, clamp_to_walkable(at, at + Vector3(Rng.range_on("fx", -1.5, 1.5), 0, Rng.range_on("fx", -1.5, 1.5))))
+	drops.append(d)
+
+## Magpie Imp: coins burst out on every (throttled) hit.
+func spill_coins(m: Monster) -> void:
+	var amount = int((2.0 + m.level * 0.8) * Rng.range_on("loot", 0.6, 1.4) * (1.0 + Game.character.stats.total("gold_find") / 100.0))
+	spawn_gold(m.global_position, max(1, amount))
+	Fx.burst(m.global_position + Vector3(0, 1.0, 0), Color(1, 0.85, 0.3), 10, 4.0, 0.08, 0.5, -8.0)
+	Sfx.play("gold", -8.0)
+
+## Pet "dig" perk: a small treasure pops out of the ground next to the pet.
+func pet_dig() -> void:
+	var at: Vector3 = pet.global_position if pet and is_instance_valid(pet) else player.global_position
+	at.y = 0
+	at = clamp_to_walkable(player.global_position, at)
+	Fx.burst(at + Vector3(0, 0.2, 0), Color(0.5, 0.4, 0.3), 18, 3.5, 0.14, 0.6)
+	Fx.float_text(at, "Dug something up!", Color(1, 0.85, 0.4), 30)
+	var res = Loot.roll_kill({}, monster_level, Game.character, Game.tier(), "pet_dig",
+		{"item_chance": 0.25, "max_items": 1, "gold_chance": 1.0, "gold_mult": 2.0, "materials": [{"id": "soot", "chance": 0.8, "min": 1, "max": 3}, {"id": "wickthread", "chance": 0.25}]})
+	_spawn_loot(res, at)
+
+## Lantern's Blessing (research #23): optional assist after repeated deaths in a zone. Never in
+## Hardcore; framed positively. config/blessing {base_pct, per_death_pct, cap_pct, min_deaths}.
+func _update_blessing() -> void:
+	var ch = Game.character
+	var c = Content.get_rec("config", "blessing")
+	var pct = 0.0
+	if not ch.hardcore and Settings.get_value("lanterns_blessing", true) and zone_deaths >= int(c.get("min_deaths", 2)):
+		pct = float(c.get("base_pct", 20.0)) + float(c.get("per_death_pct", 2.0)) * (zone_deaths - int(c.get("min_deaths", 2)))
+		pct = min(pct, float(c.get("cap_pct", 60.0)))
+	if pct != blessing_pct:
+		blessing_pct = pct
+		Events.blessing_changed.emit(pct)
+		if pct > 0.0:
+			Events.toast.emit("The Lantern's Blessing shields you (-%d%% damage taken)" % int(pct), Color(1, 0.9, 0.6))
 
 # ------------------------------------------------------------------ authority: combat
 func deal_damage(src: Actor, target: Actor, mult: float, element: String, tags: Array, e := {}, is_dot := false) -> void:
@@ -322,11 +475,19 @@ func deal_damage(src: Actor, target: Actor, mult: float, element: String, tags: 
 	var hit = Combat.roll_player_hit(src_ctx, mult, element, tags)
 	var def = {"stats": target.stats, "level": target.level}
 	var amount = Combat.mitigate(hit, def, src.level)
-	if target is Monster and target.has_affix("shielded") and target.life > target.max_life * 0.5:
+	if target is Monster and target.shield_active():
 		amount *= 0.5
 	_apply_damage(target, amount, hit.crit, element, src)
 	# On-hit effects
 	var owner: Actor = src.owner_actor if (src is Monster and src.owner_actor) else src
+	# Skill mastery XP: effects carry "_skill"; minions remember the skill that summoned them
+	var sk = str(e.get("_skill", ""))
+	if sk == "" and src is Monster and src.has_meta("skill_id"):
+		sk = str(src.get_meta("skill_id"))
+	if sk != "" and owner is Player:
+		SkillMastery.on_hit(owner.ch, sk)
+		if not target.alive:
+			SkillMastery.on_kill(owner.ch, sk)
 	if owner is Player and not is_dot:
 		var loh = owner.stats.get_stat("life_on_hit")
 		if loh > 0:
@@ -365,6 +526,8 @@ func monster_hit(src: Actor, target: Actor, mult: float, element: String) -> voi
 		var thorns = target.stats.get_stat("thorns")
 		if thorns > 0 and src.alive:
 			_apply_damage(src, thorns, false, "physical", target)
+		if blessing_pct > 0.0:
+			amount *= 1.0 - blessing_pct / 100.0
 		_apply_damage(target, amount, false, element, src)
 	else:
 		# monster hits a minion
@@ -403,8 +566,10 @@ func kill_actor(a: Actor, killer: Node) -> void:
 # ------------------------------------------------------------------ deaths, xp, loot
 func _on_monster_died(a: Actor) -> void:
 	var m = a as Monster
-	monsters.erase(m)
-	minions.erase(m)
+	monsters.erase(a)
+	minions.erase(a)
+	if m == null:
+		return
 	if m.kind == "minion":
 		Fx.soul_puff(m.global_position, Color(1.0, 0.8, 0.6))
 		get_tree().create_timer(0.6).timeout.connect(m.queue_free)
@@ -421,6 +586,22 @@ func _on_monster_died(a: Actor) -> void:
 	if m.has_meta("event"):
 		loot_kind = Content.get_rec("events", m.get_meta("event")).get("loot_kind", "rare")
 	var res = Loot.roll_kill(m.rec, m.level, ch, tier, loot_kind)
+	# Weapon proficiency, pet XP/perks, pet drops, quests
+	Weapons.gain_proficiency(ch, Weapons.main_type(ch), int(Weapons.prof_cfg().get("xp_per_kill", 1)) * {"champion": 2, "rare": 3, "boss": 10}.get(m.kind, 1))
+	var pet_res = Pets.on_kill(ch, m.kind)
+	if pet_res.dig:
+		pet_dig()
+	var new_pet = Pets.roll_drop(ch, m.kind)
+	if new_pet != "" and Pets.grant_pet(ch, new_pet):
+		Fx.burst(m.global_position + Vector3(0, 1, 0), Color(Pets.rec(new_pet).get("tint", "#ffd98a")), 30, 4.0, 0.12, 1.0, 1.0)
+		Events.toast.emit("A companion found you: %s!" % Pets.rec(new_pet).get("name", new_pet), Color(1, 0.8, 0.95))
+		if ch.active_pet == new_pet:
+			spawn_pet()
+	Quests.notify(ch, "kill", str(m.rec.get("id", "")), 1, {"family": m.rec.get("family", ""), "kind": m.kind})
+	if m.kind == "boss" or m.rec.get("boss", false):
+		Quests.notify(ch, "boss", str(m.rec.get("id", "")), 1)
+	if world_events:
+		world_events.on_monster_died(m)
 	# Scripted first-session hook: first elite drops a guaranteed Rare
 	if m.kind in ["champion", "rare"] and not ch.discoveries.has("hook:first_elite"):
 		ch.discoveries.append("hook:first_elite")
@@ -534,6 +715,7 @@ func pickup(d: Drop) -> bool:
 		Sfx.play("gold", -6.0)
 	elif d.material_id != "":
 		ch.add_material(d.material_id, d.material_count)
+		Quests.notify(ch, "collect", d.material_id, d.material_count)
 		var m = Content.get_rec("materials", d.material_id)
 		Fx.float_text(d.global_position, "+%d %s" % [d.material_count, m.get("name", d.material_id)], Color(m.get("color", "#9be7ff")), 28)
 		Sfx.play("pickup", -6.0)
@@ -550,6 +732,9 @@ func pickup(d: Drop) -> bool:
 				Events.toast.emit("Bag full!", Color(1, 0.4, 0.3))
 				return false
 		stats_session.items += 1
+		if Items.rarity_index(it.rarity) >= 4 or it.has("unique") or it.has("named"):
+			Codex.record(it)
+		Quests.notify(ch, "collect", str(it.get("base", "")), 1)
 		Events.item_picked_up.emit(it)
 		Events.inventory_changed.emit()
 		Sfx.play("pickup", -4.0)
@@ -560,6 +745,8 @@ func pickup(d: Drop) -> bool:
 func _on_player_died(_a: Actor) -> void:
 	var ch = Game.character
 	ch.track("deaths")
+	zone_deaths += 1
+	_update_blessing()
 	get_tree().call_group("session", "on_player_died")
 
 # ------------------------------------------------------------------ spawning helpers used by skills
@@ -577,7 +764,7 @@ func spawn_ground_zone(caster: Actor, pos: Vector3, e: Dictionary, mult: float, 
 
 func spawn_minion(owner: Actor, minion_id: String, e: Dictionary, rank: int) -> void:
 	var limit = int(e.get("max", 4)) + int(owner.stats.get_stat("summon_count"))
-	var mine = minions.filter(func(x): return is_instance_valid(x) and x.alive and x.rec.id == minion_id)
+	var mine = minions.filter(func(x): return is_instance_valid(x) and x is Monster and x.alive and x.rec.get("id", "") == minion_id)
 	if mine.size() >= limit:
 		kill_actor(mine[0], null)
 	var pos = clamp_to_walkable(owner.global_position, owner.global_position + Vector3(randf_range(-2, 2), 0, randf_range(-2, 2)))
@@ -590,6 +777,8 @@ func spawn_minion(owner: Actor, minion_id: String, e: Dictionary, rank: int) -> 
 	m.global_position = pos
 	m.setup(rec, owner.level, "minion")
 	m.owner_actor = owner
+	if str(e.get("_skill", "")) != "":
+		m.set_meta("skill_id", str(e._skill))
 	m.max_life = owner.max_life * float(rec.get("owner_life_mult", 0.35)) * (1.0 + 0.1 * (rank - 1))
 	m.life = m.max_life
 	m.collision_layer = 8
@@ -733,13 +922,14 @@ func _process(delta: float) -> void:
 		_light_timer = 0.5
 		_update_lights()
 	# Auto-pickup magnet for gold/materials and (simple mode or always for items within 1.3 m)
+	var pickup_bonus = clampf(player.stats.get_stat("pickup_radius"), 0.0, 8.0)
 	for d in drops.duplicate():
 		if not is_instance_valid(d):
 			drops.erase(d)
 			continue
 		var dist = d.global_position.distance_to(player.global_position)
 		var auto_items: bool = Settings.get_value("auto_pickup", true)
-		if (d.magnet and dist < 4.0) or (not d.magnet and auto_items and dist < 2.0):
+		if (d.magnet and dist < 4.0 + pickup_bonus) or (not d.magnet and auto_items and dist < 2.0 + pickup_bonus * 0.5):
 			d.global_position = d.global_position.lerp(player.global_position + Vector3(0, 0.6, 0), clampf(delta * 10.0, 0.0, 1.0))
 			if dist < 0.9:
 				pickup(d)

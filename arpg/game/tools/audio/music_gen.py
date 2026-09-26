@@ -565,7 +565,9 @@ def master_loop(x, rms_db, pre=3.0):
     """Master a loop circularly: prepend the loop's own last seconds so the IIR filters
     are already settled at the loop point, then cut them off again."""
     n = S.n_samples(pre)
-    y = S.master(np.concatenate([x[-n:], x]), rms_db, -1.0)
+    z = np.concatenate([x[-n:], x])
+    z = z - 0.55 * S.lp(z, 140)  # ~ -7 dB low shelf: phone speakers can't play it, keep energy in 200 Hz-5 kHz
+    y = S.master(z, rms_db, -1.0)
     return y[n:]
 
 

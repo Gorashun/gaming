@@ -4,7 +4,7 @@ shader_type spatial;
 // Hit flash / threat rim stay in actor_overlay (material_overlay) so gameplay code is untouched.
 render_mode blend_mix, depth_draw_opaque, cull_back;
 
-uniform sampler2D albedo_tex : source_color, filter_linear_mipmap;
+uniform sampler2D albedo_tex : source_color, hint_default_white, filter_linear_mipmap;
 uniform vec4 albedo : source_color = vec4(1.0);
 uniform float ramp_dark = 0.35;
 uniform float ramp_mid = 0.7;

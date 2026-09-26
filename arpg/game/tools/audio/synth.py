@@ -304,7 +304,7 @@ def formant(x, vowel: str = "oo"):
 
 # ---------------------------------------------------------------- physical-ish instruments
 def pluck(f0: float, dur: float, bright: float = 0.6, damp: float = 0.996, rng=None) -> np.ndarray:
-    """Karplus-Strong via a single IIR (lfilter), so it is fast."""
+    """Karplus-Strong string, vectorized one period at a time."""
     rng = rng or _RNG
     n = n_samples(dur)
     period = SR / f0
@@ -317,10 +317,16 @@ def pluck(f0: float, dur: float, bright: float = 0.6, damp: float = 0.996, rng=N
     x[: N + 1] = exc[: min(N + 1, n)]
     # loop filter: fractional-delayed [.25 .5 .25] lowpass -> total delay N+1+p = period
     w = (1 - p) * np.array([0.25, 0.5, 0.25, 0.0]) + p * np.array([0.0, 0.25, 0.5, 0.25])
-    a = np.zeros(N + 4)
-    a[0] = 1.0
-    a[N:N + 4] -= damp * w
-    y = dc_block(signal.lfilter([1.0], a, x))
+    # y[n] = x[n] + damp * sum_k w[k] * y[n - N - k]; computed N samples at a time (vectorized)
+    pad_ = N + 4
+    y = np.zeros(n + pad_)
+    xx = np.concatenate([np.zeros(pad_), x])
+    dw = damp * w
+    for s0 in range(pad_, n + pad_, N):
+        e = min(n + pad_, s0 + N)
+        y[s0:e] = (xx[s0:e] + dw[0] * y[s0 - N:e - N] + dw[1] * y[s0 - N - 1:e - N - 1]
+                   + dw[2] * y[s0 - N - 2:e - N - 2] + dw[3] * y[s0 - N - 3:e - N - 3])
+    y = dc_block(y[pad_:])
     return y * perc(dur, 0.001, dur * 0.6)
 
 
@@ -516,10 +522,11 @@ def write_wav(path, x, peak_db: float = -1.0):
     sf.write(str(path), x.astype(np.float32), SR, subtype="PCM_16")
 
 
-def write_ogg(path, x, quality: float = 0.4):
+def write_ogg(path, x, quality: float = 0.45):
+    """Vorbis via libsndfile. Written in blocks: one huge write() segfaults in libsndfile 1.2.x."""
     import soundfile as sf
     x = np.asarray(x, dtype=np.float32)
-    try:
-        sf.write(str(path), x, SR, format="OGG", subtype="VORBIS", compression_level=1.0 - quality)
-    except TypeError:
-        sf.write(str(path), x, SR, format="OGG", subtype="VORBIS")
+    with sf.SoundFile(str(path), "w", SR, 1, format="OGG", subtype="VORBIS",
+                      compression_level=float(np.clip(1.0 - quality, 0.0, 1.0))) as f:
+        for i in range(0, len(x), 8192):
+            f.write(x[i:i + 8192])

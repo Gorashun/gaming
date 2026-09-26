@@ -21,6 +21,14 @@ var owner_actor: Actor = null   # for minions
 var expire_at = 0.0
 var _spawn_until = 0.0
 var healthbar: Node3D
+# Flee AI (Magpie Imp): runs from the player, escapes through a portal after escape_after seconds
+var _flee_started = -1.0
+var _flee_dest = Vector3.ZERO
+var _coin_cd = 0.0
+var escaped = false
+# Boss phases
+var phase = 0
+var _shield_fx: MeshInstance3D
 
 func setup(r: Dictionary, lvl: int, k := "normal") -> void:
 	rec = r
@@ -82,7 +90,9 @@ func _physics_process(delta: float) -> void:
 		var atk: Dictionary = rec.get("attack", {})
 		var atk_range = float(atk.get("range", 1.6)) + target.radius
 		var ai: String = rec.get("ai", "melee")
-		if _try_abilities(d):
+		if ai == "flee":
+			move = _flee(d, delta)
+		elif _try_abilities(d):
 			pass
 		elif (ai == "ranged" or ai == "caster") and d < float(rec.get("keep_distance", 5.0)) and not anim_locked():
 			move = (global_position - target.global_position).normalized()   # kite
@@ -268,10 +278,168 @@ func _use_ability(ab: Dictionary) -> void:
 func has_affix(id: String) -> bool:
 	return elite_affixes.has(id)
 
+# ------------------------------------------------------------------ flee AI (Magpie Imp)
+func _flee(dist: float, delta: float) -> Vector3:
+	if _flee_started < 0.0:
+		_flee_started = time_now()
+		Events.toast.emit("It's running — catch it!", Color("#ffd84a"))
+	if time_now() - _flee_started > float(rec.get("escape_after", 20.0)):
+		_escape()
+		return Vector3.ZERO
+	if dist > float(rec.get("flee_range", 10.0)):
+		return Vector3.ZERO
+	# Pick a walkable point away from the player; re-pick when reached or cornered
+	var away = global_position - target.global_position
+	away.y = 0
+	if _flee_dest == Vector3.ZERO or global_position.distance_to(_flee_dest) < 1.2 or _flee_dest.distance_to(target.global_position) < 4.0:
+		var best = global_position
+		var best_score = -1e9
+		for i in 8:
+			var dir = away.normalized().rotated(Vector3.UP, deg_to_rad(-120 + i * 34.0)) if away.length() > 0.1 else Vector3.FORWARD.rotated(Vector3.UP, i * 0.8)
+			var cand: Vector3 = Game.world.clamp_to_walkable(global_position, global_position + dir * 7.0)
+			var score = cand.distance_to(target.global_position) + cand.distance_to(global_position) * 0.5
+			if score > best_score:
+				best_score = score
+				best = cand
+		_flee_dest = best
+	return _steer_to(_flee_dest, delta)
+
+## Escapes through a little portal: no loot (the chase is the fun; it will be back another time).
+func _escape() -> void:
+	if escaped or not alive:
+		return
+	escaped = true
+	alive = false
+	collision_layer = 0
+	Fx.ring(global_position, 1.5, Color("#ffd84a"), 0.6)
+	Fx.burst(global_position + Vector3(0, 0.8, 0), Color("#ffd84a"), 30, 5.0, 0.12, 0.8, 2.0)
+	Fx.flash_light(global_position + Vector3(0, 1, 0), Color("#ffd84a"), 3.0, 0.6)
+	Events.toast.emit("The %s escaped through a shimmering portal!" % display_name, Color("#ffd84a"))
+	if Game.world:
+		Game.world.remove_monster(self)
+	var t = create_tween()
+	t.tween_property(self, "scale", Vector3(0.01, 0.01, 0.01), 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	t.tween_callback(queue_free)
+
+## Sparkle trail for treasure monsters (presentation only).
+func add_sparkle_trail(col := Color("#ffd84a")) -> void:
+	var p = CPUParticles3D.new()
+	p.amount = 24
+	p.lifetime = 0.9
+	p.local_coords = false
+	p.direction = Vector3.UP
+	p.spread = 60.0
+	p.gravity = Vector3(0, -1.5, 0)
+	p.initial_velocity_min = 0.3
+	p.initial_velocity_max = 1.2
+	p.scale_amount_min = 0.04
+	p.scale_amount_max = 0.1
+	var sm = SphereMesh.new()
+	sm.radius = 0.5
+	sm.height = 1.0
+	sm.radial_segments = 4
+	sm.rings = 2
+	var m = StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = col
+	m.emission_enabled = true
+	m.emission = col
+	m.emission_energy_multiplier = 3.0
+	sm.material = m
+	p.mesh = sm
+	p.position.y = 0.7
+	add_child(p)
+	var l = OmniLight3D.new()
+	l.light_color = col
+	l.light_energy = 1.4
+	l.omni_range = 4.0
+	l.position.y = 1.2
+	l.shadow_enabled = false
+	add_child(l)
+
+# ------------------------------------------------------------------ boss phases
+## monsters[].phases: [{life_below, abilities_add[], speed_mult, dmg_mult, announce, anim}]
+func _check_phase() -> void:
+	var phases: Array = rec.get("phases", [])
+	while phase < phases.size() and life / max_life <= float(phases[phase].get("life_below", 0.5)):
+		var ph: Dictionary = phases[phase]
+		phase += 1
+		var list: Array = rec.get("abilities", []).duplicate()
+		for ab in ph.get("abilities_add", []):
+			if ab is Dictionary:
+				list.append(ab)
+			elif ab is String:
+				# reference an ability of another monster record: "monster_id/ability_id"
+				var parts = ab.split("/")
+				if parts.size() == 2:
+					for a2 in Content.get_rec("monsters", parts[0]).get("abilities", []):
+						if a2.get("id", "") == parts[1]:
+							list.append(a2)
+		rec = rec.duplicate()
+		rec["abilities"] = list
+		move_speed *= float(ph.get("speed_mult", 1.0))
+		if ph.has("dmg_mult"):
+			rec["dmg_mult"] = float(rec.get("dmg_mult", 1.0)) * float(ph.dmg_mult)
+		_attack_ready = time_now() + 1.2
+		play(str(ph.get("anim", "Cheer")), 1.1, 1.0, true)
+		flash(Color(1, 0.5, 0.3), 1.0)
+		Fx.ring(global_position, 6.0, Color("#ff2b2b"), 0.8)
+		Fx.shake(0.5)
+		Sfx.play("slam", -2.0)
+		Events.boss_phase.emit(self, phase)
+		Events.toast.emit(str(ph.get("announce", "%s grows furious!" % display_name)), Color("#ff8a5a"))
+
+# ------------------------------------------------------------------ elite visuals
+func add_shield_bubble() -> void:
+	if _shield_fx:
+		return
+	_shield_fx = MeshInstance3D.new()
+	var sm = SphereMesh.new()
+	sm.radius = 1.0
+	sm.height = 2.0
+	sm.radial_segments = 16
+	sm.rings = 8
+	_shield_fx.mesh = sm
+	var m = StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	m.albedo_color = Color(0.45, 0.75, 1.0, 0.18)
+	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	m.rim_enabled = true
+	_shield_fx.material_override = m
+	_shield_fx.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var sc = float(rec.get("scale", 1.0)) * 1.1
+	_shield_fx.scale = Vector3(sc * 0.9, sc * 1.1, sc * 0.9)
+	_shield_fx.position.y = 0.9 * sc
+	add_child(_shield_fx)
+
+func shield_active() -> bool:
+	return has_affix("shielded") and life > max_life * 0.5
+
+func _update_shield() -> void:
+	if _shield_fx and not shield_active():
+		Fx.burst(global_position + Vector3(0, 1, 0), Color(0.5, 0.8, 1.0), 24, 5.0, 0.1, 0.5)
+		Sfx.play("crit", -4.0)
+		_shield_fx.queue_free()
+		_shield_fx = null
+	elif _shield_fx:
+		var mat: StandardMaterial3D = _shield_fx.material_override
+		mat.albedo_color.a = 0.45
+		create_tween().tween_property(mat, "albedo_color:a", 0.18, 0.2)
+
 func on_damaged(amount: float, crit: bool, source: Node) -> void:
 	super.on_damaged(amount, crit, source)
 	if healthbar and healthbar.has_method("set_value"):
 		healthbar.set_value(life / max_life)
+	if _shield_fx:
+		_update_shield()
+	if alive and not rec.get("phases", []).is_empty():
+		_check_phase()
+	# Treasure monsters spill coins while being hit (throttled)
+	if alive and rec.get("ai", "") == "flee" and time_now() >= _coin_cd and Game.world:
+		_coin_cd = time_now() + 0.3
+		Game.world.spill_coins(self)
 	if alive and not anim_locked() and kind in ["normal", "minion"] and amount > max_life * 0.15:
 		play("Hit_A", 0.25, 1.5, true)
 	if source is Actor and target == null:

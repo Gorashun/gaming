@@ -46,6 +46,11 @@ This GDD is the single source of truth. Research inputs (Swedish) live in `resea
 > **v2.4 — Owner addition (binding):**
 > 30. **Hushfalls (random world events):** occasionally (≈1 per 3–5 zone visits, rarer in towns: never) a tear of Hush opens at a random spot in a zone: screen-edge glow + sound + minimap marker. Entering starts 2–4 escalating stages of themed waves (sometimes a different act's family, sometimes an elite pack or a "cursed" modifier), ending with a mini-boss; reward = cache chest with boosted rarity + Hushmark chance + materials. Variants: Invasion (waves), Cursed Shrine (survive modifier), Treasure Swarm (Magpie Imps), Lost Wisp escort, Echo Duel (mirror of your class). Optional, no real-time timers, no penalty for ignoring; progress bar per stage. Name never uses "rift".
 
+> **v2.5 — Owner additions (binding):**
+> 31. **Main questline:** long, chaptered story campaign (Act 1–5 + Deepdark epilogue), ≥6 chapters per act with varied objectives (reach, rekindle, collect, escort wisp, talk, solve, boss), story beats, twists and short dialogue scenes; completing chapters gives skill points/rewards; replayable on higher tiers for bonus rewards.
+> 32. **Many more side quests:** ≥15 per act (incl. repeatable bounty boards that bank, never expire).
+> 33. **Achievements ("Deeds"):** tiered (e.g. Rekindle 100 → 1,000 → 10,000 → 100,000 skeletons), categories: combat, exploration (zones, secrets, waypoints), crafting (crafts, upgrades, mastery), collection (uniques, Codex, pets, mounts), story, difficulty tiers, bosses, economy, Hushfalls, Last Flame. Rewards: titles (shown under name), cosmetics (cape/aura/name-frame/pet hat/mount tint), occasional skill point or small permanent stat (account-wide where sensible), Deed points with milestone rewards. No time-limited achievements (welfare).
+
 ## 1. Pillars
 1. **Every kill can surprise you.** Loot, events and secrets are variable and frequent — rewards come from *play*, never from a shop.
 2. **Juicy, readable combat.** Chibi heroes, dark world, bright attacks. Every hit feels good on a phone.

@@ -31,6 +31,11 @@ static func instance() -> ItemIcons:
 
 ## The model path for an item (or "" when it has none).
 static func model_for(item: Dictionary) -> String:
+	if item == null or item.is_empty():
+		return ""
+	var wp = UiTheme.api_call("Weapons", "prop_path", [item], "")
+	if wp is String and wp != "" and ResourceLoader.exists(wp):
+		return wp
 	var base = Content.get_rec("item_bases", str(item.get("base", "")))
 	var m = str(base.get("model", ""))
 	if m == "":

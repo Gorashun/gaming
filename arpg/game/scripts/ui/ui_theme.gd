@@ -598,14 +598,20 @@ static func api(cls_name: String) -> Script:
 	_class_cache[cls_name] = found
 	return found
 
+static var _method_cache := {}
 static func api_has(cls_name: String, method: String) -> bool:
+	var key = cls_name + "." + method
+	if _method_cache.has(key):
+		return _method_cache[key]
 	var s = api(cls_name)
-	if s == null:
-		return false
-	for m in s.get_script_method_list():
-		if str(m.get("name", "")) == method:
-			return true
-	return false
+	var ok = false
+	if s != null:
+		for m in s.get_script_method_list():
+			if str(m.get("name", "")) == method:
+				ok = true
+				break
+	_method_cache[key] = ok
+	return ok
 
 ## Call a static gameplay API; returns `fallback` when the class/method is missing.
 static func api_call(cls_name: String, method: String, args := [], fallback = null):
