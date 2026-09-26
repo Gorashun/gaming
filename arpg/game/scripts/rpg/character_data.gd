@@ -226,6 +226,24 @@ static func from_dict(d: Dictionary) -> CharacterData:
 	# JSON turns ints into floats; normalise key numerics
 	c.level = int(c.level); c.xp = int(c.xp); c.gold = int(c.gold)
 	c.skill_points = int(c.skill_points); c.star_points = int(c.star_points); c.potions = int(c.potions)
+	c.wick_charges = int(c.wick_charges)
+	for k in c.skill_mastery:
+		c.skill_mastery[k] = int(c.skill_mastery[k])
+	if not c.quests.has("active"):
+		c.quests["active"] = {}
+	if not c.quests.has("done"):
+		c.quests["done"] = []
+	# Unknown ids (removed DLC / renamed content) become placeholders instead of breaking the save
+	for slot in c.equipment.keys():
+		if c.equipment[slot] is Dictionary:
+			_mark_placeholder(c.equipment[slot])
+	for it in c.inventory:
+		if it is Dictionary:
+			_mark_placeholder(it)
+	if c.active_pet != "" and not Content.has_rec("pets", c.active_pet):
+		c.active_pet = ""
+	if c.active_mount != "" and not Content.has_rec("mounts", c.active_mount):
+		c.active_mount = ""
 	if c.inventory.size() < 40:
 		c.inventory.resize(40)
 	c.recalc()

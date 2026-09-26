@@ -66,9 +66,8 @@ func _ready() -> void:
 	Events.boss_spawned.connect(_on_boss_spawned)
 
 func _register_globals() -> void:
-	var have = RenderingServer.global_shader_parameter_get_list()
-	if not have.has(&"wick_player_pos"):
-		RenderingServer.global_shader_parameter_add(&"wick_player_pos", RenderingServer.GLOBAL_VAR_TYPE_VEC3, Vector3(0, -1000, 0))
+	# Registered at runtime (Fx is an autoload, so this runs once before any zone shader compiles).
+	RenderingServer.global_shader_parameter_add(&"wick_player_pos", RenderingServer.GLOBAL_VAR_TYPE_VEC3, Vector3(0, -1000, 0))
 
 ## Called every frame by CameraRig: drives wall dither + mist clearing around the hero.
 func set_player_pos(p: Vector3) -> void:

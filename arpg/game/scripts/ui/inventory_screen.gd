@@ -52,9 +52,9 @@ func _ready() -> void:
 	mid.add_child(glow)
 	_preview = HeroPreview.new()
 	_preview.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_preview.camera_distance = 4.6
-	_preview.camera_height = 1.5
-	_preview.look_height = 0.85
+	_preview.camera_distance = 7.8
+	_preview.camera_height = 1.7
+	_preview.look_height = 1.05
 	_preview.fov = 32
 	mid.add_child(_preview)
 	_preview.add_hero(ch.class_id, ch, 0.0)
@@ -86,7 +86,7 @@ func _ready() -> void:
 		InventoryOps.compact(ch)
 		refresh(), Vector2(110, 64), UiTheme.GOLD, true, 18))
 	tools.add_child(UiTheme.icon_button("salvage", "Salvage…", _salvage_menu, Vector2(150, 64), UiTheme.GOLD, true, 18))
-	_filter_btn = UiTheme.icon_button("filter", "", _cycle_filter, Vector2(200, 64), UiTheme.GOLD, true, 16)
+	_filter_btn = UiTheme.icon_button("filter", "Show all", _cycle_filter, Vector2(200, 64), UiTheme.GOLD, true, 16)
 	tools.add_child(_filter_btn)
 	var sc = ScrollContainer.new()
 	sc.size_flags_vertical = Control.SIZE_EXPAND_FILL

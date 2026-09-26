@@ -151,12 +151,14 @@ func _show_home() -> void:
 	page = "home"
 	_clear()
 	_preview.set_focus(-1, false)
-	_preview.camera_distance = 9.6
-	_preview.look_height = 1.25
-	_preview.fov = 34.0
-	_preview._update_camera()
 	_preview.offset_top = 150
 	_preview.offset_bottom = 0
+	_preview.offset_right = -440 if Game.list_saves().size() > 0 else 0
+	_preview.camera_distance = 11.5
+	_preview.look_height = 1.1
+	_preview.camera_height = 2.3
+	_preview.fov = 34.0
+	_preview._update_camera()
 	var top = VBoxContainer.new()
 	top.add_theme_constant_override("separation", -6)
 	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -171,7 +173,7 @@ func _show_home() -> void:
 	var v = VBoxContainer.new()
 	v.add_theme_constant_override("separation", 10)
 	panel.add_child(v)
-	var shown = saves.slice(0, 4)
+	var shown = saves.slice(0, 3)
 	if shown.size() > 0:
 		v.add_child(UiTheme.label("Continue", 24, UiTheme.GOLD, true))
 		for d in shown:
@@ -190,7 +192,7 @@ func _show_home() -> void:
 	row.add_child(UiTheme.icon_button("settings", "Settings", func(): _open_overlay("settings"), Vector2(104, 96), UiTheme.GOLD))
 	row.add_child(UiTheme.icon_button("credits", "Credits", func(): _open_overlay("credits"), Vector2(104, 96), UiTheme.GOLD))
 	row.add_child(UiTheme.icon_button("trophy", "Embers", func(): _open_overlay("hall"), Vector2(104, 96), UiTheme.GOLD))
-	var ver = UiTheme.label("Build %s · offline · no ads" % ProjectSettings.get_setting("application/config/version", "0.1.0"), 14, Color(UiTheme.MUTED, 0.7))
+	var ver = UiTheme.label("Build %s · offline · no ads" % (str(ProjectSettings.get_setting("application/config/version", "")) if str(ProjectSettings.get_setting("application/config/version", "")) != "" else "0.1"), 14, Color(UiTheme.MUTED, 0.7))
 	_layer.add_child(ver)
 	UiTheme.place(ver, 0.0, 1.0, 34, -30, 400, 22)
 	# Heroes greet
@@ -231,7 +233,7 @@ func _save_card(d: Dictionary) -> Control:
 	v.add_child(UiTheme.label("Lv %d %s · %s" % [int(d.get("level", 1)), cls.get("name", ""), tier], 18, UiTheme.MUTED))
 	if bool(d.get("hardcore", false)):
 		h.add_child(UiTheme.icon_rect("hardcore", 40, UiTheme.EMBER if not dead else UiTheme.LOCKED))
-	var lvl = UiTheme.label(str(int(d.get("level", 1))), 34, UiTheme.GOLD, true)
+	var lvl = UiTheme.label(str(int(d.get("level", 1))), 34, UiTheme.GOLD)
 	h.add_child(lvl)
 	UiTheme.juice(b)
 	b.pressed.connect(func():
@@ -253,6 +255,7 @@ func _show_create() -> void:
 	_cards.clear()
 	_preview.offset_top = 0
 	_preview.offset_bottom = -280
+	_preview.offset_right = 0
 	_preview.camera_distance = 8.4
 	_preview.look_height = 1.0
 	_preview.camera_height = 2.0

@@ -181,13 +181,16 @@ static func _wisp(ctx: Dictionary, b: Node3D, wick: bool) -> void:
 	a.style = "float"
 	var c: Color = ctx.col
 	var core = sphere(b, Vector3(0, 0.5, 0), Vector3.ONE * 0.5, glow_mat(c.lightened(0.45)), 12)
-	cone(b, Vector3(0, 0.88, -0.05), 0.2, 0.45, glow_mat(c.lightened(0.2)), Vector3(-0.3, 0, 0))
 	if wick:
-		var f = Fx.glow_sprite(c, 1.1, "flame")
-		f.position = Vector3(0, 0.85, 0)
+		# the hero's Wick: a round ember with a soft flame lick, not a spike
+		var f = Fx.glow_sprite(Color(c, 0.85), 0.9, "flame")
+		f.position = Vector3(0, 0.82, 0)
 		b.add_child(f)
 		a.extra.append(f)
-	_halo(b, Vector3(0, 0.55, 0), Color(c, 0.6), 2.0)
+		_halo(b, Vector3(0, 0.55, 0), Color(c, 0.45), 1.6)
+	else:
+		cone(b, Vector3(0, 0.88, -0.05), 0.2, 0.45, glow_mat(c.lightened(0.2)), Vector3(-0.3, 0, 0))
+		_halo(b, Vector3(0, 0.55, 0), Color(c, 0.6), 2.0)
 	var ectx = ctx.duplicate()
 	ectx.eyes = "cute"
 	ectx.eye_col = Color("#2a1a10")

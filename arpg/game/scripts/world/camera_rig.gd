@@ -7,15 +7,15 @@ extends Node3D
 ## Shake = trauma model, camera offset only, rotation <= 1.5 deg.
 ## Also feeds the hero position to the env shader (wall dither) every frame via Fx.set_player_pos.
 
-const DIST_ZONE := 17.5
-const DIST_HUB := 15.0
-const DIST_BOSS := 21.0
+const DIST_ZONE := 22.0
+const DIST_HUB := 19.0
+const DIST_BOSS := 26.0
 const SCREEN_Y := 0.54          # hero position, fraction of screen height from the top
 const LOOK_AHEAD := 1.5
 
 var target: Node3D
 var camera: Camera3D
-var distance = DIST_ZONE        # legacy: GameWorld may set 16 for bosses; mode presets win
+var distance = 22.0             # legacy: GameWorld may set 16 for bosses; mode presets win
 var pitch_deg = -52.0
 var yaw_deg = 45.0
 var trauma = 0.0
