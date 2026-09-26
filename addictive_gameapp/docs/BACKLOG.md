@@ -97,3 +97,13 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [ ] CS5 (P2) Rename Shop/Free! to Shells/Gift!; own sound for affordable hint; peeking shell max 3 bounces.
 - [ ] CS6 (P2) First shell as a "choose 1 of 3" gift instead of always-rare random.
 - [ ] CS7 (P2) Unit test: director never reads save data. Playtest: children's auto-drop share.
+
+## Fas 13 – Legal/IP fixes (docs/legal/ip-review-2026-09-26.md)
+- [ ] LG1 (HIGH) Replace stock Capacitor icon/splash with our own (release engineer, in progress); verify in built APK.
+- [ ] LG2 Own score curve (not Suika's triangular 1,3,6…66); replace fruit-like level names (e.g. "Peach"); no Suika/watermelon/fruit in store text; lead screenshots with buddies.
+- [ ] LG3 Renames: SV "Spådamen Siri" → "Spådamen Vera" / EN "Vera the Seer", id `siri` → `vera` with save migration; "Freddie the Frog" → "Figgy the Frog" + redraw eyes (away from Keroppi); "Pirate Pete" → "Captain Kip"; set "The Frosties" → "The Icelings" / "Isbitarna".
+- [ ] LG4 Mouse silhouette in the Book: oval head, lower ears (no Mickey read).
+- [ ] LG5 Ship open-source notices: generated notices file (Phaser, Capacitor, Android libs, Fredoka OFL) + "Licenses" row in the settings sheet.
+- [ ] LG6 Store text: no PEGI claim in text, add privacy policy, drop "only" in "saved on your device only" (Android backup is on) or disable backup.
+- [ ] LG7 Replace the two-note sound that shares Mario coin pitches (audio batch).
+- [ ] LG8 Before public store launch: lawyer clearance search for "KLUNK" in Nice classes 9/28/41 (Mattel KERPLUNK risk). Fallbacks: Glimjar, Plopkin, Glimta.
