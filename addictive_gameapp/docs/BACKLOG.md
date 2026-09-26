@@ -88,3 +88,12 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 - [ ] S2 Utvärdera `Scale.EXPAND` på Start för att använda höjden på långa telefoner.
 - [ ] S3 Byt namn på/ta bort föråldrade skärmdumpar (start-shelf, start-four-icons, start-aim-off, start-settings-off, shelf-box).
 - [ ] L1 Språkval i inställningsarket (English / Svenska), sparas i `settings.lang`, `setPreferredLocale` vid Boot och vid byte; standard engelska.
+
+## Fas 12 – Child-safety baseline (docs/reviews/2026-09-26-baseline.md, PASS WITH CHANGES)
+- [ ] CS1 (P1) Odds jars: rarities under 4 % shown as a hollow "very rare" speck, plus an odds sheet with exact percentages.
+- [ ] CS2 (P1) Store listing: update to current economy (pearls buy shells/upgrades, earned currency only), add privacy policy text/page.
+- [ ] CS3 (P1) Near-miss: require same level in `findNearMiss` (8 and 9 must not pulse).
+- [ ] CS4 (P1) Game over: Home button, replay icon stops pulsing after a few cycles, gentle "good place to stop" moment.
+- [ ] CS5 (P2) Rename Shop/Free! to Shells/Gift!; own sound for affordable hint; peeking shell max 3 bounces.
+- [ ] CS6 (P2) First shell as a "choose 1 of 3" gift instead of always-rare random.
+- [ ] CS7 (P2) Unit test: director never reads save data. Playtest: children's auto-drop share.
