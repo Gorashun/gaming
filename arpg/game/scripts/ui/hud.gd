@@ -493,7 +493,7 @@ func _process(delta: float) -> void:
 	if _tick_flash > 0.0:
 		_xp.queue_redraw()
 	# Golden moment waits for calm: no enemy within 12 m for 1.5 s
-	var calm = Game.world.monsters_near(player.global_position, 12.0).filter(func(m): return m.alive and m.faction != "player").is_empty() if Game.world.has_method("monsters_near") else true
+	var calm = Game.world.monsters_near(player.global_position, 12.0).filter(func(m): return m is Monster and m.alive and str(m.faction) == "monster" and str(m.get("kind")) != "minion").is_empty() if Game.world.has_method("monsters_near") else true
 	_calm_t = _calm_t + delta if calm else 0.0
 	if not _golden_open and _golden_queue.size() > 0 and _calm_t >= 1.5:
 		_show_golden(_golden_queue.pop_front())

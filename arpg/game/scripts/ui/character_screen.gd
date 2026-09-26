@@ -58,7 +58,11 @@ func _ready() -> void:
 	nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	id.add_child(nm)
 	var title = _title_text()
-	var sub = UiTheme.label(("“%s” · " % title if title != "" else "") + "Level %d %s" % [ch.level, ch.cls().get("name", "")], 18, UiTheme.MUTED)
+	if title != "":
+		var tl = UiTheme.label(title, 18, UiTheme.GOLD)
+		tl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		id.add_child(tl)
+	var sub = UiTheme.label("Level %d %s" % [ch.level, ch.cls().get("name", "")], 18, UiTheme.MUTED)
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	id.add_child(sub)
 	if ch.hardcore:
