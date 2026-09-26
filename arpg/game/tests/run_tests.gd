@@ -20,7 +20,7 @@ func _ready() -> void:
 	for t in ["test_content_sanity", "test_loot_generation", "test_upgrade", "test_affinity_proficiency", "test_pets",
 			"test_quests", "test_save_roundtrip", "test_save_backups", "test_starmap", "test_skill_mods", "test_mastery",
 			"test_merchants", "test_travel", "test_codex", "test_deeds", "test_main_quest", "test_builds", "test_mounts",
-			"test_world_event_helpers"]:
+			"test_world_event_helpers", "test_base_content_integration"]:
 		_current = t
 		Rng.reseed(1234)
 		call(t)
@@ -549,3 +549,51 @@ func test_world_event_helpers() -> void:
 		for ab in r.abilities:
 			check(str(ab.get("type", "")) in ["slam", "volley", "charge"], "echo ability type")
 		we.free()
+
+## Real content (content/base) shapes work with the systems.
+func test_base_content_integration() -> void:
+	for r in Content.all("world_events"):
+		var we = WorldEvents.new()
+		we.rec = r
+		var steps = we._build_steps()
+		check(steps.size() > 0, "hushfall %s has steps" % r.id)
+		for st in steps:
+			check(st.has("echo") or st.has("boss") or int(st.get("count", 0)) > 0, "hushfall %s step valid" % r.id)
+		we.free()
+	var ch = mk_char("lanternbearer", 20)
+	for c in Content.all("cosmetics"):
+		Deeds._grant_reward(ch, {"cosmetic": c.id})
+		check(ch.cosmetics_owned.get(str(c.get("kind", "misc")), []).has(c.id), "cosmetic %s owned" % c.id)
+		break
+	for v in Content.all("vendors"):
+		ch.gold = 100000
+		for i in v.get("stock", []).size():
+			var e = v.stock[i]
+			if str(e.get("kind", "")) == "consumable" and Content.get_rec("consumables", str(e.id)).get("kind", "") == "elixir":
+				check(Merchants.buy(ch, v.id, i).ok, "buy elixir %s" % e.id)
+				check(not ch.buffs.is_empty(), "elixir buff active")
+				ch.play_seconds += 100000
+				ch.recalc()
+				check(ch.buffs.is_empty(), "elixir expires with play time")
+				break
+		break
+	for o in Content.all("curio_offers"):
+		var cat: Dictionary = o.get("category", {})
+		if cat.has("weapon_type"):
+			ch.level = max(ch.level, int(o.get("min_level", 1)))
+			ch.add_material(Merchants.curio_currency(), 100)
+			var r = Merchants.curio_buy(ch, o.id)
+			if r.ok:
+				eq(r.item.get("type", ""), cat.weapon_type, "curio %s type" % o.id)
+			break
+	var ch2 = mk_char("lanternbearer", 1)
+	var first = MainQuest.ensure_started(ch2)
+	check(first != "", "a main quest chapter starts")
+	check(MainQuest.tracker(ch2).has("objective"), "tracker has an objective")
+	for s2 in Content.all("skills"):
+		if s2.has("mastery"):
+			ch2.skill_mastery[s2.id] = 20
+			ch2.skill_ranks[s2.id] = 5
+			var res = SkillMods.resolve(ch2, s2.id)
+			check(res.has("effects"), "mastery 20 resolves %s" % s2.id)
+	ch2.recalc()
