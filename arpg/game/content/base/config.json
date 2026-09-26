@@ -569,23 +569,24 @@
   "stat_per_level_pct": 4,
   "affix_per_level_pct": 3,
   "gold": [
-   150.0,
-   230.0,
-   360.0,
-   560.0,
-   870.0,
-   1340.0,
-   2080.0,
-   3220.0,
-   5000.0,
-   7750.0,
-   12010.0,
-   18610.0,
-   28850.0,
-   44710.0,
-   69300.0
+   180.0,
+   280.0,
+   430.0,
+   670.0,
+   1040.0,
+   1610.0,
+   2500.0,
+   3870.0,
+   6000.0,
+   9300.0,
+   14410.0,
+   22330.0,
+   34610.0,
+   53650.0,
+   83160.0
   ],
   "gold_ilvl_mult": 0.03,
+  "gold_ilvl_exp": 1.9,
   "materials": [
    {
     "soot": 4
@@ -670,10 +671,12 @@
     "title": "Fully Kindled"
    }
   },
-  "note": "gold cost = gold[L-1] * (1 + ilvl * gold_ilvl_mult). Costs shown up front. Upgrading never fails and never breaks an item."
+  "note": "gold cost = gold[L-1] * (1 + ilvl * gold_ilvl_mult) ^ gold_ilvl_exp. Costs shown up front. Upgrading never fails and never breaks an item."
  },
  {
   "id": "travel",
+  "fee_base": 10,
+  "fee_per_zone_level": 2,
   "fee_per_act_distance": 25,
   "fee_level_mult": 2,
   "town_free": true,
@@ -906,6 +909,9 @@
   },
   "one_active": true,
   "ferry_cooldown_s": 90,
+  "ferry_duration_s": 6,
+  "ferry_max_rank": 2,
+  "treat_xp": 150,
   "dig_cooldown_s": 45,
   "combat_classes": [
    "stitcher"
@@ -985,6 +991,22 @@
   "instant_reveal": true,
   "never_for_real_money": true,
   "price_note": "jewellery and two-handed cost more; see curio_offers"
+ },
+ {
+  "id": "merchants",
+  "max_potions": 10,
+  "curio_currency": "hushmark"
+ },
+ {
+  "id": "mounts",
+  "fed_speed_pct": 10,
+  "fed_duration_s": 1800,
+  "remount_delay_s": 3.0
+ },
+ {
+  "id": "world_events",
+  "chance_per_zone": 0.25,
+  "note": "fallback only; world_events records carry chance_per_zone (sum ~0.26 => one Hushfall per ~4 zone visits)"
  },
  {
   "id": "hushfall",

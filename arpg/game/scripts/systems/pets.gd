@@ -8,6 +8,27 @@ extends RefCounted
 ##   xp_per_kill, ferry_cooldown_s, ferry_duration_s, ferry_max_rank, treat_xp}.
 ## Character: pets_owned{id: {level, xp}}, active_pet, pet_state{dig_kills, ferry_ready_at, ferry_back_at}.
 
+## Keyword → CreatureFactory kind for pets whose data has no `creature` and only a placeholder model.
+const PET_KEYWORDS := [["lantern", "lantern_moth"], ["glowworm", "wisp"], ["moth", "moth"], ["owl", "owl"], ["hoot", "owl"],
+	["bat", "bat"], ["frog", "frog"], ["spider", "spider"], ["ghost", "ghost"], ["sparrow", "crow"], ["crow", "crow"],
+	["magpie", "crow"], ["hound", "fox"], ["puppy", "fox"], ["bear", "bunny"], ["cat", "cat"], ["fox", "fox"], ["snail", "snail"],
+	["bunny", "bunny"], ["hare", "bunny"], ["candle", "wick"], ["wick", "wick"], ["soot", "wisp"], ["wisp", "wisp"],
+	["sprout", "slime"], ["pebble", "slime"], ["egg", "slime"], ["hush", "ghost"]]
+
+## Visual kind for a pet: pets[].creature, else "" when a real custom model exists, else a keyword guess.
+static func creature_kind(r: Dictionary) -> String:
+	var k = str(r.get("creature", ""))
+	if k != "":
+		return k
+	var model = str(r.get("model", ""))
+	if model != "" and ResourceLoader.exists(model) and not model.contains("/characters/") and not r.get("art_needed", false):
+		return ""
+	var text = (str(r.get("id", "")) + " " + str(r.get("name", "")) + " " + str(r.get("desc", ""))).to_lower()
+	for kw in PET_KEYWORDS:
+		if text.contains(kw[0]):
+			return kw[1]
+	return "wisp"
+
 static func cfg() -> Dictionary:
 	return Content.get_rec("config", "pets")
 

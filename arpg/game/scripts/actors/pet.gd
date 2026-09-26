@@ -26,7 +26,11 @@ func setup(id: String, p: Player) -> void:
 	name = "Pet"
 	var tint = Color(rec.get("tint", "#ffd98a"))
 	var model_path = str(rec.get("model", ""))
-	if model_path != "" and ResourceLoader.exists(model_path):
+	var ck = Pets.creature_kind(rec)
+	if ck != "":
+		_visual = CreatureFactory.build(ck, tint, float(rec.get("scale", 0.6)) if rec.has("creature") else 0.6, {"outline": true})
+		_flying = ck in ["wisp", "wick", "bat", "moth", "lantern_moth", "ghost", "crow", "owl"]
+	elif model_path != "" and ResourceLoader.exists(model_path):
 		if not _scene_cache.has(model_path):
 			_scene_cache[model_path] = load(model_path)
 		_visual = _scene_cache[model_path].instantiate()
@@ -157,6 +161,8 @@ func _process(delta: float) -> void:
 	if dist > 0.1:
 		var look = flat - cur
 		rotation.y = lerp_angle(rotation.y, atan2(look.x, look.z), clampf(delta * 8.0, 0.0, 1.0))
+	if _visual.has_method("set_moving"):
+		_visual.set_moving(dist > 0.3)
 	if _anim:
 		var want = "Running_A" if dist > 0.4 and not _flying else "Idle"
 		if _anim.has_animation(want) and _anim.current_animation != want:
@@ -190,6 +196,8 @@ func _combat(delta: float) -> void:
 	if t == null:
 		return
 	var mult = float(rec.get("combat_mult", Pets.perk_param(player.ch, "combat_mult", 0.35))) * (1.0 + 0.03 * Pets.level(player.ch, pet_id))
+	if _visual.has_method("attack"):
+		_visual.attack()
 	Game.world.draw_bolt(global_position, t.hit_center(), Color(rec.get("tint", "#ffd98a")))
 	Game.world.deal_damage(player, t, mult, str(rec.get("element", "physical")), ["minion", "pet"], {}, true)
 

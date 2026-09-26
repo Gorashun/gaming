@@ -32,7 +32,7 @@ def upgrade_cost(c, ilvl, to_level):
     up = c["upgrade"]
     g, mats = 0.0, {}
     for L in range(1, to_level + 1):
-        g += up["gold"][L - 1] * (1 + ilvl * up["gold_ilvl_mult"])
+        g += up["gold"][L - 1] * (1 + ilvl * up["gold_ilvl_mult"]) ** up.get("gold_ilvl_exp", 1.0)
         for k, v in up["materials"][L - 1].items():
             mats[k] = mats.get(k, 0) + v
     return g, mats
@@ -61,7 +61,8 @@ def main():
             ok = False
     print("  materials for +0 -> +15 (one item):", upgrade_cost(c, 60, 15)[1])
     full = upgrade_cost(c, 60, 15)[0] * 12 / gold_per_hour(60, 1.5)
-    print(f"  full 12-slot set to +15 at ilvl 60: {full:.0f} h of gold income (plus {12*3} Starmotes, 12 Lanternglass)")
+    m15 = upgrade_cost(c, 60, 15)[1]
+    print(f"  full 12-slot set to +15 at ilvl 60: {full:.0f} h of gold income (plus {12*m15.get('starmote',0)} Starmotes, {12*m15.get('lanternglass',0)} Lanternglass)")
     sm = c["skill_mastery"]
     print("\nSkill mastery (one skill): usage XP at ~55 xp/min of active use (30 hits + 8 kills per min)")
     cum_xp, cum_g = 0.0, 0.0

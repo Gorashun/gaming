@@ -35,8 +35,8 @@ func setup_npc(r: Dictionary) -> void:
 	collision_mask = 0
 	_base_rot = rotation.y
 	play(str(r.get("anim", "Idle")))
-	var role_name = str(r.get("role", "")).capitalize()
-	_name_label = _label("%s\n%s %s" % [display_name, ROLE_ICONS.get(str(r.get("role", "")), "•"), role_name], 34, Color(role_color()))
+	var role_name = str(r.get("title", str(r.get("role", "")).capitalize()))
+	_name_label = _label("%s\n%s %s" % [display_name, ROLE_ICONS.get(str(r.get("role", "")), "•"), role_name], 28, Color(role_color()))
 	_name_label.position.y = 2.7
 	_marker = _label("", 72, Color("#ffd23f"))
 	_marker.position.y = 3.35
@@ -49,6 +49,7 @@ func setup_npc(r: Dictionary) -> void:
 	_bubble.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_bubble.visible = false
 	set_physics_process(false)
+	_name_label.visible = false
 
 func role() -> String:
 	return str(rec.get("role", ""))
@@ -108,6 +109,9 @@ func _process(delta: float) -> void:
 		_marker.text = mark
 	if p and is_instance_valid(p):
 		var d = global_position.distance_to(p.global_position)
+		# Names only near the hero (towns have 12+ NPCs; avoids overlapping labels)
+		_name_label.visible = d < 4.5
+		_marker.visible = d < 16.0
 		if d < 6.0:
 			face_towards(p.global_position)
 			_ambient_cd -= 0.5

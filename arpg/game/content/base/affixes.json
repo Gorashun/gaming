@@ -3600,7 +3600,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_flare",
   "decimals": 0,
   "classes": [
@@ -3655,7 +3655,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_charge",
   "decimals": 0,
   "classes": [
@@ -3710,7 +3710,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_consecrate",
   "decimals": 0,
   "classes": [
@@ -3765,7 +3765,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_aegis",
   "decimals": 0,
   "classes": [
@@ -3820,7 +3820,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_judgement",
   "decimals": 0,
   "classes": [
@@ -3875,7 +3875,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_whirl",
   "decimals": 0,
   "classes": [
@@ -3930,7 +3930,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_leap",
   "decimals": 0,
   "classes": [
@@ -3985,7 +3985,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_roar",
   "decimals": 0,
   "classes": [
@@ -4040,7 +4040,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_quake",
   "decimals": 0,
   "classes": [
@@ -4095,7 +4095,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_chains",
   "decimals": 0,
   "classes": [
@@ -4150,7 +4150,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_starfall",
   "decimals": 0,
   "classes": [
@@ -4205,7 +4205,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_frostnova",
   "decimals": 0,
   "classes": [
@@ -4260,7 +4260,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_chain",
   "decimals": 0,
   "classes": [
@@ -4315,7 +4315,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_blink",
   "decimals": 0,
   "classes": [
@@ -4370,7 +4370,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_meteor",
   "decimals": 0,
   "classes": [
@@ -4425,7 +4425,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_ragdoll",
   "decimals": 0,
   "classes": [
@@ -4480,7 +4480,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_pins",
   "decimals": 0,
   "classes": [
@@ -4535,7 +4535,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_bigdoll",
   "decimals": 0,
   "classes": [
@@ -4590,7 +4590,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_unravel",
   "decimals": 0,
   "classes": [
@@ -4645,7 +4645,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_mend",
   "decimals": 0,
   "classes": [
@@ -4700,7 +4700,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_fan",
   "decimals": 0,
   "classes": [
@@ -4755,7 +4755,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_roll",
   "decimals": 0,
   "classes": [
@@ -4810,7 +4810,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_trap",
   "decimals": 0,
   "classes": [
@@ -4865,7 +4865,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_smoke",
   "decimals": 0,
   "classes": [
@@ -4920,7 +4920,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_rain",
   "decimals": 0,
   "classes": [
@@ -4975,7 +4975,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_beacon",
   "decimals": 0,
   "classes": [
@@ -5030,7 +5030,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_rally",
   "decimals": 0,
   "classes": [
@@ -5085,7 +5085,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_chain",
   "decimals": 0,
   "classes": [
@@ -5140,7 +5140,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_sanctuary",
   "decimals": 0,
   "classes": [
@@ -5195,7 +5195,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_dawnstrike",
   "decimals": 0,
   "classes": [
@@ -5250,7 +5250,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_sunrise",
   "decimals": 0,
   "classes": [
@@ -5305,7 +5305,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_lb_smite",
   "decimals": 0,
   "classes": [
@@ -5360,7 +5360,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_gong",
   "decimals": 0,
   "classes": [
@@ -5415,7 +5415,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_throw",
   "decimals": 0,
   "classes": [
@@ -5470,7 +5470,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_stomp",
   "decimals": 0,
   "classes": [
@@ -5525,7 +5525,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_frenzy",
   "decimals": 0,
   "classes": [
@@ -5580,7 +5580,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_quakeline",
   "decimals": 0,
   "classes": [
@@ -5635,7 +5635,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_doom",
   "decimals": 0,
   "classes": [
@@ -5690,7 +5690,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_bs_ringout",
   "decimals": 0,
   "classes": [
@@ -5745,7 +5745,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_orbit",
   "decimals": 0,
   "classes": [
@@ -5800,7 +5800,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_icicle",
   "decimals": 0,
   "classes": [
@@ -5855,7 +5855,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_gravity",
   "decimals": 0,
   "classes": [
@@ -5910,7 +5910,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_blizzard",
   "decimals": 0,
   "classes": [
@@ -5965,7 +5965,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_storm",
   "decimals": 0,
   "classes": [
@@ -6020,7 +6020,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_supernova",
   "decimals": 0,
   "classes": [
@@ -6075,7 +6075,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_sg_moonbeam",
   "decimals": 0,
   "classes": [
@@ -6130,7 +6130,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_pinarcher",
   "decimals": 0,
   "classes": [
@@ -6185,7 +6185,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_hex",
   "decimals": 0,
   "classes": [
@@ -6240,7 +6240,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_spool",
   "decimals": 0,
   "classes": [
@@ -6295,7 +6295,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_scarecrow",
   "decimals": 0,
   "classes": [
@@ -6350,7 +6350,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_quilt",
   "decimals": 0,
   "classes": [
@@ -6405,7 +6405,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_puppetking",
   "decimals": 0,
   "classes": [
@@ -6460,7 +6460,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_st_thimble",
   "decimals": 0,
   "classes": [
@@ -6515,7 +6515,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_caltrops",
   "decimals": 0,
   "classes": [
@@ -6570,7 +6570,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_pinbolt",
   "decimals": 0,
   "classes": [
@@ -6625,7 +6625,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_decoy",
   "decimals": 0,
   "classes": [
@@ -6680,7 +6680,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_firework",
   "decimals": 0,
   "classes": [
@@ -6735,7 +6735,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_shadowstep",
   "decimals": 0,
   "classes": [
@@ -6790,7 +6790,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_rooftop",
   "decimals": 0,
   "classes": [
@@ -6845,7 +6845,7 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 0.6,
+  "weight": 0.2,
   "group": "rank_rr_sparrow",
   "decimals": 0,
   "classes": [

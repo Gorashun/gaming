@@ -198,6 +198,10 @@ func _populate() -> void:
 		return
 	var room_ids = range(layout.rooms.size())
 	room_ids.erase(layout.start_room)
+	if zone.get("boss", "") != "" and room_ids.size() > 1:
+		room_ids.erase(layout.end_room)
+	if room_ids.is_empty():
+		packs = 0   # tiny layouts (boss arenas): only the boss
 	var tier = Game.tier()
 	var elite_chance = float(zone.get("elite_chance", 0.18)) * float(tier.get("elite_mult", 1.0))
 	for i in packs:
@@ -917,6 +921,9 @@ func spawn_minion(owner: Actor, minion_id: String, e: Dictionary, rank: int) -> 
 	Fx.soul_puff(pos, Color(1.0, 0.85, 0.6))
 
 func draw_bolt(a: Vector3, b: Vector3, col: Color) -> void:
+	if Fx.has_method("lightning"):
+		Fx.lightning(a, b, col)
+		return
 	var im = ImmediateMesh.new()
 	var mi = MeshInstance3D.new()
 	mi.mesh = im

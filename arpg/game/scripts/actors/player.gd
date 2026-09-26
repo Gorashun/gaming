@@ -275,12 +275,17 @@ func _physics_process(delta: float) -> void:
 		face_towards(global_position + intent_move)
 		play("Sit_Chair_Idle" if mounted and anim and anim.has_animation("Sit_Chair_Idle") else "Running_A", 0, clampf(speed_mult(), 0.8, 1.4))
 		if mount_visual:
-			mount_visual.position.y = absf(sin(time_now() * 10.0)) * 0.08
+			if mount_visual.has_method("set_moving"):
+				mount_visual.set_moving(true)
+			else:
+				mount_visual.position.y = absf(sin(time_now() * 10.0)) * 0.08
 		_step_timer -= delta
 		if _step_timer <= 0.0:
 			_step_timer = 0.32
 			Sfx.play(_step_sfx, -14.0, 0.15)
 	elif not anim_locked():
+		if mount_visual and mount_visual.has_method("set_moving"):
+			mount_visual.set_moving(false)
 		if mounted and anim and anim.has_animation("Sit_Chair_Idle"):
 			play("Sit_Chair_Idle")
 		elif not _channel.is_empty() and anim and anim.has_animation("Spellcasting"):
@@ -450,8 +455,12 @@ func mount() -> bool:
 	if ch.cosmetics.has("mount_tint"):
 		_tint_node(mount_visual, cosmetic_color(ch.cosmetics.mount_tint), 0.5)
 	mount_visual.rotation.y = 0.0
+	var seat = float(Mounts.rec(ch.active_mount).get("seat_height", 0.55))
+	var saddle = mount_visual.find_child("Saddle", true, false)
+	if saddle is Node3D and not Mounts.rec(ch.active_mount).has("seat_height"):
+		seat = (saddle as Node3D).global_position.y - global_position.y
 	if model:
-		model.position.y = float(Mounts.rec(ch.active_mount).get("seat_height", 0.55))
+		model.position.y = seat
 	Fx.burst(global_position + Vector3(0, 0.5, 0), Color(0.9, 0.8, 0.6), 12, 3.0, 0.12, 0.5)
 	Sfx.play("mount", -4.0)
 	Events.mount_changed.emit(true)

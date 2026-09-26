@@ -6,6 +6,23 @@ extends RefCounted
 ## tint, speed_pct, seat_height, source, cost_gold, requires, desc}; config/mounts {remount_delay_s,
 ## fed_speed_pct, fed_duration_s}. Character: mounts_owned[], active_mount, mount_fed_until.
 
+const MOUNT_KEYWORDS := [["moth", "lantern_beetle"], ["beetle", "lantern_beetle"], ["deer", "stag"], ["stag", "stag"],
+	["newt", "giant_snail"], ["snail", "giant_snail"], ["pony", "boar"], ["boar", "boar"], ["hare", "wolf"], ["wolf", "wolf"]]
+
+## Visual kind: mounts[].creature, else "" for a real custom model, else a keyword guess (default wolf).
+static func creature_kind(r: Dictionary) -> String:
+	var k = str(r.get("creature", ""))
+	if k != "":
+		return k
+	var model = str(r.get("model", ""))
+	if model != "" and ResourceLoader.exists(model) and not model.contains("/characters/") and not r.get("art_needed", false):
+		return ""
+	var text = (str(r.get("id", "")) + " " + str(r.get("name", ""))).to_lower()
+	for kw in MOUNT_KEYWORDS:
+		if text.contains(kw[0]):
+			return kw[1]
+	return "wolf"
+
 static func cfg() -> Dictionary:
 	return Content.get_rec("config", "mounts")
 
@@ -67,6 +84,11 @@ static func make_visual(id: String) -> Node3D:
 	var r = rec(id)
 	var tint = Color(r.get("tint", "#8a7a6a"))
 	var path = str(r.get("model", ""))
+	var ck = creature_kind(r) if not r.is_empty() else "wolf"
+	if ck != "":
+		var c: Node3D = CreatureFactory.build(ck, tint, float(r.get("scale", 1.0)) if r.has("creature") else 1.0, {"outline": true})
+		c.name = "Mount"
+		return c
 	if path != "" and ResourceLoader.exists(path):
 		var n: Node3D = load(path).instantiate()
 		n.scale = Vector3.ONE * float(r.get("scale", 1.0))

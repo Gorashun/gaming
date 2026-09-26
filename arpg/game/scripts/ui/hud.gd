@@ -93,6 +93,10 @@ func _ready() -> void:
 	_connect_opt("world_event_stage", _on_event_stage)
 	_connect_opt("world_event_completed", _on_event_completed)
 	_connect_opt("codex_updated", func(_e): toast("Codex of Light updated", Color("#ffe39a"), "trophy"))
+	_connect_opt("story_dialogue", _on_story)
+	_connect_opt("main_quest_updated", func(_c, _o, _p, _n): _refresh_quests())
+	_connect_opt("main_quest_chapter_completed", func(cid): _refresh_quests(); _banner("Chapter complete!", UiTheme.GOLD))
+	_connect_opt("deed_tier_completed", _on_deed)
 	_connect_opt("item_upgraded", func(it): toast("%s is now +%d" % [it.get("name", "Item"), int(it.get("upgrade", 0))], UiTheme.GOLD, "upgrade"))
 
 func _connect_opt(sig: String, cb: Callable) -> void:
@@ -510,6 +514,7 @@ func _slow_update() -> void:
 	_hearth_sweep.value = clampf(left / max(1.0, total), 0.0, 1.0) if ch.wick_charges <= 0 else 0.0
 	_refresh_buffs()
 	_refresh_quick()
+	_poll_event()
 
 func _context_icon(it: Dictionary) -> String:
 	if it.has("icon"):
@@ -632,17 +637,31 @@ func _refresh_quests() -> void:
 	for c in _quests.get_children():
 		c.queue_free()
 	var active: Array = UiTheme.api_call("Quests", "active_list", [player.ch], [])
-	if active.is_empty():
-		_quests.visible = false
-		return
-	_quests.visible = true
+	var mq: Dictionary = UiTheme.api_call("MainQuest", "tracker", [player.ch], {})
+	_quests.visible = not active.is_empty() or not mq.is_empty()
 	var shown = 0
+	if not mq.is_empty():
+		var chap = Content.get_rec("main_quest", str(mq.get("chapter", "")))
+		var ob: Dictionary = mq.get("objective", {})
+		var txt = load("res://scripts/ui/quests_screen.gd").objective_text(chap, int(mq.get("index", 0)))
+		if int(ob.get("count", 1)) > 1:
+			txt += "  %d/%d" % [int(ob.get("progress", 0)), int(ob.count)]
+		var mh = HBoxContainer.new()
+		mh.add_theme_constant_override("separation", 6)
+		mh.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		mh.add_child(UiTheme.icon_rect("star", 26, UiTheme.EMBER))
+		var ml = UiTheme.label(txt, 19, Color("#ffd9a0"))
+		ml.clip_text = true
+		ml.custom_minimum_size = Vector2(290, 0)
+		mh.add_child(ml)
+		_quests.add_child(mh)
+		shown = 1
 	for q in active:
 		if shown >= 3:
 			break
 		shown += 1
-		var qd: Dictionary = q if q is Dictionary else Content.get_rec("quests", str(q))
-		var qid = str(qd.get("id", q))
+		var qd: Dictionary = q.get("quest", q) if q is Dictionary else Content.get_rec("quests", str(q))
+		var qid = str(qd.get("id", ""))
 		var rec = Content.get_rec("quests", qid)
 		var prog = int(UiTheme.api_call("Quests", "progress", [player.ch, qid], 0))
 		var cnt = int(UiTheme.api_call("Quests", "count", [rec], int(rec.get("count", 1))))
@@ -811,11 +830,112 @@ func _on_event_completed(_eid: String) -> void:
 	bt.tween_callback(banner.queue_free)
 	Sfx.play("level_up", -4.0)
 
+func _poll_event() -> void:
+	var w = Game.world
+	var we = w.get("world_events") if w else null
+	if we == null or not is_instance_valid(we) or not we.has_method("status"):
+		return
+	var st: Dictionary = we.status()
+	if st.is_empty() or str(st.get("state", "")) in ["", "idle", "done", "failed", "closed"]:
+		if _event_id != "" and str(st.get("state", "")) != "done":
+			_event_id = ""
+			_event_box.visible = false
+			_minimap.event_marker = null
+		return
+	if _event_id == "":
+		_on_event_started(str(st.get("id", "")))
+	_event_name.text = "%s  %d/%d" % [st.get("name", "Hushfall"), int(st.get("stage", 0)), int(st.get("total", 1))]
+	_event_bar.value = float(st.get("stage", 0)) / max(1.0, float(st.get("total", 1)))
+
+func _banner(text: String, col: Color) -> void:
+	var banner = UiTheme.label(text, 52, col, true)
+	banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	banner.add_theme_color_override("font_outline_color", Color(0.2, 0.08, 0))
+	banner.add_theme_constant_override("outline_size", 14)
+	add_child(banner)
+	UiTheme.place(banner, 0.5, 0.5, -400, -190, 800, 80)
+	banner.pivot_offset = Vector2(400, 40)
+	banner.scale = Vector2(0.5, 0.5)
+	var bt = create_tween()
+	bt.tween_property(banner, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	bt.tween_interval(1.6)
+	bt.tween_property(banner, "modulate:a", 0.0, 0.6)
+	bt.tween_callback(banner.queue_free)
+
+func _on_deed(did: String, tier: int) -> void:
+	var t = Content.get_rec("deeds_text", Content.get_rec("deeds", did).get("text_ref", did))
+	var names: Array = Content.get_rec("deeds_text", "deed_tiers").get("tier_names", ["Spark", "Glow", "Flame", "Beacon", "Lantern"])
+	toast("Deed: %s — %s" % [t.get("name", did), names[clampi(tier - 1, 0, names.size() - 1)]], UiTheme.GOLD, "star")
+	Sfx.play("deed", -4.0)
+
+# ------------------------------------------------------------------ story dialogue (bottom sheet)
+var _story_lines: Array = []
+var _story_box: PanelContainer
+var _story_i = 0
+
+func _on_story(lines: Array) -> void:
+	_story_lines = lines
+	_story_i = 0
+	if _story_box == null:
+		_story_box = PanelContainer.new()
+		_story_box.add_theme_stylebox_override("panel", UiTheme.panel_style(Color(0.05, 0.04, 0.08, 0.96), UiTheme.GOLD, 18, 3))
+		_story_box.mouse_filter = Control.MOUSE_FILTER_STOP
+		add_child(_story_box)
+		UiTheme.place(_story_box, 0.5, 1.0, -520, -250, 1040, 220)
+		_story_box.gui_input.connect(func(e):
+			if (e is InputEventMouseButton and e.pressed) or (e is InputEventScreenTouch and e.pressed):
+				_story_next())
+	_story_box.visible = true
+	_story_show()
+
+func _story_show() -> void:
+	ScreenBase.clear(_story_box)
+	if _story_i >= _story_lines.size():
+		_story_box.visible = false
+		return
+	var ln: Dictionary = _story_lines[_story_i]
+	var h = HBoxContainer.new()
+	h.add_theme_constant_override("separation", 16)
+	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_story_box.add_child(h)
+	var sp = str(ln.get("speaker", ""))
+	var port = PanelContainer.new()
+	port.add_theme_stylebox_override("panel", _round_style(UiTheme.GOLD, Color(0.2, 0.13, 0.05, 0.95), 3))
+	port.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	port.add_child(UiTheme.icon_rect("hero" if sp == "You" else str(ln.get("portrait", "talk")) if UiTheme.has_icon(str(ln.get("portrait", ""))) else ("hero" if sp == "You" else "talk"), 96, UiTheme.GOLD))
+	h.add_child(port)
+	var v = VBoxContainer.new()
+	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	h.add_child(v)
+	v.add_child(UiTheme.label(sp, 24, UiTheme.GOLD, true))
+	var tl = UiTheme.label(str(ln.get("text", "")), 22, UiTheme.TEXT)
+	tl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tl.visible_ratio = 0.0
+	v.add_child(tl)
+	create_tween().tween_property(tl, "visible_ratio", 1.0, clampf(tl.text.length() * 0.02, 0.2, 1.2))
+	var right = VBoxContainer.new()
+	right.alignment = BoxContainer.ALIGNMENT_END
+	h.add_child(right)
+	right.add_child(UiTheme.label("%d/%d  tap ›" % [_story_i + 1, _story_lines.size()], 16, UiTheme.MUTED))
+	right.add_child(UiTheme.button("Skip", func():
+		_story_i = _story_lines.size()
+		_story_show(), 18, Vector2(110, 60)))
+
+func _story_next() -> void:
+	_story_i += 1
+	_story_show()
+
 ## Where the active tear is (world may expose world_event_pos() or an "event_pos" meta/property).
 func _event_pos():
 	var w = Game.world
 	if w == null:
 		return null
+	var we = w.get("world_events")
+	if we and is_instance_valid(we) and we.has_method("status"):
+		var stt: Dictionary = we.status()
+		if stt.get("pos") is Vector3:
+			return stt.pos
 	if w.has_method("world_event_pos"):
 		return w.world_event_pos()
 	var p = w.get("world_event_pos")
