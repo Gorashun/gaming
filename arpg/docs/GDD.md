@@ -43,6 +43,9 @@ This GDD is the single source of truth. Research inputs (Swedish) live in `resea
 > 28. **Merchants:** each town has several merchants selling BASIC supplies only (potions, elixirs, Homeward Wick charges, pet treats, mount feed, plain Common starter gear, salvage-to-buy basics). No powerful gear for sale.
 > 29. **Curio Cart (mystery merchant, owner's "black market"):** spend **Hushmarks** (rare RANDOM drop — hard to come by; ~1 mid-price mystery item per 1–2 h of play — NEVER purchasable with real money) to buy a mystery item of a chosen category (weapon type or armour slot, e.g. "Mystery Sword", "Mystery Helm", "Mystery Ring"). Result is rolled with the SAME loot tables, rarity weights, item level and pity as monster drops. Welfare: result decided before any animation, true rarity shown instantly, no reels/near-miss, cost shown up front, no timers or limited offers. Price scales by slot (jewelry costs more).
 
+> **v2.4 — Owner addition (binding):**
+> 30. **Hushfalls (random world events):** occasionally (≈1 per 3–5 zone visits, rarer in towns: never) a tear of Hush opens at a random spot in a zone: screen-edge glow + sound + minimap marker. Entering starts 2–4 escalating stages of themed waves (sometimes a different act's family, sometimes an elite pack or a "cursed" modifier), ending with a mini-boss; reward = cache chest with boosted rarity + Hushmark chance + materials. Variants: Invasion (waves), Cursed Shrine (survive modifier), Treasure Swarm (Magpie Imps), Lost Wisp escort, Echo Duel (mirror of your class). Optional, no real-time timers, no penalty for ignoring; progress bar per stage. Name never uses "rift".
+
 ## 1. Pillars
 1. **Every kill can surprise you.** Loot, events and secrets are variable and frequent — rewards come from *play*, never from a shop.
 2. **Juicy, readable combat.** Chibi heroes, dark world, bright attacks. Every hit feels good on a phone.
