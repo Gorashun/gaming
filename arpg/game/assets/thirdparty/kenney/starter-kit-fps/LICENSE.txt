@@ -1,0 +1,7 @@
+Source: https://github.com/KenneyNL/Starter-Kit-FPS @ 185fd2326d74a5cf858cffc616f87cf9696f9cc0 (downloaded 2026-09-26)
+Asset license statement, verbatim from upstream README.md:
+
+Assets included in this package (2D sprites, 3D models and sound effects) are [CC0 licensed](https://creativecommons.org/publicdomain/zero/1.0/)
+
+CC0 1.0 Universal legal code: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+The MIT LICENSE.md in the upstream repo covers the GDScript code only (not copied); kept as LICENSE-code-MIT.md for provenance.
