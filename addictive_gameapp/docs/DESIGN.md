@@ -78,7 +78,7 @@ En ingång: `juice.trigger(event, intensity: 0..1, x?, y?)`. Alla effekter skala
 **Flash-guard**: inget element får växla ljusstyrka mer än 3 gånger per sekund. Vitblixtar max 2 per sekund. Aldrig mättad röd blinkning. Testas i Playwright.
 
 ## 7. Skärmar
-1. **Start**: logotyp, stor "spela"-ikon (▶), hylla med bästa objekt + highscore, tre små ikoner: ljud, haptik, lugnt läge. Ingen text utöver logotypen.
+1. **Start**: ersatt av Start v2, se §18 och UI.md §16.
 2. **Spel**: burk, nästa-förhandsvisning uppe till höger, poäng uppe till vänster, highscore-markör.
 3. **Förlust**: overlay med poäng, highscore, bästa objekt denna runda. Hela ytan är en knapp: tryck = ny runda.
 Onboarding: en animerad hand visar drag+släpp tills spelaren gjort sin första drop.
@@ -256,3 +256,13 @@ Källa: research/economy-research.md §5. Ersätter §14.3 (intjäning) och §14
 - **Spelet ritar i skärmens upplösning med tak 2×** (bredd/höjd × Z, kamerazoom Z, pointer.worldX, setResolution på text). Texturer bakas i Z.
 - Aktivt set bakas vid start, övriga vid behov. Budget: max 2 set i full upplösning (≤ ~11 MB vid 2×). `mode: 'v1'` som fallback för svaga enheter.
 - Bomb, regnbåge, pärlor, romber, musslor och partiklar får v2 i steg två. Glöd som gemensam sprite: backlog.
+
+## 18. Start v2 (beslut 2026-09-26, spec UI.md §16, duk https://claude.ai/artifact/3bdoh7692uJDrXsGBk9cD1)
+- Förslag A: resurspiller + kugghjul, hjälte med kompis och rekord, bred SPELA-knapp, tre kort (Bok, Kompisar, Butik), set-stapel med låst nästa set. Inställningar i bottenark.
+- **Korta etiketter** på knappar (≤10 tecken, ≥14 px, EN/SV). Principen "ingen text" gäller inte längre för navigering.
+- Typsnitt Fredoka (OFL), buntat i `app/public/fonts/`.
+- Kortkant #4A6194 (3,1:1 mot bakgrund) i stället för dukens #2B3B5E.
+- Butik-badge **bara** när en gratismussla väntar, aldrig för "har råd".
+- Nästa sets siluett är en generisk okänd Glimt med lås (setet lottas först vid upplåsning).
+- Hjälten är en leksak: tryck ger kompisens uppvisning.
+- Mått skalade till 360×640 (SPELA 268×88, kort 101×104).

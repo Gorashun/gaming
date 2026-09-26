@@ -1,6 +1,6 @@
 # UI.md – KLUNK visuell spec, ljudkarta och game feel
 
-Version 1.4 · 2026-09-25 (§12 meta-lager, §13 Kompisar, §14 Ekonomi, §15 Art v2) · Ägare: ui-designer. Underordnad `DESIGN.md` (spelregler) och `TECH.md` (stack).
+Version 1.5 · 2026-09-26 (§12 meta-lager, §13 Kompisar, §14 Ekonomi, §15 Art v2, §16 Start v2) · Ägare: ui-designer. Underordnad `DESIGN.md` (spelregler) och `TECH.md` (stack).
 Implementation av tokens: `app/src/data/theme.ts`. Granskningsbild: `docs/ui-preview.png` (nivåark, spel, start, förlust).
 
 ---
@@ -43,6 +43,8 @@ Regel: allt som spelaren kan röra ritas i `accent`. Inget annat använder `acce
 ### 2.2 Typografi
 
 Ett systemtypsnitt, noll filer: `system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`, vikt **800**. Endast siffror och logotypen renderas som text.
+
+> **Ändrat i v1.5 (§16):** logotyp, knappar och etiketter ritas i **Fredoka** (buntad woff2, systemfonten som fallback), och korta etiketter under ikonerna är tillåtna. Se §16.2 för den nya textprincipen.
 
 | Roll | px (logisk yta 360×640) | Färg |
 |---|---|---|
@@ -210,6 +212,9 @@ Burkens geometri, gemensam för Spel och Förlust (tolkning av DESIGN §3, godk�
 
 ### 7.1 Start
 
+> **Ersatt av §16 (Start v2).** Tabellen nedan beskriver testversion 7 och ska bara användas som historik.
+
+
 | Element | Koordinat | Not |
 |---|---|---|
 | Bakgrund | 0,0–360,640 | gradient `bg` → `bgDeep` + radial `bgGlow` vid (180, 330) r 320 |
@@ -363,6 +368,9 @@ Laddning: `'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)` → `t
 | `app/src/systems/audio.ts` | programmerare | läser `THEME.sound` |
 | `app/src/data/art.ts` | ui-designer | Art v2-parametrar (§15), ingen Phaser-import |
 | `app/src/ui/artv2.ts` | ui-designer (referens) → programmerare kopplar | Canvas2D-renderare för nivåer och kompisar (§15.5) |
+| `app/src/data/startUi.ts` | ui-designer | Start v2: layout, knappkomponent, ljud, etiketter, ikoner (§16) |
+| `app/src/ui/buttonArt.ts` | ui-designer (referens) → programmerare kopplar | Canvas2D-renderare för knappytan (§16.3) |
+| `app/public/fonts/Fredoka-latin.woff2` | ui-designer | buntad font + `Fredoka-OFL.txt` (§16.4) |
 
 `theme.ts` är typkollad med `tsc --strict` (TS 6) och med projektets egen `app/tsconfig.json` utan fel.
 
@@ -1219,3 +1227,209 @@ renderLevel(ctx, skin, radius, { dpr, spotStyle?, mode?, sil?, shadow?, scratch?
 3. **Glöden kunde ligga utanför texturen**, som en delad tonad `bg-glow`-sprite med ADD. Då krymper nivåtexturerna med cirka 35 % och glöden kan skalas fritt. Det kräver en ändring i scenen.
 4. **Hur blank?** Nu är det blank plast. Sätts `spec.dot.alpha` till 0 och `spec.levelSoftAlpha` till 0,25 blir uttrycket mattare, mer som gummi. Det är ett smakval och en enradsändring i `art.ts`.
 
+
+---
+
+## 16. Start v2 – tydliga knappar (testversion 8)
+
+Data: `app/src/data/startUi.ts` (`START_UI`, `BUTTON_STYLE`, `BUTTON_SOUND`, `START_COLORS`, `START_FONT`, `START_STRINGS` och ikonerna). Referensrenderare för knappytan: `app/src/ui/buttonArt.ts` (Canvas2D, ingen Phaser). Font: `app/public/fonts/Fredoka-latin.woff2` och `Fredoka-OFL.txt`. Granskningsbild: `docs/ui-preview-start-v2.png`, Chromium, 390×844, DPR 2, med figurerna ritade av Art v2-renderaren. Panelerna:
+
+- **A** före
+- **B** efter, EN, kompis vald
+- **C** efter, SV, gratismussla väntar
+- **D** inställningsarket
+- **E** ny spelare med handen och SPELA nedtryckt
+- **F** knappkomponentens lägen och de nya ikonerna
+
+Förlaga: projektledarens designduk, förslag A.
+
+**Känslan i en mening:** en leksakshylla man vill trycka på. Det finns en stor blank knapp som tar en ut i spelet och tre tjocka glaskort som leder vidare. Kompisen står på en liten scen, och ingenting på skärmen är en gåta.
+
+### 16.1 Diagnos av testversion 7 (`start-shelf.png`)
+
+1. **Allt har samma vikt.** Play-ringen, bok-ikonen och de fyra inställningsikonerna är lika stora konturer i samma färg. Ögat vet inte var det ska börja.
+2. **Bara play och boken ser tryckbara ut, och bara som konturer.** De saknar yta, tjocklek och tryckläge, så en 7-åring ser "bilder", inte "knappar".
+3. **Butik och Kompisar syns inte alls.** De ligger bakom bok-ikonen, i en flik.
+4. **Hyllan blandar status och knappar.** Kompis, rekord, musslor och bok står på samma linje. Musslan och kompisen är tryckbara, men rekordet och objektet är det inte.
+5. **"?" i slutet av stapeln betyder ingenting** för den som inte redan vet.
+6. **Räknarna är för små** (16 px siffra, 20 px ikon) och svävar fritt utan bakgrund.
+
+### 16.2 Ny textprincip (ersätter "noll text" på startskärmen)
+
+- **Ikonen bär fortfarande betydelsen, och texten är stöd.** Varje knapp på startskärmen och i inställningsarket har en **kort etikett**, högst 10 tecken (`START_LABEL_MAX`). Engelska är primärspråk och svenska lokalisering (DESIGN §15).
+- **Underrader** (siffror, "Musslor", "Gratis!") och **hjälptexterna i arket** får vara längre, men de ryms alltid på en rad.
+- **Minst 14 logiska px** för all text (på en 390 px bred telefon blir det 15,2 CSS-px). Kontrasten är minst 4,5:1 och i praktiken 6,2–16,5:1 (§16.10).
+- Resten av spelet (Spel, Förlust, bokens rutnät) är oförändrat. Där bär ikoner och siffror informationen. Knappar i boken och på förlustskärmen som byter till `BUTTON_STYLE` får samma rätt till en kort etikett.
+- **DESIGN §7.1 behöver uppdateras** av projektledaren: "Ingen text utöver logotypen" gäller inte längre startskärmen.
+
+### 16.3 Knappkomponenten (`BUTTON_STYLE`)
+
+Samma komponent används på Start, i boken och på förlustskärmen. Ytan bakas en gång per variant, läge och storlek med `renderButton(ctx, variant, state, w, h, dpr)`. Ikon, etikett och badge läggs ovanpå som vanliga Phaser-objekt i en container, så att en bakad yta räcker för alla språk.
+
+| Variant | Används till | Form | Yta (topp → botten) | Kant | Inre läpp | Övrigt |
+|---|---|---|---|---|---|---|
+| `primary` | SPELA, förlustens "igen" | kapsel, radie h/2 | `#B6FCFF` → `#7CF9FF` → `#36C9D6` | 3 px `#EAFEFF` | 6 px, alpha 0,20 | glöd-ring 7 px accent 0,14, blank reflex (inset 14), skugga 16/6. Text `#0B1020` 32 px/700 versaler, spärrning 3 |
+| `card` | Bok, Kompisar, Butik, bokens knappar | radie 22 | `#1B2A48` → `#16223C` → `#131E36` | 2 px `#4A6194` | 5 px, alpha 0,28 | mjuk reflex över hela bredden (alpha 0,07), skugga 10/4. Etikett 17 px/600 `hud` |
+| `round` | kugghjulet, stäng i arket | cirkel | som `card` | 2 px `#4A6194` | 4 px | ikon i accent |
+
+**Lägen** (`looks`):
+
+| Läge | Utseende | Vad som bär informationen |
+|---|---|---|
+| `normal` | enligt tabellen ovan | – |
+| `pressed` | Skala 0,94, mörkare yta (primär: `#94E6EA` → `#2AA9B6`), läppen krymper till 2–3 px och kanten blir accent (kort, rund). Ned: 80 ms Quad.easeOut. Upp: 160 ms Back.easeOut | läppen krymper, så knappen "sjunker" |
+| `disabled` | platt `#1A2744`, **streckad** kant `hudDim` (8/6), text och ikon `hudDim`, ingen reflex | streckningen, inte färgen |
+| `badge` | Kort: varmare yta `#2A2440` och **guldkant**. Plus guldpricken (24 px, 3 px ring i `bg`) uppe till höger, som poppar in på 200 ms Back.easeOut. Pricken pulsar inte | pricken, en form |
+
+**Interaktion:**
+- Pointerdown i träffytan ger tryckläget och ljudet `press`.
+- Pointerup i träffytan kör handlingen, spelar `confirm` (SPELA: `play`) och ger haptik.
+- Glider fingret ut ur ytan släpps knappen tyst och ingenting händer.
+- Disabled ger en skakning på ±4 px (240 ms), ljudet `denied` och 10 ms haptik.
+- Inga långtryck och inga dubbeltryck. Långtrycket på logotypen för debugpanelen finns kvar.
+
+| Ljud (`BUTTON_SOUND`) | Karaktär | Haptik |
+|---|---|---|
+| `press` | sinus 520 → 440 Hz, 35 ms, gain 0,08: ett nästan omärkligt trä-tock direkt vid tryck | – |
+| `confirm` | = `THEME.sound.ui` | kort/rund 10 ms |
+| `play` | triangel G4 + kvint (0/+7, 60 ms) med oktav: en "klunk" uppåt, som ett lock som öppnas | 20 ms |
+| `denied` | = `ECONOMY_SOUND.notEnough` | 10 ms |
+| `sheetOpen` / `sheetClose` | sinus 620 ↔ 900 Hz, 70 ms | – |
+| `switchOn` / `switchOff` | sinus 740 → 988 Hz / 740 → 554 Hz, 50 ms | 10 ms |
+| `shellPeek` | sinus 988 → 1 319 Hz, 60 ms, gain 0,08. Spelas bara vid musslans första studs efter att skärmen visats | – |
+
+**Minne:** Start behöver 2 lägen för primären, 3×2 för korten och 2 för den runda. Totalt är det ungefär 0,6 MB vid dpr 2. Nyckelförslag: `btn-{variant}-{state}-{w}x{h}@{dpr}`.
+
+### 16.4 Typsnitt: Fredoka
+
+- **Fil:** Fredoka (SIL OFL 1.1), variabel vikt 300–700, latin-subset med å, ä och ö, 29 kB. Den ligger i `app/public/fonts/Fredoka-latin.woff2` tillsammans med licensen. Appen gör inga nätanrop.
+- **Laddning i Boot**, före första `Text`:
+  1. `new FontFace('Fredoka', 'url(fonts/Fredoka-latin.woff2)', { weight: '300 700' })`
+  2. `document.fonts.add(f)`
+  3. `await Promise.race([f.load(), timeout(1500)])`
+  
+  Phaser-Text rastreras när objektet skapas, så fonten måste vara laddad innan Start ritas. Misslyckas laddningen används systemfonten, eftersom `START_FONT.family` har fallbacks.
+- **Vikter:** logotyp 700, SPELA 700, etiketter 600, räknare 600, underrader och hjälptext 500.
+- **Siffror:** Fredoka har proportionella siffror. Pillren och rekordet ritas därför med fast steg `0,6 em` per siffra (§2.2), annars hoppar de vid uppräkning.
+- **Text-upplösning:** `setResolution(Z)` som alla andra texter (§15.2).
+
+### 16.5 Layout (logisk yta 360×640, `START_UI`)
+
+Designdukens mått (CSS-px på en 390 px bred skärm) är omräknade med 360/390 ≈ 0,923.
+
+| Element | Position och mått | Tryck |
+|---|---|---|
+| Bakgrund | som förut (`drawBackground`, aktivt set) | – |
+| **Pärlpiller** | vänsterkant x 16, centrum y 36, höjd 40, radie 20, `#16223C` med 2 px `#2B3B5E`. Pärla 28 px + 6 px + siffra 20 px/600 `hud`. Bredd = innehållet, minst 80 | inte tryckbart |
+| **Sandpiller** | startar 8 px efter pärlpillret (tidigast x 104). Stjärnsand 24 px | inte tryckbart |
+| **Kugghjul** | rund knapp Ø 48 vid (320, 36), ikon 28 px accent | träffyta 64×64, öppnar arket |
+| **Logotyp** | baslinje y 116, Fredoka 700 60 px, spärrning 6, hård skugga (0, 4) `#060A14`. U:et är burken som förut (stroke 8) med nivå 2-glimten | långtryck 2 s = debug (oförändrat) |
+| **Halo** | radial accent, centrum (180, 206), r 96, alpha 0,20. Raritetsfärgen blandas in 30 % när en kompis är vald. Stilla | – |
+| **Scen** | ellips centrum (180, 268), rx 80, ry 16, 8 px tjock nedåt. Topp `#2B3B5E` → `#16223C`, kant 2 px `#6E8CC4`, reflexbåge och mjuk skugga under | – |
+| **Bästa objekt** | alltid r 24, centrum (180, 244), aktivt sets skinn, `bestLevel` (0 för en ny spelare, det är Glimten) | – |
+| **Kompis** | 104 px, greppet på objektets ovankant + 10 (samma håll-pose som i spel), idle-loop via `AvatarRig` | träffyta x 90–270, y 126–286: showcase en gång (leksak) |
+| Utan kompis | objektet r 30 står på scenen och guppar dy −4 med halvcykel 1 400 ms (0,36 Hz) | tryck: mergePunch 1,10 + pling |
+| **Rekordchip** | centrum y 312, höjd 40, radie 20, fyllning gold 0,10, kant 2 px gold 0,45. Krona 24 + 8 + siffra 26 px/700 `gold`. Rekordets kompis (26 px i ring r 13) längst till vänster, bara om den inte är vald kompis | inte tryckbart |
+| **SPELA** | `primary`, 268×88, centrum (180, 390). ▶ 30 px + 10 + "PLAY"/"SPELA" | träffyta 284×104. Enda sättet att starta en runda |
+| **Kort** | `card`, 101×104, överkant y 454, centrum x 66,5 / 180 / 293,5 (12 px mellanrum, marginal 16). Ikon 40 px på +32, etikett på +66, underrad 14 px/500 `hudDim` på +88 | träffyta +4 runt om (109×112), 4 px mellan ytorna |
+| Bok | `BOOK_ICON` accent, "Book"/"Bok", underrad "8 / 21" (fångade i aktivt set) | boken, fliken Set (tvingat) |
+| Kompisar | `BUDDIES_ICON` gold, "Buddies"/"Kompisar", underrad "5 / 48" | boken, fliken Kompisar |
+| Butik | `SHOP_ICON` rosa `#FF9CF0`, "Shop"/"Butik", underrad "Shells"/"Musslor" | se §16.6 |
+| **Set-stapel** | y 580: aktivt sets ikon 30 px vid x 32, stapel x 56–294 (13 px hög, spår `#2B3B5E`, fyllning cyan-gradient), nästa set vid x 322 (streckad cirkel Ø 36, `NEXT_SET_ICON` 22 px, `LOCK_ICON` 16 px nere till höger) | inte tryckbar |
+| Stapeltext | y 604, 14 px/500 `hudDim`: "412 / 600 to next set" / "412 / 600 till nästa set" | – |
+
+Luft: pillren 16–56, logotypen 74–120, hjälten 126–286, chippet 292–332, SPELA 339–441 med ring, korten 454–558, stapeln 562–611. Säker yta nedtill: 616.
+
+### 16.6 Tillstånd
+
+| Tillstånd | Villkor | Vad som syns |
+|---|---|---|
+| Ny spelare | inga runder spelade | Glimten på scenen, "0" i chippet, 0 / 200 i stapeln. **Handen** (`ICONS.hand`, 56 px) trycker på SPELA var 2,2 s och SPELA gör sitt tryckläge i takt med den (panel E). Försvinner efter första rundan. Det är hela onboardingen på startskärmen: en 7-åring ser en hand, en stor knapp och ▶ |
+| Kompis vald | `avatars.equipped` | kompisen på objektet, halo med raritetston, kompisen i chippet om den satte rekordet |
+| Nytt i boken | `freshSet` eller en `fresh`-plats | Bok-kortet i läget `badge` och ikonen andas 1,00 ↔ 1,08 (0,5 Hz) |
+| Nya kompisar | `avatars.fresh.length > 0` | Kompisar-kortet i läget `badge` och ikonen andas |
+| **Gratismussla väntar** | `pendingBoxes > 0` | Butik i läget `badge`, underraden "Free!"/"Gratis!" i guld, och en **mussla som tittar upp** över kortets övre vänstra hörn (36 px, lutad −14°). Den studsar dy −6 (180 ms upp Quad.easeOut, 240 ms ned Bounce.easeOut) och vilar 1 580 ms, alltså ett studs var 2:a sekund. Vid landning squash 1,10×0,90. Två eller fler: en andra mussla skymtar bakom. **Ingen siffra** (skyddsräcke §13.3) |
+| Råd med en vanlig | pärlor ≥ `ECONOMY.shells.common.price` och en vanlig finns kvar | Butik i läget `badge` (prick + guldkant), underraden "Shells", ingen mussla. Se fråga 3 |
+| Alla set upplåsta | – | set-stapeln och texten döljs. Korten ligger kvar |
+
+**Tryck på Butik:**
+- **Med väntande mussla** startar öppningen (§13.3) direkt på startskärmen, med start i den tittande musslans position (`from`). Vid stängning flyger figuren till Kompisar-kortets ikon (`closeTo` = (180, 486)). Därefter startar scenen om, som i dag. Nästa mussla kräver ett nytt tryck.
+- **Utan väntande mussla** öppnas boken med `{ tab: 'friends', focus: 'shop' }`, alltså fliken Kompisar med scroll 0 så att butikshyllan syns. `focus` är en ny parameter i `Book.create` och går före regeln "ny kompis först".
+
+### 16.7 Inställningsarket
+
+Känsla: en låda man drar fram och stänger. Den ska inte kännas som en ny skärm.
+
+| Element | Värde (`START_UI.settings`) |
+|---|---|
+| Scrim | `bg` alpha 0,72 över hela skärmen. Tryck på scrimmen stänger |
+| Ark | y 300 → 640, radie 28 överst, `#121B33`, kant 2 px `#2B3B5E`. In: y 640 → 300 på 260 ms Cubic.easeOut. Ut: 200 ms Cubic.easeIn |
+| Handtag | 40×5 vid y 312, `hudDim` (bara visuellt, ingen dragfunktion i v1) |
+| Rubrik | kugghjul 28 px `hudDim` vid (40, 342). Stäng: rund knapp Ø 48 vid (320, 342) med `ICONS.close` och träffyta 64 |
+| Rader | 4 × 64 px, centrum y 404 / 468 / 532 / 596. **Hela raden** (x 16–344) är träffytan och växlar inställningen. Ikonruta 40×40 (radie 12, `#16223C`) med befintlig på/av-ikon 30 px vid x 44. Etikett 18 px/600 `hud` från x 76 (y −10), hjälptext 14 px/500 `hudDim` (y +11). Avdelare 1 px `#2B3B5E` |
+| Strömbrytare | 58×34 vid x 300. **På:** spåret fyllt i accent, mörk knopp (`bg`, r 13) till höger med cyan bock. **Av:** mörkt spår med 2 px `hudDim`-kant och `hudDim`-knopp till vänster utan bock. Knoppen glider på 140 ms. Knoppens läge, bocken och den överkryssade ikonen bär informationen |
+| Ordning | Sound, Vibration, Calm mode, Aim line (Ljud, Vibration, Lugnt läge, Siktlinje) |
+| Bakåt | Android-bakåt stänger arket (före öppningen och debugpanelen i `onBack`) |
+
+Ljudet slås på och av direkt, så `switchOn` hörs när ljudet sätts på. Sparas som i dag (`save({ settings })`).
+
+### 16.8 Det här tar programmeraren bort ur nuvarande `Start.ts`
+
+Listan finns också i `START_V1_REMOVED`.
+
+1. Play-cirkeln (180, 330) r 56 och ikonpulsen.
+2. Hyllan (`AVATAR_UI.shelf.line` och konsolerna) och bästa objektet på hyllan.
+3. Bok-ikonen på hyllan (`shelf.book`, `shelf.badge`, `shelf.bookHit`).
+4. Musslorna på hyllan (`shelf.box`, `boxPulse`), som flyttar till Butik-kortet.
+5. Kompisen på hyllan (`shelf.buddy`), som flyttar till hjälten.
+6. Rekordets kompis vid (110, 496) och krona och siffra vid (140/172, 498), som flyttar till chippet.
+7. `META.shelf.bar` med `qmark`, som ersätts av `START_UI.setBar`.
+8. Ikonraden på y 580, som flyttar till arket.
+9. **"Tryck var som helst = spela".** Bara SPELA startar. Tomma ytor gör ingenting.
+10. `Counters` på startskärmen, som ersätts av pillren. Boken behåller `Counters`.
+
+**Nytt utanför Start:**
+- `loadIcons` laddar även `startIcons()`.
+- Boot laddar Fredoka (§16.4).
+- `Book.create` tar emot `focus: 'shop'` och respekterar `tab: 'sets'` även när det finns nya kompisar.
+- `START_STRINGS` flyttas in i `STRINGS`. Då ändras testet `Object.keys(STRINGS).length === 0` i `tests/unit/i18n.test.ts`, och ett test läggs till för `START_LABEL_KEYS` ≤ 10 tecken.
+- `JUICE.pulseHalfCycleMs` får `play.pulse` (900), `cards.freshBreath` (1 000) och musslans studscykel (2 000 ms).
+- e2e-skärmdumparna `start*.png` byts ut.
+
+### 16.9 Känslan per element
+
+| Element | Kick | Hur |
+|---|---|---|
+| SPELA | liten, varje gång | Knappen sjunker (0,94) med ett tock vid tryck och ger en klunk uppåt vid släpp. Pulsen (0,56 Hz) säger "här" utan att stressa |
+| Kort | liten | Samma tryckläge, fast tystare. Badge-kortet är varmare och har guldkant, så det känns som "något väntar" utan rött och utan siffra |
+| Musslan som tittar upp | medel, när den finns | Den enda figuren som rör sig av sig själv utanför hjälten. Den tittar över kanten som en nyfiken krabba. Studsen var 2:a sekund drar blicken en gång, sedan vilar den |
+| Kompisen på scenen | leksak | Tryck ger showcase: ens kompis visar sig för en. Det är en belöning i sig, och startskärmen blir ett rum i stället för en meny |
+
+### 16.10 Tillgänglighet
+
+- **Touchmål:** SPELA 284×104, kort 109×112, kugghjul 64×64, arkets rader 328×64 och stäng 64×64. Alla är ≥ 64 logiska px (≥ 57 dp på 320 dp-skärmar, ≥ 64 dp på ≥ 360 dp). Primären är 88 hög. Mellan korten är det 4 px mellan träffytorna och 12 px mellan de synliga ytorna.
+- **Kontrast (WCAG):**
+  - `hud` mot kort: 14,0:1
+  - `hudDim` mot kort: 6,2:1
+  - SPELA-text `#0B1020` mot ytan: 9,5–16,5:1
+  - Bok-ikon: 12,7:1, Kompisar-ikon: 11,4:1, Butik-ikon: 8,5:1 (7,9:1 på badge-kortet)
+  - "Gratis!": 10,6:1
+  - arkets text: 15,2:1 och 6,7:1
+  - **kortkanten** `#4A6194`: 3,1:1 mot bg (WCAG 1.4.11). Designdukens `#2B3B5E` har 1,7:1 och är därför ljusad
+- **Aldrig bara färg:**
+  - badge = prick (form) + kant
+  - disabled = streckad kant
+  - strömbrytare = knoppens läge + bock + överkryssad ikon
+  - "Gratis!" = ord + mussla
+  - låst set = hänglås
+- **Flash-guard:** loopar på 0,56 Hz (SPELA), 0,5 Hz (andning, musselstuds) och 0,36 Hz (Glimten guppar). Inget växlar ljusstyrka snabbare än 1 Hz och det finns inga vitblixtar. Glöd-ringen följer pulsens skala och ändrar inte alpha.
+- **Lugnt läge:** SPELA-pulsen och musselstudsen går med halv amplitud (1,015 och dy −3). Handen i onboardingen är kvar.
+
+### 16.11 Öppna frågor
+
+1. **Höjdbudget.** Designdukens mått räknade om till 360×640 blir tillsammans cirka 646 px. Därför är korten 104 i stället för 111 höga och SPELA 88 i stället för 89. Vill vi använda de 151 CSS-px svarta kanterna på en 390×844-telefon kan Start få `Scale.EXPAND` på höjden. Det är ett scenbeslut för programmeraren.
+2. **Kortkanten.** Jag avviker från duken (`#4A6194` i stället för `#2B3B5E`) för kontrasten. Säg till om Anders föredrar duken.
+3. **Badge när man "har råd med en vanlig".** Den blir permanent för en aktiv spelare, som nästan alltid har ≥ 300 pärlor. Det krockar med §14.3 ("butiken väntar, ingen press"). Förslag: badge bara för väntande gratismussla. Råd visas i stället som en liten pärla + "300" i underraden, utan prick och guldkant.
+4. **Nästa sets siluett.** Nästa set dras först vid upplåsningen (DESIGN §13.3), så siluetten är en generisk okänd Glimt med hänglås. Om setet i stället dras vid föregående upplåsning (sparas i `nextSet`) kan stapeln visa setets riktiga siluett. Det är en regeländring.
+5. **Väntande mussla öppnas på startskärmen**, inte i butiken, eftersom öppningen och `openBox` redan ligger i Start. Bekräfta.
+6. **Hjälten är en leksak** (tryck ger showcase), inte en knapp till Kompisar. Kompisar-kortet ligger precis under. Om speltest visar att barn trycker på hjälten för att "gå in" kan den i stället öppna Kompisar.
