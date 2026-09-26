@@ -415,6 +415,7 @@ func test_merchants() -> void:
 	eq(int(ch.materials.hushmark), 8, "hushmarks spent")
 	check(not Merchants.curio_buy(ch, "dev_curio_high").ok, "curio min level")
 	# Same pity path as monster drops: an overdue legendary pity forces a legendary
+	ch.level = 20   # legendary needs monster level >= 6
 	ch.play_seconds = 1000000.0
 	ch.pity["legendary"] = 0.0
 	var r2 = Merchants.curio_buy(ch, "dev_curio_chest")
