@@ -68,9 +68,16 @@ func _fade_in() -> void:
 	t.tween_property(r, "color:a", 0.0, 0.6)
 	t.tween_callback(r.queue_free)
 
+var screen_arg = ""        # "crafting:smith" → screen "crafting", screen_arg "smith"
+
 func open_screen(which: String) -> void:
 	if screen and is_instance_valid(screen):
 		screen.queue_free()
+	screen_arg = ""
+	if which.contains(":"):
+		var parts = which.split(":", true, 1)
+		which = parts[0]
+		screen_arg = parts[1]
 	var path = {"inventory": "res://scripts/ui/inventory_screen.gd", "skills": "res://scripts/ui/skills_screen.gd",
 		"map": "res://scripts/ui/map_screen.gd", "menu": "res://scripts/ui/menu_screen.gd", "credits": "res://scripts/ui/credits_screen.gd",
 		"character": "res://scripts/ui/character_screen.gd", "crafting": "res://scripts/ui/crafting_screen.gd",
@@ -82,6 +89,8 @@ func open_screen(which: String) -> void:
 		return
 	var s: ScreenBase = load(path).new()
 	s.session = self
+	if "screen_arg" in s:
+		s.screen_arg = screen_arg
 	ui_layer.add_child(s)
 	screen = s
 	get_tree().paused = true

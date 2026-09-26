@@ -5,14 +5,24 @@ extends RefCounted
 ## Data:
 ##   config/skill_mastery {max_rank, xp_base, xp_growth, xp_per_hit, xp_per_kill,
 ##                         costs:[{rank_from, rank_to, gold, materials{}}]}
-##   skills[].mastery {bonuses_per_rank{stat | damage_mult | cooldown_mult | area_mult},
+##   skills[].mastery {per_rank | bonuses_per_rank {stat | damage_pct/_mult | cooldown_pct/_mult | area_pct/_mult},
 ##                     milestones:[{rank, stats{}, patch{}}]}
 ## Per-rank multipliers are fractions: damage_mult 0.03 = +3 % effect damage per rank, area_mult
 ## likewise; cooldown_mult 0.02 = 2 % shorter cooldown per rank (sign ignored, always a reduction).
 ## Other keys are character stats (source "mastery"). Mastery is never refunded or lost.
 ## Character: skill_xp{skill_id: xp toward next rank}, skill_mastery{skill_id: rank}.
 
-const DEFAULT_BONUS := {"damage_mult": 0.03}
+const DEFAULT_BONUS := {"damage_pct": 3.0}
+## Per-rank keys that modify the skill itself (fractions *_mult or percents *_pct); others are stats.
+const SKILL_KEYS := ["damage_mult", "cooldown_mult", "area_mult", "damage_pct", "cooldown_pct", "area_pct"]
+
+## skills[].mastery.per_rank | bonuses_per_rank, else config/skill_mastery.per_rank_default.
+static func per_rank(m: Dictionary) -> Dictionary:
+	var b = m.get("per_rank", m.get("bonuses_per_rank", null))
+	if b is Dictionary:
+		return b
+	var d = cfg().get("per_rank_default", DEFAULT_BONUS)
+	return d if d is Dictionary else DEFAULT_BONUS
 
 static func cfg() -> Dictionary:
 	return Content.get_rec("config", "skill_mastery")
@@ -117,10 +127,10 @@ static func apply_to_skill(ch: CharacterData, s: Dictionary) -> void:
 	if r <= 0:
 		return
 	var m = mastery_rec(str(s.get("id", "")))
-	var b: Dictionary = m.get("bonuses_per_rank", DEFAULT_BONUS)
-	var dmg = 1.0 + float(b.get("damage_mult", 0.0)) * r
-	var area = 1.0 + float(b.get("area_mult", 0.0)) * r
-	var cdm = clampf(1.0 - absf(float(b.get("cooldown_mult", 0.0))) * r, 0.25, 1.0)
+	var b = per_rank(m)
+	var dmg = 1.0 + (float(b.get("damage_mult", 0.0)) + float(b.get("damage_pct", 0.0)) / 100.0) * r
+	var area = 1.0 + (float(b.get("area_mult", 0.0)) + float(b.get("area_pct", 0.0)) / 100.0) * r
+	var cdm = clampf(1.0 - (absf(float(b.get("cooldown_mult", 0.0))) + absf(float(b.get("cooldown_pct", 0.0))) / 100.0) * r, 0.25, 1.0)
 	if s.has("cooldown"):
 		s.cooldown = float(s.cooldown) * cdm
 	for e in s.get("effects", []):
@@ -144,9 +154,9 @@ static func stat_bonuses(ch: CharacterData) -> Dictionary:
 		if r <= 0:
 			continue
 		var m = mastery_rec(sid)
-		var b: Dictionary = m.get("bonuses_per_rank", {})
+		var b = per_rank(m)
 		for k in b:
-			if k in ["damage_mult", "cooldown_mult", "area_mult"]:
+			if k in SKILL_KEYS:
 				continue
 			out[k] = float(out.get(k, 0.0)) + float(b[k]) * r
 		for ms in m.get("milestones", []):

@@ -3,7 +3,8 @@ extends RefCounted
 ## Item upgrading +0…+15 at the Smith (GDD v2.1 #17). Costs gold + materials, rising steeply.
 ## Success is guaranteed (welfare: no fail/break) and the full cost is shown before committing.
 ## Data: config/upgrade {max, stat_per_level_pct, gold[], materials[{mat: count}], ilvl_cost_scale}.
-## Each step boosts base damage/armour and all implicit/affix values by stat_per_level_pct.
+## Each step boosts base damage/armour by stat_per_level_pct and implicit/affix values by
+## affix_per_level_pct (falls back to stat_per_level_pct).
 
 static func cfg() -> Dictionary:
 	return Content.get_rec("config", "upgrade")
@@ -24,13 +25,17 @@ static func mult_for(level: int) -> float:
 static func item_mult(item: Dictionary) -> float:
 	return mult_for(level_of(item))
 
+## Affix/implicit multiplier (config affix_per_level_pct, else stat_per_level_pct).
+static func affix_mult(item: Dictionary) -> float:
+	return 1.0 + float(cfg().get("affix_per_level_pct", pct_per_level())) * level_of(item) / 100.0
+
 ## Cost of the next step (+level → +level+1): {gold:int, materials:{id:count}}. Empty at max.
 static func cost(item: Dictionary) -> Dictionary:
 	var lvl = level_of(item)
 	if lvl >= max_level():
 		return {}
 	var c = cfg()
-	var ilvl_scale = 1.0 + int(item.get("ilvl", 1)) * float(c.get("ilvl_cost_scale", 0.03))
+	var ilvl_scale = 1.0 + int(item.get("ilvl", 1)) * float(c.get("gold_ilvl_mult", c.get("ilvl_cost_scale", 0.03)))
 	var gold = 0
 	var golds: Array = c.get("gold", [])
 	if lvl < golds.size():

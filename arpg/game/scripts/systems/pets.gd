@@ -22,7 +22,8 @@ static func max_level(id: String) -> int:
 
 static func xp_to_next(level: int) -> int:
 	var c = cfg()
-	return int(round(float(c.get("xp_base", 25.0)) * pow(float(c.get("xp_growth", 1.16)), level - 1)))
+	var curve: Dictionary = c.get("curve", {})
+	return int(round(float(curve.get("base", c.get("xp_base", 25.0))) * pow(float(curve.get("growth", c.get("xp_growth", 1.16))), level - 1)))
 
 static func level(ch: CharacterData, id: String) -> int:
 	var p = ch.pets_owned.get(id)
@@ -93,8 +94,13 @@ static func perk(ch: CharacterData) -> String:
 static func perk_param(ch: CharacterData, key: String, default):
 	return active_rec(ch).get("perk_params", {}).get(key, default)
 
+## Combat help only for minion classes: classes[].pet_combat, config/pets.combat_classes or
+## pets[].combat_for listing the class.
 static func combat_enabled(ch: CharacterData) -> bool:
-	return bool(ch.cls().get("pet_combat", false)) and ch.active_pet != ""
+	if ch.active_pet == "":
+		return false
+	return bool(ch.cls().get("pet_combat", false)) or cfg().get("combat_classes", []).has(ch.class_id) \
+		or active_rec(ch).get("combat_for", []).has(ch.class_id)
 
 ## Called for every player kill. Returns {dig:bool} so the world can spawn a dug-up treasure.
 static func on_kill(ch: CharacterData, kind := "normal") -> Dictionary:

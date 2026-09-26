@@ -84,6 +84,8 @@ static func salvage(ch: CharacterData, index: int) -> Dictionary:
 		ch.add_material(m, y[m])
 	ch.inventory[index] = null
 	ch.track("salvages")
+	if Items.rarity_index(item.rarity) >= 4 or item.has("unique"):
+		Codex.record(item)
 	Crafting.gain_xp(ch, "smith", 2 + Items.rarity_index(item.rarity) * 3)
 	return y
 
@@ -96,6 +98,7 @@ static func sell(ch: CharacterData, index: int) -> int:
 		return 0
 	var v = sell_value(item)
 	ch.gold += v
+	ch.track("items_sold")
 	ch.inventory[index] = null
 	return v
 

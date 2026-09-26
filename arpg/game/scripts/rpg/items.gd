@@ -175,10 +175,11 @@ static func from_unique(unique_id: String, ilvl: int, stream := "loot") -> Dicti
 static func item_stats(item: Dictionary) -> Dictionary:
 	var s = {}
 	var um = Upgrade.item_mult(item)
+	var am = Upgrade.affix_mult(item)
 	for k in item.get("implicit", {}):
-		s[k] = float(s.get(k, 0.0)) + float(item.implicit[k]) * um
+		s[k] = float(s.get(k, 0.0)) + float(item.implicit[k]) * am
 	for a in item.get("affixes", []):
-		s[a.stat] = float(s.get(a.stat, 0.0)) + float(a.value) * um
+		s[a.stat] = float(s.get(a.stat, 0.0)) + float(a.value) * am
 	for g in item.get("sockets", []):
 		if g != "":
 			var gem = Content.get_rec("materials", g)
@@ -248,7 +249,7 @@ static func describe(item: Dictionary) -> Array:
 		lines.append(["%d–%d Damage  ·  %.2f attacks/s" % [wd[0], wd[1], item.aps], Color.WHITE])
 	if item.has("armor"):
 		lines.append(["%d Armor" % round(float(item.armor) * Upgrade.item_mult(item)), Color.WHITE])
-	var um = Upgrade.item_mult(item)
+	var um = Upgrade.affix_mult(item)
 	for k in item.get("implicit", {}):
 		lines.append([stat_label(k, float(item.implicit[k]) * um), Color(0.8, 0.8, 0.85)])
 	for a in item.get("affixes", []):

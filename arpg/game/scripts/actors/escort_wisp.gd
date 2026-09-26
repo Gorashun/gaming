@@ -9,6 +9,8 @@ var rec = {"scale": 1.0}
 var kind = "champion"            # blue health bar + name label
 var dest = Vector3.ZERO
 var moving = false
+var wait_for: Node3D = null      # if set, only walks while this node is within wait_radius
+var wait_radius = 7.0
 var healthbar: Node3D
 var _path: PackedVector3Array = []
 var _path_i = 0
@@ -40,6 +42,8 @@ func _physics_process(delta: float) -> void:
 	_t += delta
 	_visual.position.y = 1.0 + sin(_t * 2.5) * 0.18
 	if not moving or Game.world == null:
+		return
+	if wait_for and is_instance_valid(wait_for) and wait_for.global_position.distance_to(global_position) > wait_radius:
 		return
 	if global_position.distance_to(dest) < 1.2:
 		moving = false

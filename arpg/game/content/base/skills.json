@@ -2667,7 +2667,7 @@
   "tags": [
    "minion"
   ],
-  "anim": "Spellcast_Summon",
+  "anim": "Spellcast_Raise",
   "lock": 0.5,
   "windup": 0.2,
   "targeted": false,
@@ -2953,7 +2953,7 @@
   "tags": [
    "minion"
   ],
-  "anim": "Spellcast_Summon",
+  "anim": "Spellcast_Raise",
   "lock": 0.6,
   "windup": 0.3,
   "targeted": false,
@@ -7573,7 +7573,7 @@
    "minion"
   ],
   "targeted": false,
-  "anim": "Spellcast_Summon",
+  "anim": "Spellcast_Raise",
   "lock": 0.5,
   "windup": 0.2,
   "icon": "pins",
@@ -8032,7 +8032,7 @@
    "minion"
   ],
   "targeted": false,
-  "anim": "Spellcast_Summon",
+  "anim": "Spellcast_Raise",
   "lock": 0.6,
   "windup": 0.25,
   "icon": "doll",
@@ -8339,7 +8339,7 @@
    "minion"
   ],
   "targeted": false,
-  "anim": "Spellcast_Summon",
+  "anim": "Spellcast_Raise",
   "lock": 0.8,
   "windup": 0.3,
   "icon": "bear",

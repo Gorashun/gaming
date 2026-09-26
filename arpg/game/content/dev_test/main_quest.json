@@ -2,7 +2,7 @@
  {
   "id": "dev_ch1",
   "act": "act1",
-  "order": 1,
+  "order": -100,
   "name": "Dev Chapter One",
   "dialogue_start": "dev_txt_start",
   "dialogue_end": "dev_txt_end",
@@ -37,7 +37,7 @@
  {
   "id": "dev_ch2",
   "act": "act1",
-  "order": 2,
+  "order": -99,
   "name": "Dev Chapter Two",
   "objectives": [
    {

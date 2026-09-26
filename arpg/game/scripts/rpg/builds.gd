@@ -23,7 +23,7 @@ static func spent_points(ranks: Dictionary, ch: CharacterData, passives := {}) -
 
 static func respec_cost(ch: CharacterData) -> int:
 	var c = Content.get_rec("config", "respec")
-	if ch.level <= int(c.get("free_until_level", 20)):
+	if c.get("skills_free", false) or ch.level <= int(c.get("free_until_level", 20)):
 		return 0
 	return int(c.get("gold_per_level", 5)) * ch.level
 
@@ -42,6 +42,7 @@ static func respec_skills(ch: CharacterData) -> Dictionary:
 	ch.skill_ranks = ranks
 	ch.passive_ranks = {}
 	ch.skill_points += refund
+	ch.track("respecs")
 	for i in ch.skill_bar.size():
 		if ch.skill_bar[i] != "" and not ranks.has(ch.skill_bar[i]):
 			ch.skill_bar[i] = ""

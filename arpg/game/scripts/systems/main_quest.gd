@@ -11,6 +11,15 @@ extends RefCounted
 ## Gating: a zone listed in any chapter's unlocks.zones stays locked until that chapter is done.
 ## Character: main_quest {chapter, objective, progress, done:[]}.
 
+const TYPE_ALIAS := {"reach": "reach_zone", "rekindle": "kill"}
+
+static func norm_type(t: String) -> String:
+	return TYPE_ALIAS.get(t, t)
+
+## Dialogue/text record for a chapter (text_ref → main_quest_text).
+static func text_rec(c: Dictionary) -> Dictionary:
+	return Content.get_rec("main_quest_text", str(c.get("text_ref", c.get("id", ""))))
+
 static func chapters() -> Array:
 	var list = Content.all("main_quest")
 	list.sort_custom(func(a, b): return int(a.get("order", 0)) < int(b.get("order", 0)))
@@ -28,11 +37,15 @@ static func ensure_started(ch: CharacterData) -> String:
 	if cur != "" and not Content.get_rec("main_quest", cur).is_empty() and not st.done.has(cur):
 		return cur
 	for c in chapters():
-		if not st.done.has(c.id):
+		var req = str(c.get("requires", ""))
+		if not st.done.has(c.id) and (req == "" or st.done.has(req) or Content.get_rec("main_quest", req).is_empty()):
 			st.chapter = c.id
 			st.objective = 0
 			st.progress = 0
-			dialogue(str(c.get("dialogue_start", "")))
+			if c.has("dialogue_start"):
+				dialogue(str(c.dialogue_start))
+			else:
+				_lines(text_rec(c).get("intro", []))
 			_emit(ch)
 			return c.id
 	st.chapter = ""
@@ -53,10 +66,20 @@ static func tracker(ch: CharacterData) -> Dictionary:
 	if c.is_empty():
 		return {}
 	var o = current_objective(ch)
-	return {"chapter": c.id, "name": c.get("name", ""), "act": c.get("act", ""), "index": int(_state(ch).get("objective", 0)),
+	var t = text_rec(c)
+	var otext = str(o.get("text", ""))
+	var tobjs: Array = t.get("objectives", [])
+	var oi = int(_state(ch).get("objective", 0))
+	if otext == "" and oi < tobjs.size():
+		otext = str(tobjs[oi].get("text", ""))
+	return {"chapter": c.id, "name": c.get("name", t.get("title", "")), "summary": t.get("summary", ""), "act": c.get("act", ""), "index": int(_state(ch).get("objective", 0)),
 		"total": c.get("objectives", []).size(),
-		"objective": {"type": o.get("type", ""), "target": o.get("target", ""), "text": o.get("text", ""),
+		"objective": {"type": norm_type(str(o.get("type", ""))), "target": o.get("target", ""), "text": otext,
 			"zone": o.get("zone", ""), "progress": int(_state(ch).get("progress", 0)), "count": max(1, int(o.get("count", 1)))}}
+
+static func _lines(lines: Array) -> void:
+	if not lines.is_empty():
+		Events.story_dialogue.emit(lines)
 
 static func dialogue(text_id: String) -> void:
 	if text_id == "":
@@ -69,7 +92,7 @@ static func dialogue(text_id: String) -> void:
 		Events.story_dialogue.emit(lines)
 
 static func _matches(o: Dictionary, type: String, target: String, extra: Dictionary) -> bool:
-	if str(o.get("type", "")) != type:
+	if norm_type(str(o.get("type", ""))) != type:
 		return false
 	var t = str(o.get("target", "any"))
 	if t == "" or t == "any" or t == target:
@@ -113,11 +136,11 @@ static func complete_chapter(ch: CharacterData, chapter_id: String) -> void:
 	var c = Content.get_rec("main_quest", chapter_id)
 	if not st.done.has(chapter_id):
 		st.done.append(chapter_id)
-	var r: Dictionary = c.get("reward", {})
+	var r: Dictionary = c.get("rewards", c.get("reward", {}))
 	if r.has("gold"):
 		ch.gold += int(r.gold)
-	if r.has("xp"):
-		ch.add_xp(int(r.xp))
+	if r.has("xp") or r.has("xp_levels"):
+		ch.add_xp(int(r.get("xp", 0)) + int(round(float(r.get("xp_levels", 0.0)) * Progression.xp_to_next(ch.level))))
 	if r.has("skill_points"):
 		ch.skill_points += int(r.skill_points)
 	if r.has("item_rarity"):
@@ -128,8 +151,12 @@ static func complete_chapter(ch: CharacterData, chapter_id: String) -> void:
 		Pets.grant_pet(ch, str(r.pet))
 	if str(r.get("mount", "")) != "":
 		Mounts.grant_mount(ch, str(r.mount))
-	dialogue(str(c.get("dialogue_end", "")))
+	if c.has("dialogue_end"):
+		dialogue(str(c.dialogue_end))
+	else:
+		_lines(text_rec(c).get("outro", []))
 	ch.track("chapters_done")
+	ch.track("main_quest_chapters")
 	Events.main_quest_chapter_completed.emit(chapter_id)
 	Events.toast.emit("Chapter complete: %s" % c.get("name", chapter_id), Color(1, 0.85, 0.4))
 	st.chapter = ""
@@ -148,9 +175,39 @@ static func act_locked(ch: CharacterData, act_id: String) -> String:
 			return "Continue the story to reach this act"
 	return ""
 
-## Solve objectives: the zone to place an interactable object in, else "".
+## Solve objectives: the objective whose interactable object belongs in this zone, else {}.
+## The puzzle record (puzzles table, same id as target) may give a zone/props/label.
 static func solve_object_for_zone(ch: CharacterData, zone_id: String) -> Dictionary:
 	var o = current_objective(ch)
-	if str(o.get("type", "")) == "solve" and str(o.get("zone", "")) == zone_id:
+	if str(o.get("type", "")) != "solve":
+		return {}
+	var pz = Content.get_rec("puzzles", str(o.get("target", "")))
+	if str(o.get("zone", pz.get("zone", ""))) == zone_id or str(pz.get("zone", "")) == zone_id:
 		return o
 	return {}
+
+## Escort objectives: the escorts record to run in this zone, else {}.
+static func escort_for_zone(ch: CharacterData, zone_id: String) -> Dictionary:
+	var o = current_objective(ch)
+	if str(o.get("type", "")) != "escort":
+		return {}
+	var e = Content.get_rec("escorts", str(o.get("target", "")))
+	if str(e.get("zone", o.get("zone", ""))) == zone_id:
+		var out = e.duplicate()
+		out["id"] = str(o.get("target", ""))
+		return out
+	return {}
+
+## Collect objectives with drop_while_active {chance, from: "zone_monsters"}: kills in the objective's
+## zone may yield the quest item. Returns true when progress was made.
+static func on_kill_in_zone(ch: CharacterData, zone_id: String) -> bool:
+	var o = current_objective(ch)
+	if str(o.get("type", "")) != "collect" or not o.has("drop_while_active"):
+		return false
+	var z = str(o.get("zone", ""))
+	if z != "" and z != zone_id and not Content.get_rec("zones", z).get("town", false):
+		return false
+	if Rng.chance("loot", float(o.drop_while_active.get("chance", 0.25))):
+		notify(ch, "collect", str(o.get("target", "")))
+		return true
+	return false

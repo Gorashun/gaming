@@ -98,6 +98,8 @@ func load_zone(zone_id: String, seed_value := -1) -> void:
 		Sfx.stop_ambience()
 	Quests.notify(ch, "explore", zone_id)
 	ch.track("zones_visited")
+	ch.track("zone_entered:" + zone_id)
+	Deeds.check_all(ch)
 	MainQuest.notify(ch, "reach_zone", zone_id)
 	_place_story_object()
 	Events.zone_entered.emit(zone_id)
@@ -420,6 +422,7 @@ func interact_npc(n: Npc) -> void:
 
 ## Main-quest "solve" objectives: a glowing object to interact with somewhere in this zone.
 func _place_story_object() -> void:
+	_place_story_escort()
 	var o = MainQuest.solve_object_for_zone(Game.character, zone.id)
 	if o.is_empty() or layout.rooms.size() < 2:
 		return
@@ -444,11 +447,41 @@ func _place_story_object() -> void:
 	n.add_child(mi)
 	Fx.beam(n, Color(0.6, 0.85, 1.0), 6.0, 0.6)
 	var target = str(o.get("target", ""))
+	var pz = Content.get_rec("puzzles", target)
+	var props: Array = pz.get("props", [])
+	if not props.is_empty() and ZoneBuilder.scene_of(str(props[0])):
+		mi.visible = false
+		n.add_child(ZoneBuilder.scene_of(str(props[0])).instantiate())
 	interactables.append({"node": n, "pos": pos, "radius": 2.0, "label": str(o.get("label", "Examine")), "once": true,
 		"action": func():
 			MainQuest.notify(Game.character, "solve", target)
 			Fx.burst(pos + Vector3(0, 1, 0), Color(0.6, 0.85, 1.0), 30, 4.0, 0.12, 0.9, 1.0)
 			n.queue_free()})
+
+## Main-quest escort: a small companion walks from the start to the exit while the hero is near.
+func _place_story_escort() -> void:
+	var e = MainQuest.escort_for_zone(Game.character, zone.id)
+	if e.is_empty():
+		return
+	var w = EscortWisp.new()
+	actors_root.add_child(w)
+	w.global_position = clamp_to_walkable(player.global_position, player.global_position + Vector3(1.5, 0, 0))
+	var cr: Dictionary = e.get("creature", {})
+	w.setup_wisp(999999.0, Color(cr.get("tint", "#bfe3ff")))
+	w.display_name = str(cr.get("name", "Friend"))
+	w.move_speed = float(e.get("speed", 2.5))
+	w.wait_for = player if e.get("waits_for_player", true) else null
+	var end = layout.cell_to_world(layout.rooms[layout.end_room].center)
+	if is_town:
+		var far = layout.rooms[layout.start_room].rect
+		end = clamp_to_walkable(w.global_position, w.global_position + Vector3(far.size.x * ZoneLayout.CELL * 0.4, 0, 0))
+	w.dest = end
+	w.moving = true
+	var eid = str(e.id)
+	w.arrived.connect(func():
+		MainQuest.notify(Game.character, "escort", eid)
+		Fx.burst(w.global_position + Vector3(0, 1, 0), Color(0.8, 0.95, 1.0), 30, 4.0, 0.12, 0.9, 1.0)
+		w.queue_free())
 
 ## "Portal back": after hearthing/travelling to town, a portal leads back to where you left.
 func _place_return_portal(center: Vector3) -> void:
@@ -512,13 +545,17 @@ func pet_dig() -> void:
 	_spawn_loot(res, at)
 
 ## Lantern's Blessing (research #23): optional assist after repeated deaths in a zone. Never in
-## Hardcore; framed positively. config/blessing {base_pct, per_death_pct, cap_pct, min_deaths}.
+## Hardcore; framed positively. config/assist {damage_taken_reduction_pct, per_death_pct, cap_pct,
+## allowed_in_hardcore, min_deaths}.
 func _update_blessing() -> void:
 	var ch = Game.character
-	var c = Content.get_rec("config", "blessing")
+	var c = Content.get_rec("config", "assist")
+	if c.is_empty():
+		c = Content.get_rec("config", "blessing")
 	var pct = 0.0
-	if not ch.hardcore and Settings.get_value("lanterns_blessing", true) and zone_deaths >= int(c.get("min_deaths", 2)):
-		pct = float(c.get("base_pct", 20.0)) + float(c.get("per_death_pct", 2.0)) * (zone_deaths - int(c.get("min_deaths", 2)))
+	var hc_ok = bool(c.get("allowed_in_hardcore", false)) or not ch.hardcore
+	if hc_ok and Settings.get_value("lanterns_blessing", true) and zone_deaths >= int(c.get("min_deaths", 2)):
+		pct = float(c.get("damage_taken_reduction_pct", c.get("base_pct", 20.0))) + float(c.get("per_death_pct", 2.0)) * (zone_deaths - int(c.get("min_deaths", 2)))
 		pct = min(pct, float(c.get("cap_pct", 60.0)))
 	if pct != blessing_pct:
 		blessing_pct = pct
@@ -655,7 +692,13 @@ func _on_monster_died(a: Actor) -> void:
 		loot_kind = Content.get_rec("events", m.get_meta("event")).get("loot_kind", "rare")
 	var res = Loot.roll_kill(m.rec, m.level, ch, tier, loot_kind)
 	# Weapon proficiency, pet XP/perks, pet drops, quests
-	Weapons.gain_proficiency(ch, Weapons.main_type(ch), int(Weapons.prof_cfg().get("xp_per_kill", 1)) * {"champion": 2, "rare": 3, "boss": 10}.get(m.kind, 1))
+	var pc = Weapons.prof_cfg()
+	var pxp = int(pc.get("xp_per_boss", 40)) if m.kind == "boss" else (int(pc.get("xp_per_elite", 5)) if m.kind in ["champion", "rare"] else int(pc.get("xp_per_kill", 1)))
+	Weapons.gain_proficiency(ch, Weapons.main_type(ch), pxp)
+	if m.kind == "boss":
+		ch.track("kills:boss:" + str(m.rec.get("id", "")))
+	if m.kind in ["champion", "rare"]:
+		ch.track("kills:elite")
 	var pet_res = Pets.on_kill(ch, m.kind)
 	if pet_res.dig:
 		pet_dig()
@@ -666,6 +709,9 @@ func _on_monster_died(a: Actor) -> void:
 		Events.toast.emit("A companion found you: %s!" % Pets.rec(new_pet).get("name", new_pet), Color(1, 0.8, 0.95))
 		if ch.active_pet == new_pet:
 			spawn_pet()
+	if MainQuest.on_kill_in_zone(ch, zone.id):
+		var o = MainQuest.current_objective(ch)
+		Fx.float_text(m.global_position, "Found: %s" % str(o.get("target", "")).trim_prefix("qi_").replace("_", " ").capitalize(), Color(0.7, 0.9, 1.0), 30)
 	var fam = str(m.rec.get("family", ""))
 	Quests.notify(ch, "kill", str(m.rec.get("id", "")), 1, {"family": fam, "kind": m.kind})
 	MainQuest.notify(ch, "kill", str(m.rec.get("id", "")), 1, {"family": fam})
@@ -729,6 +775,7 @@ func grant_xp(xp: int) -> void:
 		Fx.burst(player.global_position + Vector3(0, 1, 0), Color(1, 0.85, 0.4), 40, 6.0, 0.12, 1.2, 1.0)
 		Fx.flash_light(player.global_position + Vector3(0, 2, 0), Color(1, 0.85, 0.5), 5.0, 1.0, 10.0)
 		Sfx.play("level_up")
+		Deeds.check(ch, "level")
 		Events.level_up.emit(ch.level)
 		if Settings.get_value("simple_mode", false):
 			get_tree().call_group("session", "auto_spend_points")

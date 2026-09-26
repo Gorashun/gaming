@@ -21,6 +21,7 @@ var _wisp: EscortWisp
 var _escort_points: Array = []
 var _check = 0.0
 var _cache_node: Node3D
+var _steps: Array = []        # flattened waves (+ final boss step)
 
 const START_RADIUS := 8.0
 
@@ -38,9 +39,17 @@ func setup(w: GameWorld) -> void:
 				break
 		if forced == "any" and not list.is_empty():
 			pick = Rng.weighted("world", list)
-	elif Rng.chance("world", float(Content.cfg("world_events", "chance_per_zone", 0.25))):
-		pick = Rng.weighted("world", list)
-	if pick == null or pick.is_empty():
+	else:
+		# Per-record chance_per_zone (data), else config/world_events.chance_per_zone; max one per zone
+		for r in list:
+			var c = r.get("chance_per_zone", null)
+			if c != null and Rng.chance("world", float(c)):
+				pick = r
+				break
+		if pick.is_empty() and list.filter(func(r): return r.has("chance_per_zone")).is_empty() \
+				and Rng.chance("world", float(Content.cfg("world_events", "chance_per_zone", 0.25))):
+			pick = Rng.weighted("world", list)
+	if not (pick is Dictionary) or pick.is_empty():
 		return
 	rec = pick
 	_place_tear()
@@ -53,7 +62,7 @@ func _forced_id() -> String:
 
 func _eligible(r: Dictionary) -> bool:
 	var ch = Game.character
-	if ch.level < int(r.get("min_level", 1)):
+	if ch.level < int(r.get("min_level", 1)) or world.is_town:
 		return false
 	var acts: Array = r.get("acts", [])
 	return acts.is_empty() or acts.has(world.zone.get("act", ""))
@@ -163,91 +172,125 @@ func _process(delta: float) -> void:
 func _start() -> void:
 	state = "running"
 	stage = 0
-	var stages: Array = rec.get("stages", [])
-	match kind():
-		"treasure_swarm", "echo_duel":
-			total_stages = 1
-		_:
-			total_stages = max(1, stages.size() if not stages.is_empty() else 3) + (1 if _has_boss() else 0)
-	if kind() == "cursed_shrine":
-		var curse: Dictionary = rec.get("curse", {"damage_reduction": -15.0, "move_speed_pct": -10.0})
-		Game.character.stats.set_source("curse", curse)
-		world.player.on_buff_changed()
-		Events.toast.emit("A curse settles on you — survive it!", color())
-	if kind() == "escort":
+	_steps = _build_steps()
+	total_stages = max(1, _steps.size())
+	if kind() == "escort" or rec.get("stages", []).any(func(st): return st is Dictionary and st.has("escort")):
 		_spawn_wisp()
 	Fx.ring(tear_pos, 5.0, color(), 0.8)
 	Fx.shake(0.3)
 	Events.world_event_started.emit(str(rec.id))
 	_next_stage()
 
-func _has_boss() -> bool:
-	return kind() in ["invasion", "cursed_shrine", "escort"] and str(rec.get("boss", "default")) != ""
+## Flattens data stages into steps. Accepts {waves:[{monsters,count,elite_chance}], modifier, curse}
+## or the short form {monsters, count, elite}. A final boss step: echo mirror (echo_duel) or rec.boss.
+func _build_steps() -> Array:
+	var out = []
+	var stages: Array = rec.get("stages", [])
+	if stages.is_empty():
+		match kind():
+			"treasure_swarm":
+				stages = [{"monsters": [str(rec.get("swarm_monster", "magpie_imp"))], "count": int(rec.get("swarm_count", 5))}]
+			"echo_duel":
+				stages = []
+			_:
+				stages = [{"monsters": ["zone"], "count": 4}, {"monsters": ["zone"], "count": 6}, {"monsters": ["any_family"], "count": 6, "elite": "champion"}]
+	for st in stages:
+		if not (st is Dictionary):
+			continue
+		var waves: Array = st.get("waves", [st])
+		for w in waves:
+			out.append({"monsters": w.get("monsters", ["zone"]), "count": int(w.get("count", 5)), "elite": str(w.get("elite", "")),
+				"elite_chance": float(w.get("elite_chance", 0.0)), "modifier": str(st.get("modifier", "")),
+				"curse": st.get("curse", rec.get("curse", {}) if kind() == "cursed_shrine" else {}), "flee": kind() == "treasure_swarm"})
+	if kind() == "echo_duel":
+		out.append({"echo": true})
+	else:
+		var b = str(rec.get("boss", "default" if rec.get("stages", []).is_empty() and kind() in ["invasion", "cursed_shrine"] else ""))
+		if b != "":
+			out.append({"boss": "zone" if b == "default" else b})
+	return out
 
 func _next_stage() -> void:
 	if state != "running":
 		return
-	if kind() == "escort" and stage > 0 and _wisp and is_instance_valid(_wisp) and not _escort_points.is_empty():
+	if _wisp and is_instance_valid(_wisp) and stage > 0 and not _escort_points.is_empty():
 		# Wave cleared → the wisp walks on to the next point before the next wave
-		if not _wisp.moving and _wisp.global_position.distance_to(_escort_points[0]) > 1.5:
-			_wisp.dest = _escort_points[0]
-			_wisp.moving = true
+		if _wisp.global_position.distance_to(_escort_points[0]) > 1.5:
+			if not _wisp.moving:
+				_wisp.dest = _escort_points[0]
+				_wisp.moving = true
 			return
-		if _wisp.global_position.distance_to(_escort_points[0]) <= 1.5:
-			_escort_points.pop_front()
-	if stage >= total_stages:
+		_escort_points.pop_front()
+	if stage >= _steps.size():
 		_complete()
 		return
+	var step: Dictionary = _steps[stage]
 	stage += 1
 	Events.world_event_stage.emit(str(rec.id), stage, total_stages)
 	var center = tear_pos
-	if kind() == "escort" and _wisp and is_instance_valid(_wisp):
+	if _wisp and is_instance_valid(_wisp):
 		center = _wisp.global_position
-	match kind():
-		"treasure_swarm":
-			var n = int(rec.get("swarm_count", 5))
-			var imp = str(rec.get("swarm_monster", "magpie_imp"))
-			for i in n:
-				var m = _spawn(imp, center, "normal")
-				if m:
-					m.add_sparkle_trail(color().lerp(Color("#ffd84a"), 0.7))
-					if rec.has("swarm_event"):
-						m.set_meta("event", str(rec.swarm_event))
-		"echo_duel":
-			var er = echo_rec()
-			var m = world.spawn_monster_rec(er, world.clamp_to_walkable(tear_pos, tear_pos + Vector3(0, 0, 1.5)), world.monster_level + 1, "rare")
-			if m:
-				_alive.append(m)
-				m.target = world.player
-		_:
-			var stages: Array = rec.get("stages", [])
-			var is_boss_stage = _has_boss() and stage == total_stages
-			if is_boss_stage:
-				var boss_spec = str(rec.get("boss", "any_family"))
-				if boss_spec == "default":
-					boss_spec = "zone"
-				var m = _spawn(resolve_spec(boss_spec), center, "rare")
-				if m:
-					m.elite_affixes = _random_affixes(2)
-					world._apply_elite(m)
-					m.max_life *= float(rec.get("boss_life_mult", 1.6))
-					m.life = m.max_life
-					Events.toast.emit("%s emerges from the Hush!" % m.display_name, color())
-			else:
-				var st: Dictionary = stages[stage - 1] if stage - 1 < stages.size() else {"monsters": ["zone"], "count": 3 + stage * 2}
-				var specs: Array = st.get("monsters", ["zone"])
-				var count = int(st.get("count", 5))
-				for i in count:
-					var spec = str(specs[i % specs.size()]) if not specs.is_empty() else "zone"
-					var k = "normal"
-					if i == 0 and st.has("elite"):
-						k = str(st.elite)
-					var m = _spawn(resolve_spec(spec), center, k)
-					if m and k != "normal":
-						m.elite_affixes = _random_affixes(1 if k == "champion" else 2)
-						world._apply_elite(m)
+	var curse: Dictionary = step.get("curse", {})
+	if not curse.is_empty() and not Game.character.stats.sources.has("curse"):
+		Game.character.stats.set_source("curse", curse)
+		world.player.on_buff_changed()
+		Events.toast.emit("A curse settles on you — survive it!", color())
+	if step.get("echo", false):
+		var m = world.spawn_monster_rec(echo_rec(), world.clamp_to_walkable(tear_pos, tear_pos + Vector3(0, 0, 1.5)), world.monster_level + 1, "rare")
+		if m:
+			_alive.append(m)
+			m.target = world.player
+			m.set_meta("hushfall", true)
+			Events.toast.emit("Your own echo steps out of the Hush!", color())
+	elif step.has("boss"):
+		var m = _spawn(resolve_spec(str(step.boss)), center, "rare")
+		if m:
+			m.elite_affixes = _random_affixes(2)
+			world._apply_elite(m)
+			m.max_life *= float(rec.get("boss_life_mult", 1.6))
+			m.life = m.max_life
+			if rec.has("boss_scale") and m.model:
+				m.model.scale *= float(rec.boss_scale)
+			Events.toast.emit("%s emerges from the Hush!" % m.display_name, color())
+	else:
+		var specs: Array = step.get("monsters", ["zone"])
+		for i in int(step.get("count", 5)):
+			var spec = str(specs[i % specs.size()]) if not specs.is_empty() else "zone"
+			var k = "normal"
+			if i == 0 and step.get("elite", "") != "":
+				k = str(step.elite)
+			elif float(step.get("elite_chance", 0.0)) > 0.0 and Rng.chance("world", float(step.elite_chance)):
+				k = "champion"
+			var m = _spawn(resolve_spec(spec), center, k)
+			if m == null:
+				continue
+			if k != "normal":
+				m.elite_affixes = _random_affixes(1 if k == "champion" else 2)
+				world._apply_elite(m)
+			if str(step.get("modifier", "")) != "":
+				_apply_modifier(m, str(step.modifier))
+			if step.get("flee", false) or m.rec.get("ai", "") == "flee":
+				m.add_sparkle_trail(color().lerp(Color("#ffd84a"), 0.7))
 	Fx.ring(center, 4.0, color(), 0.5)
 	Sfx.play("portal", -6.0)
+
+## Stage modifier = a monster affix applied to every monster of the wave (no rename/tint).
+func _apply_modifier(m: Monster, mod: String) -> void:
+	var a = Content.get_rec("monster_affixes", mod)
+	if a.is_empty():
+		return
+	for k in a.get("stats", {}):
+		m.stats.add_to_source("modifier", k, float(a.stats[k]))
+	if a.has("speed_mult"):
+		m.move_speed *= float(a.speed_mult)
+	if a.has("life_mult"):
+		m.max_life *= float(a.life_mult)
+		m.life = m.max_life
+	if not a.get("abilities", []).is_empty():
+		m.rec = m.rec.duplicate()
+		m.rec["abilities"] = m.rec.get("abilities", []) + a.abilities
+	if not m.elite_affixes.has(mod):
+		m.elite_affixes.append(mod)
 
 func _spawn(monster_id: String, center: Vector3, k: String) -> Monster:
 	if monster_id == "":
@@ -367,6 +410,8 @@ func _complete() -> void:
 	Events.world_event_completed.emit(str(rec.id))
 	Events.toast.emit("The Hushfall is sealed! A cache of light appears.", color())
 	Game.character.track("hushfalls")
+	Game.character.track("hushfalls_completed")
+	Game.character.track("hushfalls:" + kind())
 	if kind() == "escort":
 		MainQuest.notify(Game.character, "escort", str(rec.id))
 		MainQuest.notify(Game.character, "escort", "any")
@@ -408,7 +453,15 @@ func open_cache() -> void:
 	var reward: Dictionary = rec.get("reward", {})
 	var ch = Game.character
 	var fallback = {"item_chance": 0.8, "min_items": 2, "max_items": 4, "gold_chance": 1.0, "gold_mult": 8.0, "min_rank": 1,
-		"rarity_bonus": {"rare": 2.5, "epic": 3.0, "legendary": 3.0}}
+		"rarity_bonus": reward.get("bonus_rarity", {"rare": 2.5, "epic": 3.0, "legendary": 3.0})}
+	for extra in ["pet_chance", "mount_chance"]:
+		var pc: Dictionary = reward.get(extra, {})
+		if not pc.is_empty() and Rng.chance("loot", float(pc.get("chance", 0.0))):
+			if extra == "pet_chance" and Pets.grant_pet(ch, str(pc.get("id", ""))):
+				Events.toast.emit("A companion joins you: %s!" % Pets.rec(str(pc.id)).get("name", pc.id), color())
+				world.spawn_pet()
+			elif extra == "mount_chance":
+				Mounts.grant_mount(ch, str(pc.get("id", "")))
 	var mult = int(max(1, round(float(reward.get("mult", 2.0 if kind() == "cursed_shrine" else 1.0)))))
 	var res = {"items": [], "gold": 0, "materials": {}}
 	for i in mult:

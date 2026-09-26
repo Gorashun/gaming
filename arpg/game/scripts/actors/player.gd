@@ -146,8 +146,12 @@ func refresh_gear() -> void:
 
 const AURA_COLORS := {"ember": "#ff9a3c", "frost": "#8fd8ff", "holy": "#fff1a8", "shadow": "#a07bff", "verdant": "#7dff9a", "rose": "#ff8fc8"}
 
+## Cosmetic value → colour: a `cosmetics` record id (its color), a named aura, or a hex colour.
 static func cosmetic_color(v, fallback := Color(1, 0.85, 0.5)) -> Color:
 	var sv = str(v)
+	var crec = Content.get_rec("cosmetics", sv)
+	if crec.has("color"):
+		return Color(str(crec.color))
 	if AURA_COLORS.has(sv):
 		return Color(AURA_COLORS[sv])
 	if sv.begins_with("#") or sv.is_valid_html_color():
@@ -387,7 +391,8 @@ func use_potion() -> void:
 		return
 	ch.potions -= 1
 	potion_ready_at = time_now() + 1.0
-	Game.world.heal_actor(self, max_life * 0.45)
+	Game.world.heal_actor(self, max_life * float(Content.get_rec("consumables", ch.potion_kind).get("effect", {}).get("heal_pct", 0.45)))
+	ch.track("potions_used")
 	Sfx.play("potion")
 	Fx.burst(global_position + Vector3(0, 1, 0), Color(1, 0.3, 0.35), 16, 2.0, 0.12, 0.8, 2.0)
 
@@ -479,6 +484,10 @@ func _update_mount(delta: float) -> void:
 	if _mount_check > 0.0:
 		return
 	_mount_check = 0.5
+	for b in ch.buffs:
+		if float(ch.buffs[b].get("until", 0.0)) <= ch.play_seconds:
+			sync_from_character()   # an elixir ran out
+			break
 	if mounted:
 		# keep the speed bonus current (mount feed can expire)
 		ch.stats.set_source("mount", {"move_speed_pct": Mounts.speed_pct(ch)})

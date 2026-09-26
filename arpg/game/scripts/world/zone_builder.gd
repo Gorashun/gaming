@@ -520,14 +520,26 @@ func _build_showcase() -> void:
 		m.position = center + Vector3(cos(a), 0, sin(a)) * 9.5
 		m.rotation.y = deg_to_rad(45.0)
 		_showcase_label(m, mounts[i])
+	# loot beam ladder (Art Bible 3) + a Hushfall tear, for VFX review
+	var rar = ["magic", "rare", "epic", "legendary", "mythic", "unique", "named"]
+	for i in rar.size():
+		var d = Node3D.new()
+		root.add_child(d)
+		d.position = center + Vector3(-13.0 + i * 2.6, 0, -13.0 + i * 2.6) + Vector3(3, 0, -3)
+		Fx.decorate_drop(d, rar[i])
+		_showcase_label(d, rar[i])
+	var tear_at = Node3D.new()
+	root.add_child(tear_at)
+	tear_at.position = center + Vector3(-9, 0, 5)
+	Fx.hush_tear(tear_at)
 
 func _showcase_label(n: Node3D, text: String) -> void:
 	var l = Label3D.new()
 	l.text = text
 	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	l.fixed_size = true
-	l.pixel_size = 0.0012
-	l.font_size = 28
+	l.pixel_size = 0.001
+	l.font_size = 20
 	l.outline_size = 8
 	l.position.y = 2.2 / maxf(0.3, n.scale.y)
 	l.no_depth_test = true

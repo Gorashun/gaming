@@ -1,4 +1,4 @@
-# Art Bible — v1
+# Art Bible — v2
 Owner: art-3d-designer. Look: chibi toys lost in a dark storybook. Cute meets eerie. Renderer: GL Compatibility (Godot 4.7).
 Source art: KayKit CC0 (heroes, skeletons, dungeon, halloween). All 9 characters share **one 41-joint rig**, so every animation plays on every model and heroes can be recoloured as enemies.
 
@@ -72,7 +72,7 @@ Source art: KayKit CC0 (heroes, skeletons, dungeon, halloween). All 9 characters
 
 ## 8. Camera (mobile landscape)
 - Perspective camera. Vertical FOV **38°** (keep height, so 20:9 phones get wider sight, not a crop). Pitch **−52°**, fixed yaw **45°** to the dungeon grid.
-- Distance to the player is 13 m (zone), 11 m (hub) and 16 m (boss arena), eased over 0.6 s. The player setting "Zoom" allows ±15 %.
+- Distance to the player is **22 m (zone), 19 m (hub) and 26 m (boss arena)** (v2: raised from 13/11/16 so phones see the room, hero ≈ 13 % of screen height), eased over 0.6 s. The player setting `camera_zoom` allows ±15 %.
 - The player sits at **54 % of screen height** (a little below centre, so thumbs cover less of the view ahead). Camera follow uses critical damping at 0.12 s with 1.5 m of look-ahead in the move direction.
 - Screen shake is applied as a camera offset only (trauma model, see UI_UX.md). It never rotates more than 1.5°.
 
@@ -81,3 +81,41 @@ Families are built from recolour (palette row) + scale + prop sockets (`handslot
 
 ## 10. UI icon style
 - Flat shapes with a 2-tone gradient and a 2 px dark outline, on the frame shape of their rarity. Read at 48 px. One idea per icon, no text inside icons.
+
+
+## 11. Biomes (v2, `content/base/biomes.json`, built by `scripts/world/zone_builder.gd`)
+All kit meshes render through ONE shader, `shaders/env_kit.gdshader` (MultiMesh `material_override`), so the same KayKit dungeon/halloween/medieval-hexagon pieces read as different places. A biome `tint` block (`color, saturation, brightness, hue, top_color, top_amount, top_scale, emission`) plus optional `floor_tint / wall_tint / boundary_tint` and per-prop `tint` drive it; `top_*` paints snow/moss/ash on up-facing surfaces with world-space noise. All 203 dungeon texture copies are remapped to the single atlas (VRAM + fewer materials). Hexagon-pack models get an intrinsic ×4 scale.
+| Biome id | Act | Look |
+|---|---|---|
+| town | Hub A1/A2 | warm lantern hub, tents, muted pumpkins, cats/crows, embers |
+| town_mines / town_frost / town_hush | Hubs A3/A4/A5 | mine camp · snowy hearth · the last lit refuge in a grey world |
+| graveyard | A1 | moonlit mossy slabs, graves, crypts, crows, green fireflies |
+| bog | A1 | heavy mist + height fog, lily pads, reeds, frogs, wisps |
+| crypt | A1 dungeon | cold stone, torches, coffins, bats, spiders |
+| whisperwood | A2 | violet dead forest, moss floors, glowing blue fungus (proc), muted pumpkins, root arches, owls, lantern moths |
+| rootcellar | A2 dungeon | moss-hued crypt, roots, fungus, spores |
+| echo_mines / echo_caverns | A3 | dark rock, scaffold walls, mine carts + rails, emissive crystals (proc), bats, dust |
+| rimehall / rime_court | A4 | icy blue-white kit, snow top layer, ice shards (proc), bright fog, snow particles |
+| well_of_hush / hush_wastes | A5 | fully desaturated grey, obelisks, white motes; only the Wick and loot carry colour |
+| deepdark | Endgame | ink-tinted kit, violet/cyan crystals; zone `fog_tint` modifies fog per Lightwell modifier |
+Each biome also sets `music`, `ambience`, `ambient` particle layers (≤48 each), `critters` (CreatureFactory ambience), `backdrop` silhouettes beyond the bounds and `env` (fog colour/depth range, height fog, mist, glow, outline colour). Dev zones for every biome live in `content/dev_art/` (load_order 98, not in acts).
+
+## 12. Occlusion & camera side
+- Near (+X/+Z, camera-side) dungeon edges use the low `barrier` (1.1 m); outdoor near edges use only low props (graves, fences, mounds).
+- Everything tall (far walls, pillars, trees, tents, obelisks) has `occlude`: env_kit dithers it away within ~2.4 m of the camera→hero ray, keeping the wall base so the room edge still reads. The hero position is a global shader uniform `wick_player_pos` set by CameraRig each frame.
+
+## 13. Lighting v2
+- Depth fog (begins just behind the hero plane) + optional height fog; mist plane thins out around the hero.
+- The Wick: hero light `#FFB869`, 1.25 energy, 9 m, placed high behind; carried by a tiny flame spirit (CreatureFactory "wick"). 3 nearest torches are real lights (GameWorld), all torches have flickering additive halos. Stations have no real lights.
+- Blob shadows under every actor; real shadows only hero/elite/boss/tall props. Outlines only hero/elite/boss/loot. Toon shader `toon_actor.gdshader` (3-step ramp + rim) replaces KayKit materials on all actors (Fx director).
+- Boss: key light −30 %, rim light in boss soul colour.
+
+## 14. VFX kit (`scripts/fx/fx.gd`, autoload Fx)
+Element colours: physical `#FFF1D6`, fire `#FF7A2E`, cold `#8FE3FF`, lightning `#C3CCFF`, shadow `#9B6BFF`, holy `#FFE08A`, poison `#8CFF6B`, hush `#D0D0DC`.
+Melee = 2-layer arc with hot edge + sparks · aoe/nova = ring + flash disc + vertical shockwave · projectiles = element heads (ember glow, ice shard, spinning star, dark-violet orb, arrow streak) + ribbon trails · enemy shots = dark core + threat-red rim + red smoke · chain lightning = thick jagged flickering ribbons · ground zones = swirling noise shader · buff = rotating sigil + rising sparks · heal = green-white rising sparks · dash/leap = double ribbon + dust · summon = smoke + spark ring · level-up = 12 m gold pillar + sun rays + shockwave · death "rekindle" = pop, soul rises and flies away with a trail, ember homes to the hero · telegraphs = hatched threat-red fill growing outward · loot per §3 (Legendary star ring, Mythic pulsing white-core beam + flame motes, Unique crown ring, Named sun rays + climbing halo rings) · `Fx.hush_tear(parent)` Hushfall rift · `Fx.event_cache_spawn(pos)`. Damage numbers merge hits on the same spot within 0.3 s, max 24 live. Particles: pooled CPUParticles3D, ≤40 per effect, max 3 transient lights.
+
+## 15. CreatureFactory (`scripts/fx/creature_factory.gd`)
+`CreatureFactory.build(kind: String, color: Color, scale := 1.0, opts := {}) -> Node3D` (a `CreatureAnim` node, faces +Z). opts: `eyes: "cute"|"glow"`, `eye_color`, `glow`, `outline`. Methods: `set_moving(bool)` (also auto-detected), `attack()`, `hurt()`, `set_wander(radius, fly)`, `get_saddle()` (mounts).
+- Small (pets, critters, monster stand-ins): wisp, wick, bat, moth, lantern_moth, slime, ghost, crow, spider, frog, cat, owl, fox, snail, bunny.
+- Mounts (saddle marker): wolf, boar, stag, giant_snail, lantern_beetle.
+- Animation styles: float, fly (wing flaps), hop, walk (4-leg gait, tail sway, head look), skitter, slide, squash, perch. 300–1500 tris each, shared toon materials per colour. Showcase: dev zone `dev_menagerie`.

@@ -120,8 +120,8 @@ static func turn_in(ch: CharacterData, id: String, world = null) -> Dictionary:
 		got.gold = int(r.gold)
 		ch.gold += got.gold
 		Events.gold_changed.emit(ch.gold)
-	if r.has("xp"):
-		got.xp = int(r.xp)
+	if r.has("xp") or r.has("xp_levels"):
+		got.xp = int(r.get("xp", 0)) + int(round(float(r.get("xp_levels", 0.0)) * Progression.xp_to_next(ch.level)))
 		if world and is_instance_valid(world) and world.has_method("grant_xp"):
 			world.grant_xp(got.xp)
 		else:
@@ -132,9 +132,19 @@ static func turn_in(ch: CharacterData, id: String, world = null) -> Dictionary:
 			got.items.append(it)
 			if not ch.add_item(it):
 				ch.stash.append(it)
-	for m in r.get("materials", {}):
-		ch.add_material(m, int(r.materials[m]))
-		got.materials[m] = int(r.materials[m])
+	var mats: Dictionary = r.get("materials", {}).duplicate()
+	var rm = r.get("material")
+	if rm is Dictionary:
+		if rm.has("id"):
+			mats[str(rm.id)] = int(mats.get(str(rm.id), 0)) + int(rm.get("count", 1))
+		else:
+			for k in rm:
+				mats[k] = int(mats.get(k, 0)) + int(rm[k])
+	elif rm is String:
+		mats[rm] = int(mats.get(rm, 0)) + 1
+	for m in mats:
+		ch.add_material(m, int(mats[m]))
+		got.materials[m] = int(mats[m])
 	if str(r.get("pet", "")) != "":
 		if Pets.grant_pet(ch, str(r.pet)):
 			got.pet = str(r.pet)
@@ -148,6 +158,7 @@ static func turn_in(ch: CharacterData, id: String, world = null) -> Dictionary:
 		got.skill_points = int(r.skill_points)
 		ch.skill_points += got.skill_points
 	ch.track("quests_done")
+	ch.track("side_quests_completed")
 	ch.recalc()
 	Events.quest_completed.emit(id)
 	Events.inventory_changed.emit()

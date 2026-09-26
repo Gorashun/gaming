@@ -54,10 +54,13 @@ var quests = {"active": {}, "done": []}
 var skill_mods = {}         # skill_id -> [option ids]
 var skill_xp = {}           # skill_id -> mastery xp toward next rank
 var skill_mastery = {}      # skill_id -> mastery rank
+var buffs = {}              # "elixir:<id>" -> {stats, until (play-seconds)}
+var potion_kind = ""        # strongest potion bought (consumables id)
 var loadouts = []           # up to 3 saved builds: {name, skill_ranks, skill_bar, skill_mods, gear:{slot: uid}}
 var main_quest = {}         # {chapter, objective, progress, done:[chapter ids]}
 var deeds = {}              # deed_id -> tiers reached
 var titles = []
+var deed_points = 0
 var title = ""
 var cosmetics_owned = {}    # slot -> [values]
 var cosmetics = {}          # slot -> equipped value (cape_tint, aura, name_frame, pet_hat, mount_tint)
@@ -124,6 +127,12 @@ func recalc() -> void:
 	stats.set_source("mastery", SkillMastery.stat_bonuses(self))
 	stats.set_source("pet", Pets.stat_bonuses(self))
 	stats.set_source("deeds", Deeds.stat_bonuses(self))
+	stats.clear_prefix("elixir:")
+	for b in buffs.keys():
+		if float(buffs[b].get("until", 0.0)) > play_seconds:
+			stats.set_source(b, buffs[b].get("stats", {}))
+		else:
+			buffs.erase(b)
 	# Primary attribute conversions
 	var conv: Dictionary = Content.get_rec("config", "attributes").get("conversions", {})
 	var derived = {}
@@ -210,7 +219,7 @@ func to_dict() -> Dictionary:
 		"bound_town": bound_town, "hearth_ready_at": hearth_ready_at, "wick_charges": wick_charges,
 		"return_portal": return_portal, "quests": quests, "skill_mods": skill_mods, "skill_xp": skill_xp,
 		"skill_mastery": skill_mastery, "loadouts": loadouts, "main_quest": main_quest, "deeds": deeds,
-		"titles": titles, "title": title, "cosmetics_owned": cosmetics_owned, "cosmetics": cosmetics,
+		"buffs": buffs, "deed_points": deed_points, "potion_kind": potion_kind, "titles": titles, "title": title, "cosmetics_owned": cosmetics_owned, "cosmetics": cosmetics,
 	}
 
 static func from_dict(d: Dictionary) -> CharacterData:
@@ -227,6 +236,7 @@ static func from_dict(d: Dictionary) -> CharacterData:
 	c.level = int(c.level); c.xp = int(c.xp); c.gold = int(c.gold)
 	c.skill_points = int(c.skill_points); c.star_points = int(c.star_points); c.potions = int(c.potions)
 	c.wick_charges = int(c.wick_charges)
+	c.deed_points = int(c.deed_points)
 	for k in c.skill_mastery:
 		c.skill_mastery[k] = int(c.skill_mastery[k])
 	if not c.quests.has("active"):

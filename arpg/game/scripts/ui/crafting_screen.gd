@@ -89,11 +89,12 @@ func _column(parent: Control, w: float) -> VBoxContainer:
 func _initial_prof() -> String:
 	if ctx.has("tab"):
 		return str(ctx.tab)
-	var npc = str(ctx.get("npc", ""))
-	if npc != "":
-		var role = str(Content.get_rec("npcs", npc).get("role", ""))
-		if role != "":
-			return role
+	var role = str(npc_rec().get("role", ""))
+	if role != "" and Content.has_rec("professions", role):
+		return role
+	var scr = str(npc_rec().get("screen", ""))
+	if scr.begins_with("crafting:"):
+		return scr.substr(9)
 	var l = str(ctx.get("label", "")).to_lower()
 	for p in PROFS:
 		if l.contains(p[0]) or l.contains(str(p[2]).to_lower()):
@@ -498,7 +499,9 @@ func _delta_row(icon_name: String, before: String, after: String) -> Control:
 # ------------------------------------------------------------------ actions
 func _do_upgrade() -> void:
 	var before = int(_item.get("upgrade", 0))
-	var res = UiTheme.api_call("Upgrade", "upgrade", [ch, _item], {"ok": false, "message": "Not available"})
+	var res = sess_call("upgrade_item", [_item], null)
+	if res == null:
+		res = UiTheme.api_call("Upgrade", "upgrade", [ch, _item], {"ok": false, "message": "Not available"})
 	if res.get("ok", false):
 		Sfx.play("craft_success")
 		_after_craft()

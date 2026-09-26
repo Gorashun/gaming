@@ -40,7 +40,8 @@ static func buy(ch: CharacterData, vendor_id: String, entry) -> Dictionary:
 	var out = {"ok": true, "message": "", "item": {}}
 	match kind:
 		"item_base":
-			var it = Items.generate(max(1, min(ch.level, int(Content.get_rec("item_bases", id).get("min_ilvl", 1)) + 2)), "common", "", id, "", "craft")
+			var il = ch.level if str(e.get("ilvl", "")) == "player_level" else max(1, min(ch.level, int(Content.get_rec("item_bases", id).get("min_ilvl", 1)) + 2))
+			var it = Items.generate(il, str(e.get("rarity", "common")), "", id, "", "craft")
 			if it.is_empty():
 				return {"ok": false, "message": "Not for sale"}
 			if ch.first_free_slot() < 0:
@@ -63,7 +64,12 @@ static func buy(ch: CharacterData, vendor_id: String, entry) -> Dictionary:
 	Events.inventory_changed.emit()
 	return out
 
+## Consumables: `consumables` table {id, kind (potion|elixir|hearth|pet_treat|mount_feed|key), effect{}},
+## or the built-in ids potion / wick_charge / pet_treat / mount_feed.
 static func _use_consumable(ch: CharacterData, id: String, n: int) -> String:
+	var c = Content.get_rec("consumables", id)
+	if not c.is_empty():
+		return use_consumable_rec(ch, c, n)
 	match id:
 		"potion":
 			var mx = int(Content.cfg("merchants", "max_potions", 10))
@@ -79,6 +85,36 @@ static func _use_consumable(ch: CharacterData, id: String, n: int) -> String:
 			if ch.active_mount == "":
 				return "You have no mount"
 			Mounts.feed(ch)
+		_:
+			return "Not for sale"
+	return ""
+
+static func use_consumable_rec(ch: CharacterData, c: Dictionary, n := 1) -> String:
+	var e: Dictionary = c.get("effect", {})
+	match str(c.get("kind", "")):
+		"potion":
+			var mx = int(c.get("stack_max", Content.cfg("merchants", "max_potions", 10)))
+			if ch.potions >= mx:
+				return "Potion belt full"
+			ch.potions = min(mx, ch.potions + n)
+			# Keep the strongest potion kind known for use_potion()
+			var cur = Content.get_rec("consumables", ch.potion_kind)
+			if float(e.get("heal_pct", 0.0)) >= float(cur.get("effect", {}).get("heal_pct", 0.0)):
+				ch.potion_kind = str(c.id)
+		"elixir":
+			ch.buffs["elixir:" + str(c.id)] = {"stats": e.get("stats", {}), "until": ch.play_seconds + float(e.get("duration_s", 1800.0)) * n}
+			ch.recalc()
+		"hearth":
+			ch.wick_charges += n
+		"pet_treat":
+			if not Pets.feed_treat(ch, int(e.get("pet_xp", -1)) * n):
+				return "You have no companion"
+		"mount_feed":
+			if ch.active_mount == "":
+				return "You have no mount"
+			ch.mount_fed_until = max(ch.play_seconds, float(ch.mount_fed_until)) + float(e.get("duration_s", 600.0)) * n
+		"key":
+			ch.add_material(str(c.id), n)
 		_:
 			return "Not for sale"
 	return ""
@@ -112,8 +148,10 @@ static func curio_buy(ch: CharacterData, offer_id: String) -> Dictionary:
 	if int(ch.materials.get(cur, 0)) < price:
 		return {"ok": false, "message": "Not enough Hushmarks", "item": {}}
 	var cat: Dictionary = o.get("category", {})
+	if cat.has("material"):
+		return _curio_material(ch, o, price, cur)
 	var slot = str(cat.get("slot", ""))
-	var type_id = str(cat.get("type", ""))
+	var type_id = str(cat.get("weapon_type", cat.get("type", "")))
 	if slot == "ring1" or slot == "ring2":
 		slot = "ring"
 	# Same path as a monster drop: rarity context + pity, ilvl = character level
@@ -127,5 +165,19 @@ static func curio_buy(ch: CharacterData, offer_id: String) -> Dictionary:
 		msg += " (sent to your stash)"
 	if Items.rarity_index(it.rarity) >= 4:
 		Codex.record(it)
+	ch.track("curio_bought")
 	Events.inventory_changed.emit()
 	return {"ok": true, "item": it, "message": msg}
+
+## Material offers (e.g. {"material": "gem"}): a random material of that kind, grade ≤ level tier.
+static func _curio_material(ch: CharacterData, o: Dictionary, price: int, cur: String) -> Dictionary:
+	var kind = str(o.category.material)
+	var max_tier = 1 + ch.level / 20
+	var pool = Content.all("materials").filter(func(m): return (m.get(kind, false) == true or str(m.get("kind", "")) == kind) and int(m.get("tier", 1)) <= max_tier)
+	if pool.is_empty():
+		return {"ok": false, "message": "The cart has nothing of that kind", "item": {}}
+	ch.spend_materials({cur: price})
+	var m = pool[Rng.int_on("loot", 0, pool.size() - 1)]
+	ch.add_material(m.id, 1)
+	ch.track("curio_bought")
+	return {"ok": true, "item": {}, "material": m.id, "message": "You got %s!" % m.get("name", m.id)}

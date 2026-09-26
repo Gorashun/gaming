@@ -118,9 +118,9 @@ func test_upgrade() -> void:
 	eq(int(it.upgrade), 0, "preview does not change the item")
 	check(pv.dmg_after[1] > pv.dmg_before[1], "preview shows higher damage")
 	check(not Upgrade.upgrade(ch, it).ok, "upgrade fails without gold")
-	ch.gold = 10000000
-	for m in ["soot", "wickthread", "dusk_essence", "ember_heart"]:
-		ch.add_material(m, 1000)
+	ch.gold = 1000000000
+	for m in Content.all("materials"):
+		ch.add_material(m.id, 100000)
 	var base_crit = float(Items.item_stats(it).get("crit_chance", 0.0))
 	var gold_before = ch.gold
 	var cost0 = Upgrade.cost(it)
@@ -369,9 +369,9 @@ func test_mastery() -> void:
 	p = SkillMastery.xp_progress(ch, "dev_nova")
 	check(p.ready and not p.can_upgrade, "needs gold+materials")
 	check(not SkillMastery.upgrade(ch, "dev_nova").ok, "no upgrade without payment")
-	ch.gold = 1000000
-	for m in ["soot", "wickthread", "dusk_essence", "ember_heart"]:
-		ch.add_material(m, 1000)
+	ch.gold = 1000000000
+	for m in Content.all("materials"):
+		ch.add_material(m.id, 100000)
 	var base_mult = float(SkillMods.resolve(ch, "dev_nova").effects[0].mult)
 	check(SkillMastery.upgrade(ch, "dev_nova").ok, "mastery upgrade")
 	eq(SkillMastery.rank(ch, "dev_nova"), 1, "rank 1")
@@ -519,7 +519,10 @@ func test_builds() -> void:
 	eq(ch.skill_points, 2, "points consistent")
 	check(not Builds.load_loadout(ch, 2).ok, "empty loadout")
 	ch.level = 50
-	check(Builds.respec_cost(ch) > 0, "gold respec later")
+	if Content.cfg("respec", "skills_free", false):
+		eq(Builds.respec_cost(ch), 0, "respec free forever (config)")
+	else:
+		check(Builds.respec_cost(ch) > 0, "gold respec later")
 
 func test_mounts() -> void:
 	var ch = mk_char()

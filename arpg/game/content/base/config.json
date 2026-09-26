@@ -2,10 +2,11 @@
  {
   "id": "progression",
   "max_level": 200,
-  "xp_base": 150,
-  "xp_growth": 1.108,
-  "xp_growth_post60": 1.0215,
-  "xp_linear": 60,
+  "xp_base": 116,
+  "xp_growth": 1.131,
+  "xp_growth_post60": 1.0375,
+  "xp_linear": 442,
+  "monster_xp_level_scale": 0.08,
   "skill_points_per_level": 1,
   "skill_points_from_quests": 10,
   "star_points_per_level": 2,
@@ -28,14 +29,14 @@
   "smart_loot": 0.75,
   "kinds": {
    "normal": {
-    "item_chance": 0.13,
+    "item_chance": 0.12,
     "min_items": 0,
     "max_items": 2,
     "gold_chance": 0.3,
     "materials": [
      {
       "id": "hushmark",
-      "chance": 0.003,
+      "chance": 0.0015,
       "min": 1,
       "max": 1
      },
@@ -48,20 +49,20 @@
     ]
    },
    "champion": {
-    "item_chance": 0.7,
-    "min_items": 1,
-    "max_items": 3,
+    "item_chance": 0.25,
+    "min_items": 0,
+    "max_items": 2,
     "gold_chance": 0.9,
     "gold_mult": 2.5,
     "rarity_bonus": {
-     "rare": 2.0,
-     "epic": 2.0,
-     "legendary": 2.0
+     "rare": 1.5,
+     "epic": 1.5,
+     "legendary": 1.5
     },
     "materials": [
      {
       "id": "hushmark",
-      "chance": 0.03,
+      "chance": 0.012,
       "min": 1,
       "max": 1
      },
@@ -74,20 +75,20 @@
     ]
    },
    "rare": {
-    "item_chance": 0.8,
-    "min_items": 2,
-    "max_items": 4,
+    "item_chance": 0.5,
+    "min_items": 1,
+    "max_items": 3,
     "gold_chance": 1.0,
     "gold_mult": 4.0,
     "rarity_bonus": {
-     "rare": 3.0,
-     "epic": 3.0,
-     "legendary": 3.0
+     "rare": 2.0,
+     "epic": 2.0,
+     "legendary": 2.0
     },
     "materials": [
      {
       "id": "hushmark",
-      "chance": 0.06,
+      "chance": 0.04,
       "min": 1,
       "max": 1
      },
@@ -100,17 +101,17 @@
     ]
    },
    "boss": {
-    "item_chance": 0.9,
-    "min_items": 4,
-    "max_items": 7,
+    "item_chance": 0.7,
+    "min_items": 3,
+    "max_items": 5,
     "gold_chance": 1.0,
     "gold_mult": 12.0,
     "min_rank": 1,
     "rarity_bonus": {
-     "rare": 4.0,
-     "epic": 5.0,
-     "legendary": 6.0,
-     "mythic": 4.0
+     "rare": 2.5,
+     "epic": 3.0,
+     "legendary": 3.0,
+     "mythic": 3.0
     },
     "materials": [
      {
@@ -128,9 +129,9 @@
     ]
    },
    "chest": {
-    "item_chance": 0.6,
-    "min_items": 1,
-    "max_items": 3,
+    "item_chance": 0.4,
+    "min_items": 0,
+    "max_items": 2,
     "gold_chance": 1.0,
     "gold_mult": 3.0,
     "rarity_bonus": {
@@ -139,7 +140,7 @@
     "materials": [
      {
       "id": "hushmark",
-      "chance": 0.01,
+      "chance": 0.005,
       "min": 1,
       "max": 1
      },
@@ -152,21 +153,21 @@
     ]
    },
    "chest_gold": {
-    "item_chance": 0.8,
-    "min_items": 2,
-    "max_items": 4,
+    "item_chance": 0.6,
+    "min_items": 1,
+    "max_items": 3,
     "gold_chance": 1.0,
     "gold_mult": 6.0,
     "min_rank": 1,
     "rarity_bonus": {
-     "rare": 3.0,
-     "epic": 3.0,
-     "legendary": 3.0
+     "rare": 2.0,
+     "epic": 2.0,
+     "legendary": 2.0
     },
     "materials": [
      {
       "id": "hushmark",
-      "chance": 0.03,
+      "chance": 0.015,
       "min": 1,
       "max": 1
      },

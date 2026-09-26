@@ -211,6 +211,34 @@ func flash_msg(text: String, color := UiTheme.TEXT, icon_name := "") -> void:
 	t.tween_property(p, "modulate:a", 0.0, 0.4)
 	t.tween_callback(p.queue_free)
 
+## Call a Session facade method when it exists (it syncs the player + saves), else fallback.
+func sess_call(method: String, args := [], fallback = null):
+	if session and session.has_method(method):
+		return session.callv(method, args)
+	return fallback
+
+## The NPC that opened this screen (ctx.npc, else session.current_npc), as its `npcs` record.
+func npc_rec() -> Dictionary:
+	var id = str(ctx.get("npc", ""))
+	if id == "" and session and "current_npc" in session:
+		id = str(session.current_npc)
+	return Content.get_rec("npcs", id)
+
+## A small bottom-left NPC greeting line (portrait icon + name + greeting).
+func npc_banner(parent: Control) -> void:
+	var n = npc_rec()
+	if n.is_empty():
+		return
+	var h = HBoxContainer.new()
+	h.add_theme_constant_override("separation", 8)
+	h.add_child(UiTheme.icon_rect("talk", 30, UiTheme.GOLD))
+	h.add_child(UiTheme.label(str(n.get("name", "")), 18, UiTheme.GOLD, true))
+	var g = UiTheme.label("“%s”" % str(n.get("greeting", "")), 16, UiTheme.MUTED)
+	g.clip_text = true
+	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	h.add_child(g)
+	parent.add_child(h)
+
 ## A titled card panel for screen columns.
 func card(title := "", accent := UiTheme.PANEL_EDGE) -> VBoxContainer:
 	var p = PanelContainer.new()

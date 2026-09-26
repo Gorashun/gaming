@@ -21,7 +21,7 @@ static func _deeds_for(counter: String) -> Array:
 	if _index == null:
 		_index = {}
 		for d in Content.all("deeds"):
-			var c = str(d.get("counter", ""))
+			var c = counter_of(d)
 			if not _index.has(c):
 				_index[c] = []
 			_index[c].append(d)
@@ -39,9 +39,35 @@ static func add(ch: CharacterData, key: String, n := 1) -> void:
 	Account.add_counter(key, n)
 	check(ch, key)
 
+static func counter_of(d: Dictionary) -> String:
+	return str(d.get("counter", d.get("stat", "")))
+
+## Current value of a deed's counter. Some keys are derived state rather than counters.
 static func value(ch: CharacterData, d: Dictionary) -> int:
-	var key = str(d.get("counter", ""))
-	return Account.counter(key) if d.get("account", false) else int(ch.stats_tracking.get(key, 0))
+	var key = counter_of(d)
+	if d.get("account", false):
+		return Account.counter(key)
+	match key:
+		"level":
+			return ch.level
+		"pets_owned":
+			return max(ch.pets_owned.size(), int(ch.stats_tracking.get(key, 0)))
+		"mounts_owned":
+			return max(ch.mounts_owned.size(), int(ch.stats_tracking.get(key, 0)))
+		"waypoints":
+			return ch.waypoints.size()
+		"codex_entries":
+			return Account.data().codex.size()
+		"main_quest_chapters":
+			return ch.main_quest.get("done", []).size()
+	if key.begins_with("prof_level:"):
+		return Crafting.prof_level(ch, key.substr(11))
+	return int(ch.stats_tracking.get(key, 0))
+
+## Deeds keyed by derived values (level, codex…) — call on level-up/zone load.
+static func check_all(ch: CharacterData) -> void:
+	for key in ["level", "pets_owned", "mounts_owned", "waypoints", "codex_entries", "main_quest_chapters"]:
+		check(ch, key)
 
 ## Grants every newly reached tier of deeds on this counter.
 static func check(ch: CharacterData, key: String) -> void:
@@ -55,26 +81,55 @@ static func check(ch: CharacterData, key: String) -> void:
 			_grant(ch, d, reached, tiers[reached - 1].get("reward", {}))
 
 static func _grant(ch: CharacterData, d: Dictionary, tier: int, r: Dictionary) -> void:
+	_grant_reward(ch, r)
+	# Deed points → account of milestones (deed_milestones {id, points, reward})
+	var tiers: Array = d.get("tiers", [])
+	var pts_cfg: Array = Content.cfg("deeds", "points_per_tier", [5, 10, 20, 40, 80])
+	var pts = int(tiers[tier - 1].get("points", pts_cfg[min(tier - 1, pts_cfg.size() - 1)] if not pts_cfg.is_empty() else 0))
+	ch.deed_points += pts
+	for ms in Content.all("deed_milestones"):
+		if ch.deed_points >= int(ms.get("points", 0)) and not ch.deeds.has("milestone:" + str(ms.id)):
+			ch.deeds["milestone:" + str(ms.id)] = 1
+			_grant_reward(ch, ms.get("reward", {}))
+	Events.deed_tier_completed.emit(str(d.id), tier)
+	Events.toast.emit("Deed: %s %s" % [d.get("name", str(d.id).trim_prefix("deed_").capitalize()), "I".repeat(min(tier, 3)) if tier <= 3 else str(tier)], Color(0.75, 0.9, 1.0))
+
+## Rewards: title, cosmetic (cosmetics id string, or {slot: value}), skill_points (capped by
+## config/deeds.skill_points_cap_total), gold, mount, stats (applied via stat_bonuses()).
+static func _grant_reward(ch: CharacterData, r: Dictionary) -> void:
 	if r.has("title") and not ch.titles.has(str(r.title)):
 		ch.titles.append(str(r.title))
-	for slot in r.get("cosmetic", {}):
-		var list: Array = ch.cosmetics_owned.get(slot, [])
-		if not list.has(r.cosmetic[slot]):
-			list.append(r.cosmetic[slot])
-		ch.cosmetics_owned[slot] = list
+	var cos = r.get("cosmetic", null)
+	if cos is String:
+		var crec = Content.get_rec("cosmetics", cos)
+		cos = {str(crec.get("kind", "misc")): cos}
+	if cos is Dictionary:
+		for slot in cos:
+			var list: Array = ch.cosmetics_owned.get(slot, [])
+			if not list.has(cos[slot]):
+				list.append(cos[slot])
+			ch.cosmetics_owned[slot] = list
 	if r.has("skill_points"):
-		ch.skill_points += int(r.skill_points)
+		var cap = int(Content.cfg("deeds", "skill_points_cap_total", 999))
+		var n = clampi(int(r.skill_points), 0, max(0, cap - int(ch.stats_tracking.get("deed_skill_points", 0))))
+		ch.skill_points += n
+		ch.stats_tracking["deed_skill_points"] = int(ch.stats_tracking.get("deed_skill_points", 0)) + n
 	if r.has("gold"):
 		ch.gold += int(r.gold)
+	if str(r.get("mount", "")) != "":
+		Mounts.grant_mount(ch, str(r.mount))
 	if r.has("stats"):
 		ch.recalc()
-	Events.deed_tier_completed.emit(str(d.id), tier)
-	Events.toast.emit("Deed: %s %s" % [d.get("name", d.id), "I".repeat(min(tier, 3)) if tier <= 3 else str(tier)], Color(0.75, 0.9, 1.0))
 
 ## Permanent stats from all reached tiers (stat source "deeds").
 static func stat_bonuses(ch: CharacterData) -> Dictionary:
 	var out = {}
 	for id in ch.deeds:
+		if str(id).begins_with("milestone:"):
+			var ms = Content.get_rec("deed_milestones", str(id).substr(10))
+			for k in ms.get("reward", {}).get("stats", {}):
+				out[k] = float(out.get(k, 0.0)) + float(ms.reward.stats[k])
+			continue
 		var d = Content.get_rec("deeds", id)
 		var tiers: Array = d.get("tiers", [])
 		for i in min(int(ch.deeds[id]), tiers.size()):
@@ -91,7 +146,7 @@ static func list(ch: CharacterData, include_hidden := false) -> Array:
 		var tiers: Array = d.get("tiers", [])
 		if d.get("hidden", false) and not include_hidden and t == 0:
 			continue
-		out.append({"deed": d, "tier": t, "tiers": tiers.size(), "value": value(ch, d),
+		out.append({"deed": d, "points": ch.deed_points, "tier": t, "tiers": tiers.size(), "value": value(ch, d),
 			"next_goal": int(tiers[t].get("goal", 0)) if t < tiers.size() else 0, "done": t >= tiers.size()})
 	return out
 

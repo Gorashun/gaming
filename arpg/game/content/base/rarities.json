@@ -7,7 +7,7 @@
   "shape": "square",
   "affix_min": 0,
   "affix_max": 0,
-  "weight": 56,
+  "weight": 63.4,
   "kindle": 0,
   "codex": false
  },
@@ -19,7 +19,7 @@
   "shape": "rounded",
   "affix_min": 1,
   "affix_max": 2,
-  "weight": 30,
+  "weight": 30.0,
   "kindle": 6,
   "mf_scale": 0.5,
   "codex": false
@@ -32,9 +32,9 @@
   "shape": "diamond",
   "affix_min": 3,
   "affix_max": 4,
-  "weight": 9.5,
+  "weight": 4.8,
   "kindle": 10,
-  "pity_seconds": 240,
+  "pity_seconds": 300,
   "codex": false
  },
  {
@@ -46,7 +46,7 @@
   "affix_min": 4,
   "affix_max": 4,
   "greater": 1,
-  "weight": 2.8,
+  "weight": 1.5,
   "kindle": 14,
   "mf_scale": 1.2,
   "codex": false
@@ -60,7 +60,7 @@
   "affix_min": 4,
   "affix_max": 4,
   "power": true,
-  "weight": 1.2,
+  "weight": 0.9,
   "kindle": 18,
   "mf_scale": 1.5,
   "pity_seconds": 2700,

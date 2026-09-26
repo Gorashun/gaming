@@ -113,6 +113,54 @@ func add_hero(class_id: String, ch: Object = null, x := 0.0) -> Actor:
 	_update_camera()
 	return actor
 
+## Generic model on the pedestal (pets, mounts, NPCs): glTF path, scale, tint, rim colour.
+func add_model(path: String, scale_mult := 1.0, tint := Color(1, 1, 1, 1), rim := UiTheme.GOLD, attachments := []) -> Actor:
+	var root = Node3D.new()
+	vp.add_child(root)
+	var ped = MeshInstance3D.new()
+	var cyl = CylinderMesh.new()
+	cyl.top_radius = 0.78
+	cyl.bottom_radius = 0.9
+	cyl.height = 0.28
+	ped.mesh = cyl
+	var sm = StandardMaterial3D.new()
+	sm.albedo_color = Color("#2c2433")
+	ped.material_override = sm
+	ped.position.y = -0.14
+	root.add_child(ped)
+	var ring = MeshInstance3D.new()
+	var tor = TorusMesh.new()
+	tor.inner_radius = 0.76
+	tor.outer_radius = 0.84
+	ring.mesh = tor
+	var rm = StandardMaterial3D.new()
+	rm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	rm.albedo_color = rim
+	ring.material_override = rm
+	ring.scale = Vector3(1, 0.4, 1)
+	root.add_child(ring)
+	var light = OmniLight3D.new()
+	light.light_color = rim
+	light.light_energy = 2.2
+	light.omni_range = 3.2
+	light.position = Vector3(0, 1.6, -1.1)
+	root.add_child(light)
+	var actor = Actor.new()
+	actor.set_physics_process(false)
+	root.add_child(actor)
+	if ResourceLoader.exists(path):
+		actor.setup_model(path, scale_mult, tint, rim)
+		actor.show_only_attachments(attachments)
+		actor.play("Idle", 0.0, 1.0, true)
+	heroes.append({"root": root, "actor": actor, "ring": ring, "light": light, "class_id": "", "ped": ped})
+	_update_camera()
+	return actor
+
+func clear_all() -> void:
+	for h in heroes:
+		h.root.queue_free()
+	heroes.clear()
+
 ## Show class attachments minus default weapons, then attach equipped weapon props.
 func apply_gear(index: int, ch: Object) -> void:
 	var h = heroes[index]
@@ -166,6 +214,9 @@ func _mark_props(actor: Actor) -> void:
 
 func _idle(index: int) -> void:
 	var h = heroes[index]
+	if h.class_id == "":
+		h.actor.play("Idle", 0.0, 1.0, true)
+		return
 	var cls = Content.get_rec("classes", h.class_id)
 	var anim_name = str(cls.get("idle_anim", "Idle"))
 	h.actor.play(anim_name, 0.0, 1.0, true)
@@ -190,7 +241,7 @@ func set_focus(index: int, highlight := true) -> void:
 		var on = (i == index) or not highlight
 		h.light.light_energy = 2.6 if i == index else (1.0 if not on else 2.2)
 		var mat: StandardMaterial3D = h.ring.material_override
-		var col = Color(Content.get_rec("classes", h.class_id).get("color", "#ffd27a"))
+		var col = Color(Content.get_rec("classes", h.class_id).get("color", "#ffd27a")) if h.class_id != "" else UiTheme.GOLD
 		mat.albedo_color = col if on else col.darkened(0.6)
 		mat.emission = mat.albedo_color
 

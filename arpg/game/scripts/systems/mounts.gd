@@ -51,7 +51,7 @@ static func buy(ch: CharacterData, id: String) -> Dictionary:
 
 static func speed_pct(ch: CharacterData) -> float:
 	var r = rec(ch.active_mount)
-	var s = float(r.get("speed_pct", 40.0))
+	var s = float(r.get("speed_pct", Content.cfg("travel", "mount_speed_default", 30.0)))
 	if ch.play_seconds < float(ch.mount_fed_until):
 		s += float(cfg().get("fed_speed_pct", 10.0))
 	return s

@@ -19,6 +19,12 @@
    "saturation": 0.6,
    "brightness": 0.72
   },
+  "floor_tint": {
+   "saturation": 0.45,
+   "brightness": 0.55,
+   "top_color": "#3a3028",
+   "top_amount": 0.2
+  },
   "boundary_props": [
    "hal:fence",
    "hal:fence_pillar",
