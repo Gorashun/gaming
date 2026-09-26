@@ -31,7 +31,8 @@ Status column cites the baseline review. Size: S ≈ 1–2 d, M ≈ 3–5 d, L �
 ### 1.2 Session (minutes, "one more round")
 | Lane | Trigger | Action | Variable reward | Investment | Guardrail | Safety status | Size |
 |---|---|---|---|---|---|---|---|
-| Round-end "new!" (§13.4) | loss screen | look / tap to replay | catches, set unlock | book | ≤2.5 s, skippable, restart <0.5 s | PASS | exists |
+| Round-end "new!" (§13.4) → **Round summary (§10.2)** | loss screen | look / tap to replay | everything gained this round | book, Journey | typical ≈2.5 s, hard cap 3.5 s, restart <0.5 s from t = 0, skipped → fresh markers | PASS (extends existing) | M |
+| **In-round pickup feedback (§10.1)** | a merge, sand event, completion | play | pearl/sand tokens, toast chips | – | batched, ≤2 tokens/s, 1 toast per 3 s, never over the jar, calm mode reduced | PASS (feedback, not a new reward) | S |
 | Pearls / sand tally (§16.1) | round end | – | amount of the round | currency | ≤0.6 s, no coin clink, never "double it" | PASS (P3-3) | exists |
 | Free shell (§16.2) | merge milestone | open on Start | buddy (random, no dupes) | buddy | fixed 1.2 s ceremony, no pity, **CS6: first = choose 1 of 3** | PASS / watch item §3 | exists |
 | Shells shop + upgrades (§16.2–16.3) | enough pearls | buy / upgrade | buddy / param step | currency → buddy | honest odds (**CS1**), two-tap buy, no "afford" badge | PASS / watch item | exists |
@@ -525,3 +526,102 @@ Migration 2 → 3: Journey starts at xp 0 (no retroactive currency, as §16.2). 
 
 ## 9. Legal note
 Every new player-facing name in this file ([LP]: lane names, trophy names, mission texts, Journey rewards, Aquarium items, jar skins, stage styles, stop-moment copy) is **pending legal review** (TEAM rule 3). The names are deliberately generic and descriptive. SV names for the 20 small decorations and the 12 present items are to be written by ui-designer with legal. "Klunk" in "Double Klunk" is our app name and follows the app-name trademark search.
+
+---
+
+## 10. In-round pickup feedback and round summary (producer requirement from Anders, 2026-09-26)
+
+Applies to all lanes. **This section overrides** the round-end details in §3 (Journey level-up, mission completion, trophy and mastery displays all happen here). No new rewards are added: this is presentation only. **All grants are applied and saved at the moment of loss (t = 0)**, before any animation. The summary only shows what is already in the save, so skipping never loses anything.
+
+### 10.1 In-round pickup feedback
+
+**Principle:** tokens show a player action paying off ("I did that → I got this"). Anything that is not directly caused by the last move waits for the summary, so the jar stays readable.
+
+**Events**
+| Event | In-round feedback | Cadence limit | Deferred to summary |
+|---|---|---|---|
+| Pearls (1 per merge) | **one pearl token per burst**. A burst = merges until the combo window (1.2 s) closes, and at most 1.0 s long during long cascades. The token starts at the burst's last merge point and flies to the pouch, and the number steps up by n on arrival | **≤2 tokens/s**, ≤3 in flight. Any extra is folded into the next token | the tally with count-up |
+| Star sand (shiny +1, chain ≥3 +1 up to 3 per round, level 10 +2) | one sand token per event (12 px star) from the event point to the pouch sand slot | ≤1 per 0.5 s, queued | tally |
+| Legacy milestone sand (+3, first level 7–10, first shiny, first double Klunk) | **no token**: trophy toast only (see below) | – | the 3 sand appear in the Trophies row and fly to the currency row |
+| Glimmer caught (new slot) | **existing** HUD chain ignite ("?" → light, double ring, §13.1/U5). No extra effect | existing | flyers into the Book (row R2) |
+| New shiny | **existing** six gold stars + shiny tone, plus its sand token | existing | row R2 |
+| Journey XP | **nothing** (1 XP = 1 merge, the same count as the pearls, so a second token would only add noise) | – | XP bar fill in row R4 |
+| Journey level-up | toast chip: level badge + "Level 7" / "Nivå 7" | toast rules | the level's reward (row R4) |
+| Mission progress | nothing | – | progress chips in row R5 (only if changed) |
+| Mission completed | toast chip: deed text ("Chain of 4!"), closed-gift icon | toast rules | the gift opens and its reward flies (R5) |
+| Trophy unlocked | toast chip: trophy icon + name. For a hidden trophy: gold border, name shown | toast rules | R6 |
+| Mastery star | toast chip: star + set icon | toast rules | R6 + cosmetic |
+| Free shell earned, new set unlocked | **nothing in-round** (a shell mid-round pulls attention to spending) | – | R3 / R2 ceremony |
+| Record passed | existing `newRecord` kick | existing | R0 |
+
+**HUD placement (logical 360×640; ui-designer finalises in UI.md)**
+| Element | Position | Details |
+|---|---|---|
+| **Round pouch** | top band between the score and the preview: pearl icon 14 px at x 178, "+N" 14 px/600 from x 190. Sand icon at x 232 and "+N" from x 244, all at centre y 20 | shows **this round's** earnings from merges and sand events only. Appears with a 140 ms pop on the first merge (first round ever: 300 ms fade-in, like the chain). The sand slot appears on the first sand. Same dim rule as the chain: alpha 0.35 while the hanging object overlaps it. Never shows the total balance |
+| **Toast chip** | bottom band **below the jar floor**, centre (180, 620), h 32, max w 240 | never over the jar (jar interior y 110–600). `card` fill alpha 0.92, 2 px `#4A6194` border (gold for trophies). Icon 20 px + text 14 px/600, ≤22 characters, EN/SV |
+
+**Token and toast behaviour**
+| Item | Value |
+|---|---|
+| Pearl token | 10 → 8 px, quadratic bezier 420 ms Sine.easeInOut, **no trail, no sound** (the merge sound already speaks). On arrival: pouch icon scale punch 1.15 (120 ms) |
+| Sand token | 12 px, 520 ms. On arrival: punch 1.25 + a soft `tallySand` tone at gain ×0.6 |
+| Toast | slide up 12 px + fade in 180 ms, hold 1 600 ms, fade out 240 ms. A soft `toast` tone (≤ merge gain), no haptics. **At most 1 visible, at least 3 s between toasts, queue of 2**; any overflow goes to the summary only. Priority: hidden trophy > mission > level-up > mastery star > trophy |
+| Quiet times | no new toast during danger/slow-mo or hit-stop, or within 1 s after them. Tokens follow the game's time scale |
+| Calm mode | pearl tokens off (the pouch number just updates with a 120 ms fade), sand tokens without punch, toasts fade only (no slide) |
+| Flash guard | tokens and toasts change scale and alpha only, never brightness. Pouch punches ≤2/s (<3 changes/s). Nothing loops |
+| Performance | a pool of 6 token sprites, no particles. If `perfGuard` lowers quality, tokens turn off and the pouch just updates |
+| Rule | tokens never show "almost" or "close to" anything: no "12 more to a shell", no progress bars in the HUD |
+
+### 10.2 Round summary (replaces the §13.4 / §14.3 / §16 round-end sequence; keeps its principles)
+
+**Principles, unchanged:** it sits on top of the loss screen. From t = 0, one tap anywhere except the button hit areas restarts in **<0.5 s** and kills all tweens. **Everything is already granted and saved at t = 0.** Anything not shown becomes a *fresh* marker. Only a **new** pointerdown after the loss counts (a finger still down from the last drop does not restart). Android back = Home.
+
+**"Collect all / continue": not added.** Collection happens automatically at t = 0, so a collect button would be an extra tap with no purpose (friction) and a spot for "almost" framing. The only choices are **Replay** and **Home**.
+
+**Order and grouping** (the logic: what I did → what I got → what I found → what grew → what I achieved → a calm end)
+| Row | Group | Shown when | Content | Animation (ms) |
+|---|---|---|---|---|
+| R0 | **Result** | always | score (large), record chip: crown + best, and the record buddy. New record: static gold ring + "New record!" / "Nytt rekord!". Best piece this round (small) | static at t = 0 (existing loss screen) |
+| R0d | **Daily Jar** (Daily only) | Daily round | stamp into the day cell icon, "Best today", "+2 sand" on the first finish | 140 pop + 500 stamp |
+| R1 | **Pearls and sand** | ≥1 merge | "+N" pearls counts up (existing tally sound: ≤12 ticks, ≥45 ms apart), sand +120 ms later. Later rows fly their currency into this row, which bumps it. Final value = **everything credited this round** (merges + missions + Journey + legacy sand + Daily), exactly what the Start pills gain. The affordHint follows CS5/P2-2 (neutral sound, full ring) | 140 + 500 |
+| R2 | **Glimmers and sets** | ≥1 catch, or the set bar moved | the existing flyers from the HUD chain into a Book icon (max 6, shiny with glitter, rest as a pile), meter x/21, set bar "412 / 600 to next set". **New set:** the existing ceremony (icon, 3 rings, jackpot 0.9 without shake, zoom or hit-stop; calm mode: 1 ring), then it settles into the row as a set chip | 140 + (n−1)·140 + 380 + 80 + 300 bar; new set +900 |
+| R3 | **Buddies** | ≥1 free shell earned | shell icon(s), stacked 2–3, no number, sub-label "Gift!" (CS5). The buddy is **not** revealed here: opening stays on Start (Shells card badge; CS6 choose 1 of 3 for the first) | 140 + 200 |
+| R4 | **Journey** | ≥1 merge | level badge + XP bar filling by +N. Per level-up: badge pop + the reward icon. Pearls/sand fly to R1, items show with a "new" tag, and **feature unlocks** (Missions, Aquarium, Present, Daily Jar) show their icon + "New: Aquarium" / "Nytt: Akvarium". Max 2 level-ups animated, more shown static | 140 + 400 + 360 per level-up (feature unlock 600, never compressed below 0.75×) |
+| R5 | **Missions** | ≥1 completed, or progress changed | per completed (max 3): deed chip ("Chain of 4!"), the gift opens and its reward flies to R1. Then static progress chips "2/3" for missions that moved. The next missions are **not** shown here (Journey sheet) | 140 + 500 per completion |
+| R6 | **Trophies and mastery** | ≥1 trophy or star | trophy icons (hidden ones with a gold border), mastery stars with the set icon. Legacy sand flies to R1, items get a "new" tag. Max 4 animated, rest static | 140 + 160 per icon |
+| R7 | **Stop moment** (N9/CS4) | trigger per §3.9, once per session | the buddy (or a Glimmer) yawns/waves + "Nice run! Good place for a break." Appears **last**, after every earned item, never followed by a reward | 300 fade |
+| – | **Buttons** | always, active from t = 0 | **Home** (`card`, 96×64, label "Home"/"Hem") + **Replay** (`primary`, 216×64). At the stop moment: both 164×64. Daily Jar: **Home · Calendar · Try again**, 104×64 each. Replay pulses 3 cycles, then rests (CS4). Hit areas +8 px; the rest of the screen = Replay | – |
+
+- **Hide empty groups:** a row that has nothing new is not drawn (no zeroes, no "0 trophies"). Rows close up from the top, so a quiet round shows R0 + R1 + R4 + the buttons.
+- **No "almost" framing:** no "N more to…", no teasing of the next reward, no pulse after settling (apart from the 3 replay cycles). The Journey bar shows progress because it *is* a bar, with no text.
+
+**Layout zones (logical px; ui-designer finalises):** R0 y 24–150 · rows R0d–R6 y 160–468, row height 40 + 4 gap, **max 7 rows** · R7 y 474–526 · buttons y 552–616.
+
+**Timing budget**
+| Case | Duration |
+|---|---|
+| Rows run in order; the next row starts 100 ms before the previous one's main motion ends | – |
+| Quiet round (R1 + R4) | ≈1.1 s |
+| **Typical** (3 catches, XP, 1 mission) | **≈2.5 s** (same as today) |
+| Planned > 3.5 s | all durations × max(0.5, 3.5 / planned). Rows that would still start after 3.0 s pop in **statically** together at 3.0 s. **Hard cap 3.5 s**, then everything is static until tap |
+| Sounds | at most one row sound per 120 ms. Only new record and new set have fanfares (existing) |
+| Calm mode | 1 ring, flyers max 3, a single tally tone instead of ticks, haptics 10 ms |
+
+**Skipping (tap/Home before the end) → fresh markers:** catches, sets, trophies and mastery stars → Book badge + per-item `fresh`. Free shell → Shells card badge (existing). Journey rewards and level-ups → a static dot on the Journey bar until the sheet is opened (`journey.fresh`). Completed missions → the Journey sheet shows them ticked once (`missions.freshDone`). New Aquarium items → Aquarium card badge (existing `aquarium.fresh`).
+
+### 10.3 Data and save
+```ts
+// data/pickup.ts (cadence: game-designer; positions: ui-designer)
+export const PICKUP = { burstWindowMs: 1200, burstMaxMs: 1000, pearlTokensPerSec: 2, maxInFlight: 3,
+  pearlFlyMs: 420, sandFlyMs: 520, sandMinGapMs: 500, pouchPunch: { pearl: 1.15, sand: 1.25 },
+  toast: { inMs: 180, holdMs: 1600, outMs: 240, minGapMs: 3000, queue: 2, quietAfterDangerMs: 1000,
+    priority: ['trophyHidden', 'mission', 'levelUp', 'mastery', 'trophy'], maxChars: 22 },
+  calm: { pearlTokens: false, sandPunch: false, toastSlide: false }, poolSize: 6 } as const;
+// data/summary.ts
+export const SUMMARY = { rowOverlapMs: 100, typicalBudgetMs: 2500, hardCapMs: 3500, staticAfterMs: 3000, minScale: 0.5,
+  unlockMinScale: 0.75, rowH: 40, rowGap: 4, maxRows: 7, maxAnimated: { flyers: 6, levelUps: 2, missions: 3, trophyIcons: 4 },
+  soundMinGapMs: 120, replayPulseCycles: 3, buttons: { home: [96, 64], replay: [216, 64], stopEqual: [164, 64], daily: [104, 64] } } as const;
+```
+Save additions: `journey.fresh: boolean`, `missions.freshDone: string[]`, `debug.rounds[i].summary: { plannedMs, shownMs, skipped }`. New loops for `JUICE.pulseHalfCycleMs`: none (the replay pulse already exists and is capped at 3 cycles).
+
+**Safety note:** in-round tokens and toasts are feedback on earned items, not new rewards, so there are no new odds, timers or triggers. They do add in-round stimulation, so the child-safety gate should check the cadence caps and calm mode. The summary adds a Home button and the stop moment, which CS4 requires.

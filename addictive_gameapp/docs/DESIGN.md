@@ -295,3 +295,9 @@ Status: **proposed**. Waiting for simulation (balance-analyst, RETENTION §6), c
 - `package.json` minor = test version (0.8.x now; 0.9.0 for test version 9).
 - APK growth of ~0.85 MB for own icon/splash accepted. Art director signs off icon/splash in the art batch.
 - `android:allowBackup` stays on so a child's save survives a phone change; store text drops "only" (LG6).
+- **In-round pickup feedback and round summary (Anders, via producer; RETENTION §10):**
+  - In the round, one pearl token per merge burst (≤2/s) and one sand token per sand event fly to a compact "this round" pouch between the score and the preview.
+  - Level-up, mission, trophy and mastery-star toasts sit **below the jar floor**, one at a time, ≥3 s apart. Everything else waits for the summary.
+  - The round summary replaces the §13.4/§16 round-end with 7 grouped rows: result, Daily, pearls and sand, Glimmers and sets, buddies, Journey, missions, trophies and mastery. Empty rows are hidden and the stop moment comes last. Buttons are Home and Replay.
+  - Timing: typical ≈2.5 s, hard cap 3.5 s. Everything is granted and saved at t = 0. A tap restarts in <0.5 s, and anything skipped becomes a fresh marker.
+  - No "collect all" button: collection is automatic, so the button would only add friction.
