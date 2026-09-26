@@ -1,6 +1,6 @@
 # RETENTION.md: KLUNK retention lanes
 
-Owner: game-designer · v1 2026-09-26 · Status: **design, waiting for simulation (balance-analyst), child-safety gate and legal gate.** Nothing in this file may be built before the gates in TEAM.md rule 3.
+Owner: game-designer · v1.1 2026-09-26 · Status: **design. Child-safety review `reviews/2026-09-26-retention.md` = PASS WITH CHANGES; all required changes R1–R18 applied (marked "applied (Rn)"). Legal review `legal/ip-review-2026-09-26-retention.md` applied (LG3, LG9). Waiting for simulation (R12).** Nothing in this file may be built before the gates in TEAM.md rule 3.
 Sources: `research/retention-lanes.md` (R#1–R#11 = its ranking), `reviews/2026-09-26-baseline.md` (inv. 1–10 = its §4 invariants, "PASS/PWC-x/BLOCK" = its §5 pattern list), `research/economy-research.md` + `economy-sim.py`, DESIGN §1–19, data files as of test version 8.
 
 Conventions:
@@ -43,7 +43,7 @@ Status column cites the baseline review. Size: S ≈ 1–2 d, M ≈ 3–5 d, L �
 ### 1.3 Session-to-session (hours)
 | Lane | Trigger | Action | Variable reward | Investment | Guardrail | Safety status | Size |
 |---|---|---|---|---|---|---|---|
-| **N2 Tide Pool** (new, inside Aquarium) | "something happened while I was away" | open Aquarium (1 tap = collect) | none by design: deterministic, fills over 24 h | – | cap 40 pearls ≤ 1 round, ≥24 h fill, never lost, no "full!" alert, no amount on Start | **PASS** (capped while-away accumulator) | S |
+| **N2 Pearl Pool** (new, inside Aquarium; was Tide Pool) | "something happened while I was away" | open Aquarium (1 tap = collect) | none by design: deterministic, fills over 24 h | – | cap 40 pearls ≤ 1 round, ≥24 h fill, never lost, no "full!" alert, no amount on Start | **PASS** (capped while-away accumulator) | S |
 | **N4 Journey** (new) | bar on Start, next 3 rewards visible | play (XP = merges) | every level a reward, bigger every 5 | level badge | XP only from merges; no reset, no season, no premium lane | **PASS** (free progression track) | M |
 
 ### 1.4 Daily
@@ -84,10 +84,10 @@ Status column cites the baseline review. Size: S ≈ 1–2 d, M ≈ 3–5 d, L �
 
 | # | Lane | Research rank | Why chosen | Changed vs brief / research, and why |
 |---|---|---|---|---|
-| N1 | Daily Jar | R#1 ★ | strongest "come back tomorrow" without loss; reuses seedable director | **Past days stay playable** (PASS row requires an archive). **Board-blind fixed queue** so it is truly identical for everyone. Outcome-changing abilities paused (fairness for 7–10, research §5). **No stamp-count rewards** (would be "play X days", banned for achievements) |
-| N2 | Tide Pool | R#2 ★ | "something happened while away", premium feel | **Merged into the Aquarium** (one home, one tap to collect). Cap **40 pearls**, not "≈1 shell/day" (R#2): PASS row caps at ≤1 round of play |
-| N3 | Daily Present | R#3 ★ | covers weekends and trips | **Bank cap 7, not 3** (PASS row requires ≥7). **Deterministic content** (PASS row: never random), so R#3's "occasional surprise" becomes a fixed, unannounced cycle. Player-facing name "Present", not "Gift", because CS5 renames the free buddy shell sub-line to "Gift!" |
-| N4 | Journey | R#4 ★ | the collection ends after 12–16 h of play; this runs 60–140+ h | XP from merges **only** (no loops with other lanes) |
+| N1 | Daily Jar | R#1 ★ | strongest return lane (new content on each date) without loss; reuses seedable director | **Past days stay playable** (PASS row requires an archive). **Board-blind fixed queue** so it is truly identical for everyone. Outcome-changing abilities paused (fairness for 7–10, research §5). **No stamp-count rewards** (would be "play X days", banned for achievements) |
+| N2 | Pearl Pool (was Tide Pool, legal LG9) | R#2 ★ | "something happened while away", premium feel | **Merged into the Aquarium** (one home, one tap to collect). Cap **40 pearls**, not "≈1 shell/day" (R#2): PASS row caps at ≤1 round of play |
+| N3 | Daily Present | R#3 ★ | covers weekends and trips | **Bank cap 7, not 3** (PASS row requires ≥7). **Deterministic content** (PASS row: never random), so R#3's "occasional surprise" becomes a fixed, unannounced cycle. Player-facing name "Present", not "Gift", because CS5 renames the free buddy shell sub-line to "Gift!". Drawn as a **parcel, not a shell** (R6) |
+| N4 | Journey | R#4 ★ | the collection ends after 12–16 h of play; this runs 60–140+ h | XP from merges **only** (no loops with other lanes). Legal guards §9 (never "Journey Pass") |
 | N5 | Trophies | R#7 | surprise-based (low overjustification), absorbs the 6 one-time sand milestones | no day-count, spend or open conditions |
 | N6 | Set mastery | R#8 | extends 5 sets without new content | star 3 = full page, which already pays 10 sand, so mastery pays **cosmetics only** |
 | N7 | Missions | R#6 | session goals; ties HUD icons and sets together | **Surprise-first**: the first mission is revealed already done; rewards hidden until completion; small |
@@ -96,7 +96,7 @@ Status column cites the baseline review. Size: S ≈ 1–2 d, M ≈ 3–5 d, L �
 
 **Build order (proposal for producer):**
 1. **Batch A (no rating change):** CS1–CS7 → N9 (with CS4) → N4 → N5 → N6 → N7.
-2. **Batch B (one release, PEGI 7 + listing update, DESIGN §19, inv. 10):** N8 + N2 → N3 → N1.
+2. **Batch B (one release, PEGI 7 + listing update, DESIGN §19, inv. 10):** N8 + N2 → N3 → N1. **Applied (R12):** Batch B is built only after balance-analyst confirms, by simulation, **T8 ≤ 35 % and T9 ≤ 0.8 for the casual profile at 4/7 and 7/7 days played**. If either misses, apply the §6 knobs in order. **Applied (R18):** the store text and rating answers in §7.4 ship in the same release.
 
 ---
 
@@ -121,8 +121,9 @@ Status column cites the baseline review. Size: S ≈ 1–2 d, M ≈ 3–5 d, L �
 | Reward | **first finish per date: stamp + 2 sand**. Replays unlimited, no further reward |
 | Personal best | per date (`best`); shown in the calendar cell and on the result card. No comparison with others |
 | Archive | every date from `daily.unlockedOn` to today is playable. **An archived date gives the same stamp + 2 sand on its first finish** (missed days cost nothing; each costs a full round of play, so inv. 3 holds). Maximum archive reward = days since unlock × 2 sand (bounded) |
-| Calendar | month grid; stamped days show the day's set icon in colour; unstamped past days show the same icon faint and **neutral** (no X, no grey "missed" state, no count, no month-complete reward). Swipe back to the unlock month |
-| Start badge | static dot on the Daily button only while **today's** jar is unfinished (new content). No pulse, no count |
+| Calendar | month grid; stamped days show the day's set icon in colour; unstamped past days show the same icon faint and **neutral** (no X, no grey "missed" state, no count, no month-complete reward). Swipe back to the unlock month. **Applied (R3):** an archive stamp is visually identical to a same-day stamp; no styling of consecutive stamps (no connecting lines, highlighted runs or "full week" row effects); no counter of stamped or faint days; the sheet opens on today's month; faint cells carry no badge, pulse or "catch up" prompt. These rules bind everything that reads `daily.days` (trophies, Journey, listing screenshots) |
+| No clock, no tomorrow | **Applied (R2):** no countdown or time to the next jar; no preview of tomorrow's set; future cells are blank; no "come back tomorrow" / "see you tomorrow" copy anywhere (also UI.md §17) |
+| Start badge | **Applied (R1):** the static dot means **unseen**, not unfinished. It shows at the first Start of a new date and clears when the Daily sheet is **opened** on that date, played or not. It returns at the next date only. No pulse, no count |
 
 **UI**
 | Where | What |
@@ -130,18 +131,18 @@ Status column cites the baseline review. Size: S ≈ 1–2 d, M ≈ 3–5 d, L �
 | Start | secondary button under PLAY: today's set icon + "Daily"/"Dagens" (≤10 chars) |
 | Daily sheet | calendar, big "Play today" (primary), tap a past day → "Play" + its best |
 | In game | small calendar chip under the score (day's set icon); nothing else changes |
-| Result | on top of the loss screen: score, "Best today", stamp flies into its cell (0.8 s) + "+2 sand" on first finish; buttons **Try again** (primary), **Home**, **Calendar**, all equal height. The first finish of the day also counts as a stop moment (N9) |
+| Result | on top of the loss screen: score, "Best today", stamp flies into its cell (0.8 s) + "+2 sand" on first finish. **Applied (R4):** buttons **Play again / Spela igen**, **Home / Hem** and **Calendar / Kalender**, with **equal visual weight** (no primary), because the first finish is a natural end and doubles as the N9 stop moment. Guest-set catches are shown on the result card as silhouettes with a small "saved" book icon (review recommendation, applied) |
 
-**Player sees:** day 1 → one stamp, the day's set (often a locked guest set = a preview). Day 7 → 4–7 stamps (est.), three to five different sets tried. Day 30 → a colourful month, trophies D1–D3 possible, a personal best per day.
+**Player sees:** day 1 → one stamp, the day's set (often a locked guest set = a preview). Day 7 → a few stamps, three to five different sets tried. Day 30 → trophies D1–D3 possible, a personal best per day. (Stamp counts are design estimates only and never shown, R3.)
 
-### 3.2 N2 Tide Pool [LP: "Tide Pool" / "Tidvattenpölen"]
+### 3.2 N2 Pearl Pool ["Pearl Pool" / "Pärlpölen", renamed from "Tide Pool" by legal LG9]
 | Item | Value |
 |---|---|
 | Unlock | Journey level 3 (together with N8). The pool starts empty at unlock |
 | Fill | **40 pearls over 24 h** = 1.667 pearls/h, linear, by wall clock (while away or playing). **Cap 40**, then it simply stops. Nothing decays |
 | Formula | `amount = min(cap, stored + rate × (now − since))`. On collect: `stored = 0, since = now`. **Clock moved backwards**: `stored = amount at last save, since = now` (nothing lost, nothing gained) |
-| Collect | opening the Aquarium **is** the one tap: after 400 ms the pearls fly to the pearl pill (≤0.8 s, tally up). Floors to whole pearls; the fraction stays |
-| Visual | a rock pool in the Aquarium, one small level-0 Glimmer per 5 pearls (max 8). At cap they nap (slow bob ≤0.5 Hz). **No text "full", no badge, no amount shown on Start** (stops "check every few hours") |
+| Collect | opening the Aquarium **is** the one tap: after 400 ms the pearls fly to the pearl pill (≤0.8 s). Floors to whole pearls; the fraction stays. **Applied (R17):** the collect sound reuses the soft tally (≤6 ticks), tier ≤ T3 |
+| Visual | a rock pool in the Aquarium, one small level-0 Glimmer per 5 pearls (max 8). At cap they nap (slow bob ≤0.5 Hz). **No text "full", no badge, no amount shown on Start** (stops "check every few hours"). **Applied (R5):** the nap reads as cosy and sleepy, never bored, sad or "waiting for you", and is **identical after 1 hour or 10 days full** (no escalating visual for absence). No in-game text about the pool filling while away |
 | Never | random amounts, bonus multipliers, "collect ×2", upgrades, notifications |
 
 Player sees: day 1 → first fill overnight. Day 7 → ~40 per visit if they come once a day, less if twice (est.). Day 30 → routine "the Glimmers brought pearls".
@@ -152,9 +153,10 @@ Player sees: day 1 → first fill overnight. Day 7 → ~40 per visit if they com
 | Unlock | Journey level 4, **one present already waiting** (endowed) |
 | Accrual | +1 per new local date since `lastDay`, **bank max 7**. Clock backwards: nothing removed, `lastDay = today` |
 | Content | deterministic by `present.opened` (1-based), cycle of 5: #1 **25 pearls**, #2 25 pearls, #3 **1 sand**, #4 25 pearls, #5 25 pearls **+ next present decoration** (12 in order, §3.8). When the 12 are used up, #5 = 25 pearls + 1 sand. Average ≈ 25 pe + a decoration every 5th day. Same on day 1 and day 100 |
-| Opening | tap the present on the Start stage → one unwrap (0.6 s) for **all waiting presents** together, showing the sum and any decoration. No reel, no candidates, no per-present tapping loop |
-| Visual | a ribbon-tied scallop at the right edge of the stage, visible only while ≥1 waits; 2–3 stacked when more wait (no number). One gentle wobble when Start appears, then still (≤3 cycles rule, P2-3 spirit) |
-| Separation from buddy shells | different silhouette (ribbon), different sound, no rarity colours, never contains a buddy |
+| Opening | tap the present on the Start stage → one unwrap (0.6 s) for **all waiting presents** together, showing the sum and any decoration. No reel, no candidates, no per-present tapping loop. **Applied (R7):** the unwrap has the same animation, length (0.6 s) and sound whatever it holds; the decoration appears **after** the unwrap has finished; no reveal ladder, no anticipation, no longer or louder version for present #5. **Applied (R17):** unwrap sound tier ≤ T3, never `reveal.*`, `jackpot`, `newSet` or a coin-like sound |
+| Visual | **Applied (R6):** a **wrapped parcel** (matches "Dagens paket"), **not a shell**, with no rarity colours, sparkle or glow. At the right edge of the stage, visible only while ≥1 waits; 2–3 stacked when more wait (no number). **Applied (R8):** one gentle wobble only on a **cold start or return from background** (the N9 session start), never when coming back from a round, the Book, Buddies or the Aquarium |
+| Separation from buddy shells | parcel silhouette, different sound, no rarity colours, never contains a buddy |
+| Parent sheet | **Applied (R9):** the CS1 info sheet states: "The daily present is always the same: 25 pearls, 25 pearls, 1 star sand, 25 pearls, 25 pearls and a decoration, then it starts again. Up to 7 are saved." (SV written with legal.) |
 
 Player sees: day 1 → first present. Day 2 → one more. After a week away → 7 presents in one unwrap (150 pearls + 1 sand + 1 decoration when starting from #1).
 
@@ -175,7 +177,7 @@ Player sees: day 1 → first present. Day 2 → one more. After a week away → 
 |---|---|
 | 1 | – (start, bar half full) |
 | 2 | **Missions unlock** (surprise-first, §3.7) + 30 pearls |
-| 3 | **Aquarium + Tide Pool unlock** + small decoration #1 |
+| 3 | **Aquarium + Pearl Pool unlock** + small decoration #1 |
 | 4 | **Daily Present unlock** (1 waiting) + 2 sand |
 | 5 | **Daily Jar unlock** + centerpiece "Old Anchor" + 3 sand |
 | L ≥ 6, L mod 5 = 1 or 3 | pearls: **30** (L ≤ 30), **40** (31–60), **50** (61–100) |
@@ -223,7 +225,7 @@ Player sees: day 1 → L3–L9 (profile) with 3–4 feature unlocks. Day 7 → L
 | 2 | chain3 | Chain of Three | Trekedja | chain ≥3 | – | – |
 | 3 | chain5 | Chain of Five | Femkedja | chain ≥5 | – | – |
 | 4 | combo10 | Combo Ten | Combo tio | combo ≥10 | – | – |
-| 5 | busy_jar | Busy Jar | Full fart | 120 merges in one round | – | – |
+| 5 | busy_jar | Busy Jar | Full rulle | 120 merges in one round | – | – |
 | 6 | big_clear | Big Clear | Storstädning | one bomb clears ≥6 pieces | – | – |
 | 7 | rainbow_boost | Rainbow Boost | Regnbågslyft | rainbow on a level ≥7 | – | – |
 | 8 | steady_hands | Steady Hands | Stadiga händer | leave danger 3 times in one round | – | – |
@@ -244,7 +246,7 @@ Player sees: day 1 → L3–L9 (profile) with 3–4 feature unlocks. Day 7 → L
 | 21 | set_master | Set Master | Setmästare | 3 mastery stars in one set | – | – |
 | 22 | whole_book | Whole Book | Hela boken | 105/105 slots | – | item "Golden Book Stand" / "Guldbokstöd" |
 | **Daily Jar** |
-| 23 | jar_of_day | Jar of the Day | Dagens burk | finish a Daily Jar | – | – |
+| 23 | jar_of_day | Jar of the Day | Burken är klar | finish a Daily Jar | – | – |
 | 24 | better_try | Better Try | Bättre försök | beat your own best on a Daily Jar you already finished | – | – |
 | 25 | every_jar_set | Every Jar Set | Alla burkset | finish a Daily Jar in each of the 5 sets (archive counts) | – | – |
 | 26 | daily_deep | Daily Deep | Dagens djup | a level 9 in a Daily Jar | – | – |
@@ -292,7 +294,7 @@ Player sees (est., engaged): day 7 → ★1 in the base set. Day 30 → 5–8 st
 
 - **Slots 3.** Unlock at Journey L2. **Surprise-first:** at unlock the game checks round 1 against the pool in order `lvl6_round, chain3, combo5, lvl7_round, bomb4`; the first match is shown **already completed** ("You already did this!", 20 pearls), then 3 fresh missions fill the slots. If none matches, the first 3 are shown normally.
 - **Next mission (WHAT, never IF/WHEN):** a seeded shuffle of the pool (`missions.seed`, set at unlock), skipping ineligible and currently active ones. Mix rule: at most 1 T3 and at least 1 T1 active.
-- **Rewards hidden until done:** each card shows the goal, a progress count and the same closed-gift icon for every tier. On completion the celebration names the deed first ("Chain of 4!"), then the reward flies (≤0.8 s). Exact tier rewards are listed on the parent info sheet (honesty; CS1 sheet).
+- **Rewards hidden until done. Applied (R10):** each card shows the goal, a progress count and a **neutral goal mark** (an empty ring that fills on completion). No gift icon or word on missions (one gift word per concept: "Gift!" = free shell, "Present" = daily). On completion the ring fills, the celebration names the deed first ("Chain of 4!"), then the reward flies (≤0.8 s). Exact tier rewards are on the parent info sheet (R9, CS1 sheet).
 - Progress counts in all modes, including the Daily Jar. Missions never read or influence the director (inv. 6).
 - Where: Journey sheet (3 cards + swap). Round end: one row of mission icons **only if progress changed**. Round start: the 3 icons show for 1.2 s, then fade (PWC-F: shown at start only, no fail state or sound).
 
@@ -338,17 +340,17 @@ Mix of pool: 14 T1, 9 T2, 3 T3. Expected completion 0.5–1.0 per round (est., s
 | Buddy | the equipped buddy sits on a rock; tap = its showcase (as on Start) |
 | Spots | **8 decoration spots** (5 floor, 1 left wall, 1 right wall, 1 surface) + **1 centerpiece** + **1 backdrop**. Tap a spot → drawer with owned items for that spot type → tap to place; tap a placed item → swap or remove. Always reversible |
 | Toys | tap a Glimmer = a flip (500 ms) + its set's merge tone; max 2 per second |
-| Tide Pool | lower-right rock pool (§3.2) |
+| Pearl Pool | lower-right rock pool (§3.2) |
 | Never | needs (food, cleaning), decay, night/sad states, items from random draws, buying items for currency (§16.2 "honest end": no new sinks) |
-| Start card | "Aquarium"/"Akvarium", icon = small tank. Sub-line = decorations owned "9 / 62". Static badge **only** for a new, unseen item. **No pool amount on Start** |
+| Start card | "Aquarium"/"Akvarium", icon = small tank. **No sub-line fraction on Start** (review recommendation, applied: the "9 / 62" count moves into the Aquarium screen). Static badge **only** for a new, unseen item. **No pool amount on Start** |
 
 **Item sources (62 aquarium items + 11 jar skins + 4 stage styles)**
 | Source | Aquarium items | Other |
 |---|---|---|
-| Journey small (L3, L7, L12 … L97) | 20 floor/wall/surface: Pebble Pile, Sea Grass, Tiny Starfish, Bubble Stone, Scallop Shell, Sand Dollar, Coral Sprig, Sea Fan, Spiral Shell, Anemone, Kelp Strand, Brain Coral, Mussel Cluster, Friendly Urchin, Driftwood Twig, Glass Float, Tube Worms, Sea Sponge, Oyster, Tiny Lighthouse (SV names by legal/ui with the list) | – |
+| Journey small (L3, L7, L12 … L97) | 20 floor/wall/surface: Pebble Pile, Sea Grass, Tiny Starfish, Bubble Stone, Scallop Shell, Sand Dollar, Coral Sprig, Sea Fan, Spiral Shell, Anemone, Kelp Strand, Brain Coral, Mussel Cluster, Friendly Urchin, Driftwood Twig, Glass Float, Tube Worms, Sea Sponge, Oyster, Tiny Lighthouse. SV (legal's proposal): Stenhög, Sjögräs, Liten sjöstjärna, Bubbelsten, Kammussla, Sanddollar, Korallkvist, Havssolfjäder, Spiralsnäcka, Havsanemon, Tångremsa, Hjärnkorall, Musselklunga, Snäll sjöborre, Drivvedskvist, Glasflöte, Rörmaskar, Havssvamp, Ostron, Litet fyrtorn | – |
 | Journey big | 6 centerpieces + 5 backdrops (§3.4) | 6 jar skins, 4 stage styles |
 | Set mastery | 5 plants + 5 backdrops | 5 jar skins |
-| Daily Present (every 5th) | 12: Paper Boat, Glass Bottle, Toy Submarine, Diving Helmet, Sand Bucket, Beach Ball, Sea Glass Pile, Clay Pot, Tiny Bridge, Snail House, Rope Swing, Pinwheel Shell | – |
+| Daily Present (every 5th) | 12: Paper Boat, Glass Bottle, Toy Submarine, Diving Helmet, Sand Bucket, Beach Ball, Sea Glass Pile, Clay Pot, Tiny Bridge, Snail House, Rope Swing, Pinwheel Shell. SV: Pappersbåt, Glasflaska, Leksaksubåt, Dykarhjälm, Sandhink, Badboll, Sjöglashög, Lerkruka, Liten bro, Snigelhus, Repgunga, Snurrsnäcka | – |
 | Trophies | 8 hidden + Golden Book Stand = 9 | – |
 | **Total** | **62** (mastery plants and backdrops are 1 recipe × 5 palettes → ≈54 unique recipes, est.) | 11 jar skins, 4 stages |
 
@@ -362,6 +364,8 @@ Player sees (est., engaged): day 1 → 12 swimmers, 1–2 items. Day 7 → 6–9
 | Shows | after all earned round-end items (rewards come first, never after the line): the buddy yawns/waves (1.2 s) and one line: **"Nice run! Good place for a break."** / **"Bra runda! Ett bra ställe att ta paus."** With no buddy: a Glimmer yawns. Home and Replay become equal size for this screen |
 | Never | blocks, delays, timers, rewards for stopping or continuing, guilt copy, sad faces, a reward popping up on exit, any change on Start after Home is tapped (no new badges or wobbles triggered by leaving) |
 | Also (CS4) | Home button on every loss screen; replay pulse 3 cycles then still; `sessionMs` / `roundsThisSession` in the debug panel. Calm mode shows the stop moment too |
+| Music | **Applied (R15):** on the stop screen the pad resolves over 2 bars and falls to the menu bed level. No seamless hand-off into the next round, no cue suggesting continuing |
+| Thresholds | **Applied (R11):** `WELLBEING` values (20 min, 6 rounds, 10 min gap) change only with a child-safety review. They are **not** balance knobs and are not in the §6 knob list. The copy is fixed exactly as above (no variants) |
 
 ---
 
@@ -369,9 +373,9 @@ Player sees (est., engaged): day 1 → 12 swimmers, 1–2 items. Day 7 → 6–9
 
 | Lane | Entry point | Badge rule |
 |---|---|---|
-| Daily Jar | secondary button under PLAY (today's set icon + "Daily") → Daily sheet | static dot while today's jar is unfinished |
-| Daily Present | object on the right edge of the hero stage | the object itself; no dot, no number |
-| Aquarium + Tide Pool | 4th card "Aquarium" (Book, Buddies, Shells, Aquarium) | static, only for an unseen new item |
+| Daily Jar | secondary button under PLAY (today's set icon + "Daily") → Daily sheet | static dot while today's jar is **unseen**; clears when the sheet is opened (R1) |
+| Daily Present | parcel on the right edge of the hero stage (R6) | the object itself; no dot, no number; wobble only at session start (R8) |
+| Aquarium + Pearl Pool | 4th card "Aquarium" (Book, Buddies, Shells, Aquarium) | static, only for an unseen new item |
 | Journey + Missions | bar at the bottom (replaces the set bar) → Journey sheet | none (the bar is the information) |
 | Trophies | Book → third tab | Book card badge for an unseen trophy (existing rule) |
 | Set mastery | Book page header stars | existing Book fresh rule |
@@ -389,12 +393,14 @@ Profiles (est.): **casual child** 10 min/day, 45 merges/round, 4.5 min/round →
 |---|---|---|
 | **First 60 s** | hand on PLAY → first drop by ~3 s → first merge ≤10 s (director opening Flow) → HUD chain lights levels 1–4, "?" silhouettes above → first catches fill the Book silently | the "?" silhouettes, a bigger Glimmer |
 | **First round end** (~3–5 min) | pearls tally, catches fly to the Book, **Journey bar appears: L2 → Missions** with a surprise mission already done (+20 pearls), 3 missions shown; trophies First Merge / Chain of Three | 3 mission goals, XP bar to L3 |
-| **First session** (engaged, 2–3 rounds) | first shell as **choose 1 of 3 rares** (CS6) at 90 merges (proposed, §7); **L3 Aquarium** ("your Glimmers moved in") + Tide Pool starts; **L4 Daily Present** (1 waiting); trophies Level 7, Chain of Three | "the pool fills while you're away", L5 = Daily Jar on the track |
-| **Day 1 end** | casual L3 (Aquarium, pool); engaged L6: **first Daily Jar** + stamp + Old Anchor; skilled L9; engaged and skilled get the first set unlock (200 merges) | casual: L4–5 tomorrow; everyone: a new jar tomorrow |
-| **Day 2** | new Daily Jar (new set, often a guest preview of a locked set); present #2; pool ≈ full (40); casual reaches **L4–L5** (present + Daily Jar); engaged gets the 2nd free shell (400 merges) and ~L9 | next jar tomorrow, L10 jar skin |
-| **Day 7** | casual L10 (first jar skin), engaged L19, skilled L26; 4–7 stamps; 2–3 sets; engaged ≈ 10–12 buddies; first mastery star (Full Row); 6–9 Aquarium items; ~15 trophies; present decoration #1 (present #5) | next big Journey reward, next set, hidden "?" trophies |
-| **Day 30** | casual L23, engaged L41, skilled L55; engaged ≈ 36–42 buddies, 4–5 sets, 1–2 full pages (★3, gold frames); 25–30 trophies; 16–22 Aquarium items, backdrops to choose; a month of stamps | whole book, set mastery, L50 stage, upgrades to III, Journey to L100 |
+| **First session** (engaged, 2–3 rounds) | first shell as **choose 1 of 3 rares** (CS6) at 90 merges (proposed, §7); **L3 Aquarium** ("Your Glimmers moved in!") + Pearl Pool starts; **L4 Daily Present** (1 waiting); trophies Level 7, Chain of Three | L5 = Daily Jar on the track (design note: the pool fills between sessions, but no in-game text says so) |
+| **Day 1 end** | casual L3 (Aquarium, pool); engaged L6: **first Daily Jar** + stamp + Old Anchor; skilled L9; engaged and skilled get the first set unlock (200 merges) | casual: L4–5 next; everyone: a new jar on the next date (design note only; never UI copy, R2) |
+| **Day 2** | new Daily Jar (new set, often a guest preview of a locked set); present #2; pool ≈ full (40); casual reaches **L4–L5** (present + Daily Jar); engaged gets the 2nd free shell (400 merges) and ~L9 | next date's jar (design note only, R2), L10 jar skin |
+| **Day 7** | casual L10 (first jar skin), engaged L19, skilled L26; a few stamps (never counted in UI, R3); 2–3 sets; engaged ≈ 10–12 buddies; first mastery star (Full Row); 6–9 Aquarium items; ~15 trophies; present decoration #1 (present #5) | next big Journey reward, next set, hidden "?" trophies |
+| **Day 30** | casual L23, engaged L41, skilled L55; engaged ≈ 36–42 buddies, 4–5 sets, 1–2 full pages (★3, gold frames); 25–30 trophies; 16–22 Aquarium items, backdrops to choose; calendar with stamps (no run styling, R3) | whole book, set mastery, L50 stage, upgrades to III, Journey to L100 |
 | **Beyond** | the collection ends at 10–14 h (engaged), Journey L100 ≈ 143 days (engaged) / 80 days (skilled); after that 100+N levels, upgrades, whole book, remaining trophies | always one Journey reward within ≤10 rounds |
+
+Rows mentioning time ("next date", "between sessions") are design estimates. **None of them may become UI text or visuals** (review §3; R2, R3). The only unlock line for the Aquarium is "Your Glimmers moved in!".
 
 ---
 
@@ -404,7 +410,7 @@ Extend `economy-sim.py` (or `docs/sim/`) with: the three profiles, 1 and 2 sessi
 
 | # | Metric | Casual child | Engaged child | Skilled adult | Tolerance / note |
 |---|---|---|---|---|---|
-| T1 | Session length | 10 min | 12–13 min (×2) | 20 min (×2) | stop moment shown in ≤25 % of child sessions |
+| T1 | Session length | 10 min | 12–13 min (×2) | 20 min (×2) | **Applied (R11):** measure the share of child sessions that reach the stop moment. If it is above 25 %, look at session length, **never at the trigger** |
 | T2 | Rounds per session | 2 | 2–3 | 3–4 | – |
 | T3 | Time to first shell | ≤10 min | ≤8 min | ≤7 min | requires `free.at[0]` 120 → **90**; check casual first |
 | T4 | Shells per hour, hours 1–5 | 2.5–3.5 | 3.5–4.5 | 4.5–5.5 | baseline §16 ≈3–4/h at 60 m/r |
@@ -417,7 +423,9 @@ Extend `economy-sim.py` (or `docs/sim/`) with: the three profiles, 1 and 2 sessi
 | T11 | Journey currency / total currency | ≤10 % | ≤10 % | ≤10 % | est. ≈4–6 % |
 | T12 | Max value after 7 days away (7 presents + full pool) | ≤ 3 casual rounds (≈255 pe) | – | – | est. ≈215 pe + 1 item |
 
-**Knobs, in this order, if a target misses:** mission rewards ×0.8 → `free.every` 750 → 900 → pool cap 40 → 30 → present pearls 25 → 20. Shop prices do not change (test testers' mental price anchors; §16.2).
+**Knobs, in this order, if a target misses:** mission rewards ×0.8 → `free.every` 750 → 900 → pool cap 40 → 30 → present pearls 25 → 20. Shop prices do not change (test testers' mental price anchors; §16.2). `WELLBEING` thresholds are **not** knobs (R11).
+
+**Batch B gate. Applied (R12):** T8 ≤ 35 % and T9 ≤ 0.8 for the **casual profile at 4/7 and 7/7 days played** must be confirmed by simulation, not estimates, before Batch B is built.
 
 Rough daily value behind T8 (est., pe/day): casual play ≈187 + missions ≈33 + Journey ≈20 vs daily lanes 115 (pool 40, present 25, Daily Jar 2 sand = 50). Engaged ≈600 + 105 + 25 vs 115. Skilled ≈1 120 + 180 + 30 vs 115.
 
@@ -428,8 +436,8 @@ Rough daily value behind T8 (est., pe/day): casual play ≈187 + missions ≈33 
 ### 7.1 Safety fixes (BACKLOG Fas 12)
 | CS | Interaction with the new lanes |
 |---|---|
-| CS1 honest odds + odds sheet | no new random rewards anywhere (inv. 7 trivially holds). The odds sheet also lists: first shell = choose 1 of 3 rares (CS6), mission tier rewards, "the Daily Jar is the same for everyone" and the P2-6 director sentence |
-| CS2 listing + privacy | **same release as Batch B**: PEGI 7 (play-by-appointment, positive), describe Daily Jar / Tide Pool / Daily Present, keep "no streaks, no timers, no energy, nothing expires" (all still true) |
+| CS1 honest odds + odds sheet | no new random rewards anywhere (inv. 7 trivially holds). The odds sheet (parent sheet) also lists: first shell = choose 1 of 3 rares (CS6), mission tier rewards (R10), the present schedule (R9), "the Daily Jar is the same for everyone" and the P2-6 director sentence |
+| CS2 listing + privacy | the baseline P1-2 fixes and privacy policy are due **before any public submission, Batch A included**. Batch B additions: see §7.4 (R18) |
 | CS3 near-miss same level | no trophy, mission or Journey condition uses near-miss events (no rewards for "almost") |
 | CS4 Home + stop moment | **is N9**; the Daily Jar result reuses it |
 | CS5 Shells / Gift! | the free buddy shell keeps "Gift!"; the daily lane is called **Present** and looks different, so there are not two "gifts" |
@@ -445,7 +453,7 @@ Rough daily value behind T8 (est., pe/day): casual play ≈187 + missions ≈33 
 | Journey | 1 610 over L1–100 | 100 | 41 cosmetics | – |
 | Missions | 20 / 30 / 40 | T3: 1 | – | trophy 32 only |
 | Daily Jar | – | 2 per date, first finish | – | – |
-| Tide Pool | ≤40 per 24 h | – | – | – |
+| Pearl Pool | ≤40 per 24 h | – | – | – |
 | Daily Present | 25 (4 of 5) | 1 (1 of 5) | 12 decorations | – |
 | Trophies | – | only the legacy 6 | 9 items | – |
 
@@ -457,6 +465,37 @@ Rules:
 5. **Absence value is capped**: pool = 1 day, presents = 7 days, archive rewards require playing a round per date.
 6. Every grant goes through one `grant(source, delta)` that also increments `debug.grants[source]`, so the playtest can measure T8–T11.
 7. After all 48 buddies: free shell → 10 sand (unchanged); Journey 100+N continues.
+
+
+### 7.3 Tests and audio rules for the lanes
+**Applied (R13), unit tests (game-programmer), required for every Batch B lane:**
+| Test | Assertion |
+|---|---|
+| Gap invariance (inv. 4) | a save that plays dates 1, 3, 5 and a save that plays dates 1–5 get the same reward per date and per present; nothing depends on consecutive dates |
+| No loss (inv. 1) | after 30 days away: pool = 40, present bank = 7, nothing earned is lower than before |
+| Clock backwards | pool, present and daily state gain nothing and lose nothing |
+| Blind randomness (inv. 6, CS7) | the Daily queue and the director output are identical for any save contents; the same holds for `systems/music.ts` (R14) |
+| Wording | a scan of `app/src/data` strings against the review §5 forbidden list (EN/SV), owned by ui-designer |
+
+**Applied (R14):** music reads only scene, director mode, danger and calm. It never reads economy, pending presents, pool level, pending shells, daily status, session length or records; menu music is identical whether or not something is waiting. A2 lifecycle (suspend on `visibilitychange` and Capacitor `pause`) ships **before** A7. No MediaSession, no foreground service, no new Android permission (CI gate: VIBRATE only). Calm mode plays the calm variant; Music off is always one tap in Settings (replaces the ambiguous DESIGN §21 wording).
+**Applied (R15):** see §3.9 (music settles at the stop moment).
+**Applied (R16):** the A4 audio test locks reveal equality: every `reveal.*` tier within +4 ±0.5 LU, max spread ≤1 LU between tiers, ≤5 % energy above 4 kHz; `shellOpen` and everything before the reveal identical for every shell; the mythic tail never lengthens the fixed 1.2 s ceremony or delays tap-to-skip; music duck −8 dB for every tier; calm variants keep the same equality.
+**Applied (R17):** return-lane sounds are never the loudest reward. Present unwrap, Pearl Pool collect and Daily stamp ≤ **T3**; Journey level-up, trophy and mission-complete ≤ **T4**; none reuses `reveal.*`, `jackpot`, `newSet` or a coin-like sound; all are registered in `VOICE_RULES` and the A4 loudness test. This also covers the §10 toast tone and sand-token tone.
+
+### 7.4 Store listing and rating answers for Batch B (applied R18)
+Ship **in the same release as Batch B** (inv. 10); owners producer, legal-reviewer, release-engineer; file answers and certificate in `docs/store/`.
+| Item | Content (EN / SV, legal-reviewed) |
+|---|---|
+| Age line | "7+. PEGI 7 expected: the game rewards coming back (a daily jar, a daily present and a pearl pool), and nothing is ever lost if you don't." / "7+. Väntat PEGI 7: spelet belönar att man kommer tillbaka (dagens burk, dagens paket och pärlpölen), och inget går förlorat om man inte gör det." Replaces "PEGI 3 / IARC 3+ expected" everywhere |
+| Remove | "No waiting timers" / "Ingen väntetid" (the pool fills over time). Use: "No countdowns and no energy: you can always play." / "Inga nedräkningar och ingen energi: du kan alltid spela." |
+| Keep | "No streaks: missing a day never costs anything. Nothing expires." / "Inga sviter: att hoppa över en dag kostar ingenting. Inget går ut." and the baseline shop sentence (earned currency only, no real money, no ads) |
+| Lanes, factual | "A new Daily Jar each day, the same for every player; past days stay playable." · "A small present each day; up to 7 are saved for you." · "The aquarium's pearl pool slowly gathers a few pearls over about a day, then simply stops." No "every day you come back…" framing. Journey only in lowercase description ("a long reward path that never resets"), legal §2.4 |
+| Wellbeing (after Batch A) | "After a longer session the game suggests a good place for a break." / "Efter en längre stund föreslår spelet ett bra ställe att ta paus." |
+| Privacy | "No accounts, no data collection, no network. Progress and dates are stored only on this device." Privacy policy URL in both stores |
+| Keywords, screenshots, What's new | no "daily reward", "free gift", "login bonus" or streak terms; no screenshot whose hero is the present pile, the Daily dot or a full calendar; "What's new" descriptive ("New: the Aquarium, a Daily Jar and a daily present.") |
+| IARC | play-by-appointment **Yes**; penalties for not returning **No**; real-money purchases **No**; limited offers **No**; paid random items **No**; random items with earned currency **Yes** (buddy shells: exhaustible, no duplicates, odds shown); simulated gambling, interaction, chat, sharing, location, UGC, ads **No**. Expected PEGI 7. **PEGI 12/16 → stop the release and escalate, never tune answers**; PEGI 16 triggers `SHOP.mode = 'pick3'` |
+| App Store | Loot Boxes **No** (nothing purchasable; legal confirms before submission; a Yes would mean switching to `pick3` rather than an 18+ Brazil rating); Simulated Gambling None; Advertising, Chat, UGC, Web, Age Assurance, In-App Controls No/None; Contests: legal to confirm (personal best only, no leaderboards) |
+| Play Families / Data safety | unchanged: "No data collected, no data shared"; CI permission gate still VIBRATE only after Batch B and the audio batch |
 
 ---
 
@@ -471,7 +510,8 @@ export const DAILY = { unlockLevel: 5, epoch: '2026-01-01', seedPrefix: 'klunk-d
   pacing: 'off', pausedAbilities: ['magnetPull', 'startRainbow', 'breath', 'noBounceStart', 'queenRound.specials'],
   reward: { sand: 2 }, archive: 'sinceUnlock' } as const;
 // pool.ts
-export const POOL = { unlockLevel: 3, cap: 40, fillMs: 24 * 3600e3, glimmerPer: 5, maxGlimmers: 8, flyMs: 800 } as const;
+export const POOL = { // Pearl Pool (legal LG9)
+  unlockLevel: 3, cap: 40, fillMs: 24 * 3600e3, glimmerPer: 5, maxGlimmers: 8, flyMs: 800 } as const;
 // present.ts
 export const PRESENT = { unlockLevel: 4, bankMax: 7, startBanked: 1,
   cycle: [{ pearls: 25 }, { pearls: 25 }, { sand: 1 }, { pearls: 25 }, { pearls: 25, item: 'next' }],
@@ -504,7 +544,7 @@ export const WELLBEING = { stopAfterMs: 20 * 60e3, stopAfterRounds: 6, sessionGa
   replayPulseCycles: 3 } as const;
 // economy.ts (change): free.at [120, 400] -> [90, 400]  (proposed, pending sim)
 ```
-New loops to register in `JUICE.pulseHalfCycleMs` (inv. 8): swimmer bob, pool nap bob, present wobble (≤3), Daily badge (static, none), trophy shine (once).
+New loops to register in `JUICE.pulseHalfCycleMs` (inv. 8): swimmer bob, pool nap bob, present wobble (session start only, R8), Daily badge (static, none), trophy shine (once). `daily` save gains `seenOn: string | null` (R1: date the Daily sheet was last opened).
 
 ### 8.2 Save file: `schema 3`, **migrated from 2 (no wipe)**
 ```ts
@@ -512,7 +552,7 @@ journey:   { xp: number; level: number; rewardedTo: number }
 missions:  { active: { id: string; param: string | null; progress: number }[]; seed: number; cursor: number; done: number; introShown: boolean }
 trophies:  { earned: Record<string, number /* epoch ms */>; fresh: string[] }
 mastery:   Record<string /* setId */, [boolean, boolean, boolean]>
-daily:     { unlockedOn: string | null; days: Record<string /* YYYY-MM-DD */, { best: number; first: number }> }
+daily:     { unlockedOn: string | null; seenOn: string | null; days: Record<string /* YYYY-MM-DD */, { best: number; first: number }> }
 pool:      { stored: number; since: number /* epoch ms */ }
 present:   { lastDay: string | null; banked: number; opened: number }
 aquarium:  { items: string[]; placed: Record<string, string | null>; backdrop: string | null; swimmers: string[] | null /* 'set:level:n|s' */; fresh: string[] }
@@ -524,8 +564,21 @@ Migration 2 → 3: Journey starts at xp 0 (no retroactive currency, as §16.2). 
 
 ---
 
-## 9. Legal note
-Every new player-facing name in this file ([LP]: lane names, trophy names, mission texts, Journey rewards, Aquarium items, jar skins, stage styles, stop-moment copy) is **pending legal review** (TEAM rule 3). The names are deliberately generic and descriptive. SV names for the 20 small decorations and the 12 present items are to be written by ui-designer with legal. "Klunk" in "Double Klunk" is our app name and follows the app-name trademark search.
+## 9. Legal note (review `legal/ip-review-2026-09-26-retention.md` applied)
+All [LP] names were reviewed: no HIGH, everything LOW except the items fixed below. Registry searches were not reachable, so the conclusions are provisional; §7 of the legal review lists what a lawyer confirms before the Batch B store release.
+
+| Change | Status |
+|---|---|
+| "Tide Pool / Tidvattenpölen" → **Pearl Pool / Pärlpölen** everywhere (LG9) | applied |
+| Journey: **never "Journey Pass"**, "Season Journey" or any premium/seasonal framing; never "Journey" as a feature brand in store title, subtitle, keywords, icon or captions (lowercase description only); no visual nods to *Journey* (2012) (robed figure, scarf, dunes, glyphs); never call the track a "Trophy Road". Fallback name if ever needed: Pearl Path / Pärlstigen | applied (guards) |
+| Canonical buddy and set names (LG3), used by the `{set}` / `{buddy}` mission placeholders: **Captain Anchor / Kapten Ankare** (pirate buddy), **The Snowglows / Isbitarna** (ice set, was The Frosties), **Vera the Seer / Spådamen Vera** (id `vera`, was Siri; never a voice assistant: no "Hey/Ask Vera", no speech bubbles), **Figgy the Frog** (SV Grodan Gurra). Missions ship only after LG3 lands | applied |
+| Trophy 5 SV "Full fart" → **Full rulle**; trophy 23 SV "Dagens burk" → **Burken är klar** (was identical to the lane name) | applied |
+| Trophies: never bronze/silver/gold/platinum cup tiers, never a "Platinum" trophy | applied (guard) |
+| Stop copy: never "Have a break" in-game or in marketing | applied (guard) |
+| Art guards for art-director: Scallop Shell / Hello Shell / Shell Stage never a flat front-facing yellow-red scallop; Sea Sponge never a yellow rectangle with a face; Toy Submarine never all-yellow; starfish never pink; Beach Ball never Poké Ball-split; Frost Cave not the *Frozen* look; Golden Glimmer Statue a Glimmer on a rock, not an Oscar-like figure; Golden Book Stand without Little Golden Books foil trade dress; Set trophies never as three shape-cards; Vattenfall trophy never in the energy company's logo look | forwarded |
+| SV names for the 32 decorations: legal's proposal adopted in §3.8; the final list goes back to legal for a quick check | applied |
+
+New player-facing strings follow the child-safety review §5 wording rules (forbidden EN/SV list, exclamation only for earned things, no day counts, one gift word per concept). "Klunk" in "Double Klunk" follows the app-name clearance (LG8).
 
 ---
 
@@ -548,7 +601,7 @@ Applies to all lanes. **This section overrides** the round-end details in §3 (J
 | Journey XP | **nothing** (1 XP = 1 merge, the same count as the pearls, so a second token would only add noise) | – | XP bar fill in row R4 |
 | Journey level-up | toast chip: level badge + "Level 7" / "Nivå 7" | toast rules | the level's reward (row R4) |
 | Mission progress | nothing | – | progress chips in row R5 (only if changed) |
-| Mission completed | toast chip: deed text ("Chain of 4!"), closed-gift icon | toast rules | the gift opens and its reward flies (R5) |
+| Mission completed | toast chip: deed text ("Chain of 4!"), filled goal ring (applied R10) | toast rules | its reward flies (row R5) |
 | Trophy unlocked | toast chip: trophy icon + name. For a hidden trophy: gold border, name shown | toast rules | R6 |
 | Mastery star | toast chip: star + set icon | toast rules | R6 + cosmetic |
 | Free shell earned, new set unlocked | **nothing in-round** (a shell mid-round pulls attention to spending) | – | R3 / R2 ceremony |
@@ -565,7 +618,7 @@ Applies to all lanes. **This section overrides** the round-end details in §3 (J
 |---|---|
 | Pearl token | 10 → 8 px, quadratic bezier 420 ms Sine.easeInOut, **no trail, no sound** (the merge sound already speaks). On arrival: pouch icon scale punch 1.15 (120 ms) |
 | Sand token | 12 px, 520 ms. On arrival: punch 1.25 + a soft `tallySand` tone at gain ×0.6 |
-| Toast | slide up 12 px + fade in 180 ms, hold 1 600 ms, fade out 240 ms. A soft `toast` tone (≤ merge gain), no haptics. **At most 1 visible, at least 3 s between toasts, queue of 2**; any overflow goes to the summary only. Priority: hidden trophy > mission > level-up > mastery star > trophy |
+| Toast | slide up 12 px + fade in 180 ms, hold 1 600 ms, fade out 240 ms. A soft `toast` tone (≤ merge gain, tier ≤ T4, R17), no haptics. **At most 1 visible, at least 3 s between toasts, queue of 2**; any overflow goes to the summary only. Priority: hidden trophy > mission > level-up > mastery star > trophy |
 | Quiet times | no new toast during danger/slow-mo or hit-stop, or within 1 s after them. Tokens follow the game's time scale |
 | Calm mode | pearl tokens off (the pouch number just updates with a 120 ms fade), sand tokens without punch, toasts fade only (no slide) |
 | Flash guard | tokens and toasts change scale and alpha only, never brightness. Pouch punches ≤2/s (<3 changes/s). Nothing loops |
@@ -582,15 +635,15 @@ Applies to all lanes. **This section overrides** the round-end details in §3 (J
 | Row | Group | Shown when | Content | Animation (ms) |
 |---|---|---|---|---|
 | R0 | **Result** | always | score (large), record chip: crown + best, and the record buddy. New record: static gold ring + "New record!" / "Nytt rekord!". Best piece this round (small) | static at t = 0 (existing loss screen) |
-| R0d | **Daily Jar** (Daily only) | Daily round | stamp into the day cell icon, "Best today", "+2 sand" on the first finish | 140 pop + 500 stamp |
-| R1 | **Pearls and sand** | ≥1 merge | "+N" pearls counts up (existing tally sound: ≤12 ticks, ≥45 ms apart), sand +120 ms later. Later rows fly their currency into this row, which bumps it. Final value = **everything credited this round** (merges + missions + Journey + legacy sand + Daily), exactly what the Start pills gain. The affordHint follows CS5/P2-2 (neutral sound, full ring) | 140 + 500 |
+| R0d | **Daily Jar** (Daily only) | Daily round | stamp into the day cell icon (identical for archive dates, R3), "Best today", "+2 sand" on the first finish, guest-set catches as silhouettes with a "saved" book icon | 140 pop + 500 stamp |
+| R1 | **Pearls and sand** | ≥1 merge | "+N" pearls counts up (the redesigned soft tally: ≤6 ticks, AUDIO; tier ≤ T3, R17), sand +120 ms later. Later rows fly their currency into this row, which bumps it. Final value = **everything credited this round** (merges + missions + Journey + legacy sand + Daily), exactly what the Start pills gain. The affordHint follows CS5/P2-2 (neutral sound, full ring) | 140 + 500 |
 | R2 | **Glimmers and sets** | ≥1 catch, or the set bar moved | the existing flyers from the HUD chain into a Book icon (max 6, shiny with glitter, rest as a pile), meter x/21, set bar "412 / 600 to next set". **New set:** the existing ceremony (icon, 3 rings, jackpot 0.9 without shake, zoom or hit-stop; calm mode: 1 ring), then it settles into the row as a set chip | 140 + (n−1)·140 + 380 + 80 + 300 bar; new set +900 |
 | R3 | **Buddies** | ≥1 free shell earned | shell icon(s), stacked 2–3, no number, sub-label "Gift!" (CS5). The buddy is **not** revealed here: opening stays on Start (Shells card badge; CS6 choose 1 of 3 for the first) | 140 + 200 |
 | R4 | **Journey** | ≥1 merge | level badge + XP bar filling by +N. Per level-up: badge pop + the reward icon. Pearls/sand fly to R1, items show with a "new" tag, and **feature unlocks** (Missions, Aquarium, Present, Daily Jar) show their icon + "New: Aquarium" / "Nytt: Akvarium". Max 2 level-ups animated, more shown static | 140 + 400 + 360 per level-up (feature unlock 600, never compressed below 0.75×) |
-| R5 | **Missions** | ≥1 completed, or progress changed | per completed (max 3): deed chip ("Chain of 4!"), the gift opens and its reward flies to R1. Then static progress chips "2/3" for missions that moved. The next missions are **not** shown here (Journey sheet) | 140 + 500 per completion |
+| R5 | **Missions** | ≥1 completed, or progress changed | per completed (max 3): deed chip ("Chain of 4!") with its goal ring filling (R10), then its reward flies to R1. Then static progress chips "2/3" for missions that moved. The next missions are **not** shown here (Journey sheet) | 140 + 500 per completion |
 | R6 | **Trophies and mastery** | ≥1 trophy or star | trophy icons (hidden ones with a gold border), mastery stars with the set icon. Legacy sand flies to R1, items get a "new" tag. Max 4 animated, rest static | 140 + 160 per icon |
 | R7 | **Stop moment** (N9/CS4) | trigger per §3.9, once per session | the buddy (or a Glimmer) yawns/waves + "Nice run! Good place for a break." Appears **last**, after every earned item, never followed by a reward | 300 fade |
-| – | **Buttons** | always, active from t = 0 | **Home** (`card`, 96×64, label "Home"/"Hem") + **Replay** (`primary`, 216×64). At the stop moment: both 164×64. Daily Jar: **Home · Calendar · Try again**, 104×64 each. Replay pulses 3 cycles, then rests (CS4). Hit areas +8 px; the rest of the screen = Replay | – |
+| – | **Buttons** | always, active from t = 0 | **Home** (`card`, 96×64, label "Home"/"Hem") + **Replay** (`primary`, 216×64). At the stop moment: both 164×64. Daily Jar: **Home · Calendar · Play again**, 104×64 each, equal weight (applied R4). Replay pulses 3 cycles, then rests (CS4). Hit areas +8 px; the rest of the screen = Replay | – |
 
 - **Hide empty groups:** a row that has nothing new is not drawn (no zeroes, no "0 trophies"). Rows close up from the top, so a quiet round shows R0 + R1 + R4 + the buttons.
 - **No "almost" framing:** no "N more to…", no teasing of the next reward, no pulse after settling (apart from the 3 replay cycles). The Journey bar shows progress because it *is* a bar, with no text.
@@ -604,7 +657,7 @@ Applies to all lanes. **This section overrides** the round-end details in §3 (J
 | Quiet round (R1 + R4) | ≈1.1 s |
 | **Typical** (3 catches, XP, 1 mission) | **≈2.5 s** (same as today) |
 | Planned > 3.5 s | all durations × max(0.5, 3.5 / planned). Rows that would still start after 3.0 s pop in **statically** together at 3.0 s. **Hard cap 3.5 s**, then everything is static until tap |
-| Sounds | at most one row sound per 120 ms. Only new record and new set have fanfares (existing) |
+| Sounds | at most one row sound per 120 ms. Only new record and new set have fanfares (existing). Level-up, trophy and mission sounds ≤ T4, daily stamp ≤ T3 (applied R17) |
 | Calm mode | 1 ring, flyers max 3, a single tally tone instead of ticks, haptics 10 ms |
 
 **Skipping (tap/Home before the end) → fresh markers:** catches, sets, trophies and mastery stars → Book badge + per-item `fresh`. Free shell → Shells card badge (existing). Journey rewards and level-ups → a static dot on the Journey bar until the sheet is opened (`journey.fresh`). Completed missions → the Journey sheet shows them ticked once (`missions.freshDone`). New Aquarium items → Aquarium card badge (existing `aquarium.fresh`).
