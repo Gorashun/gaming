@@ -1,0 +1,30 @@
+[
+ {
+  "id": "smith",
+  "name": "Smith",
+  "max_level": 50,
+  "unlock_act": "act1",
+  "desc": "Salvage gear, kindle affixes, forge weapons and armour."
+ },
+ {
+  "id": "alchemist",
+  "name": "Alchemist",
+  "max_level": 50,
+  "unlock_act": "act2",
+  "desc": "Potions, elixirs and material transmutation."
+ },
+ {
+  "id": "jeweler",
+  "name": "Jeweler",
+  "max_level": 50,
+  "unlock_act": "act3",
+  "desc": "Gems, sockets, rings and amulets."
+ },
+ {
+  "id": "runecarver",
+  "name": "Runecarver",
+  "max_level": 50,
+  "unlock_act": "act4",
+  "desc": "Runes that reroll and empower affixes."
+ }
+]

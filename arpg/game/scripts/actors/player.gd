@@ -4,21 +4,21 @@ extends Actor
 ## (touch, keyboard, bot, network).
 
 var ch: CharacterData
-var resource := 0.0
-var cooldowns := {}               # skill_id -> ready_time
-var intent_move := Vector3.ZERO
-var intent_cast := []             # queue of {skill, pos}
-var auto_attack := false
-var _regen_acc := 0.0
-var potion_ready_at := 0.0
-var invuln_until := 0.0
-var basic_skill := ""
-var _step_timer := 0.0
+var resource = 0.0
+var cooldowns = {}               # skill_id -> ready_time
+var intent_move = Vector3.ZERO
+var intent_cast = []             # queue of {skill, pos}
+var auto_attack = false
+var _regen_acc = 0.0
+var potion_ready_at = 0.0
+var invuln_until = 0.0
+var basic_skill = ""
+var _step_timer = 0.0
 
 func setup(c: CharacterData) -> void:
 	ch = c
 	faction = "player"
-	var cls := ch.cls()
+	var cls = ch.cls()
 	display_name = ch.name
 	radius = 0.45
 	setup_model(cls.get("model", "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb"), 1.0, Color(1, 1, 1, 1), Color(cls.get("rim", "#ffd9a0")))
@@ -32,7 +32,7 @@ func setup(c: CharacterData) -> void:
 	collision_layer = 4
 	collision_mask = 1
 	# Hero light: the "last flame" — keeps the hero readable in dark zones.
-	var l := OmniLight3D.new()
+	var l = OmniLight3D.new()
 	l.light_color = Color(1.0, 0.78, 0.5)
 	l.light_energy = 1.6
 	l.omni_range = 9.0
@@ -45,7 +45,7 @@ func sync_from_character() -> void:
 	ch.recalc()
 	stats = ch.stats
 	level = ch.level
-	var ratio := life / max_life if max_life > 0 else 1.0
+	var ratio = life / max_life if max_life > 0 else 1.0
 	max_life = ch.max_life()
 	life = clampf(max_life * ratio, 1.0, max_life)
 	move_speed = 5.2
@@ -53,7 +53,7 @@ func sync_from_character() -> void:
 	Events.resource_changed.emit(resource, ch.max_resource())
 
 func on_buff_changed() -> void:
-	var ml := ch.max_life()
+	var ml = ch.max_life()
 	max_life = ml
 	Events.health_changed.emit(life, max_life)
 
@@ -61,10 +61,10 @@ func _physics_process(delta: float) -> void:
 	if not alive:
 		return
 	_regen(delta)
-	var v := Vector3.ZERO
+	var v = Vector3.ZERO
 	if can_act() and not anim_locked():
 		v = intent_move * move_speed * speed_mult()
-	var kb := _integrate_knockback(delta)
+	var kb = _integrate_knockback(delta)
 	velocity = v + kb
 	move_and_slide()
 	global_position.y = 0.0
@@ -87,14 +87,14 @@ func _regen(delta: float) -> void:
 	_regen_acc += delta
 	if _regen_acc < 0.25:
 		return
-	var dt := _regen_acc
+	var dt = _regen_acc
 	_regen_acc = 0.0
-	var cls := ch.cls()
-	var rmax := ch.max_resource()
-	var regen := float(cls.get("resource_regen", 0.0)) + stats.get_stat("resource_regen")
-	var decay := float(cls.get("resource_decay", 0.0))
+	var cls = ch.cls()
+	var rmax = ch.max_resource()
+	var regen = float(cls.get("resource_regen", 0.0)) + stats.get_stat("resource_regen")
+	var decay = float(cls.get("resource_decay", 0.0))
 	resource = clampf(resource + (regen - decay) * dt, 0.0, rmax)
-	var lr := stats.get_stat("life_regen") + max_life * 0.004
+	var lr = stats.get_stat("life_regen") + max_life * 0.004
 	if life < max_life:
 		life = min(max_life, life + lr * dt)
 		Events.health_changed.emit(life, max_life)
@@ -122,7 +122,7 @@ func request_cast(skill_id: String, pos: Vector3) -> void:
 		intent_cast.append({"skill": skill_id, "pos": pos})
 
 func can_cast(skill_id: String) -> bool:
-	var s := Content.get_rec("skills", skill_id)
+	var s = Content.get_rec("skills", skill_id)
 	if s.is_empty() or skill_rank(skill_id) <= 0:
 		return false
 	if cooldown_left(skill_id) > 0.0:
@@ -133,7 +133,7 @@ func _process_casts() -> void:
 	if intent_cast.is_empty() or not can_act() or anim_locked():
 		return
 	var req = intent_cast.pop_front()
-	var s := Content.get_rec("skills", req.skill)
+	var s = Content.get_rec("skills", req.skill)
 	if not can_cast(req.skill):
 		if resource < float(s.get("cost", 0.0)):
 			Events.toast.emit("Not enough " + str(ch.cls().get("resource_name", "power")), Color(0.6, 0.7, 1.0))
@@ -151,16 +151,16 @@ func _process_casts() -> void:
 	Events.resource_changed.emit(resource, ch.max_resource())
 	cooldowns[req.skill] = time_now() + cooldown_total(s)
 	face_towards(pos)
-	var aps := float(ch.weapon().get("aps", 1.2)) * (1.0 + stats.get_stat("attack_speed_pct") / 100.0)
-	var speed := clampf(aps / 1.2, 0.6, 2.2) if req.skill == basic_skill else 1.0 + stats.get_stat("cast_speed_pct") / 100.0
-	var lock := float(s.get("lock", 0.35)) / speed
+	var aps = float(ch.weapon().get("aps", 1.2)) * (1.0 + stats.get_stat("attack_speed_pct") / 100.0)
+	var speed = clampf(aps / 1.2, 0.6, 2.2) if req.skill == basic_skill else 1.0 + stats.get_stat("cast_speed_pct") / 100.0
+	var lock = float(s.get("lock", 0.35)) / speed
 	var anims = s.get("anim", "1H_Melee_Attack_Chop")
 	if anims is Array:
 		anims = anims[randi() % anims.size()]
 	play(str(anims), lock, float(s.get("anim_speed", 1.3)) * speed, true)
 	Sfx.play(s.get("sfx", "swing"), -4.0)
 	Events.skill_cast.emit(req.skill)
-	var windup := float(s.get("windup", 0.12)) / speed
+	var windup = float(s.get("windup", 0.12)) / speed
 	get_tree().create_timer(windup, false).timeout.connect(func():
 		if is_instance_valid(self) and alive:
 			SkillEffects.execute(self, s, skill_rank(req.skill), pos))

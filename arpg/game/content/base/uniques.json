@@ -1,0 +1,50 @@
+[
+ {
+  "id": "u_bellringers_toll",
+  "name": "The Bellringer's Toll",
+  "base": "great_axe_t_12",
+  "flavor": "It still rings, faintly, when no one is listening.",
+  "stats": [
+   {
+    "stat": "might",
+    "min": 10,
+    "max": 18
+   },
+   {
+    "stat": "area_pct",
+    "min": 15,
+    "max": 25
+   },
+   {
+    "stat": "damage_pct",
+    "min": 20,
+    "max": 30
+   }
+  ],
+  "power": "p_giant"
+ },
+ {
+  "id": "u_drowned_lantern",
+  "name": "Drowned Lantern",
+  "base": "amulet_12",
+  "flavor": "Wet, cold, and somehow still burning.",
+  "stats": [
+   {
+    "stat": "life",
+    "min": 60,
+    "max": 90
+   },
+   {
+    "stat": "resist_all",
+    "min": 8,
+    "max": 12
+   },
+   {
+    "stat": "magic_find",
+    "min": 15,
+    "max": 25
+   }
+  ],
+  "power": "p_vamp"
+ }
+]

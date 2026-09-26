@@ -1,0 +1,186 @@
+[
+ {
+  "id": "might",
+  "format": "+{v} Might"
+ },
+ {
+  "id": "agility",
+  "format": "+{v} Agility"
+ },
+ {
+  "id": "wisdom",
+  "format": "+{v} Wisdom"
+ },
+ {
+  "id": "vitality",
+  "format": "+{v} Vitality"
+ },
+ {
+  "id": "life",
+  "format": "+{v} Life"
+ },
+ {
+  "id": "life_pct",
+  "format": "+{v}% Life"
+ },
+ {
+  "id": "life_regen",
+  "format": "+{v} Life per second"
+ },
+ {
+  "id": "life_on_hit",
+  "format": "+{v} Life on hit"
+ },
+ {
+  "id": "armor",
+  "format": "+{v} Armor"
+ },
+ {
+  "id": "armor_pct",
+  "format": "+{v}% Armor"
+ },
+ {
+  "id": "resist_all",
+  "format": "+{v}% All resistances"
+ },
+ {
+  "id": "resist_fire",
+  "format": "+{v}% Fire resistance"
+ },
+ {
+  "id": "resist_cold",
+  "format": "+{v}% Cold resistance"
+ },
+ {
+  "id": "resist_lightning",
+  "format": "+{v}% Lightning resistance"
+ },
+ {
+  "id": "resist_shadow",
+  "format": "+{v}% Shadow resistance"
+ },
+ {
+  "id": "damage",
+  "format": "+{v} Damage"
+ },
+ {
+  "id": "damage_pct",
+  "format": "+{v}% Damage"
+ },
+ {
+  "id": "attack_speed_pct",
+  "format": "+{v}% Attack speed"
+ },
+ {
+  "id": "cast_speed_pct",
+  "format": "+{v}% Cast speed"
+ },
+ {
+  "id": "crit_chance",
+  "format": "+{v}% Critical chance"
+ },
+ {
+  "id": "crit_damage",
+  "format": "+{v}% Critical damage"
+ },
+ {
+  "id": "fire_pct",
+  "format": "+{v}% Fire damage"
+ },
+ {
+  "id": "cold_pct",
+  "format": "+{v}% Cold damage"
+ },
+ {
+  "id": "lightning_pct",
+  "format": "+{v}% Lightning damage"
+ },
+ {
+  "id": "shadow_pct",
+  "format": "+{v}% Shadow damage"
+ },
+ {
+  "id": "holy_pct",
+  "format": "+{v}% Holy damage"
+ },
+ {
+  "id": "physical_pct",
+  "format": "+{v}% Physical damage"
+ },
+ {
+  "id": "melee_damage_pct",
+  "format": "+{v}% Melee damage"
+ },
+ {
+  "id": "projectile_damage_pct",
+  "format": "+{v}% Projectile damage"
+ },
+ {
+  "id": "area_damage_pct",
+  "format": "+{v}% Area damage"
+ },
+ {
+  "id": "minion_damage_pct",
+  "format": "+{v}% Minion damage"
+ },
+ {
+  "id": "move_speed_pct",
+  "format": "+{v}% Movement speed"
+ },
+ {
+  "id": "resource_max",
+  "format": "+{v} Maximum resource"
+ },
+ {
+  "id": "resource_regen",
+  "format": "+{v} Resource per second"
+ },
+ {
+  "id": "cdr_pct",
+  "format": "{v}% Cooldown reduction"
+ },
+ {
+  "id": "area_pct",
+  "format": "+{v}% Area of effect"
+ },
+ {
+  "id": "magic_find",
+  "format": "+{v}% Magic find"
+ },
+ {
+  "id": "gold_find",
+  "format": "+{v}% Gold find"
+ },
+ {
+  "id": "xp_pct",
+  "format": "+{v}% Experience"
+ },
+ {
+  "id": "thorns",
+  "format": "+{v} Thorns"
+ },
+ {
+  "id": "dodge",
+  "format": "+{v}% Dodge"
+ },
+ {
+  "id": "block",
+  "format": "+{v}% Block chance"
+ },
+ {
+  "id": "damage_reduction",
+  "format": "{v}% Damage reduction"
+ },
+ {
+  "id": "projectiles",
+  "format": "+{v} Projectiles"
+ },
+ {
+  "id": "pierce",
+  "format": "+{v} Pierce"
+ },
+ {
+  "id": "summon_count",
+  "format": "+{v} Minions"
+ }
+]

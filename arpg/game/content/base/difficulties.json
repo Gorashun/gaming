@@ -1,0 +1,144 @@
+[
+ {
+  "id": "twilight",
+  "name": "Twilight",
+  "order": 1,
+  "level_band": [
+   1,
+   60
+  ],
+  "life_mult": 1.0,
+  "damage_mult": 1.0,
+  "resist_penalty": 0,
+  "xp_mult": 1.0,
+  "magic_find": 0,
+  "gold_mult": 1.0,
+  "min_telegraph": 1.0,
+  "rarity_bonus": {
+   "mythic": 0
+  },
+  "desc": "The story begins. Gentle but spooky."
+ },
+ {
+  "id": "nightfall",
+  "name": "Nightfall",
+  "order": 2,
+  "unlock": "twilight",
+  "level_band": [
+   30,
+   80
+  ],
+  "level_offset": 30,
+  "life_mult": 2.2,
+  "damage_mult": 1.8,
+  "resist_penalty": 20,
+  "xp_mult": 1.6,
+  "magic_find": 40,
+  "gold_mult": 1.5,
+  "elite_mult": 1.3,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 1.5,
+   "legendary": 2.0
+  },
+  "desc": "Monsters grow bolder. Better loot."
+ },
+ {
+  "id": "abyss",
+  "name": "Abyss",
+  "order": 3,
+  "unlock": "nightfall",
+  "level_band": [
+   60,
+   110
+  ],
+  "level_offset": 60,
+  "life_mult": 4.5,
+  "damage_mult": 3.0,
+  "resist_penalty": 45,
+  "xp_mult": 2.4,
+  "magic_find": 90,
+  "gold_mult": 2.2,
+  "elite_mult": 1.6,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 2.0,
+   "legendary": 3.0,
+   "mythic": 1.0
+  },
+  "desc": "Only the brave. Mythics stir in the dark."
+ },
+ {
+  "id": "eclipse1",
+  "name": "Eclipse I",
+  "order": 4,
+  "unlock": "abyss",
+  "level_band": [
+   100,
+   200
+  ],
+  "level_offset": 100,
+  "life_mult": 7,
+  "damage_mult": 4.5,
+  "resist_penalty": 60,
+  "xp_mult": 3.2,
+  "magic_find": 150,
+  "gold_mult": 3.0,
+  "elite_mult": 1.8,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 2.5,
+   "legendary": 4.0,
+   "mythic": 2.0
+  },
+  "desc": "The endgame begins."
+ },
+ {
+  "id": "eclipse2",
+  "name": "Eclipse II",
+  "order": 5,
+  "unlock": "eclipse1",
+  "level_band": [
+   120,
+   200
+  ],
+  "level_offset": 120,
+  "life_mult": 11,
+  "damage_mult": 6.5,
+  "resist_penalty": 60,
+  "xp_mult": 4.0,
+  "magic_find": 210,
+  "gold_mult": 3.6,
+  "elite_mult": 2.0,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 3.0,
+   "legendary": 5.0,
+   "mythic": 3.0
+  }
+ },
+ {
+  "id": "eclipse3",
+  "name": "Eclipse III",
+  "order": 6,
+  "unlock": "eclipse2",
+  "level_band": [
+   140,
+   200
+  ],
+  "level_offset": 140,
+  "life_mult": 17,
+  "damage_mult": 9,
+  "resist_penalty": 60,
+  "xp_mult": 5.0,
+  "magic_find": 280,
+  "gold_mult": 4.2,
+  "elite_mult": 2.2,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 3.5,
+   "legendary": 6.0,
+   "mythic": 4.0
+  }
+ }
+]

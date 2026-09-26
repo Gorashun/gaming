@@ -4,55 +4,58 @@ extends RefCounted
 
 const SAVE_VERSION := 1
 
-var id := ""
-var name := "Hero"
-var class_id := "lanternbearer"
-var hardcore := false
-var dead := false
-var level := 1
-var xp := 0
-var gold := 0
-var skill_points := 0
-var star_points := 0
-var skill_ranks := {}        # skill_id -> rank
-var passive_ranks := {}      # passive_id -> rank
-var stars := []              # starmap node ids
-var pact := ""
-var equipment := {}          # slot -> item
-var inventory := []          # Array of items (null allowed = empty)
-var stash := []
-var materials := {}          # material_id -> count
-var professions := {}        # profession_id -> {level, xp}
-var recipes_known := []
-var discoveries := []        # cauldron discoveries / secrets found
-var skill_bar := ["", "", "", ""]
-var potions := 3
-var difficulty := "twilight"
-var unlocked_tiers := ["twilight"]
-var progress := {}           # tier -> {act_id: {zones_cleared:[], boss:bool}}
-var current_act := "act1"
-var waypoints := []
-var pity := {}
-var play_seconds := 0.0
-var rested_xp := 0.0
-var last_played_unix := 0
-var created_unix := 0
-var stats_tracking := {}     # kills, deaths, legendaries found, etc.
+var id = ""
+var name = "Hero"
+var class_id = "lanternbearer"
+var hardcore = false
+var dead = false
+var level = 1
+var xp = 0
+var gold = 0
+var skill_points = 0
+var star_points = 0
+var skill_ranks = {}        # skill_id -> rank
+var passive_ranks = {}      # passive_id -> rank
+var stars = []              # starmap node ids
+var pact = ""
+var equipment = {}          # slot -> item
+var inventory = []          # Array of items (null allowed = empty)
+var stash = []
+var materials = {}          # material_id -> count
+var professions = {}        # profession_id -> {level, xp}
+var recipes_known = []
+var discoveries = []        # cauldron discoveries / secrets found
+var skill_bar = ["", "", "", ""]
+var potions = 3
+var difficulty = "twilight"
+var unlocked_tiers = ["twilight"]
+var progress = {}           # tier -> {act_id: {zones_cleared:[], boss:bool}}
+var current_act = "act1"
+var waypoints = []
+var pity = {}
+var play_seconds = 0.0
+var rested_xp = 0.0
+var last_played_unix = 0
+var created_unix = 0
+var stats_tracking = {}     # kills, deaths, legendaries found, etc.
 
-var stats := StatBlock.new()
+var stats = StatBlock.new()
 
 func _init() -> void:
 	inventory.resize(40)
+
+func current_act_town() -> String:
+	return Content.get_rec("acts", current_act).get("town", "a1_town")
 
 func cls() -> Dictionary:
 	return Content.get_rec("classes", class_id)
 
 ## Rebuild all stat sources from class, level, gear, skills, stars, pact.
 func recalc() -> void:
-	var c := cls()
+	var c = cls()
 	var base: Dictionary = c.get("base_stats", {}).duplicate()
 	stats.set_source("class", base)
-	var lvl := {}
+	var lvl = {}
 	for k in c.get("per_level", {}):
 		lvl[k] = float(c.per_level[k]) * (level - 1)
 	stats.set_source("level", lvl)
@@ -63,19 +66,19 @@ func recalc() -> void:
 			stats.set_source("gear:" + slot, Items.item_stats(it))
 	stats.clear_prefix("passive:")
 	for pid in passive_ranks:
-		var p := Content.get_rec("passives", pid)
-		var s := {}
+		var p = Content.get_rec("passives", pid)
+		var s = {}
 		for k in p.get("stats", {}):
 			s[k] = float(p.stats[k]) * int(passive_ranks[pid])
 		stats.set_source("passive:" + pid, s)
 	stats.clear_prefix("star:")
 	for sid in stars:
-		var node := Content.get_rec("starmap", sid)
+		var node = Content.get_rec("starmap", sid)
 		stats.set_source("star:" + sid, node.get("stats", {}))
 	# Completed constellations
 	stats.clear_prefix("constellation:")
 	for cons in Content.all("starmap").filter(func(n): return n.get("kind", "") == "constellation"):
-		var all_owned := true
+		var all_owned = true
 		for nid in cons.get("nodes", []):
 			if not stars.has(nid):
 				all_owned = false
@@ -85,9 +88,9 @@ func recalc() -> void:
 		stats.set_source("pact", Content.get_rec("passives", pact).get("stats", {}))
 	# Primary attribute conversions
 	var conv: Dictionary = Content.get_rec("config", "attributes").get("conversions", {})
-	var derived := {}
+	var derived = {}
 	for attr in conv:
-		var amount := stats.total(attr)
+		var amount = stats.total(attr)
 		for k in conv[attr]:
 			derived[k] = float(derived.get(k, 0.0)) + amount * float(conv[attr][k])
 	stats.set_source("derived", derived)
@@ -104,7 +107,7 @@ func weapon() -> Dictionary:
 
 func add_xp(amount: int) -> int:
 	## returns number of levels gained
-	var gained := 0
+	var gained = 0
 	if rested_xp > 0:
 		var bonus: float = min(rested_xp, float(amount))
 		rested_xp -= bonus
@@ -130,7 +133,7 @@ func first_free_slot() -> int:
 	return -1
 
 func add_item(item: Dictionary) -> bool:
-	var i := first_free_slot()
+	var i = first_free_slot()
 	if i < 0:
 		return false
 	inventory[i] = item
@@ -166,7 +169,7 @@ func to_dict() -> Dictionary:
 	}
 
 static func from_dict(d: Dictionary) -> CharacterData:
-	var c := CharacterData.new()
+	var c = CharacterData.new()
 	d = migrate(d)
 	for k in d:
 		if k == "save_version":
@@ -182,7 +185,7 @@ static func from_dict(d: Dictionary) -> CharacterData:
 	return c
 
 static func migrate(d: Dictionary) -> Dictionary:
-	var v := int(d.get("save_version", 1))
+	var v = int(d.get("save_version", 1))
 	# Future: if v < 2: ... ; v = 2
 	d["save_version"] = v
 	return d

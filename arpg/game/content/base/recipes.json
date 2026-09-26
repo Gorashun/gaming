@@ -1,0 +1,108 @@
+[
+ {
+  "id": "r_kindle_upgrade",
+  "name": "Kindle: Empower",
+  "profession": "smith",
+  "kind": "kindle_upgrade",
+  "level": 1,
+  "xp": 10,
+  "cost": {
+   "soot": 3
+  },
+  "gold": 20,
+  "known_from_start": true,
+  "desc": "Upgrade one affix's value. Costs Kindle."
+ },
+ {
+  "id": "r_kindle_reroll",
+  "name": "Kindle: Reforge",
+  "profession": "smith",
+  "kind": "kindle_reroll",
+  "level": 3,
+  "xp": 14,
+  "cost": {
+   "soot": 4,
+   "wickthread": 1
+  },
+  "gold": 40,
+  "known_from_start": true,
+  "desc": "Reroll one affix. Costs Kindle."
+ },
+ {
+  "id": "r_kindle_add",
+  "name": "Kindle: Imbue",
+  "profession": "smith",
+  "kind": "kindle_add",
+  "level": 6,
+  "xp": 20,
+  "cost": {
+   "wickthread": 2
+  },
+  "gold": 80,
+  "known_from_start": true,
+  "desc": "Add a new affix to a Magic, Rare or Epic item."
+ },
+ {
+  "id": "r_socket",
+  "name": "Punch Socket",
+  "profession": "smith",
+  "kind": "add_socket",
+  "level": 8,
+  "xp": 20,
+  "cost": {
+   "soot": 10,
+   "wickthread": 2
+  },
+  "gold": 150,
+  "known_from_start": true,
+  "desc": "Add a socket to weapon, chest or shield."
+ },
+ {
+  "id": "r_forge_rare",
+  "name": "Forge Rare",
+  "profession": "smith",
+  "kind": "forge",
+  "rarity": "rare",
+  "level": 4,
+  "xp": 25,
+  "cost": {
+   "soot": 12,
+   "wickthread": 3
+  },
+  "gold": 120,
+  "known_from_start": true,
+  "desc": "Forge a random Rare item for your class at your level."
+ },
+ {
+  "id": "r_forge_epic",
+  "name": "Forge Epic",
+  "profession": "smith",
+  "kind": "forge",
+  "rarity": "epic",
+  "level": 15,
+  "xp": 60,
+  "cost": {
+   "wickthread": 8,
+   "dusk_essence": 3
+  },
+  "gold": 600,
+  "known_from_start": true,
+  "desc": "Forge a random Epic item for your class."
+ },
+ {
+  "id": "r_bell_relic",
+  "name": "Bell Relic",
+  "profession": "smith",
+  "kind": "forge_unique",
+  "unique": "u_bellringers_toll",
+  "level": 10,
+  "xp": 80,
+  "cost": {
+   "bell_shard": 10,
+   "wickthread": 5
+  },
+  "gold": 500,
+  "known_from_start": true,
+  "desc": "10 Bell Shards forge the Bellringer's Toll."
+ }
+]

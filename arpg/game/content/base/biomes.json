@@ -1,0 +1,329 @@
+[
+ {
+  "id": "crypt",
+  "name": "Crypt",
+  "floor": [
+   "floor_tile_large"
+  ],
+  "floor_alt": [
+   "floor_tile_large_rocks",
+   "floor_tile_big_grate",
+   "floor_dirt_large"
+  ],
+  "floor_alt_chance": 0.18,
+  "wall": "wall",
+  "wall_near": "wall_half",
+  "wall_variants": [
+   "wall_cracked",
+   "wall_broken",
+   "wall_archedwindow_gated"
+  ],
+  "corner_pillar": "wall_pillar",
+  "props": [
+   {
+    "models": [
+     "torch_mounted"
+    ],
+    "where": "wall_mount",
+    "density": 0.14,
+    "light": {
+     "color": "#ff9a40",
+     "energy": 1.6,
+     "range": 8,
+     "y": 2.3
+    },
+    "y": 1.4
+   },
+   {
+    "models": [
+     "barrel_large",
+     "barrel_small",
+     "box_small",
+     "box_stacked",
+     "crates_stacked",
+     "keg"
+    ],
+    "where": "corner",
+    "density": 0.35,
+    "blocking": true,
+    "scale": [
+     0.9,
+     1.1
+    ],
+    "shadow": true
+   },
+   {
+    "models": [
+     "banner_patternA_red",
+     "banner_patternB_brown",
+     "banner_thin_red",
+     "banner_shield_brown"
+    ],
+    "where": "wall",
+    "density": 0.08
+   },
+   {
+    "models": [
+     "candle_triple",
+     "candle_melted",
+     "candle_thin_lit"
+    ],
+    "where": "wall",
+    "density": 0.1,
+    "light": {
+     "color": "#ffb566",
+     "energy": 0.9,
+     "range": 5,
+     "y": 1.2
+    }
+   },
+   {
+    "models": [
+     "hal:skull",
+     "hal:bone_A",
+     "hal:bone_B",
+     "hal:ribcage",
+     "rubble_half"
+    ],
+    "where": "any",
+    "density": 0.12
+   },
+   {
+    "models": [
+     "pillar"
+    ],
+    "where": "center",
+    "density": 0.06,
+    "blocking": true,
+    "shadow": true
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.7,
+    "chest": true
+   },
+   {
+    "models": [
+     "chest_gold"
+    ],
+    "where": "corner",
+    "density": 0.01,
+    "chest": true
+   },
+   {
+    "models": [
+     "hal:coffin",
+     "hal:coffin_decorated"
+    ],
+    "where": "corner",
+    "density": 0.06,
+    "blocking": true
+   }
+  ],
+  "env": {
+   "sky": "#050409",
+   "ambient": "#3b3452",
+   "ambient_energy": 1.1,
+   "fog": "#120f1c",
+   "fog_density": 0.02,
+   "sun": "#7f8bd0",
+   "sun_energy": 0.45,
+   "mist": 0.25,
+   "mist_color": "#4a4a6a",
+   "glow": 0.7
+  },
+  "music": "crypt"
+ },
+ {
+  "id": "graveyard",
+  "name": "Graveyard",
+  "outdoor": true,
+  "corridor_width": 2,
+  "floor": [
+   "hal:floor_dirt"
+  ],
+  "floor_alt": [
+   "hal:floor_dirt_grave"
+  ],
+  "floor_alt_chance": 0.1,
+  "boundary_props": [
+   "hal:tree_dead_large",
+   "hal:tree_dead_medium",
+   "hal:fence",
+   "hal:fence_broken",
+   "hal:tree_pine_orange_large",
+   "hal:crypt"
+  ],
+  "near_boundary": "hal:grave_A",
+  "props": [
+   {
+    "models": [
+     "hal:post_lantern",
+     "hal:lantern_standing"
+    ],
+    "where": "any",
+    "density": 0.035,
+    "light": {
+     "color": "#ffb35a",
+     "energy": 1.4,
+     "range": 7,
+     "y": 1.8
+    }
+   },
+   {
+    "models": [
+     "hal:grave_A",
+     "hal:grave_B",
+     "hal:gravestone",
+     "hal:gravemarker_A",
+     "hal:gravemarker_B",
+     "hal:grave_A_destroyed"
+    ],
+    "where": "any",
+    "density": 0.16,
+    "blocking": true,
+    "scale": [
+     0.9,
+     1.2
+    ],
+    "shadow": true
+   },
+   {
+    "models": [
+     "hal:pumpkin_orange",
+     "hal:pumpkin_yellow_small",
+     "hal:pumpkin_orange_jackolantern"
+    ],
+    "where": "any",
+    "density": 0.05
+   },
+   {
+    "models": [
+     "hal:tree_dead_small",
+     "hal:tree_dead_medium"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "blocking": true,
+    "shadow": true
+   },
+   {
+    "models": [
+     "hal:skull_candle",
+     "hal:candle_triple"
+    ],
+    "where": "any",
+    "density": 0.03,
+    "light": {
+     "color": "#ffb566",
+     "energy": 0.9,
+     "range": 5,
+     "y": 1.2
+    }
+   },
+   {
+    "models": [
+     "hal:bench",
+     "hal:shrine_candles",
+     "hal:plaque_candles"
+    ],
+    "where": "any",
+    "density": 0.02,
+    "blocking": true
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.5,
+    "chest": true
+   }
+  ],
+  "env": {
+   "sky": "#0a0a14",
+   "ambient": "#3c4660",
+   "ambient_energy": 1.0,
+   "fog": "#1a1e2e",
+   "fog_density": 0.025,
+   "sun": "#9fb0ff",
+   "sun_energy": 0.7,
+   "mist": 0.45,
+   "mist_color": "#6a7894",
+   "glow": 0.7
+  },
+  "music": "graveyard"
+ },
+ {
+  "id": "town",
+  "name": "Lamplight Hollow",
+  "outdoor": true,
+  "corridor_width": 2,
+  "floor": [
+   "floor_wood_large",
+   "floor_tile_large"
+  ],
+  "floor_alt": [
+   "floor_wood_large_dark"
+  ],
+  "boundary_props": [
+   "hal:fence",
+   "hal:tree_pine_yellow_large",
+   "hal:tree_pine_orange_large",
+   "hal:fence_pillar"
+  ],
+  "near_boundary": "hal:fence",
+  "props": [
+   {
+    "models": [
+     "hal:post_lantern"
+    ],
+    "where": "any",
+    "density": 0.08,
+    "light": {
+     "color": "#ffc070",
+     "energy": 1.6,
+     "range": 8,
+     "y": 1.8
+    }
+   },
+   {
+    "models": [
+     "barrel_large",
+     "crates_stacked",
+     "keg_decorated",
+     "table_medium_tablecloth_decorated_B",
+     "stool"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "blocking": true,
+    "shadow": true
+   },
+   {
+    "models": [
+     "hal:pumpkin_yellow",
+     "hal:pumpkin_orange_small",
+     "candle_triple"
+    ],
+    "where": "any",
+    "density": 0.05
+   }
+  ],
+  "env": {
+   "sky": "#0e0b14",
+   "ambient": "#5a4a60",
+   "ambient_energy": 1.3,
+   "fog": "#1c1620",
+   "fog_density": 0.015,
+   "sun": "#ffcf9a",
+   "sun_energy": 0.6,
+   "mist": 0.15,
+   "glow": 0.8
+  },
+  "music": "town"
+ }
+]

@@ -1,0 +1,18 @@
+[
+ {
+  "id": "act1",
+  "name": "Act I \u2014 Wickmire",
+  "order": 1,
+  "families": [
+   "rattlebones"
+  ],
+  "town": "a1_town",
+  "zones": [
+   "a1_z1",
+   "a1_z2",
+   "a1_z3",
+   "a1_boss"
+  ],
+  "intro": "The bells of Wickmire stopped ringing the night the Lantern went out."
+ }
+]

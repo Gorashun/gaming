@@ -1,0 +1,255 @@
+[
+ {
+  "id": "lanternbearer",
+  "name": "Lanternbearer",
+  "tagline": "Shield of the last flame",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "1H_Sword",
+   "Round_Shield",
+   "Knight_Helmet",
+   "Knight_Cape"
+  ],
+  "primary": "might",
+  "resource_name": "Glow",
+  "resource_regen": 0,
+  "resource_decay": 1.0,
+  "resource_on_hit": 3,
+  "resource_on_block": 8,
+  "resource_on_hurt": 2,
+  "resource_start": 0.3,
+  "color": "#ffd27a",
+  "rim": "#ffd9a0",
+  "idle_anim": "Idle",
+  "basic_attack": "lb_strike",
+  "base_stats": {
+   "might": 10,
+   "agility": 4,
+   "wisdom": 4,
+   "vitality": 10,
+   "life": 120,
+   "armor": 20,
+   "block": 12,
+   "resource_max": 100
+  },
+  "per_level": {
+   "might": 2.5,
+   "vitality": 2.0,
+   "life": 14,
+   "armor": 2
+  },
+  "start_skills": [
+   "lb_strike",
+   "lb_flare"
+  ],
+  "start_bar": [
+   "lb_flare",
+   "",
+   "",
+   ""
+  ],
+  "start_gear": [
+   "short_sword",
+   "buckler",
+   "padded_vest"
+  ],
+  "desc": "A stalwart knight who turns every blow taken into holy light."
+ },
+ {
+  "id": "bellstriker",
+  "name": "Bellstriker",
+  "tagline": "Ring the world awake",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "2H_Axe",
+   "Barbarian_Hat",
+   "Barbarian_Cape"
+  ],
+  "primary": "might",
+  "resource_name": "Fury",
+  "resource_regen": 0,
+  "resource_decay": 2.5,
+  "resource_on_hit": 6,
+  "resource_start": 0.0,
+  "color": "#ff9a4a",
+  "rim": "#ffb07a",
+  "idle_anim": "2H_Melee_Idle",
+  "basic_attack": "bs_clang",
+  "base_stats": {
+   "might": 12,
+   "agility": 5,
+   "wisdom": 2,
+   "vitality": 9,
+   "life": 110,
+   "armor": 12,
+   "resource_max": 100
+  },
+  "per_level": {
+   "might": 3.0,
+   "vitality": 1.8,
+   "life": 13,
+   "armor": 1.5
+  },
+  "start_skills": [
+   "bs_clang",
+   "bs_whirl"
+  ],
+  "start_bar": [
+   "bs_whirl",
+   "",
+   "",
+   ""
+  ],
+  "start_gear": [
+   "great_axe",
+   "padded_vest"
+  ],
+  "desc": "A roaring berserker whose great bell-hammer shakes the Hush loose."
+ },
+ {
+  "id": "stargazer",
+  "name": "Stargazer",
+  "tagline": "Read the sky, rain the stars",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "2H_Staff",
+   "Mage_Hat",
+   "Mage_Cape"
+  ],
+  "primary": "wisdom",
+  "resource_name": "Mana",
+  "resource_regen": 9,
+  "resource_start": 1.0,
+  "color": "#8fd0ff",
+  "rim": "#a8c8ff",
+  "idle_anim": "Idle",
+  "basic_attack": "sg_spark",
+  "base_stats": {
+   "might": 3,
+   "agility": 5,
+   "wisdom": 12,
+   "vitality": 7,
+   "life": 90,
+   "armor": 8,
+   "resource_max": 120
+  },
+  "per_level": {
+   "wisdom": 3.0,
+   "vitality": 1.5,
+   "life": 10,
+   "armor": 1
+  },
+  "start_skills": [
+   "sg_spark",
+   "sg_starfall"
+  ],
+  "start_bar": [
+   "sg_starfall",
+   "",
+   "",
+   ""
+  ],
+  "start_gear": [
+   "apprentice_staff",
+   "padded_vest"
+  ],
+  "desc": "A young astronomer who bends starlight into bolts, novas and falling comets."
+ },
+ {
+  "id": "stitcher",
+  "name": "Stitcher",
+  "tagline": "Every doll a friend",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [
+   "Knife",
+   "Rogue_Cape"
+  ],
+  "primary": "wisdom",
+  "resource_name": "Thread",
+  "resource_regen": 7,
+  "resource_start": 1.0,
+  "color": "#ff9ecf",
+  "rim": "#ffc2e0",
+  "idle_anim": "Idle",
+  "basic_attack": "st_needle",
+  "base_stats": {
+   "might": 4,
+   "agility": 6,
+   "wisdom": 11,
+   "vitality": 8,
+   "life": 95,
+   "armor": 10,
+   "resource_max": 100
+  },
+  "per_level": {
+   "wisdom": 2.8,
+   "vitality": 1.6,
+   "life": 11,
+   "armor": 1
+  },
+  "start_skills": [
+   "st_needle",
+   "st_ragdoll"
+  ],
+  "start_bar": [
+   "st_ragdoll",
+   "",
+   "",
+   ""
+  ],
+  "start_gear": [
+   "needle_dagger",
+   "padded_vest"
+  ],
+  "desc": "A tailor who sews brave cloth dolls to fight beside her."
+ },
+ {
+  "id": "roofrunner",
+  "name": "Roofrunner",
+  "tagline": "Quick as a candle-flicker",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "attachments": [
+   "1H_Crossbow",
+   "Rogue_Cape"
+  ],
+  "primary": "agility",
+  "resource_name": "Energy",
+  "resource_regen": 14,
+  "resource_start": 1.0,
+  "color": "#9cffb0",
+  "rim": "#b8ffd0",
+  "idle_anim": "Idle",
+  "basic_attack": "rr_bolt",
+  "base_stats": {
+   "might": 4,
+   "agility": 12,
+   "wisdom": 4,
+   "vitality": 8,
+   "life": 100,
+   "armor": 10,
+   "dodge": 5,
+   "resource_max": 100
+  },
+  "per_level": {
+   "agility": 3.0,
+   "vitality": 1.6,
+   "life": 11,
+   "armor": 1
+  },
+  "start_skills": [
+   "rr_bolt",
+   "rr_fan"
+  ],
+  "start_bar": [
+   "rr_fan",
+   "",
+   "",
+   ""
+  ],
+  "start_gear": [
+   "hand_crossbow",
+   "padded_vest"
+  ],
+  "desc": "A nimble rooftop scout with a crossbow, traps and smoke."
+ }
+]

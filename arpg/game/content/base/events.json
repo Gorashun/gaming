@@ -1,0 +1,13 @@
+[
+ {
+  "id": "magpie",
+  "name": "Magpie Imp",
+  "monster": "magpie_imp",
+  "kind": "normal",
+  "chance": 0.07,
+  "force_zone": "a1_z2",
+  "loot_kind": "magpie",
+  "announce": "A Magpie Imp! Catch it before it escapes!",
+  "color": "#ffd84a"
+ }
+]

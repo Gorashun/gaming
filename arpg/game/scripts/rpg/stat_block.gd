@@ -5,7 +5,7 @@ extends RefCounted
 
 var sources: Dictionary = {}   # source -> { stat: value }
 var _cache: Dictionary = {}
-var _dirty := true
+var _dirty = true
 
 func set_source(source: String, stats: Dictionary) -> void:
 	sources[source] = stats
@@ -30,7 +30,7 @@ func clear_prefix(prefix: String) -> void:
 func _rebuild() -> void:
 	## "more_*" stats multiply across sources (stored as the combined % bonus); everything else adds.
 	_cache.clear()
-	var more := {}
+	var more = {}
 	for s in sources.values():
 		for stat in s:
 			if String(stat).begins_with("more_"):

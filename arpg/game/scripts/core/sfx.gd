@@ -4,16 +4,16 @@ extends Node
 
 const DIR := "res://assets/generated/sfx/"
 const MUSIC_DIR := "res://assets/generated/music/"
-var _cache := {}
+var _cache = {}
 var _pool: Array[AudioStreamPlayer] = []
 var _pool3d: Array[AudioStreamPlayer3D] = []
 var _music: AudioStreamPlayer
-var _last_play := {}
+var _last_play = {}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for i in 16:
-		var p := AudioStreamPlayer.new()
+		var p = AudioStreamPlayer.new()
 		p.bus = "Master"
 		add_child(p)
 		_pool.append(p)
@@ -23,19 +23,19 @@ func _ready() -> void:
 func _variants(id: String) -> Array:
 	if _cache.has(id):
 		return _cache[id]
-	var out := []
+	var out = []
 	for suffix in ["", "_1", "_2", "_3", "_4"]:
-		var p := DIR + id + suffix + ".wav"
+		var p = DIR + id + suffix + ".wav"
 		if ResourceLoader.exists(p):
 			out.append(load(p))
 	_cache[id] = out
 	return out
 
 func play(id: String, volume_db := 0.0, pitch_jitter := 0.08) -> void:
-	var v := _variants(id)
+	var v = _variants(id)
 	if v.is_empty():
 		return
-	var now := Time.get_ticks_msec()
+	var now = Time.get_ticks_msec()
 	if now - int(_last_play.get(id, 0)) < 35:   # avoid stacking the same sound in one frame
 		return
 	_last_play[id] = now
@@ -48,7 +48,7 @@ func play(id: String, volume_db := 0.0, pitch_jitter := 0.08) -> void:
 			return
 
 func play_music(id: String) -> void:
-	var path := MUSIC_DIR + id + ".ogg"
+	var path = MUSIC_DIR + id + ".ogg"
 	if not ResourceLoader.exists(path):
 		path = MUSIC_DIR + id + ".wav"
 		if not ResourceLoader.exists(path):

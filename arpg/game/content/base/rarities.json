@@ -1,0 +1,98 @@
+[
+ {
+  "id": "common",
+  "name": "Common",
+  "rank": 0,
+  "color": "#b9b9c2",
+  "shape": "square",
+  "affix_min": 0,
+  "affix_max": 0,
+  "weight": 56,
+  "kindle": 0
+ },
+ {
+  "id": "magic",
+  "name": "Magic",
+  "rank": 1,
+  "color": "#5aa0ff",
+  "shape": "rounded",
+  "affix_min": 1,
+  "affix_max": 2,
+  "weight": 30,
+  "kindle": 6,
+  "mf_scale": 0.5
+ },
+ {
+  "id": "rare",
+  "name": "Rare",
+  "rank": 2,
+  "color": "#ffd23f",
+  "shape": "diamond",
+  "affix_min": 3,
+  "affix_max": 4,
+  "weight": 9.5,
+  "kindle": 10,
+  "pity_seconds": 240
+ },
+ {
+  "id": "epic",
+  "name": "Epic",
+  "rank": 3,
+  "color": "#b46bff",
+  "shape": "hexagon",
+  "affix_min": 4,
+  "affix_max": 5,
+  "greater": 1,
+  "weight": 2.8,
+  "kindle": 14,
+  "mf_scale": 1.2
+ },
+ {
+  "id": "legendary",
+  "name": "Legendary",
+  "rank": 4,
+  "color": "#ff8a1f",
+  "shape": "star",
+  "affix_min": 4,
+  "affix_max": 4,
+  "power": true,
+  "weight": 1.2,
+  "kindle": 18,
+  "mf_scale": 1.5,
+  "pity_seconds": 2700
+ },
+ {
+  "id": "mythic",
+  "name": "Mythic",
+  "rank": 5,
+  "color": "#ff3355",
+  "shape": "flame",
+  "affix_min": 5,
+  "affix_max": 5,
+  "greater": 5,
+  "power": true,
+  "weight": 0.1,
+  "kindle": 22,
+  "mf_scale": 1.5,
+  "min_monster_level": 60,
+  "pity_seconds": 72000
+ },
+ {
+  "id": "unique",
+  "name": "Unique",
+  "rank": 6,
+  "color": "#3ddc84",
+  "shape": "crown",
+  "drops": false,
+  "kindle": 16
+ },
+ {
+  "id": "named",
+  "name": "Named",
+  "rank": 7,
+  "color": "#aef6ff",
+  "shape": "sun",
+  "drops": false,
+  "kindle": 30
+ }
+]

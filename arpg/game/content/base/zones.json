@@ -1,0 +1,109 @@
+[
+ {
+  "id": "a1_town",
+  "act": "act1",
+  "name": "Lamplight Hollow",
+  "biome": "town",
+  "town": true,
+  "size": 8,
+  "rooms": 1,
+  "room_min": 6,
+  "room_max": 6,
+  "level": 1,
+  "stations": [
+   {
+    "id": "smith",
+    "name": "Smith",
+    "screen": "crafting",
+    "model": "hal:shrine_candles",
+    "color": "#ffb35a",
+    "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+    "attachments": [
+     "2H_Axe"
+    ],
+    "npc_anim": "2H_Melee_Idle"
+   },
+   {
+    "id": "stash",
+    "name": "Stash",
+    "screen": "stash",
+    "model": "chest_gold",
+    "color": "#ffd23f"
+   },
+   {
+    "id": "waypoint",
+    "name": "Waypoint",
+    "screen": "map",
+    "model": "hal:shrine",
+    "color": "#8fd0ff"
+   },
+   {
+    "id": "vendor",
+    "name": "Trader",
+    "screen": "vendor",
+    "model": "table_medium_tablecloth_decorated_B",
+    "color": "#9cffb0",
+    "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+    "attachments": [],
+    "npc_anim": "Idle"
+   }
+  ]
+ },
+ {
+  "id": "a1_z1",
+  "act": "act1",
+  "name": "The Drowned Graves",
+  "biome": "graveyard",
+  "size": 22,
+  "rooms": 8,
+  "room_min": 3,
+  "room_max": 5,
+  "level": 1,
+  "packs": 9,
+  "elite_chance": 0.12,
+  "next": "a1_z2"
+ },
+ {
+  "id": "a1_z2",
+  "act": "act1",
+  "name": "Bellcrypt Halls",
+  "biome": "crypt",
+  "size": 24,
+  "rooms": 9,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 3,
+  "packs": 11,
+  "elite_chance": 0.18,
+  "next": "a1_z3"
+ },
+ {
+  "id": "a1_z3",
+  "act": "act1",
+  "name": "The Sunken Nave",
+  "biome": "crypt",
+  "size": 26,
+  "rooms": 10,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 5,
+  "packs": 13,
+  "elite_chance": 0.2,
+  "next": "a1_boss"
+ },
+ {
+  "id": "a1_boss",
+  "act": "act1",
+  "name": "Belfry of the Drowned",
+  "biome": "crypt",
+  "size": 14,
+  "rooms": 3,
+  "room_min": 5,
+  "room_max": 7,
+  "level": 7,
+  "packs": 3,
+  "boss": "sunken_bellringer",
+  "next": "a1_town",
+  "music": "boss"
+ }
+]

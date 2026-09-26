@@ -26,11 +26,11 @@ static func star_points_for_level(level: int) -> int:
 
 ## Monster XP scaled by level difference (no XP farming of grey monsters).
 static func monster_xp(base_xp: float, monster_level: int, player_level: int, tier_mult: float) -> int:
-	var diff := monster_level - player_level
-	var f := 1.0
+	var diff = monster_level - player_level
+	var f = 1.0
 	if diff < -5:
 		f = max(0.1, 1.0 + (diff + 5) * 0.1)
 	elif diff > 0:
 		f = 1.0 + min(diff, 5) * 0.05
-	var lvl_scale := 1.0 + monster_level * 0.35
+	var lvl_scale = 1.0 + monster_level * 0.35
 	return int(max(1.0, round(base_xp * lvl_scale * f * tier_mult)))

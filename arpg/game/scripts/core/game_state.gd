@@ -5,7 +5,8 @@ const SAVE_DIR := "user://saves"
 
 var character: CharacterData
 var world: Node = null    # current GameWorld (authority for gameplay state)
-var paused_for_ui := false
+var paused_for_ui = false
+var testing = false   # set by automated runs: disables focus auto-pause
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
@@ -18,14 +19,14 @@ func tier() -> Dictionary:
 	return Content.get_rec("difficulties", character.difficulty if character else "twilight")
 
 func new_character(char_name: String, class_id: String, hardcore: bool) -> CharacterData:
-	var c := CharacterData.new()
+	var c = CharacterData.new()
 	c.id = "%d_%d" % [Time.get_unix_time_from_system(), randi() % 10000]
 	c.name = char_name
 	c.class_id = class_id
 	c.hardcore = hardcore
 	c.created_unix = int(Time.get_unix_time_from_system())
 	c.last_played_unix = c.created_unix
-	var cls := c.cls()
+	var cls = c.cls()
 	# Starting skills & gear
 	for s in cls.get("start_skills", []):
 		c.skill_ranks[s] = 1
@@ -33,7 +34,7 @@ func new_character(char_name: String, class_id: String, hardcore: bool) -> Chara
 	for i in min(4, bar.size()):
 		c.skill_bar[i] = bar[i]
 	for base_id in cls.get("start_gear", []):
-		var it := Items.generate(1, "common", class_id, base_id, "", "start")
+		var it = Items.generate(1, "common", class_id, base_id, "", "start")
 		if not it.is_empty():
 			var slot: String = it.slot
 			if slot == "ring":
@@ -50,8 +51,8 @@ func new_character(char_name: String, class_id: String, hardcore: bool) -> Chara
 	return c
 
 func list_saves() -> Array:
-	var out := []
-	var dir := DirAccess.open(SAVE_DIR)
+	var out = []
+	var dir = DirAccess.open(SAVE_DIR)
 	if dir == null:
 		return out
 	for f in dir.get_files():
@@ -63,7 +64,7 @@ func list_saves() -> Array:
 	return out
 
 func load_character(id: String) -> CharacterData:
-	var path := SAVE_DIR + "/" + id + ".json"
+	var path = SAVE_DIR + "/" + id + ".json"
 	var d = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if not (d is Dictionary):
 		return null
@@ -72,8 +73,8 @@ func load_character(id: String) -> CharacterData:
 	return character
 
 func _apply_rested() -> void:
-	var now := int(Time.get_unix_time_from_system())
-	var away_h := float(now - character.last_played_unix) / 3600.0
+	var now = int(Time.get_unix_time_from_system())
+	var away_h = float(now - character.last_played_unix) / 3600.0
 	if away_h > 0.5:
 		var cfg: Dictionary = Content.get_rec("config", "rested")
 		var per_hour: float = cfg.get("fraction_of_level_per_hour", 0.05)
@@ -86,8 +87,8 @@ func save_character() -> void:
 	if character == null:
 		return
 	character.last_played_unix = int(Time.get_unix_time_from_system())
-	var tmp := SAVE_DIR + "/" + character.id + ".tmp"
-	var f := FileAccess.open(tmp, FileAccess.WRITE)
+	var tmp = SAVE_DIR + "/" + character.id + ".tmp"
+	var f = FileAccess.open(tmp, FileAccess.WRITE)
 	if f == null:
 		return
 	f.store_string(JSON.stringify(character.to_dict()))

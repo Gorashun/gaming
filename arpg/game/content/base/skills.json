@@ -1,0 +1,951 @@
+[
+ {
+  "id": "lb_strike",
+  "name": "Lantern Strike",
+  "cost": 0,
+  "cooldown": 0,
+  "tags": [
+   "basic",
+   "melee"
+  ],
+  "element": "holy",
+  "anim": [
+   "1H_Melee_Attack_Slice_Diagonal",
+   "1H_Melee_Attack_Slice_Horizontal",
+   "1H_Melee_Attack_Chop"
+  ],
+  "lock": 0.42,
+  "windup": 0.14,
+  "effects": [
+   {
+    "type": "melee_arc",
+    "radius": 2.3,
+    "angle": 120,
+    "mult": 1.0
+   }
+  ],
+  "desc": "Swing your blade. Builds Glow.",
+  "sfx": "swing",
+  "icon": "sword",
+  "class": "lanternbearer",
+  "unlock_level": 1,
+  "max_rank": 5
+ },
+ {
+  "id": "lb_flare",
+  "name": "Shield Flare",
+  "branch": "radiance",
+  "cost": 25,
+  "cooldown": 1.5,
+  "tags": [
+   "melee",
+   "area"
+  ],
+  "element": "holy",
+  "anim": "Block_Attack",
+  "lock": 0.5,
+  "windup": 0.2,
+  "effects": [
+   {
+    "type": "nova",
+    "radius": 3.2,
+    "mult": 1.8,
+    "knockback": 7,
+    "status": {
+     "id": "stun",
+     "duration": 0.6,
+     "chance": 0.5
+    }
+   }
+  ],
+  "color": "#ffe7a0",
+  "desc": "Slam your shield, blasting holy light around you.",
+  "icon": "shield",
+  "class": "lanternbearer",
+  "unlock_level": 1,
+  "max_rank": 5
+ },
+ {
+  "id": "lb_charge",
+  "name": "Beacon Charge",
+  "branch": "bulwark",
+  "unlock_level": 4,
+  "cost": 20,
+  "cooldown": 5,
+  "tags": [
+   "melee"
+  ],
+  "element": "holy",
+  "anim": "Running_B",
+  "lock": 0.3,
+  "windup": 0.02,
+  "effects": [
+   {
+    "type": "dash",
+    "distance": 7,
+    "mult": 1.4,
+    "path_damage": true,
+    "width": 1.5,
+    "knockback": 8,
+    "land_radius": 2.2
+   }
+  ],
+  "desc": "Charge forward, knocking foes aside.",
+  "icon": "dash",
+  "class": "lanternbearer",
+  "max_rank": 5
+ },
+ {
+  "id": "lb_consecrate",
+  "name": "Hallowed Ground",
+  "branch": "radiance",
+  "unlock_level": 8,
+  "cost": 40,
+  "cooldown": 8,
+  "tags": [
+   "area"
+  ],
+  "element": "holy",
+  "anim": "Spellcast_Raise",
+  "lock": 0.6,
+  "windup": 0.3,
+  "targeted": false,
+  "effects": [
+   {
+    "type": "ground_zone",
+    "at": "self",
+    "radius": 4.0,
+    "duration": 6,
+    "tick": 0.5,
+    "mult": 0.45,
+    "heal_pct": 0.02
+   }
+  ],
+  "color": "#ffd978",
+  "desc": "Bless the ground: burns foes and heals you.",
+  "icon": "sun",
+  "class": "lanternbearer",
+  "max_rank": 5
+ },
+ {
+  "id": "lb_aegis",
+  "name": "Aegis of Dawn",
+  "branch": "bulwark",
+  "unlock_level": 12,
+  "cost": 0,
+  "cooldown": 18,
+  "tags": [
+   "buff"
+  ],
+  "anim": "Blocking",
+  "lock": 0.4,
+  "windup": 0.1,
+  "targeted": false,
+  "effects": [
+   {
+    "type": "buff",
+    "duration": 6,
+    "stats": {
+     "damage_reduction": 35,
+     "block": 25,
+     "thorns": 40
+    }
+   }
+  ],
+  "color": "#fff1b8",
+  "desc": "Raise a wall of light: block and reflect.",
+  "icon": "aegis",
+  "class": "lanternbearer",
+  "max_rank": 5
+ },
+ {
+  "id": "lb_judgement",
+  "name": "Judgement",
+  "branch": "zeal",
+  "unlock_level": 18,
+  "cost": 50,
+  "cooldown": 10,
+  "tags": [
+   "area"
+  ],
+  "element": "holy",
+  "anim": "2H_Melee_Attack_Chop",
+  "lock": 0.7,
+  "windup": 0.45,
+  "effects": [
+   {
+    "type": "aoe",
+    "radius": 3.5,
+    "mult": 4.2,
+    "telegraph": 0.25,
+    "shake": 0.5
+   }
+  ],
+  "color": "#fff4c2",
+  "desc": "Call down a pillar of dawn on your target.",
+  "icon": "pillar",
+  "class": "lanternbearer",
+  "max_rank": 5
+ },
+ {
+  "id": "bs_clang",
+  "name": "Clang",
+  "cost": 0,
+  "cooldown": 0,
+  "tags": [
+   "basic",
+   "melee"
+  ],
+  "element": "physical",
+  "anim": [
+   "2H_Melee_Attack_Chop",
+   "2H_Melee_Attack_Slice"
+  ],
+  "lock": 0.55,
+  "windup": 0.22,
+  "effects": [
+   {
+    "type": "melee_arc",
+    "radius": 2.6,
+    "angle": 140,
+    "mult": 1.25,
+    "shake": 0.22
+   }
+  ],
+  "desc": "A mighty swing. Builds Fury.",
+  "sfx": "heavy_swing",
+  "icon": "axe",
+  "class": "bellstriker",
+  "unlock_level": 1,
+  "max_rank": 5
+ },
+ {
+  "id": "bs_whirl",
+  "name": "Bell Whirl",
+  "branch": "storm",
+  "cost": 30,
+  "cooldown": 0.5,
+  "tags": [
+   "melee",
+   "area"
+  ],
+  "element": "physical",
+  "anim": "2H_Melee_Attack_Spinning",
+  "lock": 1.0,
+  "windup": 0.05,
+  "effects": [
+   {
+    "type": "spin",
+    "ticks": 5,
+    "interval": 0.19,
+    "radius": 2.8,
+    "mult": 0.7
+   }
+  ],
+  "desc": "Spin like a ringing bell, hitting everything near.",
+  "icon": "whirl",
+  "class": "bellstriker",
+  "unlock_level": 1,
+  "max_rank": 5
+ },
+ {
+  "id": "bs_leap",
+  "name": "Toll Leap",
+  "branch": "quake",
+  "unlock_level": 4,
+  "cost": 15,
+  "cooldown": 6,
+  "tags": [
+   "melee",
+   "area"
+  ],
+  "element": "physical",
+  "anim": "Jump_Full_Short",
+  "lock": 0.55,
+  "windup": 0.02,
+  "effects": [
+   {
+    "type": "leap",
+    "distance": 8,
+    "duration": 0.45,
+    "mult": 2.2,
+    "land_radius": 3.0,
+    "knockback": 6
+   }
+  ],
+  "desc": "Leap and crash down, shaking the ground.",
+  "icon": "leap",
+  "class": "bellstriker",
+  "max_rank": 5
+ },
+ {
+  "id": "bs_roar",
+  "name": "Great Peal",
+  "branch": "rage",
+  "unlock_level": 8,
+  "cost": 0,
+  "cooldown": 14,
+  "tags": [
+   "buff"
+  ],
+  "anim": "Cheer",
+  "lock": 0.6,
+  "windup": 0.2,
+  "targeted": false,
+  "effects": [
+   {
+    "type": "buff",
+    "duration": 8,
+    "stats": {
+     "damage_pct": 40,
+     "attack_speed_pct": 20
+    }
+   },
+   {
+    "type": "resource",
+    "amount": 40
+   }
+  ],
+  "color": "#ffb35a",
+  "desc": "A deafening peal: more damage and speed.",
+  "icon": "roar",
+  "class": "bellstriker",
+  "max_rank": 5
+ },
+ {
+  "id": "bs_quake",
+  "name": "Earthshaker",
+  "branch": "quake",
+  "unlock_level": 12,
+  "cost": 45,
+  "cooldown": 6,
+  "tags": [
+   "area"
+  ],
+  "element": "physical",
+  "anim": "2H_Melee_Attack_Chop",
+  "lock": 0.7,
+  "windup": 0.35,
+  "targeted": false,
+  "effects": [
+   {
+    "type": "nova",
+    "radius": 5.0,
+    "mult": 2.8,
+    "status": {
+     "id": "slow",
+     "duration": 2,
+     "value": 0.4
+    },
+    "shake": 0.6
+   }
+  ],
+  "desc": "Smash the ground; foes stagger and slow.",
+  "icon": "quake",
+  "class": "bellstriker",
+  "max_rank": 5
+ },
+ {
+  "id": "bs_chains",
+  "name": "Bellrope",
+  "branch": "storm",
+  "unlock_level": 18,
+  "cost": 20,
+  "cooldown": 9,
+  "tags": [
+   "area"
+  ],
+  "anim": "Throw",
+  "lock": 0.5,
+  "windup": 0.2,
+  "effects": [
+   {
+    "type": "pull",
+    "radius": 7,
+    "force": 14
+   },
+   {
+    "type": "aoe",
+    "radius": 3,
+    "mult": 1.2,
+    "delay": 0.25
+   }
+  ],
+  "desc": "Yank enemies together, then strike.",
+  "icon": "rope",
+  "class": "bellstriker",
+  "max_rank": 5
+ },
+ {
+  "id": "sg_spark",
+  "name": "Starspark",
+  "cost": 0,
+  "cooldown": 0,
+  "tags": [
+   "basic",
+   "projectile"
+  ],
+  "element": "lightning",
+  "anim": "Spellcast_Shoot",
+  "lock": 0.38,
+  "windup": 0.12,
+  "effects": [
+   {
+    "type": "projectile",
+    "speed": 18,
+    "range": 13,
+    "mult": 1.0,
+    "size": 0.22
+   }
+  ],
+  "color": "#bfe3ff",
+  "desc": "A quick bolt of starlight.",
+  "sfx": "zap",
+  "icon": "spark",
+  "class": "stargazer",
+  "unlock_level": 1,
+  "max_rank": 5
+ },
+ {
+  "id": "sg_starfall",
+  "name": "Starfall",
+  "branch": "comet",
+  "cost": 30,
+  "cooldown": 0.8,
+  "tags": [
+   "area"
+  ],
+  "element": "fire",
+  "anim": "Spellcast_Long",
+  "lock": 0.55,
+  "windup": 0.25,
+  "effects": [
+   {
+    "type": "aoe",
+    "radius": 2.8,
+    "mult": 2.4,
+    "telegraph": 0.3
+   }
+  ],
+  "color": "#ffb86b",
+  "desc": "A small star plummets onto your target.",
+  "icon": "comet",
+  "class": "stargazer",
+  "unlock_level": 1,
+  "max_rank": 5
+ },
+ {
+  "id": "sg_frostnova",
+  "name": "Frost Ring",
+  "branch": "rime",
+  "unlock_level": 4,
+  "cost": 25,
+  "cooldown": 6,
+  "tags": [
+   "area"
+  ],
+  "element": "cold",
+  "anim": "Spellcast_Raise",
+  "lock": 0.45,
+  "windup": 0.15,
+  "targeted": false,
+  "effects": [
+   {
+    "type": "nova",
+    "radius": 4.5,
+    "mult": 1.0,
+    "status": {
+     "id": "freeze",
+     "duration": 1.6
+    }
+   }
+  ],
+  "color": "#9fe8ff",
+  "desc": "Freeze everything around you.",
+  "icon": "frost",
+  "class": "stargazer",
+  "max_rank": 5
+ },
+ {
+  "id": "sg_chain",
+  "name": "Constellation",
+  "branch": "storm",
+  "unlock_level": 8,
+  "cost": 22,
+  "cooldown": 0,
+  "tags": [
+   "projectile"
+  ],
+  "element": "lightning",
+  "anim": "Spellcast_Shoot",
+  "lock": 0.4,
+  "windup": 0.12,
+  "effects": [
+   {
+    "type": "chain",
+    "jumps": 4,
+    "range": 6,
+    "mult": 1.3
+   }
+  ],
+  "color": "#e8f0ff",
+  "desc": "Lightning links foes like stars.",
+  "icon": "chain",
+  "class": "stargazer",
+  "max_rank": 5
+ },
+ {
+  "id": "sg_blink",
+  "name": "Moonstep",
+  "branch": "rime",
+  "unlock_level": 12,
+  "cost": 15,
+  "cooldown": 4,
+  "tags": [
+   "movement"
+  ],
+  "anim": "Dodge_Forward",
+  "lock": 0.2,
+  "windup": 0.0,
+  "targeted": false,
+  "effects": [
+   {
+    "type": "dash",
+    "distance": 7,
+    "duration": 0.12
+   }
+  ],
+  "color": "#c7b8ff",
+  "desc": "Blink through space.",
+  "icon": "blink",
+  "class": "stargazer",
+  "max_rank": 5
+ },
+ {
+  "id": "sg_meteor",
+  "name": "Comet Shower",
+  "branch": "comet",
+  "unlock_level": 18,
+  "cost": 60,
+  "cooldown": 9,
+  "tags": [
+   "area"
+  ],
+  "element": "fire",
+  "anim": "Spellcasting",
+  "lock": 0.9,
+  "windup": 0.3,
+  "effects": [
+   {
+    "type": "aoe",
+    "radius": 2.5,
+    "mult": 1.8,
+    "telegraph": 0.3
+   },
+   {
+    "type": "aoe",
+    "radius": 2.5,
+    "mult": 1.8,
+    "telegraph": 0.2,
+    "delay": 0.25
+   },
+   {
+    "type": "aoe",
+    "radius": 3.5,
+    "mult": 2.5,
+    "telegraph": 0.2,
+    "delay": 0.25
+   }
+  ],
+  "color": "#ff9a55",
+  "desc": "Three comets in a row.",
+  "icon": "meteor",
+  "class": "stargazer",
+  "max_rank": 5
+ },
+ {
+  "id": "st_needle",
+  "name": "Needle Toss",
+  "cost": 0,
+  "cooldown": 0,
+  "tags": [
+   "basic",
+   "projectile"
+  ],
+  "element": "physical",
+  "anim": "Throw",
+  "lock": 0.36,
+  "windup": 0.12,
+  "effects": [
+   {
+    "type": "projectile",
+    "speed": 20,
+    "range": 11,
+    "mult": 0.9,
+    "size": 0.14,
+    "pierce": 1
+   }
+  ],
+  "color": "#ffd0ea",
+  "desc": "Throw sewing needles.",
+  "sfx": "throw",
+  "icon": "needle",
+  "class": "stitcher",
+  "unlock_level": 1,
+  "max_rank": 5
+ },
+ {
+  "id": "st_ragdoll",
+  "name": "Rag Doll",
+  "branch": "dolls",
+  "cost": 30,
+  "cooldown": 1.0,
+  "tags": [
+   "minion"
+  ],
+  "anim": "Spellcast_Summon",
+  "lock": 0.5,
+  "windup": 0.2,
+  "targeted": false,
+  "effects": [
+   {
+    "type": "summon",
+    "minion": "ragdoll",
+    "count": 1,
+    "max": 4
+   }
+  ],
+  "color": "#ff9ecf",
+  "desc": "Sew a brave doll to fight for you (max 4).",
+  "icon": "doll",
+  "class": "stitcher",
+  "unlock_level": 1,
+  "max_rank": 5
+ },
+ {
+  "id": "st_pins",
+  "name": "Pincushion",
+  "branch": "needlework",
+  "unlock_level": 4,
+  "cost": 18,
+  "cooldown": 0,
+  "tags": [
+   "projectile"
+  ],
+  "element": "physical",
+  "anim": "Throw",
+  "lock": 0.4,
+  "windup": 0.1,
+  "effects": [
+   {
+    "type": "projectile",
+    "count": 5,
+    "spread": 22,
+    "speed": 18,
+    "range": 10,
+    "mult": 0.6,
+    "size": 0.12
+   }
+  ],
+  "color": "#ffe0f0",
+  "desc": "A fan of pins.",
+  "icon": "pins",
+  "class": "stitcher",
+  "max_rank": 5
+ },
+ {
+  "id": "st_bigdoll",
+  "name": "Patchwork Bear",
+  "branch": "dolls",
+  "unlock_level": 8,
+  "cost": 50,
+  "cooldown": 20,
+  "tags": [
+   "minion"
+  ],
+  "anim": "Spellcast_Summon",
+  "lock": 0.6,
+  "windup": 0.3,
+  "targeted": false,
+  "effects": [
+   {
+    "type": "summon",
+    "minion": "patch_bear",
+    "count": 1,
+    "max": 1
+   }
+  ],
+  "color": "#ffb38a",
+  "desc": "Stitch a giant teddy to crush foes.",
+  "icon": "bear",
+  "class": "stitcher",
+  "max_rank": 5
+ },
+ {
+  "id": "st_unravel",
+  "name": "Unravel",
+  "branch": "hexes",
+  "unlock_level": 12,
+  "cost": 30,
+  "cooldown": 5,
+  "tags": [
+   "area"
+  ],
+  "element": "shadow",
+  "anim": "Spellcast_Raise",
+  "lock": 0.45,
+  "windup": 0.2,
+  "effects": [
+   {
+    "type": "ground_zone",
+    "radius": 3.2,
+    "duration": 4,
+    "tick": 0.4,
+    "mult": 0.5,
+    "slow": 0.5
+   }
+  ],
+  "color": "#c58cff",
+  "desc": "Tangle foes in shadow thread.",
+  "icon": "thread",
+  "class": "stitcher",
+  "max_rank": 5
+ },
+ {
+  "id": "st_mend",
+  "name": "Mend",
+  "branch": "hexes",
+  "unlock_level": 18,
+  "cost": 35,
+  "cooldown": 12,
+  "tags": [
+   "buff"
+  ],
+  "anim": "Use_Item",
+  "lock": 0.4,
+  "windup": 0.2,
+  "targeted": false,
+  "effects": [
+   {
+    "type": "heal",
+    "pct": 0.35
+   },
+   {
+    "type": "buff",
+    "duration": 6,
+    "stats": {
+     "minion_damage_pct": 50
+    }
+   }
+  ],
+  "color": "#9dffb8",
+  "desc": "Patch yourself up; dolls fight harder.",
+  "icon": "mend",
+  "class": "stitcher",
+  "max_rank": 5
+ },
+ {
+  "id": "rr_bolt",
+  "name": "Quick Bolt",
+  "cost": 0,
+  "cooldown": 0,
+  "tags": [
+   "basic",
+   "projectile"
+  ],
+  "element": "physical",
+  "anim": "1H_Ranged_Shoot",
+  "lock": 0.34,
+  "windup": 0.1,
+  "effects": [
+   {
+    "type": "projectile",
+    "speed": 24,
+    "range": 14,
+    "mult": 1.0,
+    "size": 0.12
+   }
+  ],
+  "color": "#e9ffe0",
+  "desc": "A swift crossbow bolt.",
+  "sfx": "bow",
+  "icon": "bolt",
+  "class": "roofrunner",
+  "unlock_level": 1,
+  "max_rank": 5
+ },
+ {
+  "id": "rr_fan",
+  "name": "Fan of Bolts",
+  "branch": "marksman",
+  "cost": 25,
+  "cooldown": 0.6,
+  "tags": [
+   "projectile"
+  ],
+  "element": "physical",
+  "anim": "1H_Ranged_Shooting",
+  "lock": 0.45,
+  "windup": 0.1,
+  "effects": [
+   {
+    "type": "projectile",
+    "count": 5,
+    "spread": 28,
+    "speed": 22,
+    "range": 12,
+    "mult": 0.75,
+    "size": 0.12,
+    "pierce": 1
+   }
+  ],
+  "desc": "Fire a spread of bolts.",
+  "icon": "fan",
+  "class": "roofrunner",
+  "unlock_level": 1,
+  "max_rank": 5
+ },
+ {
+  "id": "rr_roll",
+  "name": "Tumble",
+  "branch": "shadow",
+  "unlock_level": 4,
+  "cost": 10,
+  "cooldown": 2.5,
+  "tags": [
+   "movement"
+  ],
+  "anim": "Dodge_Forward",
+  "lock": 0.25,
+  "windup": 0.0,
+  "targeted": false,
+  "effects": [
+   {
+    "type": "dash",
+    "distance": 6,
+    "duration": 0.2
+   },
+   {
+    "type": "buff",
+    "duration": 2,
+    "stats": {
+     "crit_chance": 25
+    }
+   }
+  ],
+  "color": "#b0ffc8",
+  "desc": "Roll away; next shots crit more.",
+  "icon": "roll",
+  "class": "roofrunner",
+  "max_rank": 5
+ },
+ {
+  "id": "rr_trap",
+  "name": "Snap Trap",
+  "branch": "tinker",
+  "unlock_level": 8,
+  "cost": 25,
+  "cooldown": 4,
+  "tags": [
+   "area"
+  ],
+  "element": "fire",
+  "anim": "Interact",
+  "lock": 0.35,
+  "windup": 0.15,
+  "effects": [
+   {
+    "type": "ground_zone",
+    "radius": 2.5,
+    "duration": 5,
+    "tick": 0.5,
+    "mult": 0.9
+   }
+  ],
+  "color": "#ffb060",
+  "desc": "Drop a crackling fire trap.",
+  "icon": "trap",
+  "class": "roofrunner",
+  "max_rank": 5
+ },
+ {
+  "id": "rr_smoke",
+  "name": "Smoke Bomb",
+  "branch": "shadow",
+  "unlock_level": 12,
+  "cost": 30,
+  "cooldown": 10,
+  "tags": [
+   "buff"
+  ],
+  "anim": "Throw",
+  "lock": 0.35,
+  "windup": 0.15,
+  "targeted": false,
+  "effects": [
+   {
+    "type": "nova",
+    "radius": 4,
+    "mult": 0.2,
+    "status": {
+     "id": "stun",
+     "duration": 1.2
+    }
+   },
+   {
+    "type": "buff",
+    "duration": 4,
+    "stats": {
+     "dodge": 40,
+     "move_speed_pct": 30
+    }
+   }
+  ],
+  "color": "#9a9aa8",
+  "desc": "Blind foes and vanish into smoke.",
+  "icon": "smoke",
+  "class": "roofrunner",
+  "max_rank": 5
+ },
+ {
+  "id": "rr_rain",
+  "name": "Bolt Rain",
+  "branch": "marksman",
+  "unlock_level": 18,
+  "cost": 50,
+  "cooldown": 8,
+  "tags": [
+   "area",
+   "projectile"
+  ],
+  "element": "physical",
+  "anim": "2H_Ranged_Shoot",
+  "lock": 0.6,
+  "windup": 0.3,
+  "effects": [
+   {
+    "type": "aoe",
+    "radius": 3.5,
+    "mult": 1.2,
+    "telegraph": 0.2
+   },
+   {
+    "type": "aoe",
+    "radius": 3.5,
+    "mult": 1.2,
+    "delay": 0.3
+   },
+   {
+    "type": "aoe",
+    "radius": 3.5,
+    "mult": 1.2,
+    "delay": 0.3
+   }
+  ],
+  "color": "#dfffd0",
+  "desc": "Volley after volley from above.",
+  "icon": "rain",
+  "class": "roofrunner",
+  "max_rank": 5
+ }
+]

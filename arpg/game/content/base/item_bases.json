@@ -1,0 +1,2713 @@
+[
+ {
+  "id": "sword_1",
+  "name": "Rusty Sword",
+  "slot": "main_hand",
+  "type": "sword",
+  "type_name": "Sword",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "dmg": [
+   3,
+   7
+  ],
+  "aps": 1.35,
+  "implicit": {
+   "crit_chance": [
+    1,
+    3
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "sword_12",
+  "name": "Iron Sword",
+  "slot": "main_hand",
+  "type": "sword",
+  "type_name": "Sword",
+  "min_ilvl": 12,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "dmg": [
+   6,
+   13
+  ],
+  "aps": 1.35,
+  "implicit": {
+   "crit_chance": [
+    1,
+    3
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "sword_28",
+  "name": "Moonsteel Sword",
+  "slot": "main_hand",
+  "type": "sword",
+  "type_name": "Sword",
+  "min_ilvl": 28,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "dmg": [
+   10,
+   24
+  ],
+  "aps": 1.35,
+  "implicit": {
+   "crit_chance": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "sword_48",
+  "name": "Wickforged Sword",
+  "slot": "main_hand",
+  "type": "sword",
+  "type_name": "Sword",
+  "min_ilvl": 48,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "dmg": [
+   17,
+   39
+  ],
+  "aps": 1.35,
+  "implicit": {
+   "crit_chance": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "sword_70",
+  "name": "Hushbane Sword",
+  "slot": "main_hand",
+  "type": "sword",
+  "type_name": "Sword",
+  "min_ilvl": 70,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "dmg": [
+   26,
+   60
+  ],
+  "aps": 1.35,
+  "implicit": {
+   "crit_chance": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "sword_100",
+  "name": "Starborn Sword",
+  "slot": "main_hand",
+  "type": "sword",
+  "type_name": "Sword",
+  "min_ilvl": 100,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "dmg": [
+   39,
+   91
+  ],
+  "aps": 1.35,
+  "implicit": {
+   "crit_chance": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "sword_140",
+  "name": "Dawnwrought Sword",
+  "slot": "main_hand",
+  "type": "sword",
+  "type_name": "Sword",
+  "min_ilvl": 140,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "dmg": [
+   57,
+   133
+  ],
+  "aps": 1.35,
+  "implicit": {
+   "crit_chance": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "great_axe_t_1",
+  "name": "Rusty Great Axe",
+  "slot": "main_hand",
+  "type": "axe2h",
+  "type_name": "Great Axe",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_2handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker"
+  ],
+  "dmg": [
+   6,
+   12
+  ],
+  "aps": 1.0,
+  "implicit": {
+   "damage_pct": [
+    4,
+    10
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "great_axe_t_12",
+  "name": "Iron Great Axe",
+  "slot": "main_hand",
+  "type": "axe2h",
+  "type_name": "Great Axe",
+  "min_ilvl": 12,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_2handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker"
+  ],
+  "dmg": [
+   11,
+   23
+  ],
+  "aps": 1.0,
+  "implicit": {
+   "damage_pct": [
+    4,
+    10
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "great_axe_t_28",
+  "name": "Moonsteel Great Axe",
+  "slot": "main_hand",
+  "type": "axe2h",
+  "type_name": "Great Axe",
+  "min_ilvl": 28,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_2handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker"
+  ],
+  "dmg": [
+   20,
+   41
+  ],
+  "aps": 1.0,
+  "implicit": {
+   "damage_pct": [
+    4,
+    10
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "great_axe_t_48",
+  "name": "Wickforged Great Axe",
+  "slot": "main_hand",
+  "type": "axe2h",
+  "type_name": "Great Axe",
+  "min_ilvl": 48,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_2handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker"
+  ],
+  "dmg": [
+   34,
+   67
+  ],
+  "aps": 1.0,
+  "implicit": {
+   "damage_pct": [
+    4,
+    10
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "great_axe_t_70",
+  "name": "Hushbane Great Axe",
+  "slot": "main_hand",
+  "type": "axe2h",
+  "type_name": "Great Axe",
+  "min_ilvl": 70,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_2handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker"
+  ],
+  "dmg": [
+   52,
+   103
+  ],
+  "aps": 1.0,
+  "implicit": {
+   "damage_pct": [
+    4,
+    10
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "great_axe_t_100",
+  "name": "Starborn Great Axe",
+  "slot": "main_hand",
+  "type": "axe2h",
+  "type_name": "Great Axe",
+  "min_ilvl": 100,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_2handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker"
+  ],
+  "dmg": [
+   78,
+   156
+  ],
+  "aps": 1.0,
+  "implicit": {
+   "damage_pct": [
+    4,
+    10
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "great_axe_t_140",
+  "name": "Dawnwrought Great Axe",
+  "slot": "main_hand",
+  "type": "axe2h",
+  "type_name": "Great Axe",
+  "min_ilvl": 140,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_2handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker"
+  ],
+  "dmg": [
+   114,
+   228
+  ],
+  "aps": 1.0,
+  "implicit": {
+   "damage_pct": [
+    4,
+    10
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "staff_1",
+  "name": "Rusty Staff",
+  "slot": "main_hand",
+  "type": "staff",
+  "type_name": "Staff",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/staff.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer"
+  ],
+  "dmg": [
+   4,
+   8
+  ],
+  "aps": 1.2,
+  "implicit": {
+   "wisdom": [
+    2,
+    5
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "staff_12",
+  "name": "Iron Staff",
+  "slot": "main_hand",
+  "type": "staff",
+  "type_name": "Staff",
+  "min_ilvl": 12,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/staff.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer"
+  ],
+  "dmg": [
+   8,
+   15
+  ],
+  "aps": 1.2,
+  "implicit": {
+   "wisdom": [
+    2,
+    5
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "staff_28",
+  "name": "Moonsteel Staff",
+  "slot": "main_hand",
+  "type": "staff",
+  "type_name": "Staff",
+  "min_ilvl": 28,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/staff.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer"
+  ],
+  "dmg": [
+   14,
+   27
+  ],
+  "aps": 1.2,
+  "implicit": {
+   "wisdom": [
+    2,
+    5
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "staff_48",
+  "name": "Wickforged Staff",
+  "slot": "main_hand",
+  "type": "staff",
+  "type_name": "Staff",
+  "min_ilvl": 48,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/staff.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer"
+  ],
+  "dmg": [
+   22,
+   45
+  ],
+  "aps": 1.2,
+  "implicit": {
+   "wisdom": [
+    2,
+    5
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "staff_70",
+  "name": "Hushbane Staff",
+  "slot": "main_hand",
+  "type": "staff",
+  "type_name": "Staff",
+  "min_ilvl": 70,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/staff.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer"
+  ],
+  "dmg": [
+   34,
+   69
+  ],
+  "aps": 1.2,
+  "implicit": {
+   "wisdom": [
+    2,
+    5
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "staff_100",
+  "name": "Starborn Staff",
+  "slot": "main_hand",
+  "type": "staff",
+  "type_name": "Staff",
+  "min_ilvl": 100,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/staff.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer"
+  ],
+  "dmg": [
+   52,
+   104
+  ],
+  "aps": 1.2,
+  "implicit": {
+   "wisdom": [
+    2,
+    5
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "staff_140",
+  "name": "Dawnwrought Staff",
+  "slot": "main_hand",
+  "type": "staff",
+  "type_name": "Staff",
+  "min_ilvl": 140,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/staff.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer"
+  ],
+  "dmg": [
+   76,
+   152
+  ],
+  "aps": 1.2,
+  "implicit": {
+   "wisdom": [
+    2,
+    5
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "wand_1",
+  "name": "Rusty Wand",
+  "slot": "main_hand",
+  "type": "wand",
+  "type_name": "Wand",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/wand.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "dmg": [
+   3,
+   6
+  ],
+  "aps": 1.4,
+  "implicit": {
+   "resource_regen": [
+    1,
+    3
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "wand_12",
+  "name": "Iron Wand",
+  "slot": "main_hand",
+  "type": "wand",
+  "type_name": "Wand",
+  "min_ilvl": 12,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/wand.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "dmg": [
+   6,
+   11
+  ],
+  "aps": 1.4,
+  "implicit": {
+   "resource_regen": [
+    1,
+    3
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "wand_28",
+  "name": "Moonsteel Wand",
+  "slot": "main_hand",
+  "type": "wand",
+  "type_name": "Wand",
+  "min_ilvl": 28,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/wand.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "dmg": [
+   10,
+   20
+  ],
+  "aps": 1.4,
+  "implicit": {
+   "resource_regen": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "wand_48",
+  "name": "Wickforged Wand",
+  "slot": "main_hand",
+  "type": "wand",
+  "type_name": "Wand",
+  "min_ilvl": 48,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/wand.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "dmg": [
+   17,
+   34
+  ],
+  "aps": 1.4,
+  "implicit": {
+   "resource_regen": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "wand_70",
+  "name": "Hushbane Wand",
+  "slot": "main_hand",
+  "type": "wand",
+  "type_name": "Wand",
+  "min_ilvl": 70,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/wand.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "dmg": [
+   26,
+   52
+  ],
+  "aps": 1.4,
+  "implicit": {
+   "resource_regen": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "wand_100",
+  "name": "Starborn Wand",
+  "slot": "main_hand",
+  "type": "wand",
+  "type_name": "Wand",
+  "min_ilvl": 100,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/wand.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "dmg": [
+   39,
+   78
+  ],
+  "aps": 1.4,
+  "implicit": {
+   "resource_regen": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "wand_140",
+  "name": "Dawnwrought Wand",
+  "slot": "main_hand",
+  "type": "wand",
+  "type_name": "Wand",
+  "min_ilvl": 140,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/wand.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "dmg": [
+   57,
+   114
+  ],
+  "aps": 1.4,
+  "implicit": {
+   "resource_regen": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "dagger_1",
+  "name": "Rusty Dagger",
+  "slot": "main_hand",
+  "type": "dagger",
+  "type_name": "Dagger",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/dagger.gltf",
+  "weight": 10,
+  "classes": [
+   "stitcher",
+   "roofrunner"
+  ],
+  "dmg": [
+   2,
+   5
+  ],
+  "aps": 1.6,
+  "implicit": {
+   "crit_damage": [
+    5,
+    15
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "dagger_12",
+  "name": "Iron Dagger",
+  "slot": "main_hand",
+  "type": "dagger",
+  "type_name": "Dagger",
+  "min_ilvl": 12,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/dagger.gltf",
+  "weight": 10,
+  "classes": [
+   "stitcher",
+   "roofrunner"
+  ],
+  "dmg": [
+   4,
+   10
+  ],
+  "aps": 1.6,
+  "implicit": {
+   "crit_damage": [
+    5,
+    15
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "dagger_28",
+  "name": "Moonsteel Dagger",
+  "slot": "main_hand",
+  "type": "dagger",
+  "type_name": "Dagger",
+  "min_ilvl": 28,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/dagger.gltf",
+  "weight": 10,
+  "classes": [
+   "stitcher",
+   "roofrunner"
+  ],
+  "dmg": [
+   7,
+   17
+  ],
+  "aps": 1.6,
+  "implicit": {
+   "crit_damage": [
+    5,
+    15
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "dagger_48",
+  "name": "Wickforged Dagger",
+  "slot": "main_hand",
+  "type": "dagger",
+  "type_name": "Dagger",
+  "min_ilvl": 48,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/dagger.gltf",
+  "weight": 10,
+  "classes": [
+   "stitcher",
+   "roofrunner"
+  ],
+  "dmg": [
+   11,
+   28
+  ],
+  "aps": 1.6,
+  "implicit": {
+   "crit_damage": [
+    5,
+    15
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "dagger_70",
+  "name": "Hushbane Dagger",
+  "slot": "main_hand",
+  "type": "dagger",
+  "type_name": "Dagger",
+  "min_ilvl": 70,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/dagger.gltf",
+  "weight": 10,
+  "classes": [
+   "stitcher",
+   "roofrunner"
+  ],
+  "dmg": [
+   17,
+   43
+  ],
+  "aps": 1.6,
+  "implicit": {
+   "crit_damage": [
+    5,
+    15
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "dagger_100",
+  "name": "Starborn Dagger",
+  "slot": "main_hand",
+  "type": "dagger",
+  "type_name": "Dagger",
+  "min_ilvl": 100,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/dagger.gltf",
+  "weight": 10,
+  "classes": [
+   "stitcher",
+   "roofrunner"
+  ],
+  "dmg": [
+   26,
+   65
+  ],
+  "aps": 1.6,
+  "implicit": {
+   "crit_damage": [
+    5,
+    15
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "dagger_140",
+  "name": "Dawnwrought Dagger",
+  "slot": "main_hand",
+  "type": "dagger",
+  "type_name": "Dagger",
+  "min_ilvl": 140,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/dagger.gltf",
+  "weight": 10,
+  "classes": [
+   "stitcher",
+   "roofrunner"
+  ],
+  "dmg": [
+   38,
+   95
+  ],
+  "aps": 1.6,
+  "implicit": {
+   "crit_damage": [
+    5,
+    15
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "crossbow_1",
+  "name": "Rusty Crossbow",
+  "slot": "main_hand",
+  "type": "crossbow",
+  "type_name": "Crossbow",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/crossbow_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "dmg": [
+   3,
+   7
+  ],
+  "aps": 1.45,
+  "implicit": {
+   "agility": [
+    2,
+    5
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "crossbow_12",
+  "name": "Iron Crossbow",
+  "slot": "main_hand",
+  "type": "crossbow",
+  "type_name": "Crossbow",
+  "min_ilvl": 12,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/crossbow_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "dmg": [
+   6,
+   13
+  ],
+  "aps": 1.45,
+  "implicit": {
+   "agility": [
+    2,
+    5
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "crossbow_28",
+  "name": "Moonsteel Crossbow",
+  "slot": "main_hand",
+  "type": "crossbow",
+  "type_name": "Crossbow",
+  "min_ilvl": 28,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/crossbow_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "dmg": [
+   10,
+   24
+  ],
+  "aps": 1.45,
+  "implicit": {
+   "agility": [
+    2,
+    5
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "crossbow_48",
+  "name": "Wickforged Crossbow",
+  "slot": "main_hand",
+  "type": "crossbow",
+  "type_name": "Crossbow",
+  "min_ilvl": 48,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/crossbow_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "dmg": [
+   17,
+   39
+  ],
+  "aps": 1.45,
+  "implicit": {
+   "agility": [
+    2,
+    5
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "crossbow_70",
+  "name": "Hushbane Crossbow",
+  "slot": "main_hand",
+  "type": "crossbow",
+  "type_name": "Crossbow",
+  "min_ilvl": 70,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/crossbow_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "dmg": [
+   26,
+   60
+  ],
+  "aps": 1.45,
+  "implicit": {
+   "agility": [
+    2,
+    5
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "crossbow_100",
+  "name": "Starborn Crossbow",
+  "slot": "main_hand",
+  "type": "crossbow",
+  "type_name": "Crossbow",
+  "min_ilvl": 100,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/crossbow_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "dmg": [
+   39,
+   91
+  ],
+  "aps": 1.45,
+  "implicit": {
+   "agility": [
+    2,
+    5
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "crossbow_140",
+  "name": "Dawnwrought Crossbow",
+  "slot": "main_hand",
+  "type": "crossbow",
+  "type_name": "Crossbow",
+  "min_ilvl": 140,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/crossbow_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "dmg": [
+   57,
+   133
+  ],
+  "aps": 1.45,
+  "implicit": {
+   "agility": [
+    2,
+    5
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "axe_1",
+  "name": "Rusty Axe",
+  "slot": "main_hand",
+  "type": "axe",
+  "type_name": "Axe",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker",
+   "lanternbearer"
+  ],
+  "dmg": [
+   4,
+   8
+  ],
+  "aps": 1.3,
+  "implicit": {
+   "damage": [
+    1,
+    3
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "axe_12",
+  "name": "Iron Axe",
+  "slot": "main_hand",
+  "type": "axe",
+  "type_name": "Axe",
+  "min_ilvl": 12,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker",
+   "lanternbearer"
+  ],
+  "dmg": [
+   8,
+   15
+  ],
+  "aps": 1.3,
+  "implicit": {
+   "damage": [
+    1,
+    3
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "axe_28",
+  "name": "Moonsteel Axe",
+  "slot": "main_hand",
+  "type": "axe",
+  "type_name": "Axe",
+  "min_ilvl": 28,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker",
+   "lanternbearer"
+  ],
+  "dmg": [
+   14,
+   27
+  ],
+  "aps": 1.3,
+  "implicit": {
+   "damage": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "axe_48",
+  "name": "Wickforged Axe",
+  "slot": "main_hand",
+  "type": "axe",
+  "type_name": "Axe",
+  "min_ilvl": 48,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker",
+   "lanternbearer"
+  ],
+  "dmg": [
+   22,
+   45
+  ],
+  "aps": 1.3,
+  "implicit": {
+   "damage": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "axe_70",
+  "name": "Hushbane Axe",
+  "slot": "main_hand",
+  "type": "axe",
+  "type_name": "Axe",
+  "min_ilvl": 70,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker",
+   "lanternbearer"
+  ],
+  "dmg": [
+   34,
+   69
+  ],
+  "aps": 1.3,
+  "implicit": {
+   "damage": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "axe_100",
+  "name": "Starborn Axe",
+  "slot": "main_hand",
+  "type": "axe",
+  "type_name": "Axe",
+  "min_ilvl": 100,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker",
+   "lanternbearer"
+  ],
+  "dmg": [
+   52,
+   104
+  ],
+  "aps": 1.3,
+  "implicit": {
+   "damage": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "axe_140",
+  "name": "Dawnwrought Axe",
+  "slot": "main_hand",
+  "type": "axe",
+  "type_name": "Axe",
+  "min_ilvl": 140,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_1handed.gltf",
+  "weight": 10,
+  "classes": [
+   "bellstriker",
+   "lanternbearer"
+  ],
+  "dmg": [
+   76,
+   152
+  ],
+  "aps": 1.3,
+  "implicit": {
+   "damage": [
+    1,
+    3
+   ]
+  },
+  "sockets": 2
+ },
+ {
+  "id": "shield_1",
+  "name": "Rusty Shield",
+  "slot": "off_hand",
+  "type": "shield",
+  "type_name": "Shield",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/shield_round.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "armor": 14,
+  "implicit": {
+   "block": [
+    8,
+    14
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "tome_1",
+  "name": "Rusty Tome",
+  "slot": "off_hand",
+  "type": "tome",
+  "type_name": "Tome",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/spellbook_closed.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "implicit": {
+   "resource_max": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "quiver_1",
+  "name": "Rusty Quiver",
+  "slot": "off_hand",
+  "type": "quiver",
+  "type_name": "Quiver",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/quiver.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "implicit": {
+   "projectile_damage_pct": [
+    5,
+    12
+   ]
+  }
+ },
+ {
+  "id": "shield_12",
+  "name": "Iron Shield",
+  "slot": "off_hand",
+  "type": "shield",
+  "type_name": "Shield",
+  "min_ilvl": 12,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/shield_round.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "armor": 27,
+  "implicit": {
+   "block": [
+    8,
+    14
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "tome_12",
+  "name": "Iron Tome",
+  "slot": "off_hand",
+  "type": "tome",
+  "type_name": "Tome",
+  "min_ilvl": 12,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/spellbook_closed.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "implicit": {
+   "resource_max": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "quiver_12",
+  "name": "Iron Quiver",
+  "slot": "off_hand",
+  "type": "quiver",
+  "type_name": "Quiver",
+  "min_ilvl": 12,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/quiver.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "implicit": {
+   "projectile_damage_pct": [
+    5,
+    12
+   ]
+  }
+ },
+ {
+  "id": "shield_28",
+  "name": "Moonsteel Shield",
+  "slot": "off_hand",
+  "type": "shield",
+  "type_name": "Shield",
+  "min_ilvl": 28,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/shield_round.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "armor": 48,
+  "implicit": {
+   "block": [
+    8,
+    14
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "tome_28",
+  "name": "Moonsteel Tome",
+  "slot": "off_hand",
+  "type": "tome",
+  "type_name": "Tome",
+  "min_ilvl": 28,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/spellbook_closed.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "implicit": {
+   "resource_max": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "quiver_28",
+  "name": "Moonsteel Quiver",
+  "slot": "off_hand",
+  "type": "quiver",
+  "type_name": "Quiver",
+  "min_ilvl": 28,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/quiver.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "implicit": {
+   "projectile_damage_pct": [
+    5,
+    12
+   ]
+  }
+ },
+ {
+  "id": "shield_48",
+  "name": "Wickforged Shield",
+  "slot": "off_hand",
+  "type": "shield",
+  "type_name": "Shield",
+  "min_ilvl": 48,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/shield_round.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "armor": 78,
+  "implicit": {
+   "block": [
+    8,
+    14
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "tome_48",
+  "name": "Wickforged Tome",
+  "slot": "off_hand",
+  "type": "tome",
+  "type_name": "Tome",
+  "min_ilvl": 48,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/spellbook_closed.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "implicit": {
+   "resource_max": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "quiver_48",
+  "name": "Wickforged Quiver",
+  "slot": "off_hand",
+  "type": "quiver",
+  "type_name": "Quiver",
+  "min_ilvl": 48,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/quiver.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "implicit": {
+   "projectile_damage_pct": [
+    5,
+    12
+   ]
+  }
+ },
+ {
+  "id": "shield_70",
+  "name": "Hushbane Shield",
+  "slot": "off_hand",
+  "type": "shield",
+  "type_name": "Shield",
+  "min_ilvl": 70,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/shield_round.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "armor": 120,
+  "implicit": {
+   "block": [
+    8,
+    14
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "tome_70",
+  "name": "Hushbane Tome",
+  "slot": "off_hand",
+  "type": "tome",
+  "type_name": "Tome",
+  "min_ilvl": 70,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/spellbook_closed.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "implicit": {
+   "resource_max": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "quiver_70",
+  "name": "Hushbane Quiver",
+  "slot": "off_hand",
+  "type": "quiver",
+  "type_name": "Quiver",
+  "min_ilvl": 70,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/quiver.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "implicit": {
+   "projectile_damage_pct": [
+    5,
+    12
+   ]
+  }
+ },
+ {
+  "id": "shield_100",
+  "name": "Starborn Shield",
+  "slot": "off_hand",
+  "type": "shield",
+  "type_name": "Shield",
+  "min_ilvl": 100,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/shield_round.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "armor": 182,
+  "implicit": {
+   "block": [
+    8,
+    14
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "tome_100",
+  "name": "Starborn Tome",
+  "slot": "off_hand",
+  "type": "tome",
+  "type_name": "Tome",
+  "min_ilvl": 100,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/spellbook_closed.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "implicit": {
+   "resource_max": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "quiver_100",
+  "name": "Starborn Quiver",
+  "slot": "off_hand",
+  "type": "quiver",
+  "type_name": "Quiver",
+  "min_ilvl": 100,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/quiver.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "implicit": {
+   "projectile_damage_pct": [
+    5,
+    12
+   ]
+  }
+ },
+ {
+  "id": "shield_140",
+  "name": "Dawnwrought Shield",
+  "slot": "off_hand",
+  "type": "shield",
+  "type_name": "Shield",
+  "min_ilvl": 140,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/shield_round.gltf",
+  "weight": 10,
+  "classes": [
+   "lanternbearer"
+  ],
+  "armor": 266,
+  "implicit": {
+   "block": [
+    8,
+    14
+   ]
+  },
+  "sockets": 1
+ },
+ {
+  "id": "tome_140",
+  "name": "Dawnwrought Tome",
+  "slot": "off_hand",
+  "type": "tome",
+  "type_name": "Tome",
+  "min_ilvl": 140,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/spellbook_closed.gltf",
+  "weight": 10,
+  "classes": [
+   "stargazer",
+   "stitcher"
+  ],
+  "implicit": {
+   "resource_max": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "quiver_140",
+  "name": "Dawnwrought Quiver",
+  "slot": "off_hand",
+  "type": "quiver",
+  "type_name": "Quiver",
+  "min_ilvl": 140,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/quiver.gltf",
+  "weight": 10,
+  "classes": [
+   "roofrunner"
+  ],
+  "implicit": {
+   "projectile_damage_pct": [
+    5,
+    12
+   ]
+  }
+ },
+ {
+  "id": "head_1",
+  "name": "Rusty Hood",
+  "slot": "head",
+  "type": "head",
+  "type_name": "Helm",
+  "min_ilvl": 1,
+  "model": "",
+  "weight": 10,
+  "armor": 8,
+  "sockets": 0
+ },
+ {
+  "id": "head_12",
+  "name": "Iron Hood",
+  "slot": "head",
+  "type": "head",
+  "type_name": "Helm",
+  "min_ilvl": 12,
+  "model": "",
+  "weight": 10,
+  "armor": 15,
+  "sockets": 0
+ },
+ {
+  "id": "head_28",
+  "name": "Moonsteel Hood",
+  "slot": "head",
+  "type": "head",
+  "type_name": "Helm",
+  "min_ilvl": 28,
+  "model": "",
+  "weight": 10,
+  "armor": 27,
+  "sockets": 0
+ },
+ {
+  "id": "head_48",
+  "name": "Wickforged Hood",
+  "slot": "head",
+  "type": "head",
+  "type_name": "Helm",
+  "min_ilvl": 48,
+  "model": "",
+  "weight": 10,
+  "armor": 45,
+  "sockets": 0
+ },
+ {
+  "id": "head_70",
+  "name": "Hushbane Hood",
+  "slot": "head",
+  "type": "head",
+  "type_name": "Helm",
+  "min_ilvl": 70,
+  "model": "",
+  "weight": 10,
+  "armor": 69,
+  "sockets": 0
+ },
+ {
+  "id": "head_100",
+  "name": "Starborn Hood",
+  "slot": "head",
+  "type": "head",
+  "type_name": "Helm",
+  "min_ilvl": 100,
+  "model": "",
+  "weight": 10,
+  "armor": 104,
+  "sockets": 0
+ },
+ {
+  "id": "head_140",
+  "name": "Dawnwrought Hood",
+  "slot": "head",
+  "type": "head",
+  "type_name": "Helm",
+  "min_ilvl": 140,
+  "model": "",
+  "weight": 10,
+  "armor": 152,
+  "sockets": 0
+ },
+ {
+  "id": "chest_1",
+  "name": "Rusty Coat",
+  "slot": "chest",
+  "type": "chest",
+  "type_name": "Armor",
+  "min_ilvl": 1,
+  "model": "",
+  "weight": 10,
+  "armor": 16,
+  "sockets": 0
+ },
+ {
+  "id": "chest_12",
+  "name": "Iron Coat",
+  "slot": "chest",
+  "type": "chest",
+  "type_name": "Armor",
+  "min_ilvl": 12,
+  "model": "",
+  "weight": 10,
+  "armor": 30,
+  "sockets": 0
+ },
+ {
+  "id": "chest_28",
+  "name": "Moonsteel Coat",
+  "slot": "chest",
+  "type": "chest",
+  "type_name": "Armor",
+  "min_ilvl": 28,
+  "model": "",
+  "weight": 10,
+  "armor": 54,
+  "sockets": 2
+ },
+ {
+  "id": "chest_48",
+  "name": "Wickforged Coat",
+  "slot": "chest",
+  "type": "chest",
+  "type_name": "Armor",
+  "min_ilvl": 48,
+  "model": "",
+  "weight": 10,
+  "armor": 90,
+  "sockets": 2
+ },
+ {
+  "id": "chest_70",
+  "name": "Hushbane Coat",
+  "slot": "chest",
+  "type": "chest",
+  "type_name": "Armor",
+  "min_ilvl": 70,
+  "model": "",
+  "weight": 10,
+  "armor": 138,
+  "sockets": 2
+ },
+ {
+  "id": "chest_100",
+  "name": "Starborn Coat",
+  "slot": "chest",
+  "type": "chest",
+  "type_name": "Armor",
+  "min_ilvl": 100,
+  "model": "",
+  "weight": 10,
+  "armor": 208,
+  "sockets": 2
+ },
+ {
+  "id": "chest_140",
+  "name": "Dawnwrought Coat",
+  "slot": "chest",
+  "type": "chest",
+  "type_name": "Armor",
+  "min_ilvl": 140,
+  "model": "",
+  "weight": 10,
+  "armor": 304,
+  "sockets": 2
+ },
+ {
+  "id": "hands_1",
+  "name": "Rusty Gloves",
+  "slot": "hands",
+  "type": "hands",
+  "type_name": "Gloves",
+  "min_ilvl": 1,
+  "model": "",
+  "weight": 10,
+  "armor": 6,
+  "sockets": 0
+ },
+ {
+  "id": "hands_12",
+  "name": "Iron Gloves",
+  "slot": "hands",
+  "type": "hands",
+  "type_name": "Gloves",
+  "min_ilvl": 12,
+  "model": "",
+  "weight": 10,
+  "armor": 11,
+  "sockets": 0
+ },
+ {
+  "id": "hands_28",
+  "name": "Moonsteel Gloves",
+  "slot": "hands",
+  "type": "hands",
+  "type_name": "Gloves",
+  "min_ilvl": 28,
+  "model": "",
+  "weight": 10,
+  "armor": 20,
+  "sockets": 0
+ },
+ {
+  "id": "hands_48",
+  "name": "Wickforged Gloves",
+  "slot": "hands",
+  "type": "hands",
+  "type_name": "Gloves",
+  "min_ilvl": 48,
+  "model": "",
+  "weight": 10,
+  "armor": 34,
+  "sockets": 0
+ },
+ {
+  "id": "hands_70",
+  "name": "Hushbane Gloves",
+  "slot": "hands",
+  "type": "hands",
+  "type_name": "Gloves",
+  "min_ilvl": 70,
+  "model": "",
+  "weight": 10,
+  "armor": 52,
+  "sockets": 0
+ },
+ {
+  "id": "hands_100",
+  "name": "Starborn Gloves",
+  "slot": "hands",
+  "type": "hands",
+  "type_name": "Gloves",
+  "min_ilvl": 100,
+  "model": "",
+  "weight": 10,
+  "armor": 78,
+  "sockets": 0
+ },
+ {
+  "id": "hands_140",
+  "name": "Dawnwrought Gloves",
+  "slot": "hands",
+  "type": "hands",
+  "type_name": "Gloves",
+  "min_ilvl": 140,
+  "model": "",
+  "weight": 10,
+  "armor": 114,
+  "sockets": 0
+ },
+ {
+  "id": "legs_1",
+  "name": "Rusty Leggings",
+  "slot": "legs",
+  "type": "legs",
+  "type_name": "Pants",
+  "min_ilvl": 1,
+  "model": "",
+  "weight": 10,
+  "armor": 11,
+  "sockets": 0
+ },
+ {
+  "id": "legs_12",
+  "name": "Iron Leggings",
+  "slot": "legs",
+  "type": "legs",
+  "type_name": "Pants",
+  "min_ilvl": 12,
+  "model": "",
+  "weight": 10,
+  "armor": 21,
+  "sockets": 0
+ },
+ {
+  "id": "legs_28",
+  "name": "Moonsteel Leggings",
+  "slot": "legs",
+  "type": "legs",
+  "type_name": "Pants",
+  "min_ilvl": 28,
+  "model": "",
+  "weight": 10,
+  "armor": 37,
+  "sockets": 0
+ },
+ {
+  "id": "legs_48",
+  "name": "Wickforged Leggings",
+  "slot": "legs",
+  "type": "legs",
+  "type_name": "Pants",
+  "min_ilvl": 48,
+  "model": "",
+  "weight": 10,
+  "armor": 62,
+  "sockets": 0
+ },
+ {
+  "id": "legs_70",
+  "name": "Hushbane Leggings",
+  "slot": "legs",
+  "type": "legs",
+  "type_name": "Pants",
+  "min_ilvl": 70,
+  "model": "",
+  "weight": 10,
+  "armor": 95,
+  "sockets": 0
+ },
+ {
+  "id": "legs_100",
+  "name": "Starborn Leggings",
+  "slot": "legs",
+  "type": "legs",
+  "type_name": "Pants",
+  "min_ilvl": 100,
+  "model": "",
+  "weight": 10,
+  "armor": 143,
+  "sockets": 0
+ },
+ {
+  "id": "legs_140",
+  "name": "Dawnwrought Leggings",
+  "slot": "legs",
+  "type": "legs",
+  "type_name": "Pants",
+  "min_ilvl": 140,
+  "model": "",
+  "weight": 10,
+  "armor": 209,
+  "sockets": 0
+ },
+ {
+  "id": "feet_1",
+  "name": "Rusty Boots",
+  "slot": "feet",
+  "type": "feet",
+  "type_name": "Boots",
+  "min_ilvl": 1,
+  "model": "",
+  "weight": 10,
+  "armor": 6,
+  "sockets": 0,
+  "implicit": {
+   "move_speed_pct": [
+    3,
+    6
+   ]
+  }
+ },
+ {
+  "id": "feet_12",
+  "name": "Iron Boots",
+  "slot": "feet",
+  "type": "feet",
+  "type_name": "Boots",
+  "min_ilvl": 12,
+  "model": "",
+  "weight": 10,
+  "armor": 11,
+  "sockets": 0,
+  "implicit": {
+   "move_speed_pct": [
+    3,
+    6
+   ]
+  }
+ },
+ {
+  "id": "feet_28",
+  "name": "Moonsteel Boots",
+  "slot": "feet",
+  "type": "feet",
+  "type_name": "Boots",
+  "min_ilvl": 28,
+  "model": "",
+  "weight": 10,
+  "armor": 20,
+  "sockets": 0,
+  "implicit": {
+   "move_speed_pct": [
+    3,
+    6
+   ]
+  }
+ },
+ {
+  "id": "feet_48",
+  "name": "Wickforged Boots",
+  "slot": "feet",
+  "type": "feet",
+  "type_name": "Boots",
+  "min_ilvl": 48,
+  "model": "",
+  "weight": 10,
+  "armor": 34,
+  "sockets": 0,
+  "implicit": {
+   "move_speed_pct": [
+    3,
+    6
+   ]
+  }
+ },
+ {
+  "id": "feet_70",
+  "name": "Hushbane Boots",
+  "slot": "feet",
+  "type": "feet",
+  "type_name": "Boots",
+  "min_ilvl": 70,
+  "model": "",
+  "weight": 10,
+  "armor": 52,
+  "sockets": 0,
+  "implicit": {
+   "move_speed_pct": [
+    3,
+    6
+   ]
+  }
+ },
+ {
+  "id": "feet_100",
+  "name": "Starborn Boots",
+  "slot": "feet",
+  "type": "feet",
+  "type_name": "Boots",
+  "min_ilvl": 100,
+  "model": "",
+  "weight": 10,
+  "armor": 78,
+  "sockets": 0,
+  "implicit": {
+   "move_speed_pct": [
+    3,
+    6
+   ]
+  }
+ },
+ {
+  "id": "feet_140",
+  "name": "Dawnwrought Boots",
+  "slot": "feet",
+  "type": "feet",
+  "type_name": "Boots",
+  "min_ilvl": 140,
+  "model": "",
+  "weight": 10,
+  "armor": 114,
+  "sockets": 0,
+  "implicit": {
+   "move_speed_pct": [
+    3,
+    6
+   ]
+  }
+ },
+ {
+  "id": "belt_1",
+  "name": "Rusty Sash",
+  "slot": "belt",
+  "type": "belt",
+  "type_name": "Belt",
+  "min_ilvl": 1,
+  "model": "",
+  "weight": 10,
+  "armor": 5,
+  "sockets": 0,
+  "implicit": {
+   "life": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "belt_12",
+  "name": "Iron Sash",
+  "slot": "belt",
+  "type": "belt",
+  "type_name": "Belt",
+  "min_ilvl": 12,
+  "model": "",
+  "weight": 10,
+  "armor": 10,
+  "sockets": 0,
+  "implicit": {
+   "life": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "belt_28",
+  "name": "Moonsteel Sash",
+  "slot": "belt",
+  "type": "belt",
+  "type_name": "Belt",
+  "min_ilvl": 28,
+  "model": "",
+  "weight": 10,
+  "armor": 17,
+  "sockets": 0,
+  "implicit": {
+   "life": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "belt_48",
+  "name": "Wickforged Sash",
+  "slot": "belt",
+  "type": "belt",
+  "type_name": "Belt",
+  "min_ilvl": 48,
+  "model": "",
+  "weight": 10,
+  "armor": 28,
+  "sockets": 0,
+  "implicit": {
+   "life": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "belt_70",
+  "name": "Hushbane Sash",
+  "slot": "belt",
+  "type": "belt",
+  "type_name": "Belt",
+  "min_ilvl": 70,
+  "model": "",
+  "weight": 10,
+  "armor": 43,
+  "sockets": 0,
+  "implicit": {
+   "life": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "belt_100",
+  "name": "Starborn Sash",
+  "slot": "belt",
+  "type": "belt",
+  "type_name": "Belt",
+  "min_ilvl": 100,
+  "model": "",
+  "weight": 10,
+  "armor": 65,
+  "sockets": 0,
+  "implicit": {
+   "life": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "belt_140",
+  "name": "Dawnwrought Sash",
+  "slot": "belt",
+  "type": "belt",
+  "type_name": "Belt",
+  "min_ilvl": 140,
+  "model": "",
+  "weight": 10,
+  "armor": 95,
+  "sockets": 0,
+  "implicit": {
+   "life": [
+    10,
+    25
+   ]
+  }
+ },
+ {
+  "id": "ring_1",
+  "name": "Rusty Ring",
+  "slot": "ring",
+  "type": "ring",
+  "type_name": "Ring",
+  "min_ilvl": 1,
+  "model": "",
+  "weight": 10,
+  "implicit": {
+   "resist_all": [
+    2,
+    5
+   ]
+  }
+ },
+ {
+  "id": "amulet_1",
+  "name": "Rusty Amulet",
+  "slot": "amulet",
+  "type": "amulet",
+  "type_name": "Amulet",
+  "min_ilvl": 1,
+  "model": "",
+  "weight": 6,
+  "implicit": {
+   "damage_pct": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "charm_1",
+  "name": "Rusty Charm",
+  "slot": "charm",
+  "type": "charm",
+  "type_name": "Charm",
+  "min_ilvl": 1,
+  "model": "",
+  "weight": 4,
+  "implicit": {
+   "magic_find": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "ring_12",
+  "name": "Iron Ring",
+  "slot": "ring",
+  "type": "ring",
+  "type_name": "Ring",
+  "min_ilvl": 12,
+  "model": "",
+  "weight": 10,
+  "implicit": {
+   "resist_all": [
+    2,
+    5
+   ]
+  }
+ },
+ {
+  "id": "amulet_12",
+  "name": "Iron Amulet",
+  "slot": "amulet",
+  "type": "amulet",
+  "type_name": "Amulet",
+  "min_ilvl": 12,
+  "model": "",
+  "weight": 6,
+  "implicit": {
+   "damage_pct": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "charm_12",
+  "name": "Iron Charm",
+  "slot": "charm",
+  "type": "charm",
+  "type_name": "Charm",
+  "min_ilvl": 12,
+  "model": "",
+  "weight": 4,
+  "implicit": {
+   "magic_find": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "ring_28",
+  "name": "Moonsteel Ring",
+  "slot": "ring",
+  "type": "ring",
+  "type_name": "Ring",
+  "min_ilvl": 28,
+  "model": "",
+  "weight": 10,
+  "implicit": {
+   "resist_all": [
+    2,
+    5
+   ]
+  }
+ },
+ {
+  "id": "amulet_28",
+  "name": "Moonsteel Amulet",
+  "slot": "amulet",
+  "type": "amulet",
+  "type_name": "Amulet",
+  "min_ilvl": 28,
+  "model": "",
+  "weight": 6,
+  "implicit": {
+   "damage_pct": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "charm_28",
+  "name": "Moonsteel Charm",
+  "slot": "charm",
+  "type": "charm",
+  "type_name": "Charm",
+  "min_ilvl": 28,
+  "model": "",
+  "weight": 4,
+  "implicit": {
+   "magic_find": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "ring_48",
+  "name": "Wickforged Ring",
+  "slot": "ring",
+  "type": "ring",
+  "type_name": "Ring",
+  "min_ilvl": 48,
+  "model": "",
+  "weight": 10,
+  "implicit": {
+   "resist_all": [
+    2,
+    5
+   ]
+  }
+ },
+ {
+  "id": "amulet_48",
+  "name": "Wickforged Amulet",
+  "slot": "amulet",
+  "type": "amulet",
+  "type_name": "Amulet",
+  "min_ilvl": 48,
+  "model": "",
+  "weight": 6,
+  "implicit": {
+   "damage_pct": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "charm_48",
+  "name": "Wickforged Charm",
+  "slot": "charm",
+  "type": "charm",
+  "type_name": "Charm",
+  "min_ilvl": 48,
+  "model": "",
+  "weight": 4,
+  "implicit": {
+   "magic_find": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "ring_70",
+  "name": "Hushbane Ring",
+  "slot": "ring",
+  "type": "ring",
+  "type_name": "Ring",
+  "min_ilvl": 70,
+  "model": "",
+  "weight": 10,
+  "implicit": {
+   "resist_all": [
+    2,
+    5
+   ]
+  }
+ },
+ {
+  "id": "amulet_70",
+  "name": "Hushbane Amulet",
+  "slot": "amulet",
+  "type": "amulet",
+  "type_name": "Amulet",
+  "min_ilvl": 70,
+  "model": "",
+  "weight": 6,
+  "implicit": {
+   "damage_pct": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "charm_70",
+  "name": "Hushbane Charm",
+  "slot": "charm",
+  "type": "charm",
+  "type_name": "Charm",
+  "min_ilvl": 70,
+  "model": "",
+  "weight": 4,
+  "implicit": {
+   "magic_find": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "ring_100",
+  "name": "Starborn Ring",
+  "slot": "ring",
+  "type": "ring",
+  "type_name": "Ring",
+  "min_ilvl": 100,
+  "model": "",
+  "weight": 10,
+  "implicit": {
+   "resist_all": [
+    2,
+    5
+   ]
+  }
+ },
+ {
+  "id": "amulet_100",
+  "name": "Starborn Amulet",
+  "slot": "amulet",
+  "type": "amulet",
+  "type_name": "Amulet",
+  "min_ilvl": 100,
+  "model": "",
+  "weight": 6,
+  "implicit": {
+   "damage_pct": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "charm_100",
+  "name": "Starborn Charm",
+  "slot": "charm",
+  "type": "charm",
+  "type_name": "Charm",
+  "min_ilvl": 100,
+  "model": "",
+  "weight": 4,
+  "implicit": {
+   "magic_find": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "ring_140",
+  "name": "Dawnwrought Ring",
+  "slot": "ring",
+  "type": "ring",
+  "type_name": "Ring",
+  "min_ilvl": 140,
+  "model": "",
+  "weight": 10,
+  "implicit": {
+   "resist_all": [
+    2,
+    5
+   ]
+  }
+ },
+ {
+  "id": "amulet_140",
+  "name": "Dawnwrought Amulet",
+  "slot": "amulet",
+  "type": "amulet",
+  "type_name": "Amulet",
+  "min_ilvl": 140,
+  "model": "",
+  "weight": 6,
+  "implicit": {
+   "damage_pct": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "charm_140",
+  "name": "Dawnwrought Charm",
+  "slot": "charm",
+  "type": "charm",
+  "type_name": "Charm",
+  "min_ilvl": 140,
+  "model": "",
+  "weight": 4,
+  "implicit": {
+   "magic_find": [
+    3,
+    8
+   ]
+  }
+ },
+ {
+  "id": "short_sword",
+  "name": "Worn Sword",
+  "slot": "main_hand",
+  "type": "sword",
+  "type_name": "Sword",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+  "weight": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "dmg": [
+   3,
+   6
+  ],
+  "aps": 1.35
+ },
+ {
+  "id": "buckler",
+  "name": "Wooden Buckler",
+  "slot": "off_hand",
+  "type": "shield",
+  "type_name": "Shield",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/shield_round.gltf",
+  "weight": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "armor": 10,
+  "implicit": {
+   "block": [
+    8,
+    8
+   ]
+  }
+ },
+ {
+  "id": "great_axe",
+  "name": "Old Bell-Axe",
+  "slot": "main_hand",
+  "type": "axe2h",
+  "type_name": "Great Axe",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/axe_2handed.gltf",
+  "weight": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "dmg": [
+   6,
+   11
+  ],
+  "aps": 1.0
+ },
+ {
+  "id": "apprentice_staff",
+  "name": "Apprentice Staff",
+  "slot": "main_hand",
+  "type": "staff",
+  "type_name": "Staff",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/staff.gltf",
+  "weight": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "dmg": [
+   4,
+   7
+  ],
+  "aps": 1.2
+ },
+ {
+  "id": "needle_dagger",
+  "name": "Needle Dagger",
+  "slot": "main_hand",
+  "type": "dagger",
+  "type_name": "Dagger",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/dagger.gltf",
+  "weight": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "dmg": [
+   3,
+   5
+  ],
+  "aps": 1.6
+ },
+ {
+  "id": "hand_crossbow",
+  "name": "Hand Crossbow",
+  "slot": "main_hand",
+  "type": "crossbow",
+  "type_name": "Crossbow",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/crossbow_1handed.gltf",
+  "weight": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "dmg": [
+   3,
+   6
+  ],
+  "aps": 1.45
+ },
+ {
+  "id": "padded_vest",
+  "name": "Padded Vest",
+  "slot": "chest",
+  "type": "chest",
+  "type_name": "Armor",
+  "min_ilvl": 1,
+  "model": "",
+  "weight": 0,
+  "armor": 12
+ }
+]

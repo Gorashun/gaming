@@ -1,0 +1,89 @@
+[
+ {
+  "id": "fast",
+  "name": "Swift",
+  "speed_mult": 1.5
+ },
+ {
+  "id": "shielded",
+  "name": "Warded"
+ },
+ {
+  "id": "vampiric",
+  "name": "Hungry",
+  "stats": {
+   "life_on_hit": 20
+  }
+ },
+ {
+  "id": "huge",
+  "name": "Huge",
+  "life_mult": 1.6
+ },
+ {
+  "id": "frozen",
+  "name": "Frostbound",
+  "abilities": [
+   {
+    "id": "aff_frost",
+    "type": "slam",
+    "at": "target",
+    "radius": 2.5,
+    "mult": 1.2,
+    "cooldown": 6,
+    "range": 10,
+    "telegraph": 1.2,
+    "element": "cold"
+   }
+  ]
+ },
+ {
+  "id": "molten",
+  "name": "Molten",
+  "abilities": [
+   {
+    "id": "aff_molten",
+    "type": "nova_ring",
+    "count": 8,
+    "mult": 0.6,
+    "cooldown": 7,
+    "range": 8,
+    "telegraph": 0.9,
+    "element": "fire",
+    "projectile": {
+     "speed": 6,
+     "range": 9,
+     "size": 0.25
+    }
+   }
+  ]
+ },
+ {
+  "id": "teleporter",
+  "name": "Blinking",
+  "abilities": [
+   {
+    "id": "aff_tele",
+    "type": "teleport",
+    "cooldown": 5,
+    "range": 10,
+    "telegraph": 0.4
+   }
+  ]
+ },
+ {
+  "id": "mender",
+  "name": "Mending",
+  "abilities": [
+   {
+    "id": "aff_heal",
+    "type": "heal_allies",
+    "radius": 7,
+    "pct": 0.15,
+    "cooldown": 8,
+    "range": 15,
+    "telegraph": 0.8
+   }
+  ]
+ }
+]

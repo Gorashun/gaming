@@ -22,6 +22,18 @@ Language: **English** (UI, lore, all player-facing text). Platform: **Android fi
 
 This GDD is the single source of truth. Research inputs (Swedish) live in `research/` and `lore/UNIVERSUM-PITCH.md`.
 
+> **v2.1 — Owner additions (binding):**
+> 15. **Big loot tables:** many bases per slot and tier, large affix pools, 40+ legendary powers, 30+ uniques, named set pieces, gems — drops must feel varied every session.
+> 16. **One art style only:** the older repo files (pixel item icons, hand-painted wall textures) are not used. All assets must match the chibi 3D style and animate smoothly.
+> 17. **Item upgrading (gold/material sink):** every item has an Upgrade level +0…+15 (Smith). Each step costs gold + materials (rising steeply), boosts base damage/armour and all affixes; success is guaranteed (no break/fail — welfare), costs are shown up front.
+> 18. **Many NPCs:** each town has 6+ named NPCs (smith, alchemist, jeweler, runecarver, trader, stash keeper, stablemaster, pet keeper, quest-giver, storyteller) with barks and small side quests.
+> 19. **Any class, any weapon:** all classes can equip all weapon types. Each class has weapon affinities (+damage/+speed bonus with favoured types). **Weapon proficiency** levels 1–50 per weapon type rise with kills using that type, granting permanent bonuses — build freedom.
+> 20. **Gear is visible:** the in-game hero model shows the equipped weapon/off-hand prop and gear colours; the Hero screen shows a live 3D preview of the character.
+> 21. **Pets (non-combat for most classes):** collectible companions (found as rare drops, events, quests, crafted), with levels 1–30 gained by adventuring. Pets auto-collect loot, add magic/gold find, find bonus materials, and occasionally dig up treasure. Only minion classes (Stitcher) get combat help from them.
+> 22. **Mounts:** unlocked from the Stablemaster (gold + quest), faster travel in zones and towns; dismount on attack/hit.
+> 23. **Fast travel:** waypoints unlocked by visiting; travel between any unlocked waypoints from the map for a small gold fee (free to town).
+> 24. **Homeward Wick (hearth):** return to your bound town from anywhere (3 s channel, 5 min cooldown, free); bind to any visited town at its innkeeper.
+
 ## 1. Pillars
 1. **Every kill can surprise you.** Loot, events and secrets are variable and frequent — rewards come from *play*, never from a shop.
 2. **Juicy, readable combat.** Chibi heroes, dark world, bright attacks. Every hit feels good on a phone.

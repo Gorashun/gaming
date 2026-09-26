@@ -1,0 +1,86 @@
+[
+ {
+  "id": "p_ember_trail",
+  "name": "Ember Trail",
+  "desc": "Legendary: Moving leaves burning embers that scorch foes.",
+  "hook": "move_zone",
+  "stats": {}
+ },
+ {
+  "id": "p_doubled_doll",
+  "name": "Twin Stitch",
+  "desc": "Legendary: +1 Rag Doll; dolls deal 30% more damage.",
+  "class": "stitcher",
+  "stats": {
+   "summon_count": 1,
+   "minion_damage_pct": 30
+  }
+ },
+ {
+  "id": "p_star_pierce",
+  "name": "Comet Tail",
+  "desc": "Legendary: Projectiles pierce 2 more enemies.",
+  "stats": {
+   "pierce": 2
+  }
+ },
+ {
+  "id": "p_extra_bolt",
+  "name": "Split Quarrel",
+  "desc": "Legendary: +2 projectiles on every shot.",
+  "stats": {
+   "projectiles": 2
+  }
+ },
+ {
+  "id": "p_giant",
+  "name": "Giant's Swing",
+  "desc": "Legendary: +30% area of effect.",
+  "stats": {
+   "area_pct": 30
+  }
+ },
+ {
+  "id": "p_vamp",
+  "name": "Candle-Drinker",
+  "desc": "Legendary: Heal 2% of damage dealt... in light.",
+  "stats": {
+   "life_on_hit": 25
+  }
+ },
+ {
+  "id": "p_wall",
+  "name": "Unbroken Wick",
+  "desc": "Legendary: 15% damage reduction; +20% block.",
+  "stats": {
+   "damage_reduction": 15,
+   "block": 20
+  }
+ },
+ {
+  "id": "p_swift",
+  "name": "Rooftop Heels",
+  "desc": "Legendary: +25% movement and attack speed.",
+  "stats": {
+   "move_speed_pct": 25,
+   "attack_speed_pct": 10
+  }
+ },
+ {
+  "id": "p_crit",
+  "name": "Fortune's Eye",
+  "desc": "Legendary: +8% crit chance, +50% crit damage.",
+  "stats": {
+   "crit_chance": 8,
+   "crit_damage": 50
+  }
+ },
+ {
+  "id": "p_cdr",
+  "name": "Clockwork Heart",
+  "desc": "Legendary: 20% cooldown reduction.",
+  "stats": {
+   "cdr_pct": 20
+  }
+ }
+]

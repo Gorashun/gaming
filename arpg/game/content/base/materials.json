@@ -1,0 +1,116 @@
+[
+ {
+  "id": "soot",
+  "name": "Soot Dust",
+  "tier": 1,
+  "color": "#8a8a96",
+  "desc": "Salvaged from Common and Magic gear."
+ },
+ {
+  "id": "wickthread",
+  "name": "Wickthread",
+  "tier": 2,
+  "color": "#ffd23f",
+  "desc": "Salvaged from Rare gear."
+ },
+ {
+  "id": "dusk_essence",
+  "name": "Dusk Essence",
+  "tier": 3,
+  "color": "#b46bff",
+  "desc": "Salvaged from Epic gear."
+ },
+ {
+  "id": "ember_heart",
+  "name": "Ember Heart",
+  "tier": 4,
+  "color": "#ff8a1f",
+  "desc": "Salvaged from Legendary gear."
+ },
+ {
+  "id": "bone_meal",
+  "name": "Bone Meal",
+  "tier": 1,
+  "color": "#e8dcc0",
+  "desc": "Dropped by the Rattlebones."
+ },
+ {
+  "id": "bell_shard",
+  "name": "Bell Shard",
+  "tier": 3,
+  "color": "#d9b56a",
+  "desc": "From the Sunken Bellringer. 10 make a Bell Relic."
+ },
+ {
+  "id": "ruby",
+  "name": "Candle Ruby",
+  "tier": 2,
+  "color": "#ff4d5e",
+  "gem": true,
+  "socket": {
+   "weapon": {
+    "damage_pct": 8
+   },
+   "armor": {
+    "life": 40
+   },
+   "jewelry": {
+    "crit_damage": 10
+   }
+  }
+ },
+ {
+  "id": "sapphire",
+  "name": "Frost Sapphire",
+  "tier": 2,
+  "color": "#4da3ff",
+  "gem": true,
+  "socket": {
+   "weapon": {
+    "cold_pct": 10
+   },
+   "armor": {
+    "resist_all": 4
+   },
+   "jewelry": {
+    "cdr_pct": 3
+   }
+  }
+ },
+ {
+  "id": "topaz",
+  "name": "Wick Topaz",
+  "tier": 2,
+  "color": "#ffd23f",
+  "gem": true,
+  "socket": {
+   "weapon": {
+    "crit_chance": 2
+   },
+   "armor": {
+    "magic_find": 8
+   },
+   "jewelry": {
+    "gold_find": 12
+   }
+  }
+ },
+ {
+  "id": "emerald",
+  "name": "Moss Emerald",
+  "tier": 2,
+  "color": "#3ddc84",
+  "gem": true,
+  "socket": {
+   "weapon": {
+    "life_on_hit": 6
+   },
+   "armor": {
+    "life_regen": 4
+   },
+   "jewelry": {
+    "xp_pct": 4
+   }
+  }
+ }
+]

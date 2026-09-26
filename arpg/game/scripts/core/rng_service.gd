@@ -14,7 +14,7 @@ func reseed(seed_value: int) -> void:
 
 func stream(name: String) -> RandomNumberGenerator:
 	if not _streams.has(name):
-		var r := RandomNumberGenerator.new()
+		var r = RandomNumberGenerator.new()
 		r.seed = hash(str(master_seed) + ":" + name)
 		_streams[name] = r
 	return _streams[name]
@@ -33,12 +33,12 @@ func chance(name: String, p: float) -> bool:
 
 ## Weighted pick from an Array of Dictionaries with a numeric weight key.
 func weighted(name: String, entries: Array, weight_key := "weight"):
-	var total := 0.0
+	var total = 0.0
 	for e in entries:
 		total += float(e.get(weight_key, 1.0))
 	if total <= 0.0:
 		return null
-	var roll := stream(name).randf() * total
+	var roll = stream(name).randf() * total
 	for e in entries:
 		roll -= float(e.get(weight_key, 1.0))
 		if roll <= 0.0:

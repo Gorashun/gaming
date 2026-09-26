@@ -19,13 +19,13 @@ func reload() -> void:
 	order.clear()
 	packs.clear()
 	_mount_dlc_pcks()
-	var manifests := []
+	var manifests = []
 	for dir_path in ["res://content"]:
-		var dir := DirAccess.open(dir_path)
+		var dir = DirAccess.open(dir_path)
 		if dir == null:
 			continue
 		for sub in dir.get_directories():
-			var p := dir_path + "/" + sub + "/pack.json"
+			var p = dir_path + "/" + sub + "/pack.json"
 			if FileAccess.file_exists(p):
 				var m = JSON.parse_string(FileAccess.get_file_as_string(p))
 				if m is Dictionary:
@@ -40,7 +40,7 @@ func reload() -> void:
 	content_loaded.emit()
 
 func _mount_dlc_pcks() -> void:
-	var dir := DirAccess.open("user://dlc")
+	var dir = DirAccess.open("user://dlc")
 	if dir == null:
 		return
 	for f in dir.get_files():
@@ -49,7 +49,7 @@ func _mount_dlc_pcks() -> void:
 
 func _requirements_met(m: Dictionary, all: Array) -> bool:
 	for req in m.get("requires", []):
-		var found := false
+		var found = false
 		for o in all:
 			if o.get("id") == req:
 				found = true
@@ -103,7 +103,7 @@ func has_rec(table: String, id: String) -> bool:
 	return tables.get(table, {}).has(id)
 
 func all(table: String) -> Array:
-	var out := []
+	var out = []
 	for id in order.get(table, []):
 		out.append(tables[table][id])
 	return out

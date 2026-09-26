@@ -3,7 +3,7 @@ extends Node
 
 const PATH := "user://settings.json"
 
-var data := {
+var data = {
 	"music_volume": 0.7,
 	"sfx_volume": 0.9,
 	"screen_shake": 1.0,
@@ -36,6 +36,6 @@ func load_settings() -> void:
 			data[k] = parsed[k]
 
 func save_settings() -> void:
-	var f := FileAccess.open(PATH, FileAccess.WRITE)
+	var f = FileAccess.open(PATH, FileAccess.WRITE)
 	if f:
 		f.store_string(JSON.stringify(data, "\t"))
