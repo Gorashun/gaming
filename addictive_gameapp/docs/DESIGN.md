@@ -321,3 +321,6 @@ Status: **proposed**. Waiting for simulation (balance-analyst, RETENTION §6), c
 - **Reachability fix required:** a level 10 needs ≥212 drops in one round, out of reach at estimated merges. Mastery stars and trophies must be reachable by casual and engaged children within weeks: the game designer redefines them (e.g. cumulative goals, level 8/9 targets, per-set counts) and the analyst re-simulates.
 - Batch B proceeds with estimated numbers; merges/round is logged in the debug panel and all lane numbers are recalibrated after the first playtest (R12 fails only at −30 % merges).
 - After the collection is complete, pearls/sand keep flowing into upgrades and Aquarium decorations; no new sinks for now.
+
+## 25. Set-unlock skill track (2026-09-26, producer; replaces the skill track in §13.3)
+- Level 10 and a full book page are out of reach at estimated merges. The skill track becomes: **first level 8, first level 9, first shiny, first mastery star (any set)**. Whichever comes first, time track or skill track, unlocks the next set, as before. Time track (200/600/1500/3000 merges) unchanged.
