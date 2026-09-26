@@ -42,7 +42,7 @@ static func open(sess: Node, which: String, context_in := {}) -> Control:
 	context = context_in
 	var prev = sess.get("screen")
 	if prev and is_instance_valid(prev):
-		prev.queue_free()
+		_retire(prev)
 	var s: Control = load(path).new()
 	s.set("session", sess)
 	s.set("screen_id", which)
@@ -67,14 +67,29 @@ static func open(sess: Node, which: String, context_in := {}) -> Control:
 	Sfx.play("ui_open", -8.0)
 	return s
 
+## Hide now, free a few frames later: a screen with 3D previews freed in the same frame it was built
+## makes the GL renderer report 'Parameter "material" is null'.
+static func _retire(c: Node) -> void:
+	if c is CanvasItem:
+		(c as CanvasItem).visible = false
+	c.process_mode = Node.PROCESS_MODE_DISABLED
+	if c.has_signal("closed"):
+		for con in c.closed.get_connections():
+			c.closed.disconnect(con.callable)
+	c.get_tree().create_timer(0.25, true, false, true).timeout.connect(func():
+		if is_instance_valid(c):
+			c.queue_free())
+
 func goto(which: String, context_in := {}) -> void:
 	## Switch to another screen (hub tabs). Keeps the game paused.
 	if which == screen_id:
 		return
 	var sess = session
 	var me = self
+	if sess:
+		sess.set("screen", null)
 	ScreenBase.open(sess, which, context_in)
-	me.queue_free()
+	_retire(me)
 
 func build(title: String, icon_name := "", hub := false) -> void:
 	theme = UiTheme.theme()

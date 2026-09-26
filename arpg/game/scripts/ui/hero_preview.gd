@@ -51,6 +51,13 @@ func _init() -> void:
 	vp.add_child(cam)
 	_update_camera()
 
+## Stop rendering before the viewport and its toon/outline materials are freed (avoids the renderer's
+## 'Parameter "material" is null' when a screen is opened and closed within one frame).
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_EXIT_TREE or what == NOTIFICATION_PREDELETE:
+		if vp and is_instance_valid(vp):
+			vp.render_target_update_mode = SubViewport.UPDATE_DISABLED
+
 func _update_camera() -> void:
 	var cx = 0.0
 	if heroes.size() > 0 and focus_index >= 0 and focus_index < heroes.size():

@@ -195,7 +195,7 @@ func _process(delta: float) -> void:
 	if skill_level != "novice":
 		# Only react to telegraphs that are about to land (reaction window), never to normal swings
 		var window = 1.1 if skill_level == "expert" else 0.85
-		var now_s = Time.get_ticks_msec() / 1000.0
+		var now_s = w.game_time
 		danger = w.hazards_at(p.global_position, 0.6, false).filter(func(h): return float(h.until) - now_s < window)
 	var pot_at = 0.15 if skill_level == "novice" else (0.55 if not danger.is_empty() else 0.35)
 	if p.life < p.max_life * pot_at and p.ch.potions > 0:
@@ -204,7 +204,7 @@ func _process(delta: float) -> void:
 	if not danger.is_empty():
 		var h = danger[0]
 		var esc = w.hazard_escape_dir(p.global_position, h)
-		var left = float(h.until) - Time.get_ticks_msec() / 1000.0
+		var left = float(h.until) - w.game_time
 		if left < (0.55 if skill_level == "expert" else 0.4) and h.kind != "melee":
 			if p.dodge(esc):
 				_dodges += 1

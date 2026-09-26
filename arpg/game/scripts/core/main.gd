@@ -19,6 +19,11 @@ func _ready() -> void:
 		if a.begins_with("--"):
 			var kv = a.substr(2).split("=", true, 1)
 			args[kv[0]] = kv[1] if kv.size() > 1 else "true"
+	# --set=key:value,... overrides settings for this run only (not saved), e.g. --set=auto_pickup:false
+	for kv in str(args.get("set", "")).split(",", false):
+		var p = kv.split(":", true, 1)
+		if p.size() == 2:
+			Settings.data[p[0]] = (p[1] == "true") if p[1] in ["true", "false"] else (float(p[1]) if p[1].is_valid_float() else p[1])
 	if args.has("title"):
 		Game.testing = true
 		_title()
@@ -59,6 +64,8 @@ func _autostart() -> void:
 		_open_screen_later(str(args["open-screen"]))
 	if args.has("golden"):
 		_golden_later(str(args["golden"]))
+	if args.has("check-hud"):
+		_check_hud_later()
 	_capture()
 
 ## Give a UI capture run something to show: a bag with mixed rarities, materials and gold.
@@ -113,6 +120,32 @@ func _open_screen_later(which: String) -> void:
 		if p.size() == 2:
 			ctx[p[0]] = p[1]
 	ScreenBase.open(session, which, ctx)
+
+## --check-hud: prints every HUD widget rect that overlaps a thumb-arc button (expect none).
+func _check_hud_later() -> void:
+	await get_tree().create_timer(3.0, true, false, true).timeout
+	var hud = session.hud if session else null
+	if hud == null:
+		return
+	hud._interact.visible = true
+	await get_tree().process_frame
+	var arc = []
+	for b in hud.touch.buttons.values():
+		arc.append([b.name, b.get_global_rect()])
+	var n = 0
+	for c in hud.find_children("*", "Control", true, false):
+		if c is ActionButton or c.get_parent() is ActionButton or not c.is_visible_in_tree() or c == hud or c == hud.touch or c == hud._root:
+			continue
+		if c.get_parent() != hud._root and not c.is_in_group("hud_blocker"):
+			continue
+		var r: Rect2 = c.get_global_rect()
+		if r.size.x <= 1 or r.size.x >= get_viewport().get_visible_rect().size.x * 0.9:
+			continue
+		for a in arc:
+			if r.intersects(a[1]):
+				n += 1
+				print("HUD OVERLAP ", c.name, " ", r, " with arc ", a[1])
+	print("HUD CHECK DONE overlaps=", n, " viewport=", get_viewport().get_visible_rect().size)
 
 func _golden_later(rarity: String) -> void:
 	await get_tree().create_timer(1.5, true, false, true).timeout

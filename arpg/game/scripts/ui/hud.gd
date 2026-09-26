@@ -386,14 +386,15 @@ func _build() -> void:
 	_interact.add_theme_stylebox_override("hover", _round_style(Color.WHITE, Color(0.28, 0.18, 0.07, 0.96), 4))
 	_interact.add_theme_stylebox_override("pressed", _round_style(UiTheme.EMBER, Color(0.12, 0.08, 0.04, 0.96), 4))
 	_interact.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	_interact_icon = UiTheme.icon_rect("hand", 64, UiTheme.GOLD)
-	_interact_icon.position = Vector2(28, 22)
-	_interact_icon.size = Vector2(64, 64)
+	_interact_icon = UiTheme.icon_rect("hand", 58, UiTheme.GOLD)
+	_interact_icon.position = Vector2(23, 16)
+	_interact_icon.size = Vector2(58, 58)
 	_interact.add_child(_interact_icon)
 	_interact_lbl = UiTheme.label("", 20, UiTheme.TEXT, true)
 	_interact_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_interact_lbl.position = Vector2(-40, 122)
-	_interact_lbl.size = Vector2(200, 30)
+	_interact_lbl.add_theme_font_size_override("font_size", UiTheme.fs(16))
+	_interact_lbl.position = Vector2(-48, 74)
+	_interact_lbl.size = Vector2(200, 26)
 	_interact.add_child(_interact_lbl)
 	_interact.pressed.connect(_do_interact)
 	UiTheme.juice(_interact)
@@ -407,11 +408,29 @@ func _build() -> void:
 	_root.add_child(_channel)
 	UiTheme.place(_channel, 0.5, 0.62, -160, 0, 320, 18)
 
+## Right-centre, under the minimap and left of the Bag/Lantern column: always above the thumb arc
+## (arc top ≈ 305 px from the bottom at any aspect ratio). Mirrored layouts keep it here too because
+## the right side is then free of buttons.
 func _place_interact() -> void:
-	if bool(Settings.get_value("left_handed", false)):
-		UiTheme.place(_interact, 0.0, 1.0, 380, -370, 120, 120)
+	var big = float(Settings.get_value("button_scale", 1.0)) > 1.02
+	var lh = bool(Settings.get_value("left_handed", false))
+	if big and not lh:
+		# Large buttons push the arc up to the minimap: use the top of the (empty) joystick zone instead.
+		UiTheme.place(_interact, 0.0, 0.0, 344, 150, 104, 104)
 	else:
-		UiTheme.place(_interact, 1.0, 1.0, -500, -370, 120, 120)
+		UiTheme.place(_interact, 1.0, 0.0, -300, 198, 104, 104)
+	# Lantern meter: under the Bag, or next to the quick buttons when large buttons need the space
+	if big and not lh:
+		UiTheme.place(_lantern, 0.0, 0.0, 740, 0, 84, 92)
+	else:
+		UiTheme.place(_lantern, 1.0, 0.0, -86, 192, 84, 92)
+	# Pickup feed / toasts sit on the side opposite the thumb arc
+	if bool(Settings.get_value("left_handed", false)):
+		UiTheme.place(_quests, 1.0, 0.0, -340, 312, 330, 100)
+		UiTheme.place(_feed, 1.0, 0.0, -440, 420, 440, 190)
+	else:
+		UiTheme.place(_quests, 0, 0, 0, 150, 330, 100)
+		UiTheme.place(_feed, 0, 0, 0, 258, 440, 190)
 
 static var _discs := {}
 func _disc(d: int) -> Texture2D:
@@ -451,6 +470,15 @@ func setup(p: Player, s: Node) -> void:
 	t.tween_interval(3.0)
 	t.tween_property(_zone, "modulate:a", 0.0, 1.0)
 	_minimap.setup(Game.world)
+	# Current-target ring + direction arrow + skill area preview (aim-free combat)
+	var tm = TargetMarker.new()
+	tm.name = "TargetMarker"
+	tm.add_to_group("target_marker")
+	Game.world.add_child(tm)
+	tm.setup(p, col)
+	tree_exiting.connect(func():
+		if is_instance_valid(tm):
+			tm.queue_free())
 	_on_health(p.life, p.max_life)
 	_life_trail.value = _life.value
 	_on_resource(p.resource, p.ch.max_resource())
@@ -472,7 +500,7 @@ func _process(delta: float) -> void:
 		_interact_lbl.text = str(it.get("label", "Use"))
 		_interact_icon.texture = UiTheme.icon(_context_icon(it))
 		_interact.visible = true
-	elif d:
+	elif d and (not bool(Settings.get_value("auto_pickup", true)) or player.ch.first_free_slot() < 0 or d.get("item") is Dictionary and not d.item.is_empty() and Items.rarity_index(str(d.item.get("rarity", "common"))) < int(Settings.get_value("loot_filter", 0))):
 		_interact_lbl.text = "Pick up"
 		_interact_icon.texture = UiTheme.icon("hand")
 		_interact.visible = true

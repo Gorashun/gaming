@@ -40,7 +40,8 @@ var _legendary_slowmo_done = false
 ## Telegraphed danger areas (for AI/bots/accessibility): [{kind, pos, pos2, radius, until, src}]
 ## kind: "circle" | "line" (capsule pos→pos2) | "melee" (a normal swing's reach).
 var active_hazards: Array = []
-var suppress_npc_screens = false   # tests/bots: talk without opening screens
+var suppress_npc_screens = false
+var game_time = 0.0               # pausable, time-scaled clock (hazards use it, not the wall clock)   # tests/bots: talk without opening screens
 
 const PATH_RES := 2.0
 
@@ -745,11 +746,11 @@ func spawn_pet() -> void:
 
 func add_hazard(kind: String, pos: Vector3, radius: float, duration: float, pos2 = null, src: Node = null) -> void:
 	active_hazards.append({"kind": kind, "pos": Vector3(pos.x, 0, pos.z), "pos2": Vector3(pos2.x, 0, pos2.z) if pos2 is Vector3 else Vector3(pos.x, 0, pos.z),
-		"radius": radius, "until": Time.get_ticks_msec() / 1000.0 + duration, "src": weakref(src) if src else null})
+		"radius": radius, "until": game_time + duration, "src": weakref(src) if src else null})
 
 ## Hazards covering `p` (with a safety margin), soonest first.
 func hazards_at(p: Vector3, margin := 0.6, include_melee := true) -> Array:
-	var now = Time.get_ticks_msec() / 1000.0
+	var now = game_time
 	var out = []
 	for h in active_hazards:
 		if float(h.until) < now or (not include_melee and h.kind == "melee"):
@@ -1412,8 +1413,9 @@ func _process(delta: float) -> void:
 	if player == null:
 		return
 	_update_still_secret(delta)
+	game_time += delta
 	if not active_hazards.is_empty():
-		var now = Time.get_ticks_msec() / 1000.0
+		var now = game_time
 		active_hazards = active_hazards.filter(func(h): return float(h.until) >= now)
 	_light_timer -= delta
 	if _light_timer <= 0.0:

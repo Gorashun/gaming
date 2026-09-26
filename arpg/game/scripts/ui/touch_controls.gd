@@ -148,6 +148,7 @@ func _input(event: InputEvent) -> void:
 				_aim_start[event.index] = event.position
 				_aim_vec[event.index] = Vector2.ZERO
 				buttons[hit_key].set_pressed_look(true)
+				_preview(hit_key, Vector2.ZERO)
 				get_viewport().set_input_as_handled()
 			elif _over_ui(event.position):
 				return
@@ -179,6 +180,7 @@ func _input(event: InputEvent) -> void:
 					_fire(key, aim)
 				buttons[key].set_pressed_look(false)
 				_aim_touch.erase(event.index)
+				_hide_preview()
 	elif event is InputEventScreenDrag:
 		if event.index == _joy_touch:
 			var d: Vector2 = event.position - _joy_origin
@@ -195,6 +197,7 @@ func _input(event: InputEvent) -> void:
 			var dv: Vector2 = event.position - _aim_start[event.index]
 			_aim_vec[event.index] = dv / 120.0 if dv.length() > 30.0 else Vector2.ZERO
 			buttons[_aim_touch[event.index]].show_aim(_aim_vec[event.index])
+			_preview(_aim_touch[event.index], _aim_vec[event.index])
 	elif event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
 			KEY_1: _fire("skill0", Vector2.ZERO)
@@ -258,18 +261,39 @@ func _fire(key: String, aim: Vector2) -> void:
 	if skill == "":
 		buttons[key].shake()
 		return
+	# Aim-free by default: the player picks the best target itself. Dragging = manual aim.
 	var target = player.global_position + player.facing * 5.0
-	if aim.length() > 0.1:
+	var manual = aim.length() > 0.1
+	if manual:
 		var wd = screen_to_world_dir(aim.normalized())
 		target = player.global_position + wd * 6.0
-	elif Game.world and Game.world.has_method("nearest_enemy"):
-		var e = Game.world.nearest_enemy(player, player.global_position, 14.0)
-		if e:
-			target = e.global_position
-	if not player.can_cast(skill):
+	if skill != player.basic_skill and not player.can_cast(skill):
 		buttons[key].shake()
 		UiTheme.haptic(15, 0.5)
-	player.request_cast(skill, target)
+	if player.has_method("request_cast"):
+		if manual:
+			player.request_cast(skill, target, true)
+		else:
+			player.request_cast(skill, target)
+
+func _marker() -> Node:
+	return get_tree().get_first_node_in_group("target_marker")
+
+## Faint area preview while a skill button is held (drag shows the aimed direction).
+func _preview(key: String, aim: Vector2) -> void:
+	var m = _marker()
+	if m == null or not buttons.has(key):
+		return
+	var sk: String = buttons[key].skill
+	if sk == "" or sk.begins_with("__"):
+		return
+	var s = player.skill_def(sk) if player.has_method("skill_def") else Content.get_rec("skills", sk)
+	m.show_preview(s, screen_to_world_dir(aim.normalized()) if aim.length() > 0.1 else Vector3.ZERO)
+
+func _hide_preview() -> void:
+	var m = _marker()
+	if m:
+		m.hide_preview()
 
 func _dodge() -> void:
 	if player.cooldown_left("__dodge") > 0 or not player.can_act():

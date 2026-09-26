@@ -30,6 +30,10 @@ var _walked = 0.0
 var _ember_acc = 0.0
 var _step_sfx = "step"
 var _aura: CPUParticles3D
+# Aim-free targeting (owner playtest): current target + basic-attack step-in
+var current_target: Node = null
+var _target_scan = 0.0
+var _approach = {}               # {target, skill, until}
 
 func setup(c: CharacterData) -> void:
 	ch = c
@@ -264,6 +268,7 @@ func _physics_process(delta: float) -> void:
 	var v = Vector3.ZERO
 	if can_act() and not anim_locked():
 		v = intent_move * move_speed * speed_mult()
+		v = _approach_velocity(v)
 	var kb = _integrate_knockback(delta)
 	velocity = v + kb
 	var before = global_position
@@ -305,7 +310,7 @@ func _physics_process(delta: float) -> void:
 			play(ch.cls().get("idle_anim", "Idle"))
 	_process_casts()
 	if (auto_attack or Settings.get_value("auto_attack", false)) and intent_cast.is_empty() and intent_move.length() < 0.1:
-		var t = Game.world.nearest_enemy(self, global_position, 7.0, [])
+		var t = best_target(7.0)
 		if t:
 			request_cast(basic_skill, t.global_position)
 
@@ -348,11 +353,109 @@ func cooldown_left(skill_id: String) -> float:
 func cooldown_total(skill: Dictionary) -> float:
 	return float(skill.get("cooldown", 0.0)) * (1.0 - clampf(stats.get_stat("cdr_pct"), 0.0, 50.0) / 100.0)
 
-func request_cast(skill_id: String, pos: Vector3) -> void:
+## `manual` = the player dragged to aim (keep their point); otherwise the cast auto-targets.
+func request_cast(skill_id: String, pos: Vector3, manual := false) -> void:
 	if skill_id == "":
 		return
 	if intent_cast.size() < 2:
-		intent_cast.append({"skill": skill_id, "pos": pos})
+		intent_cast.append({"skill": skill_id, "pos": pos, "manual": manual})
+
+# ------------------------------------------------------------------ aim-free targeting
+## Reach of a skill: explicit range, else from its first effect (melee arc radius, projectile range…).
+func skill_range(s: Dictionary) -> float:
+	if s.has("range"):
+		return float(s.range)
+	for e in s.get("effects", []):
+		if not (e is Dictionary):
+			continue
+		match str(e.get("type", "")):
+			"melee_arc", "spin":
+				return float(e.get("radius", 2.3)) + 0.6
+			"projectile", "chain":
+				return float(e.get("range", 12.0))
+			"dash", "leap":
+				return float(e.get("distance", e.get("range", 7.0)))
+			"aoe", "ground_zone", "pull":
+				return float(e.get("range", 10.0))
+			"nova":
+				return float(e.get("radius", 4.0)) + 0.5
+	return 8.0
+
+## Best enemy within `r`: nearest, favouring the current target, enemies in front, and elites/bosses
+## when they are close.
+func best_target(r: float):
+	if Game.world == null:
+		return null
+	var best = null
+	var bs = 1e9
+	var fwd = facing
+	fwd.y = 0
+	for m in Game.world.enemies_in_radius(self, global_position, r):
+		if not m.alive:
+			continue
+		var to: Vector3 = m.global_position - global_position
+		to.y = 0
+		var d = to.length()
+		var score = d
+		if m == current_target:
+			score -= 2.0
+		if d > 0.1 and fwd.length() > 0.1 and fwd.normalized().dot(to / d) > 0.5:
+			score -= 1.2
+		var k = str(m.get("kind")) if m.get("kind") != null else "normal"
+		if k != "normal" and k != "minion" and d < 6.0:
+			score -= 1.5
+		if score < bs:
+			bs = score
+			best = m
+	return best
+
+## Centre of the densest enemy group within `r` (for ground AoE).
+func cluster_point(r: float, radius := 3.0):
+	if Game.world == null:
+		return null
+	var list = Game.world.enemies_in_radius(self, global_position, r)
+	var best = null
+	var bn = 0
+	for m in list:
+		var n = 0
+		for o in list:
+			if o.global_position.distance_to(m.global_position) <= radius:
+				n += 1
+		if n > bn or (n == bn and best != null and m == current_target):
+			bn = n
+			best = m
+	return best.global_position if best else null
+
+func _update_targeting() -> void:
+	_target_scan -= get_physics_process_delta_time()
+	if current_target and (not is_instance_valid(current_target) or not current_target.alive or current_target.global_position.distance_to(global_position) > 14.0):
+		current_target = null
+	if _target_scan > 0.0:
+		return
+	_target_scan = 0.2
+	var t = best_target(10.0)
+	if t:
+		current_target = t
+
+## Basic attack with nobody in reach: walk to the nearest enemy within ~8 m, then swing.
+func _approach_velocity(v: Vector3) -> Vector3:
+	if _approach.is_empty():
+		return v
+	var t = _approach.get("target")
+	if intent_move.length() > 0.1 or t == null or not is_instance_valid(t) or not t.alive or time_now() > float(_approach.until):
+		_approach = {}
+		return v
+	var to: Vector3 = t.global_position - global_position
+	to.y = 0
+	var reach = skill_range(skill_def(str(_approach.skill)))
+	if to.length() <= reach * 0.9:
+		var sk = str(_approach.skill)
+		_approach = {}
+		request_cast(sk, t.global_position)
+		return v
+	face_towards(t.global_position)
+	play("Running_A", 0, clampf(speed_mult(), 0.8, 1.4))
+	return to.normalized() * move_speed * speed_mult()
 
 func can_cast(skill_id: String) -> bool:
 	var s = skill_def(skill_id)
@@ -363,6 +466,7 @@ func can_cast(skill_id: String) -> bool:
 	return resource >= float(s.get("cost", 0.0))
 
 func _process_casts() -> void:
+	_update_targeting()
 	if intent_cast.is_empty() or not can_act() or anim_locked():
 		return
 	var req = intent_cast.pop_front()
@@ -372,13 +476,33 @@ func _process_casts() -> void:
 			Events.toast.emit("Not enough " + str(ch.cls().get("resource_name", "power")), Color(0.6, 0.7, 1.0))
 		return
 	var pos: Vector3 = req.pos
-	# Auto-aim: snap to the best target near the requested point
-	if s.get("targeted", true):
-		var t = Game.world.nearest_enemy(self, pos, float(s.get("aim_assist", 4.0)), [])
-		if t == null:
-			t = Game.world.nearest_enemy(self, global_position, float(s.get("range", 8.0)), [])
-		if t:
+	# Aim-free: unless the player dragged to aim, every cast picks the best target itself.
+	if s.get("targeted", true) and not bool(req.get("manual", false)):
+		var reach = skill_range(s)
+		var is_ground = false
+		for e in s.get("effects", []):
+			if e is Dictionary and str(e.get("type", "")) in ["aoe", "ground_zone"]:
+				is_ground = true
+		var t = best_target(reach + 0.5)
+		if is_ground:
+			var c = cluster_point(reach + 0.5)
+			if c != null:
+				pos = c
+			elif t:
+				pos = t.global_position
+		elif t:
 			pos = t.global_position
+			current_target = t
+		elif req.skill == basic_skill:
+			var far = best_target(8.0)
+			if far and _approach.is_empty():
+				_approach = {"target": far, "skill": req.skill, "until": time_now() + 2.5}
+				current_target = far
+				return
+	elif s.get("targeted", true):
+		var ta = Game.world.nearest_enemy(self, pos, float(s.get("aim_assist", 2.5)), [])
+		if ta:
+			pos = ta.global_position
 	_last_combat = time_now()
 	if mounted:
 		dismount("cast")
