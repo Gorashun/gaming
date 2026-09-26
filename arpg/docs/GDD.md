@@ -34,6 +34,11 @@ This GDD is the single source of truth. Research inputs (Swedish) live in `resea
 > 23. **Fast travel:** waypoints unlocked by visiting; travel between any unlocked waypoints from the map for a small gold fee (free to town).
 > 24. **Homeward Wick (hearth):** return to your bound town from anywhere (3 s channel, 5 min cooldown, free); bind to any visited town at its innkeeper.
 
+> **v2.2 — Owner additions (binding):**
+> 25. **Skill mastery:** every skill earns usage XP; each mastery rank (1–20) unlocks only after reaching its XP threshold AND paying gold + materials (cheap common mats early; super-rare mats or large volumes late). Milestones at 5/10/15/20 change how the skill plays.
+> 26. **Long rewarding grind:** late progression (item +15, mastery 20, starmap, professions 50, pets 30) takes weeks, always with visible progress bars and milestone rewards; early ranks arrive in the first sessions.
+> 27. **Fun skill trees:** meaningful choices, cross-branch synergies, behaviour-changing passives, capstones; decisions informed by docs/research/player_wants.md.
+
 ## 1. Pillars
 1. **Every kill can surprise you.** Loot, events and secrets are variable and frequent — rewards come from *play*, never from a shop.
 2. **Juicy, readable combat.** Chibi heroes, dark world, bright attacks. Every hit feels good on a phone.
