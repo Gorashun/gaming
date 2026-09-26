@@ -278,3 +278,13 @@ Källa: research/economy-research.md §5. Ersätter §14.3 (intjäning) och §14
 - Shell reveals get **richer, not louder**: loudness equal across rarities (±1 LU), rarity shown by timbre and layers. Needs child-safety sign-off with the audio batch.
 - Adaptive generative music: **on by default at low level**, separate Music toggle in the settings sheet, ducks under big moments, off in calm mode's quiet variant only if the player turns it off. Generative from rules, no stored melodies (legal check with the batch).
 - Master bus with working limiter, voice cap, one AudioContext (disable Phaser's), suspend on background.
+
+## 20. Retention lanes v1 (proposal 2026-09-26, game-designer; spec in `docs/RETENTION.md`)
+Status: **proposed**. Waiting for simulation (balance-analyst, RETENTION §6), child-safety gate and legal gate (all new names pending legal). Producer decides and logs the decision here.
+- **Nine lanes:** N1 Daily Jar, N2 Tide Pool (inside the Aquarium), N3 Daily Present, N4 Journey, N5 Trophies (40, 8 hidden), N6 Set mastery (3 stars × 5 sets), N7 Missions (3 slots, 26 in the pool, never expire), N8 Aquarium, N9 Good place to stop (= CS4). All numbers are in RETENTION §3 and go to new data files (RETENTION §8.1).
+- **Differences from the brief, set by the baseline review's PASS rows:** the present banks to **7**, not 3, and has deterministic content. The pool is capped at **40 pearls over 24 h** (≤ 1 round). Past Daily Jars stay playable, with the same one-time reward. No stamp-count rewards. The daily lane is called "Present" so it is not confused with the "Gift!" free shell (CS5).
+- **Economy guards:** XP comes only from merges. No lane grants shells, random items or new sinks. The legacy sand milestones move into trophies and are paid once. Target: daily lanes ≤ 35 % of rewards for every profile, and return-only value per day below one round of play (inv. 3).
+- **Proposed change to §16.2:** first free shell at **90** merges (was 120), as the CS6 "choose 1 of 3" gift. Pending simulation.
+- **Release plan:** Batch A (CS1–7, N9, N4, N5, N6, N7) first, with no rating change. Then Batch B (N8+N2, N3, N1) as one release with PEGI 7 and a listing update (§19, inv. 10).
+- **Save schema 3**, migrated from 2 without wiping and without retroactive currency (RETENTION §8.2).
+- **Weekly cadence:** none on purpose. The 5-set Daily Jar rotation gives the rhythm without event rewards.
