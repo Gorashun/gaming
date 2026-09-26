@@ -76,7 +76,8 @@ func refresh_companion_light() -> void:
 		return
 	var m = 1.0
 	if Pets.perk(ch) == "glow":
-		m = float(Pets.perk_param(ch, "light_mult", 1.4))
+		# glow{light_radius: extra metres} (data) or {light_mult}
+		m = float(Pets.perk_param(ch, "light_mult", 1.0 + float(Pets.perk_param(ch, "light_radius", 3.6)) / 9.0))
 	hero_light.omni_range = 9.0 * m
 	hero_light.light_energy = 1.6 * (1.0 + (m - 1.0) * 0.5)
 
@@ -270,6 +271,8 @@ func _physics_process(delta: float) -> void:
 	_walked += Vector2(global_position.x - before.x, global_position.z - before.z).length()
 	if _walked >= 10.0:
 		ch.track("distance", int(_walked))
+		if mounted:
+			ch.track("mount_distance_m", int(_walked))
 		_walked -= float(int(_walked))
 	if intent_move.length() > 0.1 and can_act() and not anim_locked():
 		face_towards(global_position + intent_move)
@@ -385,6 +388,7 @@ func _process_casts() -> void:
 	play(str(anims), lock, float(s.get("anim_speed", 1.3)) * speed, true)
 	Sfx.play(s.get("sfx", "swing"), -4.0)
 	ch.track("skills_cast")
+	SkillMastery.on_cast(ch, s)
 	Events.skill_cast.emit(req.skill)
 	var windup = float(s.get("windup", 0.12)) / speed
 	get_tree().create_timer(windup, false).timeout.connect(func():
@@ -510,6 +514,7 @@ func start_channel(what: String, duration: float, cb: Callable) -> bool:
 		return false
 	_channel = {"what": what, "t": 0.0, "dur": max(0.1, duration), "cb": cb, "grace": 0.25}
 	intent_move = Vector3.ZERO
+	intent_cast.clear()   # queued taps from before the channel must not cancel it
 	Fx.ring(global_position, 1.6, Color(1, 0.8, 0.45), duration, false)
 	Sfx.play(what + "_channel", -4.0)
 	Events.channel_progress.emit(what, 0.0)

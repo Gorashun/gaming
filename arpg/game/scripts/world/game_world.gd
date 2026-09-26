@@ -319,6 +319,7 @@ func _place_exit() -> void:
 	interactables.append({"node": exit_portal, "pos": pos, "radius": 2.0, "label": "Leave", "action": _use_exit, "enabled": func(): return exit_portal.visible})
 
 func _use_exit() -> void:
+	Game.character.track("zones_cleared")
 	Events.zone_cleared.emit(zone.id)
 	get_tree().call_group("session", "on_zone_exit", zone.id)
 
@@ -334,15 +335,44 @@ func _maybe_surprise() -> void:
 				room = layout.end_room
 			var pos = layout.cell_to_world(layout.rooms[room].center)
 			if ev.get("monster", "") != "":
-				var m = spawn_monster(ev.monster, pos, monster_level, ev.get("kind", "normal"))
-				if m:
-					m.set_meta("event", ev.id)
-					if m.rec.get("ai", "") == "flee":
-						m.add_sparkle_trail(Color(ev.get("color", "#ffd84a")))
+				# events[].count spawns a pack; alt_monster is an alternative leader
+				for i in max(1, int(ev.get("count", 1))):
+					var mid = str(ev.monster)
+					if ev.has("alt_monster") and Rng.chance("world", 0.5):
+						mid = str(ev.alt_monster)
+					var off = Vector3(Rng.range_on("world", -2.0, 2.0), 0, Rng.range_on("world", -2.0, 2.0)) if i > 0 else Vector3.ZERO
+					var m = spawn_monster(mid, clamp_to_walkable(pos, pos + off), monster_level, ev.get("kind", "normal"))
+					if m:
+						m.set_meta("event", ev.id)
+						if m.rec.get("ai", "") == "flee":
+							m.add_sparkle_trail(Color(ev.get("color", "#ffd84a")))
+			elif str(ev.get("portal", "")) != "":
+				spawn_zone_portal(str(ev.portal), pos, Color(ev.get("color", "#ffd23f")))
 			Game.character.discoveries.append("seen:" + ev.id)
 			Events.surprise_event.emit(ev.id)
 			Events.toast.emit(ev.get("announce", "Something stirs..."), Color(ev.get("color", "#ffd23f")))
 			break
+
+## A portal to a special zone (Magpie's Hoard, Candy Crypt…). Uses a fresh seed each time.
+func spawn_zone_portal(zone_id: String, pos: Vector3, col: Color) -> void:
+	if Content.get_rec("zones", zone_id).is_empty():
+		return
+	var p = preload("res://scripts/world/portal.gd").new()
+	add_child(p)
+	p.global_position = clamp_to_walkable(pos, pos)
+	p.setup(col)
+	Fx.ring(p.global_position, 3.0, col, 0.8)
+	Sfx.play("portal")
+	var zname = Content.get_rec("zones", zone_id).get("name", zone_id)
+	interactables.append({"node": p, "pos": p.global_position, "radius": 2.0, "label": "Enter " + zname, "once": true,
+		"action": func():
+			_remember_for_portal()
+			get_tree().call_group("session", "travel", zone_id)})
+
+func _remember_for_portal() -> void:
+	var sess = get_parent()
+	if sess and sess.has_method("_remember_return_point"):
+		sess._remember_return_point()
 
 func _setup_town() -> void:
 	var center = layout.cell_to_world(layout.rooms[layout.start_room].center)
@@ -595,8 +625,16 @@ func deal_damage(src: Actor, target: Actor, mult: float, element: String, tags: 
 		sk = str(src.get_meta("skill_id"))
 	if sk != "" and owner is Player:
 		SkillMastery.on_hit(owner.ch, sk)
+		owner.ch.track("hits:skill:" + sk)
 		if not target.alive:
 			SkillMastery.on_kill(owner.ch, sk)
+	if owner is Player and not is_dot:
+		for t in tags:
+			owner.ch.track("hits:tag:" + str(t))
+		if hit.crit:
+			owner.ch.track("crits")
+		if src != owner and not target.alive:
+			owner.ch.track("minion_kills")
 	if owner is Player and not is_dot:
 		var loh = owner.stats.get_stat("life_on_hit")
 		if loh > 0:
@@ -610,6 +648,8 @@ func deal_damage(src: Actor, target: Actor, mult: float, element: String, tags: 
 		var st: Dictionary = e.status
 		if Rng.chance("combat", float(st.get("chance", 1.0))):
 			target.add_status(st.id, float(st.get("duration", 1.0)), float(st.get("value", 0.3)))
+			if st.id == "stun" and owner is Player:
+				owner.ch.track("stuns")
 			if st.id == "freeze" or st.id == "stun":
 				target.flash(Color(0.6, 0.85, 1.0), 0.6)
 	if hit.crit and not is_dot:
@@ -629,6 +669,7 @@ func monster_hit(src: Actor, target: Actor, mult: float, element: String) -> voi
 		# Block (Lanternbearer & shields)
 		if Rng.chance("combat", clampf(target.stats.get_stat("block") / 100.0, 0.0, 0.6)):
 			amount *= 0.3
+			target.ch.track("blocks")
 			Fx.float_text(target.global_position, "Block", Color(0.8, 0.9, 1.0), 32)
 			target.gain_resource(float(target.ch.cls().get("resource_on_block", 0.0)))
 		target.gain_resource(float(target.ch.cls().get("resource_on_hurt", 0.0)))
@@ -645,6 +686,8 @@ func monster_hit(src: Actor, target: Actor, mult: float, element: String) -> voi
 
 func _apply_damage(target: Actor, amount: float, crit: bool, element: String, src: Node) -> void:
 	if amount <= 0.0:
+		if target is Player:
+			target.ch.track("dodges")
 		Fx.float_text(target.global_position, "Dodge", Color(0.8, 0.8, 0.8), 30)
 		return
 	target.on_damaged(amount, crit, src)
@@ -693,8 +736,24 @@ func _on_monster_died(a: Actor) -> void:
 	grant_xp(xp)
 	var loot_kind: String = {"normal": "normal", "champion": "champion", "rare": "rare", "boss": "boss"}.get(m.kind, "normal")
 	if m.has_meta("event"):
-		loot_kind = Content.get_rec("events", m.get_meta("event")).get("loot_kind", "rare")
+		var ev = Content.get_rec("events", m.get_meta("event"))
+		loot_kind = ev.get("loot_kind", "rare")
+		if str(ev.get("portal", "")) != "" and Rng.chance("loot", float(ev.get("portal_chance", 0.0))):
+			spawn_zone_portal(str(ev.portal), m.global_position, Color(ev.get("color", "#ffd84a")))
+		var rm = ev.get("reward_material", {})
+		if rm is Dictionary and rm.has("id"):
+			ch.add_material(str(rm.id), int(rm.get("count", 1)))
+			Fx.float_text(m.global_position, "+%s" % Content.get_rec("materials", str(rm.id)).get("name", rm.id), Color(ev.get("color", "#9cffb0")), 30)
 	var res = Loot.roll_kill(m.rec, m.level, ch, tier, loot_kind)
+	var xa = Pets.extra_affix_chance(ch)
+	if xa > 0.0:
+		for it in res.items:
+			if Items.rarity_index(it.rarity) >= 1 and it.affixes.size() < Items.max_affixes(it.rarity) and Rng.chance("loot", xa):
+				var pool = Items.affix_pool(it)
+				if not pool.is_empty():
+					it.affixes.append(Items.roll_affix(Rng.weighted("loot", Items.weighted_pool(pool, it)).a, int(it.ilvl), false, "loot"))
+	if int(res.materials.get("hushmark", 0)) > 0:
+		ch.track("hushmarks_earned", int(res.materials.hushmark))
 	# Weapon proficiency, pet XP/perks, pet drops, quests
 	var pc = Weapons.prof_cfg()
 	var pxp = int(pc.get("xp_per_boss", 40)) if m.kind == "boss" else (int(pc.get("xp_per_elite", 5)) if m.kind in ["champion", "rare"] else int(pc.get("xp_per_kill", 1)))
@@ -722,6 +781,10 @@ func _on_monster_died(a: Actor) -> void:
 	if fam != "":
 		ch.track("kills:family:" + fam)
 	ch.track("kills:monster:" + str(m.rec.get("id", "")))
+	if int(ch.stats_tracking.get("kills:monster:" + str(m.rec.get("id", "")), 0)) == 1:
+		ch.track("monster_kinds_met")
+	if m.elite_affixes.size() >= 3:
+		ch.track("kills:elite_3plus_affixes")
 	if m.kind in ["champion", "rare"]:
 		ch.track("elites")
 	if m.kind == "boss" or m.rec.get("boss", false):
@@ -836,6 +899,9 @@ func spawn_drop_item(it: Dictionary, at: Vector3, index := 0) -> Drop:
 func pickup(d: Drop) -> bool:
 	var ch = Game.character
 	if d.gold > 0:
+		if Pets.double_gold(ch):
+			d.gold *= 2
+			Fx.float_text(d.global_position + Vector3(0, 0.5, 0), "Lucky!", Color(0.5, 1, 0.6), 28)
 		ch.gold += d.gold
 		stats_session.gold += d.gold
 		ch.track("gold_earned", d.gold)
@@ -863,8 +929,12 @@ func pickup(d: Drop) -> bool:
 				return false
 		stats_session.items += 1
 		if Items.rarity_index(it.rarity) >= 4 or it.has("unique") or it.has("named"):
-			Codex.record(it)
+			var new_entry = Codex.record(it)
 			ch.track("uniques_found" if it.has("unique") else "legendaries_found")
+			if it.has("unique") and new_entry:
+				ch.track("uniques_found_distinct")
+			if it.rarity == "mythic":
+				ch.track("mythics_found")
 		Quests.notify(ch, "collect", str(it.get("base", "")), 1)
 		Events.item_picked_up.emit(it)
 		Events.inventory_changed.emit()

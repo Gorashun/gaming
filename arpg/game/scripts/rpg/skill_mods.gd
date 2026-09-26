@@ -74,6 +74,7 @@ static func resolve(ch: CharacterData, skill_id: String) -> Dictionary:
 	if ch:
 		for opt in chosen_options(ch, skill_id):
 			apply_patch(s, opt.get("patch", {}))
+			apply_patch(s, {"effects+": opt.get("add_effects", [])})
 		SkillMastery.apply_to_skill(ch, s)
 	for e in s.get("effects", []):
 		if e is Dictionary:

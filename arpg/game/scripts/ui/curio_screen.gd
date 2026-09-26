@@ -27,7 +27,7 @@ func _ready() -> void:
 	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	v.add_child(sc)
 	_grid = GridContainer.new()
-	_grid.columns = 5
+	_grid.columns = 5 + (1 if get_viewport_rect().size.x > 1400 else 0)
 	_grid.add_theme_constant_override("h_separation", 10)
 	_grid.add_theme_constant_override("v_separation", 10)
 	sc.add_child(_grid)

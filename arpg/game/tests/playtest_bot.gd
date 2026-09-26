@@ -70,17 +70,19 @@ func _exercise(w: GameWorld, p: Player, delta: float) -> bool:
 	_ex_t += delta
 	match _ex_stage:
 		0:
-			if _t > 12.0 and not w.is_town:
+			if _t > 12.0 and not w.is_town and w.nearest_enemy(p, p.global_position, 12.0, []) == null:
 				var r = sess.hearth()
 				_write({"ev": "hearth", "ok": r.ok, "t": _t})
 				_ex_stage = 1 if r.ok else 9
 				_ex_t = 0.0
+				p.intent_move = Vector3.ZERO
+				return true
 		1:
 			p.intent_move = Vector3.ZERO
 			if w.is_town:
 				_ex_stage = 2
 				_ex_t = 0.0
-			elif not p.is_channeling() and _ex_t > 1.0:
+			elif not p.is_channeling() and _ex_t > 4.5:
 				_ex_stage = 0   # interrupted (hit) → retry later
 			return true
 		2:

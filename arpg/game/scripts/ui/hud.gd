@@ -228,7 +228,7 @@ func _build() -> void:
 	# Skill-point chip next to the portrait (only when points are waiting)
 	_skill_chip = _round_button("plus", 44, UiTheme.XP, func(): _open("skills"))
 	_root.add_child(_skill_chip)
-	UiTheme.place(_skill_chip, 0, 0, 62, 62, 44, 44)
+	UiTheme.place(_skill_chip, 0, 0, 0, 58, 44, 44)
 	_skill_chip.visible = false
 	# Quick buttons: pet, mount, Homeward Wick
 	var quick = HBoxContainer.new()

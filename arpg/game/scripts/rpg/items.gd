@@ -86,7 +86,10 @@ static func generate(ilvl: int, rarity_id: String, class_id := "", base_id := ""
 		item.implicit[stat] = snappedf(Rng.range_on(stream, rng_v[0], rng_v[1]) * (1.0 + (scale - 1.0) * 0.5), 0.1)
 	# Affixes
 	var n_aff = Rng.int_on(stream, int(rar.get("affix_min", 0)), int(rar.get("affix_max", 0)))
+	n_aff = min(n_aff, max_affixes(rarity_id))
 	var n_greater = int(rar.get("greater", 0))
+	if class_id != "":
+		item["class_hint"] = class_id
 	_roll_affixes(item, n_aff, n_greater, stream)
 	# Legendary powers
 	if rar.get("power", false):
@@ -103,10 +106,19 @@ static func generate(ilvl: int, rarity_id: String, class_id := "", base_id := ""
 	item.name = make_name(item, stream)
 	return item
 
+## Affix hygiene: config/loot.affix_rules.max_affixes per rarity (default: rarity affix_max).
+static func max_affixes(rarity_id: String) -> int:
+	var m = Content.cfg("loot", "affix_rules", {}).get("max_affixes", {})
+	return int(m.get(rarity_id, Content.get_rec("rarities", rarity_id).get("affix_max", 99)))
+
+## Affixes that may roll on an item. affixes[].classes limits class-specific affixes (e.g. skill
+## ranks) to items dropped for / crafted by those classes (item.class_hint).
 static func affix_pool(item: Dictionary) -> Array:
 	var used = item.affixes.map(func(a): return a.get("group", a.id))
+	var cls = str(item.get("class_hint", ""))
 	return Content.all("affixes").filter(func(a):
 		return (a.get("slots", []).is_empty() or a.slots.has(item.slot) or a.slots.has(item.type)) \
+			and (a.get("classes", []).is_empty() or a.classes.has(cls)) \
 			and not used.has(a.get("group", a.id)) and int(a.tiers[0].ilvl) <= int(item.ilvl))
 
 static func _roll_affixes(item: Dictionary, count: int, greater: int, stream: String) -> void:
@@ -114,8 +126,19 @@ static func _roll_affixes(item: Dictionary, count: int, greater: int, stream: St
 		var pool = affix_pool(item)
 		if pool.is_empty():
 			return
-		var a = Rng.weighted(stream, pool)
-		item.affixes.append(roll_affix(a, int(item.ilvl), i < greater, stream))
+		var a = Rng.weighted(stream, weighted_pool(pool, item))
+		item.affixes.append(roll_affix(a.a, int(item.ilvl), i < greater, stream))
+
+## Class weighting (config/loot.affix_rules.class_weighting.own_class_rank_affix) → [{a, weight}].
+static func weighted_pool(pool: Array, item: Dictionary) -> Array:
+	var own = float(Content.cfg("loot", "affix_rules", {}).get("class_weighting", {}).get("own_class_rank_affix", 1.0))
+	var out = []
+	for a in pool:
+		var w = float(a.get("weight", 1.0))
+		if not a.get("classes", []).is_empty():
+			w *= own
+		out.append({"a": a, "weight": w})
+	return out
 
 static func roll_affix(a: Dictionary, ilvl: int, greater: bool, stream := "loot") -> Dictionary:
 	var tiers: Array = a.tiers.filter(func(t): return int(t.ilvl) <= ilvl)
@@ -162,8 +185,14 @@ static func from_unique(unique_id: String, ilvl: int, stream := "loot") -> Dicti
 	item.name = u.name
 	item.unique = u.id
 	item.affixes = []
+	# scale_with_ilvl: stat ranges grow with the item level relative to the unique's source level
+	var sc = 1.0
+	if u.get("scale_with_ilvl", false):
+		var k = float(Content.cfg("items", "ilvl_scaling", 0.045))
+		var src = int(u.get("level", Content.get_rec("item_bases", str(u.base)).get("min_ilvl", 1)))
+		sc = max(1.0, (1.0 + ilvl * k) / (1.0 + src * k))
 	for fx in u.get("stats", []):
-		var v = Rng.range_on(stream, float(fx.min), float(fx.max))
+		var v = Rng.range_on(stream, float(fx.min), float(fx.max)) * sc
 		item.affixes.append({"id": "u_" + fx.stat, "stat": fx.stat, "value": round(v) if float(fx.max) > 5 else snappedf(v, 0.1), "tier": 1, "tiers": 1, "greater": false, "group": fx.stat})
 	if u.has("power"):
 		item.power = u.power

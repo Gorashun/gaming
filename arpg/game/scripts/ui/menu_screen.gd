@@ -4,8 +4,8 @@ extends ScreenBase
 
 const TILES := [
 	["character", "hero", "Hero"], ["inventory", "bag", "Bag"], ["skills", "skills", "Skills"], ["starmap", "starmap", "Stars"],
-	["quests", "quests", "Quests"], ["codex", "trophy", "Codex"], ["deeds", "star", "Deeds"], ["pets", "pets", "Pets"],
-	["mounts", "mounts", "Mounts"], ["wardrobe", "hero", "Wardrobe"], ["map", "map", "Map"], ["settings", "settings", "Settings"]]
+	["quests", "quests", "Quests"], ["codex", "book", "Codex"], ["deeds", "medal", "Deeds"], ["pets", "pets", "Pets"],
+	["mounts", "mounts", "Mounts"], ["wardrobe", "hanger", "Wardrobe"], ["map", "map", "Map"], ["settings", "settings", "Settings"]]
 
 func _ready() -> void:
 	if screen_id == "":

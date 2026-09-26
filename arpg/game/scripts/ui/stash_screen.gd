@@ -94,7 +94,7 @@ func refresh() -> void:
 		"stash":
 			_right.add_child(UiTheme.label("Tap an item to move it. Your stash is shared by nothing — it's all yours.", 16, UiTheme.MUTED))
 			var g = GridContainer.new()
-			g.columns = 7
+			g.columns = 7 + 3 * (1 if get_viewport_rect().size.x > 1400 else 0)
 			g.add_theme_constant_override("h_separation", 6)
 			g.add_theme_constant_override("v_separation", 6)
 			_right.add_child(g)

@@ -10,7 +10,7 @@ var _count: Label
 func _ready() -> void:
 	if screen_id == "":
 		screen_id = "codex"
-	build("Codex of Light", "trophy", true)
+	build("Codex", "book", true)
 	var v = VBoxContainer.new()
 	v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	v.add_theme_constant_override("separation", 8)
@@ -30,7 +30,7 @@ func _ready() -> void:
 	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	v.add_child(sc)
 	_grid = GridContainer.new()
-	_grid.columns = 4
+	_grid.columns = 4 + (1 if get_viewport_rect().size.x > 1400 else 0)
 	_grid.add_theme_constant_override("h_separation", 8)
 	_grid.add_theme_constant_override("v_separation", 8)
 	sc.add_child(_grid)

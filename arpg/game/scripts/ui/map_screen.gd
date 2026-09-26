@@ -9,7 +9,7 @@ func _ready() -> void:
 	ch = Game.character
 	if screen_id == "":
 		screen_id = "map"
-	build("World Map", "map", true)
+	build("Map", "map", true)
 	var v = VBoxContainer.new()
 	v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	v.add_theme_constant_override("separation", 8)
@@ -106,7 +106,7 @@ func _zone_tile(zid: String, here: String, last: bool) -> Control:
 	var can = str(UiTheme.api_call("Travel", "can_fast_travel", [ch, zid], "" if known else "Not discovered")) == "" and lock == ""
 	var col = UiTheme.GOLD if is_town else (Color("#ff8a6a") if is_boss else Color("#8fd0ff"))
 	var b = Button.new()
-	b.custom_minimum_size = Vector2(220, 110)
+	b.custom_minimum_size = Vector2(228, 110)
 	var cur = zid == here
 	b.add_theme_stylebox_override("normal", UiTheme.card_style(col if known else UiTheme.LOCKED, cur))
 	b.add_theme_stylebox_override("hover", UiTheme.card_style(col, true))
@@ -124,9 +124,9 @@ func _zone_tile(zid: String, here: String, last: bool) -> Control:
 	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(h)
 	h.add_child(UiTheme.icon_rect("lock" if lock != "" else ("hearth" if is_town else ("skull_soft" if is_boss else "waypoint")), 40, col if known else UiTheme.LOCKED))
-	var nm = UiTheme.label(str(z.get("name", zid)) if known or is_town else "???", 18, UiTheme.TEXT if known else UiTheme.MUTED, true)
+	var nm = UiTheme.label(str(z.get("name", zid)) if known else "???", 17, UiTheme.TEXT if known else UiTheme.MUTED, true)
 	nm.clip_text = true
-	nm.custom_minimum_size = Vector2(140, 0)
+	nm.custom_minimum_size = Vector2(160, 0)
 	h.add_child(nm)
 	var sub = HBoxContainer.new()
 	sub.add_theme_constant_override("separation", 6)

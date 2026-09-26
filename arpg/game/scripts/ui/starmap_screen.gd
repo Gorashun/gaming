@@ -27,8 +27,7 @@ func _ready() -> void:
 	build("Brightness", "starmap", true)
 	var pp = UiTheme.pill("star", "", UiTheme.GOLD, 24)
 	_pts = pp.find_child("Value", true, false)
-	right_box.add_child(pp)
-	right_box.move_child(pp, 0)
+	pp.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	for n in Content.all("starmap"):
 		if str(n.get("kind", "star")) == "constellation":
 			_cons.append(n)
@@ -48,6 +47,8 @@ func _ready() -> void:
 	_canvas.draw.connect(_draw_map)
 	_canvas.gui_input.connect(_input_map)
 	frame.add_child(_canvas)
+	_canvas.add_child(pp)
+	pp.position = Vector2(10, 10)
 	var side = PanelContainer.new()
 	side.add_theme_stylebox_override("panel", UiTheme.panel_style(Color(0.07, 0.055, 0.1, 0.96), UiTheme.PANEL_EDGE, 16, 2))
 	side.custom_minimum_size = Vector2(380, 0)

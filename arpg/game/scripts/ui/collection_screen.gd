@@ -46,7 +46,7 @@ func setup_collection(title: String, icon_name: String) -> void:
 	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	left.add_child(sc)
 	_grid = GridContainer.new()
-	_grid.columns = 5
+	_grid.columns = 5 + 2 * (1 if get_viewport_rect().size.x > 1400 else 0)
 	_grid.add_theme_constant_override("h_separation", 8)
 	_grid.add_theme_constant_override("v_separation", 8)
 	sc.add_child(_grid)
@@ -164,8 +164,9 @@ func _show(r: Dictionary) -> void:
 	var tint = Color(r.get("tint", "#ffffff")) if own else Color(0.05, 0.05, 0.07)
 	var a = _preview.add_model(model, float(r.get("scale", 1.0)), tint, col if own else UiTheme.LOCKED, r.get("attachments", []))
 	var sc = float(r.get("scale", 1.0))
-	_preview.camera_distance = clampf(3.0 + sc * 3.2, 2.2, 9.0)
-	_preview.look_height = clampf(sc * 0.9, 0.3, 1.6)
+	_preview.camera_distance = clampf(1.2 + sc * 5.0, 1.8, 9.0)
+	_preview.camera_height = 0.5 + sc * 1.2
+	_preview.look_height = clampf(sc * 0.9, 0.2, 1.6)
 	_preview._update_camera()
 	a.rotation.y = deg_to_rad(25)
 	var nm = UiTheme.label(str(r.get("name", r.id)) if own else "Not found yet", 26, col.lightened(0.2) if own else UiTheme.MUTED, true)

@@ -29,8 +29,6 @@ func _ready() -> void:
 	if screen_id == "":
 		screen_id = "inventory"
 	build("Bag", "bag", true)
-	right_box.add_child(gold_pill())
-	right_box.move_child(right_box.get_child(right_box.get_child_count() - 1), 0)
 	var h = HBoxContainer.new()
 	h.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	h.add_theme_constant_override("separation", 14)
@@ -88,6 +86,8 @@ func _ready() -> void:
 	tools.add_child(UiTheme.icon_button("salvage", "Salvage…", _salvage_menu, Vector2(150, 64), UiTheme.GOLD, true, 18))
 	_filter_btn = UiTheme.icon_button("filter", "Show all", _cycle_filter, Vector2(200, 64), UiTheme.GOLD, true, 16)
 	tools.add_child(_filter_btn)
+	tools.add_child(UiTheme.spacer(0, 0, true))
+	tools.add_child(gold_pill())
 	var sc = ScrollContainer.new()
 	sc.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -109,7 +109,7 @@ func _ready() -> void:
 func _tile_size() -> float:
 	# 8 columns must fit the space left of the doll; ≥ 72 px (hit area incl. gap ≈ 78)
 	var w = get_viewport_rect().size.x - 48 - 32 - 14 - (78 * 2 + 12 + 250)
-	return clampf(floor((w - 7 * 6) / 8.0), 64.0, 84.0)
+	return clampf(floor((w - 7 * 6) / 8.0), 64.0, 96.0)
 
 func refresh() -> void:
 	var ts = 78.0

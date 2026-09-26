@@ -139,6 +139,9 @@ func add_model(path: String, scale_mult := 1.0, tint := Color(1, 1, 1, 1), rim :
 	ring.material_override = rm
 	ring.scale = Vector3(1, 0.4, 1)
 	root.add_child(ring)
+	var ps = clampf(scale_mult * 1.6, 0.35, 1.0)
+	ped.scale = Vector3(ps, 1, ps)
+	ring.scale = Vector3(ps, 0.4, ps)
 	var light = OmniLight3D.new()
 	light.light_color = rim
 	light.light_energy = 2.2

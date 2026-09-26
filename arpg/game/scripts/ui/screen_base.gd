@@ -11,7 +11,7 @@ static var context: Dictionary = {}
 
 const HUB_TABS := [
 	["character", "hero", "Hero"], ["inventory", "bag", "Bag"], ["skills", "skills", "Skills"], ["starmap", "starmap", "Stars"],
-	["quests", "quests", "Quests"], ["codex", "trophy", "Codex"], ["pets", "pets", "Pets"], ["mounts", "mounts", "Mounts"],
+	["quests", "quests", "Quests"], ["codex", "book", "Codex"], ["pets", "pets", "Pets"], ["mounts", "mounts", "Mounts"],
 	["map", "map", "Map"], ["menu", "menu", "Menu"]]
 
 var body: Control
@@ -103,13 +103,13 @@ func build(title: String, icon_name := "", hub := false) -> void:
 	var back = UiTheme.icon_button("back", "", close, Vector2(96, 84), UiTheme.GOLD)
 	back.tooltip_text = "Back"
 	top_bar.add_child(back)
-	if icon_name != "":
+	if icon_name != "" and not hub:
 		top_bar.add_child(UiTheme.icon_rect(icon_name, 52, UiTheme.GOLD))
 	title_label = UiTheme.label(title, 34, UiTheme.GOLD, true)
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_label.custom_minimum_size = Vector2(120, 0)
+	title_label.custom_minimum_size = Vector2(150, 0)
 	top_bar.add_child(title_label)
 	right_box = HBoxContainer.new()
 	right_box.add_theme_constant_override("separation", 8)

@@ -59,5 +59,17 @@
   "perk_params": {
    "light_mult": 1.5
   }
+ },
+ {
+  "id": "dev_ferry",
+  "name": "Dev Porter",
+  "tint": "#c0c0ff",
+  "source": "vendor",
+  "max_level": 30,
+  "bonuses_per_level": {},
+  "perk": "ferry",
+  "perk_params": {
+   "trip_seconds": 3
+  }
  }
 ]

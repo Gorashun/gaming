@@ -49,6 +49,8 @@ static func cost_for(r: int) -> Dictionary:
 			for k in e.get("materials", {}):
 				if Content.has_rec("materials", k):
 					mats[k] = int(e.materials[k])
+				elif k == "act_material":
+					mats["act_material"] = int(e.materials[k])
 			return {"gold": int(e.get("gold", 0)), "materials": mats}
 	var m = {}
 	if r < 5:
@@ -65,12 +67,29 @@ static func cost_for(r: int) -> Dictionary:
 	return {"gold": int(round(50.0 * pow(1.6, r))), "materials": m}
 
 ## UI/API: {rank, max_rank, xp, next_xp, ready (xp reached), can_upgrade, cost, reason}
+## "act_material": n = any common act material; resolved to the one the hero has most of.
+static func resolve_cost(ch: CharacterData, c: Dictionary) -> Dictionary:
+	if not c.get("materials", {}).has("act_material"):
+		return c
+	var out = c.duplicate(true)
+	var n = int(out.materials.act_material)
+	out.materials.erase("act_material")
+	var best = ""
+	var bn = -1
+	for m in Content.all("materials"):
+		if str(m.get("category", "")) == "act" and int(ch.materials.get(m.id, 0)) > bn:
+			bn = int(ch.materials.get(m.id, 0))
+			best = m.id
+	if best != "":
+		out.materials[best] = int(out.materials.get(best, 0)) + n
+	return out
+
 static func xp_progress(ch: CharacterData, skill_id: String) -> Dictionary:
 	var r = rank(ch, skill_id)
 	var xp = int(ch.skill_xp.get(skill_id, 0))
 	var at_max = r >= max_rank()
 	var need = xp_for_next(r)
-	var c = {} if at_max else cost_for(r)
+	var c = {} if at_max else resolve_cost(ch, cost_for(r))
 	var reason = ""
 	if at_max:
 		reason = "Mastered"
@@ -103,6 +122,15 @@ static func on_hit(ch: CharacterData, skill_id: String) -> void:
 static func on_kill(ch: CharacterData, skill_id: String) -> void:
 	gain(ch, skill_id, int(cfg().get("xp_per_kill", 4)))
 
+## Utility skills (no damaging effect) earn XP per cast instead.
+static func on_cast(ch: CharacterData, skill: Dictionary) -> void:
+	for e in skill.get("effects", []):
+		if e is Dictionary and str(e.get("type", "")) in ["melee_arc", "aoe", "nova", "projectile", "chain", "ground_zone", "spin", "summon"]:
+			return
+		if e is Dictionary and (e.has("path_damage") or e.has("land_radius")):
+			return
+	gain(ch, str(skill.get("id", "")), int(cfg().get("xp_per_cast_utility", 4)))
+
 ## Pay and rank up. Returns {ok, message}.
 static func upgrade(ch: CharacterData, skill_id: String) -> Dictionary:
 	var p = xp_progress(ch, skill_id)
@@ -112,6 +140,8 @@ static func upgrade(ch: CharacterData, skill_id: String) -> Dictionary:
 	ch.spend_materials(p.cost.materials)
 	ch.skill_xp[skill_id] = int(p.xp) - int(p.next_xp)
 	ch.skill_mastery[skill_id] = int(p.rank) + 1
+	if int(p.rank) + 1 >= max_rank():
+		ch.track("skills_at_mastery_20")
 	ch.recalc()
 	Events.skill_mastery_up.emit(skill_id, int(p.rank) + 1)
 	Events.gold_changed.emit(ch.gold)
@@ -145,6 +175,7 @@ static func apply_to_skill(ch: CharacterData, s: Dictionary) -> void:
 	for ms in m.get("milestones", []):
 		if int(ms.get("rank", 999)) <= r:
 			SkillMods.apply_patch(s, ms.get("patch", {}))
+			SkillMods.apply_patch(s, {"effects+": ms.get("add_effects", [])})
 
 ## Character-wide stats from mastery (non-multiplier keys of bonuses_per_rank + milestone stats).
 static func stat_bonuses(ch: CharacterData) -> Dictionary:

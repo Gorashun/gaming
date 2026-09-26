@@ -121,6 +121,9 @@ func recalc() -> void:
 	stats.set_source("proficiency", Weapons.proficiency_stats(self))
 	stats.clear_prefix("skillmod:")
 	for sid in skill_mods:
+		# Modifier stats are active while the skill is on the bar (the basic attack always is)
+		if not skill_bar.has(sid) and sid != c.get("basic_attack", ""):
+			continue
 		for opt in SkillMods.chosen_options(self, sid):
 			if not opt.get("stats", {}).is_empty():
 				stats.set_source("skillmod:%s:%s" % [sid, opt.get("id", "")], opt.stats)
@@ -237,8 +240,12 @@ static func from_dict(d: Dictionary) -> CharacterData:
 	c.skill_points = int(c.skill_points); c.star_points = int(c.star_points); c.potions = int(c.potions)
 	c.wick_charges = int(c.wick_charges)
 	c.deed_points = int(c.deed_points)
-	for k in c.skill_mastery:
-		c.skill_mastery[k] = int(c.skill_mastery[k])
+	for k in c.skill_mastery.keys():
+		var v = c.skill_mastery[k]
+		if v is Dictionary:   # schema form {rank, xp}
+			c.skill_xp[k] = int(v.get("xp", 0))
+			v = v.get("rank", 0)
+		c.skill_mastery[k] = int(v)
 	if not c.quests.has("active"):
 		c.quests["active"] = {}
 	if not c.quests.has("done"):

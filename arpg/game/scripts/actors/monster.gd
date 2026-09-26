@@ -28,6 +28,7 @@ var _coin_cd = 0.0
 var escaped = false
 # Boss phases
 var phase = 0
+var _phase_locked = {}          # ability ids unlocked only by a later phase (phases[].abilities_add)
 var _shield_fx: MeshInstance3D
 
 func setup(r: Dictionary, lvl: int, k := "normal") -> void:
@@ -61,6 +62,10 @@ func setup(r: Dictionary, lvl: int, k := "normal") -> void:
 	collision_layer = 2
 	collision_mask = 1
 	home = global_position
+	for ph in r.get("phases", []):
+		for ab in ph.get("abilities_add", []):
+			if ab is String and not ab.contains("/"):
+				_phase_locked[ab] = true
 
 func _ready() -> void:
 	var sa: String = rec.get("spawn_anim", "")
@@ -182,7 +187,7 @@ func _try_abilities(dist: float) -> bool:
 		return false
 	for ab in rec.get("abilities", []):
 		var id: String = ab.get("id", "ab")
-		if time_now() < float(_ability_ready.get(id, 0.0)):
+		if _phase_locked.has(id) or time_now() < float(_ability_ready.get(id, 0.0)):
 			continue
 		if dist > float(ab.get("range", 8.0)) or dist < float(ab.get("min_range", 0.0)):
 			continue
@@ -370,6 +375,8 @@ func _check_phase() -> void:
 		for ab in ph.get("abilities_add", []):
 			if ab is Dictionary:
 				list.append(ab)
+			elif ab is String and _phase_locked.has(ab):
+				_phase_locked.erase(ab)   # own ability, unlocked by this phase
 			elif ab is String:
 				# reference an ability of another monster record: "monster_id/ability_id"
 				var parts = ab.split("/")

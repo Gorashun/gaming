@@ -63,9 +63,9 @@ func _ready() -> void:
 	v.add_child(_viewer)
 	var nm = UiTheme.label(str(item.get("name", "")), 34, _col.lightened(0.35), true)
 	nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	nm.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	nm.custom_minimum_size = Vector2(540, 0)
-	nm.visible_ratio = 0.0
+	nm.custom_minimum_size = Vector2(540, 44)
+	nm.clip_text = true
+	nm.visible_characters = 0
 	v.add_child(nm)
 	var base = Content.get_rec("item_bases", str(item.get("base", "")))
 	var sub = UiTheme.label("%s  ·  item level %d" % [base.get("type_name", str(item.get("slot", "")).capitalize()), int(item.get("ilvl", 1))], 18, UiTheme.MUTED)
@@ -106,7 +106,7 @@ func _ready() -> void:
 	tw.tween_property(card, "modulate:a", 1.0, 0.2)
 	var tw2 = create_tween()
 	tw2.tween_interval(0.25)
-	tw2.tween_property(nm, "visible_ratio", 1.0, 0.4)
+	tw2.tween_property(nm, "visible_characters", nm.text.length(), 0.4)
 	Sfx.play("golden_moment")
 	UiTheme.haptic(30, 0.8)
 

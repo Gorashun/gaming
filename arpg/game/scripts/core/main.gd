@@ -82,6 +82,24 @@ func _seed_ui_demo(ch: CharacterData) -> void:
 	for m in Content.all("materials"):
 		ch.add_material(m.id, 6 + (m.id.length() * 3) % 20)
 	ch.gold += 2450
+	# companions for the collection screens
+	var pets = Content.all("pets")
+	for i in min(5, pets.size()):
+		UiTheme.api_call("Pets", "grant_pet", [ch, pets[i * 3 % pets.size()].id], false)
+	if pets.size() > 0:
+		UiTheme.api_call("Pets", "set_active", [ch, pets[0].id], false)
+	var mounts = Content.all("mounts")
+	for i in min(3, mounts.size()):
+		UiTheme.api_call("Mounts", "grant_mount", [ch, mounts[i].id], false)
+	if mounts.size() > 0:
+		UiTheme.api_call("Mounts", "set_active", [ch, mounts[0].id], false)
+	if "titles" in ch:
+		ch.titles.append_array(["the Rekindler", "Friend of Moths"])
+		ch.title = "the Rekindler"
+	for q in Content.all("quests").slice(0, 2):
+		UiTheme.api_call("Quests", "accept", [ch, q.id], false)
+	if ch.materials.has("hushmark"):
+		ch.materials["hushmark"] = 10
 	ch.skill_points += 3
 	ch.potions = max(ch.potions, 3)
 

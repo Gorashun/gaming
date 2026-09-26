@@ -21,19 +21,23 @@ func _ready() -> void:
 	if meta.has("tier_names"):
 		_tiers_txt = meta.tier_names
 	_cats = meta.get("categories", {})
-	build("Deeds", "star", true)
+	build("Deeds", "medal", true)
 	var pp = UiTheme.pill("star", "", UiTheme.GOLD, 24)
 	_pts = pp.find_child("Value", true, false)
-	right_box.add_child(pp)
-	right_box.move_child(pp, 0)
+	pp.name = "DeedPts"
 	var h = HBoxContainer.new()
 	h.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	h.add_theme_constant_override("separation", 12)
 	body.add_child(h)
+	var lc = VBoxContainer.new()
+	lc.add_theme_constant_override("separation", 8)
+	h.add_child(lc)
+	lc.add_child(pp)
 	var rs = ScrollContainer.new()
+	rs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	rs.custom_minimum_size = Vector2(230, 0)
 	rs.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	h.add_child(rs)
+	lc.add_child(rs)
 	_rail = VBoxContainer.new()
 	_rail.add_theme_constant_override("separation", 6)
 	rs.add_child(_rail)

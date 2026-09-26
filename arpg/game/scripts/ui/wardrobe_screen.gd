@@ -17,7 +17,7 @@ func _ready() -> void:
 	ch = Game.character
 	if screen_id == "":
 		screen_id = "wardrobe"
-	build("Wardrobe", "hero", true)
+	build("Wardrobe", "hanger", true)
 	var h = HBoxContainer.new()
 	h.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	h.add_theme_constant_override("separation", 12)

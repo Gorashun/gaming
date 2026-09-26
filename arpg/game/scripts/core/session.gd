@@ -122,6 +122,9 @@ func _on_act_complete(z: Dictionary) -> void:
 				Events.toast.emit("New difficulty unlocked: " + d.name, UiTheme.EMBER)
 		ch.discoveries.append("story_complete:" + ch.difficulty)
 		ch.track("tiers_cleared")
+		ch.track("story_complete:" + ch.difficulty)
+		if ch.hardcore:
+			ch.track("lastflame_story_complete")
 
 ## Natural stopping point (welfare): summary + choice, next run never auto-starts.
 func _show_summary(zone_id: String, next: String) -> void:
@@ -147,7 +150,9 @@ func _show_summary(zone_id: String, next: String) -> void:
 		v.add_child(UiTheme.label(lock, 20, UiTheme.MUTED))
 	else:
 		h.add_child(UiTheme.button("Continue: " + nz.get("name", "Onward"), func(): travel(next), 22, Vector2(380, 76)))
-	h.add_child(UiTheme.button("Return to town", func(): travel(Game.character.current_act_town()), 22, Vector2(260, 76)))
+	h.add_child(UiTheme.button("Return to town", func():
+		Game.character.track("summary_return_to_town")
+		travel(Game.character.current_act_town()), 22, Vector2(260, 76)))
 	h.add_child(UiTheme.button("Save & rest", func():
 		Game.save_character()
 		get_tree().paused = false
@@ -298,6 +303,7 @@ func hearth() -> Dictionary:
 		Travel.consume_hearth(ch)
 		_remember_return_point()
 		Events.hearth_used.emit()
+		ch.track("hearth_uses")
 		Sfx.play("hearth_done")
 		Fx.burst(world.player.global_position + Vector3(0, 1, 0), Color(1, 0.8, 0.45), 30, 4.0, 0.12, 0.8, 2.0)
 		travel(Travel.hearth_target(ch)))
@@ -513,3 +519,12 @@ func set_cosmetic(slot: String, value) -> bool:
 		Events.cosmetics_changed.emit()
 		_refresh()
 	return ok
+
+## Deed flags/secrets ("flag:<id>", "secret:<id>") are set to 1 once.
+func set_flag(key: String) -> void:
+	var ch = Game.character
+	if int(ch.stats_tracking.get(key, 0)) >= 1:
+		return
+	ch.track(key)
+	if key.begins_with("secret:"):
+		ch.track("secrets")

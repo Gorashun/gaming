@@ -115,3 +115,10 @@ Death (softcore) → "Rekindle" card (checkpoint / town) ; Death (Last Flame) �
 | Golden moment card | queued until **no enemy within 12 m for 1.5 s**. Card slides in 300: item rotates, name types on 400, 1 highlight stat, big **Equip** + "Later". Skippable from 500 |
 | UI tap | scale 0.94 for 60 → 1.0 over 90; tick sound; haptic 10 |
 | Button unavailable | shake 3 px × 3 in 180; low thud; show reason icon (no mana / cooldown) |
+
+## 11. Implementation notes (v1.1, as built)
+- **Code:** `game/scripts/ui/`. `UiTheme` = palette, fonts (Cinzel/Nunito variable → FontVariation 700/750; Andika = easy-read option), rarity colour + shape (`shape_points`, colour-blind palette), icon loader, juice (press 0.94 → 1.0, haptics via `Input.vibrate_handheld`, setting `haptics`), `hold_button`, `safe_insets`, and `api()/api_call()` for defensive calls into gameplay classes by `class_name`.
+- **Icons:** 160 procedural vector icons, `game/assets/ui/icons/*.png` (tintable light masks + baked dark outline), generator `game/assets/ui/_gen/gen_icons.py`. Item icons for weapons/off-hands are the real 3D prop rendered once in an off-screen SubViewport (`ItemIcons`, cached in memory + `user://icon_cache`); armour/jewellery use the vector slot icon tinted by rarity.
+- **Screens** open via `ScreenBase.open(session, name, ctx)` → `res://scripts/ui/<name>_screen.gd`. Hub screens share a top tab bar (Hero, Bag, Skills, Stars, Quests, Codex, Pets, Mounts, Map, Menu); the ☰ Menu hub reaches every screen in one tap (≤ 2 from the HUD). NPC screens: crafting, vendor, curio, stash, stable (=mounts), pets, inn, quests/bounties/lore.
+- **Welfare in UI:** golden card and Curio reveal show the true rarity on frame 1, skippable after 0.5 s, no reels; craft results count up to the rolled value with no max-roll line; Epic+ salvage/sell/craft/upgrade are hold-to-confirm (0.8 s); Last Flame is locked until story completion (or parent), with illustrated warning + hold.
+- **Capture flags (main.gd):** `--title`, `--title-page=create`, `--open-screen=<name>`, `--screen-ctx=k:v`, `--golden=<rarity>`; `tools/shot_wide.sh` = 2400×1080.

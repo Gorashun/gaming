@@ -131,12 +131,33 @@ static func on_kill(ch: CharacterData, kind := "normal") -> Dictionary:
 	var mult = {"champion": 3, "rare": 5, "boss": 20}.get(kind, 1)
 	gain_xp(ch, ch.active_pet, int(cfg().get("xp_per_kill", 1)) * mult)
 	if perk(ch) == "dig":
-		var n = int(ch.pet_state.get("dig_kills", 0)) + 1
-		if n >= int(perk_param(ch, "every", 30)):
-			n = 0
-			out.dig = Rng.chance("loot", float(perk_param(ch, "chance", 0.6)))
-		ch.pet_state["dig_kills"] = n
+		var every = int(perk_param(ch, "every", 0))
+		if every > 0:
+			# Kill-count mode: every N kills, chance
+			var n = int(ch.pet_state.get("dig_kills", 0)) + 1
+			if n >= every:
+				n = 0
+				out.dig = Rng.chance("loot", float(perk_param(ch, "chance", 0.6)))
+			ch.pet_state["dig_kills"] = n
+		elif ch.play_seconds >= float(ch.pet_state.get("dig_ready_at", 0.0)):
+			# Data mode (dig{chance}): per-kill chance, then config dig_cooldown_s of play time
+			if Rng.chance("loot", float(perk_param(ch, "chance", 0.03))):
+				out.dig = true
+				ch.pet_state["dig_ready_at"] = ch.play_seconds + float(cfg().get("dig_cooldown_s", 45.0))
+	if level(ch, ch.active_pet) >= max_level(ch.active_pet) and not ch.pet_state.get("maxed", []).has(ch.active_pet):
+		var mx: Array = ch.pet_state.get("maxed", [])
+		mx.append(ch.active_pet)
+		ch.pet_state["maxed"] = mx
+		ch.track("pets_at_level_30")
 	return out
+
+## "lucky" perk: chance to double a gold pickup.
+static func double_gold(ch: CharacterData) -> bool:
+	return perk(ch) == "lucky" and Rng.chance("loot", float(perk_param(ch, "double_gold_chance", 0.0)))
+
+## "lucky" perk: chance for one extra affix on a dropped Magic+ item (within affix hygiene max).
+static func extra_affix_chance(ch: CharacterData) -> float:
+	return float(perk_param(ch, "extra_affix_chance", 0.0)) if perk(ch) == "lucky" else 0.0
 
 ## Pet drops: pets with drop_chance roll on kills (elites/bosses more likely). Returns pet id or "".
 static func roll_drop(ch: CharacterData, kind := "normal") -> String:
@@ -158,6 +179,12 @@ static func feed_treat(ch: CharacterData, amount := -1) -> bool:
 	return true
 
 # ------------------------------------------------------------------ pet ferry (research #6)
+## Pets with perk "ferry" carry loads; if no pet in the content has that perk, any pet can.
+static func can_ferry(ch: CharacterData) -> bool:
+	if perk(ch) == "ferry" or cfg().get("ferry_any_pet", false):
+		return true
+	return not Content.all("pets").any(func(p): return str(p.get("perk", "")) == "ferry")
+
 static func ferry_status(ch: CharacterData) -> Dictionary:
 	var now = ch.play_seconds
 	return {"has_pet": ch.active_pet != "", "ready": ch.active_pet != "" and now >= float(ch.pet_state.get("ferry_ready_at", 0.0)),
@@ -181,6 +208,8 @@ static func ferry(ch: CharacterData, mode := "sell", max_rank := -1, indices := 
 	var st = ferry_status(ch)
 	if not st.has_pet:
 		return {"ok": false, "message": "You have no companion"}
+	if not can_ferry(ch):
+		return {"ok": false, "message": "%s can't carry loads — try a ferrying companion" % active_rec(ch).get("name", "Your pet")}
 	if not st.ready:
 		return {"ok": false, "message": "Your companion is resting (%ds)" % int(ceil(st.cooldown_left))}
 	var list: Array = indices if not indices.is_empty() else ferry_candidates(ch, max_rank)
@@ -205,7 +234,7 @@ static func ferry(ch: CharacterData, mode := "sell", max_rank := -1, indices := 
 	for m in mats:
 		ch.add_material(m, mats[m])
 	var c = cfg()
-	ch.pet_state["ferry_back_at"] = ch.play_seconds + float(c.get("ferry_duration_s", 6.0))
+	ch.pet_state["ferry_back_at"] = ch.play_seconds + float(perk_param(ch, "trip_seconds", c.get("ferry_duration_s", 6.0))) + 2.0
 	ch.pet_state["ferry_ready_at"] = ch.play_seconds + float(c.get("ferry_cooldown_s", 90.0))
 	var res = {"ok": true, "count": n, "gold": gold, "materials": mats,
 		"message": "%s carries %d items to town" % [active_rec(ch).get("name", "Your pet"), n]}

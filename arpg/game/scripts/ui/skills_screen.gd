@@ -35,7 +35,7 @@ func _ready() -> void:
 	var tools = HBoxContainer.new()
 	tools.add_theme_constant_override("separation", 8)
 	left.add_child(tools)
-	var pp = UiTheme.pill("skills", "", UiTheme.XP, 22)
+	var pp = UiTheme.pill("plus", "", UiTheme.XP, 22)
 	_pts_lbl = pp.find_child("Value", true, false)
 	tools.add_child(pp)
 	tools.add_child(UiTheme.spacer(0, 0, true))

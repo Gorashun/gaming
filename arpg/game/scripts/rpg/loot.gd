@@ -22,6 +22,7 @@ static func roll_kill(monster: Dictionary, monster_level: int, ch: CharacterData
 		var item = Items.generate(monster_level, rarity, ch.class_id if smart else "")
 		if not item.is_empty():
 			out.items.append(item)
+	_apply_hooks(ch, out, monster_level)
 	# Uniques from boss tables
 	for u in monster.get("uniques", []):
 		if Rng.chance("loot", float(u.get("chance", 0.025)) * float(tier.get("unique_mult", 1.0))):
@@ -40,6 +41,34 @@ static func roll_kill(monster: Dictionary, monster_level: int, ch: CharacterData
 		if Rng.chance("loot", float(m.get("chance", 0.1)) * mat_mult):
 			out.materials[m.id] = int(out.materials.get(m.id, 0)) + Rng.int_on("loot", int(m.get("min", 1)), int(m.get("max", 1)))
 	return out
+
+## Scripted first-session hooks (config/hooks): first Magic by first_magic_s, first Legendary
+## (golden moment) by first_legendary_s of active play. Each fires once per hero.
+static func _apply_hooks(ch: CharacterData, out: Dictionary, ilvl: int) -> void:
+	var h = Content.get_rec("config", "hooks")
+	if h.is_empty():
+		return
+	var best = -1
+	for it in out.items:
+		best = max(best, Items.rarity_index(it.rarity))
+	if not ch.discoveries.has("hook:first_magic"):
+		if best >= 1:
+			ch.discoveries.append("hook:first_magic")
+		elif ch.play_seconds >= float(h.get("first_magic_s", 120)):
+			var it = Items.generate(ilvl, "magic", ch.class_id)
+			if not it.is_empty():
+				out.items.append(it)
+				ch.discoveries.append("hook:first_magic")
+	var lr = str(h.get("first_legendary_rarity", "legendary"))
+	if not ch.discoveries.has("hook:first_legendary"):
+		if best >= Items.rarity_index(lr):
+			ch.discoveries.append("hook:first_legendary")
+		elif ch.play_seconds >= float(h.get("first_legendary_s", 660)):
+			var it = Items.generate(ilvl, lr, ch.class_id)
+			if not it.is_empty():
+				out.items.append(it)
+				ch.discoveries.append("hook:first_legendary")
+				ch.pity[lr] = ch.play_seconds
 
 ## Rarity roll context shared by monster drops, chests and the Curio Cart (identical odds everywhere).
 static func rarity_context(ch: CharacterData, tier: Dictionary, monster_level: int, kind_cfg := {}) -> Dictionary:

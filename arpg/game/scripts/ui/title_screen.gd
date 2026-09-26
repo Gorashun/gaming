@@ -344,7 +344,7 @@ func _class_card(id: String) -> Button:
 	nv.add_theme_constant_override("separation", -4)
 	nv.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	h.add_child(nv)
-	var nm = UiTheme.label(str(c.get("name", id)), 22, col.lightened(0.3), true)
+	var nm = UiTheme.label(str(c.get("name", id)), 18, col.lightened(0.3), true)
 	nm.clip_text = true
 	nm.custom_minimum_size = Vector2(150, 0)
 	nv.add_child(nm)

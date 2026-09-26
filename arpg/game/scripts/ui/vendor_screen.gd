@@ -103,7 +103,7 @@ func _buy_tab() -> void:
 		_list.add_child(UiTheme.label("Nothing for sale here yet.", 20, UiTheme.MUTED))
 		return
 	var g = GridContainer.new()
-	g.columns = 3
+	g.columns = 3 + (1 if get_viewport_rect().size.x > 1400 else 0)
 	g.add_theme_constant_override("h_separation", 10)
 	g.add_theme_constant_override("v_separation", 10)
 	_list.add_child(g)
@@ -122,14 +122,14 @@ func _buy_tab() -> void:
 		h.add_theme_constant_override("separation", 10)
 		h.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		b.add_child(h)
-		h.add_child(UiTheme.icon_rect(info[0], 60, info[3]))
+		h.add_child(UiTheme.icon_rect(info[0], 50, info[3]))
 		var v = VBoxContainer.new()
 		v.alignment = BoxContainer.ALIGNMENT_CENTER
 		v.add_theme_constant_override("separation", 0)
 		v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		h.add_child(v)
-		var nl = UiTheme.label(info[1], 19, UiTheme.TEXT, true)
+		var nl = UiTheme.label(info[1], 17, UiTheme.TEXT, true)
 		nl.clip_text = true
 		nl.custom_minimum_size = Vector2(170, 0)
 		v.add_child(nl)

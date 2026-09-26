@@ -117,6 +117,8 @@ static func upgrade(ch: CharacterData, item: Dictionary) -> Dictionary:
 	item.name = Items.upgraded_name(item)
 	Crafting.gain_xp(ch, "smith", 4 + item.upgrade * 2)
 	ch.track("upgrades")
+	if int(item.upgrade) >= max_level():
+		ch.track("items_at_plus15")
 	ch.recalc()
 	Events.item_upgraded.emit(item)
 	Events.gold_changed.emit(ch.gold)

@@ -191,7 +191,11 @@ func test_pets() -> void:
 	Pets.grant_pet(ch, "dev_lucky")
 	Pets.set_active(ch, "dev_lucky")
 	check(Loot.pity_speed(ch) > 1.0, "lucky perk speeds up pity")
-	# Pet ferry
+	# Pet ferry (needs a "ferry" perk companion when such pets exist)
+	if not Pets.can_ferry(ch):
+		check(not Pets.ferry(ch, "sell").ok, "non-ferry pet refuses")
+		Pets.grant_pet(ch, "dev_ferry")
+		Pets.set_active(ch, "dev_ferry")
 	for i in 5:
 		ch.add_item(Items.generate(5, "common", "", "dev_plate"))
 	var before = ch.gold
@@ -206,6 +210,7 @@ func test_pets() -> void:
 	var r2 = Pets.ferry(ch, "salvage")
 	check(r2.ok and not r2.materials.is_empty(), "ferry salvage returns materials")
 	check(Pets.feed_treat(ch), "pet treat")
+	Pets.set_active(ch, "dev_lucky")
 
 func test_quests() -> void:
 	var ch = mk_char()

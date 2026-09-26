@@ -126,6 +126,8 @@ static func gain_proficiency(ch: CharacterData, type_id: String, amount := -1) -
 		gained += 1
 	if lvl >= prof_max_level():
 		xp = 0
+		if gained > 0:
+			ch.track("proficiency_types_at_50")
 	p.level = lvl
 	p.xp = xp
 	if gained > 0:
