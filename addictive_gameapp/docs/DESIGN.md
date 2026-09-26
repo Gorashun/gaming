@@ -288,3 +288,10 @@ Status: **proposed**. Waiting for simulation (balance-analyst, RETENTION §6), c
 - **Release plan:** Batch A (CS1–7, N9, N4, N5, N6, N7) first, with no rating change. Then Batch B (N8+N2, N3, N1) as one release with PEGI 7 and a listing update (§19, inv. 10).
 - **Save schema 3**, migrated from 2 without wiping and without retroactive currency (RETENTION §8.2).
 - **Weekly cadence:** none on purpose. The 5-set Daily Jar rotation gives the rhythm without event rewards.
+
+## 22. Release decisions (2026-09-26, producer; source docs/RELEASE.md)
+- Phaser pre/post FX disabled (unused): ~60 % less texture memory at DPR 2.
+- Only this branch publishes the rolling `test-latest` release.
+- `package.json` minor = test version (0.8.x now; 0.9.0 for test version 9).
+- APK growth of ~0.85 MB for own icon/splash accepted. Art director signs off icon/splash in the art batch.
+- `android:allowBackup` stays on so a child's save survives a phone change; store text drops "only" (LG6).

@@ -47,6 +47,10 @@ function startGame(): void {
       },
     },
     input: { activePointers: 2 },
+    // Spelet använder varken preFX eller postFX; utan dessa slipper vi Phasers FX-rendertargets
+    // (≈ −60 % texturminne vid DPR 2, docs/RELEASE.md).
+    disablePreFX: true,
+    disablePostFX: true,
     scene: bench ? [Bench] : [Boot, Start, Game, GameOver, Book],
   });
 }

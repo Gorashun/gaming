@@ -7,8 +7,9 @@ android {
         applicationId "se.ferrer.klunk"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        // From scripts/version.mjs via the workflow: ./gradlew -PklunkVersionCode=48 -PklunkVersionName=0.8.48+abc1234
+        versionCode((project.findProperty('klunkVersionCode') ?: '1') as Integer)
+        versionName((project.findProperty('klunkVersionName') ?: '0.0.0-local') as String)
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

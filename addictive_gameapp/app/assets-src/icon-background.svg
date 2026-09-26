@@ -1,0 +1,31 @@
+<!--
+  KLUNK adaptive icon, background layer (108 x 108 dp). Art source: scripts/gen-icons.mjs renders it.
+  Deep-sea night: THEME.palette bg #0B1020, bgDeep #060A14, bgGlow #132043 (UI.md §2.1).
+  The whole square is visible only before the launcher masks it; keep detail inside the 72 dp centre.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108">
+  <defs>
+    <radialGradient id="sea" cx="54" cy="60" r="66" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1A2A56"/>
+      <stop offset="0.38" stop-color="#132043"/>
+      <stop offset="0.72" stop-color="#0B1020"/>
+      <stop offset="1" stop-color="#060A14"/>
+    </radialGradient>
+    <linearGradient id="ray" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#AFC8FF" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#AFC8FF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="108" height="108" fill="url(#sea)"/>
+  <!-- faint light from the surface -->
+  <path d="M30 0 L44 0 L60 80 L50 80 Z" fill="url(#ray)"/>
+  <path d="M62 0 L70 0 L80 70 L74 70 Z" fill="url(#ray)" opacity="0.7"/>
+  <!-- drifting motes -->
+  <g fill="#7CF9FF">
+    <circle cx="24" cy="30" r="0.9" opacity="0.35"/>
+    <circle cx="86" cy="40" r="1.1" opacity="0.30"/>
+    <circle cx="80" cy="84" r="0.8" opacity="0.25"/>
+    <circle cx="27" cy="78" r="1.2" opacity="0.22"/>
+    <circle cx="18" cy="56" r="0.7" opacity="0.30"/>
+  </g>
+</svg>

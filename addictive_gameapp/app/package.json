@@ -1,14 +1,17 @@
 {
   "name": "klunk",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.8.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --port 4173",
     "test": "vitest run",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "icons": "node scripts/gen-icons.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "measure": "node scripts/measure.mjs"
   },
   "dependencies": {
     "@capacitor/android": "8.5.2",

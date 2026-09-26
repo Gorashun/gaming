@@ -4,6 +4,7 @@
  */
 import { DEBUG } from '../data/debug';
 import { AVATARS } from '../data/avatarsIndex';
+import { APP_VERSION } from '../data/version';
 
 export type ModeTriple = { drought: number; flow: number; kick: number };
 
@@ -140,6 +141,7 @@ export function exportJson(d: {
   return JSON.stringify({
     app: 'klunk',
     format: 1,
+    version: APP_VERSION,
     exportedAt: new Date().toISOString(),
     highscore: d.highscore,
     stats: { runs: d.stats.runs, merges: d.stats.merges },

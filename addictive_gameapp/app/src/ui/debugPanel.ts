@@ -9,6 +9,7 @@ import { setCalm, setSoundEnabled } from '../systems/audio';
 import { setHapticsEnabled } from '../systems/haptics';
 import { Z, Z_AUTO } from './view';
 import { zoomLine } from '../systems/zoom';
+import { APP_VERSION } from '../data/version';
 
 const P = DEBUG.panel;
 /** "Ge kompis" fortsätter i cykeln så länge appen är igång. */
@@ -77,8 +78,9 @@ export class DebugPanel {
     this.list = scene.add.text(6, P.listY, '', { ...style, lineSpacing: P.lineH - P.px - 2 });
     this.status = scene.add.text(W / 2, P.statusY, '', { ...style, color: P.dim, align: 'center', wordWrap: { width: W - 20 } }).setOrigin(0.5, 0);
     this.zoom = scene.add.text(10, P.zoomY, '', { ...style, color: P.accent });
+    const version = scene.add.text(W / 2, P.versionY, `KLUNK ${APP_VERSION}`, { ...style, color: P.dim }).setOrigin(0.5, 0);
     const g = scene.add.graphics();
-    this.root = scene.add.container(0, 0, [bg, title, this.list, this.zoom, this.status, g]).setDepth(P.depth);
+    this.root = scene.add.container(0, 0, [bg, title, this.list, this.zoom, this.status, version, g]).setDepth(P.depth);
     for (const b of P.buttons) {
       g.lineStyle(2, hexToInt(P.accent), 1);
       g.strokeRoundedRect(b.x - P.buttonW / 2, b.y - P.buttonH / 2, P.buttonW, P.buttonH, 10);

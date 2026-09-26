@@ -34,6 +34,8 @@ export const DEBUG = {
     /** Raden "Zoom: 2 (auto)" ovanför statusraden. */
     zoomY: 336,
     statusY: 356,
+    /** Byggversionen (RELEASE.md §Versioning), en rad under knapparna. */
+    versionY: 596,
     /** Knappar 160×52 i två kolumner. */
     buttons: [
       { id: 'copy', label: 'Kopiera JSON', x: 94, y: 410 },

@@ -18,11 +18,15 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: addictive_gameapp/app
     steps:
       - uses: actions/checkout@v5
+        with:
+          # Full history: versionCode = commit count (scripts/version.mjs).
+          fetch-depth: 0
 
       - uses: actions/setup-node@v5
         with:
@@ -40,11 +44,29 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Version
+        id: version
+        run: node scripts/version.mjs --github
+
       - name: Unit tests
         run: npm test
 
       - name: Build web
         run: npm run build
+
+      - name: Size budget and version check
+        run: node scripts/check-dist.mjs dist
+
+      # Boots the build in the runner's Google Chrome (no browser download), starts a round, drops one object.
+      - name: Smoke test
+        timeout-minutes: 2
+        run: node scripts/smoke.mjs --dir dist --channel chrome
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: klunk-web-${{ steps.version.outputs.name }}
+          path: addictive_gameapp/app/dist
+          retention-days: 30
 
       - name: Sync Capacitor
         run: npx cap sync android
@@ -53,10 +75,38 @@ jobs:
         run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
 
       - name: Build debug APK
-        run: cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+        run: >
+          cd android && chmod +x gradlew && ./gradlew assembleDebug --no-daemon
+          -PklunkVersionCode=${{ steps.version.outputs.code }}
+          -PklunkVersionName=${{ steps.version.outputs.name }}
 
-      - name: Rename APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk klunk-debug.apk
+      # Only VIBRATE (from @capacitor/haptics) may reach the merged manifest. androidx adds its own
+      # signature-level DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION, which users never see.
+      - name: Check manifest permissions
+        run: |
+          m=$(find android/app/build/intermediates -path '*debug*' -name AndroidManifest.xml | grep -i merged | head -1)
+          if [ -z "$m" ]; then echo "::warning::merged manifest not found, permission check skipped"; exit 0; fi
+          perms=$(grep -o 'uses-permission[^>]*android:name="[^"]*"' "$m" | sed 's/.*android:name="\([^"]*\)"/\1/' | grep -v 'DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION$' | sort -u)
+          echo "permissions: $perms"
+          if [ "$perms" != "android.permission.VIBRATE" ]; then echo "::error::unexpected permissions: $perms"; exit 1; fi
+
+      - name: Rename APK and write release notes
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk klunk-debug.apk
+          size=$(du -k klunk-debug.apk | cut -f1)
+          {
+            echo "**KLUNK ${{ steps.version.outputs.name }}** (versionCode ${{ steps.version.outputs.code }}, APK ${size} KB)"
+            echo
+            echo "Senaste debug-APK från branch \`${{ github.ref_name }}\`, commit \`${{ github.sha }}\`."
+            echo "Ladda ner \`klunk-debug.apk\` nedan direkt på telefonen och installera."
+            echo "Versionen syns i debugpanelen (långtryck 2 s på logotypen)."
+            echo
+            echo "Webbygget: artifact \`klunk-web-${{ steps.version.outputs.name }}\` i ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo
+            echo "### Senaste ändringar"
+            git log -15 --no-merges --format='- %s (%h)' -- .
+          } > release-notes.md
+          cat release-notes.md
 
       - uses: actions/upload-artifact@v4
         with:
@@ -65,12 +115,11 @@ jobs:
           retention-days: 30
 
       - name: Publish rolling test release
+        if: github.ref == 'refs/heads/claude/addictive-mobile-game-vr0egf'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: test-latest
-          name: KLUNK testversion (senaste bygget)
+          name: KLUNK testversion ${{ steps.version.outputs.name }}
           prerelease: true
-          body: |
-            Senaste debug-APK från branch `${{ github.ref_name }}`, commit `${{ github.sha }}`.
-            Ladda ner `klunk-debug.apk` nedan direkt på telefonen och installera.
+          body_path: addictive_gameapp/app/release-notes.md
           files: addictive_gameapp/app/klunk-debug.apk
