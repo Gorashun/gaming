@@ -21,6 +21,7 @@ var _ttk := []
 var _engaged := {}
 var _zones_done := 0
 var _start_level := 1
+var _dodges := 0
 var _ex_stage := 0
 var _ex_t := 0.0
 
@@ -40,6 +41,29 @@ func _ready() -> void:
 	await get_tree().create_timer(1.0).timeout
 	_start_level = Game.character.level if Game.character else 1
 	_grant_companions()
+
+var _tour_i := -1
+var _tour_t := 0.0
+## --screens=a,b:c,... opens each screen for 2 s (prints SCREEN <name>) to catch UI errors.
+func _screen_tour(w: GameWorld, delta: float) -> void:
+	_tour_t -= delta
+	if _tour_t > 0.0:
+		return
+	var list: Array = str(args.screens).split(",")
+	var sess = w.get_parent()
+	if sess.screen and is_instance_valid(sess.screen):
+		sess.screen.queue_free()
+		get_tree().paused = false
+	_tour_i += 1
+	if _tour_i >= list.size():
+		_finish()
+		return
+	_tour_t = float(args.get("screen-interval", "2.0"))
+	print("SCREEN ", list[_tour_i])
+	sess.current_npc = str(args.get("npc", ""))
+	sess.open_screen(list[_tour_i])
+	if args.has("burst"):
+		sess.open_screen(str(args.burst))   # same-frame replace (stress test)
 
 func _pick(table: String, want: String) -> String:
 	if want == "first" or want == "true":
@@ -106,6 +130,8 @@ func _exercise(w: GameWorld, p: Player, delta: float) -> bool:
 	return false
 
 func _write(d: Dictionary) -> void:
+	if args.has("exercise"):
+		print("EV ", JSON.stringify(d))
 	if _log:
 		_log.store_line(JSON.stringify(d))
 
@@ -133,6 +159,22 @@ func _process(delta: float) -> void:
 	var p: Player = w.player
 	# Dismiss summary / death screens
 	var s = w.get_parent().screen if w.get_parent() and "screen" in w.get_parent() else null
+	if args.has("talk-all"):
+		w.suppress_npc_screens = true
+		_tour_t -= delta
+		if _tour_t <= 0.0:
+			_tour_t = 1.5
+			_tour_i += 1
+			if _tour_i >= w.npcs.size():
+				_finish()
+				return
+			var n = w.npcs[_tour_i]
+			print("NPC ", n.npc_id)
+			w.interact_npc(n)
+		return
+	if args.has("screens"):
+		_screen_tour(w, delta)
+		return
 	if get_tree().paused:
 		_handle_pause(w)
 		return
@@ -145,13 +187,34 @@ func _process(delta: float) -> void:
 			p.sync_from_character()
 		if p.ch.skill_points > 0:
 			w.get_parent().auto_spend_points()
-	if p.life < p.max_life * (0.35 if skill_level != "novice" else 0.15):
-		p.use_potion()
 	var target = w.nearest_enemy(p, p.global_position, 30.0, [])
+	var basic = Content.get_rec("skills", p.basic_skill)
+	var ranged = basic.get("tags", []).has("projectile")
+	# Potions: novice drinks late; others drink at 35 %, or at 55 % when a telegraph is on them
+	var danger = []
+	if skill_level != "novice":
+		# Only react to telegraphs that are about to land (reaction window), never to normal swings
+		var window = 1.1 if skill_level == "expert" else 0.85
+		var now_s = Time.get_ticks_msec() / 1000.0
+		danger = w.hazards_at(p.global_position, 0.6, false).filter(func(h): return float(h.until) - now_s < window)
+	var pot_at = 0.15 if skill_level == "novice" else (0.55 if not danger.is_empty() else 0.35)
+	if p.life < p.max_life * pot_at and p.ch.potions > 0:
+		p.use_potion()
+	# Dodge telegraphs (competent/expert): step out; roll when it is about to land
+	if not danger.is_empty():
+		var h = danger[0]
+		var esc = w.hazard_escape_dir(p.global_position, h)
+		var left = float(h.until) - Time.get_ticks_msec() / 1000.0
+		if left < (0.55 if skill_level == "expert" else 0.4) and h.kind != "melee":
+			if p.dodge(esc):
+				_dodges += 1
+		p.intent_move = esc
+		if ranged and target:
+			p.request_cast(p.basic_skill, target.global_position)
+		_last_pos = p.global_position
+		return
 	if target:
 		var d = p.global_position.distance_to(target.global_position)
-		var basic = Content.get_rec("skills", p.basic_skill)
-		var ranged = basic.get("tags", []).has("projectile")
 		var want = 7.0 if ranged else 1.8
 		# try skills
 		for sid in p.ch.skill_bar:
@@ -163,8 +226,13 @@ func _process(delta: float) -> void:
 		else:
 			p.intent_move = Vector3.ZERO
 			p.request_cast(p.basic_skill, target.global_position)
-			if skill_level == "expert" and d < 1.2 and ranged:
-				p.intent_move = (p.global_position - target.global_position).normalized()
+			# Kite: ranged heroes back off when something gets close (not novices)
+			if ranged and skill_level != "novice" and d < (4.0 if skill_level == "expert" else 2.5):
+				var away = (p.global_position - target.global_position)
+				away.y = 0
+				var dest = w.clamp_to_walkable(p.global_position, p.global_position + away.normalized() * 3.0)
+				if dest.distance_to(p.global_position) > 0.5:
+					p.intent_move = (dest - p.global_position).normalized()
 	else:
 		# loot then exit
 		var drop = null
@@ -240,7 +308,7 @@ func _finish() -> void:
 	avg_ttk = avg_ttk / max(1, _ttk.size())
 	var summary = {"ev": "summary", "bot": skill_level, "class": ch.class_id, "tier": ch.difficulty, "duration_s": _t,
 		"kills": _kills, "kills_per_min": _kills / (_t / 60.0), "deaths": _deaths, "avg_ttk_s": avg_ttk,
-		"drops": _drops, "level_start": _start_level, "level_end": ch.level, "gold": ch.gold, "zones_cleared": _zones_done,
+		"drops": _drops, "dodges": _dodges, "level_start": _start_level, "level_end": ch.level, "gold": ch.gold, "zones_cleared": _zones_done,
 		"dmg_dealt": int(_dmg_dealt), "dmg_taken": int(_dmg_taken), "zone": Game.world.zone.id if Game.world else ""}
 	_write(summary)
 	print("BOT_SUMMARY ", JSON.stringify(summary))

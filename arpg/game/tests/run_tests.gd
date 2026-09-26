@@ -20,7 +20,7 @@ func _ready() -> void:
 	for t in ["test_content_sanity", "test_loot_generation", "test_upgrade", "test_affinity_proficiency", "test_pets",
 			"test_quests", "test_save_roundtrip", "test_save_backups", "test_starmap", "test_skill_mods", "test_mastery",
 			"test_merchants", "test_travel", "test_codex", "test_deeds", "test_main_quest", "test_builds", "test_mounts",
-			"test_world_event_helpers", "test_base_content_integration", "test_wave2_integration"]:
+			"test_world_event_helpers", "test_base_content_integration", "test_wave2_integration", "test_moon_hooks"]:
 		_current = t
 		Rng.reseed(1234)
 		call(t)
@@ -669,3 +669,18 @@ func test_wave2_integration() -> void:
 				check(Merchants.buy(ch, v.id, i).ok, "buy hearth charge")
 				eq(ch.wick_charges, w + 1, "hearth charge added")
 		break
+
+func test_moon_hooks() -> void:
+	var ch = mk_char()
+	ch.play_seconds = 0.0
+	var st = Moon.state(ch)
+	check(not st.full, "no full moon at start")
+	ch.play_seconds += st.next_full_in_s + 1.0
+	check(Moon.is_full(ch), "full moon reached by active play")
+	eq(Moon.state(ch).next_full_in_s, 0.0, "full now")
+	for pr in Content.all("passives"):
+		if str(pr.get("hook", "")) in ["spin_every_n_casts", "zone_minion_bonus"]:
+			var c2 = mk_char(str(pr.get("class", "lanternbearer")), 30)
+			c2.passive_ranks[pr.id] = 1
+			c2.recalc()
+			check(Hooks.has(c2, str(pr.hook)), "hook active " + str(pr.hook))

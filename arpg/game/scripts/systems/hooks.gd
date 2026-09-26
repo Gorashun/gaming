@@ -4,7 +4,7 @@ extends RefCounted
 ## Stats on those records always apply through CharacterData.recalc; hooks add behaviour.
 ## Implemented: crit_gain_resource, low_life_buff, bonus_vs_status, chain_bonus_jumps, dodge_next_crit,
 ## aoe_repeat_chance, quake_stun_bonus, minion_death_burst, block_casts, holy_area_leaves_zone,
-## zone_expire_burst. Unknown hooks are ignored (stats still work).
+## zone_expire_burst, spin_every_n_casts, zone_minion_bonus, move_zone. Unknown hooks are ignored (stats still work).
 
 ## {hook: params} for the hero right now (ranked passives, pact, equipped item powers).
 static func active(ch: CharacterData) -> Dictionary:

@@ -27,6 +27,7 @@ var _mount_check = 0.0
 # Channel (hearth etc.)
 var _channel = {}                # {what, t, dur, cb}
 var _walked = 0.0
+var _ember_acc = 0.0
 var _step_sfx = "step"
 var _aura: CPUParticles3D
 
@@ -269,6 +270,13 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	global_position.y = 0.0
 	_walked += Vector2(global_position.x - before.x, global_position.z - before.z).length()
+	if Hooks.has(ch, "move_zone") and before.distance_to(global_position) > 0.01:
+		_ember_acc += before.distance_to(global_position)
+		if _ember_acc >= float(Hooks.param(ch, "move_zone", "every_m", 2.5)):
+			_ember_acc = 0.0
+			Game.world.spawn_ground_zone(self, global_position, {"type": "ground_zone", "radius": float(Hooks.param(ch, "move_zone", "radius", 1.2)),
+				"duration": float(Hooks.param(ch, "move_zone", "duration", 2.0)), "tick": 0.5, "_ember": true},
+				float(Hooks.param(ch, "move_zone", "mult", 0.15)), str(Hooks.param(ch, "move_zone", "element", "fire")), ["area"], Color(1.0, 0.5, 0.2))
 	if _walked >= 10.0:
 		ch.track("distance", int(_walked))
 		if mounted:
@@ -395,12 +403,35 @@ func _process_casts() -> void:
 	play(str(anims), lock, float(s.get("anim_speed", 1.3)) * speed, true)
 	Sfx.play(s.get("sfx", "swing"), -4.0)
 	ch.track("skills_cast")
+	if Game.world:
+		Game.world._casts_in_zone += 1
 	SkillMastery.on_cast(ch, s)
 	Events.skill_cast.emit(req.skill)
 	var windup = float(s.get("windup", 0.12)) / speed
 	after(windup, func():
 		if is_instance_valid(self) and alive:
 			SkillEffects.execute(self, s, skill_rank(req.skill), pos))
+
+## Dodge roll (Dodge button / bots): 4 m dash with a short invulnerability window, 2 s cooldown.
+func dodge(dir := Vector3.ZERO) -> bool:
+	if cooldown_left("__dodge") > 0 or not can_act() or not alive:
+		return false
+	cooldowns["__dodge"] = time_now() + 2.0
+	if dir.length() < 0.1:
+		dir = intent_move if intent_move.length() > 0.1 else facing
+	if mounted:
+		dismount("dodge")
+	if not _channel.is_empty():
+		cancel_channel()
+	var dest: Vector3 = Game.world.clamp_to_walkable(global_position, global_position + dir.normalized() * 4.0)
+	face_towards(global_position + dir)
+	play("Dodge_Forward", 0.35, 1.4, true)
+	invuln_until = time_now() + 0.3
+	var t = create_tween()
+	t.tween_property(self, "global_position", dest, 0.28).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	Sfx.play("dodge", -4.0)
+	Fx.burst(global_position + Vector3(0, 0.3, 0), Color(0.6, 0.6, 0.7), 10, 2.0, 0.2, 0.4)
+	return true
 
 func use_potion() -> void:
 	if ch.potions <= 0 or time_now() < potion_ready_at or not alive:

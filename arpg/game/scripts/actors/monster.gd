@@ -173,6 +173,7 @@ func _attack() -> void:
 		return
 	# Melee: short telegraph flash on the monster, then hit if still in range/arc
 	flash(Color(1, 0.3, 0.2), 0.35)
+	Game.world.add_hazard("melee", global_position, float(atk.get("range", 1.6)) + 0.6, windup, null, self)
 	after(windup, func():
 		var t = t_ref.get_ref()
 		if not (is_instance_valid(self) and alive and is_instance_valid(t) and t.alive):
@@ -202,6 +203,7 @@ func _try_abilities(dist: float) -> bool:
 
 func _use_ability(ab: Dictionary) -> void:
 	var tel = max(float(ab.get("telegraph", 1.0)), float(Game.tier().get("min_telegraph", 0.8)))
+	Game.world.on_monster_ability(self)
 	play(ab.get("anim", "Spellcast_Raise"), tel + 0.3, 1.0, true)
 	var pos: Vector3 = target.global_position if target else global_position
 	match str(ab.get("type", "slam")):
@@ -209,6 +211,7 @@ func _use_ability(ab: Dictionary) -> void:
 			var at: Vector3 = global_position if ab.get("at", "target") == "self" else pos
 			var r = float(ab.get("radius", 3.0))
 			Fx.telegraph(at, r, tel, Color("#ff2b2b"))
+			Game.world.add_hazard("circle", at, r, tel + 0.15, null, self)
 			after(tel, func():
 				if not (is_instance_valid(self) and alive):
 					return
@@ -221,6 +224,7 @@ func _use_ability(ab: Dictionary) -> void:
 					Game.world.monster_hit(self, p, float(ab.get("mult", 2.0)), ab.get("element", "physical")))
 		"volley":
 			var n = int(ab.get("count", 5))
+			Game.world.add_hazard("line", global_position, 1.2, tel * 0.5 + 0.6, pos + (pos - global_position).normalized() * 3.0, self)
 			after(tel * 0.5, func():
 				if not (is_instance_valid(self) and alive):
 					return
@@ -234,6 +238,7 @@ func _use_ability(ab: Dictionary) -> void:
 		"nova_ring":
 			# Expanding ring of projectiles around the caster
 			var n = int(ab.get("count", 12))
+			Game.world.add_hazard("circle", global_position, 3.5, tel + 0.5, null, self)
 			after(tel, func():
 				if not (is_instance_valid(self) and alive):
 					return
@@ -250,6 +255,8 @@ func _use_ability(ab: Dictionary) -> void:
 		"charge":
 			var dest: Vector3 = pos
 			Fx.telegraph(global_position.lerp(dest, 0.5), 1.2, tel, Color("#ff2b2b"))
+			var cend = global_position + (dest - global_position).normalized() * float(ab.get("distance", 8.0))
+			Game.world.add_hazard("line", global_position, 1.4, tel + 0.45, cend, self)
 			after(tel, func():
 				if not (is_instance_valid(self) and alive):
 					return

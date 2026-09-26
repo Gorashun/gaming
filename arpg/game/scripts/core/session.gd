@@ -74,7 +74,16 @@ var screen_arg = ""        # "crafting:smith" → screen "crafting", screen_arg 
 ## ScreenBase.context {arg, tab, npc}. Known names include inventory, skills, map, menu, character,
 ## crafting, stash, vendor, curio, pets, mounts, stable, quests, bounties, lore, inn, codex, deeds,
 ## wardrobe, starmap, settings, credits, hall, collection.
+var _last_open_ms = -10000
+
 func open_screen(which: String) -> void:
+	# Several opens in the same instant (e.g. many NPC talks queued at once) would build and free
+	# screens with 3D previews in one frame, which the renderer reports as 'Parameter "material" is
+	# null'. Keep the first request of a burst.
+	var now = Time.get_ticks_msec()
+	if now - _last_open_ms < 250 and screen and is_instance_valid(screen):
+		return
+	_last_open_ms = now
 	screen_arg = ""
 	if which.contains(":"):
 		var parts = which.split(":", true, 1)

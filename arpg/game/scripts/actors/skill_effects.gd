@@ -164,8 +164,19 @@ static func _run(world, caster: Actor, skill: Dictionary, rank: int, e: Dictiona
 				if not is_instance_valid(caster) or not caster.alive:
 					return
 				Fx.slash(caster.global_position, caster.facing.rotated(Vector3.UP, i * 2.1), r, 200.0, col, interval * 1.2)
+				var hit_any = false
 				for t in world.enemies_in_radius(caster, caster.global_position, r):
 					world.deal_damage(caster, t, mult, element, tags, e)
+					hit_any = true
+				# spin_every_n_casts hook: every Nth spin tick that hits rings a free skill
+				if hit_any and caster is Player and Hooks.has(caster.ch, "spin_every_n_casts"):
+					var n = int(caster.get_meta("spin_hits", 0)) + 1
+					if n >= int(Hooks.param(caster.ch, "spin_every_n_casts", "n", 5)):
+						n = 0
+						var sid = str(Hooks.param(caster.ch, "spin_every_n_casts", "skill", ""))
+						if Content.has_rec("skills", sid):
+							execute(caster, caster.skill_def(sid), max(1, caster.skill_rank(sid)), caster.global_position + caster.facing * 2.0)
+					caster.set_meta("spin_hits", n)
 				await caster.get_tree().create_timer(interval, false).timeout
 		"pull":
 			for t in world.enemies_in_radius(caster, target_pos, float(e.get("radius", 5.0))):

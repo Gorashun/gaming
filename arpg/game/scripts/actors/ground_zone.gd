@@ -19,6 +19,8 @@ func setup(c: Actor, effect: Dictionary, m: float, el: String, t: Array, col: Co
 	element = el
 	tags = t
 	radius = float(effect.get("radius", 3.0)) * sqrt(1.0 + c.stats.get_stat("area_pct") / 100.0)
+	if c is Player:
+		add_to_group("player_zones")
 	until = Time.get_ticks_msec() / 1000.0 + float(effect.get("duration", 4.0))
 	var mi = MeshInstance3D.new()
 	var q = PlaneMesh.new()

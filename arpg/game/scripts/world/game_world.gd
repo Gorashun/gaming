@@ -37,6 +37,10 @@ var world_events: WorldEvents
 var zone_deaths = 0              # deaths during this zone visit (Lantern's Blessing)
 var blessing_pct = 0.0
 var _legendary_slowmo_done = false
+## Telegraphed danger areas (for AI/bots/accessibility): [{kind, pos, pos2, radius, until, src}]
+## kind: "circle" | "line" (capsule pos→pos2) | "melee" (a normal swing's reach).
+var active_hazards: Array = []
+var suppress_npc_screens = false   # tests/bots: talk without opening screens
 
 const PATH_RES := 2.0
 
@@ -451,6 +455,7 @@ func interact_npc(n: Npc) -> void:
 	var ch = Game.character
 	Sfx.play("npc_talk", -4.0)
 	Events.npc_talked.emit(n.npc_id)
+	_secret_on_npc_talk(n.npc_id)
 	Quests.notify(ch, "talk", n.npc_id)
 	MainQuest.notify(ch, "talk", n.npc_id)
 	var done = Quests.ready_for(ch, n.npc_id)
@@ -470,18 +475,28 @@ func interact_npc(n: Npc) -> void:
 	var scr = str(n.rec.get("screen", ""))
 	if scr == "" and not Quests.available_for(ch, n.npc_id).is_empty():
 		scr = "quests"
-	if scr != "" and sess and sess.has_method("open_screen"):
+	if scr != "" and sess and sess.has_method("open_screen") and not suppress_npc_screens:
 		get_tree().create_timer(0.6).timeout.connect(func():
 			if is_instance_valid(sess) and is_instance_valid(self):
 				sess.open_screen(scr))
 
 # ------------------------------------------------------------------ zone secrets
 ## zones[].secrets[{id, kind, hint, lore, reward{material|pet|mount|lore|portal|gold|item_rarity|title}}].
-## Interact-style kinds become a faint sparkle to find; "stand_still" (30 s without moving) and "ride"
-## (reach the sparkle mounted) add a condition. Other condition kinds (moon, rain, riddles…) are not
-## spawned yet. Portal secrets stay available after discovery; others are found once (flag secret:<id>).
-const SECRET_CONDITIONS := ["stand_still", "ride"]
-const SECRET_SKIP := ["moon_night", "rain_walk", "no_hit_phase", "silence", "story_complete", "rekindle", "maze", "third_mirror", "talk_chain", "riddles"]
+## Interact-style kinds become a faint sparkle to find. Condition kinds:
+##   stand_still (30 s without moving), ride (reach the sparkle mounted), moon_night (sparkle only during
+##   the in-game full moon), story_complete (sparkle only after finishing the story), silence (sparkle
+##   in the last room; works only if you haven't attacked in this zone), riddles (the answer is to say
+##   nothing: stand still beside it 5 s), no_hit_phase (the boss uses N abilities while you're unhit),
+##   rekindle (defeat the act boss without having fallen in this act), talk_chain (talk to every NPC
+##   in the town). Not spawned: rain_walk (no weather system), maze, third_mirror (need layouts).
+## Portal secrets stay available after discovery; others are found once (flag secret:<id>).
+const SECRET_SKIP := ["rain_walk", "maze", "third_mirror"]
+var _no_hit_secret = {}
+var _no_hit_count = 0
+var _rekindle_secret = {}
+var _talk_secret = {}
+var _riddle = {}
+var _casts_in_zone = 0
 var _still_t = 0.0
 var _still_secret = {}
 
@@ -496,10 +511,29 @@ func _place_secrets() -> void:
 		var portal = str(sc.get("reward", {}).get("portal", ""))
 		if SECRET_SKIP.has(str(sc.get("kind", ""))) or (found and portal == ""):
 			continue
-		if str(sc.get("kind", "")) == "stand_still":
-			_still_secret = sc
-			continue
+		var kind = str(sc.get("kind", ""))
+		match kind:
+			"stand_still":
+				_still_secret = sc
+				continue
+			"no_hit_phase":
+				_no_hit_secret = sc
+				continue
+			"rekindle":
+				_rekindle_secret = sc
+				continue
+			"talk_chain":
+				_talk_secret = sc
+				continue
+			"moon_night":
+				if not Moon.is_full(ch):
+					continue
+			"story_complete":
+				if not ch.discoveries.any(func(d): return str(d).begins_with("story_complete:")):
+					continue
 		var ri: int = rooms[Rng.int_on("world", 0, rooms.size() - 1)]
+		if kind == "silence":
+			ri = layout.end_room
 		var cells = layout.room_cells(ri)
 		var pos = layout.cell_to_world(cells[Rng.int_on("world", 0, cells.size() - 1)])
 		var n = Node3D.new()
@@ -529,6 +563,13 @@ func _place_secrets() -> void:
 		entry.action = func():
 			if str(sc.get("kind", "")) == "ride" and not player.mounted:
 				Events.toast.emit(str(sc.get("hint", "Something here wants a rider...")), Color(0.8, 0.9, 1.0))
+				return
+			if str(sc.get("kind", "")) == "silence" and _casts_in_zone > 0:
+				Events.toast.emit(str(sc.get("hint", "It only answers the quiet...")), Color(0.8, 0.9, 1.0))
+				return
+			if str(sc.get("kind", "")) == "riddles":
+				Events.story_dialogue.emit([{"speaker": "?", "text": str(sc.get("hint", "What can you hold without touching, and keep by giving nothing?"))}])
+				_riddle = {"sc": sc, "pos": pos, "t": 0.0}
 				return
 			found_secret(sc, pos)
 		interactables.append(entry)
@@ -567,7 +608,41 @@ func found_secret(sc: Dictionary, at: Vector3) -> void:
 		Events.toast.emit("A secret! " + str(sc.get("hint", "")), Color(0.85, 0.95, 1.0))
 		Game.save_character()
 
+## Called by monsters when they use an ability (no_hit_phase secret).
+func on_monster_ability(m: Node) -> void:
+	if _no_hit_secret.is_empty() or not (m is Monster) or not m.is_boss():
+		return
+	_no_hit_count += 1
+	if _no_hit_count >= int(_no_hit_secret.get("count_needed", 3)):
+		var sc = _no_hit_secret
+		_no_hit_secret = {}
+		found_secret(sc, player.global_position)
+
+func _secret_on_player_hit() -> void:
+	_no_hit_count = 0
+
+func _secret_on_npc_talk(npc_id: String) -> void:
+	if _talk_secret.is_empty():
+		return
+	var ch = Game.character
+	ch.stats_tracking["talked:" + npc_id] = 1
+	for n in npcs:
+		if is_instance_valid(n) and int(ch.stats_tracking.get("talked:" + n.npc_id, 0)) == 0:
+			return
+	var sc = _talk_secret
+	_talk_secret = {}
+	found_secret(sc, player.global_position)
+
 func _update_still_secret(delta: float) -> void:
+	if not _riddle.is_empty() and player:
+		if player.intent_move.length() > 0.1 or player.global_position.distance_to(_riddle.pos) > 3.0:
+			_riddle.t = 0.0
+		else:
+			_riddle.t = float(_riddle.t) + delta
+			if float(_riddle.t) >= 5.0:
+				var rsc = _riddle.sc
+				_riddle = {}
+				found_secret(rsc, player.global_position)
 	if _still_secret.is_empty() or player == null:
 		return
 	if player.intent_move.length() > 0.1 or not player.alive:
@@ -668,6 +743,37 @@ func spawn_pet() -> void:
 	add_child(pet)
 	pet.setup(ch.active_pet, player)
 
+func add_hazard(kind: String, pos: Vector3, radius: float, duration: float, pos2 = null, src: Node = null) -> void:
+	active_hazards.append({"kind": kind, "pos": Vector3(pos.x, 0, pos.z), "pos2": Vector3(pos2.x, 0, pos2.z) if pos2 is Vector3 else Vector3(pos.x, 0, pos.z),
+		"radius": radius, "until": Time.get_ticks_msec() / 1000.0 + duration, "src": weakref(src) if src else null})
+
+## Hazards covering `p` (with a safety margin), soonest first.
+func hazards_at(p: Vector3, margin := 0.6, include_melee := true) -> Array:
+	var now = Time.get_ticks_msec() / 1000.0
+	var out = []
+	for h in active_hazards:
+		if float(h.until) < now or (not include_melee and h.kind == "melee"):
+			continue
+		var c: Vector3 = h.pos if h.kind != "line" else Geometry3D.get_closest_point_to_segment(Vector3(p.x, 0, p.z), h.pos, h.pos2)
+		if Vector2(p.x - c.x, p.z - c.z).length() <= float(h.radius) + margin:
+			out.append(h)
+	out.sort_custom(func(a, b): return float(a.until) < float(b.until))
+	return out
+
+## Direction that leaves hazard h fastest (away from centre / perpendicular to a line).
+func hazard_escape_dir(p: Vector3, h: Dictionary) -> Vector3:
+	var c: Vector3 = h.pos if h.kind != "line" else Geometry3D.get_closest_point_to_segment(Vector3(p.x, 0, p.z), h.pos, h.pos2)
+	var d = Vector3(p.x - c.x, 0, p.z - c.z)
+	if d.length() < 0.05:
+		d = (h.pos2 - h.pos).cross(Vector3.UP) if h.kind == "line" else Vector3(1, 0, 0)
+	d = d.normalized()
+	# Prefer a direction that stays walkable
+	for ang in [0.0, 0.6, -0.6, 1.2, -1.2, PI]:
+		var dir = d.rotated(Vector3.UP, ang)
+		if is_walkable(p + dir * 2.0):
+			return dir
+	return d
+
 ## Removes a monster without a kill (escaped Magpie, despawned event actors).
 func remove_monster(m: Node) -> void:
 	monsters.erase(m)
@@ -760,6 +866,12 @@ func deal_damage(src: Actor, target: Actor, mult: float, element: String, tags: 
 			if target.has_status(str(stid)):
 				hit.amount = float(hit.amount) * (1.0 + float(Hooks.param(owner.ch, "bonus_vs_status", "more", 25)) / 100.0)
 				break
+	# zone_minion_bonus hook: foes inside the hero's ground zones take more damage from minions
+	if owner is Player and src != owner and Hooks.has(owner.ch, "zone_minion_bonus"):
+		for z in get_tree().get_nodes_in_group("player_zones"):
+			if z.global_position.distance_to(target.global_position) <= float(z.radius):
+				hit.amount = float(hit.amount) * (1.0 + float(Hooks.param(owner.ch, "zone_minion_bonus", "more", 20)) / 100.0)
+				break
 	var def = {"stats": target.stats, "level": target.level}
 	var amount = Combat.mitigate(hit, def, src.level)
 	if target is Monster and target.shield_active():
@@ -848,6 +960,8 @@ func _apply_damage(target: Actor, amount: float, crit: bool, element: String, sr
 				target.set_meta("next_crit", true)
 		Fx.float_text(target.global_position, "Dodge", Color(0.8, 0.8, 0.8), 30)
 		return
+	if target is Player:
+		_secret_on_player_hit()
 	target.on_damaged(amount, crit, src)
 	Fx.damage_number(target.global_position, amount, crit, _elem_color(element), target is Player)
 	Events.actor_damaged.emit(target, amount, crit, element)
@@ -969,6 +1083,9 @@ func _on_monster_died(a: Actor) -> void:
 		Events.boss_defeated.emit(m)
 		ch.track("bosses")
 		_mark_boss_progress()
+		if not _rekindle_secret.is_empty() and int(ch.stats_tracking.get("deaths_in_act:" + str(zone.get("act", "")), 0)) == 0:
+			found_secret(_rekindle_secret, m.global_position)
+			_rekindle_secret = {}
 		exit_portal.visible = true
 		Events.toast.emit("%s is rekindled!" % m.display_name, Color(1, 0.85, 0.4))
 	Events.actor_died.emit(m, player)
@@ -1119,6 +1236,7 @@ func _on_player_died(_a: Actor) -> void:
 	var ch = Game.character
 	ch.track("deaths")
 	zone_deaths += 1
+	ch.stats_tracking["deaths_in_act:" + str(zone.get("act", ""))] = int(ch.stats_tracking.get("deaths_in_act:" + str(zone.get("act", "")), 0)) + 1
 	_update_blessing()
 	get_tree().call_group("session", "on_player_died")
 
@@ -1294,6 +1412,9 @@ func _process(delta: float) -> void:
 	if player == null:
 		return
 	_update_still_secret(delta)
+	if not active_hazards.is_empty():
+		var now = Time.get_ticks_msec() / 1000.0
+		active_hazards = active_hazards.filter(func(h): return float(h.until) >= now)
 	_light_timer -= delta
 	if _light_timer <= 0.0:
 		_light_timer = 0.5
