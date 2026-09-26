@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { AVATARS } from '../../src/data/avatars';
 import { THEME_SETS } from '../../src/data/themes';
 import { THEME } from '../../src/data/theme';
-import { getLocale, localeFrom, str, STRINGS, t, type LocalizedName } from '../../src/systems/i18n';
+import { getLocale, localeFrom, setPreferredLocale, str, STRINGS, t, type LocalizedName } from '../../src/systems/i18n';
 import { START_LABEL_KEYS, START_LABEL_MAX } from '../../src/data/startUi';
 
 function expectLocalized(group: readonly LocalizedName[], count: number): void {
@@ -31,10 +31,16 @@ describe('i18n: namn i data (DESIGN §15)', () => {
 
 describe('i18n: språkval', () => {
   it('sv* → sv, annars en', () => {
-    expect(getLocale('sv-SE', '')).toBe('sv');
-    expect(getLocale('sv', '')).toBe('sv');
+    // Enhetens språk styr inte: engelska är standard (DESIGN §15, 2026-09-26).
+    setPreferredLocale(null);
+    expect(getLocale('sv-SE', '')).toBe('en');
+    expect(getLocale('sv', '')).toBe('en');
     expect(getLocale('en-US', '')).toBe('en');
     expect(getLocale('de', '')).toBe('en');
+    // Svenska bara när spelaren valt det.
+    setPreferredLocale('sv');
+    expect(getLocale('en-US', '')).toBe('sv');
+    setPreferredLocale(null);
     expect(localeFrom(undefined)).toBe('en');
   });
 

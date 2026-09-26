@@ -204,7 +204,7 @@ Aldrig rött (rött = fara). Vanlig/ovanlig namnges och ritas av UI-designern me
 - UI:t förblir textfritt. Namn på avatarer, set och förmågor lagras som `{ en, sv }` i data och visas bara där text införs senare (bok, öppning, butik).
 - Appnamn: KLUNK (samma på båda språk). `index.html` lang="en".
 - Butikstext (Play/App Store) skrivs på engelska med svensk översättning i `docs/store/`.
-- Enkel `i18n`-modul väljer språk från enhetens språk (sv → svenska, annars engelska). Ingen inställning i v1.
+- ~~Enkel `i18n`-modul väljer språk från enhetens språk.~~ **Ändrat 2026-09-26 (Anders): spelet är alltid på engelska som standard, oavsett enhetens språk. Svenska bara som eget val i inställningarna (`settings.lang`).**
 
 ## 16. Ekonomi: pärlor, stjärnsand, musslor i butik (v1.3, beslut 2026-09-25)
 Källa: research/economy-research.md §5. Ersätter §14.3 (intjäning) och §14.4 (XP). Inga köp för riktiga pengar, inga annonser, ingen timer, inga dubbletter, odds synliga, ingen spelautomat-estetik. Reservflagga `SHOP.mode: 'random' | 'pick3'` (välj 1 av 3 synliga) om regelverk kräver.
