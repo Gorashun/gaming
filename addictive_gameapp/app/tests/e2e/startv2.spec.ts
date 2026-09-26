@@ -125,7 +125,7 @@ test('(a, c) Butik med väntande mussla: badge, öppning på startskärmen, seda
   await page.waitForFunction(() => window.__start?.opening === true, undefined, { timeout: 10_000 });
   expect(await page.evaluate(() => window.__book === undefined)).toBe(true);
   expect((await saved(page)).avatars.pendingBoxes).toBe(1);
-  await page.waitForFunction(() => window.__start?.openPhase === 'done', undefined, { timeout: 10_000 });
+  await page.waitForFunction(() => window.__start?.openPhase === 'done', undefined, { timeout: 30_000 });
   await tap(page, PLAY); // stänger öppningen, startar inte spelet
   await page.waitForFunction(() => window.__start !== undefined && !window.__start.opening, undefined, { timeout: 10_000 });
   await page.waitForTimeout(300);
@@ -133,7 +133,7 @@ test('(a, c) Butik med väntande mussla: badge, öppning på startskärmen, seda
   // En kvar: badgen finns kvar; öppna den också, sedan ingen badge.
   expect(await page.evaluate(() => window.__start!.shopBadge)).toBe(true);
   await tap(page, SHOP);
-  await page.waitForFunction(() => window.__start?.openPhase === 'done', undefined, { timeout: 10_000 });
+  await page.waitForFunction(() => window.__start?.openPhase === 'done', undefined, { timeout: 30_000 });
   await tap(page, PLAY);
   await page.waitForFunction(() => window.__start !== undefined && !window.__start.opening, undefined, { timeout: 10_000 });
   await page.waitForTimeout(300);

@@ -46,6 +46,8 @@ for (const c of CASES) {
       if (kind !== 'level') break;
       await page.evaluate((x) => window.__game!.drop(x), 60 + ((drops * 53) % 240));
       await page.waitForTimeout(200);
+      // Vänta på nästa hängande objekt (cooldown i speltid) så att burken inte fylls när speltiden går långsamt.
+      await page.waitForFunction(() => window.__game!.hangingX !== -1 || window.__game!.over, undefined, { timeout: 10_000 });
       // Burken töms när den blir full: testet mäter regissören, inte överlevnad.
       if (await page.evaluate(() => window.__game!.bodyCount >= 12)) {
         await page.evaluate(() => window.__game!.clear());

@@ -89,7 +89,7 @@ test('inställningsikonerna går att stänga av och sparas', async ({ page }) =>
     await page.waitForTimeout(120);
   }
   await page.waitForTimeout(200);
-  await page.screenshot({ path: 'tests/e2e/screenshots/start-settings-off.png' });
+  await page.screenshot({ path: 'tests/e2e/screenshots/sheet-all-off.png' });
 
   const settings = await page.evaluate(
     () => JSON.parse(localStorage.getItem('klunk.save.v1')!).settings,
@@ -129,10 +129,13 @@ test('highscore överlever omladdning och rekordjakten triggar', async ({ page }
   await page.waitForFunction(() => window.__game !== undefined, undefined, { timeout: 10_000 });
 
   // Spela tills poängen passerar det låga rekordet (record + newRecord).
-  for (let i = 0; i < 20; i++) {
+  // Som en spelare: nästa drop först när nästa objekt hänger (dropp-cooldown i speltid), annars
+  // staplas objekten över farolinjen när speltiden går långsamt under CPU-last.
+  for (let i = 0; i < 40; i++) {
+    await page.waitForFunction(() => window.__game!.hangingX !== -1 || window.__game!.over, undefined, { timeout: 10_000 });
+    if (await page.evaluate(() => window.__game!.over || window.__game!.score > 36)) break;
     await page.evaluate((px) => window.__game!.drop(px), 70 + ((i * 47) % 220));
     await page.waitForTimeout(260);
-    if (await page.evaluate(() => window.__game!.over)) break;
   }
   await page.waitForTimeout(600);
   await page.screenshot({ path: 'tests/e2e/screenshots/record.png' });

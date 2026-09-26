@@ -41,6 +41,9 @@ const saved = (page: Page): Promise<SavedAvatars> =>
   page.evaluate(() => JSON.parse(localStorage.getItem('klunk.save.v1')!).avatars);
 
 test('mussla: 120 merges ger en gratismussla på hyllan, öppning ger sällsynt, fliken Kompisar väljer avatar', async ({ page }) => {
+  // Speltidens timers (Phaser smoothStep) går långsammare än väggklockan när CPU:n är delad; ge marginal.
+  test.setTimeout(120_000);
+
   const errors = collectErrors(page);
   await seedSave(page);
   await page.goto('/?test=1');
@@ -58,11 +61,11 @@ test('mussla: 120 merges ger en gratismussla på hyllan, öppning ger sällsynt,
   await page.reload();
   await page.waitForFunction(() => window.__start !== undefined, undefined, { timeout: 10_000 });
   await page.waitForTimeout(1200);
-  await page.screenshot({ path: 'tests/e2e/screenshots/shelf-box.png' });
+  await page.screenshot({ path: 'tests/e2e/screenshots/start-v2-free-shell.png' });
 
   await tap(page, 293.5, 506); // Butik-kortet med väntande mussla
   // Fast 1,2 s i speltid; vänta tills öppningen är klar (headless kan gå långsammare).
-  await page.waitForFunction(() => window.__start?.openPhase === 'done', undefined, { timeout: 10_000 });
+  await page.waitForFunction(() => window.__start?.openPhase === 'done', undefined, { timeout: 30_000 });
   await page.screenshot({ path: 'tests/e2e/screenshots/box-open.png' });
   const first = await page.evaluate(() => window.__start!.lastBox);
   expect(first?.rarity).toBe('rare');

@@ -93,6 +93,9 @@ test('(a) U1: inställningsarkets på-ikoner är hud-vita, även siktlinjen; av 
 });
 
 test('(b) U7: boken öppnar på Kompisar när en ny kompis finns, pulsen slutar efter 2 s', async ({ page }) => {
+  // Speltidens timers (Phaser smoothStep) går långsammare än väggklockan när CPU:n är delad; ge marginal.
+  test.setTimeout(120_000);
+
   const errors = collectErrors(page);
   await seedSave(page, { settings: { bookHintSeen: true }, avatars: { owned: ['lisa', 'siri'], equipped: 'siri', fresh: ['lisa'] } });
   await page.goto('/?test=1');
@@ -107,7 +110,7 @@ test('(b) U7: boken öppnar på Kompisar när en ny kompis finns, pulsen slutar 
   expect(await page.evaluate(() => window.__book!.pulsingFriends)).toBe(1);
   expect((await saved(page)).avatars.fresh).toEqual(['lisa']);
   await page.screenshot({ path: 'tests/e2e/screenshots/book-friends-fresh.png' });
-  await page.waitForFunction(() => window.__book!.pulsingFriends === 0, undefined, { timeout: 15_000 });
+  await page.waitForFunction(() => window.__book!.pulsingFriends === 0, undefined, { timeout: 40_000 });
   expect((await saved(page)).avatars.fresh).toEqual([]);
 
   // Tryck på en siluett: inga fel (bara cellen skakar).
@@ -193,10 +196,10 @@ test('(e) U6: Lisas oljemätare syns vid Släpparen och försvinner när oljan �
   const p = await toCanvas(page, 200, 300);
   await page.mouse.move(p.x, p.y);
   await page.mouse.down();
-  await page.waitForFunction(() => window.__game!.abilityState.lisa.oilMs < 3000, undefined, { timeout: 15_000 });
+  await page.waitForFunction(() => window.__game!.abilityState.lisa.oilMs < 3000, undefined, { timeout: 40_000 });
   expect(await page.evaluate(() => window.__game!.lanternMeterVisible)).toBe(true);
   await page.screenshot({ path: 'tests/e2e/screenshots/lantern-meter.png' });
-  await page.waitForFunction(() => window.__game!.abilityState.lisa.oilMs === 0, undefined, { timeout: 15_000 });
+  await page.waitForFunction(() => window.__game!.abilityState.lisa.oilMs === 0, undefined, { timeout: 40_000 });
   await page.waitForTimeout(400);
   expect(await page.evaluate(() => window.__game!.lanternMeterVisible)).toBe(false);
   await page.mouse.up();

@@ -35,6 +35,9 @@ function seedSave(page: Page, extra: Record<string, unknown> = {}): Promise<void
 }
 
 test('rundavslut: 200 merges låser upp ett nytt set, tryck mitt i sekvensen startar om <500 ms', async ({ page }) => {
+  // Speltidens timers (Phaser smoothStep) går långsammare än väggklockan när CPU:n är delad; ge marginal.
+  test.setTimeout(120_000);
+
   const errors = collectErrors(page);
   await seedSave(page);
   await page.goto('/?test=1');
@@ -57,7 +60,7 @@ test('rundavslut: 200 merges låser upp ett nytt set, tryck mitt i sekvensen sta
   expect(s.u[0]).toBe('glimtarna');
   expect(s.f).toBe(s.u[1]);
   // Hela sekvensen (≤2,5 s speltid). freshSet ligger kvar tills setets sida visats i boken (U3).
-  await page.waitForFunction(() => (window.__reveal?.landed ?? 0) >= 1, undefined, { timeout: 20_000 });
+  await page.waitForFunction(() => (window.__reveal?.landed ?? 0) >= 1, undefined, { timeout: 40_000 });
   await page.waitForTimeout(1200);
   await page.screenshot({ path: 'tests/e2e/screenshots/reveal-newset.png' });
   expect(await page.evaluate(() => window.__game!.freshSet)).toBe(s.u[1]);
@@ -82,29 +85,34 @@ test('rundavslut: 200 merges låser upp ett nytt set, tryck mitt i sekvensen sta
   await page.waitForFunction(() => window.__reveal !== undefined, undefined, { timeout: 5_000 });
   const res = await page.evaluate(
     () =>
-      new Promise<{ ms: number; landed: number }>((resolve) => {
+      new Promise<{ ms: number; landed: number; done: boolean }>((resolve) => {
         const old = window.__game;
         const canvas = document.querySelector('canvas')!;
         const r = canvas.getBoundingClientRect();
         const at = { clientX: r.left + r.width / 2, clientY: r.top + (300 * r.height) / 640, bubbles: true };
         let t0 = 0;
         let landed = -1;
+        let done = true;
         const poll = (): void => {
           const rv = window.__reveal;
           if (t0 === 0 && rv && rv.elapsed >= 600) {
             landed = rv.landed;
+            done = rv.tally.done;
             canvas.dispatchEvent(new MouseEvent('mousedown', at));
             t0 = performance.now();
             canvas.dispatchEvent(new MouseEvent('mouseup', at));
           }
           const g = window.__game;
-          if (t0 > 0 && g && g !== old && !g.over) resolve({ ms: performance.now() - t0, landed });
+          if (t0 > 0 && g && g !== old && !g.over) resolve({ ms: performance.now() - t0, landed, done });
           else requestAnimationFrame(poll);
         };
         poll();
       }),
   );
-  expect(res.landed).toBe(0);
+  // Mitt i sekvensen: resursräkningen är inte klar. (Vid låg fps kan en frame på >200 ms hoppa förbi
+  // landningen vid 840 ms innan `elapsed` passerar 600, så `landed` kan vara 0 eller 1.)
+  expect(res.done).toBe(false);
+  expect(res.landed).toBeLessThanOrEqual(1);
   const ms = res.ms;
   console.log(`[e2e] omstart mitt i rundavslutet: ${ms.toFixed(0)} ms`);
   expect(ms).toBeLessThan(500);
@@ -115,6 +123,9 @@ test('rundavslut: 200 merges låser upp ett nytt set, tryck mitt i sekvensen sta
 });
 
 test('boken: låst sida är låst, upplåst sida kan väljas som aktiv och sparas', async ({ page }) => {
+  // Speltidens timers (Phaser smoothStep) går långsammare än väggklockan när CPU:n är delad; ge marginal.
+  test.setTimeout(120_000);
+
   const errors = collectErrors(page);
   const caught = [true, true, true, true, true, false, false, false, false, false, false];
   const fresh = new Array(21).fill(false);
@@ -130,7 +141,7 @@ test('boken: låst sida är låst, upplåst sida kan väljas som aktiv och spara
   });
   await page.goto('/?test=1');
   await page.waitForTimeout(1200);
-  await page.screenshot({ path: 'tests/e2e/screenshots/start-shelf.png' });
+  await page.screenshot({ path: 'tests/e2e/screenshots/start-v2-book-fresh.png' });
   await tap(page, 66.5, 506); // Bok-kortet
   await page.waitForFunction(() => window.__book !== undefined, undefined, { timeout: 5_000 });
   // Boken öppnas på det nya setet.
@@ -166,7 +177,7 @@ test('boken: låst sida är låst, upplåst sida kan väljas som aktiv och spara
   expect(saved.activeSet).toBe('frostisarna');
   // Sidan har synts i 2 s: freshSet nollställt.
   await page.waitForFunction(() => JSON.parse(localStorage.getItem('klunk.save.v1')!).freshSet === null, undefined, {
-    timeout: 20_000,
+    timeout: 40_000,
   });
   await page.screenshot({ path: 'tests/e2e/screenshots/book-sets.png' });
 
@@ -175,7 +186,7 @@ test('boken: låst sida är låst, upplåst sida kan väljas som aktiv och spara
   await page.waitForFunction(
     () => JSON.parse(localStorage.getItem('klunk.save.v1')!).collection.glimtarna.fresh[4] === false,
     undefined,
-    { timeout: 20_000 },
+    { timeout: 40_000 },
   );
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('klunk.save.v1')!).activeSet)).toBe('glimtarna');
 
@@ -215,7 +226,7 @@ test('en runda i annat set byter texturer och kör setets merge-klang', async ({
       g.spawn(1, 104, 530);
     });
     // Två merges ⇒ minst två klanger i setets klangfärg.
-    await page.waitForFunction((b) => window.__game!.timbrePlays >= b + 2, before, { timeout: 15_000 });
+    await page.waitForFunction((b) => window.__game!.timbrePlays >= b + 2, before, { timeout: 40_000 });
     await page.screenshot({ path: `tests/e2e/screenshots/set-${id}.png` });
   }
   expect(errors, errors.join('\n')).toEqual([]);

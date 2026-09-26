@@ -91,7 +91,7 @@ test('siktlinjen i inställningsarket stängs av och sparas', async ({ page }) =
   await click(320, 36);
   await page.waitForFunction(() => window.__start?.sheetOpen === true);
   await page.waitForTimeout(400);
-  await page.screenshot({ path: 'tests/e2e/screenshots/start-four-icons.png' });
+  await page.screenshot({ path: 'tests/e2e/screenshots/sheet-aim-on.png' });
   await click(180, 596);
   await page.waitForTimeout(200);
 
@@ -101,7 +101,7 @@ test('siktlinjen i inställningsarket stängs av och sparas', async ({ page }) =
   expect(settings.aimLine).toBe(false);
   // Ett tryck i arket får inte starta spelet.
   expect(await page.evaluate(() => window.__game === undefined)).toBe(true);
-  await page.screenshot({ path: 'tests/e2e/screenshots/start-aim-off.png' });
+  await page.screenshot({ path: 'tests/e2e/screenshots/sheet-aim-off.png' });
 
   // Bakåt stänger arket; inställningen slår igenom i spelet.
   await page.keyboard.press('Escape');

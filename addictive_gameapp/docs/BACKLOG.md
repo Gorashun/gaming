@@ -86,7 +86,7 @@ Status: `[ ]` ej påbörjad · `[~]` pågår · `[x]` klar
 ## Fas 11 – Start v2 (DESIGN §18)
 - [x] S1 Start v2: resurspiller, kugghjul/inställningsark, hjälte, SPELA, tre kort, set-stapel, Fredoka.
 - [ ] S2 Utvärdera `Scale.EXPAND` på Start för att använda höjden på långa telefoner.
-- [ ] S3 Byt namn på/ta bort föråldrade skärmdumpar (start-shelf, start-four-icons, start-aim-off, start-settings-off, shelf-box).
+- [x] S3 Byt namn på/ta bort föråldrade skärmdumpar (start-shelf, start-four-icons, start-aim-off, start-settings-off, shelf-box).
 - [ ] L1 Språkval i inställningsarket (English / Svenska), sparas i `settings.lang`, `setPreferredLocale` vid Boot och vid byte; standard engelska.
 
 ## Fas 12 – Child-safety baseline (docs/reviews/2026-09-26-baseline.md, PASS WITH CHANGES)

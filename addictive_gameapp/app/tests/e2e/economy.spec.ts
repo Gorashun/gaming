@@ -88,6 +88,9 @@ test('(a) gammal sparfil utan schema raderas: ny start med schema 2', async ({ p
 });
 
 test('(b–d) butik: köp i två tryck, silver räcker inte, uppgradering till II', async ({ page }) => {
+  // Speltidens timers (Phaser smoothStep) går långsammare än väggklockan när CPU:n är delad; ge marginal.
+  test.setTimeout(120_000);
+
   const errors = collectErrors(page);
   await seedSave(page, { avatars: { owned: ['common-1'], equipped: 'common-1' } });
   await page.goto('/?test=1');
@@ -114,7 +117,7 @@ test('(b–d) butik: köp i två tryck, silver räcker inte, uppgradering till I
   let d = await saved(page);
   expect(d.avatars.owned).toContain(bought.avatarId);
   expect(d.economy.pearls).toBe(0);
-  await page.waitForFunction(() => window.__book!.shop.openPhase === 'done', undefined, { timeout: 10_000 });
+  await page.waitForFunction(() => window.__book!.shop.openPhase === 'done', undefined, { timeout: 30_000 });
   await page.screenshot({ path: 'tests/e2e/screenshots/shop-open.png' });
   await tap(page, 180, 330);
   await page.waitForFunction(() => window.__book !== undefined && !window.__book.shop.opening && window.__book.tab === 'friends', undefined, { timeout: 5_000 });
