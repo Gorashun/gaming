@@ -1,6 +1,6 @@
 # Retention simulation: 60 days, three profiles (RETENTION §6)
 
-Owner: balance-analyst · 2026-09-26 · Sim: `docs/sim/retention_sim.py` (Python 3 stdlib, 200 seeded runs per case, medians). Run `python3 docs/sim/retention_sim.py` (about 4 min, or `--quick`). Sections can be run alone with `--only base|free|sens|rec|knobs`. Recalibrate a profile from a debug-panel export with `--playtest B1.json --profile casual`.
+Owner: balance-analyst · 2026-09-26 · Sim: `docs/sim/retention_sim.py` (Python 3 stdlib, 200 seeded runs per case, medians). Run 1 (below, spec v1): `python3 docs/sim/retention_sim.py --spec v1` (about 4 min, or `--quick`; sections alone with `--only base|free|sens|rec|knobs`). Run 2 (spec v1.2, at the end): `python3 docs/sim/retention_sim.py --only run2` (about 1 min). Recalibrate a profile from a debug-panel export with `--playtest B1.json --profile casual`.
 
 **Status: everything below is an ESTIMATE.** Merges per round, round length, skill, mission completion and session times are unmeasured (PLAYTEST.md). Existing numbers are read from `app/src/data/{economy,collection,unlocks,avatars,themes}.ts`. The lane numbers (Journey, missions, Daily Jar, Pearl Pool (formerly Tide Pool, same mechanics), Daily Present) are copied from RETENTION §3/§8.1 because they are not in `app/src/data` yet. RETENTION §10 is presentation only (grants at t = 0), so it does not change any number here. LG2 (the new score curve) does not affect currency. No game code was changed.
 
@@ -155,3 +155,101 @@ With these numbers: **R12 PASSES** for the casual child at 45 merges/round. T8 i
 4. **Collection exhausted early for adults and engaged children.** All 48 buddies by day 15 / 23 (T6 range). After that, Journey (L55–82 by day 30–60), trophies (30/40 by day 30) and upgrades carry retention. Stars stay empty (risk 1), so the long-term layer is thinner than planned.
 5. **Missions pay too much as specified.** At 20/30/40 they are 33–37 % of merge pearls and speed up collection by about 10 %.
 6. **Model limits.** Chain, combo and special rates, mission completion and trophy odds are guesses. Buddy abilities (Star Whale shiny ×2–3, Queen's extra specials) are not modelled. Sand is valued at 25 pe, which drives the share metrics (round sand is 22–34 % of value).
+
+---
+
+# Run 2: spec v1.2 (RETENTION v1.2 §3.5–3.6, DESIGN §24–25), 2026-09-26
+
+Command: `python3 docs/sim/retention_sim.py --only run2` (200 runs per profile, same seeds and profiles as Run 1).
+
+What changed in the model:
+- **Adopted numbers (DESIGN §24):** first free shells at 60 and 400, missions 10/20/30 (+1 sand at T3), surprise mission 10 pearls, Pearl Pool cap 30, present #5 after the decorations = 25 pearls.
+- **Trophies:** the 40 v1.2 definitions (§3.5). Items come from the 8 hidden trophies and Star Collector.
+- **Mastery (§3.6):** ★1 = levels 0–7 caught, ★2 = a level 8, ★3 = 6 shiny slots, per set. Guest-set rounds count, and stars count once the set is unlocked.
+- **Set-unlock skill track (§25):** first level 8, first level 9, first shiny, first mastery star.
+- **T3 missions:** available when score2500 is eligible (proxy: a level 8 ever), lvl9_round (a 9) or lvl10 (a 10).
+- **Verdict rules:** T1 is judged as a health signal (§24/R11), and casual T5/T6 are judged in days (§6).
+- **Data files:** `app/src/data/economy.ts` (`free.at [120, 400]`) and `unlocks.ts` (`levels [8, 10]`, `fullPage`) are **not updated yet**, so the sim overrides them with the v1.2 values. Programmer: update both before the build.
+
+New per-round rates, all estimates:
+- combo ≥ 8 per round = 1 − exp(−merges × a × 0.6⁵);
+- rainbow on level ≥ 5 = 0.4 per rainbow;
+- a bomb clears a level ≥ 7 = 0.08 per bomb;
+- leaving danger twice in a round = 0.15 / 0.22 / 0.28;
+- Quick Climb = a separate 40-drop cascade.
+
+## R2.1 Targets: all Run 1 results hold
+
+| # | Casual child (5/7) | Engaged child | Skilled adult |
+|---|---|---|---|
+| T1 (signal) | 12.0 min. Daily-Jar trigger 91 %, time/rounds 0 %: **OK** | 14.6 min. 50 % / 0 %: **OK** | 22.5 min. 93 % / 87 %: **OK** |
+| T2 | 2.29 **PASS** | 2.57 **PASS** | 3.38 **PASS** |
+| T3 | 8.5 min **PASS** | 7.4 min **PASS** | 6.5 min **PASS** |
+| T4 | 4.5 /h **FAIL** (2.5–3.5) | 4.5 **PASS** | 4.4 **FAIL** (one shell short of 4.5) |
+| T5 | day 43 **PASS** (day 40–50) | 5.3 h **PASS** | 5.2 h **PASS** |
+| T6 | day 84 **PASS** (day 75–95) | 10.3 h, day 25 **PASS** | 9.9 h, day 15 **PASS** |
+| T7 | 3/9/19 at 5/7. At 7/7 (the target's basis) 3/10/23 **PASS** | 6/19/41 **PASS** | 9/26/55 **PASS** |
+| T8 | 31.1 % **PASS** | 12.8 % **PASS** | 7.1 % **PASS** |
+| T9 | 0.59 **PASS** | 0.49 **PASS** | 0.35 **PASS** |
+| T10 | 18.5 %, 0.61/round **PASS** | 21.3 %, 0.88/round **PASS** | 22.5 % **PASS** on share. 1.18 completions/round is above the 0.5–1.0 band (**FAIL**, and that rate is my estimate) |
+| T11 | 8.6 % **PASS** | 6.2 % **PASS** | 4.8 % **PASS** |
+| T12 | 205 pe, also after the decorations (limit 237) **PASS** | – | – |
+
+**R12 (casual):**
+
+| Days played | 45 merges/round: T8 / T9 | 31 merges/round: T8 / T9 |
+|---|---|---|
+| 7/7 | 30.2 % / 0.69 **PASS** | 36.9 % / 1.03 **FAIL** |
+| 5/7 | 31.1 % / 0.59 **PASS** | 37.7 % / 0.86 **FAIL** |
+| 4/7 | 31.7 % / 0.52 **PASS** | 38.7 % / 0.78 **FAIL** |
+
+This is unchanged from Run 1. The redefinitions carry no currency, so the economy is the same within noise.
+
+**Remaining FAILs:**
+- **T4 casual (4.5 vs 2.5–3.5).** This is the same structural issue as T5/T6: daily lanes pay per day. I recommend restating it in days, or dropping it for casual.
+- **T4 skilled (4.4 vs 4.5).** One shell in 5 h, within sim resolution.
+- **T10 skilled completion rate.** It rests on my guess of mission difficulty for adults; measure it in the playtest.
+- **R12 at −30 % merges.** Unchanged; gated on the playtest per DESIGN §24.
+
+## R2.2 Stars, trophies and set unlocks (medians; p90 in brackets)
+
+| Profile | Stars d7 / d14 / d28 / d60 (of 15) | Trophies d7 / d28 / d60 (of 40) | Day of 1st / 5th / 10th / 15th star | Day set 2 / 3 / 4 / 5 unlocks |
+|---|---|---|---|---|
+| Casual child | 5 / 6 / 8 / 14 | 19 / 32 / 37 | 1 / 7 / 35 / >60 | 1 (1) / 1 (2) / 4 (18) / 42 (48) |
+| Engaged child | 10 / 15 / 15 / 15 | 35 / 38 / 38 | 1 / 2 / 6 / 13 | 1 (1) / 1 (1) / 1 (1) / 10 (11) |
+| Skilled adult | 15 / 15 / 15 / 15 | 37 / 38 / 39 | 1 / 1 / 3 / 6 | 1 (1) / 1 (1) / 1 (1) / 2 (6) |
+
+At ±30 % merges, the result is stars d28 / d60, trophies d28, and the day set 5 unlocks:
+
+| Profile | 0.7× | 1.0× | 1.3× |
+|---|---|---|---|
+| Casual | 5 / 9, 27, day 59 | 8 / 14, 32, day 42 | 11 / 15, 35, day 32 |
+| Engaged | 15 / 15, 37, day 15 | 15 / 15, 38, day 10 | 15 / 15, 39, day 4 |
+| Skilled | 15 / 15, 38, day 8 | 15 / 15, 38, day 2 | 15 / 15, 39, day 1 |
+
+**Reachability is fixed.** Every visible trophy is earned by ≥ 90 % of casual children by day 60, except Better Try (58 %). Stars match the §3.6 estimate: casual 5 / 7 / 9 / 11 at d7/14/28/60 (sim 5 / 6 / 8 / 14); engaged 11 / 13 / 15 / 15 (sim 10 / 15 / 15 / 15).
+
+**The per-trophy first-completion days are within a few days of §3.5 for 34 of 40.** The exceptions:
+- Busy Jar, casual: day 19 vs 30.
+- Better Try, casual: day 46 vs about 5. My replay model is thin: about 3 % of rounds are voluntary replays.
+- Decorator and Full Aquarium: day 2–7 vs 7–18. My item count includes plants and trophy items, and assumes every item fits a spot.
+- Ten Missions: day 8 vs 14.
+- Tickled and Say Hello: player-driven.
+- Deep Nine: 0 % casual, 38 % engaged, day 2 skilled. Top of the Jar: 0 % for everyone (as designed).
+
+**New finding 1: the §25 skill track unlocks sets on day 1.** "First shiny" (guaranteed by round 3) and "first mastery star" (★1 in the base set needs a level 7, 64–98 % per round) both happen on day 1 for almost everyone. So **sets 2 and 3 unlock on day 1 for all profiles, and set 4 does too for engaged and skilled players.** The skill track no longer paces anything; the old time-track rhythm (200/600/1500 merges) is overridden. Set 5 is then gated by level 9 or 3 000 merges: day 42 for casual, day 10 for engaged. An alternative I tested:
+
+| Skill track | Casual: set 2 / 3 / 4 / 5 | Engaged | Skilled |
+|---|---|---|---|
+| §25: L8, L9, first shiny, first star | 1 / 1 / 4 / 42 | 1 / 1 / 1 / 10 | 1 / 1 / 1 / 2 |
+| **Alt: L8, L9, 10 shiny slots, 5 stars** | **2 / 8 / 13 / 42** | **1 / 2 / 3 / 10** | 1 / 1 / 2 / 3 |
+
+**Recommendation to game-designer and producer:** use the alternative (`skill: { levels: [8, 9], shinySlots: 10, stars: 5 }`, time track unchanged). It restores a new set roughly every week for the casual child and every 1–2 days for the engaged child. Buddies, Journey and all economy targets are unaffected, because set unlocks carry no currency. Note that more sets unlocked early also dilute catches across pages, which slows stars per set slightly.
+
+**New finding 2: trophies and stars are now front-loaded for engaged and skilled players.** The engaged child has 35/40 trophies by day 7 (§3.5 estimated about 28) and 15/15 stars by day 14. The skilled adult has 37/40 and 15/15 by day 7. After that, only the hard hidden trophies (Waterfall, Deep Nine, Top of the Jar) and Journey 25 remain. This is the opposite of Run 1's problem. Together with the collection ending on day 15–25, the long-term layer for these two profiles rests on Journey and upgrades alone from week 2–3. Options for game-designer, if wanted (none of them add currency):
+- raise a few cumulative counts (Sevens Club 10 → 25 rounds, Five Eights 5 → 15, Sparkle Collector 10 → 20 slots, Star Collector 10 → 15 stars);
+- make ★3 = 8 shiny slots per set (sim not run for these variants yet).
+
+The casual child's curve (19 → 32 → 37 trophies, 5 → 8 → 14 stars) is well paced and should not be slowed.
+
+**Model limits for Run 2.** Trophy and star timings depend on the est. per-round rates above and on set choice (50 % of normal rounds go to the least-filled unlocked page, 50 % to a random one). The designer's model assumed 40 % random. The measured max level per round in the playtest decides the level-8/9 rows.

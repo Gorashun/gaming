@@ -118,19 +118,39 @@ PROFILES = {
     'casual': dict(label='Casual child', merges=45, round_min=4.5, eff=0.80,
                    sessions=[(17.0, 10.0)], play_days=5 / 7,
                    chain_k=0.010, combo_a=0.035, mission_p=(0.30, 0.12, 0.05),
-                   calm_p=0.05, tap_buddy_p=0.06, hello_p=0.06, danger3_p=0.06, daily_replay_p=0.10),
+                   calm_p=0.05, tap_buddy_p=0.06, hello_p=0.06, danger3_p=0.06, danger2_p=0.15, daily_replay_p=0.10),
     'engaged': dict(label='Engaged child', merges=60, round_min=5.0, eff=0.86,
                     sessions=[(15.5, 12.5), (18.5, 12.5)], play_days=1.0,
                     chain_k=0.013, combo_a=0.045, mission_p=(0.40, 0.20, 0.10),
-                    calm_p=0.05, tap_buddy_p=0.06, hello_p=0.06, danger3_p=0.10, daily_replay_p=0.25),
+                    calm_p=0.05, tap_buddy_p=0.06, hello_p=0.06, danger3_p=0.10, danger2_p=0.22, daily_replay_p=0.25),
     'skilled': dict(label='Skilled adult', merges=80, round_min=6.0, eff=0.92,
                     sessions=[(12.5, 20.0), (21.0, 20.0)], play_days=1.0,
                     chain_k=0.017, combo_a=0.055, mission_p=(0.50, 0.30, 0.18),
-                    calm_p=0.03, tap_buddy_p=0.02, hello_p=0.03, danger3_p=0.14, daily_replay_p=0.30),
+                    calm_p=0.03, tap_buddy_p=0.02, hello_p=0.03, danger3_p=0.14, danger2_p=0.28, daily_replay_p=0.30),
 }
 OVERHEAD_ROUND_MIN = 0.4    # result screen + restart per round (est.)
 OVERHEAD_SESSION_MIN = 1.0  # Start, present, aquarium, shop per session (est.)
 DROP_W = [26, 24, 22, 16, 12]  # queue levels 0-4 (RETENTION §3.1 daily weights, used for all rounds)
+
+# Spec version. 'v1' = RETENTION v1 as in Run 1. 'v1.2' = RETENTION v1.2 + DESIGN §24/§25 (Run 2):
+# adopted numbers, redefined trophies (§3.5) and mastery (§3.6), new set-unlock skill track (§25).
+SPEC = 'v1.2'
+V12 = {
+    'free_at': [60, 400],                                   # DESIGN §24 (app/src/data/economy.ts still says [120, 400])
+    'mission_rewards': {1: (10, 0), 2: (20, 0), 3: (30, 1)},
+    'surprise_pearls': 10,
+    'pool_cap': 30,
+    'present_after_items': (25, 0, 0),
+    'skill_track': 'level8, level9, first shiny, first mastery star',  # DESIGN §25 (unlocks.ts not updated yet)
+}
+TROPHIES_V12 = ['first_merge', 'chain3', 'chain5', 'combo8', 'busy_jar', 'big_clear', 'rainbow_boost', 'steady_hands',
+                'level7', 'level8', 'sevens_club', 'five_eights', 'quick_climb', 'eights_all_over',
+                'first_sparkle', 'sparkle_collector', 'row_to_eight', 'busy_page', 'set_explorer', 'first_star',
+                'set_master', 'star_collector', 'jar_of_day', 'better_try', 'every_jar_set', 'daily_deep',
+                'moving_in', 'decorator', 'full_aquarium', 'journey10', 'journey25', 'ten_missions',
+                'tickled', 'calm_steady', 'big_boom', 'double_sparkle', 'say_hello', 'waterfall', 'deep_nine', 'top_of_jar']
+ITEMS_V12 = {'tickled', 'calm_steady', 'big_boom', 'double_sparkle', 'say_hello', 'waterfall', 'deep_nine', 'top_of_jar',
+             'star_collector'}
 
 TROPHIES = ['first_merge', 'chain3', 'chain5', 'combo10', 'busy_jar', 'big_clear', 'rainbow_boost', 'steady_hands',
             'level7', 'level8', 'level9', 'level10', 'double_klunk', 'whole_chain', 'five_tens',
@@ -297,7 +317,11 @@ class Player:
         self.items = 0
         self.centerpiece = False
         self.trophies = set()
+        self.trophy_day = {}
         self.stars = 0
+        self.star_days = []      # day when the k-th star was earned
+        self.set_days = [1]      # day when the k-th set became unlocked (base set = day 1)
+        self.rounds7 = self.rounds8 = 0
         # session stats
         self.sessions = []  # (rounds, minutes, stop_any, stop_nodaily)
 
@@ -311,7 +335,8 @@ class Player:
     def trophy(self, tid):
         if tid not in self.trophies:
             self.trophies.add(tid)
-            if tid in HIDDEN_WITH_ITEM:
+            self.trophy_day[tid] = self.day
+            if tid in (ITEMS_V12 if SPEC == 'v1.2' else HIDDEN_WITH_ITEM):
                 self.items += 1
 
     # ---------------------------------------------------------- buddies
@@ -405,7 +430,8 @@ class Player:
                 break
 
     def free_due(self):
-        at, every = self.o.get('free_at', self.cfg['free_at']), self.o.get('free_every', self.cfg['free_every'])
+        default_at = V12['free_at'] if SPEC == 'v1.2' else self.cfg['free_at']
+        at, every = self.o.get('free_at', default_at), self.o.get('free_every', self.cfg['free_every'])
         m = self.merges
         n = sum(1 for t in at if m >= t)
         if m >= at[-1]:
@@ -427,7 +453,7 @@ class Player:
             if L == U['missions']:
                 self.missions_on = True
                 if self.rng.random() < 0.9:  # surprise-first: round 1 already matched a goal (est.)
-                    self.grant('mission', LANES['missions']['surprise_pearls'], 0)
+                    self.grant('mission', V12['surprise_pearls'] if SPEC == 'v1.2' else LANES['missions']['surprise_pearls'], 0)
                     self.missions_done += 1
                 self.slots = []
                 for _ in range(LANES['missions']['slots']):
@@ -444,14 +470,19 @@ class Player:
                 self.daily_since = self.day
             if L >= 10:
                 self.trophy('journey10')
-            if L >= 50:
+            if L >= 50 and SPEC == 'v1':
                 self.trophy('journey50')
+            if L >= 25 and SPEC == 'v1.2':
+                self.trophy('journey25')
 
     def next_tier(self, others):
         """Tier of the next mission: pool mix 14/9/3, at most 1 T3 active, at least 1 T1 active,
         T3 only after a level 8 (eligibility, RETENTION §3.7)."""
         mix = dict(LANES['missions']['pool_mix'])
-        if self.max_level < 8 or 3 in others:
+        if SPEC == 'v1.2':
+            # v1.2 eligibility: score2500 (proxy: a level 8 ever, est.), lvl9_round needs a 9, lvl10 needs a 10
+            mix[3] = (self.max_level >= 8) + (self.max_level >= 9) + (self.max_level >= 10)
+        if self.max_level < 8 or 3 in others or not mix.get(3):
             mix.pop(3, None)
         if len(others) >= LANES['missions']['slots'] - 1 and 1 not in others:
             return 1
@@ -471,7 +502,7 @@ class Player:
             t = self.slots[i]
             p = min(0.95, base[t - 1] * math.sqrt(mult))
             if self.rng.random() < p:
-                rp, rs = self.o.get('mission_rewards', LANES['missions']['reward'])[t]
+                rp, rs = self.o.get('mission_rewards', V12['mission_rewards'] if SPEC == 'v1.2' else LANES['missions']['reward'])[t]
                 k = self.o.get('mission_mult', 1.0)
                 self.grant('mission', round(rp * k), rs)
                 self.missions_done += 1
@@ -557,49 +588,55 @@ class Player:
         rainbows = specials - bombs
         # trophies from the round
         tr = self.trophy
-        if merges:
-            tr('first_merge')
-        if n3:
-            tr('chain3')
-        if n5:
-            tr('chain5')
-        if n7:
-            tr('waterfall')
-        if combo10:
-            tr('combo10')
-        if merges >= 120:
-            tr('busy_jar')
-        if any(rng.random() < 0.2 for _ in range(bombs)):
-            tr('big_clear')
-        if top >= 8 and any(rng.random() < 0.05 for _ in range(bombs)):
-            tr('big_boom')
-        if top >= 7 and any(rng.random() < 0.15 for _ in range(rainbows)):
-            tr('rainbow_boost')
-        if c[9] and any(rng.random() < 0.05 for _ in range(rainbows)):
-            tr('rainbow_top')
-        if rng.random() < P['danger3_p']:
-            tr('steady_hands')
-        for L in (7, 8, 9, 10):
-            if self.max_level >= L:
-                tr(f'level{L}')
-        if self.double_klunks:
-            tr('double_klunk')
-        if c[10]:
-            tr('whole_chain')
-        if self.tens >= 5:
-            tr('five_tens')
-        if self.ever_shiny:
-            tr('first_sparkle')
-        if shinies[10]:
-            tr('sparkling_giant')
-        if sum(shinies) >= 2:
-            tr('double_sparkle')
-        if top >= 8 and rng.random() < P['calm_p']:
-            tr('calm_steady')
-        if is_daily:
-            tr('jar_of_day')
-            if top >= 9:
-                tr('daily_deep')
+        self.rounds7 += top >= 7
+        self.rounds8 += top >= 8
+        if SPEC == 'v1':
+            if merges:
+                tr('first_merge')
+            if n3:
+                tr('chain3')
+            if n5:
+                tr('chain5')
+            if n7:
+                tr('waterfall')
+            if combo10:
+                tr('combo10')
+            if merges >= 120:
+                tr('busy_jar')
+            if any(rng.random() < 0.2 for _ in range(bombs)):
+                tr('big_clear')
+            if top >= 8 and any(rng.random() < 0.05 for _ in range(bombs)):
+                tr('big_boom')
+            if top >= 7 and any(rng.random() < 0.15 for _ in range(rainbows)):
+                tr('rainbow_boost')
+            if c[9] and any(rng.random() < 0.05 for _ in range(rainbows)):
+                tr('rainbow_top')
+            if rng.random() < P['danger3_p']:
+                tr('steady_hands')
+            for L in (7, 8, 9, 10):
+                if self.max_level >= L:
+                    tr(f'level{L}')
+            if self.double_klunks:
+                tr('double_klunk')
+            if c[10]:
+                tr('whole_chain')
+            if self.tens >= 5:
+                tr('five_tens')
+            if self.ever_shiny:
+                tr('first_sparkle')
+            if shinies[10]:
+                tr('sparkling_giant')
+            if sum(shinies) >= 2:
+                tr('double_sparkle')
+            if top >= 8 and rng.random() < P['calm_p']:
+                tr('calm_steady')
+            if is_daily:
+                tr('jar_of_day')
+                if top >= 9:
+                    tr('daily_deep')
+
+        else:
+            self.round_trophies_v12(c, top, merges, n3, n5, n7, shinies, bombs, rainbows, is_daily, D)
         # journey, missions, free shells, sets
         self.journey_add(merges)
         self.missions_round(mult)
@@ -614,7 +651,123 @@ class Player:
         self.check_sets()
         return top
 
+    def round_trophies_v12(self, c, top, merges, n3, n5, n7, shinies, bombs, rainbows, is_daily, D):
+        """RETENTION v1.2 §3.5 (per-round and cumulative conditions; rates are est.)."""
+        tr, rng, P = self.trophy, self.rng, self.P
+        if merges:
+            tr('first_merge')
+        if n3:
+            tr('chain3')
+        if n5:
+            tr('chain5')
+        if n7:
+            tr('waterfall')
+        if rng.random() < 1 - math.exp(-merges * P['combo_a'] * 0.6 ** 5):
+            tr('combo8')
+        if merges >= 70:
+            tr('busy_jar')
+        if any(rng.random() < 0.2 for _ in range(bombs)):
+            tr('big_clear')
+        if top >= 7 and any(rng.random() < 0.08 for _ in range(bombs)):
+            tr('big_boom')
+        if top >= 5 and any(rng.random() < 0.4 for _ in range(rainbows)):
+            tr('rainbow_boost')
+        if rng.random() < P['danger2_p']:
+            tr('steady_hands')
+        if self.max_level >= 7:
+            tr('level7')
+        if self.max_level >= 8:
+            tr('level8')
+        if self.max_level >= 9:
+            tr('deep_nine')
+        if self.max_level >= 10:
+            tr('top_of_jar')
+        if self.rounds7 >= 10:
+            tr('sevens_club')
+        if self.rounds8 >= 5:
+            tr('five_eights')
+        if top >= 7 and 'quick_climb' not in self.trophies:
+            c40 = cascade(rng, min(40, D), P['eff'])
+            if c40[7] > 0:
+                tr('quick_climb')
+        if sum(1 for pg in self.pages if pg['caught'][8]) >= 3:
+            tr('eights_all_over')
+        if self.ever_shiny:
+            tr('first_sparkle')
+        if sum(shinies) >= 2:
+            tr('double_sparkle')
+        if top >= 7 and rng.random() < P['calm_p']:
+            tr('calm_steady')
+        if is_daily:
+            tr('jar_of_day')
+            if top >= 8:
+                tr('daily_deep')
+
+    def stars_of(self, i):
+        p = self.pages[i]
+        if SPEC == 'v1':
+            full = sum(p['caught']) + sum(p['shiny'][1:]) >= self.cfg['slots_per_page']
+            return (all(p['caught']), p['l10'], full)
+        return (all(p['caught'][:8]), p['caught'][8], sum(p['shiny'][1:]) >= 6)
+
     def check_sets(self):
+        if SPEC == 'v1.2':
+            return self.check_sets_v12()
+        return self.check_sets_v1()
+
+    def check_sets_v12(self):
+        cfg = self.cfg
+        spp = cfg['slots_per_page']
+        time_steps = sum(1 for t in cfg['set_thresholds'] if self.merges >= t)
+        while True:
+            stars = sum(sum(self.stars_of(i)) for i in self.unlocked)
+            if self.o.get('skill_alt'):
+                # alternative tested in Run 2: 10 shiny slots and 5 stars instead of first shiny / first star
+                slots = sum(sum(self.pages[i]['shiny'][1:]) for i in self.unlocked)
+                skill = (self.max_level >= 8) + (self.max_level >= 9) + (slots >= 10) + (stars >= 5)
+            else:
+                skill = (self.max_level >= 8) + (self.max_level >= 9) + bool(self.ever_shiny) + (stars >= 1)
+            earned = max(time_steps, skill)
+            if len(self.unlocked) - 1 >= earned or len(self.unlocked) >= cfg['n_sets']:
+                break
+            rem = [i for i in range(cfg['n_sets']) if i not in self.unlocked]
+            self.unlocked.append(self.rng.choice(rem))
+            self.set_days.append(self.day)
+        prev = self.stars
+        self.stars = stars
+        for _ in range(prev, stars):
+            self.star_days.append(self.day)
+        master = False
+        for i in self.unlocked:
+            p = self.pages[i]
+            s1, s2, s3 = self.stars_of(i)
+            for k, got in enumerate((s1, s2, s3)):
+                if got and f'star{i}.{k}' not in self.milestones:
+                    self.milestones.add(f'star{i}.{k}')
+                    self.items += 1 if k != 1 else 0   # plant, backdrop are aquarium items; jar skin is not
+            if s1 and s2 and s3:
+                master = True
+            if sum(p['caught']) + sum(p['shiny'][1:]) >= spp and f'page:{i}' not in self.milestones:
+                self.milestones.add(f'page:{i}')
+                self.grant('fullpage', 0, cfg['sand']['fullPage'])
+        tr = self.trophy
+        ul = [self.pages[i] for i in self.unlocked]
+        if stars >= 1:
+            tr('first_star')
+        if master:
+            tr('set_master')
+        if stars >= 10:
+            tr('star_collector')
+        if sum(sum(p['shiny'][1:]) for p in ul) >= 10:
+            tr('sparkle_collector')
+        if any(all(p['caught'][:9]) for p in ul):
+            tr('row_to_eight')
+        if any(sum(p['caught']) + sum(p['shiny'][1:]) >= 14 for p in ul):
+            tr('busy_page')
+        if len(self.sets_played) >= cfg['n_sets']:
+            tr('set_explorer')
+
+    def check_sets_v1(self):
         cfg = self.cfg
         spp = cfg['slots_per_page']
 
@@ -630,6 +783,7 @@ class Player:
         while len(self.unlocked) - 1 < earned and len(self.unlocked) < cfg['n_sets']:
             rem = [i for i in range(cfg['n_sets']) if i not in self.unlocked]
             self.unlocked.append(self.rng.choice(rem))
+            self.set_days.append(self.day)
         stars = 0
         n_shiny = 0
         master = False
@@ -681,9 +835,8 @@ class Player:
     def session_start(self):
         L = LANES
         if self.pool_on:
-            amt = min(L['pool']['cap'] * self.o.get('pool_scale', 1.0),
-                      self.pool_stored + (L['pool']['cap'] * self.o.get('pool_scale', 1.0)) / L['pool']['fill_h']
-                      * (self.now - self.pool_since))
+            cap = (V12['pool_cap'] if SPEC == 'v1.2' else L['pool']['cap']) * self.o.get('pool_scale', 1.0)
+            amt = min(cap, self.pool_stored + cap / L['pool']['fill_h'] * (self.now - self.pool_since))
             got = int(amt)
             self.pool_stored, self.pool_since = amt - got, self.now
             self.grant('pool', got, 0)
@@ -708,7 +861,7 @@ class Player:
             k = (self.present_opened - 1) % 5
             p, s, it = L['cycle'][k]
             if k == 4 and self.present_opened > 5 * L['n_items']:
-                p, s, it = self.o.get('present_after_items', L['after_items_5th'])
+                p, s, it = self.o.get('present_after_items', V12['present_after_items'] if SPEC == 'v1.2' else L['after_items_5th'])
             self.grant('present', pk if p else 0, s)
             self.items += it
 
@@ -803,7 +956,7 @@ def simulate(cfg, prof_name, opts=None, seed=0, days=60, extend_to=400):
         if day > days and (p.t48 is not None or day > extend_to):
             break
         p.play_day(day, mult)
-        if day in (1, 2, 7, 14, 30, 60):
+        if day in (1, 2, 7, 14, 28, 30, 60):
             snaps[day] = p.snapshot()
         if day == 7:
             marks['ledger7'] = (dict(p.grant_p), dict(p.grant_s))
@@ -846,7 +999,8 @@ def metrics(cfg, prof, opts, runs, days=60):
         child_s = s30
         shells_5h = sum(1 for (m, d) in p.shell_log if m <= 300)
         rows.append({
-            'snaps': snaps,
+            'snaps': snaps, 'set_days': list(p.set_days), 'star_days': list(p.star_days),
+            'trophy_day': dict(p.trophy_day),
             'first_shell_min': p.first_shell_min, 'first_shell_day': p.first_shell_day,
             'shells_h1_5': shells_5h / 5 if p.play_min >= 300 else None,
             'h24': p.t24[0] / 60 if p.t24 else None, 'd24': p.t24[1] if p.t24 else None,
@@ -888,11 +1042,11 @@ def f(x, d=1):
     return str(x)
 
 
-def snap_table(rows, label):
+def snap_table(rows, label, days=(1, 2, 7, 14, 30, 60)):
     out = [f'**{label}** (median of {len(rows)} runs; buddies p10-p90 in brackets)', '',
            '| Day | Play h | Buddies | Shells free/bought | Journey L | Pearls | Sand | Fav. upgrade | Trophies /40 | Mastery stars /15 | Sets | Aquarium items | Daily-lane share (cum.) |',
            '|---|---|---|---|---|---|---|---|---|---|---|---|---|']
-    for d in (1, 2, 7, 14, 30, 60):
+    for d in days:
         S = [r['snaps'][d] for r in rows if d in r['snaps']]
         g = lambda k: med([s[k] for s in S])
         fav = g('fav')
@@ -932,7 +1086,11 @@ def target_rows(prof, rows):
     stop_nd = g('stop_nodaily')
     child = prof != 'skilled'
     t1 = within(sl, *T['T1']) and (not child or stop <= 0.25)
-    res.append(('T1', f"{sl:.1f} min; stop moment in {stop * 100:.0f} % of sessions ({stop_nd * 100:.0f} % without the Daily Jar trigger)",
+    if SPEC == 'v1.2':  # DESIGN §24 / R11: health signal; flag only if the time/rounds trigger share > 25 %
+        res.append(('T1', f"{sl:.1f} min; stop moment: Daily-Jar trigger {stop * 100:.0f} %, time/rounds trigger {stop_nd * 100:.0f} % of sessions",
+                    'signal: time/rounds share <= 25 % (children)', 'OK (signal)' if (not child or stop_nd <= 0.25) else 'LOOK'))
+    else:
+      res.append(('T1', f"{sl:.1f} min; stop moment in {stop * 100:.0f} % of sessions ({stop_nd * 100:.0f} % without the Daily Jar trigger)",
                 f"{T['T1'][0]}-{T['T1'][1]} min" + ('; stop <= 25 %' if child else ''), pf(t1)))
     res.append(('T2', f'{sr:.2f}', f"{T['T2'][0]}-{T['T2'][1]}", pf(T['T2'][0] - 0.3 <= sr <= T['T2'][1] + 0.3)))
     fs = g('first_shell_min')
@@ -942,10 +1100,16 @@ def target_rows(prof, rows):
     s5 = g('shells_h1_5')
     res.append(('T4', f(s5, 2), f"{T['T4'][0]}-{T['T4'][1]}", pf(within(s5, *T['T4']))))
     h24, d24 = g('h24'), g('d24')
-    res.append(('T5', f'{f(h24)} h (day {f(d24, 0)})', f"{T['T5'][0]}-{T['T5'][1]} h", pf(within(h24, *T['T5']))))
+    if SPEC == 'v1.2' and prof == 'casual':  # restated in days (DESIGN §24), 5/7 days played
+        res.append(('T5', f'{f(h24)} h (day {f(d24, 0)})', 'day 40-50', pf(within(d24, 40, 50))))
+    else:
+        res.append(('T5', f'{f(h24)} h (day {f(d24, 0)})', f"{T['T5'][0]}-{T['T5'][1]} h", pf(within(h24, *T['T5']))))
     h48, d48 = g('h48'), g('d48')
-    res.append(('T6', f'{f(h48)} h (day {f(d48, 0)})', f"{T['T6'][0]}-{T['T6'][1]} h; days {T['T6d'][0]}-{T['T6d'][1]}",
-                pf(within(h48, *T['T6']) and within(d48, *T['T6d']))))
+    if SPEC == 'v1.2' and prof == 'casual':
+        res.append(('T6', f'{f(h48)} h (day {f(d48, 0)})', 'day 75-95', pf(within(d48, 75, 95))))
+    else:
+        res.append(('T6', f'{f(h48)} h (day {f(d48, 0)})', f"{T['T6'][0]}-{T['T6'][1]} h; days {T['T6d'][0]}-{T['T6d'][1]}",
+                    pf(within(h48, *T['T6']) and within(d48, *T['T6d']))))
     lv = [med([r['snaps'][d]['jlevel'] for r in rows]) for d in (1, 7, 30)]
     ok = all(within(v, t, t, 0.15) for v, t in zip(lv, T['T7']))
     res.append(('T7', ' / '.join(f(v, 0) for v in lv), ' / '.join(str(t) for t in T['T7']) + ' (±15 %)', pf(ok)))
@@ -1191,6 +1355,99 @@ def run_all(args):
     print('\n'.join(out))
 
 
+DESIGNER_DAYS = {  # RETENTION v1.2 §3.5 "expected first completion" (casual / engaged / skilled)
+    'first_merge': '1/1/1', 'chain3': '2/1/1', 'chain5': '9/2/1', 'combo8': '7/2/1', 'busy_jar': '30/1/1',
+    'big_clear': '3/1/1', 'rainbow_boost': '3/1/1', 'steady_hands': '2/1/1', 'level7': '1/1/1', 'level8': '5/1/1',
+    'sevens_club': '9/3/2', 'five_eights': '37/3/1', 'quick_climb': '4/1/1', 'eights_all_over': '28/3/2',
+    'first_sparkle': '1/1/1', 'sparkle_collector': '11/3/2', 'row_to_eight': '5/1/1', 'busy_page': '15/3/1',
+    'set_explorer': '8/4/4', 'first_star': '1/1/1', 'set_master': '23/4/2', 'star_collector': '35/6/4',
+    'jar_of_day': '2/1/1', 'better_try': '5/2/2', 'every_jar_set': '11/6/6', 'daily_deep': '13/3/2',
+    'moving_in': '1/1/1', 'decorator': '7/3/2', 'full_aquarium': '18/7/5', 'journey10': '9/2/2', 'journey25': '53/13/8',
+    'ten_missions': '14/4/2', 'tickled': 'player', 'calm_steady': '~L7', 'big_boom': '9/2/1', 'double_sparkle': '3/1/1',
+    'say_hello': 'player', 'waterfall': '57/14/5', 'deep_nine': '>60/>60/2', 'top_of_jar': '>60/>60/>60'}
+
+
+def med_day(rows, getter, horizon=60):
+    """Median day an event happens; '>60' if it happens after the horizon (or never) in >= half the runs."""
+    ds = sorted((getter(r) if getter(r) is not None else 10 ** 6) for r in rows)
+    m = ds[len(ds) // 2]
+    return '>60' if m > horizon else str(m)
+
+
+def run2(args):
+    cfg = load_config()
+    R = args.runs
+    out = []
+    w = out.append
+    w('<!-- Run 2: generated by docs/sim/retention_sim.py --only run2 (spec v1.2) -->')
+    w(f"Spec v1.2 numbers used: free.at {V12['free_at']}, missions {V12['mission_rewards']}, surprise {V12['surprise_pearls']} pearls, "
+      f"pool cap {V12['pool_cap']}, present #5 after decorations {V12['present_after_items']}, skill track = {V12['skill_track']}.\n")
+    rows = {pn: metrics(cfg, pn, {}, R) for pn in PROFILES}
+    w('### Targets (spec v1.2, default schedules)\n')
+    w('| # | ' + ' | '.join(PROFILES[p]['label'] for p in PROFILES) + ' |\n|---|---|---|---|')
+    tr = {pn: target_rows(pn, rows[pn]) for pn in PROFILES}
+    for i in range(len(tr['casual'])):
+        w(f"| {tr['casual'][i][0]} | " + ' | '.join(f"{tr[p][i][1]} → **{tr[p][i][3]}**" for p in PROFILES) + ' |')
+    crpe = med([r['round_pe'] for r in rows['casual']])
+    a, b, lim = t12(cfg, crpe, pool_cap=V12['pool_cap'], after_items=V12['present_after_items'])
+    w(f"| T12 | {a} pe, after the decorations {b} pe; limit 3 casual rounds = {lim:.0f} pe → **{pf(max(a, b) <= lim)}** | – | – |\n")
+    r77 = metrics(cfg, 'casual', {'play_days': 1.0}, max(60, R // 2))
+    lv = [med([r['snaps'][d]['jlevel'] for r in r77]) for d in (1, 7, 30)]
+    w(f"T7 casual at 7/7 (the target's basis): {' / '.join(f(v, 0) for v in lv)} vs 3 / 10 / 23 → "
+      f"**{pf(all(within(v, t, t, 0.15) for v, t in zip(lv, (3, 10, 23))))}**\n")
+    w('### Stars, trophies and set unlocks\n')
+    w('| Profile | Stars d7 / d14 / d28 / d60 (of 15) | Trophies d7 / d28 / d60 (of 40) | Day of 1st / 5th / 10th / 15th star | Day set 2 / 3 / 4 / 5 unlocks (p90) |')
+    w('|---|---|---|---|---|')
+    for pn in PROFILES:
+        rr = rows[pn]
+        s_ = lambda d, k: f(med([r['snaps'][d][k] for r in rr]), 0)
+        sd = ' / '.join(med_day(rr, lambda r, k=k: r['star_days'][k - 1] if len(r['star_days']) >= k else None) for k in (1, 5, 10, 15))
+        ud = ' / '.join(f"{med_day(rr, lambda r, k=k: r['set_days'][k] if len(r['set_days']) > k else None)} "
+                        f"({pctl([r['set_days'][k] if len(r['set_days']) > k else 999 for r in rr], .9)})" for k in (1, 2, 3, 4))
+        w(f"| {PROFILES[pn]['label']} | {s_(7, 'stars')} / {s_(14, 'stars')} / {s_(28, 'stars')} / {s_(60, 'stars')} | "
+          f"{s_(7, 'trophies')} / {s_(28, 'trophies')} / {s_(60, 'trophies')} | {sd} | {ud} |")
+    w('')
+    w('**Alternative skill track** (first level 8, first level 9, **10 shiny slots**, **5 mastery stars**): day set 2 / 3 / 4 / 5 unlocks (p90)\n')
+    w('| Profile | DESIGN §25 track | Alternative |\n|---|---|---|')
+    for pn in PROFILES:
+        alt = metrics(cfg, pn, {'skill_alt': True}, max(60, R // 2))
+        cell = lambda rr: ' / '.join(f"{med_day(rr, lambda r, k=k: r['set_days'][k] if len(r['set_days']) > k else None)} "
+                                     f"({pctl([r['set_days'][k] if len(r['set_days']) > k else 999 for r in rr], .9)})" for k in (1, 2, 3, 4))
+        w(f"| {PROFILES[pn]['label']} | {cell(rows[pn])} | {cell(alt)} |")
+    w('')
+    for pn in PROFILES:
+        w(snap_table(rows[pn], PROFILES[pn]['label'], days=(1, 7, 14, 28, 60)))
+        w('')
+    w('### Trophy first completion, median day (sim vs RETENTION v1.2 §3.5 estimate), casual / engaged / skilled\n')
+    w('| # | Trophy | Sim | §3.5 est. | Share earned by d60 (c / e / s) |\n|---|---|---|---|---|')
+    for i, t in enumerate(TROPHIES_V12, 1):
+        sim = '/'.join(med_day(rows[p], lambda r, t=t: r['trophy_day'].get(t)) for p in PROFILES)
+        share = ' / '.join(f"{sum(1 for r in rows[p] if r['trophy_day'].get(t, 999) <= 60) / len(rows[p]) * 100:.0f} %" for p in PROFILES)
+        w(f'| {i} | {t} | {sim} | {DESIGNER_DAYS.get(t, "")} | {share} |')
+    w('')
+    w('### R12 (casual child, spec v1.2)\n')
+    w('| Days played | Merges/round | T8 median (p90) | T9 per calendar day | Verdict |\n|---|---|---|---|---|')
+    for sname, pd in (('7/7', 1.0), ('5/7', 5 / 7), ('4/7', 4 / 7)):
+        for mult in (1.0, 0.7):
+            rr = rows['casual'] if (pd == 5 / 7 and mult == 1.0) else metrics(cfg, 'casual', {'play_days': pd, 'mult': mult}, max(60, R // 2))
+            t8 = med([r['daily_share30'] for r in rr])
+            t9 = med([r['return_per_day_over_round'] for r in rr])
+            w(f"| {sname} | {PROFILES['casual']['merges'] * mult:.0f} | {t8 * 100:.1f} % ({pctl([r['daily_share30'] for r in rr], .9) * 100:.1f} %) | "
+              f"{t9:.2f} | {pf(t8 <= 0.35 and t9 <= 0.8)} |")
+    w('')
+    w('### Sensitivity ±30 % merges (spec v1.2): stars d28 / d60, trophies d28, day set 5 unlocks\n')
+    w('| Profile | 0.7× | 1.0× | 1.3× |\n|---|---|---|---|')
+    for pn in PROFILES:
+        cells = []
+        for mult in (0.7, 1.0, 1.3):
+            rr = rows[pn] if mult == 1.0 else metrics(cfg, pn, {'mult': mult}, max(40, R // 3))
+            s_ = lambda d, k: f(med([r['snaps'][d][k] for r in rr]), 0)
+            cells.append(f"{s_(28, 'stars')} / {s_(60, 'stars')}, {s_(28, 'trophies')}, d{med_day(rr, lambda r: r['set_days'][4] if len(r['set_days']) > 4 else None)}")
+        w(f"| {PROFILES[pn]['label']} | " + ' | '.join(cells) + ' |')
+    w('')
+    print('\n'.join(out))
+
+
 def calibrate_from_playtest(path, prof):
     """Override a profile's merges/round and round length from a debug-panel JSON export."""
     with open(path, encoding='utf-8') as fh:
@@ -1220,12 +1477,19 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--runs', type=int, default=200)
     ap.add_argument('--quick', action='store_true')
-    ap.add_argument('--only', choices=['base', 'free', 'sens', 'rec', 'knobs'])
+    ap.add_argument('--only', choices=['base', 'free', 'sens', 'rec', 'knobs', 'run2'])
+    ap.add_argument('--spec', choices=['v1', 'v1.2'], default='v1.2',
+                    help="v1 reproduces Run 1 (use with base/free/sens/rec/knobs); v1.2 is the current spec (Run 2)")
     ap.add_argument('--playtest')
     ap.add_argument('--profile', choices=list(PROFILES))
     a = ap.parse_args()
     if a.quick:
         a.runs = 40
+    SPEC = a.spec
     if a.playtest:
         calibrate_from_playtest(a.playtest, a.profile or 'engaged')
-    run_all(a)
+    if a.only == 'run2' or (a.only is None and SPEC == 'v1.2'):
+        SPEC = 'v1.2'
+        run2(a)
+    else:
+        run_all(a)

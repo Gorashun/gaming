@@ -323,4 +323,9 @@ Status: **proposed**. Waiting for simulation (balance-analyst, RETENTION §6), c
 - After the collection is complete, pearls/sand keep flowing into upgrades and Aquarium decorations; no new sinks for now.
 
 ## 25. Set-unlock skill track (2026-09-26, producer; replaces the skill track in §13.3)
-- Level 10 and a full book page are out of reach at estimated merges. The skill track becomes: **first level 8, first level 9, first shiny, first mastery star (any set)**. Whichever comes first, time track or skill track, unlocks the next set, as before. Time track (200/600/1500/3000 merges) unchanged.
+- Level 10 and a full book page are out of reach at estimated merges. The skill track becomes: **first level 8, first level 9, 10 shiny slots filled, 5 mastery stars** (revised after sim Run 2: the first-shiny/first-star version unlocked sets on day 1). Whichever comes first, time track or skill track, unlocks the next set, as before. Time track (200/600/1500/3000 merges) unchanged.
+
+## 26. Balance follow-ups (2026-09-26, producer; sim Run 2)
+- T4 for the casual profile is restated in days (like T5/T6). T4 skilled (4.4 vs 4.5) and T10 skilled mission rate (1.18/round) accepted: reward shares pass.
+- Engaged/skilled players exhaust stars and most trophies in week 1–2: the designer raises a few cumulative trophy counts in the build batch (data only); Journey carries the long term.
+- Code must update `data/economy.ts` free.at → [60, 400] and `data/unlocks.ts` skill track per §25.
