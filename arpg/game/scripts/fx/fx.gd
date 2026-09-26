@@ -202,26 +202,41 @@ func later(t: float, f: Callable) -> void:
 	else:
 		get_tree().create_timer(t, false).timeout.connect(f)
 
-var _recent_numbers = {}   # grid key -> {label, amount, t}: merges rapid hits into one number
+var _recent_numbers = {}   # grid key -> {label, amount, t, shown}: running totals per target
 var _active_numbers = 0
-const MAX_NUMBERS := 24
+var _lane = 0
+const MAX_NUMBERS := 18
+const NUMBER_LIFE := 0.55
+const SCREEN_RIGHT := Vector3(0.7071, 0, -0.7071)   # camera yaw 45: screen-right in world space
 
+## Damage numbers (declutter pass): outgoing hits fan out in 4 lanes left/right of the target and
+## above head height; repeated hits on the same target within 0.45 s tick up one running total
+## instead of stacking; crits are bigger and gold-orange; damage taken by the hero drifts down-left
+## so it never covers the hero's head. Short life, max 18 live.
 func damage_number(pos: Vector3, amount: float, crit: bool, color := Color.WHITE, is_player := false) -> void:
 	if not Settings.get_value("damage_numbers", true):
 		return
 	var r = root3d()
 	if r == null:
 		return
-	# Declutter crowded fights: hits on the same spot within 0.3 s add up into one number.
-	var key = "%d_%d_%s_%s" % [int(round(pos.x)), int(round(pos.z)), is_player, crit]
+	var key = "%d_%d_%s" % [int(round(pos.x / 1.5)), int(round(pos.z / 1.5)), is_player]
 	var now = Time.get_ticks_msec()
 	if _recent_numbers.has(key):
 		var rec = _recent_numbers[key]
-		if now - int(rec.t) < 300 and is_instance_valid(rec.label) and rec.label.is_inside_tree():
+		if now - int(rec.t) < 450 and is_instance_valid(rec.label) and rec.label.is_inside_tree():
 			rec.amount = float(rec.amount) + amount
 			rec.t = now
-			(rec.label as Label3D).text = _fmt(rec.amount) + ("!" if crit else "")
-			(rec.label as Label3D).scale = Vector3.ONE * (1.9 if crit else 1.3)
+			rec.crit = rec.crit or crit
+			var lb: Label3D = rec.label
+			lb.text = _fmt(rec.amount) + ("!" if rec.crit else "")
+			if crit:
+				lb.modulate = Color("#ffb02e")
+				lb.font_size = 56
+			lb.modulate.a = 1.0
+			lb.scale = Vector3.ONE * 1.3
+			var tp = lb.create_tween()
+			tp.tween_property(lb, "scale", Vector3.ONE, 0.12)
+			_number_tail(lb)
 			return
 	if _active_numbers >= MAX_NUMBERS and not crit and not is_player:
 		return
@@ -233,34 +248,57 @@ func damage_number(pos: Vector3, amount: float, crit: bool, color := Color.WHITE
 		l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 		l.no_depth_test = true
 		l.fixed_size = true
-		l.outline_size = 10
-		l.outline_modulate = Color(0.05, 0.03, 0.08, 0.9)
+		l.outline_size = 9
+		l.outline_modulate = Color(0.05, 0.03, 0.08, 0.95)
 		l.render_priority = 10
 		l.font = UiTheme.font_numbers()
 	r.add_child(l)
 	l.text = _fmt(amount) + ("!" if crit else "")
-	l.pixel_size = 0.0022 if crit else 0.0016
-	l.font_size = 64 if crit else 48
-	l.modulate = Color(1.0, 0.8, 0.25) if crit else color
+	l.pixel_size = 0.0014
+	l.font_size = 56 if crit else 34
+	l.modulate = Color("#ffb02e") if crit else color
+	var start: Vector3
+	var drift: Vector3
 	if is_player:
 		l.modulate = Color("#ff6b6b")
-	l.global_position = pos + Vector3(randf_range(-0.4, 0.4), 1.9, randf_range(-0.4, 0.4))
-	l.scale = Vector3.ONE * (1.7 if crit else 1.15)
-	_recent_numbers[key] = {"label": l, "amount": amount, "t": now}
+		l.font_size = 40
+		start = pos - SCREEN_RIGHT * 1.1 + Vector3(0, 1.3, 0)
+		drift = -SCREEN_RIGHT * 0.5 + Vector3(0, -0.5, 0)
+	else:
+		_lane = (_lane + 1) % 4
+		var side = -1.0 if _lane % 2 == 0 else 1.0
+		var spread = 0.9 if _lane < 2 else 1.6
+		start = pos + SCREEN_RIGHT * side * spread + Vector3(0, 2.5 + 0.55 * float(_lane / 2), 0)
+		drift = SCREEN_RIGHT * side * 0.5 + Vector3(0, 0.9, 0)
+	l.global_position = start
+	l.scale = Vector3.ONE * 1.35
+	l.modulate.a = 1.0
+	_recent_numbers[key] = {"label": l, "amount": amount, "t": now, "crit": crit}
 	if _recent_numbers.size() > 64:
 		_recent_numbers.clear()
 	_active_numbers += 1
 	var t = l.create_tween()
 	t.set_parallel(true)
-	t.tween_property(l, "global_position", l.global_position + Vector3(0, 1.2, 0), 0.7).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	t.tween_property(l, "scale", Vector3.ONE * (1.1 if crit else 0.8), 0.25).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-	t.tween_property(l, "modulate:a", 0.0, 0.3).set_delay(0.45)
-	t.chain().tween_callback(func():
+	t.tween_property(l, "global_position", start + drift, NUMBER_LIFE + 0.35).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	t.tween_property(l, "scale", Vector3.ONE, 0.14).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	_number_tail(l)
+
+func _number_tail(l: Label3D) -> void:
+	if l.has_meta("tw"):
+		var old: Tween = l.get_meta("tw")
+		if old and old.is_valid():
+			old.kill()
+	var t = l.create_tween()
+	t.tween_interval(NUMBER_LIFE)
+	t.tween_property(l, "modulate:a", 0.0, 0.22)
+	t.tween_callback(func():
 		_active_numbers = maxi(0, _active_numbers - 1)
-		if is_instance_valid(l):
+		if is_instance_valid(l) and l.get_parent():
 			l.get_parent().remove_child(l)
 			l.modulate.a = 1.0
+			l.remove_meta("tw")
 			_dmg_pool.append(l))
+	l.set_meta("tw", t)
 
 func _fmt(v: float) -> String:
 	if v >= 1_000_000:
@@ -350,7 +388,7 @@ func hit_spark(pos: Vector3, color: Color, size := 0.9) -> void:
 	var r = root3d()
 	if r == null:
 		return
-	var s = glow_sprite(color.lightened(0.3), size, "spark")
+	var s = glow_sprite(Color(color, 0.75), size * 0.7, "spark")
 	r.add_child(s)
 	s.global_position = pos
 	s.rotation.z = randf() * TAU
@@ -366,10 +404,20 @@ func soul_puff(pos: Vector3, color := Color(0.7, 0.9, 1.0)) -> void:
 	burst(pos + Vector3(0, 0.8, 0), color, 10, 3.0, 0.08, 0.8, 2.5, "spark")
 	flash_light(pos + Vector3(0, 1, 0), color, 2.0, 0.3)
 
+var _flash_areas = {}   # 3 m grid cell -> msec; repeated hits in one spot don't stack lights
+
 func flash_light(pos: Vector3, color: Color, energy := 2.0, duration := 0.25, rng := 6.0) -> void:
 	var r = root3d()
 	if r == null or _flash_lights >= MAX_FLASH_LIGHTS:
 		return
+	var key = "%d_%d" % [int(floor(pos.x / 3.0)), int(floor(pos.z / 3.0))]
+	var now = Time.get_ticks_msec()
+	if now - int(_flash_areas.get(key, -10000)) < 350:
+		return
+	_flash_areas[key] = now
+	if _flash_areas.size() > 128:
+		_flash_areas.clear()
+	energy = minf(energy, 3.0)
 	_flash_lights += 1
 	var l = OmniLight3D.new()
 	l.light_color = color
@@ -495,7 +543,7 @@ func slash(origin: Vector3, forward: Vector3, radius: float, angle_deg: float, c
 	for layer in 2:
 		var mi = MeshInstance3D.new()
 		mi.mesh = _arc_mesh(radius * (1.0 if layer == 0 else 0.82), angle_deg)
-		var mat = shader_mat("res://shaders/slash.gdshader", {"color": color if layer == 0 else color.lerp(Color.WHITE, 0.5), "intensity": 2.0 if layer == 0 else 1.2})
+		var mat = shader_mat("res://shaders/slash.gdshader", {"color": color if layer == 0 else color.lerp(Color.WHITE, 0.3), "intensity": 1.05 if layer == 0 else 0.55, "opacity": 0.7 if layer == 0 else 0.45})
 		mi.material_override = mat
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		r.add_child(mi)

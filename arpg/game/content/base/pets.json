@@ -2,9 +2,9 @@
  {
   "id": "pet_sootkin",
   "name": "Sootkin",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.3,
-  "tint": "#2a2a30",
+  "model": "",
+  "scale": 0.5,
+  "tint": "#4a4458",
   "rarity": "common",
   "source": "quest",
   "source_ref": "q_a1_lost_rattlers",
@@ -35,14 +35,15 @@
    }
   ],
   "desc": "A soot sprite. Brings you coins.",
-  "codex": true
+  "codex": true,
+  "creature": "wisp"
  },
  {
   "id": "pet_button",
   "name": "Button",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.28,
-  "tint": "#ffb3d1",
+  "model": "",
+  "scale": 0.55,
+  "tint": "#e89ab8",
   "rarity": "common",
   "source": "vendor",
   "source_ref": "npc_a1_petkeeper",
@@ -75,13 +76,14 @@
    }
   ],
   "desc": "A rag-doll puppy with button eyes. Fights beside Stitchers.",
-  "codex": true
+  "codex": true,
+  "creature": "cat"
  },
  {
   "id": "pet_mothball",
   "name": "Mothball",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
-  "scale": 0.28,
+  "model": "",
+  "scale": 0.55,
   "tint": "#f0f0e8",
   "rarity": "common",
   "source": "drop",
@@ -112,14 +114,15 @@
    }
   ],
   "desc": "A fluffy white moth that glows softly.",
-  "codex": true
+  "codex": true,
+  "creature": "moth"
  },
  {
   "id": "pet_pip",
   "name": "Pip",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.25,
-  "tint": "#ffd84a",
+  "model": "",
+  "scale": 0.55,
+  "tint": "#3a3448",
   "rarity": "rare",
   "source": "event",
   "source_ref": "magpie",
@@ -149,14 +152,15 @@
    }
   ],
   "desc": "A tiny magpie imp who reformed. Mostly.",
-  "codex": true
+  "codex": true,
+  "creature": "crow"
  },
  {
   "id": "pet_dimple",
   "name": "Dimple",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
-  "scale": 0.28,
-  "tint": "#9fffd0",
+  "model": "",
+  "scale": 0.5,
+  "tint": "#c8f0dc",
   "rarity": "common",
   "source": "drop",
   "source_ref": "lily_ghost",
@@ -186,14 +190,15 @@
    }
   ],
   "desc": "A lily-ghost who follows you giggling.",
-  "codex": true
+  "codex": true,
+  "creature": "ghost"
  },
  {
   "id": "pet_wicklet",
   "name": "Wicklet",
-  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
-  "scale": 0.3,
-  "tint": "#ffd27a",
+  "model": "",
+  "scale": 0.5,
+  "tint": "#ffc070",
   "rarity": "rare",
   "source": "craft",
   "source_ref": "r_cauldron_egg",
@@ -224,14 +229,15 @@
    }
   ],
   "desc": "A little candle-person. Hatched from a warm egg.",
-  "codex": true
+  "codex": true,
+  "creature": "wick"
  },
  {
   "id": "pet_crumpet",
   "name": "Crumpet",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.32,
-  "tint": "#c89060",
+  "model": "",
+  "scale": 0.6,
+  "tint": "#7a8a50",
   "rarity": "common",
   "source": "vendor",
   "source_ref": "npc_a2_petkeeper",
@@ -262,14 +268,15 @@
    }
   ],
   "desc": "A moss-hound pup. Fetches everything. Everything.",
-  "codex": true
+  "codex": true,
+  "creature": "fox"
  },
  {
   "id": "pet_hoot",
   "name": "Hoot",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
-  "scale": 0.3,
-  "tint": "#4a3a5a",
+  "model": "",
+  "scale": 0.55,
+  "tint": "#6a5a7a",
   "rarity": "rare",
   "source": "quest",
   "source_ref": "q_a2_owlcrows",
@@ -299,13 +306,14 @@
    }
   ],
   "desc": "A baby owlcrow. Knows one riddle. Tells it constantly.",
-  "codex": true
+  "codex": true,
+  "creature": "owl"
  },
  {
   "id": "pet_puddle",
   "name": "Puddle",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.3,
+  "model": "",
+  "scale": 0.55,
   "tint": "#6f8a4a",
   "rarity": "common",
   "source": "drop",
@@ -337,14 +345,15 @@
    }
   ],
   "desc": "A mud frog who digs up shiny things.",
-  "codex": true
+  "codex": true,
+  "creature": "frog"
  },
  {
   "id": "pet_gravel",
   "name": "Gravel",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
-  "scale": 0.3,
-  "tint": "#8a7a6a",
+  "model": "",
+  "scale": 0.55,
+  "tint": "#8a8078",
   "rarity": "common",
   "source": "quest",
   "source_ref": "q_a3_diglings",
@@ -374,14 +383,15 @@
    }
   ],
   "desc": "A pebble golem. Very proud of his pebbles.",
-  "codex": true
+  "codex": true,
+  "creature": "slime"
  },
  {
   "id": "pet_glim",
   "name": "Glim",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.25,
-  "tint": "#cfe8f0",
+  "model": "",
+  "scale": 0.5,
+  "tint": "#a8d8f0",
   "rarity": "rare",
   "source": "drop",
   "source_ref": "mb_crystal_matron",
@@ -412,14 +422,15 @@
    }
   ],
   "desc": "A crystal spiderling. Clinks happily.",
-  "codex": true
+  "codex": true,
+  "creature": "spider"
  },
  {
   "id": "pet_lanternbug",
   "name": "Lanternbug",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
-  "scale": 0.22,
-  "tint": "#ffe9a0",
+  "model": "",
+  "scale": 0.5,
+  "tint": "#c8a860",
   "rarity": "epic",
   "source": "event",
   "source_ref": "lantern_moth",
@@ -450,14 +461,15 @@
    }
   ],
   "desc": "It lights the way. Literally.",
-  "codex": true
+  "codex": true,
+  "creature": "lantern_moth"
  },
  {
   "id": "pet_sir_wobble",
   "name": "Sir Wobble",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
-  "scale": 0.32,
-  "tint": "#b8c0d0",
+  "model": "",
+  "scale": 0.55,
+  "tint": "#a0a8b8",
   "rarity": "rare",
   "source": "quest",
   "source_ref": "q_a4_tin_soldiers",
@@ -490,13 +502,14 @@
    }
   ],
   "desc": "A tin soldier who salutes everything. Carries loot to town.",
-  "codex": true
+  "codex": true,
+  "creature": "owl"
  },
  {
   "id": "pet_flurry",
   "name": "Flurry",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.3,
+  "model": "",
+  "scale": 0.6,
   "tint": "#e8f0f8",
   "rarity": "common",
   "source": "vendor",
@@ -528,13 +541,14 @@
    }
   ],
   "desc": "A snow-hound pup. Cold nose, warm heart.",
-  "codex": true
+  "codex": true,
+  "creature": "fox"
  },
  {
   "id": "pet_toffee",
   "name": "Toffee",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.28,
+  "model": "",
+  "scale": 0.55,
   "tint": "#ff9ed8",
   "rarity": "epic",
   "source": "event",
@@ -566,14 +580,15 @@
    }
   ],
   "desc": "A candy skeleton. Slightly sticky.",
-  "codex": true
+  "codex": true,
+  "creature": "slime"
  },
  {
   "id": "pet_mumble",
   "name": "Mumble",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
-  "scale": 0.28,
-  "tint": "#8a8a90",
+  "model": "",
+  "scale": 0.5,
+  "tint": "#9a9aa2",
   "rarity": "rare",
   "source": "quest",
   "source_ref": "q_a5_hushlings",
@@ -603,14 +618,15 @@
    }
   ],
   "desc": "A hushling who decided to be your friend. Carries loot to town.",
-  "codex": true
+  "codex": true,
+  "creature": "ghost"
  },
  {
   "id": "pet_biscuit",
   "name": "Biscuit",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.3,
-  "tint": "#d9a07a",
+  "model": "",
+  "scale": 0.6,
+  "tint": "#c89060",
   "rarity": "common",
   "source": "vendor",
   "source_ref": "npc_a3_petkeeper",
@@ -643,14 +659,15 @@
    }
   ],
   "desc": "A patchwork bear cub. Fights beside Stitchers.",
-  "codex": true
+  "codex": true,
+  "creature": "cat"
  },
  {
   "id": "pet_nibbles",
   "name": "Nibbles",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
-  "scale": 0.25,
-  "tint": "#9a8a70",
+  "model": "",
+  "scale": 0.5,
+  "tint": "#5a4a3a",
   "rarity": "common",
   "source": "drop",
   "source_ref": "echo_bat",
@@ -680,13 +697,14 @@
    }
   ],
   "desc": "An echo bat who squeaks your name.",
-  "codex": true
+  "codex": true,
+  "creature": "bat"
  },
  {
   "id": "pet_marshmallow",
   "name": "Marshmallow",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.3,
+  "model": "",
+  "scale": 0.6,
   "tint": "#fff4f0",
   "rarity": "rare",
   "source": "event",
@@ -718,14 +736,15 @@
    }
   ],
   "desc": "Hatched from a mystery egg. Unbearably soft.",
-  "codex": true
+  "codex": true,
+  "creature": "bunny"
  },
  {
   "id": "pet_sprocket",
   "name": "Sprocket",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
-  "scale": 0.25,
-  "tint": "#c8d0a0",
+  "model": "",
+  "scale": 0.5,
+  "tint": "#b8b890",
   "rarity": "rare",
   "source": "craft",
   "source_ref": "r_cauldron_egg",
@@ -756,13 +775,14 @@
    }
   ],
   "desc": "A wind-up tin sparrow. Carries loot to town and back.",
-  "codex": true
+  "codex": true,
+  "creature": "crow"
  },
  {
   "id": "pet_nutmeg",
   "name": "Nutmeg",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.3,
+  "model": "",
+  "scale": 0.6,
   "tint": "#8a6a4a",
   "rarity": "common",
   "source": "drop",
@@ -793,13 +813,14 @@
    }
   ],
   "desc": "A twigling sprout. Buries things. Finds better things.",
-  "codex": true
+  "codex": true,
+  "creature": "snail"
  },
  {
   "id": "pet_quill",
   "name": "Quill",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
-  "scale": 0.26,
+  "model": "",
+  "scale": 0.5,
   "tint": "#e0d0ff",
   "rarity": "epic",
   "source": "quest",
@@ -831,13 +852,14 @@
    }
   ],
   "desc": "A living letter. Spells your name wrong on purpose.",
-  "codex": true
+  "codex": true,
+  "creature": "moth"
  },
  {
   "id": "pet_glowworm",
   "name": "Wisp",
-  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.2,
+  "model": "",
+  "scale": 0.45,
   "tint": "#8fd9a0",
   "rarity": "legendary",
   "source": "event",
@@ -869,6 +891,7 @@
    }
   ],
   "desc": "A wisp of the old World-Lantern. Found after a Hushfall.",
-  "codex": true
+  "codex": true,
+  "creature": "wisp"
  }
 ]

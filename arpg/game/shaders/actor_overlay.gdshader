@@ -10,6 +10,6 @@ uniform vec4 flash_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 
 void fragment() {
 	float rim = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), rim_power) * rim_strength;
-	ALBEDO = rim_color.rgb * rim + flash_color.rgb * flash;
+	ALBEDO = rim_color.rgb * rim + flash_color.rgb * flash * 0.45;   // hit flash reads without white-out
 	ALPHA = 1.0;
 }

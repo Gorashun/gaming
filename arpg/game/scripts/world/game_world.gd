@@ -142,10 +142,10 @@ func _setup_environment() -> void:
 	en.fog_height = float(e.get("fog_height", -10.0))
 	en.fog_height_density = float(e.get("fog_height_density", 0.0))
 	en.glow_enabled = float(e.get("glow", 0.6)) > 0.0
-	en.glow_intensity = float(e.get("glow", 0.6))
+	en.glow_intensity = float(e.get("glow", 0.6)) * 0.7
 	en.glow_strength = float(e.get("glow_strength", 1.0))
 	en.glow_bloom = float(e.get("bloom", 0.02))
-	en.glow_hdr_threshold = float(e.get("glow_threshold", 1.0))
+	en.glow_hdr_threshold = float(e.get("glow_threshold", 1.35))
 	en.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
 	en.adjustment_enabled = true
 	en.adjustment_brightness = float(e.get("brightness", 1.0))

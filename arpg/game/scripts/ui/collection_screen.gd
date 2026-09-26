@@ -162,8 +162,14 @@ func _show(r: Dictionary) -> void:
 	var col = UiTheme.rarity_color(rar)
 	var model = str(r.get("model", ""))
 	var tint = Color(r.get("tint", "#ffffff")) if own else Color(0.05, 0.05, 0.07)
-	var a = _preview.add_model(model, float(r.get("scale", 1.0)), tint, col if own else UiTheme.LOCKED, r.get("attachments", []))
+	var ck = str(r.get("creature", ""))
+	var a = _preview.add_model("" if ck != "" else model, 0.5 if ck != "" else float(r.get("scale", 1.0)), tint, col if own else UiTheme.LOCKED, r.get("attachments", []))
 	var sc = float(r.get("scale", 1.0))
+	if ck != "":
+		# CreatureFactory pet/mount (art): normalised to the pedestal; locked = dark silhouette
+		var mount = CreatureFactory.is_mount(ck)
+		a.add_child(CreatureFactory.build(ck, tint, 0.62 if mount else 1.25, {"outline": true, "eyes": "cute" if own else "glow"}))
+		sc = 0.62 if mount else 0.5
 	_preview.camera_distance = clampf(1.2 + sc * 5.0, 1.8, 9.0)
 	_preview.camera_height = 0.5 + sc * 1.2
 	_preview.look_height = clampf(sc * 0.9, 0.2, 1.6)
