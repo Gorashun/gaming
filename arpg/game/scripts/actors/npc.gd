@@ -104,8 +104,12 @@ func _process(delta: float) -> void:
 		var mark = ""
 		if not Quests.ready_for(ch, npc_id).is_empty():
 			mark = "?"
-		elif not Quests.available_for(ch, npc_id).is_empty():
-			mark = "!"
+		else:
+			# "!" only for offers the player has not seen yet (the quest journal marks them seen)
+			for q in Quests.available_for(ch, npc_id):
+				if not ch.discoveries.has("offer_seen:" + str(q.id)):
+					mark = "!"
+					break
 		_marker.text = mark
 	if p and is_instance_valid(p):
 		var d = global_position.distance_to(p.global_position)

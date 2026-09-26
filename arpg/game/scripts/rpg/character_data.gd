@@ -241,6 +241,7 @@ static func from_dict(d: Dictionary) -> CharacterData:
 	c.level = int(c.level); c.xp = int(c.xp); c.gold = int(c.gold)
 	c.skill_points = int(c.skill_points); c.star_points = int(c.star_points); c.potions = int(c.potions)
 	c.wick_charges = int(c.wick_charges)
+	_normalize_ints(c)
 	c.deed_points = int(c.deed_points)
 	for k in c.skill_mastery.keys():
 		var v = c.skill_mastery[k]
@@ -267,6 +268,46 @@ static func from_dict(d: Dictionary) -> CharacterData:
 		c.inventory.resize(40)
 	c.recalc()
 	return c
+
+const ITEM_INT_KEYS := ["upgrade", "ilvl", "level_req", "kindle", "kindle_max", "stack"]
+
+## JSON turns every number into a float; restore ints in nested save data (QA B-24) so str(), match and
+## dictionary keys behave the same before and after a save round trip.
+static func _normalize_ints(c: CharacterData) -> void:
+	c.created_unix = int(c.created_unix)
+	c.last_played_unix = int(c.last_played_unix)
+	for d in [c.skill_ranks, c.passive_ranks, c.skill_mastery, c.skill_xp, c.deeds, c.stats_tracking]:
+		for k in d.keys():
+			if d[k] is float:
+				d[k] = int(d[k])
+	for d in [c.professions, c.pets_owned, c.proficiency]:
+		for k in d:
+			if d[k] is Dictionary:
+				for f in ["level", "xp"]:
+					if d[k].has(f):
+						d[k][f] = int(d[k][f])
+	for k in c.materials.keys():
+		c.materials[k] = int(c.materials[k])
+	for q in c.quests.get("active", {}).values():
+		if q is Dictionary and q.has("progress"):
+			q.progress = int(q.progress)
+	if c.quests.has("bounty_bank"):
+		c.quests.bounty_bank = int(c.quests.bounty_bank)
+	var items = []
+	for slot in c.equipment:
+		items.append(c.equipment[slot])
+	items += c.inventory + c.stash
+	for it in items:
+		if not (it is Dictionary):
+			continue
+		for f in ITEM_INT_KEYS:
+			if it.has(f) and (it[f] is float):
+				it[f] = int(it[f])
+		for a in it.get("affixes", []):
+			if a is Dictionary:
+				for f in ["tier", "tiers"]:
+					if a.has(f):
+						a[f] = int(a[f])
 
 static func _mark_placeholder(it: Dictionary) -> void:
 	if not Content.has_rec("item_bases", str(it.get("base", ""))):

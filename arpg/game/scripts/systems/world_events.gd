@@ -52,6 +52,8 @@ func setup(w: GameWorld) -> void:
 	if not (pick is Dictionary) or pick.is_empty():
 		return
 	rec = pick
+	_steps = _build_steps()
+	total_stages = max(1, _steps.size())
 	_place_tear()
 
 func _forced_id() -> String:
@@ -63,6 +65,10 @@ func _forced_id() -> String:
 func _eligible(r: Dictionary) -> bool:
 	var ch = Game.character
 	if ch.level < int(r.get("min_level", 1)) or world.is_town:
+		return false
+	# Never in towns or special/peaceful/endgame zones (Magpie's Hoard, Candy Crypt, Lightwells…)
+	var z = world.zone
+	if z.get("special", false) or z.get("peaceful", false) or z.get("endgame", false) or z.get("town", false):
 		return false
 	var acts: Array = r.get("acts", [])
 	return acts.is_empty() or acts.has(world.zone.get("act", ""))
@@ -306,14 +312,7 @@ func _spawn(monster_id: String, center: Vector3, k: String) -> Monster:
 	return m
 
 func _random_affixes(n: int) -> Array:
-	var all_aff = Content.all("monster_affixes")
-	var out = []
-	for i in n:
-		if all_aff.size() > 0:
-			var a = all_aff[Rng.int_on("world", 0, all_aff.size() - 1)].id
-			if not out.has(a):
-				out.append(a)
-	return out
+	return world.roll_elite_affixes(n, world.monster_level)
 
 ## "family:x" → weighted monster of family x; "any_family" → any regular monster (other acts too);
 ## "zone" → the zone's families; anything else is a monster id.
@@ -493,4 +492,4 @@ func _exit_tree() -> void:
 func status() -> Dictionary:
 	if rec.is_empty():
 		return {}
-	return {"id": rec.id, "name": rec.get("name", ""), "kind": kind(), "state": state, "stage": stage, "total": total_stages, "pos": tear_pos}
+	return {"id": rec.id, "name": rec.get("name", ""), "kind": kind(), "state": state, "stage": stage, "total": max(1, total_stages), "pos": tear_pos}

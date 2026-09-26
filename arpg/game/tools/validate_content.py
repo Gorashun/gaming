@@ -25,7 +25,7 @@ MQ_TYPES = {"reach", "rekindle", "collect", "escort", "talk", "solve", "boss"}
 BLOCKED = [r"\bparagon\b", r"\brift", r"\btorment\b", r"\bnephalem", r"\bhoradric", r"\bgreater rift", r"\bdevotion\b", r"\bforging potential",
            r"\bwraeclast", r"\bsanctuary of", r"\bexalted orb", r"\bchaos orb", r"\btreasure goblin", r"\bdeckard", r"\blilith", r"\bmephisto",
            r"\bbaal\b", r"\bdiablo", r"\bembermage", r"\bwarhammer", r"\bnightmare\b", r"\bworld tier", r"\bhellforge", r"\briftgate", r"\batlas\b"]
-BLOCK_ALLOW = {"Sanctuary"}   # a skill named "Sanctuary" is generic English (not "Sanctuary" the Diablo world as a place name)
+BLOCK_ALLOW = set()
 
 
 class V:

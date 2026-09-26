@@ -589,7 +589,7 @@
  },
  {
   "id": "r_tr_dusk_ember",
-  "name": "Transmute: 1 Ember Heart",
+  "name": "Transmute: 1 Kindled Heart",
   "profession": "alchemist",
   "kind": "transmute",
   "level": 25,
@@ -599,7 +599,7 @@
   },
   "gold": 250,
   "known_from_start": true,
-  "desc": "10 Dusk Essence into 1 Ember Heart.",
+  "desc": "10 Dusk Essence into 1 Kindled Heart.",
   "output": {
    "ember_heart": 1
   }
@@ -616,7 +616,7 @@
   },
   "gold": 450,
   "known_from_start": true,
-  "desc": "12 Ember Hearts into 1 Lanternglass.",
+  "desc": "12 Kindled Hearts into 1 Lanternglass.",
   "output": {
    "lanternglass": 1
   }
@@ -633,7 +633,7 @@
   },
   "gold": 200,
   "known_from_start": true,
-  "desc": "Break 1 Ember Heart into 6 Dusk Essence.",
+  "desc": "Break 1 Kindled Heart into 6 Dusk Essence.",
   "output": {
    "dusk_essence": 6
   }

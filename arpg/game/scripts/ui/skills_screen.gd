@@ -429,7 +429,7 @@ func _modifiers(s: Dictionary) -> void:
 			var chosen = str(t.get("chosen", "")) == str(o.get("id", ""))
 			var oid = str(o.get("id", ""))
 			var b = Button.new()
-			b.custom_minimum_size = Vector2(130, 120)
+			b.custom_minimum_size = Vector2(130, 150)
 			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			b.disabled = not unlocked
 			var col = Color(s.get("color", "#ffd98a"))
@@ -452,10 +452,11 @@ func _modifiers(s: Dictionary) -> void:
 			on.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			on.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			v.add_child(on)
-			var od = UiTheme.label(str(o.get("desc", "")), 14, UiTheme.MUTED)
+			var od = UiTheme.label(str(o.get("desc", "")), 13, UiTheme.MUTED)
 			od.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			od.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			od.max_lines_visible = 3
+			od.custom_minimum_size = Vector2(118, 0)
+			b.tooltip_text = str(o.get("name", "")) + ": " + str(o.get("desc", ""))
 			v.add_child(od)
 			if chosen:
 				var ck = UiTheme.icon_rect("check", 26, UiTheme.GOOD)

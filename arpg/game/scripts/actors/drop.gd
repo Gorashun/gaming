@@ -16,6 +16,11 @@ var _land_t = 1.0
 var magnet = false
 
 static var _prop_cache := {}
+## Label discipline (QA B-07): small, short names; Common items unnamed unless the hero is close;
+## at most MAX_LABELS visible (newest / rarest win); hidden where they would cover the HUD.
+const MAX_LABELS := 6
+static var _labelled: Array = []      # drops with a name label, oldest first
+var _label_check = 0.0
 
 func setup_item(it: Dictionary) -> void:
 	item = it
@@ -35,17 +40,20 @@ func setup_item(it: Dictionary) -> void:
 		l.shadow_enabled = false
 		add_child(l)
 	_label = Label3D.new()
-	_label.text = it.name
+	var nm = str(it.name)
+	_label.text = nm if nm.length() <= 18 else nm.substr(0, 17) + "…"
 	_label.modulate = col
 	_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_label.no_depth_test = true
 	_label.fixed_size = true
-	_label.pixel_size = 0.0012
-	_label.font_size = 36
-	_label.outline_size = 12
+	_label.pixel_size = 0.0007 if rank < 4 else 0.0009
+	_label.font_size = 34
+	_label.outline_size = 10
 	_label.outline_modulate = Color(0, 0, 0, 0.9)
-	_label.position.y = 1.1
+	_label.position.y = 0.9
+	_label.visible = rank > 0
 	add_child(_label)
+	_labelled.append(self)
 
 func setup_gold(amount: int) -> void:
 	gold = amount
@@ -90,8 +98,50 @@ func toss(from: Vector3, to: Vector3) -> void:
 	_land_t = 0.0
 	global_position = from
 
+func _exit_tree() -> void:
+	_labelled.erase(self)
+
+func _update_label() -> void:
+	if _label == null:
+		return
+	var rank = Items.rarity_index(str(item.get("rarity", "common")))
+	var p = Game.world.player if Game.world else null
+	var near = p != null and is_instance_valid(p) and p.global_position.distance_to(global_position) < 4.0
+	var show = rank > 0 or near
+	if show and rank < 4:
+		# only the newest / rarest MAX_LABELS keep a name (Legendary+ always)
+		var alive = _labelled.filter(func(d): return is_instance_valid(d) and d.is_inside_tree())
+		var shown = 0
+		for i in range(alive.size() - 1, -1, -1):
+			var d = alive[i]
+			if d == self:
+				break
+			shown += 1
+		show = shown < MAX_LABELS
+		_label.modulate.a = 1.0 if alive.size() <= 3 else 0.8
+	if show:
+		var cam = get_viewport().get_camera_3d()
+		if cam:
+			var sp = cam.unproject_position(global_position + Vector3(0, 0.9, 0))
+			for n in get_tree().get_nodes_in_group("hud_blocker"):
+				var c = n as Control
+				if c and c.is_visible_in_tree() and c.get_global_rect().grow(12).has_point(sp):
+					show = false
+					break
+			if show:
+				for n in get_tree().get_nodes_in_group("hud_arc"):
+					var c2 = n as Control
+					if c2 and c2.is_visible_in_tree() and c2.get_global_rect().grow(12).has_point(sp):
+						show = false
+						break
+	_label.visible = show
+
 func _process(delta: float) -> void:
 	_t += delta
+	_label_check -= delta
+	if _label_check <= 0.0 and not item.is_empty():
+		_label_check = 0.2
+		_update_label()
 	if _land_t < 1.0:
 		_land_t = min(1.0, _land_t + delta * 2.2)
 		var p = _land_from.lerp(_land_to, _land_t)

@@ -85,6 +85,7 @@ func _add_button(key: String, skill: String, off: Vector2, sz: float) -> void:
 	var b = ActionButton.new()
 	add_child(b)
 	b.setup(key, skill, sz)
+	b.add_to_group("hud_arc")
 	if mirrored:
 		UiTheme.place(b, 0.0, 1.0, -off.x - sz * 0.5, off.y - sz * 0.5, sz, sz)
 	else:

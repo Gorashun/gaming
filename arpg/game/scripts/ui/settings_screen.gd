@@ -10,7 +10,7 @@ var _gate_ok = false
 var _gate_answer = 0
 
 const TABS := [["play", "star", "Play"], ["controls", "hand", "Controls"], ["sound", "sound", "Sound"], ["access", "eye", "Access"], ["parents", "parent", "Parents"]]
-const FILTERS := ["Show all", "Hide Common", "Hide Magic-", "Rare+ only"]
+const FILTERS := ["Show all", "Hide Common", "Rare & up", "Epic & up"]
 
 func _ready() -> void:
 	if screen_id == "":

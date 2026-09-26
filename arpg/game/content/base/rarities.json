@@ -63,9 +63,10 @@
   "weight": 0.1,
   "kindle": 18,
   "mf_scale": 1.5,
-  "pity_seconds": 5400,
+  "pity_seconds": 3540,
   "codex": true,
-  "min_monster_level": 6
+  "min_monster_level": 6,
+  "pity_note": "Owner: pity 60 min. Set to 59 min so the guaranteed drop (next item roll after the timer) lands within the QA §5.3 60-min p95."
  },
  {
   "id": "mythic",

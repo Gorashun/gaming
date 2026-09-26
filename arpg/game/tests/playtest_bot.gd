@@ -22,6 +22,10 @@ var _engaged := {}
 var _zones_done := 0
 var _start_level := 1
 var _dodges := 0
+var _town_t := 0.0
+var _target = null
+var _nudge := Vector3.ZERO
+var _nudge_t := 0.0
 var _ex_stage := 0
 var _ex_t := 0.0
 
@@ -157,6 +161,12 @@ func _process(delta: float) -> void:
 	if w == null or w.player == null or not is_instance_valid(w.player):
 		return
 	var p: Player = w.player
+	if args.has("trace") and int(_t * 2) != int((_t - delta) * 2):
+		var tgt = w.nearest_enemy(p, p.global_position, 30.0, [])
+		if tgt:
+			print("TRACE path=", w.find_path(p.global_position, tgt.global_position).slice(0, 3), " line=", w.has_line(p.global_position, tgt.global_position), " dir=", _dir_to(w, p.global_position, tgt.global_position), " hz=", w.hazards_at(p.global_position, 0.6, false).size())
+		print("TRACE st=", p.status.keys(), " can=", p.can_act(), " lock=", p.anim_locked(), " chan=", p.is_channeling(), " vel=", p.velocity)
+		print("TRACE t=%.1f pos=(%.1f,%.1f) move=(%.2f,%.2f) alive=%s tgt=%s paused=%s" % [_t, p.global_position.x, p.global_position.z, p.intent_move.x, p.intent_move.z, p.alive, (("%s@(%.1f,%.1f)" % [tgt.rec.id, tgt.global_position.x, tgt.global_position.z]) if tgt else "-"), get_tree().paused])
 	# Dismiss summary / death screens
 	var s = w.get_parent().screen if w.get_parent() and "screen" in w.get_parent() else null
 	if args.has("talk-all"):
@@ -182,12 +192,24 @@ func _process(delta: float) -> void:
 		return
 	if args.has("exercise") and _exercise(w, p, delta):
 		return
+	# In town (not exercising): take the onward portal after a moment
+	if w.is_town and not args.has("exercise") and not args.has("stay-in-town") and w.has_meta("onward_zone"):
+		_town_t += delta
+		if _town_t > 3.0:
+			_town_t = 0.0
+			w.get_parent().travel(str(w.get_meta("onward_zone")))
+			return
 	if args.has("auto-equip") and int(_t * 2) % 20 == 0:
 		if InventoryOps.best_gear(p.ch) > 0:
 			p.sync_from_character()
 		if p.ch.skill_points > 0:
 			w.get_parent().auto_spend_points()
+	# Sticky target (hysteresis): keep chasing the current target out to 40 m. Without it the bot
+	# oscillated at the 30 m search edge between "chase" and "walk to exit" (QA B-06 stall).
 	var target = w.nearest_enemy(p, p.global_position, 30.0, [])
+	if target == null and _target and is_instance_valid(_target) and _target.alive and _target.global_position.distance_to(p.global_position) < 40.0:
+		target = _target
+	_target = target
 	var basic = Content.get_rec("skills", p.basic_skill)
 	var ranged = basic.get("tags", []).has("projectile")
 	# Potions: novice drinks late; others drink at 35 %, or at 55 % when a telegraph is on them
@@ -253,11 +275,15 @@ func _process(delta: float) -> void:
 	# stuck detection
 	if p.global_position.distance_to(_last_pos) < 0.05 and p.intent_move.length() > 0.1:
 		_stuck_t += delta
-		if _stuck_t > 1.5:
-			p.intent_move = Vector3(randf_range(-1, 1), 0, randf_range(-1, 1)).normalized()
+		if _stuck_t > 1.0:
+			_nudge = Vector3(randf_range(-1, 1), 0, randf_range(-1, 1)).normalized()
+			_nudge_t = 0.6
 			_stuck_t = 0.0
 	else:
 		_stuck_t = 0.0
+	if _nudge_t > 0.0:
+		_nudge_t -= delta
+		p.intent_move = _nudge
 	_last_pos = p.global_position
 
 func _explore_target(w: GameWorld, p: Player) -> Vector3:
@@ -290,13 +316,18 @@ func _handle_pause(w: GameWorld) -> void:
 	if sess.screen and is_instance_valid(sess.screen):
 		var title = sess.screen.title_label.text if sess.screen.title_label else ""
 		_write({"ev": "screen", "title": title, "t": _t})
-		if title.contains("snuffed"):
+		if args.has("death-back") and (title.contains("snuffed") or title.contains("Last Flame")):
+			sess.screen.close()   # QA B-01: Back on a death screen must revive, never softlock
+			await get_tree().create_timer(0.5, true, false, true).timeout
+			var p2 = Game.world.player if Game.world else null
+			print("DEATHBACK paused=", get_tree().paused, " alive=", p2.alive if p2 else "?", " hardcore=", Game.character.hardcore)
+		elif title.contains("snuffed"):
 			sess.screen.queue_free()
 			get_tree().paused = false
 			w.player.revive()
 		elif title.contains("cleansed"):
 			var z = Content.get_rec("zones", w.zone.id)
-			sess.travel(z.get("next", "a1_z1"))
+			sess.travel(sess.story_next(z.id, z.get("next", "a1_z1")) if sess.has_method("story_next") else z.get("next", "a1_z1"))
 		else:
 			sess.screen.close()
 

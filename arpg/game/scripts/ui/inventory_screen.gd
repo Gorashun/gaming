@@ -10,7 +10,7 @@ var _preview: HeroPreview
 var _doll_left: VBoxContainer
 var _doll_right: VBoxContainer
 var _bag: GridContainer
-var _mats: HBoxContainer
+var _mats: HFlowContainer
 var _power: Label
 var _sheet: Control
 var _filter_btn: Button
@@ -22,7 +22,7 @@ static var _seen := {}   # uid -> true (for new-dots)
 
 const LEFT_SLOTS := ["head", "amulet", "chest", "hands", "belt", "legs"]
 const RIGHT_SLOTS := ["main_hand", "off_hand", "ring1", "ring2", "feet", "charm"]
-const FILTERS := ["Show all", "Hide Common", "Hide Magic & below", "Rare+ only"]
+const FILTERS := ["Show all", "Hide Common", "Rare & up", "Epic & up"]
 
 func _ready() -> void:
 	ch = Game.character
@@ -97,12 +97,15 @@ func _ready() -> void:
 	_bag.add_theme_constant_override("h_separation", 6)
 	_bag.add_theme_constant_override("v_separation", 6)
 	sc.add_child(_bag)
+	# Material bag: wraps into rows inside a short scroll box (never cut, never crowds the grid)
 	var msc = ScrollContainer.new()
-	msc.custom_minimum_size = Vector2(0, 46)
-	msc.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	msc.custom_minimum_size = Vector2(0, 70)
+	msc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	bagcol.add_child(msc)
-	_mats = HBoxContainer.new()
-	_mats.add_theme_constant_override("separation", 6)
+	_mats = HFlowContainer.new()
+	_mats.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_mats.add_theme_constant_override("h_separation", 5)
+	_mats.add_theme_constant_override("v_separation", 4)
 	msc.add_child(_mats)
 	refresh()
 
@@ -146,7 +149,7 @@ func refresh() -> void:
 		if int(ch.materials[m]) <= 0:
 			continue
 		var rec = Content.get_rec("materials", m)
-		var p = UiTheme.pill(m if UiTheme.has_icon(m) else ("gem" if rec.get("gem", false) else "material"), str(int(ch.materials[m])), Color(rec.get("color", "#cccccc")), 18)
+		var p = UiTheme.pill(m if UiTheme.has_icon(m) else ("gem" if rec.get("gem", false) else "material"), str(int(ch.materials[m])), Color(rec.get("color", "#cccccc")), 15)
 		p.tooltip_text = str(rec.get("name", m))
 		p.mouse_filter = Control.MOUSE_FILTER_PASS
 		_mats.add_child(p)

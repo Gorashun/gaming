@@ -85,7 +85,7 @@ Hardcore uses the same numbers; additionally **0** hardcore deaths attributed to
 | Unique (boss) | — | ~1 per 40 boss kills (sim: 30–50) |
 | Mythic | 0 | 0 |
 
-Plus: Legendary gap p95 ≤ 45 min of active play (pity guarantees the max); gold/min and materials/min tracked, target set by economy sim. Observed rarity shares over 1M sim rolls within ±5% relative of `rarities` weights.
+Plus: Legendary gap p95 ≤ 60 min of active play (owner decision 2026-09-26: pity 60 min, data 3540 s; `sim_loot.py --check` enforces it); gold/min and materials/min tracked, target set by economy sim. Observed rarity shares over 1M sim rolls within ±5% relative of `rarities` weights.
 
 ### 5.4 Time-to-level (competent bot, playing Act 1 in order, rested bonus off) *(est.)*
 | Level | Cumulative play time |

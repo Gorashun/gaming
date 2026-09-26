@@ -125,7 +125,8 @@ func _zone_tile(zid: String, here: String, last: bool) -> Control:
 	v.add_child(h)
 	h.add_child(UiTheme.icon_rect("lock" if lock != "" else ("hearth" if is_town else ("skull_soft" if is_boss else "waypoint")), 40, col if known else UiTheme.LOCKED))
 	var nm = UiTheme.label(str(z.get("name", zid)) if known else "???", 17, UiTheme.TEXT if known else UiTheme.MUTED, true)
-	nm.clip_text = true
+	nm.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	nm.max_lines_visible = 2
 	nm.custom_minimum_size = Vector2(160, 0)
 	h.add_child(nm)
 	var sub = HBoxContainer.new()

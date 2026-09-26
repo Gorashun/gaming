@@ -91,9 +91,11 @@ func refresh() -> void:
 		_grid.add_child(b)
 
 func _buy(oid: String) -> void:
-	var res = sess_call("curio_buy", [oid], null)
-	if res == null:
-		res = UiTheme.api_call("Merchants", "curio_buy", [ch, oid], {"ok": false, "message": "The cart is closed"})
+	# Call the rules directly: Session.curio_buy() also emits golden_moment, and the Curio reveal card
+	# must be the only reveal for a purchase (welfare §2.5: no chained reveals).
+	var res = UiTheme.api_call("Merchants", "curio_buy", [ch, oid], {"ok": false, "message": "The cart is closed"})
+	if res.get("ok", false):
+		Game.save_character()
 	if not res.get("ok", false):
 		flash_msg(str(res.get("message", "")), UiTheme.BAD, "lock")
 		return

@@ -110,3 +110,11 @@ All tables live in `game/content/<pack>/<table>.json` as arrays of records with 
 
 ## Progression
 - `config/progression.monster_xp_level_scale` (0.08) replaces the `0.35` constant in `Progression.monster_xp()`: `base_xp * (1 + S*ml)`. The tuned curve (xp_base 116, growth 1.131, linear 442, post60 1.0375) assumes S is read from config — with the old constant players reach 60 in ~6 h instead of ~19 h.
+
+## Wave 3 additions (QA_REPORT tuning)
+- `monster_affixes[].min_level`: the elite affix is only rolled when the monster level ≥ this (mender 5, huge 3, frozen 4, vampiric 5, teleporter 6, molten 8). Code must filter the affix roll (and roll per pack without replacement).
+- `difficulties[].max_hit_pct_non_boss` (40, Eclipse): cap for a single non-boss hit as a fraction of max life (code clamp / sim check).
+- `curio_offers[].min_rarity` ("magic") and `source_kind` ("champion"): `Merchants.curio_buy` should roll with the `champion` loot-kind bonus and reroll/raise below `min_rarity` using the normal weights above it (true odds, instant reveal).
+- `config/upgrade.stat_per_level_pct` 5 and `milestone_bonus_pct {"5":10,"10":10,"15":10}` (also in `milestones[L].bonus_pct`): extra base damage/armour % added at +5/+10/+15 → +105 % at +15.
+- `pets[].drop_chance_from_source`: per-kill chance when only the `source_ref` monster rolls it (use this if `Pets.roll_drop` starts honouring `source_ref`; `drop_chance` is tuned for today's "every kill rolls every drop pet").
+- `rarities.legendary.pity_note`; legendary `pity_seconds` 3540.

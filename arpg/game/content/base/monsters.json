@@ -13,8 +13,8 @@
     "bone": "handslot.r"
    }
   ],
-  "life_mult": 0.9,
-  "dmg_mult": 0.9,
+  "life_mult": 0.675,
+  "dmg_mult": 0.72,
   "speed": 3.4,
   "xp": 10,
   "ai": "melee",
@@ -45,7 +45,8 @@
     "id": "u_rattlers_nightcap",
     "chance": 0.0015
    }
-  ]
+  ],
+  "low_level_note": "dmg -20% (QA T4); rattlebones are the level 1-12 family"
  },
  {
   "id": "shieldbones",
@@ -66,8 +67,8 @@
     "bone": "handslot.l"
    }
   ],
-  "life_mult": 1.6,
-  "dmg_mult": 1.1,
+  "life_mult": 1.2,
+  "dmg_mult": 0.88,
   "speed": 2.8,
   "xp": 16,
   "armor_mult": 2.0,
@@ -85,7 +86,8 @@
   "pack_max": 4,
   "spawn_weight": 18,
   "act": 1,
-  "soul_color": "#8fd9a0"
+  "soul_color": "#8fd9a0",
+  "low_level_note": "dmg -20% (QA T4); rattlebones are the level 1-12 family"
  },
  {
   "id": "bog_archer",
@@ -102,8 +104,8 @@
     "bone": "handslot.r"
    }
   ],
-  "life_mult": 0.75,
-  "dmg_mult": 0.8,
+  "life_mult": 0.562,
+  "dmg_mult": 0.64,
   "speed": 3.0,
   "xp": 12,
   "ai": "ranged",
@@ -125,7 +127,8 @@
   "pack_max": 4,
   "spawn_weight": 16,
   "act": 1,
-  "soul_color": "#8fd9a0"
+  "soul_color": "#8fd9a0",
+  "low_level_note": "dmg -20% (QA T4); rattlebones are the level 1-12 family"
  },
  {
   "id": "candle_mage",
@@ -141,8 +144,8 @@
     "bone": "handslot.r"
    }
   ],
-  "life_mult": 0.8,
-  "dmg_mult": 1.0,
+  "life_mult": 0.6,
+  "dmg_mult": 0.8,
   "speed": 2.8,
   "xp": 15,
   "ai": "caster",
@@ -179,7 +182,8 @@
   "pack_max": 2,
   "spawn_weight": 10,
   "soul_color": "#ffb070",
-  "act": 1
+  "act": 1,
+  "low_level_note": "dmg -20% (QA T4); rattlebones are the level 1-12 family"
  },
  {
   "id": "bonepile",
@@ -187,8 +191,8 @@
   "family": "rattlebones",
   "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
   "scale": 0.62,
-  "life_mult": 0.35,
-  "dmg_mult": 0.5,
+  "life_mult": 0.262,
+  "dmg_mult": 0.4,
   "speed": 4.4,
   "xp": 4,
   "ai": "swarm",
@@ -206,7 +210,8 @@
   "pack_max": 8,
   "spawn_weight": 12,
   "act": 1,
-  "soul_color": "#8fd9a0"
+  "soul_color": "#8fd9a0",
+  "low_level_note": "dmg -20% (QA T4); rattlebones are the level 1-12 family"
  },
  {
   "id": "warden",
@@ -225,7 +230,7 @@
    }
   ],
   "life_mult": 3.2,
-  "dmg_mult": 1.6,
+  "dmg_mult": 1.28,
   "speed": 2.6,
   "xp": 40,
   "ai": "melee",
@@ -263,7 +268,8 @@
     "id": "u_tollys_morning_note",
     "chance": 0.004
    }
-  ]
+  ],
+  "low_level_note": "dmg -20% (QA T4); rattlebones are the level 1-12 family"
  },
  {
   "id": "mud_frog",
@@ -275,8 +281,8 @@
   "tint": "#6f8a4a",
   "rim": "#a8d080",
   "attachments": [],
-  "life_mult": 0.7,
-  "dmg_mult": 0.8,
+  "life_mult": 0.525,
+  "dmg_mult": 0.64,
   "speed": 3.8,
   "xp": 9,
   "ai": "ranged",
@@ -314,7 +320,8 @@
     "id": "pet_puddle",
     "chance": 0.003
    }
-  ]
+  ],
+  "low_level_note": "dmg -20% (QA T4); rattlebones are the level 1-12 family"
  },
  {
   "id": "mist_snail",
@@ -326,8 +333,8 @@
   "tint": "#9aa8b0",
   "rim": "#c8e0ff",
   "attachments": [],
-  "life_mult": 1.8,
-  "dmg_mult": 0.7,
+  "life_mult": 1.35,
+  "dmg_mult": 0.56,
   "speed": 1.6,
   "xp": 12,
   "ai": "melee",
@@ -359,7 +366,8 @@
   "pack_max": 3,
   "spawn_weight": 6,
   "desc": "Slow, but its trail of forgetting makes you slow too.",
-  "soul_color": "#8fd9a0"
+  "soul_color": "#8fd9a0",
+  "low_level_note": "dmg -20% (QA T4); rattlebones are the level 1-12 family"
  },
  {
   "id": "lily_ghost",
@@ -373,8 +381,8 @@
   "attachments": [
    "Skeleton_Mage_Hat"
   ],
-  "life_mult": 0.7,
-  "dmg_mult": 0.9,
+  "life_mult": 0.525,
+  "dmg_mult": 0.72,
   "speed": 3.0,
   "xp": 13,
   "ai": "caster",
@@ -414,7 +422,8 @@
     "id": "pet_dimple",
     "chance": 0.003
    }
-  ]
+  ],
+  "low_level_note": "dmg -20% (QA T4); rattlebones are the level 1-12 family"
  },
  {
   "id": "twigling",
@@ -432,7 +441,7 @@
     "bone": "handslot.r"
    }
   ],
-  "life_mult": 0.9,
+  "life_mult": 0.675,
   "dmg_mult": 0.9,
   "speed": 3.6,
   "xp": 10,
@@ -479,7 +488,7 @@
    "Skeleton_Rogue_Hood",
    "Skeleton_Rogue_Cape"
   ],
-  "life_mult": 0.75,
+  "life_mult": 0.562,
   "dmg_mult": 0.85,
   "speed": 3.2,
   "xp": 12,
@@ -540,7 +549,7 @@
   "tint": "#4f7a3a",
   "rim": "#a0e080",
   "attachments": [],
-  "life_mult": 0.8,
+  "life_mult": 0.6,
   "dmg_mult": 1.0,
   "speed": 5.0,
   "xp": 11,
@@ -597,7 +606,7 @@
     "bone": "handslot.r"
    }
   ],
-  "life_mult": 0.85,
+  "life_mult": 0.637,
   "dmg_mult": 1.0,
   "speed": 2.6,
   "xp": 15,
@@ -665,7 +674,7 @@
   "tint": "#a0e070",
   "rim": "#d8ffb0",
   "attachments": [],
-  "life_mult": 0.4,
+  "life_mult": 0.3,
   "dmg_mult": 0.7,
   "speed": 4.6,
   "xp": 6,
@@ -1680,7 +1689,7 @@
    }
   ],
   "life_mult": 9.0,
-  "dmg_mult": 1.6,
+  "dmg_mult": 1.28,
   "speed": 2.7,
   "xp": 120,
   "armor_mult": 2.0,
@@ -1737,7 +1746,8 @@
     "id": "u_warden_helm",
     "chance": 0.03
    }
-  ]
+  ],
+  "low_level_note": "dmg -20% (QA T4); rattlebones are the level 1-12 family"
  },
  {
   "id": "mb_candlewife",
@@ -1758,7 +1768,7 @@
    }
   ],
   "life_mult": 7.0,
-  "dmg_mult": 1.4,
+  "dmg_mult": 1.12,
   "speed": 2.6,
   "xp": 120,
   "ai": "caster",
@@ -1825,7 +1835,8 @@
     "id": "u_purls_scarf",
     "chance": 0.03
    }
-  ]
+  ],
+  "low_level_note": "dmg -20% (QA T4); rattlebones are the level 1-12 family"
  },
  {
   "id": "mb_briar_aunt",

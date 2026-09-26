@@ -8,7 +8,9 @@
   "price_hushmarks": 4,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_greatsword",
@@ -19,7 +21,9 @@
   "price_hushmarks": 6,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_axe",
@@ -30,7 +34,9 @@
   "price_hushmarks": 4,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_axe2h",
@@ -41,7 +47,9 @@
   "price_hushmarks": 6,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_staff",
@@ -52,7 +60,9 @@
   "price_hushmarks": 6,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_wand",
@@ -63,7 +73,9 @@
   "price_hushmarks": 4,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_dagger",
@@ -74,7 +86,9 @@
   "price_hushmarks": 4,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_crossbow",
@@ -85,7 +99,9 @@
   "price_hushmarks": 4,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_arbalest",
@@ -96,7 +112,9 @@
   "price_hushmarks": 6,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_shield",
@@ -107,7 +125,9 @@
   "price_hushmarks": 4,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_tome",
@@ -118,7 +138,9 @@
   "price_hushmarks": 4,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_quiver",
@@ -129,7 +151,9 @@
   "price_hushmarks": 4,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_head",
@@ -140,7 +164,9 @@
   "price_hushmarks": 3,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_chest",
@@ -151,7 +177,9 @@
   "price_hushmarks": 4,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_hands",
@@ -162,7 +190,9 @@
   "price_hushmarks": 3,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_legs",
@@ -173,7 +203,9 @@
   "price_hushmarks": 3,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_feet",
@@ -184,7 +216,9 @@
   "price_hushmarks": 3,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_belt",
@@ -195,7 +229,9 @@
   "price_hushmarks": 3,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_ring",
@@ -206,7 +242,9 @@
   "price_hushmarks": 8,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_amulet",
@@ -217,7 +255,9 @@
   "price_hushmarks": 10,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_charm",
@@ -228,7 +268,9 @@
   "price_hushmarks": 6,
   "min_level": 1,
   "roll": "standard_drop",
-  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly.",
+  "min_rarity": "magic",
+  "source_kind": "champion"
  },
  {
   "id": "curio_gem",

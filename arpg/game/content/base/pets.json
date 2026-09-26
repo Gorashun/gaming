@@ -88,7 +88,7 @@
   "rarity": "common",
   "source": "drop",
   "source_ref": "grey_moth",
-  "drop_chance": 0.002,
+  "drop_chance": 8e-05,
   "max_level": 30,
   "bonuses_per_level": {
    "material_find": 0.8
@@ -115,7 +115,9 @@
   ],
   "desc": "A fluffy white moth that glows softly.",
   "codex": true,
-  "creature": "moth"
+  "creature": "moth",
+  "drop_chance_from_source": 0.003,
+  "drop_note": "Pets.roll_drop rolls every drop-pet on every kill (source_ref ignored): 6 pets x 0.00008 x ~700 kills/h (elites x2-6) = ~1 pet per 2.5-3 h. If code starts honouring source_ref, use drop_chance_from_source instead."
  },
  {
   "id": "pet_pip",
@@ -164,7 +166,7 @@
   "rarity": "common",
   "source": "drop",
   "source_ref": "lily_ghost",
-  "drop_chance": 0.003,
+  "drop_chance": 8e-05,
   "max_level": 30,
   "bonuses_per_level": {
    "xp_pct": 0.3
@@ -191,7 +193,9 @@
   ],
   "desc": "A lily-ghost who follows you giggling.",
   "codex": true,
-  "creature": "ghost"
+  "creature": "ghost",
+  "drop_chance_from_source": 0.003,
+  "drop_note": "Pets.roll_drop rolls every drop-pet on every kill (source_ref ignored): 6 pets x 0.00008 x ~700 kills/h (elites x2-6) = ~1 pet per 2.5-3 h. If code starts honouring source_ref, use drop_chance_from_source instead."
  },
  {
   "id": "pet_wicklet",
@@ -318,7 +322,7 @@
   "rarity": "common",
   "source": "drop",
   "source_ref": "mud_frog",
-  "drop_chance": 0.003,
+  "drop_chance": 8e-05,
   "max_level": 30,
   "bonuses_per_level": {
    "gold_find": 0.8,
@@ -346,7 +350,9 @@
   ],
   "desc": "A mud frog who digs up shiny things.",
   "codex": true,
-  "creature": "frog"
+  "creature": "frog",
+  "drop_chance_from_source": 0.003,
+  "drop_note": "Pets.roll_drop rolls every drop-pet on every kill (source_ref ignored): 6 pets x 0.00008 x ~700 kills/h (elites x2-6) = ~1 pet per 2.5-3 h. If code starts honouring source_ref, use drop_chance_from_source instead."
  },
  {
   "id": "pet_gravel",
@@ -395,7 +401,7 @@
   "rarity": "rare",
   "source": "drop",
   "source_ref": "mb_crystal_matron",
-  "drop_chance": 0.08,
+  "drop_chance": 8e-05,
   "max_level": 30,
   "bonuses_per_level": {
    "magic_find": 1.0,
@@ -423,7 +429,9 @@
   ],
   "desc": "A crystal spiderling. Clinks happily.",
   "codex": true,
-  "creature": "spider"
+  "creature": "spider",
+  "drop_chance_from_source": 0.004,
+  "drop_note": "Pets.roll_drop rolls every drop-pet on every kill (source_ref ignored): 6 pets x 0.00008 x ~700 kills/h (elites x2-6) = ~1 pet per 2.5-3 h. If code starts honouring source_ref, use drop_chance_from_source instead."
  },
  {
   "id": "pet_lanternbug",
@@ -671,7 +679,7 @@
   "rarity": "common",
   "source": "drop",
   "source_ref": "echo_bat",
-  "drop_chance": 0.002,
+  "drop_chance": 8e-05,
   "max_level": 30,
   "bonuses_per_level": {
    "pickup_radius": 3
@@ -698,7 +706,9 @@
   ],
   "desc": "An echo bat who squeaks your name.",
   "codex": true,
-  "creature": "bat"
+  "creature": "bat",
+  "drop_chance_from_source": 0.003,
+  "drop_note": "Pets.roll_drop rolls every drop-pet on every kill (source_ref ignored): 6 pets x 0.00008 x ~700 kills/h (elites x2-6) = ~1 pet per 2.5-3 h. If code starts honouring source_ref, use drop_chance_from_source instead."
  },
  {
   "id": "pet_marshmallow",
@@ -787,7 +797,7 @@
   "rarity": "common",
   "source": "drop",
   "source_ref": "twigling",
-  "drop_chance": 0.002,
+  "drop_chance": 8e-05,
   "max_level": 30,
   "bonuses_per_level": {
    "material_find": 0.8
@@ -814,7 +824,9 @@
   ],
   "desc": "A twigling sprout. Buries things. Finds better things.",
   "codex": true,
-  "creature": "snail"
+  "creature": "snail",
+  "drop_chance_from_source": 0.003,
+  "drop_note": "Pets.roll_drop rolls every drop-pet on every kill (source_ref ignored): 6 pets x 0.00008 x ~700 kills/h (elites x2-6) = ~1 pet per 2.5-3 h. If code starts honouring source_ref, use drop_chance_from_source instead."
  },
  {
   "id": "pet_quill",

@@ -55,6 +55,7 @@ var _boss_phases = 1
 var _tick_flash = 0.0
 var _last_sub = -1
 var _slow_t = 0.0
+var _zone_t = -1.0   # zone title: 0.4 s in, 2.5 s hold, 0.8 s out (real time, QA B-21)
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -81,7 +82,6 @@ func _ready() -> void:
 	_connect_opt("skill_mastery_ready", func(sid): toast("%s can be mastered!" % Content.get_rec("skills", sid).get("name", "A skill"), UiTheme.GOLD, "skills"))
 	_connect_opt("skill_mastery_up", func(sid, r): toast("%s mastery %d!" % [Content.get_rec("skills", sid).get("name", ""), r], UiTheme.GOLD, "star"))
 	_connect_opt("proficiency_up", func(t, l): toast("%s proficiency %d" % [str(t).capitalize(), l], Color("#ffcf80"), t if UiTheme.has_icon(t) else "sword"))
-	_connect_opt("pet_acquired", func(pid): toast("New pet: %s!" % _pet_name(pid), Color("#ffb3de"), "pets"))
 	_connect_opt("pet_level_up", func(pid, l): toast("%s reached level %d" % [_pet_name(pid), l], Color("#ffb3de"), "paw"))
 	_connect_opt("mount_changed", func(_m): _refresh_quick())
 	_connect_opt("channel_progress", _on_channel)
@@ -465,10 +465,8 @@ func setup(p: Player, s: Node) -> void:
 	var zname = str(Game.world.zone.get("name", "")) if Game.world else ""
 	_zone.text = zname
 	_zone.modulate.a = 0.0
-	var t = create_tween()
-	t.tween_property(_zone, "modulate:a", 1.0, 0.6)
-	t.tween_interval(3.0)
-	t.tween_property(_zone, "modulate:a", 0.0, 1.0)
+	_zone.visible = true
+	_zone_t = 0.0
 	_minimap.setup(Game.world)
 	# Current-target ring + direction arrow + skill area preview (aim-free combat)
 	var tm = TargetMarker.new()
@@ -493,6 +491,12 @@ func _process(delta: float) -> void:
 	if player == null or not is_instance_valid(player) or Game.world == null:
 		return
 	var ch = player.ch
+	if _zone_t >= 0.0:
+		_zone_t += delta
+		_zone.modulate.a = clampf(_zone_t / 0.4, 0.0, 1.0) if _zone_t < 0.4 else (1.0 if _zone_t < 2.9 else clampf(1.0 - (_zone_t - 2.9) / 0.8, 0.0, 1.0))
+		if _zone_t >= 3.7:
+			_zone_t = -1.0
+			_zone.visible = false
 	# Interact button: context icon
 	var it = Game.world.nearest_interactable()
 	var d = Game.world.nearest_drop()
@@ -521,7 +525,7 @@ func _process(delta: float) -> void:
 	if _tick_flash > 0.0:
 		_xp.queue_redraw()
 	# Golden moment waits for calm: no enemy within 12 m for 1.5 s
-	var calm = Game.world.monsters_near(player.global_position, 12.0).filter(func(m): return m is Monster and m.alive and str(m.faction) == "monster" and str(m.get("kind")) != "minion").is_empty() if Game.world.has_method("monsters_near") else true
+	var calm = Game.world.monsters_near(player.global_position, 12.0).filter(func(m): return m is Monster and m.alive and str(m.faction) == "monster" and str(m.get("kind")) != "minion" and m.get("target") == player).is_empty() if Game.world.has_method("monsters_near") else true
 	_calm_t = _calm_t + delta if calm else 0.0
 	if not _golden_open and _golden_queue.size() > 0 and _calm_t >= 1.5:
 		_show_golden(_golden_queue.pop_front())
@@ -833,7 +837,7 @@ func _on_event_stage(eid: String, stage: int, total: int) -> void:
 		_on_event_started(eid)
 	_event_bar.value = float(stage) / max(1.0, float(total))
 	var rec = Content.get_rec("world_events", eid)
-	_event_name.text = "%s  %d/%d" % [rec.get("name", "Hushfall"), stage, total]
+	_event_name.text = str(rec.get("name", "Hushfall")) + ("  %d/%d" % [stage, total] if total > 0 else "")
 
 func _on_event_completed(_eid: String) -> void:
 	_event_id = ""
@@ -872,8 +876,10 @@ func _poll_event() -> void:
 		return
 	if _event_id == "":
 		_on_event_started(str(st.get("id", "")))
-	_event_name.text = "%s  %d/%d" % [st.get("name", "Hushfall"), int(st.get("stage", 0)), int(st.get("total", 1))]
-	_event_bar.value = float(st.get("stage", 0)) / max(1.0, float(st.get("total", 1)))
+	var tot = int(st.get("total", 0))
+	_event_name.text = str(st.get("name", "Hushfall")) + ("  %d/%d" % [int(st.get("stage", 0)), tot] if tot > 0 else "")
+	_event_bar.value = float(st.get("stage", 0)) / max(1.0, float(tot)) if tot > 0 else 0.0
+	_event_bar.visible = tot > 0
 
 func _banner(text: String, col: Color) -> void:
 	var banner = UiTheme.label(text, 52, col, true)
@@ -1017,7 +1023,27 @@ func _on_channel(_what: String, t: float) -> void:
 	_channel.value = t
 
 # ------------------------------------------------------------------ toasts & pickup feed
+var _toast_seen = {}   # text -> {"t": msec, "node": Control, "n": count}
+
 func toast(text: String, color: Color, icon_name := "") -> void:
+	# Toast discipline (QA B-20): identical text within 4 s merges into "×N"; "Not enough …" at most
+	# once per 10 s; at most 3 lines on screen.
+	var now = Time.get_ticks_msec()
+	var key = text
+	var window = 10000 if text.begins_with("Not enough") else 4000
+	var prev = _toast_seen.get(key)
+	if prev and now - int(prev.t) < window:
+		if text.begins_with("Not enough"):
+			return
+		prev.n = int(prev.n) + 1
+		prev.t = now
+		var node = prev.node
+		if node and is_instance_valid(node):
+			var lab: Label = node.find_child("ToastText", true, false)
+			if lab:
+				lab.text = "%s  ×%d" % [text, prev.n]
+			node.modulate.a = 1.0
+		return
 	if icon_name == "":
 		icon_name = _guess_icon(text)
 	var p = PanelContainer.new()
@@ -1035,8 +1061,10 @@ func toast(text: String, color: Color, icon_name := "") -> void:
 	p.add_child(h)
 	h.add_child(UiTheme.icon_rect(icon_name, 28, color))
 	var l = UiTheme.label(text, 19, color)
+	l.name = "ToastText"
 	l.add_theme_constant_override("outline_size", 5)
 	h.add_child(l)
+	_toast_seen[key] = {"t": now, "node": p, "n": 1}
 	_push_feed(p)
 
 func _guess_icon(text: String) -> String:
@@ -1066,7 +1094,7 @@ func _on_pickup(it: Dictionary) -> void:
 
 func _push_feed(c: Control) -> void:
 	_feed.add_child(c)
-	while _feed.get_child_count() > 4:
+	while _feed.get_child_count() > 3:
 		var old = _feed.get_child(0)
 		_feed.remove_child(old)
 		old.queue_free()
@@ -1089,7 +1117,15 @@ func _show_golden(it: Dictionary) -> void:
 	_golden_open = true
 	var card = GoldenCard.new()
 	card.setup(it)
-	add_child(card)
+	# Own top canvas layer: always above the HUD, toasts and world labels.
+	var layer = CanvasLayer.new()
+	layer.layer = 40
+	layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(layer)
+	layer.add_child(card)
+	card.tree_exited.connect(func():
+		if is_instance_valid(layer):
+			layer.queue_free())
 	card.done.connect(func(equip):
 		_golden_open = false
 		if equip:

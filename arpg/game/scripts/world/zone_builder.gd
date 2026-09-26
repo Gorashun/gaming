@@ -43,6 +43,8 @@ var lights = []          # [OmniLight3D] managed by GameWorld (nearest N active)
 var halos = []           # [Sprite3D] flicker with their light (AmbientFx)
 var chests = []          # positions for interactive chests
 var occupied = {}        # Vector2i -> true (props placed)
+var town_slots = []      # hub NPC stand points (world), ring around the plaza, >= 4 m apart
+var reserved = {}        # Vector2i -> true: kept free of props (spawn clearance, NPC slots)
 
 static func resolve(path: String) -> String:
 	if path.begins_with("res://") or path.begins_with("proc:"):
@@ -91,6 +93,14 @@ func build(parent: Node3D, l: ZoneLayout, b: Dictionary, seed_value: int) -> Nod
 	root = Node3D.new()
 	root.name = "Zone"
 	parent.add_child(root)
+	if b.has("town_layout"):
+		_make_town_layout(b.town_layout)
+	else:
+		# spawn clearance in every zone: nothing blocking within 1 cell of the start point
+		var sc: Vector2i = layout.rooms[layout.start_room].center
+		for dy in range(-1, 2):
+			for dx in range(-1, 2):
+				reserved[sc + Vector2i(dx, dy)] = true
 	_build_floor()
 	if b.get("outdoor", false):
 		_build_outdoor_bounds()
@@ -371,7 +381,7 @@ func _scatter_props() -> void:
 		var where: String = spec.get("where", "any")
 		var buckets = {}
 		for c in layout.floor_cells():
-			if occupied.has(c):
+			if occupied.has(c) or reserved.has(c):
 				continue
 			if not _cell_matches(c, where):
 				continue
@@ -544,3 +554,77 @@ func _showcase_label(n: Node3D, text: String) -> void:
 	l.position.y = 2.2 / maxf(0.3, n.scale.y)
 	l.no_depth_test = true
 	n.add_child(l)
+
+# ------------------------------------------------------------------ hubs
+## Town generator (QA B-09): a plaza + 2-4 streets with yards, shaped per town (seeded by zone id,
+## so a town looks the same every visit). The hero spawns on open ground south-east of the plaza
+## centre (camera side); NPC stand points ring the plaza >= 4 m apart and are kept free of props.
+## biome.town_layout: {plaza: "round"|"square"|"cross", radius (cells), streets (count), ring (m)}
+func _make_town_layout(opts: Dictionary) -> void:
+	var zid = str(Game.world.zone.get("id", "town")) if Game.world else "town"
+	var r = RandomNumberGenerator.new()
+	r.seed = hash(zid)
+	var n = 24
+	var R = int(opts.get("radius", 4))
+	var c = Vector2i(n / 2, n / 2)
+	layout.w = n
+	layout.h = n
+	layout.cells.resize(n * n)
+	layout.cells.fill(0)
+	layout.rooms.clear()
+	var shape: String = str(opts.get("plaza", ["round", "square", "cross"][r.randi_range(0, 2)]))
+	for y in range(-R, R + 1):
+		for x in range(-R, R + 1):
+			var inside = false
+			match shape:
+				"square": inside = true
+				"cross": inside = absi(x) <= R / 2 + 1 or absi(y) <= R / 2 + 1 or Vector2(x, y).length() <= R * 0.8
+				_: inside = Vector2(x, y).length() <= R + 0.45
+			if inside:
+				layout.set_cell(c.x + x, c.y + y, 1)
+	layout.rooms.append({"rect": Rect2i(c.x - R, c.y - R, R * 2 + 1, R * 2 + 1), "center": c + Vector2i(1, 1)})
+	var dirs = [Vector2i(0, -1), Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, 1)]
+	# shuffle deterministically; always keep a street towards the far (-X/-Z) side for depth
+	for i in range(dirs.size() - 1, 0, -1):
+		var j = r.randi_range(0, i)
+		var tmp = dirs[i]
+		dirs[i] = dirs[j]
+		dirs[j] = tmp
+	var count = clampi(int(opts.get("streets", r.randi_range(2, 4))), 1, 4)
+	for k in count:
+		var d: Vector2i = dirs[k]
+		var side = Vector2i(d.y, d.x)
+		var length = r.randi_range(4, n / 2 - R - 2)
+		var p = c + d * R
+		for step in length:
+			p += d
+			for w in 2:
+				layout.set_cell(p.x + side.x * w, p.y + side.y * w, 1)
+		var yard = Rect2i(p.x - 1, p.y - 1, 3, 3)
+		for yy in range(yard.position.y, yard.end.y):
+			for xx in range(yard.position.x, yard.end.x):
+				layout.set_cell(xx, yy, 1)
+		layout.rooms.append({"rect": yard, "center": p})
+	layout.start_room = 0
+	layout.end_room = layout.rooms.size() - 1
+	var spawn: Vector2i = layout.rooms[0].center
+	for dy in range(-1, 2):
+		for dx in range(-1, 2):
+			reserved[spawn + Vector2i(dx, dy)] = true
+	reserved[c] = true
+	# NPC ring: evenly spaced, radius grows with NPC count so spacing stays >= 4 m
+	var npc_count = maxi(8, int(opts.get("npcs", 15)))
+	var ring = maxf(float(opts.get("ring", 11.0)), 4.2 * npc_count / TAU)
+	var cw = layout.cell_to_world(c)
+	var a0 = r.randf() * TAU
+	for i in npc_count:
+		var a = a0 + TAU * i / npc_count
+		var pos = cw + Vector3(cos(a), 0, sin(a)) * ring
+		town_slots.append(pos)
+		reserved[layout.world_to_cell(pos)] = true
+	# centrepiece at the plaza centre (lamp/shrine); the hero spawns beside it
+	var cp: String = str(opts.get("centerpiece", "hal:shrine_candles"))
+	if cp != "":
+		occupied[c] = true
+		_multimesh(cp, [Transform3D(Basis().scaled(Vector3.ONE * float(opts.get("centerpiece_scale", 1.4))), cw)], {"layer": "prop", "shadow": true})
+		_add_light(cw + Vector3(0, 2.4, 0), {"color": opts.get("centerpiece_light", "#ffb54a"), "energy": 1.6, "range": 9.0, "halo": 0.5})

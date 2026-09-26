@@ -19,7 +19,7 @@ import sys
 
 GAME = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = os.path.join(GAME, "content", "base")
-ZONE_MIN = 4.5
+ZONE_MIN = 4.4   # QA_REPORT T6: observed ~11 kills/min with the larger Act 1 zones
 BOSS_ZONE_MIN = 3.0
 CHESTS_PER_ZONE = 1.5
 
@@ -245,6 +245,7 @@ def report(args, C, players, kills, label):
     for p in players:
         ts = [0.0] + p.legendary_times
         gaps += [(b - a) / 60 for a, b in zip(ts, ts[1:])]
+    res_gap = pct(gaps, 0.95) if gaps else 0.0
     if gaps:
         print(f"Legendary gap (min): mean {statistics.mean(gaps):.1f}  p95 {pct(gaps,0.95):.1f}  max {max(gaps):.1f}")
     fm = [p.first.get("magic", float("inf")) / 60 for p in players]
@@ -258,6 +259,7 @@ def report(args, C, players, kills, label):
     gc = statistics.mean(p.mats.get("glowcoal", 0) for p in players) / (mins / 60)
     print(f"hushmarks/h: {hm:.2f}  -> hours per 5-hushmark mystery item: {5/hm if hm else float('inf'):.2f}   glowcoal/h: {gc:.1f}")
     res["all"] = tot
+    res["gap_p95"] = res_gap
     res["hushmark_h"] = hm
     return res
 
@@ -279,6 +281,8 @@ def main():
     if args.check:
         bands = {"all": (2.5, 4.0), "common": (1.4, 2.2), "magic": (0.75, 1.3), "rare": (0.15, 0.26), "epic": (0.03, 0.06), "legendary": (0.012, 0.03)}
         bad = [f"{k} {res[k]:.3f} not in {lo}-{hi}" for k, (lo, hi) in bands.items() if not (lo <= res[k] <= hi)]
+        if res["gap_p95"] > 60.0:
+            bad.append(f"Legendary gap p95 {res['gap_p95']:.1f} min > 60 (QA §5.3)")
         if bad:
             print("QA §5.3 FAIL:", "; ".join(bad))
             return 1

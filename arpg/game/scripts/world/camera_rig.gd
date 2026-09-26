@@ -10,8 +10,9 @@ extends Node3D
 const DIST_ZONE := 22.0
 const DIST_HUB := 19.0
 const DIST_BOSS := 26.0
-const SCREEN_Y := 0.54          # hero position, fraction of screen height from the top
-const LOOK_AHEAD := 1.5
+const SCREEN_Y := 0.50          # hero position, fraction of screen height from the top
+const SCREEN_X := 0.42          # hero left of centre: the fight stays clear of the right thumb arc (QA B-08)
+const LOOK_AHEAD := 2.2         # towards the joystick direction
 
 var target: Node3D
 var camera: Camera3D
@@ -70,7 +71,15 @@ func _place() -> void:
 	var view_h = 2.0 * d * tan(deg_to_rad(camera.fov * 0.5))
 	var ground_shift = (SCREEN_Y - 0.5) * view_h / sin(pitch)
 	var back = Vector3(sin(yaw), 0, cos(yaw))
-	camera.position = back * horiz + Vector3(0, sin(pitch) * d, 0) - back * ground_shift
+	var right = Vector3(cos(yaw), 0, -sin(yaw))
+	var aspect = 16.0 / 9.0
+	var vp = get_viewport()
+	if vp:
+		var sz = vp.get_visible_rect().size
+		if sz.y > 0:
+			aspect = sz.x / sz.y
+	var side_shift = (0.5 - SCREEN_X) * view_h * aspect
+	camera.position = back * horiz + Vector3(0, sin(pitch) * d, 0) - back * ground_shift + right * side_shift
 	camera.rotation = Vector3(-pitch, yaw, 0)
 
 func _process(delta: float) -> void:
@@ -83,7 +92,11 @@ func _process(delta: float) -> void:
 		var mv = (tp - _last_target) / maxf(delta, 0.0001)
 		mv.y = 0.0
 		_last_target = tp
-		var want_ahead = mv.normalized() * LOOK_AHEAD if mv.length() > 1.0 else Vector3.ZERO
+		var steer = mv
+		if "intent_move" in target and (target.intent_move as Vector3).length() > 0.1:
+			steer = target.intent_move        # joystick direction leads the frame
+		steer.y = 0.0
+		var want_ahead = steer.normalized() * LOOK_AHEAD if steer.length() > 0.1 else Vector3.ZERO
 		_ahead = _ahead.lerp(want_ahead, clampf(delta * 2.5, 0.0, 1.0))
 		# critically damped spring towards the hero (+ look-ahead)
 		var goal = tp + _ahead

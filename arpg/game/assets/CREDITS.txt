@@ -1,7 +1,25 @@
-Wickwright asset credits
-========================
+WICKWRIGHT — Carry the Light
+Made by a small studio of humans and AI helpers.
 
-Audio: generated in-house. All sound effects, music and ambience in assets/generated/sfx and
-assets/generated/music are synthesized from our own code in tools/audio/ (see docs/design/AUDIO.md).
-Exception: UI sounds ui_click, menu_open, menu_close, error are converted from "UI SFX (uisfx) 0.4.0"
-by Romain Simon, CC0-1.0 (https://github.com/romainsimon/uisfx). Attribution not required; given with thanks.
+ART (3D models, animations, textures) — CC0 1.0 (public domain)
+  • KayKit Character Pack: Adventurers, Skeletons; Dungeon Remastered; Halloween Bits;
+    Medieval Hexagon Pack — by Kay Lousberg (KayKit, kaylousberg.com). Thank you, Kay!
+  • Kenney Mini Arena — by Kenney (www.kenney.nl), with Tony Schär.
+  Item icons, UI icons and effects: made for this game (procedural).
+
+SOUND & MUSIC
+  • Sound effects, music and ambience: generated in-house from our own code (tools/audio).
+  • UI sounds: "UI SFX (uisfx) 0.4.0" by Romain Simon — CC0 1.0.
+  • Extra sounds from Kenney Starter Kits (3D Platformer, FPS) — by Kenney, CC0 1.0.
+
+FONTS — SIL Open Font License 1.1 (full license texts below)
+  • Cinzel — Copyright 2020 The Cinzel Project Authors (github.com/NDISCOVER/Cinzel)
+  • Nunito — Copyright 2014 The Nunito Project Authors (github.com/googlefonts/nunito)
+  • Andika — Copyright 2004-2022 SIL International (software.sil.org/andika),
+    with Reserved Font Names "Andika" and "SIL". Shipped unmodified.
+
+ENGINE
+  • Made with Godot Engine — MIT License, Copyright (c) 2014-present Godot Engine contributors,
+    (c) 2007-2014 Juan Linietsky, Ariel Manzur. Full text and third-party notices below.
+
+Offline, no ads, no accounts. Thank you for playing!

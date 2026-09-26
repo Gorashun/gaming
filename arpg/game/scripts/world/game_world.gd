@@ -129,6 +129,10 @@ func _setup_environment() -> void:
 	# Owned by art (ART_BIBLE §2/§4): every value comes from the biome "env" block.
 	# Depth fog starts just behind the hero plane so actors stay crisp and the room edges fall
 	# off into the act colour; optional height fog = ground-hugging bog/mine haze.
+	# Per-zone biome variant (e.g. each hub gets its own dressing while zones.json keeps "town").
+	var variant = str(biome.get("variants", {}).get(str(zone.get("id", "")), ""))
+	if variant != "" and Content.has_rec("biomes", variant):
+		biome = Content.get_rec("biomes", variant)
 	var e: Dictionary = biome.get("env", {})
 	env = WorldEnvironment.new()
 	var en = Environment.new()
@@ -237,10 +241,7 @@ func _populate() -> void:
 			kind = "rare" if Rng.chance("world", 0.35) else "champion"
 		var affixes = []
 		if kind != "normal":
-			var all_aff = Content.all("monster_affixes")
-			for k in (Rng.int_on("world", 2, 3) if kind == "rare" else 1):
-				if all_aff.size() > 0:
-					affixes.append(all_aff[Rng.int_on("world", 0, all_aff.size() - 1)].id)
+			affixes = roll_elite_affixes(Rng.int_on("world", 2, 3) if kind == "rare" else 1, monster_level)
 		for j in size:
 			var rec = lead if j == 0 or Rng.chance("world", 0.6) else pool[Rng.int_on("world", 0, pool.size() - 1)]
 			var off = Vector3(Rng.range_on("world", -2.5, 2.5), 0, Rng.range_on("world", -2.5, 2.5))
@@ -256,6 +257,21 @@ func _populate() -> void:
 		boss = spawn_monster(zone.boss, bc, monster_level + int(Content.get_rec("monsters", zone.boss).get("level_bonus", 2)), "boss")
 		if boss:
 			Events.boss_spawned.emit(boss)
+
+## Elite affixes for a pack: drawn WITHOUT replacement, honouring monster_affixes[].min_level
+## (and optional weight).
+func roll_elite_affixes(n: int, lvl: int) -> Array:
+	var pool = Content.all("monster_affixes").filter(func(a): return int(a.get("min_level", 1)) <= lvl)
+	var out = []
+	for i in n:
+		if pool.is_empty():
+			break
+		var pick = Rng.weighted("world", pool)
+		if pick == null:
+			break
+		out.append(pick.id)
+		pool.erase(pick)
+	return out
 
 func spawn_monster(id: String, pos: Vector3, lvl: int, kind := "normal") -> Monster:
 	var rec = Content.get_rec("monsters", id)
@@ -416,6 +432,7 @@ func _remember_for_portal() -> void:
 func _setup_town() -> void:
 	var center = layout.cell_to_world(layout.rooms[layout.start_room].center)
 	_place_return_portal(center)
+	_place_onward_portal(center)
 	var npc_recs = _town_npcs()
 	if not npc_recs.is_empty():
 		_spawn_npcs(npc_recs, center)
@@ -446,11 +463,25 @@ func _town_npcs() -> Array:
 	return out
 
 func _spawn_npcs(recs: Array, center: Vector3) -> void:
+	# Art: hubs from ZoneBuilder's town generator provide stand points ringing the plaza, >= 4 m
+	# apart and clear of props; NPCs face the plaza centre, not the spawn point.
+	var slots: Array = builder.town_slots if builder else []
+	var plaza = center
+	if not slots.is_empty():
+		plaza = Vector3.ZERO
+		for sp in slots:
+			plaza += sp
+		plaza /= slots.size()
 	for i in recs.size():
 		var r: Dictionary = recs[i]
 		var pos: Vector3
 		if r.get("pos") is Array and r.pos.size() >= 2:
 			pos = clamp_to_walkable(center, center + Vector3(float(r.pos[0]), 0, float(r.pos[1])))
+		elif not slots.is_empty():
+			pos = slots[i % slots.size()]
+			if i >= slots.size():
+				pos = plaza + (pos - plaza) * 1.35
+			pos = clamp_to_walkable(plaza, pos)
 		else:
 			var ang = TAU * i / max(1, recs.size()) + 0.4
 			var rad = 5.0 + (i % 2) * 2.0
@@ -459,7 +490,7 @@ func _spawn_npcs(recs: Array, center: Vector3) -> void:
 		actors_root.add_child(n)
 		n.global_position = pos
 		n.setup_npc(r)
-		n.face_towards(center)
+		n.face_towards(plaza)
 		n._base_rot = n.rotation.y
 		npcs.append(n)
 		interactables.append({"node": n, "pos": pos, "radius": 2.4, "label": "Talk to %s" % r.get("name", ""), "action": func(): interact_npc(n)})
@@ -744,6 +775,23 @@ func _place_return_portal(center: Vector3) -> void:
 	var zname = Content.get_rec("zones", str(rp.zone)).get("name", "")
 	interactables.append({"node": return_portal, "pos": pos, "radius": 2.0, "label": "Return to " + zname,
 		"action": func(): get_tree().call_group("session", "portal_back")})
+
+## Town "onward" portal to the next unvisited story zone of this act (the waypoint map covers the rest).
+func _place_onward_portal(center: Vector3) -> void:
+	var sess = get_parent()
+	if sess == null or not sess.has_method("onward_zone"):
+		return
+	var zid: String = sess.onward_zone(str(zone.get("act", "")))
+	if zid == "":
+		return
+	var pos = clamp_to_walkable(center, center + Vector3(3.0, 0, 3.0))
+	var p = preload("res://scripts/world/portal.gd").new()
+	add_child(p)
+	p.global_position = pos
+	p.setup(Color(0.55, 0.75, 1.0))
+	interactables.append({"node": p, "pos": pos, "radius": 2.0, "label": "Onward: " + str(Content.get_rec("zones", zid).get("name", zid)),
+		"action": func(): get_tree().call_group("session", "travel", zid)})
+	set_meta("onward_zone", zid)
 
 ## Companion follower for the active pet (call again after changing pets).
 func spawn_pet() -> void:
@@ -1389,6 +1437,17 @@ func separation(m: Actor) -> Vector3:
 				s += d.normalized() / max(0.3, d.length())
 	return s
 
+func _nearest_open(c: Vector2i) -> Vector2i:
+	if astar.is_in_boundsv(c) and not astar.is_point_solid(c):
+		return c
+	for r in range(1, 3):
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				var n = c + Vector2i(dx, dy)
+				if astar.is_in_boundsv(n) and not astar.is_point_solid(n):
+					return n
+	return Vector2i(-99999, -99999)
+
 func is_walkable(p: Vector3) -> bool:
 	var c = layout.world_to_cell(p)
 	return layout.get_cell(c.x, c.y) == 1
@@ -1411,9 +1470,11 @@ func clamp_to_walkable(from: Vector3, to: Vector3) -> Vector3:
 	return Vector3(last.x, 0, last.z)
 
 func find_path(a: Vector3, b: Vector3) -> PackedVector3Array:
-	var ia = Vector2i(int(a.x / PATH_RES), int(a.z / PATH_RES))
-	var ib = Vector2i(int(b.x / PATH_RES), int(b.z / PATH_RES))
-	if not astar.is_in_boundsv(ia) or not astar.is_in_boundsv(ib) or astar.is_point_solid(ia) or astar.is_point_solid(ib):
+	# Start/end on a solid or out-of-bounds point (actor pushed against a wall, target on a ledge):
+	# path from the nearest walkable point instead of giving up.
+	var ia = _nearest_open(Vector2i(int(a.x / PATH_RES), int(a.z / PATH_RES)))
+	var ib = _nearest_open(Vector2i(int(b.x / PATH_RES), int(b.z / PATH_RES)))
+	if ia.x < -9999 or ib.x < -9999:
 		return PackedVector3Array()
 	var pts = astar.get_id_path(ia, ib)
 	var out = PackedVector3Array()

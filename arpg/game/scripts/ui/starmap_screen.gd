@@ -103,7 +103,9 @@ func _draw_map() -> void:
 				continue
 			var b = _to_screen(Vector2(m.pos[0], m.pos[1]))
 			var lit = owned.has(n.id) and owned.has(m.id)
-			_canvas.draw_line(a, b, Color(1, 0.85, 0.5, 0.9) if lit else Color(0.5, 0.5, 0.8, 0.25), 3.0 if lit else 1.5, true)
+			var long_link = Vector2(n.pos[0], n.pos[1]).distance_to(Vector2(m.pos[0], m.pos[1])) > 260.0
+			var lc = Color(1, 0.85, 0.5, 0.9) if lit else Color(0.5, 0.5, 0.8, 0.08 if long_link else 0.25)
+			_canvas.draw_line(a, b, lc, 3.0 if lit else (1.0 if long_link else 1.5), true)
 	var r = clampf(7.0 * _zoom, 4.0, 14.0)
 	for n in _nodes:
 		var p = _to_screen(Vector2(n.pos[0], n.pos[1]))
@@ -123,8 +125,11 @@ func _draw_map() -> void:
 		if n.id == _sel:
 			_canvas.draw_arc(p, r * 2.2, 0, TAU, 24, Color.WHITE, 2.5, true)
 	var font = UiTheme.font_heading()
+	var placed: Array = []   # label rects already drawn (no overlaps, QA B-23)
 	if _zoom >= 0.55:
-		for c in _cons:
+		var order = _cons.duplicate()
+		order.sort_custom(func(a, b): return (a.get("nodes", []) as Array).size() > (b.get("nodes", []) as Array).size())
+		for c in order:
 			if not c.has("pos"):
 				continue
 			var cp = _to_screen(Vector2(c.pos[0], c.pos[1]))
@@ -139,8 +144,20 @@ func _draw_map() -> void:
 			var fsz = 15
 			var w = font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fsz).x
 			var col = UiTheme.GOLD if got == nodes.size() and nodes.size() > 0 else Color(0.75, 0.75, 0.95, 0.85)
-			_canvas.draw_string_outline(font, cp + Vector2(-w * 0.5, -22), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fsz, 4, Color(0, 0, 0, 0.9))
-			_canvas.draw_string(font, cp + Vector2(-w * 0.5, -22), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fsz, col)
+			var pos = cp + Vector2(-w * 0.5, -22)
+			pos.x = clampf(pos.x, 6, sz.x - w - 6)
+			pos.y = clampf(pos.y, 20, sz.y - 6)
+			var rect = Rect2(pos + Vector2(-4, -fsz), Vector2(w + 8, fsz + 6))
+			var clash = false
+			for pr in placed:
+				if pr.intersects(rect):
+					clash = true
+					break
+			if clash:
+				continue
+			placed.append(rect)
+			_canvas.draw_string_outline(font, pos, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fsz, 4, Color(0, 0, 0, 0.9))
+			_canvas.draw_string(font, pos, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fsz, col)
 
 func _draw_star(p: Vector2, r: float, col: Color) -> void:
 	var pts = PackedVector2Array()

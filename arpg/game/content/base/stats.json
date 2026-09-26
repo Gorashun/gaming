@@ -460,7 +460,7 @@
  },
  {
   "id": "skill_rank:lb_sanctuary",
-  "format": "+{v} to Sanctuary",
+  "format": "+{v} to Lantern Haven",
   "hook": "skill_rank",
   "class": "lanternbearer"
  },

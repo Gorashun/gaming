@@ -5,6 +5,16 @@
   "act": "act1",
   "outdoor": true,
   "corridor_width": 2,
+  "variants": {
+   "a2_town": "town_owlstead"
+  },
+  "town_layout": {
+   "plaza": "round",
+   "radius": 4,
+   "streets": 3,
+   "centerpiece": "hal:shrine_candles",
+   "centerpiece_scale": 1.4
+  },
   "floor": [
    "floor_wood_large",
    "floor_tile_large"
@@ -23,7 +33,7 @@
    "saturation": 0.45,
    "brightness": 0.55,
    "top_color": "#3a3028",
-   "top_amount": 0.2
+   "top_amount": 0.06
   },
   "boundary_props": [
    "hal:fence",
@@ -192,11 +202,197 @@
   "music": "town"
  },
  {
+  "id": "town_owlstead",
+  "name": "Owlstead",
+  "act": "act2",
+  "outdoor": true,
+  "corridor_width": 2,
+  "variants": {
+   "a2_town": "town_owlstead"
+  },
+  "town_layout": {
+   "plaza": "cross",
+   "radius": 4,
+   "streets": 4,
+   "centerpiece": "hal:tree_dead_large_decorated",
+   "centerpiece_scale": 1.3,
+   "centerpiece_light": "#c8b0ff"
+  },
+  "floor": [
+   "hal:floor_dirt",
+   "floor_wood_large_dark"
+  ],
+  "floor_alt": [
+   "floor_dirt_large"
+  ],
+  "floor_alt_chance": 0.2,
+  "ground": "#15121c",
+  "tint": {
+   "color": "#b8a8c8",
+   "saturation": 0.5,
+   "brightness": 0.8,
+   "top_color": "#4c6450",
+   "top_amount": 0.4
+  },
+  "floor_tint": {
+   "saturation": 0.4,
+   "brightness": 0.7
+  },
+  "boundary_props": [
+   "hal:tree_dead_large",
+   "hal:tree_dead_medium",
+   "hex:nature/tree_single_B",
+   "hal:fence_broken"
+  ],
+  "boundary_tint": {
+   "color": "#a898b8",
+   "saturation": 0.35,
+   "brightness": 0.65
+  },
+  "near_boundary": [
+   "hal:pumpkin_orange",
+   "proc:mushroom_glow",
+   "hal:fence_broken"
+  ],
+  "backdrop": [
+   {
+    "models": [
+     "hex:nature/trees_B_large",
+     "hex:nature/trees_A_large"
+    ],
+    "density": 0.8,
+    "scale": [
+     0.95,
+     1.25
+    ],
+    "tint": {
+     "color": "#5a4a70",
+     "saturation": 0.3,
+     "brightness": 0.45
+    }
+   }
+  ],
+  "props": [
+   {
+    "models": [
+     "hal:post_lantern"
+    ],
+    "where": "any",
+    "density": 0.07,
+    "light": {
+     "color": "#ffb54a",
+     "energy": 1.6,
+     "range": 8.0,
+     "y": 2.6,
+     "halo": 0.55,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "hex:props/tent"
+    ],
+    "where": "corner",
+    "density": 0.3,
+    "scale": [
+     1.125,
+     1.25
+    ],
+    "blocking": true,
+    "shadow": true,
+    "occlude": true,
+    "tint": {
+     "color": "#c8b0d8"
+    }
+   },
+   {
+    "models": [
+     "proc:mushroom_glow"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "free_rot": true,
+    "crystal": {
+     "base": "#4a6a90",
+     "glow": "#7fb8e0",
+     "strength": 1.3
+    }
+   },
+   {
+    "models": [
+     "hal:pumpkin_orange",
+     "hal:pumpkin_yellow_jackolantern",
+     "barrel_large",
+     "hex:props/sack"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "tint": {
+     "saturation": 0.55
+    }
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "spores",
+    "color": "#9fc8f0",
+    "amount": 24
+   },
+   {
+    "kind": "fireflies",
+    "color": "#ffd28a",
+    "amount": 12
+   }
+  ],
+  "critters": [
+   {
+    "kind": "owl",
+    "color": "#6a5a70",
+    "count": 3,
+    "scale": 0.6
+   },
+   {
+    "kind": "lantern_moth",
+    "color": "#8a7aa8",
+    "count": 2,
+    "scale": 0.5,
+    "fly": true
+   }
+  ],
+  "env": {
+   "sky": "#110e18",
+   "ambient": "#4a4064",
+   "ambient_energy": 1.05,
+   "fog": "#3b3450",
+   "fog_begin": 24,
+   "fog_end": 62,
+   "sun": "#b8a8d8",
+   "sun_energy": 0.45,
+   "mist": 0.3,
+   "mist_color": "#6a6090",
+   "glow": 0.7,
+   "contrast": 1.08,
+   "outline": "#120e1a"
+  },
+  "music": "town"
+ },
+ {
   "id": "town_mines",
   "name": "Pitlamp Camp",
   "act": "act3",
   "outdoor": true,
   "corridor_width": 2,
+  "variants": {
+   "a2_town": "town_owlstead"
+  },
+  "town_layout": {
+   "plaza": "square",
+   "radius": 3,
+   "streets": 2,
+   "centerpiece": "proc:minecart",
+   "centerpiece_scale": 1.6,
+   "centerpiece_light": "#ffc070"
+  },
   "floor": [
    "floor_wood_large",
    "floor_dirt_large"
@@ -215,7 +411,7 @@
    "saturation": 0.45,
    "brightness": 0.55,
    "top_color": "#3a3028",
-   "top_amount": 0.2
+   "top_amount": 0.06
   },
   "boundary_props": [
    "hex:nature/rock_single_A",
@@ -375,23 +571,36 @@
   "act": "act4",
   "outdoor": true,
   "corridor_width": 2,
+  "variants": {
+   "a2_town": "town_owlstead"
+  },
+  "town_layout": {
+   "plaza": "round",
+   "radius": 5,
+   "streets": 3,
+   "centerpiece": "hal:shrine",
+   "centerpiece_scale": 1.5
+  },
   "floor": [
-   "floor_wood_large",
-   "hal:floor_dirt"
+   "floor_tile_large",
+   "floor_wood_large"
   ],
   "floor_alt": [
-   "floor_tile_large"
+   "floor_tile_large_rocks"
   ],
   "floor_alt_chance": 0.2,
-  "ground": "#b8c4d0",
+  "ground": "#6e7c8c",
   "tint": {
-   "saturation": 0.7,
-   "brightness": 0.95,
-   "top_color": "#eef4ff",
-   "top_amount": 0.55
+   "color": "#a8b4c4",
+   "saturation": 0.35,
+   "brightness": 0.6,
+   "top_color": "#d0dae6",
+   "top_amount": 0.5
   },
   "floor_tint": {
-   "top_amount": 0.35
+   "saturation": 0.12,
+   "top_amount": 0.7,
+   "brightness": 0.55
   },
   "boundary_props": [
    "hal:tree_dead_large",
@@ -515,14 +724,14 @@
    }
   ],
   "env": {
-   "sky": "#8a9aac",
-   "ambient": "#6a7a8c",
-   "ambient_energy": 1.0,
-   "fog": "#aebfd2",
+   "sky": "#4a5666",
+   "ambient": "#4e5c6c",
+   "ambient_energy": 0.95,
+   "fog": "#7c8ea2",
    "fog_begin": 22,
    "fog_end": 58,
    "sun": "#e0f0ff",
-   "sun_energy": 0.7,
+   "sun_energy": 0.55,
    "mist": 0.12,
    "mist_color": "#dde8f4",
    "glow": 0.6,
@@ -538,6 +747,16 @@
   "act": "act5",
   "outdoor": true,
   "corridor_width": 2,
+  "variants": {
+   "a2_town": "town_owlstead"
+  },
+  "town_layout": {
+   "plaza": "square",
+   "radius": 4,
+   "streets": 2,
+   "centerpiece": "hal:lantern_standing",
+   "centerpiece_scale": 2.0
+  },
   "floor": [
    "floor_tile_large",
    "floor_wood_large"
@@ -555,7 +774,7 @@
    "saturation": 0.45,
    "brightness": 0.55,
    "top_color": "#3a3028",
-   "top_amount": 0.2
+   "top_amount": 0.06
   },
   "boundary_props": [
    "hal:tree_dead_large",
@@ -1092,9 +1311,9 @@
   ],
   "corner_pillar": "wall_pillar",
   "tint": {
-   "color": "#c0c4d8",
+   "color": "#c8cce0",
    "saturation": 0.6,
-   "brightness": 0.85
+   "brightness": 1.0
   },
   "floor_tint": {
    "top_color": "#3a4438",
@@ -1236,9 +1455,9 @@
   ],
   "env": {
    "sky": "#050409",
-   "ambient": "#302a44",
-   "ambient_energy": 1.0,
-   "fog": "#120f1c",
+   "ambient": "#4a4266",
+   "ambient_energy": 1.2,
+   "fog": "#1a1628",
    "fog_begin": 21,
    "fog_end": 50,
    "sun": "#7f8bd0",
@@ -1905,9 +2124,9 @@
   "wall_variant_chance": 0.5,
   "corner_pillar": "wall_pillar",
   "tint": {
-   "color": "#a8b0c0",
-   "saturation": 0.4,
-   "brightness": 0.65,
+   "color": "#b0b8c8",
+   "saturation": 0.45,
+   "brightness": 0.9,
    "hue": -12
   },
   "props": [
@@ -2016,9 +2235,9 @@
   ],
   "env": {
    "sky": "#040508",
-   "ambient": "#262c3a",
-   "ambient_energy": 1.0,
-   "fog": "#141820",
+   "ambient": "#4a5874",
+   "ambient_energy": 1.35,
+   "fog": "#1a2030",
    "fog_begin": 18,
    "fog_end": 46,
    "sun": "#a8c8e8",
@@ -2040,7 +2259,8 @@
    "floor_tile_large"
   ],
   "floor_alt": [
-   "floor_tile_big_gratefloor_tile_large_rocks"
+   "floor_tile_big_grate",
+   "floor_tile_large_rocks"
   ],
   "floor_alt_chance": 0.2,
   "wall": "wall",
@@ -2053,16 +2273,17 @@
   ],
   "corner_pillar": "wall_pillar",
   "tint": {
-   "color": "#c8dcf0",
+   "color": "#a4b4c8",
    "saturation": 0.35,
-   "brightness": 1.0,
-   "top_color": "#f0f6ff",
-   "top_amount": 0.6,
+   "brightness": 0.52,
+   "top_color": "#d0dae6",
+   "top_amount": 0.5,
    "top_scale": 0.1
   },
   "floor_tint": {
-   "top_amount": 0.35,
-   "brightness": 0.85
+   "top_amount": 0.7,
+   "brightness": 0.62,
+   "saturation": 0.15
   },
   "wall_tint": {
    "color": "#90a8c8",
@@ -2205,17 +2426,17 @@
    }
   ],
   "env": {
-   "sky": "#5a6a7e",
-   "ambient": "#5a6e80",
-   "ambient_energy": 1.0,
-   "fog": "#afc4d6",
+   "sky": "#3e4a5a",
+   "ambient": "#4a5a6c",
+   "ambient_energy": 0.95,
+   "fog": "#7e90a4",
    "fog_begin": 20,
    "fog_end": 50,
    "sun": "#e0f0ff",
-   "sun_energy": 0.9,
+   "sun_energy": 0.5,
    "sun_yaw": 25,
-   "mist": 0.3,
-   "mist_color": "#dce8f4",
+   "mist": 0.25,
+   "mist_color": "#a8b8c8",
    "glow": 0.55,
    "glow_threshold": 1.2,
    "contrast": 1.08,
@@ -2239,14 +2460,18 @@
    "floor_tile_large_rocks"
   ],
   "floor_alt_chance": 0.15,
-  "ground": "#c8d4e0",
+  "ground": "#7a8898",
   "tint": {
-   "color": "#b8c8dc",
-   "saturation": 0.4,
-   "brightness": 0.82,
-   "top_color": "#e4ecf6",
-   "top_amount": 0.6,
+   "color": "#a4b4c8",
+   "saturation": 0.35,
+   "brightness": 0.5,
+   "top_color": "#d0dae6",
+   "top_amount": 0.55,
    "top_scale": 0.1
+  },
+  "floor_tint": {
+   "saturation": 0.1,
+   "top_amount": 0.7
   },
   "boundary_props": [
    "hal:tree_dead_large",
@@ -2396,17 +2621,17 @@
    }
   ],
   "env": {
-   "sky": "#6a7a8e",
-   "ambient": "#5a6e84",
-   "ambient_energy": 0.95,
-   "fog": "#afc4d6",
+   "sky": "#3e4a5a",
+   "ambient": "#4a5a6c",
+   "ambient_energy": 0.9,
+   "fog": "#7e90a4",
    "fog_begin": 20,
    "fog_end": 50,
    "sun": "#e0f0ff",
-   "sun_energy": 0.8,
+   "sun_energy": 0.5,
    "sun_yaw": 25,
-   "mist": 0.3,
-   "mist_color": "#e4eef8",
+   "mist": 0.25,
+   "mist_color": "#a8b8c8",
    "glow": 0.5,
    "glow_threshold": 1.2,
    "contrast": 1.06,
@@ -2424,7 +2649,8 @@
    "floor_tile_large"
   ],
   "floor_alt": [
-   "floor_tile_large_rocksfloor_dirt_large"
+   "floor_tile_large_rocks",
+   "floor_dirt_large"
   ],
   "floor_alt_chance": 0.25,
   "wall": "wall",

@@ -9,6 +9,11 @@ var _preview: HeroPreview
 var _info: VBoxContainer
 var _count: Label
 var _sel = ""
+var _actions: HBoxContainer
+
+## Action buttons live in a fixed row under the info scroll (never cut by the panel).
+func actions_box() -> HBoxContainer:
+	return _actions
 
 # --- hooks (override)
 func records() -> Array: return []
@@ -55,7 +60,7 @@ func setup_collection(title: String, icon_name: String) -> void:
 	right.add_theme_constant_override("separation", 8)
 	h.add_child(right)
 	var stage = Control.new()
-	stage.custom_minimum_size = Vector2(430, 230)
+	stage.custom_minimum_size = Vector2(430, 200)
 	right.add_child(stage)
 	var bg = Panel.new()
 	bg.add_theme_stylebox_override("panel", UiTheme.panel_style(Color(0.1, 0.07, 0.12, 0.85), Color(0.35, 0.27, 0.18), 16, 2))
@@ -76,6 +81,9 @@ func setup_collection(title: String, icon_name: String) -> void:
 	_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_info.add_theme_constant_override("separation", 6)
 	sc2.add_child(_info)
+	_actions = HBoxContainer.new()
+	_actions.add_theme_constant_override("separation", 8)
+	right.add_child(_actions)
 	_sel = active_id()
 	if _sel == "":
 		for r in records():
@@ -119,13 +127,15 @@ func _tile(r: Dictionary, own: bool) -> Button:
 	v.add_theme_constant_override("separation", 2)
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_child(v)
-	var ic = UiTheme.icon_rect(tile_icon() if own else "unknown", 58, tint.lightened(0.35) if own else Color(0.25, 0.22, 0.3))
+	var ic = UiTheme.icon_rect(tile_icon() if own else "unknown", 50, tint.lightened(0.35) if own else Color(0.25, 0.22, 0.3))
 	ic.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	v.add_child(ic)
-	var nm = UiTheme.label(str(r.get("name", r.id)) if own else "???", 16, UiTheme.TEXT if own else UiTheme.MUTED, true)
+	var nm = UiTheme.label(str(r.get("name", r.id)).split(" the ")[0] if own else "???", 15, UiTheme.TEXT if own else UiTheme.MUTED, true)
 	nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	nm.clip_text = true
-	nm.custom_minimum_size = Vector2(110, 0)
+	nm.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	nm.max_lines_visible = 2
+	nm.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	nm.custom_minimum_size = Vector2(114, 0)
 	v.add_child(nm)
 	var sub = UiTheme.label(tile_sub(r) if own else "", 14, UiTheme.MUTED)
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -153,6 +163,7 @@ func _tile(r: Dictionary, own: bool) -> Button:
 
 func _show(r: Dictionary) -> void:
 	ScreenBase.clear(_info)
+	ScreenBase.clear(_actions)
 	_preview.clear_all()
 	if r.is_empty():
 		_info.add_child(UiTheme.label("Nothing here yet.", 20, UiTheme.MUTED))

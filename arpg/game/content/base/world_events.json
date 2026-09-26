@@ -128,7 +128,7 @@
   "id": "wev_cursed_ring",
   "name": "Hushfall: Circle of Candles",
   "kind": "cursed_shrine",
-  "chance_per_zone": 0.04,
+  "chance_per_zone": 0.1,
   "min_level": 1,
   "stages": [
    {
@@ -188,7 +188,7 @@
   "id": "wev_goblet_swarm",
   "name": "Hushfall: Runaway Treasure",
   "kind": "treasure_swarm",
-  "chance_per_zone": 0.035,
+  "chance_per_zone": 0.09,
   "min_level": 1,
   "stages": [
    {

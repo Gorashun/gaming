@@ -1,16 +1,24 @@
 extends Node
 ## Session state: the active character, save slots, difficulty, rested bonus.
 
-const SAVE_DIR := "user://saves"
+const SAVE_DIR := "user://saves"          # real heroes
+const TEST_SAVE_DIR := "user://saves_test" # automated runs / tests (never touch real saves)
+var save_dir = SAVE_DIR
 const BACKUPS := 3            # rolling backups: <id>.bak1 (newest) … <id>.bak3
 
 var character: CharacterData
 var world: Node = null    # current GameWorld (authority for gameplay state)
 var paused_for_ui = false
-var testing = false   # set by automated runs: disables focus auto-pause
+## Set by automated runs: disables focus auto-pause and redirects saves + account data to test files.
+var testing = false:
+	set(v):
+		testing = v
+		save_dir = TEST_SAVE_DIR if v else SAVE_DIR
+		DirAccess.make_dir_recursive_absolute(save_dir)
+		Account.use_path("user://account_test.json" if v else "user://account.json")
 
 func _ready() -> void:
-	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
+	DirAccess.make_dir_recursive_absolute(save_dir)
 
 func _process(delta: float) -> void:
 	if character and world and not get_tree().paused:
@@ -53,12 +61,12 @@ func new_character(char_name: String, class_id: String, hardcore: bool) -> Chara
 
 func list_saves() -> Array:
 	var out = []
-	var dir = DirAccess.open(SAVE_DIR)
+	var dir = DirAccess.open(save_dir)
 	if dir == null:
 		return out
 	for f in dir.get_files():
 		if f.ends_with(".json"):
-			var d = JSON.parse_string(FileAccess.get_file_as_string(SAVE_DIR + "/" + f))
+			var d = JSON.parse_string(FileAccess.get_file_as_string(save_dir + "/" + f))
 			if d is Dictionary:
 				out.append(d)
 	out.sort_custom(func(a, b): return int(a.get("last_played_unix", 0)) > int(b.get("last_played_unix", 0)))
@@ -85,7 +93,7 @@ func _apply_rested() -> void:
 	character.last_played_unix = now
 
 func read_save_dict(id: String) -> Dictionary:
-	for path in [SAVE_DIR + "/" + id + ".json"] + backup_paths(id):
+	for path in [save_dir + "/" + id + ".json"] + backup_paths(id):
 		if not FileAccess.file_exists(path):
 			continue
 		var d = JSON.parse_string(FileAccess.get_file_as_string(path))
@@ -98,7 +106,7 @@ func read_save_dict(id: String) -> Dictionary:
 func backup_paths(id: String) -> Array:
 	var out = []
 	for i in range(1, BACKUPS + 1):
-		out.append(SAVE_DIR + "/%s.bak%d" % [id, i])
+		out.append(save_dir + "/%s.bak%d" % [id, i])
 	return out
 
 ## Atomic save (tmp + rename) with 3 rolling backups of the previous good file.
@@ -110,8 +118,8 @@ func save_character() -> void:
 	Account.flush()
 
 func write_save(c: CharacterData) -> bool:
-	var main = SAVE_DIR + "/" + c.id + ".json"
-	var tmp = SAVE_DIR + "/" + c.id + ".tmp"
+	var main = save_dir + "/" + c.id + ".json"
+	var tmp = save_dir + "/" + c.id + ".tmp"
 	var f = FileAccess.open(tmp, FileAccess.WRITE)
 	if f == null:
 		return false
@@ -122,17 +130,17 @@ func write_save(c: CharacterData) -> bool:
 	return true
 
 func _rotate_backups(id: String) -> void:
-	var main = SAVE_DIR + "/" + id + ".json"
+	var main = save_dir + "/" + id + ".json"
 	if not FileAccess.file_exists(main):
 		return
 	# Throttle: only roll when the newest backup is older than a minute (autosaves are frequent)
-	var b1 = SAVE_DIR + "/%s.bak1" % id
+	var b1 = save_dir + "/%s.bak1" % id
 	if FileAccess.file_exists(b1) and Time.get_unix_time_from_system() - FileAccess.get_modified_time(b1) < 60 and not testing_backups:
 		DirAccess.copy_absolute(main, b1)
 		return
 	for i in range(BACKUPS, 1, -1):
-		var older = SAVE_DIR + "/%s.bak%d" % [id, i]
-		var newer = SAVE_DIR + "/%s.bak%d" % [id, i - 1]
+		var older = save_dir + "/%s.bak%d" % [id, i]
+		var newer = save_dir + "/%s.bak%d" % [id, i - 1]
 		if FileAccess.file_exists(newer):
 			DirAccess.rename_absolute(newer, older)
 	DirAccess.copy_absolute(main, b1)
@@ -140,7 +148,7 @@ func _rotate_backups(id: String) -> void:
 var testing_backups = false   # tests: roll on every save
 
 func delete_character(id: String) -> void:
-	DirAccess.remove_absolute(SAVE_DIR + "/" + id + ".json")
+	DirAccess.remove_absolute(save_dir + "/" + id + ".json")
 	for p in backup_paths(id):
 		if FileAccess.file_exists(p):
 			DirAccess.remove_absolute(p)

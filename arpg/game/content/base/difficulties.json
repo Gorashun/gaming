@@ -29,8 +29,8 @@
    90
   ],
   "level_offset": 35,
-  "life_mult": 2.5,
-  "damage_mult": 1.9,
+  "life_mult": 2.0,
+  "damage_mult": 1.5,
   "resist_penalty": 20,
   "xp_mult": 1.6,
   "magic_find": 40,
@@ -39,7 +39,7 @@
   "min_telegraph": 0.8,
   "rarity_bonus": {
    "epic": 1.5,
-   "legendary": 2.0
+   "legendary": 3.0
   },
   "unique_mult": 1.25,
   "materials": [
@@ -60,8 +60,8 @@
    120
   ],
   "level_offset": 65,
-  "life_mult": 5.0,
-  "damage_mult": 3.0,
+  "life_mult": 4.0,
+  "damage_mult": 2.4,
   "resist_penalty": 45,
   "xp_mult": 2.4,
   "magic_find": 90,
@@ -97,7 +97,7 @@
   ],
   "level_offset": 95,
   "life_mult": 7.0,
-  "damage_mult": 4.5,
+  "damage_mult": 3.2,
   "resist_penalty": 60,
   "xp_mult": 3.2,
   "magic_find": 150,
@@ -124,7 +124,8 @@
     "chance": 0.0002
    }
   ],
-  "desc": "The endgame. Named materials glimmer in the dark."
+  "desc": "The endgame. Named materials glimmer in the dark.",
+  "max_hit_pct_non_boss": 40
  },
  {
   "id": "eclipse2",
@@ -137,7 +138,7 @@
   ],
   "level_offset": 105,
   "life_mult": 9.3,
-  "damage_mult": 5.6,
+  "damage_mult": 3.9,
   "resist_penalty": 60,
   "xp_mult": 3.6,
   "magic_find": 190,
@@ -164,7 +165,8 @@
     "chance": 0.0004
    }
   ],
-  "desc": "Deeper. Brighter rewards."
+  "desc": "Deeper. Brighter rewards.",
+  "max_hit_pct_non_boss": 40
  },
  {
   "id": "eclipse3",
@@ -177,7 +179,7 @@
   ],
   "level_offset": 115,
   "life_mult": 12.4,
-  "damage_mult": 7.0,
+  "damage_mult": 4.8,
   "resist_penalty": 60,
   "xp_mult": 4.0,
   "magic_find": 230,
@@ -204,7 +206,8 @@
     "chance": 0.0006
    }
   ],
-  "desc": "Deeper. Brighter rewards."
+  "desc": "Deeper. Brighter rewards.",
+  "max_hit_pct_non_boss": 40
  },
  {
   "id": "eclipse4",
@@ -217,7 +220,7 @@
   ],
   "level_offset": 125,
   "life_mult": 16.5,
-  "damage_mult": 8.8,
+  "damage_mult": 5.8,
   "resist_penalty": 60,
   "xp_mult": 4.4,
   "magic_find": 270,
@@ -244,7 +247,8 @@
     "chance": 0.0008
    }
   ],
-  "desc": "Deeper. Brighter rewards."
+  "desc": "Deeper. Brighter rewards.",
+  "max_hit_pct_non_boss": 40
  },
  {
   "id": "eclipse5",
@@ -257,7 +261,7 @@
   ],
   "level_offset": 135,
   "life_mult": 21.9,
-  "damage_mult": 11.0,
+  "damage_mult": 7.1,
   "resist_penalty": 60,
   "xp_mult": 4.8,
   "magic_find": 310,
@@ -284,7 +288,8 @@
     "chance": 0.001
    }
   ],
-  "desc": "Deeper. Brighter rewards."
+  "desc": "Deeper. Brighter rewards.",
+  "max_hit_pct_non_boss": 40
  },
  {
   "id": "eclipse6",
@@ -297,7 +302,7 @@
   ],
   "level_offset": 145,
   "life_mult": 29.1,
-  "damage_mult": 13.7,
+  "damage_mult": 8.6,
   "resist_penalty": 60,
   "xp_mult": 5.2,
   "magic_find": 350,
@@ -324,7 +329,8 @@
     "chance": 0.0012
    }
   ],
-  "desc": "Deeper. Brighter rewards."
+  "desc": "Deeper. Brighter rewards.",
+  "max_hit_pct_non_boss": 40
  },
  {
   "id": "eclipse7",
@@ -337,7 +343,7 @@
   ],
   "level_offset": 155,
   "life_mult": 38.7,
-  "damage_mult": 17.2,
+  "damage_mult": 10.6,
   "resist_penalty": 60,
   "xp_mult": 5.6,
   "magic_find": 390,
@@ -364,7 +370,8 @@
     "chance": 0.0014
    }
   ],
-  "desc": "Deeper. Brighter rewards."
+  "desc": "Deeper. Brighter rewards.",
+  "max_hit_pct_non_boss": 40
  },
  {
   "id": "eclipse8",
@@ -377,7 +384,7 @@
   ],
   "level_offset": 165,
   "life_mult": 51.5,
-  "damage_mult": 21.5,
+  "damage_mult": 12.9,
   "resist_penalty": 60,
   "xp_mult": 6.0,
   "magic_find": 430,
@@ -404,7 +411,8 @@
     "chance": 0.0016
    }
   ],
-  "desc": "Deeper. Brighter rewards."
+  "desc": "Deeper. Brighter rewards.",
+  "max_hit_pct_non_boss": 40
  },
  {
   "id": "eclipse9",
@@ -417,7 +425,7 @@
   ],
   "level_offset": 175,
   "life_mult": 68.5,
-  "damage_mult": 26.8,
+  "damage_mult": 15.7,
   "resist_penalty": 60,
   "xp_mult": 6.4,
   "magic_find": 470,
@@ -444,7 +452,8 @@
     "chance": 0.0018
    }
   ],
-  "desc": "Deeper. Brighter rewards."
+  "desc": "Deeper. Brighter rewards.",
+  "max_hit_pct_non_boss": 40
  },
  {
   "id": "eclipse10",
@@ -457,7 +466,7 @@
   ],
   "level_offset": 185,
   "life_mult": 91.2,
-  "damage_mult": 33.5,
+  "damage_mult": 19.2,
   "resist_penalty": 60,
   "xp_mult": 6.8,
   "magic_find": 510,
@@ -484,6 +493,7 @@
     "chance": 0.002
    }
   ],
-  "desc": "Deeper. Brighter rewards."
+  "desc": "Deeper. Brighter rewards.",
+  "max_hit_pct_non_boss": 40
  }
 ]

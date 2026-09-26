@@ -17,16 +17,16 @@ func _ready() -> void:
 	if FileAccess.file_exists(TEST_ACCOUNT):
 		DirAccess.remove_absolute(TEST_ACCOUNT)
 	Account.use_path(TEST_ACCOUNT)
+	check(Game.save_dir != Game.SAVE_DIR, "tests never write the real save dir")
 	for t in ["test_content_sanity", "test_loot_generation", "test_upgrade", "test_affinity_proficiency", "test_pets",
 			"test_quests", "test_save_roundtrip", "test_save_backups", "test_starmap", "test_skill_mods", "test_mastery",
 			"test_merchants", "test_travel", "test_codex", "test_deeds", "test_main_quest", "test_builds", "test_mounts",
-			"test_world_event_helpers", "test_base_content_integration", "test_wave2_integration", "test_moon_hooks"]:
+			"test_world_event_helpers", "test_base_content_integration", "test_wave2_integration", "test_moon_hooks", "test_wave3"]:
 		_current = t
 		Rng.reseed(1234)
 		call(t)
 	print("TESTS DONE: %d passed, %d failed" % [passed, failed])
-	# Leave the normal content state behind and clean up test files
-	Account.use_path("user://account.json")
+	# Clean up test files (the real account file is never touched in test mode)
 	if FileAccess.file_exists(TEST_ACCOUNT):
 		DirAccess.remove_absolute(TEST_ACCOUNT)
 	get_tree().quit(1 if failed > 0 else 0)
@@ -283,6 +283,9 @@ func test_save_roundtrip() -> void:
 	eq(c2.bound_town, "a1_town", "bound town")
 	eq(c2.hearth_ready_at, 42.5, "hearth cooldown")
 	eq(int(c2.equipment.main_hand.upgrade), 4, "item upgrade level")
+	check(c2.equipment.main_hand.upgrade is int and c2.equipment.main_hand.ilvl is int, "item ints stay ints after JSON")
+	check(c2.skill_ranks.values().all(func(v): return v is int), "skill ranks stay ints")
+	check(str(c2.equipment.main_hand.ilvl) == str(ch.equipment.main_hand.ilvl), "str() identical after round trip")
 	eq(c2.cosmetics.get("aura", ""), "ember", "cosmetics")
 	check(c2.titles.has("Dev Spark"), "titles")
 	eq(c2.stats.get_stat("magic_find"), ch.stats.get_stat("magic_find"), "stats rebuilt identically")
@@ -311,7 +314,7 @@ func test_save_backups() -> void:
 	for p in Game.backup_paths(ch.id):
 		check(FileAccess.file_exists(p), "backup exists: " + p)
 	# Corrupt the main file → loader falls back to the newest backup
-	var f = FileAccess.open(Game.SAVE_DIR + "/" + ch.id + ".json", FileAccess.WRITE)
+	var f = FileAccess.open(Game.save_dir + "/" + ch.id + ".json", FileAccess.WRITE)
 	f.store_string("{not json")
 	f.close()
 	var d = Game.read_save_dict(ch.id)
@@ -685,3 +688,33 @@ func test_moon_hooks() -> void:
 			c2.passive_ranks[pr.id] = 1
 			c2.recalc()
 			check(Hooks.has(c2, str(pr.hook)), "hook active " + str(pr.hook))
+
+func test_wave3() -> void:
+	# Elite affixes without replacement + min_level
+	var gw = GameWorld.new()
+	for i in 50:
+		var a = gw.roll_elite_affixes(3, 1)
+		var uniq = {}
+		for x in a:
+			uniq[x] = true
+		eq(uniq.size(), a.size(), "no duplicate elite affixes")
+		for x in a:
+			check(int(Content.get_rec("monster_affixes", x).get("min_level", 1)) <= 1, "affix min_level honoured")
+	gw.free()
+	eq(float(Content.cfg("monsters", "champion_life_mult", 0)), 2.0, "champion life mult in config")
+	# Story flow: while "reach town" is the objective, a zone exit leads to that town
+	Content.reload(false)
+	Deeds.reset_index()
+	var ch = mk_char("lanternbearer", 1)
+	MainQuest.ensure_started(ch)
+	var o = MainQuest.current_objective(ch)
+	if MainQuest.norm_type(str(o.get("type", ""))) == "reach_zone" and Travel.is_town(str(o.get("target", ""))):
+		var sess = Session.new()
+		eq(sess.story_next("a1_z1", "a1_z2"), str(o.target), "a1_z1 exit leads to town during chapter 1")
+		MainQuest.notify(ch, "reach_zone", str(o.target))
+		eq(sess.story_next("a1_z1", "a1_z2"), "a1_z2", "normal next afterwards")
+		ch.waypoints = ["a1_town", "a1_z1"]
+		eq(sess.onward_zone("act1"), "a1_z2", "town onward portal goes to the next unvisited zone")
+		sess.free()
+	Content.reload(true)
+	Deeds.reset_index()

@@ -29,6 +29,7 @@ func travel(zone_id: String, seed_value := -1, spawn_pos = null) -> void:
 	if screen and is_instance_valid(screen):
 		screen.queue_free()
 	var ch = Game.character
+	MainQuest.ensure_started(ch)
 	var was_mounted = world != null and is_instance_valid(world) and world.player != null and world.player.wants_mount
 	var z = Content.get_rec("zones", zone_id)
 	if z.is_empty():
@@ -56,6 +57,9 @@ func travel(zone_id: String, seed_value := -1, spawn_pos = null) -> void:
 	hud.process_mode = Node.PROCESS_MODE_PAUSABLE
 	ui_layer.add_child(hud)
 	hud.setup(world.player, self)
+	# boss_spawned fired during load_zone(), before this HUD existed — replay it for the boss bar
+	if world.boss and is_instance_valid(world.boss) and world.boss.alive:
+		Events.boss_spawned.emit(world.boss)
 	_fade_in()
 
 func _fade_in() -> void:
@@ -105,10 +109,28 @@ func open_station(which: String) -> void:
 
 func on_zone_exit(zone_id: String) -> void:
 	var z = Content.get_rec("zones", zone_id)
-	var next: String = z.get("next", Game.character.current_act_town())
+	var next: String = story_next(zone_id, z.get("next", Game.character.current_act_town()))
 	if z.get("boss", "") != "":
 		_on_act_complete(z)
 	_show_summary(zone_id, next)
+
+## Where "Continue" leads: normally zones[].next, but while the main quest asks the hero to reach a
+## town (e.g. mq_a1_01 "Reach Lamplight Hollow"), the way on leads there first.
+func story_next(zone_id: String, default_next: String) -> String:
+	var o = MainQuest.current_objective(Game.character)
+	if MainQuest.norm_type(str(o.get("type", ""))) == "reach_zone":
+		var t = str(o.get("target", ""))
+		if t != zone_id and Travel.is_town(t) and Content.get_rec("zones", t).get("act", "") == Content.get_rec("zones", zone_id).get("act", ""):
+			return t
+	return default_next
+
+## The first story zone of the act the hero hasn't reached yet (town "onward" portal), else "".
+func onward_zone(act_id: String) -> String:
+	var ch = Game.character
+	for zid in Content.get_rec("acts", act_id).get("zones", []):
+		if not ch.waypoints.has(zid) and MainQuest.zone_locked(ch, zid) == "":
+			return zid
+	return ""
 
 func _on_act_complete(z: Dictionary) -> void:
 	var ch = Game.character
@@ -162,11 +184,14 @@ func _show_summary(zone_id: String, next: String) -> void:
 func on_player_died() -> void:
 	var ch = Game.character
 	await get_tree().create_timer(1.6).timeout
+	if world == null or not is_instance_valid(world) or world.player == null or world.player.alive:
+		return
 	get_tree().paused = true
 	var s = ScreenBase.new()
 	s.session = self
 	ui_layer.add_child(s)
 	screen = s
+	var done = [false]   # the default action runs once (button, Back, Esc or Android back)
 	if ch.hardcore:
 		s.build("Your Last Flame has gone out")
 		ch.dead = true
@@ -174,30 +199,56 @@ func on_player_died() -> void:
 		var v = VBoxContainer.new()
 		s.body.add_child(v)
 		v.add_child(UiTheme.label("%s, level %d, rests now in the Hall of Embers." % [ch.name, ch.level], 24))
-		v.add_child(UiTheme.button("Carry the ember on (continue as a normal hero)", func():
-			var copy = CharacterData.from_dict(ch.to_dict())
-			copy.id = ch.id + "_ember"
-			copy.hardcore = false
-			copy.dead = false
-			copy.name = ch.name + " (Ember)"
-			Game.character = copy
-			Game.save_character()
-			travel(copy.current_act_town()), 22, Vector2(640, 76)))
+		var carry = func():
+			if done[0]:
+				return
+			done[0] = true
+			_carry_ember_on(ch)
+		v.add_child(UiTheme.button("Carry the ember on (continue as a normal hero)", carry, 22, Vector2(640, 76)))
 		v.add_child(UiTheme.button("Return to title", func():
+			done[0] = true
 			get_tree().paused = false
 			get_tree().change_scene_to_file("res://scenes/main.tscn"), 22, Vector2(300, 70)))
+		# Back / Esc / Android back = the default, safe action (never a paused dead state)
+		s.closed.connect(carry)
 	else:
 		s.build("You were snuffed out...")
 		var v = VBoxContainer.new()
 		s.body.add_child(v)
 		v.add_child(UiTheme.label("No worries — your flame rekindles. You keep everything.", 22, UiTheme.MUTED))
-		v.add_child(UiTheme.button("Rekindle here", func():
-			s.queue_free()
-			get_tree().paused = false
-			world.player.revive()
-			var start = world.layout.cell_to_world(world.layout.rooms[world.layout.start_room].center)
-			world.player.global_position = start, 24, Vector2(320, 76)))
-		v.add_child(UiTheme.button("Return to town", func(): travel(ch.current_act_town()), 22, Vector2(320, 70)))
+		var rekindle = func():
+			if done[0]:
+				return
+			done[0] = true
+			if is_instance_valid(s):
+				s.queue_free()
+			if screen == s:
+				screen = null
+			_rekindle_at_entrance()
+		v.add_child(UiTheme.button("Rekindle at the zone entrance", rekindle, 24, Vector2(420, 76)))
+		v.add_child(UiTheme.button("Return to town", func():
+			done[0] = true
+			travel(ch.current_act_town()), 22, Vector2(320, 70)))
+		s.closed.connect(rekindle)
+
+func _rekindle_at_entrance() -> void:
+	get_tree().paused = false
+	if world == null or not is_instance_valid(world) or world.player == null:
+		return
+	world.player.revive()
+	world.player.global_position = world.layout.cell_to_world(world.layout.rooms[world.layout.start_room].center)
+
+## Last Flame death → continue as a softcore copy (the memorial stays in the Hall of Embers).
+func _carry_ember_on(ch: CharacterData) -> void:
+	var copy = CharacterData.from_dict(ch.to_dict())
+	copy.id = "%s_ember_%d" % [ch.id, Time.get_unix_time_from_system()]
+	copy.hardcore = false
+	copy.dead = false
+	copy.name = ch.name + " (Ember)"
+	Game.character = copy
+	Game.save_character()
+	get_tree().paused = false
+	travel(copy.current_act_town())
 
 func salvage_item(it: Dictionary) -> void:
 	Game.character.track("salvages")
@@ -489,11 +540,9 @@ func vendor_buy(vendor_id: String, entry) -> Dictionary:
 	return r
 
 func curio_buy(offer_id: String) -> Dictionary:
+	# Welfare (PLAYER_WELFARE §2.5): the Curio screen shows ONE reveal card with the true rarity —
+	# no golden_moment card or extra drop sound here (no chained reveals).
 	var r = Merchants.curio_buy(Game.character, offer_id)
-	if r.ok:
-		Sfx.play("drop_" + str(r.item.rarity), -2.0, 0.0)
-	if r.ok and Items.rarity_index(r.item.rarity) >= 4:
-		Events.golden_moment.emit(r.item)
 	Game.save_character()
 	return r
 

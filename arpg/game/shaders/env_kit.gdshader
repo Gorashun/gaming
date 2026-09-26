@@ -21,7 +21,7 @@ uniform vec4 emission_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
 uniform float emission_strength = 0.0;
 uniform float ground_darken = 0.0;      // darkens low parts (fake AO at the base of walls)
 uniform float occlude = 0.0;            // 1 = dither away when between camera and hero
-uniform float occlude_radius = 2.4;
+uniform float occlude_radius = 3.4;
 
 global uniform vec3 wick_player_pos;
 
@@ -70,7 +70,7 @@ void fragment() {
 		float up = smoothstep(0.45, 0.85, wnorm.y);
 		float n = texture(noise_tex, wpos.xz * top_scale).r * 0.7 + texture(noise_tex, wpos.xz * top_scale * 3.1).g * 0.3;
 		float cover = smoothstep(1.0 - top_amount - 0.08, 1.0 - top_amount + 0.08, n * 0.85 + up * 0.3) * up;
-		c = mix(c, top_color.rgb * (0.85 + 0.15 * n), clamp(cover, 0.0, 1.0));
+		c = mix(c, top_color.rgb * brightness * (0.85 + 0.15 * n), clamp(cover, 0.0, 1.0));
 	}
 	if (ground_darken > 0.0) {
 		c *= mix(1.0 - ground_darken, 1.0, smoothstep(0.0, 1.2, wpos.y));

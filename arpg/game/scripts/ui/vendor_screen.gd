@@ -112,7 +112,7 @@ func _buy_tab() -> void:
 		var info = _entry_info(e)
 		var price = int(e.get("price_gold", 0))
 		var b = Button.new()
-		b.custom_minimum_size = Vector2(368, 96)
+		b.custom_minimum_size = Vector2(372, 100)
 		b.add_theme_stylebox_override("normal", UiTheme.card_style(info[3]))
 		b.add_theme_stylebox_override("hover", UiTheme.card_style(info[3], true))
 		var h = HBoxContainer.new()
@@ -129,13 +129,16 @@ func _buy_tab() -> void:
 		v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		h.add_child(v)
-		var nl = UiTheme.label(info[1], 17, UiTheme.TEXT, true)
-		nl.clip_text = true
+		var nl = UiTheme.label(info[1], 16, UiTheme.TEXT, true)
+		nl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		nl.max_lines_visible = 2
+		nl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		nl.custom_minimum_size = Vector2(170, 0)
 		v.add_child(nl)
 		var dl = UiTheme.label(info[2], 14, UiTheme.MUTED)
-		dl.clip_text = true
+		dl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		dl.custom_minimum_size = Vector2(170, 0)
+		b.tooltip_text = "%s — %s" % [info[1], info[2]]
 		v.add_child(dl)
 		var pp = UiTheme.pill("gold", "Free" if price == 0 else UiTheme.fmt_num(price), UiTheme.COIN, 18)
 		if ch.gold < price:

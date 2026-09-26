@@ -136,7 +136,7 @@ func refresh() -> void:
 			_prof = id
 			_recipe = {}
 			_mode = ""
-			refresh(), Vector2(150, 64), UiTheme.GOLD if id == _prof else (UiTheme.MUTED if un else UiTheme.LOCKED), true, 17)
+			refresh(), Vector2(176, 64), UiTheme.GOLD if id == _prof else (UiTheme.MUTED if un else UiTheme.LOCKED), true, 15)
 		if id == _prof:
 			b.add_theme_stylebox_override("normal", UiTheme.panel_style(Color(0.3, 0.18, 0.08, 0.95), UiTheme.EMBER, 14, 3))
 		_tabs.add_child(b)
@@ -190,7 +190,7 @@ func _list_recipes() -> void:
 		var need_lvl = int(r.get("level", 1))
 		var ok_lvl = Crafting.prof_level(ch, _prof) >= need_lvl
 		var b = Button.new()
-		b.custom_minimum_size = Vector2(0, 76)
+		b.custom_minimum_size = Vector2(0, 84)
 		b.add_theme_stylebox_override("normal", UiTheme.card_style(UiTheme.GOLD if sup and ok_lvl else UiTheme.LOCKED, sel))
 		b.add_theme_stylebox_override("hover", UiTheme.card_style(UiTheme.GOLD, true))
 		var h = HBoxContainer.new()
@@ -207,9 +207,11 @@ func _list_recipes() -> void:
 		v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		h.add_child(v)
-		var nl = UiTheme.label(str(r.get("name", r.id)), 19, UiTheme.TEXT if ok_lvl else UiTheme.MUTED, true)
-		nl.clip_text = true
-		nl.custom_minimum_size = Vector2(200, 0)
+		var nl = UiTheme.label(str(r.get("name", r.id)), 16, UiTheme.TEXT if ok_lvl else UiTheme.MUTED, true)
+		nl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		nl.max_lines_visible = 2
+		nl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		nl.custom_minimum_size = Vector2(190, 0)
 		v.add_child(nl)
 		var sub = ""
 		if not ok_lvl:
@@ -582,6 +584,9 @@ func _result_card(msg: String, icon_name: String, from_v: float, to_v: float, pr
 	UiTheme.haptic(25, 0.7)
 
 # ------------------------------------------------------------------ cauldron
+var _pot: Array = [{}, {}, {}]    # [{id, n}] per slot
+var _pot_sel = 0
+
 func _cauldron() -> void:
 	ScreenBase.clear(_recipes)
 	ScreenBase.clear(_picker)
@@ -593,27 +598,88 @@ func _cauldron() -> void:
 		var h = HBoxContainer.new()
 		h.add_theme_constant_override("separation", 8)
 		h.add_child(UiTheme.icon_rect("cauldron" if known else "unknown", 36, UiTheme.GOLD if known else UiTheme.LOCKED))
-		h.add_child(UiTheme.label(str(r.get("name", "?")) if known else "? ? ?", 19, UiTheme.TEXT if known else UiTheme.MUTED))
+		var nl = UiTheme.label(str(r.get("name", "?")) if known else "? ? ?", 18, UiTheme.TEXT if known else UiTheme.MUTED)
+		nl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		nl.custom_minimum_size = Vector2(240, 0)
+		h.add_child(nl)
 		_recipes.add_child(h)
-	_picker.get_parent().get_child(0).text = "Drop up to 3 things in the pot"
-	var pot = Control.new()
-	pot.custom_minimum_size = Vector2(360, 300)
-	_card.add_child(pot)
-	var ci = UiTheme.icon_rect("cauldron", 180, Color("#8a7ab0"))
-	UiTheme.place(ci, 0.5, 0.5, -90, -60, 180, 180)
-	pot.add_child(ci)
-	for i in 3:
-		var a = -PI / 2 + (i - 1) * 0.9
-		var s = ItemSlot.new()
-		s.setup(null, "", 80)
-		UiTheme.place(s, 0.5, 0.5, cos(a) * 140 - 40, sin(a) * 110 - 40, 80, 80)
-		pot.add_child(s)
+		if known:
+			var row = HFlowContainer.new()
+			for m in r.get("cost", {}):
+				row.add_child(UiTheme.pill(m if UiTheme.has_icon(m) else "material", "×%d" % int(r.cost[m]), Color(Content.get_rec("materials", m).get("color", "#cccccc")), 14))
+			_recipes.add_child(row)
+	_picker.get_parent().get_child(0).text = "Tap a pot slot, then a material"
+	# material picker (owned only)
+	var mats = ch.materials.keys().filter(func(k): return int(ch.materials[k]) > 0)
+	mats.sort()
+	for m in mats:
+		var rec = Content.get_rec("materials", m)
+		var b = UiTheme.icon_button(m if UiTheme.has_icon(m) else ("gem" if rec.get("gem", false) else "material"), str(int(ch.materials[m])), func():
+			_pot[_pot_sel] = {"id": m, "n": 1}
+			_pot_sel = min(2, _pot_sel + 1)
+			_cauldron(), Vector2(72, 80), Color(rec.get("color", "#cccccc")), false, 15)
+		b.tooltip_text = str(rec.get("name", m))
+		_picker.add_child(b)
 	_ops.add_child(UiTheme.label("The Cauldron", 24, UiTheme.GOLD, true))
-	_ops.add_child(UiTheme.wrap_label("Mix items and materials to discover secret recipes. The Cauldron never destroys anything — if nothing happens, you get it all back.", 18, UiTheme.TEXT, 360))
+	var pot = Control.new()
+	pot.custom_minimum_size = Vector2(360, 230)
+	_ops.add_child(pot)
+	var ci = UiTheme.icon_rect("cauldron", 150, Color("#8a7ab0"))
+	UiTheme.place(ci, 0.5, 0.5, -75, -30, 150, 150)
+	pot.add_child(ci)
+	for i2 in 3:
+		var a = -PI / 2 + (i2 - 1) * 0.95
+		var slot: Dictionary = _pot[i2]
+		var si = i2
+		var b2: Button
+		if slot.is_empty():
+			b2 = UiTheme.icon_button("plus", "", func():
+				_pot_sel = si
+				_cauldron(), Vector2(84, 84), UiTheme.GOLD if si == _pot_sel else UiTheme.MUTED)
+		else:
+			var rec2 = Content.get_rec("materials", str(slot.id))
+			b2 = UiTheme.icon_button(str(slot.id) if UiTheme.has_icon(str(slot.id)) else "material", "×%d" % int(slot.n), func():
+				_pot_sel = si
+				_cauldron(), Vector2(84, 84), Color(rec2.get("color", "#cccccc")), false, 15)
+		if si == _pot_sel:
+			b2.add_theme_stylebox_override("normal", UiTheme.panel_style(Color(0.3, 0.2, 0.06, 0.95), UiTheme.GOLD, 42, 3))
+		UiTheme.place(b2, 0.5, 0.5, cos(a) * 140 - 42, sin(a) * 100 - 20, 84, 84)
+		pot.add_child(b2)
+	var sel: Dictionary = _pot[_pot_sel]
+	if not sel.is_empty():
+		var st = HBoxContainer.new()
+		st.alignment = BoxContainer.ALIGNMENT_CENTER
+		st.add_theme_constant_override("separation", 8)
+		_ops.add_child(st)
+		st.add_child(UiTheme.icon_button("minus", "", func():
+			sel.n = int(sel.n) - 1
+			if int(sel.n) <= 0:
+				_pot[_pot_sel] = {}
+			_cauldron(), Vector2(72, 64), UiTheme.GOLD))
+		st.add_child(UiTheme.label("%s ×%d" % [Content.get_rec("materials", str(sel.id)).get("name", sel.id), int(sel.n)], 19, UiTheme.TEXT))
+		st.add_child(UiTheme.icon_button("plus", "", func():
+			if int(sel.n) < int(ch.materials.get(str(sel.id), 0)):
+				sel.n = int(sel.n) + 1
+			_cauldron(), Vector2(72, 64), UiTheme.GOLD))
+	_ops.add_child(UiTheme.wrap_label("Never destroys anything — if nothing happens, you keep it all.", 16, UiTheme.MUTED, 360))
+	var given = {}
+	for sl in _pot:
+		if not sl.is_empty():
+			given[str(sl.id)] = int(given.get(str(sl.id), 0)) + int(sl.n)
 	var stir = UiTheme.hold_button("Stir", 0.4, func():
-		var res = UiTheme.api_call("Crafting", "cauldron_stir", [ch, []], null)
-		flash_msg("Nothing happened… yet" if res == null else str(res.get("message", "")), UiTheme.MUTED, "cauldron"), Vector2(360, 96), Color("#a878ff"), "cauldron")
-	stir.disabled = not UiTheme.api_has("Crafting", "cauldron_stir")
+		var res = sess_call("cauldron_stir", [given], null)
+		if res == null:
+			res = UiTheme.api_call("Crafting", "cauldron_stir", [ch, given], {"ok": false, "message": "Nothing happened… yet"})
+		if res.get("ok", false):
+			_pot = [{}, {}, {}]
+			_pot_sel = 0
+			Sfx.play("craft_success")
+		flash_msg(str(res.get("message", "")), UiTheme.GOLD if res.get("ok", false) else UiTheme.MUTED, "cauldron")
+		_cauldron(), Vector2(360, 84), Color("#a878ff"), "cauldron")
+	stir.disabled = given.is_empty() or not (UiTheme.api_has("Crafting", "cauldron_stir") or (session and session.has_method("cauldron_stir")))
 	_ops.add_child(stir)
-	if stir.disabled:
-		_ops.add_child(UiTheme.label("The Cauldron wakes up in Act V.", 17, UiTheme.MUTED))
+	if st_empty(given):
+		_ops.add_child(UiTheme.label("Put something in the pot first.", 17, UiTheme.MUTED))
+
+func st_empty(d: Dictionary) -> bool:
+	return d.is_empty()

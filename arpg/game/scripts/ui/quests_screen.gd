@@ -123,6 +123,8 @@ func _npc_panel() -> void:
 		_quest_card(q, "ready")
 	for q in _offers():
 		_quest_card(q, "offer")
+		if not ch.discoveries.has("offer_seen:" + str(q.id)):
+			ch.discoveries.append("offer_seen:" + str(q.id))
 	if _ready_list().is_empty() and _offers().is_empty():
 		_list.add_child(UiTheme.label("No new tasks right now. Come back later!", 19, UiTheme.MUTED))
 

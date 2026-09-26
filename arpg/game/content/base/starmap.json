@@ -5182,7 +5182,7 @@
  {
   "id": "c_sugar_cube_1",
   "kind": "star",
-  "name": "The Sugar Cube 1",
+  "name": "The Sugar Lump 1",
   "constellation": "c_sugar_cube",
   "pos": [
    205,
@@ -5200,7 +5200,7 @@
  {
   "id": "c_sugar_cube_2",
   "kind": "star",
-  "name": "The Sugar Cube 2",
+  "name": "The Sugar Lump 2",
   "constellation": "c_sugar_cube",
   "pos": [
    171,
@@ -5218,7 +5218,7 @@
  {
   "id": "c_sugar_cube_3",
   "kind": "star",
-  "name": "The Sugar Cube 3",
+  "name": "The Sugar Lump 3",
   "constellation": "c_sugar_cube",
   "pos": [
    225,
@@ -5236,7 +5236,7 @@
  {
   "id": "c_sugar_cube_4",
   "kind": "star",
-  "name": "The Sugar Cube 4",
+  "name": "The Sugar Lump 4",
   "constellation": "c_sugar_cube",
   "pos": [
    322,
@@ -5254,7 +5254,7 @@
  {
   "id": "c_sugar_cube_5",
   "kind": "star",
-  "name": "The Sugar Cube 5",
+  "name": "The Sugar Lump 5",
   "constellation": "c_sugar_cube",
   "pos": [
    369,
@@ -5272,7 +5272,7 @@
  {
   "id": "c_sugar_cube_6",
   "kind": "star",
-  "name": "The Sugar Cube 6",
+  "name": "The Sugar Lump 6",
   "constellation": "c_sugar_cube",
   "pos": [
    360,
@@ -5290,7 +5290,7 @@
  {
   "id": "c_sugar_cube_7",
   "kind": "star",
-  "name": "The Sugar Cube 7",
+  "name": "The Sugar Lump 7",
   "constellation": "c_sugar_cube",
   "pos": [
    378,
@@ -5308,7 +5308,7 @@
  {
   "id": "c_sugar_cube_8",
   "kind": "star",
-  "name": "The Sugar Cube 8",
+  "name": "The Sugar Lump 8",
   "constellation": "c_sugar_cube",
   "pos": [
    462,
@@ -5326,7 +5326,7 @@
  {
   "id": "c_sugar_cube_9",
   "kind": "star",
-  "name": "The Sugar Cube 9",
+  "name": "The Sugar Lump 9",
   "constellation": "c_sugar_cube",
   "pos": [
    562,
@@ -5344,7 +5344,7 @@
  {
   "id": "c_sugar_cube_10",
   "kind": "star",
-  "name": "The Sugar Cube 10",
+  "name": "The Sugar Lump 10",
   "constellation": "c_sugar_cube",
   "pos": [
    618,
@@ -5362,7 +5362,7 @@
  {
   "id": "c_sugar_cube_11",
   "kind": "star",
-  "name": "The Sugar Cube 11",
+  "name": "The Sugar Lump 11",
   "constellation": "c_sugar_cube",
   "pos": [
    651,
@@ -5380,7 +5380,7 @@
  {
   "id": "c_sugar_cube_12",
   "kind": "star",
-  "name": "The Sugar Cube 12",
+  "name": "The Sugar Lump 12",
   "constellation": "c_sugar_cube",
   "pos": [
    711,
@@ -9022,7 +9022,7 @@
  {
   "id": "c_sugar_cube",
   "kind": "constellation",
-  "name": "The Sugar Cube",
+  "name": "The Sugar Lump",
   "nodes": [
    "c_sugar_cube_1",
    "c_sugar_cube_2",

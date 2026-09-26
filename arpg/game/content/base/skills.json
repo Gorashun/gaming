@@ -4741,7 +4741,7 @@
  },
  {
   "id": "lb_sanctuary",
-  "name": "Sanctuary",
+  "name": "Lantern Haven",
   "branch": "bulwark",
   "unlock_level": 32,
   "cost": 50,
@@ -4832,7 +4832,7 @@
      },
      {
       "id": "cd",
-      "name": "Ready Sanctuary",
+      "name": "Ready Lantern Haven",
       "desc": "Shorter cooldown.",
       "patch": {
        "cooldown": 11

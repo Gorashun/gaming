@@ -32,13 +32,13 @@ func fill_info(r: Dictionary, box: VBoxContainer) -> void:
 	box.add_child(h)
 	box.add_child(UiTheme.label("You hop off when you attack or get hit.", 16, UiTheme.MUTED))
 	if r.id != active_id():
-		box.add_child(UiTheme.icon_button("check", "Ride this one", func():
+		actions_box().add_child(UiTheme.icon_button("check", "Ride this one", func():
 			var res = sess_call("set_active_mount", [r.id], null)
 			if res == null:
 				UiTheme.api_call("Mounts", "set_active", [ch, r.id], false)
 			refresh(), Vector2(230, 80), UiTheme.GOOD, true, 20))
 	else:
-		box.add_child(UiTheme.pill("check", "Your mount", UiTheme.GOOD, 20))
+		actions_box().add_child(UiTheme.pill("check", "Your mount", UiTheme.GOOD, 20))
 
 func fill_locked(r: Dictionary, box: VBoxContainer) -> void:
 	var cost = int(r.get("cost_gold", 0))
@@ -56,4 +56,4 @@ func fill_locked(r: Dictionary, box: VBoxContainer) -> void:
 			update_gold_pill()
 			refresh(), Vector2(230, 80), UiTheme.COIN, true, 20)
 		b.disabled = not req_ok or ch.gold < cost
-		box.add_child(b)
+		actions_box().add_child(b)

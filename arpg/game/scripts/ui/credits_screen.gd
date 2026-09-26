@@ -30,6 +30,13 @@ func _ready() -> void:
 	if FileAccess.file_exists(path):
 		credits = FileAccess.get_file_as_string(path).strip_edges()
 	_section("Credits", credits, true)
+	var fonts = ""
+	for fam in ["Cinzel", "Nunito", "Andika"]:
+		var fp = "res://assets/fonts/%s/OFL.txt" % fam
+		if FileAccess.file_exists(fp):
+			fonts += "=== %s ===\n%s\n\n" % [fam, FileAccess.get_file_as_string(fp).strip_edges()]
+	if fonts != "":
+		_section("Font licenses (SIL OFL 1.1)", fonts, false)
 	_section("Godot Engine", "This game uses Godot Engine, available under the following license:\n\n" + Engine.get_license_text(), false)
 	var parts = ""
 	for info in Engine.get_copyright_info():

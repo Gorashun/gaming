@@ -1127,7 +1127,37 @@ func _apply_toon(a: Actor, hero: bool) -> void:
 					"rim_amount": 0.45 if hero else 0.3, "emission_boost": 0.06 if hero else 0.0})
 			m.set_surface_override_material(si, _toon_cache[key])
 
+## Class palettes (GDD v2 #8): Stitcher warm patchwork, Roofrunner dark slate/teal. Both share the
+## KayKit Rogue atlas, so the green cloth band and the saturated leather band are hue-swapped.
+const CLASS_PALETTES := {
+	"stitcher": {"swap_a": Vector3(0.43, 0.1, 0.3), "swap_a_color": Color("#e87fa8"), "swap_b": Vector3(0.05, 0.05, 0.5), "swap_b_color": Color("#ecd2a8")},
+	"roofrunner": {"swap_a": Vector3(0.43, 0.1, 0.3), "swap_a_color": Color("#2f5a66"), "swap_b": Vector3(0.05, 0.05, 0.5), "swap_b_color": Color("#3c4150")},
+}
+
+## Toon-shade an actor and apply its class palette (used for the in-world hero and UI previews).
+func apply_class_palette(a: Actor, class_id: String) -> void:
+	if a == null or a.model == null:
+		return
+	if toon_enabled:
+		_apply_toon(a, true)
+	var pal: Dictionary = CLASS_PALETTES.get(class_id, {})
+	if pal.is_empty():
+		return
+	for mi in a.model.find_children("*", "MeshInstance3D", true, false):
+		var m: MeshInstance3D = mi
+		if m.mesh == null:
+			continue
+		for si in m.mesh.get_surface_count():
+			var mat = m.get_surface_override_material(si)
+			if mat is ShaderMaterial:
+				var d: ShaderMaterial = mat.duplicate()
+				for k in pal:
+					d.set_shader_parameter(k, pal[k])
+				m.set_surface_override_material(si, d)
+
 func _decorate_hero(p: Actor) -> void:
+	if p is Player and p.ch:
+		apply_class_palette(p, p.ch.class_id)
 	# The Wick: the hero's warm light, carried by a tiny flame spirit at the shoulder.
 	var light: OmniLight3D = null
 	for c in p.get_children():

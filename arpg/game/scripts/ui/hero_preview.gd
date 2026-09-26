@@ -115,6 +115,7 @@ func add_hero(class_id: String, ch: Object = null, x := 0.0) -> Actor:
 	root.add_child(actor)
 	actor.setup_model(cls.get("model", "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb"), 1.0, Color(1, 1, 1, 1), Color(cls.get("rim", "#ffd9a0")))
 	actor.rotation.y = deg_to_rad(14)
+	Fx.apply_class_palette(actor, class_id)   # art: toon + class palette (Stitcher/Roofrunner)
 	var h = {"root": root, "actor": actor, "ring": ring, "light": rim, "class_id": class_id, "ped": ped}
 	heroes.append(h)
 	apply_gear(heroes.size() - 1, ch)

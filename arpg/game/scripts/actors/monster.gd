@@ -26,6 +26,9 @@ var _flee_started = -1.0
 var _flee_dest = Vector3.ZERO
 var _coin_cd = 0.0
 var escaped = false
+var _stuck_check = 1.0
+var _stuck_pos = Vector3.ZERO
+var _force_path_t = 0.0
 # Boss phases
 var phase = 0
 var _phase_locked = {}          # ability ids unlocked only by a later phase (phases[].abilities_add)
@@ -52,8 +55,8 @@ func setup(r: Dictionary, lvl: int, k := "normal") -> void:
 	var tier = Game.tier()
 	max_life = Combat.monster_life(float(r.get("life_mult", 1.0)), lvl, tier)
 	match k:
-		"champion": max_life *= 2.6
-		"rare": max_life *= 4.0
+		"champion": max_life *= float(Content.cfg("monsters", "champion_life_mult", 2.0))
+		"rare": max_life *= float(Content.cfg("monsters", "rare_life_mult", 3.2))
 		"boss": max_life *= float(r.get("boss_life_mult", 1.0))
 	life = max_life
 	move_speed = float(r.get("speed", 3.2))
@@ -138,6 +141,22 @@ func _acquire_target() -> void:
 	target = m
 
 func _steer_to(dest: Vector3, delta: float) -> Vector3:
+	# Unstick: no progress for 1 s while trying to move → drop the straight line, force a fresh path
+	_stuck_check -= delta
+	if _stuck_check <= 0.0:
+		_stuck_check = 1.0
+		if global_position.distance_to(_stuck_pos) < 0.3 and global_position.distance_to(dest) > 1.5:
+			_path = Game.world.find_path(global_position, dest)
+			_path_i = 1 if _path.size() > 1 else 0
+			_repath = 1.0
+			_force_path_t = 1.5
+		_stuck_pos = global_position
+	_force_path_t -= delta
+	if _force_path_t > 0.0 and _path_i < _path.size():
+		while _path_i < _path.size() and global_position.distance_to(_path[_path_i]) < 0.8:
+			_path_i += 1
+		if _path_i < _path.size():
+			return (_path[_path_i] - global_position).normalized()
 	_repath -= delta
 	if Game.world.has_line(global_position, dest):
 		_path = []

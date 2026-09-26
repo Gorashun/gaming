@@ -68,29 +68,27 @@ func fill_info(r: Dictionary, box: VBoxContainer) -> void:
 		for t in tricks:
 			var got = l >= int(t.get("level", 0))
 			tr.add_child(UiTheme.pill("check" if got else "lock", "%d: %s" % [int(t.get("level", 0)), str(t.get("trick", "")).replace("_", " ")], UiTheme.GOOD if got else UiTheme.MUTED, 15))
-	var acts = HBoxContainer.new()
-	acts.add_theme_constant_override("separation", 8)
-	box.add_child(acts)
+	var acts = actions_box()
 	if r.id != active_id():
 		acts.add_child(UiTheme.icon_button("check", "Take along", func():
 			var res = sess_call("set_active_pet", [r.id], null)
 			if res == null:
 				UiTheme.api_call("Pets", "set_active", [ch, r.id], false)
-			refresh(), Vector2(200, 80), UiTheme.GOOD, true, 20))
+			refresh(), Vector2(200, 76), UiTheme.GOOD, true, 20))
 	else:
 		acts.add_child(UiTheme.icon_button("treat", "Treat", func():
 			var ok = UiTheme.api_call("Pets", "feed_treat", [ch], false)
 			flash_msg("Yum! +XP" if ok else "Buy treats from the Trader", UiTheme.GOLD if ok else UiTheme.MUTED, "treat")
-			refresh(), Vector2(150, 80), Color("#ffcf80"), true, 20))
+			refresh(), Vector2(150, 76), Color("#ffcf80"), true, 20))
 		var fs: Dictionary = UiTheme.api_call("Pets", "ferry_status", [ch], {})
 		if not fs.is_empty():
-			var fb = UiTheme.icon_button("bag", "Send junk to town", func():
+			var fb = UiTheme.icon_button("bag", "Junk to town", func():
 				var res = sess_call("pet_ferry", ["sell"], null)
 				if res == null:
 					res = UiTheme.api_call("Pets", "ferry", [ch, "sell"], {"ok": false, "message": ""})
 				flash_msg(str(res.get("message", "")), UiTheme.GOLD if res.get("ok", false) else UiTheme.MUTED, "pets")
 				update_gold_pill()
-				refresh(), Vector2(230, 80), UiTheme.GOLD, true, 18)
+				refresh(), Vector2(260, 76), UiTheme.GOLD, true, 17)
 			fb.disabled = not bool(fs.get("ready", false))
 			if fb.disabled and float(fs.get("cooldown_left", 0)) > 0:
 				fb.tooltip_text = "Resting: " + UiTheme.fmt_time(float(fs.cooldown_left))
