@@ -2,7 +2,7 @@
 config_version=5
 
 [application]
-config/name="Lanterna"
+config/name="Wickwright"
 config/description="Chibi dark-fantasy action RPG"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
