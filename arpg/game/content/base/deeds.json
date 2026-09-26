@@ -1,0 +1,2667 @@
+[
+ {
+  "id": "deed_bonecounter",
+  "category": "combat",
+  "stat": "kills:family:rattlebones",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 100000,
+    "points": 40,
+    "reward": {
+     "title": "the Bonecounter"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_bonecounter"
+ },
+ {
+  "id": "deed_stickpicker",
+  "category": "combat",
+  "stat": "kills:family:thicket_kin",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 100000,
+    "points": 40,
+    "reward": {
+     "title": "the Stick Picker"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_stickpicker"
+ },
+ {
+  "id": "deed_digdug",
+  "category": "combat",
+  "stat": "kills:family:echoes",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 100000,
+    "points": 40,
+    "reward": {
+     "title": "the Foreman"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_digdug"
+ },
+ {
+  "id": "deed_courtly",
+  "category": "combat",
+  "stat": "kills:family:frozen_court",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 100000,
+    "points": 40,
+    "reward": {
+     "title": "the Party Crasher"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_courtly"
+ },
+ {
+  "id": "deed_hushsweeper",
+  "category": "combat",
+  "stat": "kills:family:hushed",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 100000,
+    "points": 40,
+    "reward": {
+     "title": "the Hush Sweeper"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_hushsweeper"
+ },
+ {
+  "id": "deed_rekindler",
+  "category": "combat",
+  "stat": "kills",
+  "tiers": [
+   {
+    "goal": 1000,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 10,
+    "reward": {
+     "stats": {
+      "damage_pct": 1
+     }
+    }
+   },
+   {
+    "goal": 100000,
+    "points": 20,
+    "reward": {
+     "skill_points": 1
+    }
+   },
+   {
+    "goal": 1000000,
+    "points": 40,
+    "reward": {
+     "title": "the Rekindler"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_rekindler"
+ },
+ {
+  "id": "deed_elite_hunter",
+  "category": "combat",
+  "stat": "kills:elite",
+  "tiers": [
+   {
+    "goal": 25,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 250,
+    "points": 10,
+    "reward": {
+     "stats": {
+      "elite_damage_pct": 2
+     }
+    }
+   },
+   {
+    "goal": 2500,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 25000,
+    "points": 40,
+    "reward": {
+     "title": "the Ringbreaker"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_elite_hunter"
+ },
+ {
+  "id": "deed_champion_packs",
+  "category": "combat",
+  "stat": "kills:elite_3plus_affixes",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 20,
+    "reward": {
+     "title": "the Unflappable"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_champion_packs"
+ },
+ {
+  "id": "deed_magpie_catcher",
+  "category": "combat",
+  "stat": "kills:monster:magpie_imp",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 250,
+    "points": 40,
+    "reward": {
+     "title": "the Magpie Catcher"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_magpie_catcher"
+ },
+ {
+  "id": "deed_dodger",
+  "category": "combat",
+  "stat": "dodges",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {
+     "cosmetic": "aura_mist"
+    }
+   },
+   {
+    "goal": 100000,
+    "points": 40,
+    "reward": {
+     "title": "the Roly-Poly"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_dodger"
+ },
+ {
+  "id": "deed_red_means_move",
+  "category": "combat",
+  "stat": "telegraphs_avoided",
+  "tiers": [
+   {
+    "goal": 50,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 500,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 5000,
+    "points": 20,
+    "reward": {
+     "title": "the Light-Footed"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_red_means_move"
+ },
+ {
+  "id": "deed_crits",
+  "category": "combat",
+  "stat": "crits",
+  "tiers": [
+   {
+    "goal": 500,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 5000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50000,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 500000,
+    "points": 40,
+    "reward": {
+     "title": "the Sparkler"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_crits"
+ },
+ {
+  "id": "deed_potion_sipper",
+  "category": "combat",
+  "stat": "potions_used",
+  "tiers": [
+   {
+    "goal": 50,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 500,
+    "points": 10,
+    "reward": {
+     "stats": {
+      "potion_effect_pct": 3
+     }
+    }
+   },
+   {
+    "goal": 5000,
+    "points": 20,
+    "reward": {
+     "title": "the Well-Hydrated"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_potion_sipper"
+ },
+ {
+  "id": "deed_combo_master",
+  "category": "combat",
+  "stat": "combo10",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 250,
+    "points": 20,
+    "reward": {
+     "title": "the Clean Sweep"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_combo_master"
+ },
+ {
+  "id": "deed_minion_friends",
+  "category": "combat",
+  "stat": "minion_kills",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {
+     "title": "the Doll Parent"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_minion_friends"
+ },
+ {
+  "id": "deed_bell_ringer",
+  "category": "combat",
+  "stat": "stuns",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {
+     "title": "the Loud"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_bell_ringer"
+ },
+ {
+  "id": "deed_star_thrower",
+  "category": "combat",
+  "stat": "hits:skill:sg_chain",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {
+     "title": "the Starry-Eyed"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_star_thrower"
+ },
+ {
+  "id": "deed_glow_up",
+  "category": "combat",
+  "stat": "blocks",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {
+     "cosmetic": "cape_steel",
+     "title": "the Unbudgeable"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_glow_up"
+ },
+ {
+  "id": "deed_trap_setter",
+  "category": "combat",
+  "stat": "hits:tag:trap",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {
+     "title": "the Sneaky"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_trap_setter"
+ },
+ {
+  "id": "deed_weapon_mastery",
+  "category": "combat",
+  "stat": "proficiency_types_at_50",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 3,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 7,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 14,
+    "points": 40,
+    "reward": {
+     "title": "the Armoury"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_weapon_mastery"
+ },
+ {
+  "id": "deed_skill_mastery",
+  "category": "combat",
+  "stat": "skills_at_mastery_20",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {
+     "cosmetic": "aura_mastery"
+    }
+   },
+   {
+    "goal": 5,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 12,
+    "points": 20,
+    "reward": {
+     "title": "the Practised"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_skill_mastery"
+ },
+ {
+  "id": "deed_waypoints",
+  "category": "exploration",
+  "stat": "waypoints",
+  "tiers": [
+   {
+    "goal": 5,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 15,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 20,
+    "reward": {
+     "title": "the Pathfinder"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_waypoints"
+ },
+ {
+  "id": "deed_zones",
+  "category": "exploration",
+  "stat": "zones_cleared",
+  "tiers": [
+   {
+    "goal": 5,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 15,
+    "points": 10,
+    "reward": {
+     "stats": {
+      "move_speed_pct": 1
+     }
+    }
+   },
+   {
+    "goal": 25,
+    "points": 20,
+    "reward": {
+     "title": "the Cartographer"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_zones"
+ },
+ {
+  "id": "deed_secrets",
+  "category": "exploration",
+  "stat": "secrets",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 5,
+    "points": 10,
+    "reward": {
+     "skill_points": 1
+    }
+   },
+   {
+    "goal": 12,
+    "points": 20,
+    "reward": {
+     "title": "the Nosy"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_secrets"
+ },
+ {
+  "id": "deed_tenth_lantern",
+  "category": "exploration",
+  "stat": "secret:sc_tenth_lantern",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Moonlit"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_tenth_lantern"
+ },
+ {
+  "id": "deed_mailbox",
+  "category": "exploration",
+  "stat": "mailbox_letters",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 3,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 6,
+    "points": 20,
+    "reward": {
+     "title": "the Pen Pal"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_mailbox"
+ },
+ {
+  "id": "deed_tea_party",
+  "category": "exploration",
+  "stat": "secret:sc_tea_party",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "cosmetic": "pet_hat_teacup",
+     "title": "the Well-Mannered"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_tea_party"
+ },
+ {
+  "id": "deed_candy_crypt",
+  "category": "exploration",
+  "stat": "secret:sc_candy_crypt",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Sweet Tooth"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_candy_crypt"
+ },
+ {
+  "id": "deed_magpies_hoard",
+  "category": "exploration",
+  "stat": "zone_entered:magpies_hoard",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {
+     "title": "the Glittering"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_magpies_hoard"
+ },
+ {
+  "id": "deed_frog",
+  "category": "exploration",
+  "stat": "secret:sc_frog",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Patient"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_frog"
+ },
+ {
+  "id": "deed_owlcrow_riddles",
+  "category": "exploration",
+  "stat": "riddles_answered",
+  "tiers": [
+   {
+    "goal": 5,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {
+     "title": "the Riddle-Wise"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_owlcrow_riddles"
+ },
+ {
+  "id": "deed_dont_know",
+  "category": "exploration",
+  "stat": "secret:sc_owlcrow",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Honest"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_dont_know"
+ },
+ {
+  "id": "deed_stillness",
+  "category": "exploration",
+  "stat": "secret:sc_stillness",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Unmoving"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_stillness"
+ },
+ {
+  "id": "deed_mount_miles",
+  "category": "exploration",
+  "stat": "mount_distance_m",
+  "tiers": [
+   {
+    "goal": 1000,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 100000,
+    "points": 20,
+    "reward": {
+     "mount": "mount_pony2"
+    }
+   },
+   {
+    "goal": 1000000,
+    "points": 40,
+    "reward": {
+     "title": "the Rider"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_mount_miles"
+ },
+ {
+  "id": "deed_hearth",
+  "category": "exploration",
+  "stat": "hearth_uses",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 20,
+    "reward": {
+     "title": "the Homebody"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_hearth"
+ },
+ {
+  "id": "deed_journal",
+  "category": "exploration",
+  "stat": "journal_pages",
+  "tiers": [
+   {
+    "goal": 5,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {
+     "cosmetic": "aura_key"
+    }
+   },
+   {
+    "goal": 20,
+    "points": 20,
+    "reward": {
+     "title": "the Bookish"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_journal"
+ },
+ {
+  "id": "deed_deepdark_runs",
+  "category": "exploration",
+  "stat": "deepdark_runs",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 20,
+    "reward": {
+     "title": "the Deep Diver"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_deepdark_runs"
+ },
+ {
+  "id": "deed_lightwells",
+  "category": "exploration",
+  "stat": "lightwells_completed",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 5000,
+    "points": 40,
+    "reward": {
+     "title": "the Well-Done"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_lightwells"
+ },
+ {
+  "id": "deed_lightwell_trials",
+  "category": "exploration",
+  "stat": "lightwell_trial_depth_max",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 40,
+    "reward": {
+     "title": "the Unfathomable"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_lightwell_trials"
+ },
+ {
+  "id": "deed_crafts",
+  "category": "crafting",
+  "stat": "crafts",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 20,
+    "reward": {
+     "skill_points": 1
+    }
+   },
+   {
+    "goal": 10000,
+    "points": 40,
+    "reward": {
+     "title": "the Handy"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_crafts"
+ },
+ {
+  "id": "deed_upgrade_15",
+  "category": "crafting",
+  "stat": "items_at_plus15",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {
+     "cosmetic": "aura_forge"
+    }
+   },
+   {
+    "goal": 5,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 12,
+    "points": 20,
+    "reward": {
+     "title": "the Polished"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_upgrade_15"
+ },
+ {
+  "id": "deed_kindle",
+  "category": "crafting",
+  "stat": "kindle_spent",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {
+     "title": "the Kindler"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_kindle"
+ },
+ {
+  "id": "deed_salvage",
+  "category": "crafting",
+  "stat": "salvages",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 10,
+    "reward": {
+     "stats": {
+      "material_find": 2
+     }
+    }
+   },
+   {
+    "goal": 10000,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 100000,
+    "points": 40,
+    "reward": {
+     "title": "the Unattached"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_salvage"
+ },
+ {
+  "id": "deed_smith_50",
+  "category": "crafting",
+  "stat": "prof_level:smith",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {
+     "title": "the Smith"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_smith_50"
+ },
+ {
+  "id": "deed_alchemist_50",
+  "category": "crafting",
+  "stat": "prof_level:alchemist",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {
+     "title": "the Fizzy"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_alchemist_50"
+ },
+ {
+  "id": "deed_jeweler_50",
+  "category": "crafting",
+  "stat": "prof_level:jeweler",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {
+     "title": "the Sparkly"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_jeweler_50"
+ },
+ {
+  "id": "deed_runecarver_50",
+  "category": "crafting",
+  "stat": "prof_level:runecarver",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {
+     "title": "the Scribbler"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_runecarver_50"
+ },
+ {
+  "id": "deed_cauldron",
+  "category": "crafting",
+  "stat": "cauldron_discoveries",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 30,
+    "points": 20,
+    "reward": {
+     "title": "the Stirrer"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_cauldron"
+ },
+ {
+  "id": "deed_gems",
+  "category": "crafting",
+  "stat": "gems_socketed",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 20,
+    "reward": {
+     "title": "the Gem Setter"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_gems"
+ },
+ {
+  "id": "deed_named",
+  "category": "crafting",
+  "stat": "named_forged",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {
+     "skill_points": 1
+    }
+   },
+   {
+    "goal": 3,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 5,
+    "points": 20,
+    "reward": {
+     "title": "the Impossible"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_named"
+ },
+ {
+  "id": "deed_uniques",
+  "category": "collection",
+  "stat": "uniques_found_distinct",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 30,
+    "points": 20,
+    "reward": {
+     "skill_points": 1,
+     "title": "the Crowned"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_uniques"
+ },
+ {
+  "id": "deed_legendaries",
+  "category": "collection",
+  "stat": "legendaries_found",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 500,
+    "points": 20,
+    "reward": {
+     "stats": {
+      "magic_find": 2
+     }
+    }
+   },
+   {
+    "goal": 5000,
+    "points": 40,
+    "reward": {
+     "title": "the Radiant"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_legendaries"
+ },
+ {
+  "id": "deed_mythics",
+  "category": "collection",
+  "stat": "mythics_found",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 20,
+    "reward": {
+     "cosmetic": "aura_flame",
+     "title": "the Mythical"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_mythics"
+ },
+ {
+  "id": "deed_codex",
+  "category": "collection",
+  "stat": "codex_entries",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 150,
+    "points": 20,
+    "reward": {
+     "cosmetic": "aura_codex",
+     "title": "the Archivist"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_codex"
+ },
+ {
+  "id": "deed_bestiary",
+  "category": "collection",
+  "stat": "monster_kinds_met",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 40,
+    "points": 20,
+    "reward": {
+     "skill_points": 1,
+     "title": "the Naturalist"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_bestiary"
+ },
+ {
+  "id": "deed_pets",
+  "category": "collection",
+  "stat": "pets_owned",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 5,
+    "points": 10,
+    "reward": {
+     "stats": {
+      "pet_xp_pct": 5
+     }
+    }
+   },
+   {
+    "goal": 15,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 30,
+    "points": 40,
+    "reward": {
+     "title": "the Pet Parent"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_pets"
+ },
+ {
+  "id": "deed_pet_30",
+  "category": "collection",
+  "stat": "pets_at_level_30",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {
+     "cosmetic": "pet_hat_crown"
+    }
+   },
+   {
+    "goal": 5,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 15,
+    "points": 20,
+    "reward": {
+     "title": "the Best Friend"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_pet_30"
+ },
+ {
+  "id": "deed_mounts",
+  "category": "collection",
+  "stat": "mounts_owned",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 5,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 20,
+    "reward": {
+     "cosmetic": "mount_tint_gold",
+     "title": "the Stable Hand"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_mounts"
+ },
+ {
+  "id": "deed_eggs",
+  "category": "collection",
+  "stat": "eggs_hatched",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {
+     "title": "the Egg-cellent"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_eggs"
+ },
+ {
+  "id": "deed_hats",
+  "category": "collection",
+  "stat": "cosmetic_hats_owned",
+  "tiers": [
+   {
+    "goal": 3,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 20,
+    "reward": {
+     "title": "the Well-Hatted"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_hats"
+ },
+ {
+  "id": "deed_act1",
+  "category": "story",
+  "stat": "kills:boss:sunken_bellringer",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "cosmetic": "cape_act1",
+     "title": "of Wickmire"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_act1"
+ },
+ {
+  "id": "deed_act2",
+  "category": "story",
+  "stat": "kills:boss:mother_bark",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "cosmetic": "cape_act2",
+     "title": "of Whisperwood"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_act2"
+ },
+ {
+  "id": "deed_act3",
+  "category": "story",
+  "stat": "kills:boss:great_echo",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "cosmetic": "cape_act3",
+     "title": "of the Echo Mines"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_act3"
+ },
+ {
+  "id": "deed_act4",
+  "category": "story",
+  "stat": "kills:boss:king_who_forgot",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "cosmetic": "cape_act4",
+     "title": "of Rimehall"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_act4"
+ },
+ {
+  "id": "deed_act5",
+  "category": "story",
+  "stat": "kills:boss:grey_guest",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "skill_points": 1,
+     "title": "the Wickwright"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_act5"
+ },
+ {
+  "id": "deed_pell_name",
+  "category": "story",
+  "stat": "flag:pell_name_before_act5",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Name-Finder"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_pell_name"
+ },
+ {
+  "id": "deed_chapters",
+  "category": "story",
+  "stat": "main_quest_chapters",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 43,
+    "points": 20,
+    "reward": {
+     "title": "the Storied"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_chapters"
+ },
+ {
+  "id": "deed_side_quests",
+  "category": "story",
+  "stat": "side_quests_completed",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 40,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 90,
+    "points": 20,
+    "reward": {
+     "skill_points": 1,
+     "title": "the Helpful"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_side_quests"
+ },
+ {
+  "id": "deed_bounties",
+  "category": "story",
+  "stat": "bounties_completed",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 20,
+    "reward": {
+     "title": "the Reliable"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_bounties"
+ },
+ {
+  "id": "deed_all_classes",
+  "category": "story",
+  "stat": "story_complete_classes",
+  "tiers": [
+   {
+    "goal": 2,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 3,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 5,
+    "points": 20,
+    "reward": {
+     "title": "the Many-Wicks"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_all_classes"
+ },
+ {
+  "id": "deed_brightness_200",
+  "category": "story",
+  "stat": "level",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {
+     "cosmetic": "aura_bright"
+    }
+   },
+   {
+    "goal": 150,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 200,
+    "points": 20,
+    "reward": {
+     "title": "the Brightest"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_brightness_200"
+ },
+ {
+  "id": "deed_nightfall",
+  "category": "difficulty",
+  "stat": "story_complete:nightfall",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Nightfaller"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_nightfall"
+ },
+ {
+  "id": "deed_abyss",
+  "category": "difficulty",
+  "stat": "story_complete:abyss",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Abyssal"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_abyss"
+ },
+ {
+  "id": "deed_eclipse",
+  "category": "difficulty",
+  "stat": "eclipse_boss_tier_max",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 5,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 20,
+    "reward": {
+     "title": "the Eclipse"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_eclipse"
+ },
+ {
+  "id": "deed_bellringer_x",
+  "category": "bosses",
+  "stat": "kills:boss:sunken_bellringer",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 250,
+    "points": 20,
+    "reward": {
+     "title": "the Bell Friend"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_bellringer_x"
+ },
+ {
+  "id": "deed_bark_x",
+  "category": "bosses",
+  "stat": "kills:boss:mother_bark",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 250,
+    "points": 20,
+    "reward": {
+     "title": "the Jar Opener"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_bark_x"
+ },
+ {
+  "id": "deed_echo_x",
+  "category": "bosses",
+  "stat": "kills:boss:great_echo",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 250,
+    "points": 20,
+    "reward": {
+     "title": "the Echoing"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_echo_x"
+ },
+ {
+  "id": "deed_king_x",
+  "category": "bosses",
+  "stat": "kills:boss:king_who_forgot",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 250,
+    "points": 20,
+    "reward": {
+     "title": "the Reminder"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_king_x"
+ },
+ {
+  "id": "deed_guest_x",
+  "category": "bosses",
+  "stat": "kills:boss:grey_guest",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 250,
+    "points": 20,
+    "reward": {
+     "title": "the Guest's Friend"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_guest_x"
+ },
+ {
+  "id": "deed_long_shadow",
+  "category": "bosses",
+  "stat": "kills:boss:long_shadow",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {
+     "cosmetic": "frame_long_shadow"
+    }
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {
+     "title": "the Shadow Scatterer"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_long_shadow"
+ },
+ {
+  "id": "deed_no_hit_boss",
+  "category": "bosses",
+  "stat": "boss_kills_no_hit",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 5,
+    "points": 10,
+    "reward": {
+     "title": "the Untouchable"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_no_hit_boss"
+ },
+ {
+  "id": "deed_boss_fragments",
+  "category": "bosses",
+  "stat": "boss_fragments_collected",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 1000,
+    "points": 20,
+    "reward": {
+     "title": "the Collector"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_boss_fragments"
+ },
+ {
+  "id": "deed_gold",
+  "category": "economy",
+  "stat": "gold_earned",
+  "tiers": [
+   {
+    "goal": 10000,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 1000000,
+    "points": 10,
+    "reward": {
+     "stats": {
+      "gold_find": 2
+     }
+    }
+   },
+   {
+    "goal": 100000000,
+    "points": 20,
+    "reward": {
+     "title": "the Well-Off"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_gold"
+ },
+ {
+  "id": "deed_sell",
+  "category": "economy",
+  "stat": "items_sold",
+  "tiers": [
+   {
+    "goal": 50,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 500,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 5000,
+    "points": 20,
+    "reward": {
+     "title": "the Haggler"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_sell"
+ },
+ {
+  "id": "deed_curio_cart",
+  "category": "economy",
+  "stat": "curio_bought",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {
+     "cosmetic": "cape_curio"
+    }
+   },
+   {
+    "goal": 250,
+    "points": 20,
+    "reward": {
+     "title": "the Curious"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_curio_cart"
+ },
+ {
+  "id": "deed_hushmarks",
+  "category": "economy",
+  "stat": "hushmarks_earned",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 10,
+    "reward": {
+     "stats": {
+      "hushmark_find": 3
+     }
+    }
+   },
+   {
+    "goal": 500,
+    "points": 20,
+    "reward": {
+     "title": "the Hushmark Hoarder"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_hushmarks"
+ },
+ {
+  "id": "deed_respec",
+  "category": "economy",
+  "stat": "respecs",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {
+     "title": "the Undecided"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_respec"
+ },
+ {
+  "id": "deed_hushfalls",
+  "category": "hushfalls",
+  "stat": "hushfalls_completed",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 250,
+    "points": 20,
+    "reward": {
+     "skill_points": 1
+    }
+   },
+   {
+    "goal": 2500,
+    "points": 40,
+    "reward": {
+     "title": "the Tear Mender"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_hushfalls"
+ },
+ {
+  "id": "deed_hushfall_invasion",
+  "category": "hushfalls",
+  "stat": "hushfalls:invasion",
+  "tiers": [
+   {
+    "goal": 5,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 10,
+    "reward": {
+     "cosmetic": "aura_hush"
+    }
+   },
+   {
+    "goal": 500,
+    "points": 20,
+    "reward": {
+     "title": "the Unbothered"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_hushfall_invasion"
+ },
+ {
+  "id": "deed_hushfall_swarm",
+  "category": "hushfalls",
+  "stat": "hushfalls:treasure_swarm_perfect",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 20,
+    "reward": {
+     "title": "the Swarm Catcher"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_hushfall_swarm"
+ },
+ {
+  "id": "deed_hushfall_wisp",
+  "category": "hushfalls",
+  "stat": "hushfalls:escort",
+  "tiers": [
+   {
+    "goal": 5,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 500,
+    "points": 20,
+    "reward": {
+     "title": "the Wisp Walker"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_hushfall_wisp"
+ },
+ {
+  "id": "deed_hushfall_duel",
+  "category": "hushfalls",
+  "stat": "hushfalls:echo_duel",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 25,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 250,
+    "points": 20,
+    "reward": {
+     "title": "the Unmirrored"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_hushfall_duel"
+ },
+ {
+  "id": "deed_hushfall_cursed",
+  "category": "hushfalls",
+  "stat": "hushfalls:cursed_shrine",
+  "tiers": [
+   {
+    "goal": 5,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 500,
+    "points": 20,
+    "reward": {
+     "title": "the Unjinxed"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_hushfall_cursed"
+ },
+ {
+  "id": "deed_last_flame_60",
+  "category": "last_flame",
+  "stat": "lastflame_level",
+  "tiers": [
+   {
+    "goal": 30,
+    "points": 5,
+    "reward": {
+     "cosmetic": "frame_lastflame"
+    }
+   },
+   {
+    "goal": 60,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 20,
+    "reward": {}
+   },
+   {
+    "goal": 200,
+    "points": 40,
+    "reward": {
+     "title": "the Everburning"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_last_flame_60"
+ },
+ {
+  "id": "deed_last_flame_story",
+  "category": "last_flame",
+  "stat": "lastflame_story_complete",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "mount": "mount_hare2",
+     "title": "the Unsnuffed"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_last_flame_story"
+ },
+ {
+  "id": "deed_hall_of_embers",
+  "category": "last_flame",
+  "stat": "flag:hall_of_embers_visited",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Rememberer of Heroes"
+    }
+   }
+  ],
+  "hidden": false,
+  "text_ref": "deed_hall_of_embers"
+ },
+ {
+  "id": "deed_pet_the_cat",
+  "category": "kindness",
+  "stat": "secret:sc_hub_cat",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Cat's Favourite"
+    }
+   }
+  ],
+  "hidden": true,
+  "text_ref": "deed_pet_the_cat"
+ },
+ {
+  "id": "deed_bran_moth",
+  "category": "kindness",
+  "stat": "flag:bran_moth",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Diplomat"
+    }
+   }
+  ],
+  "hidden": true,
+  "text_ref": "deed_bran_moth"
+ },
+ {
+  "id": "deed_rested",
+  "category": "kindness",
+  "stat": "rested_full_returns",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 50,
+    "points": 20,
+    "reward": {
+     "title": "the Well-Rested"
+    }
+   }
+  ],
+  "hidden": true,
+  "text_ref": "deed_rested"
+ },
+ {
+  "id": "deed_stop_at_summary",
+  "category": "kindness",
+  "stat": "summary_return_to_town",
+  "tiers": [
+   {
+    "goal": 10,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 500,
+    "points": 20,
+    "reward": {
+     "title": "the Sensible"
+    }
+   }
+  ],
+  "hidden": true,
+  "text_ref": "deed_stop_at_summary"
+ },
+ {
+  "id": "deed_ada_sit",
+  "category": "kindness",
+  "stat": "flag:ada_sat",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 15,
+    "reward": {
+     "title": "the Rule-Keeper"
+    }
+   }
+  ],
+  "hidden": true,
+  "text_ref": "deed_ada_sit"
+ },
+ {
+  "id": "deed_hat_on_nobody",
+  "category": "kindness",
+  "stat": "emote:hat_tip:nobody_hat",
+  "tiers": [
+   {
+    "goal": 1,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 100,
+    "points": 20,
+    "reward": {
+     "title": "the Hat-Tipper"
+    }
+   }
+  ],
+  "hidden": true,
+  "text_ref": "deed_hat_on_nobody"
+ },
+ {
+  "id": "deed_thank_you",
+  "category": "kindness",
+  "stat": "thank_you_squeaks",
+  "tiers": [
+   {
+    "goal": 100,
+    "points": 5,
+    "reward": {}
+   },
+   {
+    "goal": 10000,
+    "points": 10,
+    "reward": {}
+   },
+   {
+    "goal": 1000000,
+    "points": 20,
+    "reward": {
+     "title": "the Thanked"
+    }
+   }
+  ],
+  "hidden": true,
+  "text_ref": "deed_thank_you"
+ }
+]

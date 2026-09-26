@@ -2,24 +2,50 @@
  {
   "id": "progression",
   "max_level": 200,
-  "xp_base": 120,
-  "xp_growth": 1.075,
-  "xp_growth_post60": 1.018,
-  "xp_linear": 40
+  "xp_base": 150,
+  "xp_growth": 1.108,
+  "xp_growth_post60": 1.0215,
+  "xp_linear": 60,
+  "skill_points_per_level": 1,
+  "skill_points_from_quests": 10,
+  "star_points_per_level": 2,
+  "note": "Tuned by tools/sim_xp.py against QA.md §5.4 (see docs/design/SYSTEMS.md)."
  },
  {
   "id": "items",
-  "ilvl_scaling": 0.045
+  "ilvl_scaling": 0.045,
+  "two_handed_types": [
+   "greatsword",
+   "axe2h",
+   "staff",
+   "arbalest"
+  ],
+  "prefer_recent_tiers": 3,
+  "note": "two_handed is also set per base (two_handed: true). Code should read the base flag."
  },
  {
   "id": "loot",
   "smart_loot": 0.75,
   "kinds": {
    "normal": {
-    "item_chance": 0.16,
+    "item_chance": 0.13,
     "min_items": 0,
     "max_items": 2,
-    "gold_chance": 0.3
+    "gold_chance": 0.3,
+    "materials": [
+     {
+      "id": "hushmark",
+      "chance": 0.003,
+      "min": 1,
+      "max": 1
+     },
+     {
+      "id": "glowcoal",
+      "chance": 0.02,
+      "min": 1,
+      "max": 1
+     }
+    ]
    },
    "champion": {
     "item_chance": 0.7,
@@ -31,7 +57,21 @@
      "rare": 2.0,
      "epic": 2.0,
      "legendary": 2.0
-    }
+    },
+    "materials": [
+     {
+      "id": "hushmark",
+      "chance": 0.03,
+      "min": 1,
+      "max": 1
+     },
+     {
+      "id": "glowcoal",
+      "chance": 0.15,
+      "min": 1,
+      "max": 2
+     }
+    ]
    },
    "rare": {
     "item_chance": 0.8,
@@ -43,7 +83,21 @@
      "rare": 3.0,
      "epic": 3.0,
      "legendary": 3.0
-    }
+    },
+    "materials": [
+     {
+      "id": "hushmark",
+      "chance": 0.06,
+      "min": 1,
+      "max": 1
+     },
+     {
+      "id": "glowcoal",
+      "chance": 0.3,
+      "min": 1,
+      "max": 3
+     }
+    ]
    },
    "boss": {
     "item_chance": 0.9,
@@ -57,7 +111,21 @@
      "epic": 5.0,
      "legendary": 6.0,
      "mythic": 4.0
-    }
+    },
+    "materials": [
+     {
+      "id": "hushmark",
+      "chance": 0.25,
+      "min": 1,
+      "max": 3
+     },
+     {
+      "id": "glowcoal",
+      "chance": 1.0,
+      "min": 2,
+      "max": 5
+     }
+    ]
    },
    "chest": {
     "item_chance": 0.6,
@@ -67,7 +135,21 @@
     "gold_mult": 3.0,
     "rarity_bonus": {
      "rare": 1.5
-    }
+    },
+    "materials": [
+     {
+      "id": "hushmark",
+      "chance": 0.01,
+      "min": 1,
+      "max": 1
+     },
+     {
+      "id": "glowcoal",
+      "chance": 0.1,
+      "min": 1,
+      "max": 1
+     }
+    ]
    },
    "chest_gold": {
     "item_chance": 0.8,
@@ -80,7 +162,21 @@
      "rare": 3.0,
      "epic": 3.0,
      "legendary": 3.0
-    }
+    },
+    "materials": [
+     {
+      "id": "hushmark",
+      "chance": 0.03,
+      "min": 1,
+      "max": 1
+     },
+     {
+      "id": "glowcoal",
+      "chance": 0.5,
+      "min": 1,
+      "max": 3
+     }
+    ]
    },
    "magpie": {
     "item_chance": 1.0,
@@ -92,8 +188,152 @@
     "rarity_bonus": {
      "epic": 4.0,
      "legendary": 4.0
-    }
+    },
+    "materials": [
+     {
+      "id": "hushmark",
+      "chance": 0.2,
+      "min": 1,
+      "max": 2
+     },
+     {
+      "id": "glowcoal",
+      "chance": 1.0,
+      "min": 3,
+      "max": 6
+     }
+    ]
+   },
+   "goblet": {
+    "item_chance": 0.5,
+    "min_items": 0,
+    "max_items": 2,
+    "gold_chance": 1.0,
+    "gold_mult": 10.0,
+    "materials": [
+     {
+      "id": "hushmark",
+      "chance": 0.02,
+      "min": 1,
+      "max": 1
+     },
+     {
+      "id": "glowcoal",
+      "chance": 0.5,
+      "min": 1,
+      "max": 2
+     }
+    ]
+   },
+   "shrine": {
+    "item_chance": 0.9,
+    "min_items": 2,
+    "max_items": 4,
+    "gold_chance": 1.0,
+    "gold_mult": 5.0,
+    "min_rank": 1,
+    "rarity_bonus": {
+     "rare": 2.0,
+     "epic": 3.0,
+     "legendary": 2.5
+    },
+    "materials": [
+     {
+      "id": "hushmark",
+      "chance": 0.1,
+      "min": 1,
+      "max": 1
+     },
+     {
+      "id": "dusk_essence",
+      "chance": 0.5
+     }
+    ]
+   },
+   "egg": {
+    "item_chance": 0.5,
+    "min_items": 1,
+    "max_items": 2,
+    "gold_chance": 1.0,
+    "gold_mult": 3.0,
+    "materials": [
+     {
+      "id": "mystery_egg",
+      "chance": 1.0
+     }
+    ]
+   },
+   "moth": {
+    "item_chance": 0.8,
+    "min_items": 1,
+    "max_items": 3,
+    "gold_chance": 1.0,
+    "gold_mult": 4.0,
+    "min_rank": 1,
+    "rarity_bonus": {
+     "epic": 2.0,
+     "legendary": 2.0
+    },
+    "materials": [
+     {
+      "id": "hushmark",
+      "chance": 0.08,
+      "min": 1,
+      "max": 1
+     },
+     {
+      "id": "glowcoal",
+      "chance": 1.0,
+      "min": 2,
+      "max": 4
+     }
+    ]
+   },
+   "hushfall_cache": {
+    "item_chance": 1.0,
+    "min_items": 3,
+    "max_items": 6,
+    "gold_chance": 1.0,
+    "gold_mult": 15.0,
+    "min_rank": 1,
+    "rarity_bonus": {
+     "rare": 3.0,
+     "epic": 4.0,
+     "legendary": 4.0,
+     "mythic": 2.0
+    },
+    "materials": [
+     {
+      "id": "glowcoal",
+      "chance": 1.0,
+      "min": 3,
+      "max": 8
+     }
+    ]
    }
+  },
+  "affix_rules": {
+   "max_affixes": {
+    "magic": 2,
+    "rare": 4,
+    "epic": 4,
+    "legendary": 4,
+    "mythic": 5
+   },
+   "class_weighting": {
+    "own_class_rank_affix": 3.0,
+    "other_class_rank_affix": 0.0,
+    "primary_attribute": 1.5,
+    "off_attribute": 0.4,
+    "minion_for_non_stitcher": 0.3
+   },
+   "no_conditional_affixes": true
+  },
+  "unique_duplicate_protection": true,
+  "wish": {
+   "enabled": true,
+   "weight_mult": 3.0,
+   "note": "Lantern Shrine wish: pick 1 boss unique, x3 weight (player_wants #4)"
   }
  },
  {
@@ -135,46 +375,636 @@
    "resist_all": 1.5,
    "move_speed_pct": 1.0,
    "magic_find": 0.5,
-   "cdr_pct": 3.0
+   "cdr_pct": 3.0,
+   "more_damage": 4.0,
+   "physical_pct": 1.5,
+   "fire_pct": 1.5,
+   "cold_pct": 1.5,
+   "lightning_pct": 1.5,
+   "shadow_pct": 1.5,
+   "holy_pct": 1.5,
+   "melee_damage_pct": 1.8,
+   "projectile_damage_pct": 1.8,
+   "area_damage_pct": 1.8,
+   "minion_damage_pct": 1.8,
+   "cast_speed_pct": 2.5,
+   "projectiles": 25,
+   "pierce": 12,
+   "summon_count": 25,
+   "damage_reduction": 3.0,
+   "block": 1.5,
+   "dodge": 1.5,
+   "life_pct": 2.0,
+   "armor_pct": 0.8,
+   "gold_find": 0.3,
+   "xp_pct": 0.5,
+   "pickup_radius": 0.1,
+   "pet_xp_pct": 0.1,
+   "material_find": 0.2
   }
  },
  {
   "id": "name_parts",
   "first": [
-   "Grim",
    "Ash",
-   "Dusk",
-   "Wick",
-   "Hollow",
-   "Ember",
-   "Gloom",
-   "Moon",
-   "Bone",
-   "Thorn",
+   "Bell",
+   "Bramble",
+   "Button",
    "Candle",
-   "Rime",
+   "Cinder",
+   "Cobweb",
+   "Crow",
+   "Dew",
+   "Dim",
+   "Dusk",
+   "Echo",
+   "Fable",
+   "Fern",
+   "Flicker",
+   "Fog",
+   "Frost",
+   "Gloam",
+   "Gloom",
+   "Glimmer",
+   "Grim",
+   "Hob",
+   "Hollow",
    "Hush",
+   "Kettle",
+   "Lantern",
+   "Lull",
+   "Marsh",
+   "Mire",
+   "Mist",
+   "Moon",
+   "Moss",
+   "Moth",
+   "Murk",
+   "Nettle",
+   "Owl",
+   "Pale",
+   "Pebble",
+   "Puddle",
+   "Pumpkin",
+   "Quill",
+   "Rattle",
+   "Rime",
+   "Rook",
+   "Rust",
+   "Sable",
+   "Shade",
+   "Silk",
+   "Slumber",
+   "Snuff",
    "Soot",
-   "Bram",
-   "Wisp"
+   "Spindle",
+   "Sprig",
+   "Tallow",
+   "Thimble",
+   "Thistle",
+   "Thorn",
+   "Toad",
+   "Twig",
+   "Umber",
+   "Vesper",
+   "Whisker",
+   "Whisper",
+   "Wick",
+   "Willow",
+   "Wisp",
+   "Wren",
+   "Yarrow",
+   "Bog"
   ],
   "second": [
-   "bite",
-   "song",
-   "fang",
-   "ward",
-   "wake",
-   "mourn",
-   "glow",
-   "call",
-   "wind",
-   "shard",
-   "veil",
    "bloom",
-   "whisper",
-   "brand",
+   "bramble",
+   "button",
+   "cap",
+   "chime",
+   "cloak",
+   "crown",
+   "drift",
+   "dream",
+   "drop",
+   "flare",
+   "flicker",
    "gleam",
-   "spark"
+   "glow",
+   "grin",
+   "hood",
+   "hoot",
+   "hop",
+   "howl",
+   "nip",
+   "hum",
+   "hush",
+   "jingle",
+   "knot",
+   "lace",
+   "lull",
+   "mantle",
+   "mend",
+   "mist",
+   "moss",
+   "murmur",
+   "nook",
+   "patch",
+   "pip",
+   "purr",
+   "quill",
+   "ring",
+   "root",
+   "rustle",
+   "shard",
+   "sip",
+   "snap",
+   "song",
+   "spark",
+   "spindle",
+   "sprout",
+   "step",
+   "stitch",
+   "sting",
+   "stride",
+   "tangle",
+   "thread",
+   "tide",
+   "tooth",
+   "tuft",
+   "twist",
+   "veil",
+   "ward",
+   "whisker",
+   "whisper",
+   "wick",
+   "wink",
+   "wisp",
+   "yawn",
+   "fang",
+   "claw",
+   "bell",
+   "tail",
+   "tuck",
+   "gust"
+  ],
+  "source": "names.json (writer)"
+ },
+ {
+  "id": "proficiency",
+  "max_level": 50,
+  "xp_per_kill": 1,
+  "xp_per_elite": 5,
+  "xp_per_boss": 40,
+  "curve": {
+   "base": 60,
+   "growth": 1.09
+  },
+  "note": "XP to next = base * growth^(level-1). Level 10 ~ 1 h with one weapon type, 50 ~ 70 h. Bonuses from weapon_types[].proficiency_bonus x level."
+ },
+ {
+  "id": "upgrade",
+  "max": 15,
+  "stat_per_level_pct": 4,
+  "affix_per_level_pct": 3,
+  "gold": [
+   150.0,
+   230.0,
+   360.0,
+   560.0,
+   870.0,
+   1340.0,
+   2080.0,
+   3220.0,
+   5000.0,
+   7750.0,
+   12010.0,
+   18610.0,
+   28850.0,
+   44710.0,
+   69300.0
+  ],
+  "gold_ilvl_mult": 0.03,
+  "materials": [
+   {
+    "soot": 4
+   },
+   {
+    "soot": 8
+   },
+   {
+    "soot": 12,
+    "glowcoal": 1
+   },
+   {
+    "soot": 16,
+    "glowcoal": 2
+   },
+   {
+    "soot": 20,
+    "glowcoal": 3
+   },
+   {
+    "wickthread": 4,
+    "glowcoal": 12
+   },
+   {
+    "wickthread": 6,
+    "glowcoal": 14
+   },
+   {
+    "wickthread": 8,
+    "glowcoal": 16,
+    "dusk_essence": 1
+   },
+   {
+    "wickthread": 10,
+    "glowcoal": 18,
+    "dusk_essence": 2
+   },
+   {
+    "wickthread": 12,
+    "glowcoal": 20,
+    "dusk_essence": 3
+   },
+   {
+    "dusk_essence": 6,
+    "ember_heart": 1,
+    "glowcoal": 44
+   },
+   {
+    "dusk_essence": 9,
+    "ember_heart": 2,
+    "glowcoal": 48
+   },
+   {
+    "dusk_essence": 12,
+    "ember_heart": 3,
+    "glowcoal": 52,
+    "starmote": 1
+   },
+   {
+    "dusk_essence": 15,
+    "ember_heart": 4,
+    "glowcoal": 56,
+    "starmote": 1
+   },
+   {
+    "ember_heart": 8,
+    "lanternglass": 1,
+    "starmote": 3,
+    "glowcoal": 80
+   }
+  ],
+  "never_fails": true,
+  "milestones": {
+   "5": {
+    "glow": "soft"
+   },
+   "10": {
+    "glow": "bright"
+   },
+   "15": {
+    "glow": "radiant",
+    "title": "Fully Kindled"
+   }
+  },
+  "note": "gold cost = gold[L-1] * (1 + ilvl * gold_ilvl_mult). Costs shown up front. Upgrading never fails and never breaks an item."
+ },
+ {
+  "id": "travel",
+  "fee_per_act_distance": 25,
+  "fee_level_mult": 2,
+  "town_free": true,
+  "hearth_cooldown_s": 300,
+  "hearth_channel_s": 3,
+  "hearth_free": true,
+  "mount_speed_default": 30,
+  "mount_dismount_on": [
+   "attack",
+   "hit",
+   "cast"
   ]
+ },
+ {
+  "id": "skill_mastery",
+  "max_rank": 20,
+  "xp_base": 180,
+  "xp_growth": 1.34,
+  "xp_per_hit": 1,
+  "xp_per_kill": 3,
+  "xp_per_cast_utility": 4,
+  "per_rank_default": {
+   "damage_pct": 2.0
+  },
+  "milestone_ranks": [
+   5,
+   10,
+   15,
+   20
+  ],
+  "costs": [
+   {
+    "rank_from": 0,
+    "rank_to": 1,
+    "gold": 100.0,
+    "materials": {
+     "soot": 5
+    }
+   },
+   {
+    "rank_from": 1,
+    "rank_to": 2,
+    "gold": 140.0,
+    "materials": {
+     "soot": 10
+    }
+   },
+   {
+    "rank_from": 2,
+    "rank_to": 3,
+    "gold": 200.0,
+    "materials": {
+     "soot": 15
+    }
+   },
+   {
+    "rank_from": 3,
+    "rank_to": 4,
+    "gold": 290.0,
+    "materials": {
+     "soot": 20
+    }
+   },
+   {
+    "rank_from": 4,
+    "rank_to": 5,
+    "gold": 410.0,
+    "materials": {
+     "soot": 25
+    }
+   },
+   {
+    "rank_from": 5,
+    "rank_to": 6,
+    "gold": 580.0,
+    "materials": {
+     "wickthread": 3,
+     "act_material": 2
+    }
+   },
+   {
+    "rank_from": 6,
+    "rank_to": 7,
+    "gold": 820.0,
+    "materials": {
+     "wickthread": 4,
+     "act_material": 4
+    }
+   },
+   {
+    "rank_from": 7,
+    "rank_to": 8,
+    "gold": 1160.0,
+    "materials": {
+     "wickthread": 5,
+     "act_material": 6
+    }
+   },
+   {
+    "rank_from": 8,
+    "rank_to": 9,
+    "gold": 1650.0,
+    "materials": {
+     "wickthread": 6,
+     "act_material": 8
+    }
+   },
+   {
+    "rank_from": 9,
+    "rank_to": 10,
+    "gold": 2350.0,
+    "materials": {
+     "wickthread": 7,
+     "act_material": 10
+    }
+   },
+   {
+    "rank_from": 10,
+    "rank_to": 11,
+    "gold": 3330.0,
+    "materials": {
+     "dusk_essence": 2,
+     "act_material": 12,
+     "glowcoal": 3
+    }
+   },
+   {
+    "rank_from": 11,
+    "rank_to": 12,
+    "gold": 4730.0,
+    "materials": {
+     "dusk_essence": 3,
+     "act_material": 16,
+     "glowcoal": 6
+    }
+   },
+   {
+    "rank_from": 12,
+    "rank_to": 13,
+    "gold": 6720.0,
+    "materials": {
+     "dusk_essence": 4,
+     "act_material": 20,
+     "glowcoal": 9
+    }
+   },
+   {
+    "rank_from": 13,
+    "rank_to": 14,
+    "gold": 9540.0,
+    "materials": {
+     "dusk_essence": 5,
+     "act_material": 24,
+     "glowcoal": 12
+    }
+   },
+   {
+    "rank_from": 14,
+    "rank_to": 15,
+    "gold": 13550.0,
+    "materials": {
+     "dusk_essence": 6,
+     "act_material": 28,
+     "glowcoal": 15
+    }
+   },
+   {
+    "rank_from": 15,
+    "rank_to": 16,
+    "gold": 19250.0,
+    "materials": {
+     "ember_heart": 2,
+     "starmote": 1,
+     "glowcoal": 20
+    }
+   },
+   {
+    "rank_from": 16,
+    "rank_to": 17,
+    "gold": 27330.0,
+    "materials": {
+     "ember_heart": 3,
+     "starmote": 1,
+     "glowcoal": 30
+    }
+   },
+   {
+    "rank_from": 17,
+    "rank_to": 18,
+    "gold": 38810.0,
+    "materials": {
+     "ember_heart": 4,
+     "starmote": 1,
+     "glowcoal": 40
+    }
+   },
+   {
+    "rank_from": 18,
+    "rank_to": 19,
+    "gold": 55100.0,
+    "materials": {
+     "ember_heart": 5,
+     "starmote": 1,
+     "glowcoal": 50
+    }
+   },
+   {
+    "rank_from": 19,
+    "rank_to": 20,
+    "gold": 78250.0,
+    "materials": {
+     "ember_heart": 6,
+     "starmote": 2,
+     "glowcoal": 60,
+     "echo_lost_bell": 1
+    }
+   }
+  ],
+  "act_material_rule": "act_material = any common act material (bone_meal, bog_iron, whisper_bark, moss_silk, echo_salt, glimmer_ore, rime_shard, porcelain_chip, hush_ash, grey_feather) — player picks; converts via Alchemist transmutes",
+  "never_refunded_or_lost": true,
+  "note": "XP to reach rank r from r-1 = xp_base * xp_growth^(r-1). Ranks 1-10 ~3 h of use; 15 ~13 h; 20 ~60 h (weeks)."
+ },
+ {
+  "id": "pets",
+  "max_level": 30,
+  "xp_per_kill": 1,
+  "curve": {
+   "base": 40,
+   "growth": 1.14
+  },
+  "one_active": true,
+  "ferry_cooldown_s": 90,
+  "dig_cooldown_s": 45,
+  "combat_classes": [
+   "stitcher"
+  ],
+  "note": "Pets are companions; only Stitchers get combat help from them."
+ },
+ {
+  "id": "codex",
+  "learn_on": [
+   "salvage",
+   "equip"
+  ],
+  "kinds": [
+   "legendary_power",
+   "unique",
+   "named",
+   "pet",
+   "mount",
+   "monster"
+  ],
+  "account_wide": true,
+  "upgrade_entry_on_better_roll": true,
+  "imprint_recipe": "r_rune_imprint",
+  "note": "Codex of Light (player_wants #1)."
+ },
+ {
+  "id": "assist",
+  "name": "Lantern's Blessing",
+  "damage_taken_reduction_pct": 20,
+  "per_death_pct": 2,
+  "cap_pct": 60,
+  "allowed_in_hardcore": false,
+  "badge": false,
+  "loot_penalty": 0,
+  "note": "Offered without judgement (player_wants #23)."
+ },
+ {
+  "id": "respec",
+  "skills_free": true,
+  "starmap_free": true,
+  "mastery_refund": false,
+  "loadouts": 3,
+  "note": "Free skill respec forever (player_wants #8); GDD item 7 cheap-gold respec superseded by owner research."
+ },
+ {
+  "id": "hooks",
+  "first_kill_s": 30,
+  "first_magic_s": 120,
+  "first_elite_rare": true,
+  "first_legendary_s": 660,
+  "first_legendary_rarity": "legendary",
+  "magpie_force_zone": "a1_z2",
+  "note": "Scripted first-session hook (GDD v2 item 6)."
+ },
+ {
+  "id": "bounties",
+  "per_town": 3,
+  "refill_active_play_minutes": 30,
+  "bank_max": 3,
+  "expires": false
+ },
+ {
+  "id": "moon",
+  "cycle_nights": 8,
+  "night_minutes": 12,
+  "day_minutes": 18,
+  "full_moon_night": 8,
+  "counts": "active_play",
+  "note": "In-game moon only; never tied to the device clock (welfare)."
+ },
+ {
+  "id": "curio",
+  "currency": "hushmark",
+  "roll": "standard_drop",
+  "ilvl": "player_level",
+  "pity_applies": true,
+  "instant_reveal": true,
+  "never_for_real_money": true,
+  "price_note": "jewellery and two-handed cost more; see curio_offers"
+ },
+ {
+  "id": "hushfall",
+  "max_per_zone": 1,
+  "never_in_towns": true,
+  "target_zones_between": [
+   3,
+   5
+  ],
+  "announce_s": 3,
+  "partial_reward_on_leave": true
+ },
+ {
+  "id": "deeds",
+  "points_per_tier": [
+   5,
+   10,
+   20,
+   40,
+   80
+  ],
+  "skill_points_cap_total": 10
  }
 ]

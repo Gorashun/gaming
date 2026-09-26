@@ -11,43 +11,43 @@
   "tiers": [
    {
     "ilvl": 1,
-    "min": 2.0,
-    "max": 5.0
+    "min": 2,
+    "max": 5
    },
    {
     "ilvl": 10,
-    "min": 2.9,
-    "max": 7.2
+    "min": 3,
+    "max": 8
    },
    {
-    "ilvl": 20,
-    "min": 4.2,
-    "max": 10.5
+    "ilvl": 22,
+    "min": 5,
+    "max": 12
    },
    {
-    "ilvl": 35,
-    "min": 6.1,
-    "max": 15.2
+    "ilvl": 38,
+    "min": 8,
+    "max": 19
    },
    {
-    "ilvl": 50,
-    "min": 8.8,
-    "max": 22.1
+    "ilvl": 58,
+    "min": 11,
+    "max": 28
    },
    {
-    "ilvl": 70,
-    "min": 12.8,
-    "max": 32.0
+    "ilvl": 82,
+    "min": 16,
+    "max": 39
    },
    {
-    "ilvl": 100,
-    "min": 18.6,
-    "max": 46.5
+    "ilvl": 115,
+    "min": 22,
+    "max": 55
    },
    {
-    "ilvl": 140,
-    "min": 27.0,
-    "max": 67.4
+    "ilvl": 165,
+    "min": 32,
+    "max": 80
    }
   ]
  },
@@ -63,43 +63,43 @@
   "tiers": [
    {
     "ilvl": 1,
-    "min": 2.0,
-    "max": 5.0
+    "min": 2,
+    "max": 5
    },
    {
     "ilvl": 10,
-    "min": 2.9,
-    "max": 7.2
+    "min": 3,
+    "max": 8
    },
    {
-    "ilvl": 20,
-    "min": 4.2,
-    "max": 10.5
+    "ilvl": 22,
+    "min": 5,
+    "max": 12
    },
    {
-    "ilvl": 35,
-    "min": 6.1,
-    "max": 15.2
+    "ilvl": 38,
+    "min": 8,
+    "max": 19
    },
    {
-    "ilvl": 50,
-    "min": 8.8,
-    "max": 22.1
+    "ilvl": 58,
+    "min": 11,
+    "max": 28
    },
    {
-    "ilvl": 70,
-    "min": 12.8,
-    "max": 32.0
+    "ilvl": 82,
+    "min": 16,
+    "max": 39
    },
    {
-    "ilvl": 100,
-    "min": 18.6,
-    "max": 46.5
+    "ilvl": 115,
+    "min": 22,
+    "max": 55
    },
    {
-    "ilvl": 140,
-    "min": 27.0,
-    "max": 67.4
+    "ilvl": 165,
+    "min": 32,
+    "max": 80
    }
   ]
  },
@@ -107,7 +107,7 @@
   "id": "wisdom",
   "stat": "wisdom",
   "kind": "prefix",
-  "name": "Sage's",
+  "name": "Wise",
   "slots": [],
   "weight": 12,
   "group": "wisdom",
@@ -115,43 +115,43 @@
   "tiers": [
    {
     "ilvl": 1,
-    "min": 2.0,
-    "max": 5.0
+    "min": 2,
+    "max": 5
    },
    {
     "ilvl": 10,
-    "min": 2.9,
-    "max": 7.2
+    "min": 3,
+    "max": 8
    },
    {
-    "ilvl": 20,
-    "min": 4.2,
-    "max": 10.5
+    "ilvl": 22,
+    "min": 5,
+    "max": 12
    },
    {
-    "ilvl": 35,
-    "min": 6.1,
-    "max": 15.2
+    "ilvl": 38,
+    "min": 8,
+    "max": 19
    },
    {
-    "ilvl": 50,
-    "min": 8.8,
-    "max": 22.1
+    "ilvl": 58,
+    "min": 11,
+    "max": 28
    },
    {
-    "ilvl": 70,
-    "min": 12.8,
-    "max": 32.0
+    "ilvl": 82,
+    "min": 16,
+    "max": 39
    },
    {
-    "ilvl": 100,
-    "min": 18.6,
-    "max": 46.5
+    "ilvl": 115,
+    "min": 22,
+    "max": 55
    },
    {
-    "ilvl": 140,
-    "min": 27.0,
-    "max": 67.4
+    "ilvl": 165,
+    "min": 32,
+    "max": 80
    }
   ]
  },
@@ -159,7 +159,7 @@
   "id": "vitality",
   "stat": "vitality",
   "kind": "prefix",
-  "name": "Stout",
+  "name": "Sturdy",
   "slots": [],
   "weight": 12,
   "group": "vitality",
@@ -167,43 +167,43 @@
   "tiers": [
    {
     "ilvl": 1,
-    "min": 2.0,
-    "max": 5.0
+    "min": 2,
+    "max": 5
    },
    {
     "ilvl": 10,
-    "min": 2.9,
-    "max": 7.2
+    "min": 3,
+    "max": 8
    },
    {
-    "ilvl": 20,
-    "min": 4.2,
-    "max": 10.5
+    "ilvl": 22,
+    "min": 5,
+    "max": 12
    },
    {
-    "ilvl": 35,
-    "min": 6.1,
-    "max": 15.2
+    "ilvl": 38,
+    "min": 8,
+    "max": 19
    },
    {
-    "ilvl": 50,
-    "min": 8.8,
-    "max": 22.1
+    "ilvl": 58,
+    "min": 11,
+    "max": 28
    },
    {
-    "ilvl": 70,
-    "min": 12.8,
-    "max": 32.0
+    "ilvl": 82,
+    "min": 16,
+    "max": 39
    },
    {
-    "ilvl": 100,
-    "min": 18.6,
-    "max": 46.5
+    "ilvl": 115,
+    "min": 22,
+    "max": 55
    },
    {
-    "ilvl": 140,
-    "min": 27.0,
-    "max": 67.4
+    "ilvl": 165,
+    "min": 32,
+    "max": 80
    }
   ]
  },
@@ -211,7 +211,7 @@
   "id": "life",
   "stat": "life",
   "kind": "prefix",
-  "name": "Hale",
+  "name": "Hearty",
   "slots": [
    "head",
    "chest",
@@ -230,43 +230,43 @@
   "tiers": [
    {
     "ilvl": 1,
-    "min": 8.0,
-    "max": 20.0
+    "min": 8,
+    "max": 20
    },
    {
     "ilvl": 10,
-    "min": 11.6,
-    "max": 29.0
+    "min": 13,
+    "max": 32
    },
    {
-    "ilvl": 20,
-    "min": 16.8,
-    "max": 42.0
+    "ilvl": 22,
+    "min": 20,
+    "max": 50
    },
    {
-    "ilvl": 35,
-    "min": 24.4,
-    "max": 61.0
+    "ilvl": 38,
+    "min": 30,
+    "max": 76
    },
    {
-    "ilvl": 50,
-    "min": 35.4,
-    "max": 88.4
+    "ilvl": 58,
+    "min": 44,
+    "max": 110
    },
    {
-    "ilvl": 70,
-    "min": 51.3,
-    "max": 128.2
+    "ilvl": 82,
+    "min": 62,
+    "max": 156
    },
    {
-    "ilvl": 100,
-    "min": 74.4,
-    "max": 185.9
+    "ilvl": 115,
+    "min": 88,
+    "max": 220
    },
    {
-    "ilvl": 140,
-    "min": 107.8,
-    "max": 269.5
+    "ilvl": 165,
+    "min": 128,
+    "max": 320
    }
   ]
  },
@@ -274,7 +274,7 @@
   "id": "armor",
   "stat": "armor",
   "kind": "prefix",
-  "name": "Sturdy",
+  "name": "Plated",
   "slots": [
    "head",
    "chest",
@@ -290,43 +290,43 @@
   "tiers": [
    {
     "ilvl": 1,
-    "min": 6.0,
-    "max": 15.0
+    "min": 6,
+    "max": 15
    },
    {
     "ilvl": 10,
-    "min": 8.7,
-    "max": 21.8
+    "min": 10,
+    "max": 24
    },
    {
-    "ilvl": 20,
-    "min": 12.6,
-    "max": 31.5
+    "ilvl": 22,
+    "min": 15,
+    "max": 38
    },
    {
-    "ilvl": 35,
-    "min": 18.3,
-    "max": 45.7
+    "ilvl": 38,
+    "min": 23,
+    "max": 57
    },
    {
-    "ilvl": 50,
-    "min": 26.5,
-    "max": 66.3
+    "ilvl": 58,
+    "min": 33,
+    "max": 82
    },
    {
-    "ilvl": 70,
-    "min": 38.5,
-    "max": 96.1
+    "ilvl": 82,
+    "min": 47,
+    "max": 117
    },
    {
-    "ilvl": 100,
-    "min": 55.8,
-    "max": 139.4
+    "ilvl": 115,
+    "min": 66,
+    "max": 165
    },
    {
-    "ilvl": 140,
-    "min": 80.9,
-    "max": 202.1
+    "ilvl": 165,
+    "min": 96,
+    "max": 240
    }
   ]
  },
@@ -334,7 +334,7 @@
   "id": "dmg_pct",
   "stat": "damage_pct",
   "kind": "prefix",
-  "name": "Cruel",
+  "name": "Fierce",
   "slots": [
    "main_hand",
    "ring",
@@ -343,49 +343,49 @@
    "off_hand",
    "hands"
   ],
-  "weight": 9,
-  "group": "damage_pct",
+  "weight": 10,
+  "group": "dmg_pct",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 4.0,
-    "max": 9.0
+    "min": 4,
+    "max": 9
    },
    {
     "ilvl": 10,
-    "min": 5.0,
-    "max": 11.2
+    "min": 5,
+    "max": 12
    },
    {
-    "ilvl": 20,
-    "min": 6.2,
-    "max": 14.1
+    "ilvl": 22,
+    "min": 7,
+    "max": 15
    },
    {
-    "ilvl": 35,
-    "min": 7.8,
-    "max": 17.6
+    "ilvl": 38,
+    "min": 8,
+    "max": 18
    },
    {
-    "ilvl": 50,
-    "min": 9.8,
-    "max": 22.0
+    "ilvl": 58,
+    "min": 10,
+    "max": 22
    },
    {
-    "ilvl": 70,
-    "min": 12.2,
-    "max": 27.5
+    "ilvl": 82,
+    "min": 11,
+    "max": 25
    },
    {
-    "ilvl": 100,
-    "min": 15.3,
-    "max": 34.3
+    "ilvl": 115,
+    "min": 13,
+    "max": 30
    },
    {
-    "ilvl": 140,
-    "min": 19.1,
-    "max": 42.9
+    "ilvl": 165,
+    "min": 16,
+    "max": 35
    }
   ]
  },
@@ -399,49 +399,49 @@
    "hands",
    "ring"
   ],
-  "weight": 9,
-  "group": "damage",
+  "weight": 10,
+  "group": "flat_dmg",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 1.0,
-    "max": 4.0
+    "min": 1,
+    "max": 4
    },
    {
     "ilvl": 10,
-    "min": 1.4,
-    "max": 5.8
+    "min": 2,
+    "max": 6
    },
    {
-    "ilvl": 20,
-    "min": 2.1,
-    "max": 8.4
+    "ilvl": 22,
+    "min": 2,
+    "max": 10
    },
    {
-    "ilvl": 35,
-    "min": 3.0,
-    "max": 12.2
+    "ilvl": 38,
+    "min": 4,
+    "max": 15
    },
    {
-    "ilvl": 50,
-    "min": 4.4,
-    "max": 17.7
+    "ilvl": 58,
+    "min": 6,
+    "max": 22
    },
    {
-    "ilvl": 70,
-    "min": 6.4,
-    "max": 25.6
+    "ilvl": 82,
+    "min": 8,
+    "max": 31
    },
    {
-    "ilvl": 100,
-    "min": 9.3,
-    "max": 37.2
+    "ilvl": 115,
+    "min": 11,
+    "max": 44
    },
    {
-    "ilvl": 140,
-    "min": 13.5,
-    "max": 53.9
+    "ilvl": 165,
+    "min": 16,
+    "max": 64
    }
   ]
  },
@@ -449,7 +449,7 @@
   "id": "fire",
   "stat": "fire_pct",
   "kind": "prefix",
-  "name": "Smoldering",
+  "name": "Burning",
   "slots": [
    "main_hand",
    "ring",
@@ -458,48 +458,48 @@
    "off_hand"
   ],
   "weight": 6,
-  "group": "fire_pct",
+  "group": "fire",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 5.0,
-    "max": 10.0
+    "min": 5,
+    "max": 10
    },
    {
     "ilvl": 10,
-    "min": 6.1,
-    "max": 12.2
+    "min": 6,
+    "max": 13
    },
    {
-    "ilvl": 20,
-    "min": 7.4,
-    "max": 14.9
+    "ilvl": 22,
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 35,
-    "min": 9.1,
-    "max": 18.2
+    "ilvl": 38,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 50,
-    "min": 11.1,
-    "max": 22.2
+    "ilvl": 58,
+    "min": 12,
+    "max": 24
    },
    {
-    "ilvl": 70,
-    "min": 13.5,
-    "max": 27.0
+    "ilvl": 82,
+    "min": 14,
+    "max": 28
    },
    {
-    "ilvl": 100,
-    "min": 16.5,
-    "max": 33.0
+    "ilvl": 115,
+    "min": 16,
+    "max": 33
    },
    {
-    "ilvl": 140,
-    "min": 20.1,
-    "max": 40.2
+    "ilvl": 165,
+    "min": 20,
+    "max": 39
    }
   ]
  },
@@ -516,48 +516,48 @@
    "off_hand"
   ],
   "weight": 6,
-  "group": "cold_pct",
+  "group": "cold",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 5.0,
-    "max": 10.0
+    "min": 5,
+    "max": 10
    },
    {
     "ilvl": 10,
-    "min": 6.1,
-    "max": 12.2
+    "min": 6,
+    "max": 13
    },
    {
-    "ilvl": 20,
-    "min": 7.4,
-    "max": 14.9
+    "ilvl": 22,
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 35,
-    "min": 9.1,
-    "max": 18.2
+    "ilvl": 38,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 50,
-    "min": 11.1,
-    "max": 22.2
+    "ilvl": 58,
+    "min": 12,
+    "max": 24
    },
    {
-    "ilvl": 70,
-    "min": 13.5,
-    "max": 27.0
+    "ilvl": 82,
+    "min": 14,
+    "max": 28
    },
    {
-    "ilvl": 100,
-    "min": 16.5,
-    "max": 33.0
+    "ilvl": 115,
+    "min": 16,
+    "max": 33
    },
    {
-    "ilvl": 140,
-    "min": 20.1,
-    "max": 40.2
+    "ilvl": 165,
+    "min": 20,
+    "max": 39
    }
   ]
  },
@@ -574,48 +574,48 @@
    "off_hand"
   ],
   "weight": 6,
-  "group": "lightning_pct",
+  "group": "lightning",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 5.0,
-    "max": 10.0
+    "min": 5,
+    "max": 10
    },
    {
     "ilvl": 10,
-    "min": 6.1,
-    "max": 12.2
+    "min": 6,
+    "max": 13
    },
    {
-    "ilvl": 20,
-    "min": 7.4,
-    "max": 14.9
+    "ilvl": 22,
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 35,
-    "min": 9.1,
-    "max": 18.2
+    "ilvl": 38,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 50,
-    "min": 11.1,
-    "max": 22.2
+    "ilvl": 58,
+    "min": 12,
+    "max": 24
    },
    {
-    "ilvl": 70,
-    "min": 13.5,
-    "max": 27.0
+    "ilvl": 82,
+    "min": 14,
+    "max": 28
    },
    {
-    "ilvl": 100,
-    "min": 16.5,
-    "max": 33.0
+    "ilvl": 115,
+    "min": 16,
+    "max": 33
    },
    {
-    "ilvl": 140,
-    "min": 20.1,
-    "max": 40.2
+    "ilvl": 165,
+    "min": 20,
+    "max": 39
    }
   ]
  },
@@ -623,7 +623,7 @@
   "id": "shadow",
   "stat": "shadow_pct",
   "kind": "prefix",
-  "name": "Dusky",
+  "name": "Shadowed",
   "slots": [
    "main_hand",
    "ring",
@@ -632,48 +632,48 @@
    "off_hand"
   ],
   "weight": 6,
-  "group": "shadow_pct",
+  "group": "shadow",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 5.0,
-    "max": 10.0
+    "min": 5,
+    "max": 10
    },
    {
     "ilvl": 10,
-    "min": 6.1,
-    "max": 12.2
+    "min": 6,
+    "max": 13
    },
    {
-    "ilvl": 20,
-    "min": 7.4,
-    "max": 14.9
+    "ilvl": 22,
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 35,
-    "min": 9.1,
-    "max": 18.2
+    "ilvl": 38,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 50,
-    "min": 11.1,
-    "max": 22.2
+    "ilvl": 58,
+    "min": 12,
+    "max": 24
    },
    {
-    "ilvl": 70,
-    "min": 13.5,
-    "max": 27.0
+    "ilvl": 82,
+    "min": 14,
+    "max": 28
    },
    {
-    "ilvl": 100,
-    "min": 16.5,
-    "max": 33.0
+    "ilvl": 115,
+    "min": 16,
+    "max": 33
    },
    {
-    "ilvl": 140,
-    "min": 20.1,
-    "max": 40.2
+    "ilvl": 165,
+    "min": 20,
+    "max": 39
    }
   ]
  },
@@ -690,48 +690,48 @@
    "off_hand"
   ],
   "weight": 6,
-  "group": "holy_pct",
+  "group": "holy",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 5.0,
-    "max": 10.0
+    "min": 5,
+    "max": 10
    },
    {
     "ilvl": 10,
-    "min": 6.1,
-    "max": 12.2
+    "min": 6,
+    "max": 13
    },
    {
-    "ilvl": 20,
-    "min": 7.4,
-    "max": 14.9
+    "ilvl": 22,
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 35,
-    "min": 9.1,
-    "max": 18.2
+    "ilvl": 38,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 50,
-    "min": 11.1,
-    "max": 22.2
+    "ilvl": 58,
+    "min": 12,
+    "max": 24
    },
    {
-    "ilvl": 70,
-    "min": 13.5,
-    "max": 27.0
+    "ilvl": 82,
+    "min": 14,
+    "max": 28
    },
    {
-    "ilvl": 100,
-    "min": 16.5,
-    "max": 33.0
+    "ilvl": 115,
+    "min": 16,
+    "max": 33
    },
    {
-    "ilvl": 140,
-    "min": 20.1,
-    "max": 40.2
+    "ilvl": 165,
+    "min": 20,
+    "max": 39
    }
   ]
  },
@@ -739,7 +739,7 @@
   "id": "minion",
   "stat": "minion_damage_pct",
   "kind": "prefix",
-  "name": "Puppeteer's",
+  "name": "Stitched",
   "slots": [
    "main_hand",
    "ring",
@@ -748,49 +748,49 @@
    "off_hand",
    "chest"
   ],
-  "weight": 5,
-  "group": "minion_damage_pct",
+  "weight": 6,
+  "group": "minion",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 6.0,
-    "max": 12.0
+    "min": 6,
+    "max": 12
    },
    {
     "ilvl": 10,
-    "min": 7.3,
-    "max": 14.6
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 20,
-    "min": 8.9,
-    "max": 17.9
+    "ilvl": 22,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 35,
-    "min": 10.9,
-    "max": 21.8
+    "ilvl": 38,
+    "min": 12,
+    "max": 24
    },
    {
-    "ilvl": 50,
-    "min": 13.3,
-    "max": 26.6
+    "ilvl": 58,
+    "min": 14,
+    "max": 29
    },
    {
-    "ilvl": 70,
-    "min": 16.2,
-    "max": 32.4
+    "ilvl": 82,
+    "min": 17,
+    "max": 34
    },
    {
-    "ilvl": 100,
-    "min": 19.8,
-    "max": 39.6
+    "ilvl": 115,
+    "min": 20,
+    "max": 40
    },
    {
-    "ilvl": 140,
-    "min": 24.1,
-    "max": 48.3
+    "ilvl": 165,
+    "min": 23,
+    "max": 47
    }
   ]
  },
@@ -805,8 +805,8 @@
    "ring",
    "amulet"
   ],
-  "weight": 8,
-  "group": "attack_speed_pct",
+  "weight": 6,
+  "group": "ias",
   "decimals": 0,
   "tiers": [
    {
@@ -815,19 +815,39 @@
     "max": 5
    },
    {
-    "ilvl": 20,
-    "min": 5,
-    "max": 7
+    "ilvl": 10,
+    "min": 4,
+    "max": 6
    },
    {
-    "ilvl": 50,
-    "min": 7,
+    "ilvl": 22,
+    "min": 4,
+    "max": 8
+   },
+   {
+    "ilvl": 38,
+    "min": 5,
     "max": 9
    },
    {
-    "ilvl": 100,
+    "ilvl": 58,
+    "min": 6,
+    "max": 10
+   },
+   {
+    "ilvl": 82,
+    "min": 7,
+    "max": 12
+   },
+   {
+    "ilvl": 115,
+    "min": 8,
+    "max": 13
+   },
+   {
+    "ilvl": 165,
     "min": 9,
-    "max": 11
+    "max": 15
    }
   ]
  },
@@ -843,29 +863,44 @@
    "amulet",
    "head"
   ],
-  "weight": 8,
-  "group": "crit_chance",
+  "weight": 6,
+  "group": "crit",
   "decimals": 1,
   "tiers": [
    {
-    "ilvl": 1,
-    "min": 1,
-    "max": 2
+    "ilvl": 10,
+    "min": 1.2,
+    "max": 2.5
    },
    {
-    "ilvl": 15,
-    "min": 2,
-    "max": 3
+    "ilvl": 22,
+    "min": 1.5,
+    "max": 3.0
    },
    {
-    "ilvl": 40,
-    "min": 3,
-    "max": 4.5
+    "ilvl": 38,
+    "min": 1.8,
+    "max": 3.5
    },
    {
-    "ilvl": 80,
-    "min": 4.5,
-    "max": 6
+    "ilvl": 58,
+    "min": 2.0,
+    "max": 4.0
+   },
+   {
+    "ilvl": 82,
+    "min": 2.3,
+    "max": 4.6
+   },
+   {
+    "ilvl": 115,
+    "min": 2.6,
+    "max": 5.2
+   },
+   {
+    "ilvl": 165,
+    "min": 3.0,
+    "max": 6.0
    }
   ]
  },
@@ -881,48 +916,48 @@
    "hands"
   ],
   "weight": 8,
-  "group": "crit_damage",
+  "group": "critdmg",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 6.0,
-    "max": 12.0
+    "min": 6,
+    "max": 12
    },
    {
     "ilvl": 10,
-    "min": 7.5,
-    "max": 15.0
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 20,
-    "min": 9.4,
-    "max": 18.8
+    "ilvl": 22,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 35,
-    "min": 11.7,
-    "max": 23.4
+    "ilvl": 38,
+    "min": 12,
+    "max": 24
    },
    {
-    "ilvl": 50,
-    "min": 14.6,
-    "max": 29.3
+    "ilvl": 58,
+    "min": 14,
+    "max": 29
    },
    {
-    "ilvl": 70,
-    "min": 18.3,
-    "max": 36.6
+    "ilvl": 82,
+    "min": 17,
+    "max": 34
    },
    {
-    "ilvl": 100,
-    "min": 22.9,
-    "max": 45.8
+    "ilvl": 115,
+    "min": 20,
+    "max": 40
    },
    {
-    "ilvl": 140,
-    "min": 28.6,
-    "max": 57.2
+    "ilvl": 165,
+    "min": 23,
+    "max": 47
    }
   ]
  },
@@ -930,7 +965,7 @@
   "id": "res",
   "stat": "resist_all",
   "kind": "suffix",
-  "name": "of Warding",
+  "name": "of the Hearth",
   "slots": [
    "head",
    "chest",
@@ -944,48 +979,48 @@
    "off_hand"
   ],
   "weight": 8,
-  "group": "resist_all",
+  "group": "res",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 3.0,
-    "max": 6.0
+    "min": 3,
+    "max": 6
    },
    {
     "ilvl": 10,
-    "min": 3.6,
-    "max": 7.2
+    "min": 4,
+    "max": 8
    },
    {
-    "ilvl": 20,
-    "min": 4.3,
-    "max": 8.6
+    "ilvl": 22,
+    "min": 5,
+    "max": 10
    },
    {
-    "ilvl": 35,
-    "min": 5.2,
-    "max": 10.4
+    "ilvl": 38,
+    "min": 6,
+    "max": 12
    },
    {
-    "ilvl": 50,
-    "min": 6.2,
-    "max": 12.4
+    "ilvl": 58,
+    "min": 7,
+    "max": 14
    },
    {
-    "ilvl": 70,
-    "min": 7.5,
-    "max": 14.9
+    "ilvl": 82,
+    "min": 8,
+    "max": 17
    },
    {
-    "ilvl": 100,
-    "min": 9.0,
-    "max": 17.9
+    "ilvl": 115,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 140,
-    "min": 10.7,
-    "max": 21.5
+    "ilvl": 165,
+    "min": 12,
+    "max": 23
    }
   ]
  },
@@ -993,7 +1028,7 @@
   "id": "resfire",
   "stat": "resist_fire",
   "kind": "suffix",
-  "name": "of the Hearth",
+  "name": "of the Salamander",
   "slots": [
    "head",
    "chest",
@@ -1005,49 +1040,49 @@
    "amulet",
    "charm"
   ],
-  "weight": 6,
-  "group": "resist_fire",
+  "weight": 7,
+  "group": "resfire",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 6.0,
-    "max": 12.0
+    "min": 6,
+    "max": 12
    },
    {
     "ilvl": 10,
-    "min": 7.2,
-    "max": 14.4
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 20,
-    "min": 8.6,
-    "max": 17.3
+    "ilvl": 22,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 35,
-    "min": 10.4,
-    "max": 20.7
+    "ilvl": 38,
+    "min": 12,
+    "max": 24
    },
    {
-    "ilvl": 50,
-    "min": 12.4,
-    "max": 24.9
+    "ilvl": 58,
+    "min": 14,
+    "max": 29
    },
    {
-    "ilvl": 70,
-    "min": 14.9,
-    "max": 29.9
+    "ilvl": 82,
+    "min": 17,
+    "max": 34
    },
    {
-    "ilvl": 100,
-    "min": 17.9,
-    "max": 35.8
+    "ilvl": 115,
+    "min": 20,
+    "max": 40
    },
    {
-    "ilvl": 140,
-    "min": 21.5,
-    "max": 43.0
+    "ilvl": 165,
+    "min": 23,
+    "max": 47
    }
   ]
  },
@@ -1055,7 +1090,7 @@
   "id": "rescold",
   "stat": "resist_cold",
   "kind": "suffix",
-  "name": "of the Thaw",
+  "name": "of the Walrus",
   "slots": [
    "head",
    "chest",
@@ -1067,49 +1102,49 @@
    "amulet",
    "charm"
   ],
-  "weight": 6,
-  "group": "resist_cold",
+  "weight": 7,
+  "group": "rescold",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 6.0,
-    "max": 12.0
+    "min": 6,
+    "max": 12
    },
    {
     "ilvl": 10,
-    "min": 7.2,
-    "max": 14.4
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 20,
-    "min": 8.6,
-    "max": 17.3
+    "ilvl": 22,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 35,
-    "min": 10.4,
-    "max": 20.7
+    "ilvl": 38,
+    "min": 12,
+    "max": 24
    },
    {
-    "ilvl": 50,
-    "min": 12.4,
-    "max": 24.9
+    "ilvl": 58,
+    "min": 14,
+    "max": 29
    },
    {
-    "ilvl": 70,
-    "min": 14.9,
-    "max": 29.9
+    "ilvl": 82,
+    "min": 17,
+    "max": 34
    },
    {
-    "ilvl": 100,
-    "min": 17.9,
-    "max": 35.8
+    "ilvl": 115,
+    "min": 20,
+    "max": 40
    },
    {
-    "ilvl": 140,
-    "min": 21.5,
-    "max": 43.0
+    "ilvl": 165,
+    "min": 23,
+    "max": 47
    }
   ]
  },
@@ -1117,7 +1152,7 @@
   "id": "resshadow",
   "stat": "resist_shadow",
   "kind": "suffix",
-  "name": "of Dawn",
+  "name": "of the Moth",
   "slots": [
    "head",
    "chest",
@@ -1129,49 +1164,49 @@
    "amulet",
    "charm"
   ],
-  "weight": 6,
-  "group": "resist_shadow",
+  "weight": 7,
+  "group": "resshadow",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 6.0,
-    "max": 12.0
+    "min": 6,
+    "max": 12
    },
    {
     "ilvl": 10,
-    "min": 7.2,
-    "max": 14.4
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 20,
-    "min": 8.6,
-    "max": 17.3
+    "ilvl": 22,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 35,
-    "min": 10.4,
-    "max": 20.7
+    "ilvl": 38,
+    "min": 12,
+    "max": 24
    },
    {
-    "ilvl": 50,
-    "min": 12.4,
-    "max": 24.9
+    "ilvl": 58,
+    "min": 14,
+    "max": 29
    },
    {
-    "ilvl": 70,
-    "min": 14.9,
-    "max": 29.9
+    "ilvl": 82,
+    "min": 17,
+    "max": 34
    },
    {
-    "ilvl": 100,
-    "min": 17.9,
-    "max": 35.8
+    "ilvl": 115,
+    "min": 20,
+    "max": 40
    },
    {
-    "ilvl": 140,
-    "min": 21.5,
-    "max": 43.0
+    "ilvl": 165,
+    "min": 23,
+    "max": 47
    }
   ]
  },
@@ -1179,56 +1214,56 @@
   "id": "loh",
   "stat": "life_on_hit",
   "kind": "suffix",
-  "name": "of Leeching",
+  "name": "of the Leech",
   "slots": [
    "main_hand",
    "ring",
    "amulet",
    "hands"
   ],
-  "weight": 6,
-  "group": "life_on_hit",
+  "weight": 7,
+  "group": "loh",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 1.0,
-    "max": 3.0
+    "min": 1,
+    "max": 3
    },
    {
     "ilvl": 10,
-    "min": 1.4,
-    "max": 4.3
+    "min": 2,
+    "max": 5
    },
    {
-    "ilvl": 20,
-    "min": 2.1,
-    "max": 6.3
+    "ilvl": 22,
+    "min": 2,
+    "max": 8
    },
    {
-    "ilvl": 35,
-    "min": 3.0,
-    "max": 9.1
+    "ilvl": 38,
+    "min": 4,
+    "max": 11
    },
    {
-    "ilvl": 50,
-    "min": 4.4,
-    "max": 13.3
+    "ilvl": 58,
+    "min": 6,
+    "max": 16
    },
    {
-    "ilvl": 70,
-    "min": 6.4,
-    "max": 19.2
+    "ilvl": 82,
+    "min": 8,
+    "max": 23
    },
    {
-    "ilvl": 100,
-    "min": 9.3,
-    "max": 27.9
+    "ilvl": 115,
+    "min": 11,
+    "max": 33
    },
    {
-    "ilvl": 140,
-    "min": 13.5,
-    "max": 40.4
+    "ilvl": 165,
+    "min": 16,
+    "max": 48
    }
   ]
  },
@@ -1248,49 +1283,49 @@
    "amulet",
    "charm"
   ],
-  "weight": 6,
-  "group": "life_regen",
-  "decimals": 0,
+  "weight": 7,
+  "group": "regen",
+  "decimals": 1,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 1.0,
-    "max": 3.0
+    "min": 1,
+    "max": 3
    },
    {
     "ilvl": 10,
-    "min": 1.4,
-    "max": 4.3
+    "min": 1.6,
+    "max": 4.8
    },
    {
-    "ilvl": 20,
-    "min": 2.1,
-    "max": 6.3
+    "ilvl": 22,
+    "min": 2.5,
+    "max": 7.5
    },
    {
-    "ilvl": 35,
-    "min": 3.0,
-    "max": 9.1
+    "ilvl": 38,
+    "min": 3.8,
+    "max": 11.4
    },
    {
-    "ilvl": 50,
-    "min": 4.4,
-    "max": 13.3
+    "ilvl": 58,
+    "min": 5.5,
+    "max": 16.5
    },
    {
-    "ilvl": 70,
-    "min": 6.4,
-    "max": 19.2
+    "ilvl": 82,
+    "min": 7.8,
+    "max": 23.4
    },
    {
-    "ilvl": 100,
-    "min": 9.3,
-    "max": 27.9
+    "ilvl": 115,
+    "min": 11,
+    "max": 33
    },
    {
-    "ilvl": 140,
-    "min": 13.5,
-    "max": 40.4
+    "ilvl": 165,
+    "min": 16,
+    "max": 48
    }
   ]
  },
@@ -1298,12 +1333,12 @@
   "id": "move",
   "stat": "move_speed_pct",
   "kind": "suffix",
-  "name": "of the Wind",
+  "name": "of the Hare",
   "slots": [
    "feet"
   ],
-  "weight": 14,
-  "group": "move_speed_pct",
+  "weight": 6,
+  "group": "move",
   "decimals": 0,
   "tiers": [
    {
@@ -1312,14 +1347,39 @@
     "max": 6
    },
    {
-    "ilvl": 30,
+    "ilvl": 10,
+    "min": 5,
+    "max": 8
+   },
+   {
+    "ilvl": 22,
     "min": 6,
     "max": 9
    },
    {
-    "ilvl": 70,
-    "min": 9,
+    "ilvl": 38,
+    "min": 7,
+    "max": 10
+   },
+   {
+    "ilvl": 58,
+    "min": 8,
     "max": 12
+   },
+   {
+    "ilvl": 82,
+    "min": 9,
+    "max": 14
+   },
+   {
+    "ilvl": 115,
+    "min": 10,
+    "max": 16
+   },
+   {
+    "ilvl": 165,
+    "min": 12,
+    "max": 18
    }
   ]
  },
@@ -1327,31 +1387,56 @@
   "id": "cdr",
   "stat": "cdr_pct",
   "kind": "suffix",
-  "name": "of Rhythm",
+  "name": "of the Clock",
   "slots": [
    "head",
    "amulet",
    "ring",
    "off_hand"
   ],
-  "weight": 5,
-  "group": "cdr_pct",
-  "decimals": 0,
+  "weight": 4,
+  "group": "cdr",
+  "decimals": 1,
   "tiers": [
    {
-    "ilvl": 10,
+    "ilvl": 1,
     "min": 2,
     "max": 4
    },
    {
-    "ilvl": 40,
-    "min": 4,
-    "max": 6
+    "ilvl": 10,
+    "min": 2.5,
+    "max": 5.0
    },
    {
-    "ilvl": 90,
-    "min": 6,
-    "max": 8
+    "ilvl": 22,
+    "min": 3.0,
+    "max": 6.0
+   },
+   {
+    "ilvl": 38,
+    "min": 3.5,
+    "max": 7.0
+   },
+   {
+    "ilvl": 58,
+    "min": 4.0,
+    "max": 8.0
+   },
+   {
+    "ilvl": 82,
+    "min": 4.6,
+    "max": 9.2
+   },
+   {
+    "ilvl": 115,
+    "min": 5.2,
+    "max": 10.4
+   },
+   {
+    "ilvl": 165,
+    "min": 6.0,
+    "max": 12.0
    }
   ]
  },
@@ -1359,30 +1444,55 @@
   "id": "area",
   "stat": "area_pct",
   "kind": "suffix",
-  "name": "of Expanse",
+  "name": "of Reach",
   "slots": [
    "chest",
    "amulet",
    "off_hand"
   ],
-  "weight": 5,
-  "group": "area_pct",
+  "weight": 4,
+  "group": "area",
   "decimals": 0,
   "tiers": [
    {
-    "ilvl": 10,
+    "ilvl": 1,
     "min": 5,
     "max": 8
    },
    {
-    "ilvl": 50,
+    "ilvl": 10,
+    "min": 6,
+    "max": 10
+   },
+   {
+    "ilvl": 22,
     "min": 8,
     "max": 12
    },
    {
-    "ilvl": 100,
-    "min": 12,
+    "ilvl": 38,
+    "min": 9,
+    "max": 14
+   },
+   {
+    "ilvl": 58,
+    "min": 10,
     "max": 16
+   },
+   {
+    "ilvl": 82,
+    "min": 12,
+    "max": 18
+   },
+   {
+    "ilvl": 115,
+    "min": 13,
+    "max": 21
+   },
+   {
+    "ilvl": 165,
+    "min": 15,
+    "max": 24
    }
   ]
  },
@@ -1393,48 +1503,48 @@
   "name": "of Fortune",
   "slots": [],
   "weight": 6,
-  "group": "magic_find",
+  "group": "mf",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 4.0,
-    "max": 8.0
+    "min": 4,
+    "max": 8
    },
    {
     "ilvl": 10,
-    "min": 4.8,
-    "max": 9.6
+    "min": 5,
+    "max": 10
    },
    {
-    "ilvl": 20,
-    "min": 5.8,
-    "max": 11.5
+    "ilvl": 22,
+    "min": 7,
+    "max": 13
    },
    {
-    "ilvl": 35,
-    "min": 6.9,
-    "max": 13.8
+    "ilvl": 38,
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 50,
-    "min": 8.3,
-    "max": 16.6
+    "ilvl": 58,
+    "min": 10,
+    "max": 19
    },
    {
-    "ilvl": 70,
-    "min": 10.0,
-    "max": 19.9
+    "ilvl": 82,
+    "min": 11,
+    "max": 22
    },
    {
-    "ilvl": 100,
-    "min": 11.9,
-    "max": 23.9
+    "ilvl": 115,
+    "min": 13,
+    "max": 26
    },
    {
-    "ilvl": 140,
-    "min": 14.3,
-    "max": 28.7
+    "ilvl": 165,
+    "min": 16,
+    "max": 31
    }
   ]
  },
@@ -1442,51 +1552,51 @@
   "id": "gf",
   "stat": "gold_find",
   "kind": "suffix",
-  "name": "of Greed",
+  "name": "of the Magpie",
   "slots": [],
-  "weight": 5,
-  "group": "gold_find",
+  "weight": 6,
+  "group": "gf",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 6.0,
-    "max": 12.0
+    "min": 6,
+    "max": 12
    },
    {
     "ilvl": 10,
-    "min": 7.2,
-    "max": 14.4
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 20,
-    "min": 8.6,
-    "max": 17.3
+    "ilvl": 22,
+    "min": 10,
+    "max": 20
    },
    {
-    "ilvl": 35,
-    "min": 10.4,
-    "max": 20.7
+    "ilvl": 38,
+    "min": 12,
+    "max": 24
    },
    {
-    "ilvl": 50,
-    "min": 12.4,
-    "max": 24.9
+    "ilvl": 58,
+    "min": 14,
+    "max": 29
    },
    {
-    "ilvl": 70,
-    "min": 14.9,
-    "max": 29.9
+    "ilvl": 82,
+    "min": 17,
+    "max": 34
    },
    {
-    "ilvl": 100,
-    "min": 17.9,
-    "max": 35.8
+    "ilvl": 115,
+    "min": 20,
+    "max": 40
    },
    {
-    "ilvl": 140,
-    "min": 21.5,
-    "max": 43.0
+    "ilvl": 165,
+    "min": 23,
+    "max": 47
    }
   ]
  },
@@ -1498,21 +1608,52 @@
   "slots": [
    "head",
    "amulet",
-   "ring"
+   "ring",
+   "charm"
   ],
   "weight": 3,
-  "group": "xp_pct",
+  "group": "xp",
   "decimals": 0,
   "tiers": [
    {
-    "ilvl": 5,
+    "ilvl": 1,
     "min": 3,
     "max": 5
    },
    {
-    "ilvl": 40,
-    "min": 5,
+    "ilvl": 10,
+    "min": 4,
+    "max": 6
+   },
+   {
+    "ilvl": 22,
+    "min": 4,
     "max": 8
+   },
+   {
+    "ilvl": 38,
+    "min": 5,
+    "max": 9
+   },
+   {
+    "ilvl": 58,
+    "min": 6,
+    "max": 10
+   },
+   {
+    "ilvl": 82,
+    "min": 7,
+    "max": 12
+   },
+   {
+    "ilvl": 115,
+    "min": 8,
+    "max": 13
+   },
+   {
+    "ilvl": 165,
+    "min": 9,
+    "max": 15
    }
   ]
  },
@@ -1526,49 +1667,49 @@
    "off_hand",
    "legs"
   ],
-  "weight": 5,
+  "weight": 6,
   "group": "thorns",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 3.0,
-    "max": 8.0
+    "min": 3,
+    "max": 8
    },
    {
     "ilvl": 10,
-    "min": 4.3,
-    "max": 11.6
+    "min": 5,
+    "max": 13
    },
    {
-    "ilvl": 20,
-    "min": 6.3,
-    "max": 16.8
+    "ilvl": 22,
+    "min": 8,
+    "max": 20
    },
    {
-    "ilvl": 35,
-    "min": 9.1,
-    "max": 24.4
+    "ilvl": 38,
+    "min": 11,
+    "max": 30
    },
    {
-    "ilvl": 50,
-    "min": 13.3,
-    "max": 35.4
+    "ilvl": 58,
+    "min": 16,
+    "max": 44
    },
    {
-    "ilvl": 70,
-    "min": 19.2,
-    "max": 51.3
+    "ilvl": 82,
+    "min": 23,
+    "max": 62
    },
    {
-    "ilvl": 100,
-    "min": 27.9,
-    "max": 74.4
+    "ilvl": 115,
+    "min": 33,
+    "max": 88
    },
    {
-    "ilvl": 140,
-    "min": 40.4,
-    "max": 107.8
+    "ilvl": 165,
+    "min": 48,
+    "max": 128
    }
   ]
  },
@@ -1576,11 +1717,11 @@
   "id": "block",
   "stat": "block",
   "kind": "suffix",
-  "name": "of the Bulwark",
+  "name": "of the Wall",
   "slots": [
-   "off_hand"
+   "shield"
   ],
-  "weight": 8,
+  "weight": 5,
   "group": "block",
   "decimals": 0,
   "tiers": [
@@ -1590,9 +1731,39 @@
     "max": 5
    },
    {
-    "ilvl": 40,
-    "min": 5,
+    "ilvl": 10,
+    "min": 4,
+    "max": 6
+   },
+   {
+    "ilvl": 22,
+    "min": 4,
     "max": 8
+   },
+   {
+    "ilvl": 38,
+    "min": 5,
+    "max": 9
+   },
+   {
+    "ilvl": 58,
+    "min": 6,
+    "max": 10
+   },
+   {
+    "ilvl": 82,
+    "min": 7,
+    "max": 12
+   },
+   {
+    "ilvl": 115,
+    "min": 8,
+    "max": 13
+   },
+   {
+    "ilvl": 165,
+    "min": 9,
+    "max": 15
    }
   ]
  },
@@ -1600,56 +1771,56 @@
   "id": "resmax",
   "stat": "resource_max",
   "kind": "suffix",
-  "name": "of Plenty",
+  "name": "of Depth",
   "slots": [
    "head",
    "amulet",
    "off_hand",
    "chest"
   ],
-  "weight": 6,
-  "group": "resource_max",
+  "weight": 7,
+  "group": "resmax",
   "decimals": 0,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 5.0,
-    "max": 10.0
+    "min": 5,
+    "max": 10
    },
    {
     "ilvl": 10,
-    "min": 5.8,
-    "max": 11.5
+    "min": 8,
+    "max": 16
    },
    {
-    "ilvl": 20,
-    "min": 6.6,
-    "max": 13.2
+    "ilvl": 22,
+    "min": 12,
+    "max": 25
    },
    {
-    "ilvl": 35,
-    "min": 7.6,
-    "max": 15.2
+    "ilvl": 38,
+    "min": 19,
+    "max": 38
    },
    {
-    "ilvl": 50,
-    "min": 8.7,
-    "max": 17.5
+    "ilvl": 58,
+    "min": 28,
+    "max": 55
    },
    {
-    "ilvl": 70,
-    "min": 10.1,
-    "max": 20.1
+    "ilvl": 82,
+    "min": 39,
+    "max": 78
    },
    {
-    "ilvl": 100,
-    "min": 11.6,
-    "max": 23.1
+    "ilvl": 115,
+    "min": 55,
+    "max": 110
    },
    {
-    "ilvl": 140,
-    "min": 13.3,
-    "max": 26.6
+    "ilvl": 165,
+    "min": 80,
+    "max": 160
    }
   ]
  },
@@ -1664,49 +1835,5057 @@
    "main_hand",
    "off_hand"
   ],
-  "weight": 6,
-  "group": "resource_regen",
+  "weight": 7,
+  "group": "resregen",
   "decimals": 1,
   "tiers": [
    {
     "ilvl": 1,
-    "min": 1.0,
-    "max": 2.0
+    "min": 1,
+    "max": 2
    },
    {
     "ilvl": 10,
-    "min": 1.1,
-    "max": 2.3
+    "min": 1.2,
+    "max": 2.5
    },
    {
-    "ilvl": 20,
-    "min": 1.3,
-    "max": 2.6
-   },
-   {
-    "ilvl": 35,
+    "ilvl": 22,
     "min": 1.5,
     "max": 3.0
    },
    {
-    "ilvl": 50,
-    "min": 1.7,
+    "ilvl": 38,
+    "min": 1.8,
     "max": 3.5
    },
    {
-    "ilvl": 70,
+    "ilvl": 58,
     "min": 2.0,
     "max": 4.0
    },
    {
-    "ilvl": 100,
+    "ilvl": 82,
     "min": 2.3,
     "max": 4.6
    },
    {
-    "ilvl": 140,
-    "min": 2.7,
-    "max": 5.3
+    "ilvl": 115,
+    "min": 2.6,
+    "max": 5.2
+   },
+   {
+    "ilvl": 165,
+    "min": 3.0,
+    "max": 6.0
+   }
+  ]
+ },
+ {
+  "id": "life_pct",
+  "stat": "life_pct",
+  "kind": "prefix",
+  "name": "Hale",
+  "slots": [
+   "chest",
+   "belt",
+   "amulet",
+   "head",
+   "legs"
+  ],
+  "weight": 6,
+  "group": "life_pct",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 3,
+    "max": 5
+   },
+   {
+    "ilvl": 10,
+    "min": 4,
+    "max": 6
+   },
+   {
+    "ilvl": 22,
+    "min": 4,
+    "max": 8
+   },
+   {
+    "ilvl": 38,
+    "min": 5,
+    "max": 9
+   },
+   {
+    "ilvl": 58,
+    "min": 6,
+    "max": 10
+   },
+   {
+    "ilvl": 82,
+    "min": 7,
+    "max": 12
+   },
+   {
+    "ilvl": 115,
+    "min": 8,
+    "max": 13
+   },
+   {
+    "ilvl": 165,
+    "min": 9,
+    "max": 15
+   }
+  ]
+ },
+ {
+  "id": "armor_pct",
+  "stat": "armor_pct",
+  "kind": "prefix",
+  "name": "Reinforced",
+  "slots": [
+   "head",
+   "chest",
+   "hands",
+   "legs",
+   "feet",
+   "belt",
+   "shield"
+  ],
+  "weight": 7,
+  "group": "armor_pct",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 6,
+    "max": 12
+   },
+   {
+    "ilvl": 10,
+    "min": 8,
+    "max": 16
+   },
+   {
+    "ilvl": 22,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 38,
+    "min": 12,
+    "max": 24
+   },
+   {
+    "ilvl": 58,
+    "min": 14,
+    "max": 29
+   },
+   {
+    "ilvl": 82,
+    "min": 17,
+    "max": 34
+   },
+   {
+    "ilvl": 115,
+    "min": 20,
+    "max": 40
+   },
+   {
+    "ilvl": 165,
+    "min": 23,
+    "max": 47
+   }
+  ]
+ },
+ {
+  "id": "physical",
+  "stat": "physical_pct",
+  "kind": "prefix",
+  "name": "Honed",
+  "slots": [
+   "main_hand",
+   "hands",
+   "amulet",
+   "ring"
+  ],
+  "weight": 6,
+  "group": "physical",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 5,
+    "max": 10
+   },
+   {
+    "ilvl": 10,
+    "min": 6,
+    "max": 13
+   },
+   {
+    "ilvl": 22,
+    "min": 8,
+    "max": 16
+   },
+   {
+    "ilvl": 38,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 58,
+    "min": 12,
+    "max": 24
+   },
+   {
+    "ilvl": 82,
+    "min": 14,
+    "max": 28
+   },
+   {
+    "ilvl": 115,
+    "min": 16,
+    "max": 33
+   },
+   {
+    "ilvl": 165,
+    "min": 20,
+    "max": 39
+   }
+  ]
+ },
+ {
+  "id": "melee",
+  "stat": "melee_damage_pct",
+  "kind": "prefix",
+  "name": "Brawler's",
+  "slots": [
+   "main_hand",
+   "hands",
+   "amulet",
+   "ring",
+   "shield"
+  ],
+  "weight": 6,
+  "group": "melee",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 5,
+    "max": 10
+   },
+   {
+    "ilvl": 10,
+    "min": 6,
+    "max": 13
+   },
+   {
+    "ilvl": 22,
+    "min": 8,
+    "max": 16
+   },
+   {
+    "ilvl": 38,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 58,
+    "min": 12,
+    "max": 24
+   },
+   {
+    "ilvl": 82,
+    "min": 14,
+    "max": 28
+   },
+   {
+    "ilvl": 115,
+    "min": 16,
+    "max": 33
+   },
+   {
+    "ilvl": 165,
+    "min": 20,
+    "max": 39
+   }
+  ]
+ },
+ {
+  "id": "projectile",
+  "stat": "projectile_damage_pct",
+  "kind": "prefix",
+  "name": "Fletched",
+  "slots": [
+   "main_hand",
+   "quiver",
+   "hands",
+   "amulet",
+   "ring"
+  ],
+  "weight": 6,
+  "group": "projectile",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 5,
+    "max": 10
+   },
+   {
+    "ilvl": 10,
+    "min": 6,
+    "max": 13
+   },
+   {
+    "ilvl": 22,
+    "min": 8,
+    "max": 16
+   },
+   {
+    "ilvl": 38,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 58,
+    "min": 12,
+    "max": 24
+   },
+   {
+    "ilvl": 82,
+    "min": 14,
+    "max": 28
+   },
+   {
+    "ilvl": 115,
+    "min": 16,
+    "max": 33
+   },
+   {
+    "ilvl": 165,
+    "min": 20,
+    "max": 39
+   }
+  ]
+ },
+ {
+  "id": "area_dmg",
+  "stat": "area_damage_pct",
+  "kind": "prefix",
+  "name": "Sweeping",
+  "slots": [
+   "main_hand",
+   "amulet",
+   "chest",
+   "ring",
+   "tome"
+  ],
+  "weight": 6,
+  "group": "area_dmg",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 5,
+    "max": 10
+   },
+   {
+    "ilvl": 10,
+    "min": 6,
+    "max": 13
+   },
+   {
+    "ilvl": 22,
+    "min": 8,
+    "max": 16
+   },
+   {
+    "ilvl": 38,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 58,
+    "min": 12,
+    "max": 24
+   },
+   {
+    "ilvl": 82,
+    "min": 14,
+    "max": 28
+   },
+   {
+    "ilvl": 115,
+    "min": 16,
+    "max": 33
+   },
+   {
+    "ilvl": 165,
+    "min": 20,
+    "max": 39
+   }
+  ]
+ },
+ {
+  "id": "basic",
+  "stat": "basic_damage_pct",
+  "kind": "prefix",
+  "name": "Practiced",
+  "slots": [
+   "main_hand",
+   "hands",
+   "ring"
+  ],
+  "weight": 5,
+  "group": "basic",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 8,
+    "max": 14
+   },
+   {
+    "ilvl": 10,
+    "min": 10,
+    "max": 18
+   },
+   {
+    "ilvl": 22,
+    "min": 13,
+    "max": 23
+   },
+   {
+    "ilvl": 38,
+    "min": 16,
+    "max": 28
+   },
+   {
+    "ilvl": 58,
+    "min": 19,
+    "max": 34
+   },
+   {
+    "ilvl": 82,
+    "min": 22,
+    "max": 39
+   },
+   {
+    "ilvl": 115,
+    "min": 26,
+    "max": 46
+   },
+   {
+    "ilvl": 165,
+    "min": 31,
+    "max": 55
+   }
+  ]
+ },
+ {
+  "id": "might_pct",
+  "stat": "might_pct",
+  "kind": "prefix",
+  "name": "Heroic",
+  "slots": [
+   "amulet",
+   "chest"
+  ],
+  "weight": 3,
+  "group": "might_pct",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 4,
+    "max": 6
+   },
+   {
+    "ilvl": 22,
+    "min": 4,
+    "max": 8
+   },
+   {
+    "ilvl": 38,
+    "min": 5,
+    "max": 9
+   },
+   {
+    "ilvl": 58,
+    "min": 6,
+    "max": 10
+   },
+   {
+    "ilvl": 82,
+    "min": 7,
+    "max": 12
+   },
+   {
+    "ilvl": 115,
+    "min": 8,
+    "max": 13
+   },
+   {
+    "ilvl": 165,
+    "min": 9,
+    "max": 15
+   }
+  ]
+ },
+ {
+  "id": "agility_pct",
+  "stat": "agility_pct",
+  "kind": "prefix",
+  "name": "Feline",
+  "slots": [
+   "amulet",
+   "chest"
+  ],
+  "weight": 3,
+  "group": "agility_pct",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 4,
+    "max": 6
+   },
+   {
+    "ilvl": 22,
+    "min": 4,
+    "max": 8
+   },
+   {
+    "ilvl": 38,
+    "min": 5,
+    "max": 9
+   },
+   {
+    "ilvl": 58,
+    "min": 6,
+    "max": 10
+   },
+   {
+    "ilvl": 82,
+    "min": 7,
+    "max": 12
+   },
+   {
+    "ilvl": 115,
+    "min": 8,
+    "max": 13
+   },
+   {
+    "ilvl": 165,
+    "min": 9,
+    "max": 15
+   }
+  ]
+ },
+ {
+  "id": "wisdom_pct",
+  "stat": "wisdom_pct",
+  "kind": "prefix",
+  "name": "Sagely",
+  "slots": [
+   "amulet",
+   "chest"
+  ],
+  "weight": 3,
+  "group": "wisdom_pct",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 4,
+    "max": 6
+   },
+   {
+    "ilvl": 22,
+    "min": 4,
+    "max": 8
+   },
+   {
+    "ilvl": 38,
+    "min": 5,
+    "max": 9
+   },
+   {
+    "ilvl": 58,
+    "min": 6,
+    "max": 10
+   },
+   {
+    "ilvl": 82,
+    "min": 7,
+    "max": 12
+   },
+   {
+    "ilvl": 115,
+    "min": 8,
+    "max": 13
+   },
+   {
+    "ilvl": 165,
+    "min": 9,
+    "max": 15
+   }
+  ]
+ },
+ {
+  "id": "vitality_pct",
+  "stat": "vitality_pct",
+  "kind": "prefix",
+  "name": "Stalwart",
+  "slots": [
+   "amulet",
+   "chest",
+   "belt"
+  ],
+  "weight": 3,
+  "group": "vitality_pct",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 4,
+    "max": 6
+   },
+   {
+    "ilvl": 22,
+    "min": 4,
+    "max": 8
+   },
+   {
+    "ilvl": 38,
+    "min": 5,
+    "max": 9
+   },
+   {
+    "ilvl": 58,
+    "min": 6,
+    "max": 10
+   },
+   {
+    "ilvl": 82,
+    "min": 7,
+    "max": 12
+   },
+   {
+    "ilvl": 115,
+    "min": 8,
+    "max": 13
+   },
+   {
+    "ilvl": 165,
+    "min": 9,
+    "max": 15
+   }
+  ]
+ },
+ {
+  "id": "resmax_pct",
+  "stat": "resource_max_pct",
+  "kind": "prefix",
+  "name": "Brimming",
+  "slots": [
+   "amulet",
+   "tome",
+   "head"
+  ],
+  "weight": 3,
+  "group": "resmax_pct",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 5,
+    "max": 9
+   },
+   {
+    "ilvl": 22,
+    "min": 6,
+    "max": 10
+   },
+   {
+    "ilvl": 38,
+    "min": 7,
+    "max": 12
+   },
+   {
+    "ilvl": 58,
+    "min": 8,
+    "max": 14
+   },
+   {
+    "ilvl": 82,
+    "min": 9,
+    "max": 16
+   },
+   {
+    "ilvl": 115,
+    "min": 10,
+    "max": 18
+   },
+   {
+    "ilvl": 165,
+    "min": 12,
+    "max": 21
+   }
+  ]
+ },
+ {
+  "id": "minion_life",
+  "stat": "minion_life_pct",
+  "kind": "prefix",
+  "name": "Well-Stuffed",
+  "slots": [
+   "chest",
+   "off_hand",
+   "amulet",
+   "legs"
+  ],
+  "weight": 5,
+  "group": "minion_life",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 8,
+    "max": 14
+   },
+   {
+    "ilvl": 10,
+    "min": 10,
+    "max": 18
+   },
+   {
+    "ilvl": 22,
+    "min": 13,
+    "max": 23
+   },
+   {
+    "ilvl": 38,
+    "min": 16,
+    "max": 28
+   },
+   {
+    "ilvl": 58,
+    "min": 19,
+    "max": 34
+   },
+   {
+    "ilvl": 82,
+    "min": 22,
+    "max": 39
+   },
+   {
+    "ilvl": 115,
+    "min": 26,
+    "max": 46
+   },
+   {
+    "ilvl": 165,
+    "min": 31,
+    "max": 55
+   }
+  ]
+ },
+ {
+  "id": "elite_dmg",
+  "stat": "elite_damage_pct",
+  "kind": "prefix",
+  "name": "Giant-Felling",
+  "slots": [
+   "main_hand",
+   "ring",
+   "amulet",
+   "charm"
+  ],
+  "weight": 4,
+  "group": "elite_dmg",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 6,
+    "max": 13
+   },
+   {
+    "ilvl": 22,
+    "min": 8,
+    "max": 16
+   },
+   {
+    "ilvl": 38,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 58,
+    "min": 12,
+    "max": 24
+   },
+   {
+    "ilvl": 82,
+    "min": 14,
+    "max": 28
+   },
+   {
+    "ilvl": 115,
+    "min": 16,
+    "max": 33
+   },
+   {
+    "ilvl": 165,
+    "min": 20,
+    "max": 39
+   }
+  ]
+ },
+ {
+  "id": "cast",
+  "stat": "cast_speed_pct",
+  "kind": "suffix",
+  "name": "of Whispers",
+  "slots": [
+   "main_hand",
+   "hands",
+   "amulet",
+   "ring",
+   "tome"
+  ],
+  "weight": 6,
+  "group": "cast",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 3,
+    "max": 5
+   },
+   {
+    "ilvl": 10,
+    "min": 4,
+    "max": 6
+   },
+   {
+    "ilvl": 22,
+    "min": 4,
+    "max": 8
+   },
+   {
+    "ilvl": 38,
+    "min": 5,
+    "max": 9
+   },
+   {
+    "ilvl": 58,
+    "min": 6,
+    "max": 10
+   },
+   {
+    "ilvl": 82,
+    "min": 7,
+    "max": 12
+   },
+   {
+    "ilvl": 115,
+    "min": 8,
+    "max": 13
+   },
+   {
+    "ilvl": 165,
+    "min": 9,
+    "max": 15
+   }
+  ]
+ },
+ {
+  "id": "dodge",
+  "stat": "dodge",
+  "kind": "suffix",
+  "name": "of Mist",
+  "slots": [
+   "feet",
+   "legs",
+   "chest",
+   "hands",
+   "charm"
+  ],
+  "weight": 6,
+  "group": "dodge",
+  "decimals": 1,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 10,
+    "min": 2.5,
+    "max": 3.8
+   },
+   {
+    "ilvl": 22,
+    "min": 3.0,
+    "max": 4.5
+   },
+   {
+    "ilvl": 38,
+    "min": 3.5,
+    "max": 5.2
+   },
+   {
+    "ilvl": 58,
+    "min": 4.0,
+    "max": 6.0
+   },
+   {
+    "ilvl": 82,
+    "min": 4.6,
+    "max": 6.9
+   },
+   {
+    "ilvl": 115,
+    "min": 5.2,
+    "max": 7.8
+   },
+   {
+    "ilvl": 165,
+    "min": 6.0,
+    "max": 9.0
+   }
+  ]
+ },
+ {
+  "id": "dr",
+  "stat": "damage_reduction",
+  "kind": "suffix",
+  "name": "of the Bulwark",
+  "slots": [
+   "chest",
+   "shield",
+   "belt",
+   "amulet"
+  ],
+  "weight": 3,
+  "group": "dr",
+  "decimals": 1,
+  "tiers": [
+   {
+    "ilvl": 22,
+    "min": 1.5,
+    "max": 3.0
+   },
+   {
+    "ilvl": 38,
+    "min": 1.8,
+    "max": 3.5
+   },
+   {
+    "ilvl": 58,
+    "min": 2.0,
+    "max": 4.0
+   },
+   {
+    "ilvl": 82,
+    "min": 2.3,
+    "max": 4.6
+   },
+   {
+    "ilvl": 115,
+    "min": 2.6,
+    "max": 5.2
+   },
+   {
+    "ilvl": 165,
+    "min": 3.0,
+    "max": 6.0
+   }
+  ]
+ },
+ {
+  "id": "reslight",
+  "stat": "resist_lightning",
+  "kind": "suffix",
+  "name": "of the Weathervane",
+  "slots": [
+   "head",
+   "chest",
+   "hands",
+   "legs",
+   "feet",
+   "belt",
+   "ring",
+   "amulet",
+   "charm"
+  ],
+  "weight": 7,
+  "group": "reslight",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 6,
+    "max": 12
+   },
+   {
+    "ilvl": 10,
+    "min": 8,
+    "max": 16
+   },
+   {
+    "ilvl": 22,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 38,
+    "min": 12,
+    "max": 24
+   },
+   {
+    "ilvl": 58,
+    "min": 14,
+    "max": 29
+   },
+   {
+    "ilvl": 82,
+    "min": 17,
+    "max": 34
+   },
+   {
+    "ilvl": 115,
+    "min": 20,
+    "max": 40
+   },
+   {
+    "ilvl": 165,
+    "min": 23,
+    "max": 47
+   }
+  ]
+ },
+ {
+  "id": "summon",
+  "stat": "summon_count",
+  "kind": "suffix",
+  "name": "of the Seamstress",
+  "slots": [
+   "tome",
+   "amulet",
+   "chest"
+  ],
+  "weight": 1,
+  "group": "summon",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 82,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 115,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 165,
+    "min": 1,
+    "max": 1
+   }
+  ]
+ },
+ {
+  "id": "multishot",
+  "stat": "projectiles",
+  "kind": "suffix",
+  "name": "of Splitting",
+  "slots": [
+   "crossbow",
+   "arbalest",
+   "quiver",
+   "wand"
+  ],
+  "weight": 1,
+  "group": "multishot",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 82,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 115,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 165,
+    "min": 1,
+    "max": 1
+   }
+  ]
+ },
+ {
+  "id": "pierce",
+  "stat": "pierce",
+  "kind": "suffix",
+  "name": "of Piercing",
+  "slots": [
+   "crossbow",
+   "arbalest",
+   "quiver",
+   "dagger"
+  ],
+  "weight": 2,
+  "group": "pierce",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 22,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 38,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 165,
+    "min": 2,
+    "max": 2
+   }
+  ]
+ },
+ {
+  "id": "pickup",
+  "stat": "pickup_radius",
+  "kind": "suffix",
+  "name": "of Reaching",
+  "slots": [
+   "charm",
+   "belt",
+   "hands"
+  ],
+  "weight": 4,
+  "group": "pickup",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 10,
+    "min": 13,
+    "max": 26
+   },
+   {
+    "ilvl": 22,
+    "min": 16,
+    "max": 33
+   },
+   {
+    "ilvl": 38,
+    "min": 20,
+    "max": 40
+   },
+   {
+    "ilvl": 58,
+    "min": 24,
+    "max": 48
+   },
+   {
+    "ilvl": 82,
+    "min": 28,
+    "max": 56
+   },
+   {
+    "ilvl": 115,
+    "min": 33,
+    "max": 66
+   },
+   {
+    "ilvl": 165,
+    "min": 39,
+    "max": 78
+   }
+  ]
+ },
+ {
+  "id": "petxp",
+  "stat": "pet_xp_pct",
+  "kind": "suffix",
+  "name": "of Companionship",
+  "slots": [
+   "charm",
+   "amulet"
+  ],
+  "weight": 3,
+  "group": "petxp",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 10,
+    "min": 13,
+    "max": 26
+   },
+   {
+    "ilvl": 22,
+    "min": 16,
+    "max": 33
+   },
+   {
+    "ilvl": 38,
+    "min": 20,
+    "max": 40
+   },
+   {
+    "ilvl": 58,
+    "min": 24,
+    "max": 48
+   },
+   {
+    "ilvl": 82,
+    "min": 28,
+    "max": 56
+   },
+   {
+    "ilvl": 115,
+    "min": 33,
+    "max": 66
+   },
+   {
+    "ilvl": 165,
+    "min": 39,
+    "max": 78
+   }
+  ]
+ },
+ {
+  "id": "potion",
+  "stat": "potion_effect_pct",
+  "kind": "suffix",
+  "name": "of the Apothecary",
+  "slots": [
+   "belt",
+   "charm"
+  ],
+  "weight": 4,
+  "group": "potion",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 8,
+    "max": 15
+   },
+   {
+    "ilvl": 10,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 22,
+    "min": 13,
+    "max": 25
+   },
+   {
+    "ilvl": 38,
+    "min": 16,
+    "max": 30
+   },
+   {
+    "ilvl": 58,
+    "min": 19,
+    "max": 36
+   },
+   {
+    "ilvl": 82,
+    "min": 22,
+    "max": 42
+   },
+   {
+    "ilvl": 115,
+    "min": 26,
+    "max": 50
+   },
+   {
+    "ilvl": 165,
+    "min": 31,
+    "max": 58
+   }
+  ]
+ },
+ {
+  "id": "matfind",
+  "stat": "material_find",
+  "kind": "suffix",
+  "name": "of Scavenging",
+  "slots": [
+   "charm",
+   "hands",
+   "belt"
+  ],
+  "weight": 4,
+  "group": "matfind",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 5,
+    "max": 10
+   },
+   {
+    "ilvl": 10,
+    "min": 6,
+    "max": 13
+   },
+   {
+    "ilvl": 22,
+    "min": 8,
+    "max": 16
+   },
+   {
+    "ilvl": 38,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 58,
+    "min": 12,
+    "max": 24
+   },
+   {
+    "ilvl": 82,
+    "min": 14,
+    "max": 28
+   },
+   {
+    "ilvl": 115,
+    "min": 16,
+    "max": 33
+   },
+   {
+    "ilvl": 165,
+    "min": 20,
+    "max": 39
+   }
+  ]
+ },
+ {
+  "id": "profxp",
+  "stat": "proficiency_xp_pct",
+  "kind": "suffix",
+  "name": "of Practice",
+  "slots": [
+   "main_hand",
+   "charm",
+   "hands"
+  ],
+  "weight": 3,
+  "group": "profxp",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 10,
+    "min": 13,
+    "max": 26
+   },
+   {
+    "ilvl": 22,
+    "min": 16,
+    "max": 33
+   },
+   {
+    "ilvl": 38,
+    "min": 20,
+    "max": 40
+   },
+   {
+    "ilvl": 58,
+    "min": 24,
+    "max": 48
+   },
+   {
+    "ilvl": 82,
+    "min": 28,
+    "max": 56
+   },
+   {
+    "ilvl": 115,
+    "min": 33,
+    "max": 66
+   },
+   {
+    "ilvl": 165,
+    "min": 39,
+    "max": 78
+   }
+  ]
+ },
+ {
+  "id": "masteryxp",
+  "stat": "mastery_xp_pct",
+  "kind": "suffix",
+  "name": "of Diligence",
+  "slots": [
+   "head",
+   "charm",
+   "amulet"
+  ],
+  "weight": 3,
+  "group": "masteryxp",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 22,
+    "min": 13,
+    "max": 25
+   },
+   {
+    "ilvl": 38,
+    "min": 16,
+    "max": 30
+   },
+   {
+    "ilvl": 58,
+    "min": 19,
+    "max": 36
+   },
+   {
+    "ilvl": 82,
+    "min": 22,
+    "max": 42
+   },
+   {
+    "ilvl": 115,
+    "min": 26,
+    "max": 50
+   },
+   {
+    "ilvl": 165,
+    "min": 31,
+    "max": 58
+   }
+  ]
+ },
+ {
+  "id": "lpk",
+  "stat": "life_per_kill",
+  "kind": "suffix",
+  "name": "of Rekindling",
+  "slots": [
+   "main_hand",
+   "ring",
+   "belt"
+  ],
+  "weight": 4,
+  "group": "lpk",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 4,
+    "max": 8
+   },
+   {
+    "ilvl": 10,
+    "min": 6,
+    "max": 13
+   },
+   {
+    "ilvl": 22,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 38,
+    "min": 15,
+    "max": 30
+   },
+   {
+    "ilvl": 58,
+    "min": 22,
+    "max": 44
+   },
+   {
+    "ilvl": 82,
+    "min": 31,
+    "max": 62
+   },
+   {
+    "ilvl": 115,
+    "min": 44,
+    "max": 88
+   },
+   {
+    "ilvl": 165,
+    "min": 64,
+    "max": 128
+   }
+  ]
+ },
+ {
+  "id": "rpk",
+  "stat": "resource_on_kill",
+  "kind": "suffix",
+  "name": "of Kindling",
+  "slots": [
+   "main_hand",
+   "ring",
+   "off_hand"
+  ],
+  "weight": 4,
+  "group": "rpk",
+  "decimals": 1,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 2,
+    "max": 4
+   },
+   {
+    "ilvl": 10,
+    "min": 2.5,
+    "max": 5.0
+   },
+   {
+    "ilvl": 22,
+    "min": 3.0,
+    "max": 6.0
+   },
+   {
+    "ilvl": 38,
+    "min": 3.5,
+    "max": 7.0
+   },
+   {
+    "ilvl": 58,
+    "min": 4.0,
+    "max": 8.0
+   },
+   {
+    "ilvl": 82,
+    "min": 4.6,
+    "max": 9.2
+   },
+   {
+    "ilvl": 115,
+    "min": 5.2,
+    "max": 10.4
+   },
+   {
+    "ilvl": 165,
+    "min": 6.0,
+    "max": 12.0
+   }
+  ]
+ },
+ {
+  "id": "boss_dmg",
+  "stat": "boss_damage_pct",
+  "kind": "suffix",
+  "name": "of the Bellringer",
+  "slots": [
+   "main_hand",
+   "amulet",
+   "ring"
+  ],
+  "weight": 3,
+  "group": "boss_dmg",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 22,
+    "min": 7,
+    "max": 13
+   },
+   {
+    "ilvl": 38,
+    "min": 8,
+    "max": 16
+   },
+   {
+    "ilvl": 58,
+    "min": 10,
+    "max": 19
+   },
+   {
+    "ilvl": 82,
+    "min": 11,
+    "max": 22
+   },
+   {
+    "ilvl": 115,
+    "min": 13,
+    "max": 26
+   },
+   {
+    "ilvl": 165,
+    "min": 16,
+    "max": 31
+   }
+  ]
+ },
+ {
+  "id": "mount",
+  "stat": "mount_speed_pct",
+  "kind": "suffix",
+  "name": "of the Road",
+  "slots": [
+   "feet",
+   "legs",
+   "charm"
+  ],
+  "weight": 2,
+  "group": "mount",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 1,
+    "min": 5,
+    "max": 10
+   },
+   {
+    "ilvl": 10,
+    "min": 6,
+    "max": 12
+   },
+   {
+    "ilvl": 22,
+    "min": 8,
+    "max": 15
+   },
+   {
+    "ilvl": 38,
+    "min": 9,
+    "max": 18
+   },
+   {
+    "ilvl": 58,
+    "min": 10,
+    "max": 20
+   },
+   {
+    "ilvl": 82,
+    "min": 12,
+    "max": 23
+   },
+   {
+    "ilvl": 115,
+    "min": 13,
+    "max": 26
+   },
+   {
+    "ilvl": 165,
+    "min": 15,
+    "max": 30
+   }
+  ]
+ },
+ {
+  "id": "potion_cap",
+  "stat": "potion_charges",
+  "kind": "suffix",
+  "name": "of the Deep Pocket",
+  "slots": [
+   "belt"
+  ],
+  "weight": 2,
+  "group": "potion_cap",
+  "decimals": 0,
+  "tiers": [
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 82,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 115,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 165,
+    "min": 1,
+    "max": 1
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_flare",
+  "stat": "skill_rank:lb_flare",
+  "kind": "suffix",
+  "name": "of Shield Flare",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_flare",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_charge",
+  "stat": "skill_rank:lb_charge",
+  "kind": "suffix",
+  "name": "of Beacon Charge",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_charge",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_consecrate",
+  "stat": "skill_rank:lb_consecrate",
+  "kind": "suffix",
+  "name": "of Hallowed Ground",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_consecrate",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_aegis",
+  "stat": "skill_rank:lb_aegis",
+  "kind": "suffix",
+  "name": "of Aegis of Dawn",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_aegis",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_judgement",
+  "stat": "skill_rank:lb_judgement",
+  "kind": "suffix",
+  "name": "of Judgement",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_judgement",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_whirl",
+  "stat": "skill_rank:bs_whirl",
+  "kind": "suffix",
+  "name": "of Bell Whirl",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_whirl",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_leap",
+  "stat": "skill_rank:bs_leap",
+  "kind": "suffix",
+  "name": "of Toll Leap",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_leap",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_roar",
+  "stat": "skill_rank:bs_roar",
+  "kind": "suffix",
+  "name": "of Great Peal",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_roar",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_quake",
+  "stat": "skill_rank:bs_quake",
+  "kind": "suffix",
+  "name": "of Earthshaker",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_quake",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_chains",
+  "stat": "skill_rank:bs_chains",
+  "kind": "suffix",
+  "name": "of Bellrope",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_chains",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_starfall",
+  "stat": "skill_rank:sg_starfall",
+  "kind": "suffix",
+  "name": "of Starfall",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_starfall",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_frostnova",
+  "stat": "skill_rank:sg_frostnova",
+  "kind": "suffix",
+  "name": "of Frost Ring",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_frostnova",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_chain",
+  "stat": "skill_rank:sg_chain",
+  "kind": "suffix",
+  "name": "of Constellation",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_chain",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_blink",
+  "stat": "skill_rank:sg_blink",
+  "kind": "suffix",
+  "name": "of Moonstep",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_blink",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_meteor",
+  "stat": "skill_rank:sg_meteor",
+  "kind": "suffix",
+  "name": "of Comet Shower",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_meteor",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_ragdoll",
+  "stat": "skill_rank:st_ragdoll",
+  "kind": "suffix",
+  "name": "of Rag Doll",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_ragdoll",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_pins",
+  "stat": "skill_rank:st_pins",
+  "kind": "suffix",
+  "name": "of Pincushion",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_pins",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_bigdoll",
+  "stat": "skill_rank:st_bigdoll",
+  "kind": "suffix",
+  "name": "of Patchwork Bear",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_bigdoll",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_unravel",
+  "stat": "skill_rank:st_unravel",
+  "kind": "suffix",
+  "name": "of Unravel",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_unravel",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_mend",
+  "stat": "skill_rank:st_mend",
+  "kind": "suffix",
+  "name": "of Mend",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_mend",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_fan",
+  "stat": "skill_rank:rr_fan",
+  "kind": "suffix",
+  "name": "of Fan of Bolts",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_fan",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_roll",
+  "stat": "skill_rank:rr_roll",
+  "kind": "suffix",
+  "name": "of Tumble",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_roll",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_trap",
+  "stat": "skill_rank:rr_trap",
+  "kind": "suffix",
+  "name": "of Snap Trap",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_trap",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_smoke",
+  "stat": "skill_rank:rr_smoke",
+  "kind": "suffix",
+  "name": "of Smoke Bomb",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_smoke",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_rain",
+  "stat": "skill_rank:rr_rain",
+  "kind": "suffix",
+  "name": "of Bolt Rain",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_rain",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_beacon",
+  "stat": "skill_rank:lb_beacon",
+  "kind": "suffix",
+  "name": "of Beacon Toss",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_beacon",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_rally",
+  "stat": "skill_rank:lb_rally",
+  "kind": "suffix",
+  "name": "of Rally Cry",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_rally",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_chain",
+  "stat": "skill_rank:lb_chain",
+  "kind": "suffix",
+  "name": "of Lantern Chain",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_chain",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_sanctuary",
+  "stat": "skill_rank:lb_sanctuary",
+  "kind": "suffix",
+  "name": "of Sanctuary",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_sanctuary",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_dawnstrike",
+  "stat": "skill_rank:lb_dawnstrike",
+  "kind": "suffix",
+  "name": "of Dawnstrike",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_dawnstrike",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_sunrise",
+  "stat": "skill_rank:lb_sunrise",
+  "kind": "suffix",
+  "name": "of Long Sunrise",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_sunrise",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_lb_smite",
+  "stat": "skill_rank:lb_smite",
+  "kind": "suffix",
+  "name": "of Hallowed Smite",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_lb_smite",
+  "decimals": 0,
+  "classes": [
+   "lanternbearer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_gong",
+  "stat": "skill_rank:bs_gong",
+  "kind": "suffix",
+  "name": "of Gong Shield",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_gong",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_throw",
+  "stat": "skill_rank:bs_throw",
+  "kind": "suffix",
+  "name": "of Bell Toss",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_throw",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_stomp",
+  "stat": "skill_rank:bs_stomp",
+  "kind": "suffix",
+  "name": "of Belfry Stomp",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_stomp",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_frenzy",
+  "stat": "skill_rank:bs_frenzy",
+  "kind": "suffix",
+  "name": "of Carillon Frenzy",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_frenzy",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_quakeline",
+  "stat": "skill_rank:bs_quakeline",
+  "kind": "suffix",
+  "name": "of Faultline",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_quakeline",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_doom",
+  "stat": "skill_rank:bs_doom",
+  "kind": "suffix",
+  "name": "of Last Toll",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_doom",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_bs_ringout",
+  "stat": "skill_rank:bs_ringout",
+  "kind": "suffix",
+  "name": "of Ring Out",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_bs_ringout",
+  "decimals": 0,
+  "classes": [
+   "bellstriker"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_orbit",
+  "stat": "skill_rank:sg_orbit",
+  "kind": "suffix",
+  "name": "of Orbiting Motes",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_orbit",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_icicle",
+  "stat": "skill_rank:sg_icicle",
+  "kind": "suffix",
+  "name": "of Icicle Lance",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_icicle",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_gravity",
+  "stat": "skill_rank:sg_gravity",
+  "kind": "suffix",
+  "name": "of Black Star",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_gravity",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_blizzard",
+  "stat": "skill_rank:sg_blizzard",
+  "kind": "suffix",
+  "name": "of Snow of Stars",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_blizzard",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_storm",
+  "stat": "skill_rank:sg_storm",
+  "kind": "suffix",
+  "name": "of Thunder Veil",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_storm",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_supernova",
+  "stat": "skill_rank:sg_supernova",
+  "kind": "suffix",
+  "name": "of Supernova",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_supernova",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_sg_moonbeam",
+  "stat": "skill_rank:sg_moonbeam",
+  "kind": "suffix",
+  "name": "of Moonbeam",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_sg_moonbeam",
+  "decimals": 0,
+  "classes": [
+   "stargazer"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_pinarcher",
+  "stat": "skill_rank:st_pinarcher",
+  "kind": "suffix",
+  "name": "of Pin Archers",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_pinarcher",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_hex",
+  "stat": "skill_rank:st_hex",
+  "kind": "suffix",
+  "name": "of Button Eyes",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_hex",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_spool",
+  "stat": "skill_rank:st_spool",
+  "kind": "suffix",
+  "name": "of Runaway Spool",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_spool",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_scarecrow",
+  "stat": "skill_rank:st_scarecrow",
+  "kind": "suffix",
+  "name": "of Scarecrow",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_scarecrow",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_quilt",
+  "stat": "skill_rank:st_quilt",
+  "kind": "suffix",
+  "name": "of Patchwork Quilt",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_quilt",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_puppetking",
+  "stat": "skill_rank:st_puppetking",
+  "kind": "suffix",
+  "name": "of Puppet Knight",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_puppetking",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_st_thimble",
+  "stat": "skill_rank:st_thimble",
+  "kind": "suffix",
+  "name": "of Thimble Bomb",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_st_thimble",
+  "decimals": 0,
+  "classes": [
+   "stitcher"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_caltrops",
+  "stat": "skill_rank:rr_caltrops",
+  "kind": "suffix",
+  "name": "of Caltrops",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_caltrops",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_pinbolt",
+  "stat": "skill_rank:rr_pinbolt",
+  "kind": "suffix",
+  "name": "of Pinning Shot",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_pinbolt",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_decoy",
+  "stat": "skill_rank:rr_decoy",
+  "kind": "suffix",
+  "name": "of Chimney Decoy",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_decoy",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_firework",
+  "stat": "skill_rank:rr_firework",
+  "kind": "suffix",
+  "name": "of Firework Bolt",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_firework",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_shadowstep",
+  "stat": "skill_rank:rr_shadowstep",
+  "kind": "suffix",
+  "name": "of Shadow Step",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_shadowstep",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_rooftop",
+  "stat": "skill_rank:rr_rooftop",
+  "kind": "suffix",
+  "name": "of Rooftop Barrage",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_rooftop",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
+   }
+  ]
+ },
+ {
+  "id": "rank_rr_sparrow",
+  "stat": "skill_rank:rr_sparrow",
+  "kind": "suffix",
+  "name": "of Clockwork Sparrow",
+  "slots": [
+   "head",
+   "amulet",
+   "main_hand",
+   "off_hand"
+  ],
+  "weight": 0.6,
+  "group": "rank_rr_sparrow",
+  "decimals": 0,
+  "classes": [
+   "roofrunner"
+  ],
+  "tiers": [
+   {
+    "ilvl": 10,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 22,
+    "min": 1,
+    "max": 1
+   },
+   {
+    "ilvl": 38,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 58,
+    "min": 1,
+    "max": 2
+   },
+   {
+    "ilvl": 82,
+    "min": 2,
+    "max": 2
+   },
+   {
+    "ilvl": 115,
+    "min": 2,
+    "max": 3
+   },
+   {
+    "ilvl": 165,
+    "min": 3,
+    "max": 3
    }
   ]
  }

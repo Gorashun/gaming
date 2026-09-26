@@ -1,7 +1,7 @@
 [
  {
   "id": "act1",
-  "name": "Act I \u2014 Wickmire",
+  "name": "Act I — Wickmire",
   "order": 1,
   "families": [
    "rattlebones"
@@ -13,6 +13,130 @@
    "a1_z3",
    "a1_boss"
   ],
-  "intro": "The bells of Wickmire stopped ringing the night the Lantern went out."
+  "intro": "The bells of Wickmire stopped ringing the night the Lantern went out.",
+  "lore": "act_intro_act1",
+  "level_range": [
+   1,
+   9
+  ],
+  "station_unlock": "smith",
+  "boss": "sunken_bellringer",
+  "minibosses": [
+   "mb_mossjaw",
+   "mb_candlewife"
+  ],
+  "art_biome": "wickmire"
+ },
+ {
+  "id": "act2",
+  "name": "Act II — Whisperwood",
+  "order": 2,
+  "families": [
+   "thicket_kin"
+  ],
+  "town": "a2_town",
+  "zones": [
+   "a2_z1",
+   "a2_z2",
+   "a2_z3",
+   "a2_boss"
+  ],
+  "intro": "In the Whisperwood, every tree has something to say about you.",
+  "lore": "act_intro_act2",
+  "level_range": [
+   14,
+   22
+  ],
+  "station_unlock": "alchemist",
+  "boss": "mother_bark",
+  "minibosses": [
+   "mb_briar_aunt",
+   "mb_great_hoot"
+  ],
+  "art_biome": "whisperwood"
+ },
+ {
+  "id": "act3",
+  "name": "Act III — Echo Mines",
+  "order": 3,
+  "families": [
+   "echoes"
+  ],
+  "town": "a3_town",
+  "zones": [
+   "a3_z1",
+   "a3_z2",
+   "a3_z3",
+   "a3_boss"
+  ],
+  "intro": "Deep under the mountain, the miners forgot why they dig.",
+  "lore": "act_intro_act3",
+  "level_range": [
+   26,
+   34
+  ],
+  "station_unlock": "jeweler",
+  "boss": "great_echo",
+  "minibosses": [
+   "mb_foreman_clank",
+   "mb_crystal_matron"
+  ],
+  "art_biome": "echo_mines"
+ },
+ {
+  "id": "act4",
+  "name": "Act IV — Rimehall",
+  "order": 4,
+  "families": [
+   "frozen_court"
+  ],
+  "town": "a4_town",
+  "zones": [
+   "a4_z1",
+   "a4_z2",
+   "a4_z3",
+   "a4_boss"
+  ],
+  "intro": "A royal party froze in the middle of a toast. It is still waiting to finish.",
+  "lore": "act_intro_act4",
+  "level_range": [
+   38,
+   46
+  ],
+  "station_unlock": "runecarver",
+  "boss": "king_who_forgot",
+  "minibosses": [
+   "mb_captain_tinwhistle",
+   "mb_head_butler"
+  ],
+  "art_biome": "rimehall"
+ },
+ {
+  "id": "act5",
+  "name": "Act V — Well of Hush",
+  "order": 5,
+  "families": [
+   "hushed"
+  ],
+  "town": "a5_town",
+  "zones": [
+   "a5_z1",
+   "a5_z2",
+   "a5_z3",
+   "a5_boss"
+  ],
+  "intro": "At the bottom of everything, where no colour goes, someone is waiting.",
+  "lore": "act_intro_act5",
+  "level_range": [
+   50,
+   60
+  ],
+  "station_unlock": "cauldron",
+  "boss": "grey_guest",
+  "minibosses": [
+   "mb_choirmaster",
+   "mb_faded_champion"
+  ],
+  "art_biome": "well_of_hush"
  }
 ]

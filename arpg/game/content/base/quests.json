@@ -1,1 +1,1814 @@
-[]
+[
+ {
+  "id": "q_a1_lost_rattlers",
+  "name": "Bedtime for Bones",
+  "giver": "npc_a1_questgiver",
+  "act": "act1",
+  "type": "kill",
+  "target": "rattler",
+  "count": 10,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "pet": "pet_sootkin"
+  },
+  "text_offer": "The Rattlers climbed out of their graves and forgot why. Rekindle 10 and send them home to bed.",
+  "text_done": "Ten sleepy Rattlers, back in bed. They even said goodnight!",
+  "repeatable": false,
+  "text_ref": "q_a1_lost_rattlers"
+ },
+ {
+  "id": "q_a1_bone_meal",
+  "name": "Glitter Ingredients",
+  "giver": "npc_a1_alchemist",
+  "act": "act1",
+  "type": "collect",
+  "target": "bone_meal",
+  "count": 8,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "I need 8 Bone Meal for my potions. Don't ask. Ah— ACHOO! See? Very important. Well, a bit important. Whenever!",
+  "text_done": "Perfect! One potion coming up. Stand back. Glitter incoming.",
+  "repeatable": false,
+  "text_ref": "q_a1_bone_meal"
+ },
+ {
+  "id": "q_a1_drowned_graves",
+  "name": "Where the Graves Went",
+  "giver": "npc_a1_waypoint",
+  "act": "act1",
+  "type": "explore",
+  "target": "a1_z1",
+  "count": 1,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "The old graveyard slid into the bog! Go and find the far end? I'd come too but *flicker*.",
+  "text_done": "You found it! And came back! I knew you would. *no flicker*",
+  "repeatable": false,
+  "text_ref": "q_a1_drowned_graves"
+ },
+ {
+  "id": "q_a1_magpie",
+  "name": "Pocket Thief",
+  "giver": "npc_a1_trader",
+  "act": "act1",
+  "type": "kill",
+  "target": "magpie_imp",
+  "count": 1,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "epic"
+  },
+  "text_offer": "A Magpie Imp nicked something from pocket nineteen! It's in the Bellcrypt Halls. Catch it!",
+  "text_done": "My thimble! And some extra gold? Keep that. The imp won't miss it. Much.",
+  "repeatable": false,
+  "text_ref": "q_a1_magpie"
+ },
+ {
+  "id": "q_a1_candle_mages",
+  "name": "Too Many Candles",
+  "giver": "npc_a1_runecarver",
+  "act": "act1",
+  "type": "kill",
+  "target": "candle_mage",
+  "count": 5,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "recipe": "r_rune_reroll_values"
+  },
+  "text_offer": "Candle Mages keep lighting cold, grey candles. Wrong sort of light. Rekindle 5 of them?",
+  "text_done": "Proper warm light again. I carved you a rune. It says 'ta'.",
+  "repeatable": false,
+  "text_ref": "q_a1_candle_mages"
+ },
+ {
+  "id": "q_a1_purl_yarn",
+  "name": "The Borrowed Yarn",
+  "giver": "npc_a1_storyteller",
+  "act": "act1",
+  "type": "talk",
+  "target": "npc_a1_jeweler",
+  "count": 1,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Madame Glimmerwick borrowed my silver yarn for a ring. Could you ask for it back? Nicely.",
+  "text_done": "My silver yarn! The scarf grows another inch. Thank you, little light.",
+  "repeatable": false,
+  "text_ref": "q_a1_purl_yarn"
+ },
+ {
+  "id": "q_a1_warden_crypt",
+  "name": "The Warden Below",
+  "giver": "npc_a1_questgiver",
+  "act": "act1",
+  "type": "kill",
+  "target": "warden",
+  "count": 1,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "skill_points": 1
+  },
+  "text_offer": "A Crypt Warden guards the Sunken Nave. It thinks it's still on duty. Relieve it of its shift.",
+  "text_done": "The old Warden's resting at last. So can you, if you like.",
+  "repeatable": false,
+  "text_ref": "q_a1_warden_crypt"
+ },
+ {
+  "id": "q_a1_bellringer",
+  "name": "The Bell Under the Water",
+  "giver": "npc_a1_questgiver",
+  "act": "act1",
+  "type": "boss",
+  "target": "sunken_bellringer",
+  "count": 1,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.6,
+   "item_rarity": "epic",
+   "skill_points": 1,
+   "recipe": "r_forge_rare_weapon"
+  },
+  "text_offer": "Every DONG makes someone fall asleep in the bog. Climb the Belfry of the Drowned and stop that bell.",
+  "text_done": "It was Tolly. All this time, calling us home. And now he's home too.",
+  "repeatable": false,
+  "text_ref": "q_a1_bellringer"
+ },
+ {
+  "id": "q_a1_newt_ride",
+  "name": "Newt Test Drive",
+  "giver": "npc_a1_stablemaster",
+  "act": "act1",
+  "type": "explore",
+  "target": "a1_z2",
+  "count": 1,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic",
+   "mount": "mount_newt"
+  },
+  "text_offer": "Puddle wants to stretch her legs! Ride through the Bellcrypt Halls and back. She says please.",
+  "text_done": "Puddle says that was the best day of her life. She says that every day.",
+  "repeatable": false,
+  "text_ref": "q_a1_newt_ride"
+ },
+ {
+  "id": "q_a2_twiglings",
+  "name": "Poke Every Stick",
+  "giver": "npc_a2_questgiver",
+  "act": "act2",
+  "type": "kill",
+  "target": "twigling",
+  "count": 12,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "Twiglings pretend to be sticks, then jump out. Rekindle 12 before I jump out of my boots.",
+  "text_done": "Twelve sticks, twelve thank-yous. Only jumped nine times!",
+  "repeatable": false,
+  "text_ref": "q_a2_twiglings"
+ },
+ {
+  "id": "q_a2_spores",
+  "name": "A Little Evening",
+  "giver": "npc_a2_alchemist",
+  "act": "act2",
+  "type": "collect",
+  "target": "dusk_essence",
+  "count": 3,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "recipe": "r_elixir_fortune"
+  },
+  "text_offer": "I need 3 Dusk Essence for a new elixir. Bottled evening. Smells like cocoa. *puff*",
+  "text_done": "Marvellous! This elixir will be ever so glowy. *happy puff*",
+  "repeatable": false,
+  "text_ref": "q_a2_spores"
+ },
+ {
+  "id": "q_a2_owl_towers",
+  "name": "The Tower Question",
+  "giver": "npc_a2_storyteller",
+  "act": "act2",
+  "type": "explore",
+  "target": "a2_z3",
+  "count": 1,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "magic",
+   "skill_points": 1
+  },
+  "text_offer": "What's at the top of the Owl Towers? Why don't you go and see? And who'll tell me after?",
+  "text_done": "You went. You saw. And now — what will you ask next?",
+  "repeatable": false,
+  "text_ref": "q_a2_owl_towers"
+ },
+ {
+  "id": "q_a2_owlcrows",
+  "name": "Hoo's Grumpy",
+  "giver": "npc_a2_petkeeper",
+  "act": "act2",
+  "type": "kill",
+  "target": "owlcrow",
+  "count": 8,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "pet": "pet_hoot"
+  },
+  "text_offer": "The Snuffed Owlcrows scare my owlets. Rekindle 8? They'll be nicer after. Promise. Hoo.",
+  "text_done": "The owlets are napping again. Hoo. Thank you. Hoo.",
+  "repeatable": false,
+  "text_ref": "q_a2_owlcrows"
+ },
+ {
+  "id": "q_a2_moss_hounds",
+  "name": "Dig Dog Trouble",
+  "giver": "npc_a2_stash",
+  "act": "act2",
+  "type": "kill",
+  "target": "moss_hound",
+  "count": 6,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "mount": "mount_deer"
+  },
+  "text_offer": "Moss Hounds keep digging up my buried stashes! Six of them! Help!",
+  "text_done": "Stashes safe! I buried a snack for you. Somewhere!",
+  "repeatable": false,
+  "text_ref": "q_a2_moss_hounds"
+ },
+ {
+  "id": "q_a2_trader_riddle",
+  "name": "A Riddle for Hob",
+  "giver": "npc_a2_trader",
+  "act": "act2",
+  "type": "talk",
+  "target": "npc_a2_runecarver",
+  "count": 1,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Riddle: what's green, grows on a face, and owes me money? Go ask Hob. Hoo-hoo!",
+  "text_done": "He paid in acorns! Carved acorns! What a fine deal.",
+  "repeatable": false,
+  "text_ref": "q_a2_trader_riddle"
+ },
+ {
+  "id": "q_a2_gossip",
+  "name": "Hush, Birches",
+  "giver": "npc_a2_smith",
+  "act": "act2",
+  "type": "explore",
+  "target": "a2_z1",
+  "count": 1,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "The Gossiping Birches keep telling rumours about my axe. Walk through and shine your light?",
+  "text_done": "Quiet at last. They only said one mean thing. Sorry, trees.",
+  "repeatable": false,
+  "text_ref": "q_a2_gossip"
+ },
+ {
+  "id": "q_a2_mother_bark",
+  "name": "The Shadow Pantry",
+  "giver": "npc_a2_questgiver",
+  "act": "act2",
+  "type": "boss",
+  "target": "mother_bark",
+  "count": 1,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.6,
+   "item_rarity": "epic",
+   "skill_points": 1,
+   "recipe": "r_forge_rare_armor"
+  },
+  "text_offer": "Nobody in Whisperwood has a shadow. They're all in jars at Mother Bark's Pantry. Go gently.",
+  "text_done": "My shadow came home! It's shy. It's hiding behind me. Thank you.",
+  "repeatable": false,
+  "text_ref": "q_a2_mother_bark"
+ },
+ {
+  "id": "q_a3_diglings",
+  "name": "The Forgetful Crew",
+  "giver": "npc_a3_questgiver",
+  "act": "act3",
+  "type": "kill",
+  "target": "digling",
+  "count": 15,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "pet": "pet_gravel"
+  },
+  "text_offer": "My crew became Diglings. Rekindle 15 and maybe they'll remember why we dig.",
+  "text_done": "They're back! They still don't know why. But they know they're friends.",
+  "repeatable": false,
+  "text_ref": "q_a3_diglings"
+ },
+ {
+  "id": "q_a3_crystal_spiders",
+  "name": "SPIDERS!",
+  "giver": "npc_a3_smith",
+  "act": "act3",
+  "type": "kill",
+  "target": "crystal_spider",
+  "count": 8,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "CRYSTAL SPIDERS IN THE GALLERY! My nephew won't go near them. Rekindle 8? THANK YOU!",
+  "text_done": "No more clinking in the dark! My nephew says thank you from under the bed.",
+  "repeatable": false,
+  "text_ref": "q_a3_crystal_spiders"
+ },
+ {
+  "id": "q_a3_salt",
+  "name": "Wick Required",
+  "giver": "npc_a3_alchemist",
+  "act": "act3",
+  "type": "collect",
+  "target": "wickthread",
+  "count": 5,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "recipe": "r_socket_plus"
+  },
+  "text_offer": "I need 5 Wickthread for a fuse. A safe fuse! A mostly safe fuse!",
+  "text_done": "It fizzled perfectly. Eyebrows intact. A good day!",
+  "repeatable": false,
+  "text_ref": "q_a3_salt"
+ },
+ {
+  "id": "q_a3_cart_mimic",
+  "name": "That's Not Cart Six",
+  "giver": "npc_a3_stash",
+  "act": "act3",
+  "type": "kill",
+  "target": "cart_mimic",
+  "count": 1,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "skill_points": 1
+  },
+  "text_offer": "Cart six came back with TEETH. That's not cart six! Find the real one on the Rattletrack Rails?",
+  "text_done": "The real cart six! And the toothy one ran home. Everyone's happy.",
+  "repeatable": false,
+  "text_ref": "q_a3_cart_mimic"
+ },
+ {
+  "id": "q_a3_annie_song",
+  "name": "The First Line",
+  "giver": "npc_a3_storyteller",
+  "act": "act3",
+  "type": "talk",
+  "target": "npc_a3_innkeeper",
+  "count": 1,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Barnaby used to hum the old song. Ask him if he remembers a line. Line.",
+  "text_done": "'Dig deep.' Two words. Two whole words! Words.",
+  "repeatable": false,
+  "text_ref": "q_a3_annie_song"
+ },
+ {
+  "id": "q_a3_saltwhistle",
+  "name": "Floor Unknown",
+  "giver": "npc_a3_waypoint",
+  "act": "act3",
+  "type": "explore",
+  "target": "a3_z1",
+  "count": 1,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "magic",
+   "mount": "mount_pony"
+  },
+  "text_offer": "The Saltwhistle Shafts aren't on my lift list. Go explore and I'll add a floor!",
+  "text_done": "New floor! Floor Saltwhistle! Ding! Everybody out!",
+  "repeatable": false,
+  "text_ref": "q_a3_saltwhistle"
+ },
+ {
+  "id": "q_a3_lamp_ghosts",
+  "name": "Lost Lamps",
+  "giver": "npc_a3_petkeeper",
+  "act": "act3",
+  "type": "kill",
+  "target": "lamp_ghost",
+  "count": 6,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "Lamp ghosts are looking for their miners. Rekindle 6 so they can find their way home?",
+  "text_done": "Dimple saw them float up the shaft, all glowy. She did a happy wiggle.",
+  "repeatable": false,
+  "text_ref": "q_a3_lamp_ghosts"
+ },
+ {
+  "id": "q_a3_great_echo",
+  "name": "The Mountain's Voice",
+  "giver": "npc_a3_questgiver",
+  "act": "act3",
+  "type": "boss",
+  "target": "great_echo",
+  "count": 1,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.6,
+   "item_rarity": "epic",
+   "skill_points": 1,
+   "recipe": "r_forge_epic_weapon"
+  },
+  "text_offer": "The Mouth of the Mountain copies everything, backwards. Go and give it something good to repeat.",
+  "text_done": "It's singing. The whole mountain. 'Dig deep, dig bright.' I remember now.",
+  "repeatable": false,
+  "text_ref": "q_a3_great_echo"
+ },
+ {
+  "id": "q_a4_place_cards",
+  "name": "The Guest List",
+  "giver": "npc_a4_questgiver",
+  "act": "act4",
+  "type": "collect",
+  "target": "qi_place_card",
+  "count": 6,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "pet": "pet_quill"
+  },
+  "text_offer": "Six place cards blew off the banquet table. Find them? Everyone deserves to know where to sit. It's item one.",
+  "text_done": "All six! Everyone has a seat again. Even the ones who haven't thawed yet.",
+  "repeatable": false,
+  "text_ref": "q_a4_place_cards"
+ },
+ {
+  "id": "q_a4_porcelain",
+  "name": "Who Moved?",
+  "giver": "npc_a4_petkeeper",
+  "act": "act4",
+  "type": "kill",
+  "target": "porcelain_doll",
+  "count": 10,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "The porcelain dolls only move when you don't look. Rekindle 10! That's a royal order. Please.",
+  "text_done": "Nobody moved! Except the right things! Sir Wobble says thank you.",
+  "repeatable": false,
+  "text_ref": "q_a4_porcelain"
+ },
+ {
+  "id": "q_a4_mirror_tea",
+  "name": "Tea Served Wrongly",
+  "giver": "npc_a4_stash",
+  "act": "act4",
+  "type": "kill",
+  "target": "mirror_butler",
+  "count": 6,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "My old colleagues, the Mirror Butlers, serve trap tea now. Rekindle 6. Kindly.",
+  "text_done": "Six butlers restored. One offered me proper tea. I wept. Discreetly.",
+  "repeatable": false,
+  "text_ref": "q_a4_mirror_tea"
+ },
+ {
+  "id": "q_a4_soup",
+  "name": "Stoking the Pot",
+  "giver": "npc_a4_alchemist",
+  "act": "act4",
+  "type": "collect",
+  "target": "soot",
+  "count": 20,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "The big pot needs stoking. 20 Soot Dust keeps it bubbling for the thawing guests!",
+  "text_done": "Bubbling beautifully! Have the first bowl, pet.",
+  "repeatable": false,
+  "text_ref": "q_a4_soup"
+ },
+ {
+  "id": "q_a4_gardens",
+  "name": "Hare Run",
+  "giver": "npc_a4_stablemaster",
+  "act": "act4",
+  "type": "explore",
+  "target": "a4_z1",
+  "count": 1,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "magic",
+   "mount": "mount_hare"
+  },
+  "text_offer": "Flurry wants to see the Frosted Gardens. Ride through? Wrap up warm first!",
+  "text_done": "Flurry did twelve happy hops. Did you wrap up warm? Good.",
+  "repeatable": false,
+  "text_ref": "q_a4_gardens"
+ },
+ {
+  "id": "q_a4_jester_joke",
+  "name": "A Joke for the Corporal",
+  "giver": "npc_a4_storyteller",
+  "act": "act4",
+  "type": "talk",
+  "target": "npc_a4_smith",
+  "count": 1,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "magic",
+   "skill_points": 1
+  },
+  "text_offer": "The Corporal hasn't laughed since the freeze. Tell him my best joke: 'Why did the soldier salute the fridge?'",
+  "text_done": "He laughed! Then saluted the laugh. That counts.",
+  "repeatable": false,
+  "text_ref": "q_a4_jester_joke"
+ },
+ {
+  "id": "q_a4_tin_soldiers",
+  "name": "My Old Regiment",
+  "giver": "npc_a4_smith",
+  "act": "act4",
+  "type": "kill",
+  "target": "tin_soldier",
+  "count": 12,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "pet": "pet_sir_wobble"
+  },
+  "text_offer": "My regiment froze on parade. Rekindle 12 tin soldiers and they'll march again! *salute*",
+  "text_done": "They marched straight into the kitchen for soup. Good lads. *salute*",
+  "repeatable": false,
+  "text_ref": "q_a4_tin_soldiers"
+ },
+ {
+  "id": "q_a4_the_king",
+  "name": "Who Are You?",
+  "giver": "npc_a4_questgiver",
+  "act": "act4",
+  "type": "boss",
+  "target": "king_who_forgot",
+  "count": 1,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.6,
+   "item_rarity": "epic",
+   "skill_points": 1,
+   "recipe": "r_rune_seal"
+  },
+  "text_offer": "His Majesty sits in the Throne of Frost, forgetting. Remind him who he is.",
+  "text_done": "'— and to all of you, who stayed.' He finished the toast. Item one: done.",
+  "repeatable": false,
+  "text_ref": "q_a4_the_king"
+ },
+ {
+  "id": "q_a5_hushlings",
+  "name": "Soft Shapes",
+  "giver": "npc_a5_questgiver",
+  "act": "act5",
+  "type": "kill",
+  "target": "hushling",
+  "count": 15,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "pet": "pet_mumble"
+  },
+  "text_offer": "Hushlings drift over the Upside-Down Stars. Rekindle 15. Give them a bit of sound back.",
+  "text_done": "Fifteen little hums. You can almost hear the Well breathing.",
+  "repeatable": false,
+  "text_ref": "q_a5_hushlings"
+ },
+ {
+  "id": "q_a5_grey_moths",
+  "name": "Grey Wings",
+  "giver": "npc_a5_storyteller",
+  "act": "act5",
+  "type": "kill",
+  "target": "grey_moth",
+  "count": 10,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "mount": "mount_moth"
+  },
+  "text_offer": "*sing* Some moths forgot their colours… Rekindle 10, little light, and bring them home!",
+  "text_done": "*loud tiny cheer* Ten new voices in the Choir!",
+  "repeatable": false,
+  "text_ref": "q_a5_grey_moths"
+ },
+ {
+  "id": "q_a5_leftovers",
+  "name": "The Shiniest Leftovers",
+  "giver": "npc_a5_trader",
+  "act": "act5",
+  "type": "explore",
+  "target": "a5_z2",
+  "count": 1,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "The Drift of Leftovers has bits of everywhere floating about. Go look! Not to borrow. Just look.",
+  "text_done": "You didn't borrow anything? Not even a tiny thing? …Respect.",
+  "repeatable": false,
+  "text_ref": "q_a5_leftovers"
+ },
+ {
+  "id": "q_a5_essence",
+  "name": "Feed the Cauldron",
+  "giver": "npc_a5_alchemist",
+  "act": "act5",
+  "type": "collect",
+  "target": "dusk_essence",
+  "count": 6,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "recipe": "r_tr_starmote"
+  },
+  "text_offer": "The Cauldron's peckish. 6 Dusk Essence, dearie? *burble*",
+  "text_done": "*burble burble* That's a very happy burble.",
+  "repeatable": false,
+  "text_ref": "q_a5_essence"
+ },
+ {
+  "id": "q_a5_quiet_stair",
+  "name": "The Quiet Stair",
+  "giver": "npc_a5_waypoint",
+  "act": "act5",
+  "type": "explore",
+  "target": "a5_z3",
+  "count": 1,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic",
+   "skill_points": 1
+  },
+  "text_offer": "…  (Nobody points down the Quiet Stair. Then at you. Then tips its hat.)",
+  "text_done": "…!  (Nobody does a tiny, silent dance.)",
+  "repeatable": false,
+  "text_ref": "q_a5_quiet_stair"
+ },
+ {
+  "id": "q_a5_ada_talk",
+  "name": "Make Her Sit",
+  "giver": "npc_a5_innkeeper",
+  "act": "act5",
+  "type": "talk",
+  "target": "npc_a5_questgiver",
+  "count": 1,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Ada hasn't sat down in forty years. Go and ask her to sit. Just for a minute.",
+  "text_done": "She sat! For a whole minute! Then stood up. It's a start, love.",
+  "repeatable": false,
+  "text_ref": "q_a5_ada_talk"
+ },
+ {
+  "id": "q_a5_faded_knights",
+  "name": "Old Guild Guards",
+  "giver": "npc_a5_smith",
+  "act": "act5",
+  "type": "kill",
+  "target": "faded_knight",
+  "count": 6,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "Faded Knights were Guild guards once. Rekindle 6 and I'll make them new lanterns.",
+  "text_done": "Six new lanterns, six old friends back. Still learning, me.",
+  "repeatable": false,
+  "text_ref": "q_a5_faded_knights"
+ },
+ {
+  "id": "q_a5_grey_guest",
+  "name": "The Lantern Room",
+  "giver": "npc_a5_questgiver",
+  "act": "act5",
+  "type": "boss",
+  "target": "grey_guest",
+  "count": 1,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.6,
+   "item_rarity": "epic",
+   "skill_points": 1,
+   "recipe": "r_forge_legendary"
+  },
+  "text_offer": "He's up there. Down there. In the Lantern Room. Don't fight to win, Wickbearer. Share your light.",
+  "text_done": "He's home. The Lantern's lit. And for once, nobody's carrying it alone.",
+  "repeatable": false,
+  "text_ref": "q_a5_grey_guest"
+ },
+ {
+  "id": "q_a1_bounty_bones",
+  "name": "Bounty: Rattle Patrol",
+  "giver": "npc_a1_board",
+  "act": "act1",
+  "type": "kill",
+  "target": "rattler",
+  "count": 25,
+  "reward": {
+   "gold": 220,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Rattlers wandering near the stilts again. Rekindle 25. No rush — this note will wait.",
+  "text_done": "Bounty done! The village sleeps easier. The Rattlers do too.",
+  "repeatable": true,
+  "text_ref": "q_a1_bounty_bones",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a1_bounty_archers",
+  "name": "Bounty: Arrows in the Reeds",
+  "giver": "npc_a1_board",
+  "act": "act1",
+  "type": "kill",
+  "target": "bog_archer",
+  "count": 15,
+  "reward": {
+   "gold": 220,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Bog Archers keep shooting at the lamps. Rekindle 15.",
+  "text_done": "Bounty done! The lamps thank you. Well, they flicker gratefully.",
+  "repeatable": true,
+  "text_ref": "q_a1_bounty_archers",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a1_bounty_bonemeal",
+  "name": "Bounty: Big Soup Order",
+  "giver": "npc_a1_board",
+  "act": "act1",
+  "type": "collect",
+  "target": "bone_meal",
+  "count": 15,
+  "reward": {
+   "gold": 220,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Mother Mabble needs 15 Bone Meal for… soup? Don't ask.",
+  "text_done": "Bounty done! Soup achieved. Nobody asked.",
+  "repeatable": true,
+  "text_ref": "q_a1_bounty_bonemeal",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a1_shieldbones",
+  "name": "Borrowed Shields",
+  "giver": "npc_a1_smith",
+  "act": "act1",
+  "type": "kill",
+  "target": "shieldbones",
+  "count": 8,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "Those Shieldbones are carrying MY old shields. Rekindle 8 and Hammer Gerald gets his work back.",
+  "text_done": "My shields! Dented, soggy, perfect. Gerald is thrilled.",
+  "repeatable": false,
+  "text_ref": "q_a1_shieldbones"
+ },
+ {
+  "id": "q_a1_bonepiles",
+  "name": "Tidy the Graves",
+  "giver": "npc_a1_innkeeper",
+  "act": "act1",
+  "type": "kill",
+  "target": "bonepile",
+  "count": 5,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "Bonepiles clutter up the graves. Rekindle 5, dear. Tidy graves, tidy mind.",
+  "text_done": "Lovely and tidy. Have a biscuit. It's a soup biscuit.",
+  "repeatable": false,
+  "text_ref": "q_a1_bonepiles"
+ },
+ {
+  "id": "q_a1_pet_egg",
+  "name": "Something Warm in the Nave",
+  "giver": "npc_a1_petkeeper",
+  "act": "act1",
+  "type": "explore",
+  "target": "a1_z3",
+  "count": 1,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic",
+   "material": {
+    "mystery_egg": 1
+   }
+  },
+  "text_offer": "I heard there's a warm egg in the Sunken Nave. Go and look. Carefully. Eggs are delicate.",
+  "text_done": "It's a mystery egg! Carry it around. It'll hatch when it's ready. Very professional.",
+  "repeatable": false,
+  "text_ref": "q_a1_pet_egg"
+ },
+ {
+  "id": "q_a1_ring_hunt",
+  "name": "Rings for Madame",
+  "giver": "npc_a1_jeweler",
+  "act": "act1",
+  "type": "collect",
+  "target": "topaz",
+  "count": 2,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "recipe": "r_forge_ring"
+  },
+  "text_offer": "Darling, I need 2 Wick Topaz for a new ring. I'll wear it immediately. Then lose it.",
+  "text_done": "Gorgeous! Now, where did I put the ring I was wearing…",
+  "repeatable": false,
+  "text_ref": "q_a1_ring_hunt"
+ },
+ {
+  "id": "q_a1_humphrey_count",
+  "name": "Counting Spoons",
+  "giver": "npc_a1_stash",
+  "act": "act1",
+  "type": "talk",
+  "target": "npc_a1_innkeeper",
+  "count": 1,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Mother… Mabble… borrowed… my… spoons. Ask… how… many.",
+  "text_done": "Twelve… spoons. Twelve. I… counted… twice. Thank… you.",
+  "repeatable": false,
+  "text_ref": "q_a1_humphrey_count"
+ },
+ {
+  "id": "q_a1_rune_spoon",
+  "name": "Runes for Supper",
+  "giver": "npc_a1_runecarver",
+  "act": "act1",
+  "type": "collect",
+  "target": "soot",
+  "count": 10,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "I've run out of soot for my rune-ink. 10 Soot Dust, and I'll carve 'soup' on your spoon too.",
+  "text_done": "Here's your spoon. It says 'soup'. Very useful.",
+  "repeatable": false,
+  "text_ref": "q_a1_rune_spoon"
+ },
+ {
+  "id": "q_a1_wisp_lights",
+  "name": "The Top of the Tower",
+  "giver": "npc_a1_waypoint",
+  "act": "act1",
+  "type": "explore",
+  "target": "a1_boss",
+  "count": 1,
+  "reward": {
+   "gold": 340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Glim wants to see the top of the Belfry. From far away. Could you peek first? *flicker*",
+  "text_done": "The view's lovely? Great! We'll go. Someday. *flicker*",
+  "repeatable": false,
+  "text_ref": "q_a1_wisp_lights"
+ },
+ {
+  "id": "q_a2_bounty_twigs",
+  "name": "Bounty: Stick Check",
+  "giver": "npc_a2_board",
+  "act": "act2",
+  "type": "kill",
+  "target": "twigling",
+  "count": 30,
+  "reward": {
+   "gold": 740,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Twiglings pretending to be firewood. Rekindle 30. Take your time.",
+  "text_done": "Bounty done! The firewood pile is just firewood now.",
+  "repeatable": true,
+  "text_ref": "q_a2_bounty_twigs",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a2_bounty_puffers",
+  "name": "Bounty: Spore Season",
+  "giver": "npc_a2_board",
+  "act": "act2",
+  "type": "kill",
+  "target": "sporecap",
+  "count": 15,
+  "reward": {
+   "gold": 740,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Sporecaps puffing in the Hollow. Rekindle 15. Bring a hanky.",
+  "text_done": "Bounty done! Spore levels: acceptable. *puff*",
+  "repeatable": true,
+  "text_ref": "q_a2_bounty_puffers",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a2_bounty_essence",
+  "name": "Bounty: Evening in a Bottle",
+  "giver": "npc_a2_board",
+  "act": "act2",
+  "type": "collect",
+  "target": "dusk_essence",
+  "count": 4,
+  "reward": {
+   "gold": 740,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: The Professor wants 4 Dusk Essence. He says it's for science. It's for cocoa.",
+  "text_done": "Bounty done! Science (cocoa) is served.",
+  "repeatable": true,
+  "text_ref": "q_a2_bounty_essence",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a2_thorn_sprites",
+  "name": "Sorry, Thorns",
+  "giver": "npc_a2_smith",
+  "act": "act2",
+  "type": "kill",
+  "target": "thorn_sprite",
+  "count": 10,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "Thorn Sprites are pricking my customers. Rekindle 10. And tell them sorry from me.",
+  "text_done": "Thank you. I apologised to the brambles too, just in case.",
+  "repeatable": false,
+  "text_ref": "q_a2_thorn_sprites"
+ },
+ {
+  "id": "q_a2_stump_grumble",
+  "name": "The Grumpy Stump",
+  "giver": "npc_a2_innkeeper",
+  "act": "act2",
+  "type": "kill",
+  "target": "stump_grumble",
+  "count": 1,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "A huge Stump Grumble sits on the path to the Hollow. Grumbling. Rekindle it? Politely?",
+  "text_done": "It stopped grumbling and started snoring. Much better. Have a hammock.",
+  "repeatable": false,
+  "text_ref": "q_a2_stump_grumble"
+ },
+ {
+  "id": "q_a2_dew_gems",
+  "name": "Gems That Stay",
+  "giver": "npc_a2_jeweler",
+  "act": "act2",
+  "type": "collect",
+  "target": "emerald",
+  "count": 2,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "recipe": "r_gem_recut"
+  },
+  "text_offer": "I want gems that DON'T evaporate. 2 Moss Emeralds, please!",
+  "text_done": "They're still here! It's been a whole minute! Thank you!",
+  "repeatable": false,
+  "text_ref": "q_a2_dew_gems"
+ },
+ {
+  "id": "q_a2_acorn_runes",
+  "name": "Thread for Runes",
+  "giver": "npc_a2_runecarver",
+  "act": "act2",
+  "type": "collect",
+  "target": "wickthread",
+  "count": 3,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "I tie my rune-acorns with Wickthread. 3 lengths, if you've got them. Beard's holding the rest.",
+  "text_done": "Lovely. My beard says thank you. It's grown a berry.",
+  "repeatable": false,
+  "text_ref": "q_a2_acorn_runes"
+ },
+ {
+  "id": "q_a2_deer_ride",
+  "name": "Fern Wants Out",
+  "giver": "npc_a2_stablemaster",
+  "act": "act2",
+  "type": "explore",
+  "target": "a2_z2",
+  "count": 1,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "*whistles* That means: Fern wants a ride through Puffcap Hollow. You in?",
+  "text_done": "*two happy whistles* Fern's never been sparklier.",
+  "repeatable": false,
+  "text_ref": "q_a2_deer_ride"
+ },
+ {
+  "id": "q_a2_nutsy_lost",
+  "name": "Where Did I Bury It",
+  "giver": "npc_a2_stash",
+  "act": "act2",
+  "type": "explore",
+  "target": "a2_z1",
+  "count": 1,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "magic",
+   "pet": "pet_crumpet"
+  },
+  "text_offer": "I buried something important in the Birches! Or near them! Or I dreamed it! Go look?",
+  "text_done": "You found it! It's… an acorn. My favourite acorn! Thank you!",
+  "repeatable": false,
+  "text_ref": "q_a2_nutsy_lost"
+ },
+ {
+  "id": "q_a2_hoot_question",
+  "name": "A Question for Quibble",
+  "giver": "npc_a2_storyteller",
+  "act": "act2",
+  "type": "talk",
+  "target": "npc_a2_trader",
+  "count": 1,
+  "reward": {
+   "gold": 1120,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Will you ask Mister Quibble a question for me? Which question? Isn't that the question?",
+  "text_done": "He answered with a riddle? And you answered with a question? Now who's the owl?",
+  "repeatable": false,
+  "text_ref": "q_a2_hoot_question"
+ },
+ {
+  "id": "q_a3_bounty_diglings",
+  "name": "Bounty: Shift Change",
+  "giver": "npc_a3_board",
+  "act": "act3",
+  "type": "kill",
+  "target": "digling",
+  "count": 30,
+  "reward": {
+   "gold": 1220,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Diglings digging where they shouldn't. Rekindle 30. Hard hats optional.",
+  "text_done": "Bounty done! The tunnels are tidy. The Diglings went for a nap.",
+  "repeatable": true,
+  "text_ref": "q_a3_bounty_diglings",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a3_bounty_bats",
+  "name": "Bounty: Squeak Squad",
+  "giver": "npc_a3_board",
+  "act": "act3",
+  "type": "kill",
+  "target": "echo_bat",
+  "count": 20,
+  "reward": {
+   "gold": 1220,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Echo Bats copying everyone's sneezes. Rekindle 20.",
+  "text_done": "Bounty done! Sneezes are private again.",
+  "repeatable": true,
+  "text_ref": "q_a3_bounty_bats",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a3_bounty_wick",
+  "name": "Bounty: Fuse Supplies",
+  "giver": "npc_a3_board",
+  "act": "act3",
+  "type": "collect",
+  "target": "wickthread",
+  "count": 5,
+  "reward": {
+   "gold": 1220,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Fizzwick needs 5 Wickthread. Again. For safety. Allegedly.",
+  "text_done": "Bounty done! Only a small pop. Eyebrows mostly fine.",
+  "repeatable": true,
+  "text_ref": "q_a3_bounty_wick",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a3_salt_golem",
+  "name": "Too Much Salt",
+  "giver": "npc_a3_questgiver",
+  "act": "act3",
+  "type": "kill",
+  "target": "salt_golem",
+  "count": 3,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "Salt Golems are blocking the lower shaft. Rekindle 3. They're big, but they're softies.",
+  "text_done": "Shaft's clear. One of the golems waved goodbye. With a whole arm of salt.",
+  "repeatable": false,
+  "text_ref": "q_a3_salt_golem"
+ },
+ {
+  "id": "q_a3_dimple_dig",
+  "name": "Dimple's Tunnel",
+  "giver": "npc_a3_petkeeper",
+  "act": "act3",
+  "type": "explore",
+  "target": "a3_z3",
+  "count": 1,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Dimple dug a tunnel to the Rattletrack Rails! Check it's safe? I'd go, but— actually I'd go. You go.",
+  "text_done": "Safe! Dimple found a coin and a sock. She's keeping the sock.",
+  "repeatable": false,
+  "text_ref": "q_a3_dimple_dig"
+ },
+ {
+  "id": "q_a3_ruby_polish",
+  "name": "Rubies for Polishing",
+  "giver": "npc_a3_jeweler",
+  "act": "act3",
+  "type": "collect",
+  "target": "ruby",
+  "count": 2,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "recipe": "r_jewel_socket"
+  },
+  "text_offer": "Bring me 2 Candle Rubies. I'm going to polish them until they blush.",
+  "text_done": "*polish polish* Look at them glow. And look at you! *polish*",
+  "repeatable": false,
+  "text_ref": "q_a3_ruby_polish"
+ },
+ {
+  "id": "q_a3_chisel_friend",
+  "name": "Chisel. Friend.",
+  "giver": "npc_a3_runecarver",
+  "act": "act3",
+  "type": "talk",
+  "target": "npc_a3_petkeeper",
+  "count": 1,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Tuppence. Friend? Ask. Please.",
+  "text_done": "Friend. Yes. Happy. Me.",
+  "repeatable": false,
+  "text_ref": "q_a3_chisel_friend"
+ },
+ {
+  "id": "q_a3_gus_carts",
+  "name": "Not For Sale",
+  "giver": "npc_a3_trader",
+  "act": "act3",
+  "type": "kill",
+  "target": "cart_mimic",
+  "count": 3,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "Three toothy carts are pretending to be MY carts. Rekindle them before somebody buys one!",
+  "text_done": "My real carts! Both of them! Two carts, zero teeth.",
+  "repeatable": false,
+  "text_ref": "q_a3_gus_carts"
+ },
+ {
+  "id": "q_a3_pony_route",
+  "name": "Shortcut Test",
+  "giver": "npc_a3_stablemaster",
+  "act": "act3",
+  "type": "explore",
+  "target": "a3_z2",
+  "count": 1,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "I found a new shortcut through the Glittering Gallery. Test it on Gravel?",
+  "text_done": "Four seconds faster! Gravel's thrilled. Other Gravel is jealous.",
+  "repeatable": false,
+  "text_ref": "q_a3_pony_route"
+ },
+ {
+  "id": "q_a3_lift_laugh",
+  "name": "Mind the Laugh",
+  "giver": "npc_a3_innkeeper",
+  "act": "act3",
+  "type": "talk",
+  "target": "npc_a3_waypoint",
+  "count": 1,
+  "reward": {
+   "gold": 1840,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Tell Lou my laugh won't shake the lift any more. HA HA! …Tell him to hold on, actually.",
+  "text_done": "Lou says 'Going up, going down, going wobbly.' HA HA! Fair.",
+  "repeatable": false,
+  "text_ref": "q_a3_lift_laugh"
+ },
+ {
+  "id": "q_a4_bounty_dolls",
+  "name": "Bounty: Tidy the Nursery",
+  "giver": "npc_a4_board",
+  "act": "act4",
+  "type": "kill",
+  "target": "porcelain_doll",
+  "count": 25,
+  "reward": {
+   "gold": 1700,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Porcelain dolls sneaking around the halls. Rekindle 25. Look behind you.",
+  "text_done": "Bounty done! The dolls are back on their shelves. Probably.",
+  "repeatable": true,
+  "text_ref": "q_a4_bounty_dolls",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a4_bounty_jesters",
+  "name": "Bounty: Cold Jokes",
+  "giver": "npc_a4_board",
+  "act": "act4",
+  "type": "kill",
+  "target": "frost_jester",
+  "count": 15,
+  "reward": {
+   "gold": 1700,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Frost Jesters telling freezing jokes. Rekindle 15. Don't laugh. Actually, laugh.",
+  "text_done": "Bounty done! The jokes are warm again. Still not very good.",
+  "repeatable": true,
+  "text_ref": "q_a4_bounty_jesters",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a4_bounty_soot",
+  "name": "Bounty: Stoke the Kettle",
+  "giver": "npc_a4_board",
+  "act": "act4",
+  "type": "collect",
+  "target": "soot",
+  "count": 25,
+  "reward": {
+   "gold": 1700,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: The great kettle needs 25 Soot Dust. Nan Kettleby says thank you in advance.",
+  "text_done": "Bounty done! Kettle's roaring. Tea for everyone.",
+  "repeatable": true,
+  "text_ref": "q_a4_bounty_soot",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a4_courtiers",
+  "name": "Frozen Manners",
+  "giver": "npc_a4_questgiver",
+  "act": "act4",
+  "type": "kill",
+  "target": "ice_courtier",
+  "count": 8,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "Ice Courtiers keep bowing people into snowdrifts. Rekindle 8. It's on my list. Item four.",
+  "text_done": "Item four: done. Item five: have a sit-down. Please do item five.",
+  "repeatable": false,
+  "text_ref": "q_a4_courtiers"
+ },
+ {
+  "id": "q_a4_sleigh_run",
+  "name": "Sled to the Hall",
+  "giver": "npc_a4_stablemaster",
+  "act": "act4",
+  "type": "explore",
+  "target": "a4_z3",
+  "count": 1,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Mister Fluffington wants to pull a sled to the Everlasting Toast. Wrap up warm! Then go!",
+  "text_done": "Twelve seconds! A castle record! Did you wrap up? Good.",
+  "repeatable": false,
+  "text_ref": "q_a4_sleigh_run"
+ },
+ {
+  "id": "q_a4_sapphires",
+  "name": "The Crown's Missing Sapphires",
+  "giver": "npc_a4_jeweler",
+  "act": "act4",
+  "type": "collect",
+  "target": "sapphire",
+  "count": 3,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "rare",
+   "recipe": "r_forge_epic_jewel"
+  },
+  "text_offer": "Three sapphires fell off the crown when it froze. One is ashamed. Bring me 3 Frost Sapphires? *giggle*",
+  "text_done": "The crown is complete! One is so pleased. *giggle giggle*",
+  "repeatable": false,
+  "text_ref": "q_a4_sapphires"
+ },
+ {
+  "id": "q_a4_quillon_cold",
+  "name": "Please, No Kettle",
+  "giver": "npc_a4_runecarver",
+  "act": "act4",
+  "type": "talk",
+  "target": "npc_a4_innkeeper",
+  "count": 1,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Ask Nan Kettleby to move the kettle ONE step to the left. Away from my ice.",
+  "text_done": "She moved it one step. To the right. I'm choosing to be at peace.",
+  "repeatable": false,
+  "text_ref": "q_a4_quillon_cold"
+ },
+ {
+  "id": "q_a4_crumbs",
+  "name": "Crumbs for Crumbsworth",
+  "giver": "npc_a4_trader",
+  "act": "act4",
+  "type": "collect",
+  "target": "bone_meal",
+  "count": 10,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "I need 10 Bone Meal. For baking. Mouse baking. It's a whole thing.",
+  "text_done": "Squeak! Bone-meal biscuits! Try one. …Don't try one.",
+  "repeatable": false,
+  "text_ref": "q_a4_crumbs"
+ },
+ {
+  "id": "q_a4_pip_letter",
+  "name": "A Letter for Dad",
+  "giver": "npc_a4_petkeeper",
+  "act": "act4",
+  "type": "talk",
+  "target": "npc_a4_stash",
+  "count": 1,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Give my letter to Mister Ledger. He'll keep it safe until Dad can read it.",
+  "text_done": "Mister Ledger says it's filed under 'P' for 'Pip'. And 'P' for 'precious'.",
+  "repeatable": false,
+  "text_ref": "q_a4_pip_letter"
+ },
+ {
+  "id": "q_a4_tinwhistle_drill",
+  "name": "Hound Drill",
+  "giver": "npc_a4_smith",
+  "act": "act4",
+  "type": "kill",
+  "target": "snow_hound",
+  "count": 12,
+  "reward": {
+   "gold": 2560,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "Snow Hounds keep chewing my boots. Rekindle 12! *salute*",
+  "text_done": "Boots saved! *salute* That was for you. *salute* That was for the boots.",
+  "repeatable": false,
+  "text_ref": "q_a4_tinwhistle_drill"
+ },
+ {
+  "id": "q_a5_bounty_hush",
+  "name": "Bounty: Soft Sweep",
+  "giver": "npc_a5_board",
+  "act": "act5",
+  "type": "kill",
+  "target": "hushling",
+  "count": 30,
+  "reward": {
+   "gold": 2220,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Hushlings drifting too close to the Landing. Rekindle 30. Go gently.",
+  "text_done": "Bounty done! The Landing hums a little louder.",
+  "repeatable": true,
+  "text_ref": "q_a5_bounty_hush",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a5_bounty_moths",
+  "name": "Bounty: Colour Back",
+  "giver": "npc_a5_board",
+  "act": "act5",
+  "type": "kill",
+  "target": "grey_moth",
+  "count": 20,
+  "reward": {
+   "gold": 2220,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: Grey Moths without their colours. Rekindle 20. The Choir will sing about you.",
+  "text_done": "Bounty done! The Choir sang. It was very small and very loud.",
+  "repeatable": true,
+  "text_ref": "q_a5_bounty_moths",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a5_bounty_essence",
+  "name": "Bounty: Cauldron Supper",
+  "giver": "npc_a5_board",
+  "act": "act5",
+  "type": "collect",
+  "target": "dusk_essence",
+  "count": 8,
+  "reward": {
+   "gold": 2220,
+   "xp_levels": 0.12,
+   "item_rarity": "rare",
+   "material": {
+    "glowcoal": 3
+   }
+  },
+  "text_offer": "BOUNTY: The Cauldron's peckish. 8 Dusk Essence. *burble* (that's from the Cauldron).",
+  "text_done": "Bounty done! *burble burble*",
+  "repeatable": true,
+  "text_ref": "q_a5_bounty_essence",
+  "bounty": true,
+  "refill": {
+   "per_active_play_minutes": 30,
+   "bank_max": 3,
+   "expires": false
+  }
+ },
+ {
+  "id": "q_a5_hollow_choir",
+  "name": "The Silent Singers",
+  "giver": "npc_a5_storyteller",
+  "act": "act5",
+  "type": "kill",
+  "target": "hollow_choir",
+  "count": 4,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "*sing* Four hollow choirs sing without sound… rekindle them, little light, bring their voices round!",
+  "text_done": "*sing* Four new voices! Our harmony is complete! Nearly!",
+  "repeatable": false,
+  "text_ref": "q_a5_hollow_choir"
+ },
+ {
+  "id": "q_a5_nib_shinies",
+  "name": "The Warmest Shiny",
+  "giver": "npc_a5_trader",
+  "act": "act5",
+  "type": "collect",
+  "target": "ember_heart",
+  "count": 2,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "Ember Hearts! The warmest shinies! Bring 2? I'll pay! Legally!",
+  "text_done": "So warm! So shiny! I didn't even try to borrow them!",
+  "repeatable": false,
+  "text_ref": "q_a5_nib_shinies"
+ },
+ {
+  "id": "q_a5_twinkle_home",
+  "name": "Where I Fell",
+  "giver": "npc_a5_jeweler",
+  "act": "act5",
+  "type": "explore",
+  "target": "a5_z1",
+  "count": 1,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Find the spot where I fell, on the Upside-Down Stars? I want to know it's still there.",
+  "text_done": "It's there? With a little dent? My dent! Aw.",
+  "repeatable": false,
+  "text_ref": "q_a5_twinkle_home"
+ },
+ {
+  "id": "q_a5_vesper_blink",
+  "name": "Someone Who Doesn't Blink",
+  "giver": "npc_a5_runecarver",
+  "act": "act5",
+  "type": "talk",
+  "target": "npc_a5_stash",
+  "count": 1,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Keeper Stillwater never hurries. Maybe he never blinks. Ask him to read a rune for me?",
+  "text_done": "He read it. Slowly. Without blinking. The rune is still glowing. I'm moved.",
+  "repeatable": false,
+  "text_ref": "q_a5_vesper_blink"
+ },
+ {
+  "id": "q_a5_moth_ride",
+  "name": "Dusty's Flight",
+  "giver": "npc_a5_stablemaster",
+  "act": "act5",
+  "type": "explore",
+  "target": "a5_z2",
+  "count": 1,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic",
+   "mount": "mount_moth2"
+  },
+  "text_offer": "Take Dusty over the Drift of Leftovers! Goggles on! Goggles on indoors, too!",
+  "text_done": "Dusty did a loop! Deliberately! Probably!",
+  "repeatable": false,
+  "text_ref": "q_a5_moth_ride"
+ },
+ {
+  "id": "q_a5_fireflies",
+  "name": "Jars for Fireflies",
+  "giver": "npc_a5_petkeeper",
+  "act": "act5",
+  "type": "collect",
+  "target": "wickthread",
+  "count": 4,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "rare"
+  },
+  "text_offer": "I need 4 Wickthread to tie new firefly jars. The fireflies are very excited.",
+  "text_done": "New jars! They'll come and go as they like. That's the whole point.",
+  "repeatable": false,
+  "text_ref": "q_a5_fireflies"
+ },
+ {
+  "id": "q_a5_stillwater_tea",
+  "name": "Tell Mae to Sit",
+  "giver": "npc_a5_innkeeper",
+  "act": "act5",
+  "type": "talk",
+  "target": "npc_a5_smith",
+  "count": 1,
+  "reward": {
+   "gold": 3340,
+   "xp_levels": 0.3,
+   "item_rarity": "magic"
+  },
+  "text_offer": "Mae's been at her anvil since breakfast. Yesterday's breakfast. Tell her to sit.",
+  "text_done": "She sat! She's 'still learning' how. It's a start.",
+  "repeatable": false,
+  "text_ref": "q_a5_stillwater_tea"
+ }
+]

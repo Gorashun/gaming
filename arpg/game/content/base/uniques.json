@@ -3,6 +3,8 @@
   "id": "u_bellringers_toll",
   "name": "The Bellringer's Toll",
   "base": "great_axe_t_12",
+  "rarity": "unique",
+  "class": "bellstriker",
   "flavor": "It still rings, faintly, when no one is listening.",
   "stats": [
    {
@@ -21,12 +23,21 @@
     "max": 30
    }
   ],
-  "power": "p_giant"
+  "power": "p_giant",
+  "drop": {
+   "boss": "sunken_bellringer",
+   "chance": 0.00625
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
  },
  {
   "id": "u_drowned_lantern",
   "name": "Drowned Lantern",
   "base": "amulet_12",
+  "rarity": "unique",
+  "class": "",
   "flavor": "Wet, cold, and somehow still burning.",
   "stats": [
    {
@@ -45,6 +56,1133 @@
     "max": 25
    }
   ],
-  "power": "p_vamp"
+  "power": "p_vamp",
+  "drop": {
+   "boss": "sunken_bellringer",
+   "chance": 0.00625
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_tollys_morning_note",
+  "name": "Tolly's Morning Note",
+  "base": "axe_6",
+  "rarity": "unique",
+  "class": "bellstriker",
+  "flavor": "One bright DONG. Everybody up!",
+  "stats": [
+   {
+    "stat": "might",
+    "min": 6,
+    "max": 10
+   },
+   {
+    "stat": "attack_speed_pct",
+    "min": 6,
+    "max": 10
+   }
+  ],
+  "power": "pu_tollys_morning_note",
+  "drop": {
+   "monster": "warden",
+   "chance": 0.004
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_warden_helm",
+  "name": "The Warden's Big Helmet",
+  "base": "head_h_6",
+  "rarity": "unique",
+  "class": "lanternbearer",
+  "flavor": "Two sizes too big. You'll grow into it.",
+  "stats": [
+   {
+    "stat": "vitality",
+    "min": 6,
+    "max": 10
+   },
+   {
+    "stat": "armor",
+    "min": 20,
+    "max": 35
+   }
+  ],
+  "power": "pu_warden_helm",
+  "drop": {
+   "monster": "mb_mossjaw",
+   "chance": 0.03
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_purls_scarf",
+  "name": "The Unfinished Scarf",
+  "base": "amulet_6",
+  "rarity": "unique",
+  "class": "stitcher",
+  "flavor": "Long enough for a whole village. Nearly.",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 6,
+    "max": 10
+   },
+   {
+    "stat": "life",
+    "min": 40,
+    "max": 60
+   }
+  ],
+  "power": "pu_purls_scarf",
+  "drop": {
+   "monster": "mb_candlewife",
+   "chance": 0.03
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_bog_newt_boots",
+  "name": "Squelchstriders",
+  "base": "feet_6",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "They squelch. Proudly.",
+  "stats": [
+   {
+    "stat": "move_speed_pct",
+    "min": 8,
+    "max": 12
+   },
+   {
+    "stat": "resist_cold",
+    "min": 10,
+    "max": 16
+   }
+  ],
+  "power": "pu_bog_newt_boots",
+  "drop": {
+   "boss": "sunken_bellringer",
+   "chance": 0.00625
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_candle_mages_last_wick",
+  "name": "The Last Warm Wick",
+  "base": "wand_6",
+  "rarity": "unique",
+  "class": "stargazer",
+  "flavor": "A Candle Mage gave it back. Politely.",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 6,
+    "max": 10
+   },
+   {
+    "stat": "fire_pct",
+    "min": 15,
+    "max": 25
+   }
+  ],
+  "power": "pu_candle_mages_last_wick",
+  "drop": {
+   "boss": "sunken_bellringer",
+   "chance": 0.00625
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_rattlers_nightcap",
+  "name": "Rattler's Nightcap",
+  "base": "head_l_1",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "Rattlebones sleep better in it. So do you.",
+  "stats": [
+   {
+    "stat": "life_regen",
+    "min": 2,
+    "max": 4
+   },
+   {
+    "stat": "xp_pct",
+    "min": 5,
+    "max": 8
+   }
+  ],
+  "power": "pu_rattlers_nightcap",
+  "drop": {
+   "monster": "rattler",
+   "chance": 0.0015
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_mother_barks_jar",
+  "name": "Mother Bark's Shadow Jar",
+  "base": "tome_open_12",
+  "rarity": "unique",
+  "class": "stitcher",
+  "flavor": "Empty now. It hums a lullaby anyway.",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 10,
+    "max": 16
+   },
+   {
+    "stat": "shadow_pct",
+    "min": 15,
+    "max": 25
+   }
+  ],
+  "power": "pu_mother_barks_jar",
+  "drop": {
+   "boss": "mother_bark",
+   "chance": 0.00833
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_birch_whisper",
+  "name": "Birchwhisper",
+  "base": "arbalest_12",
+  "rarity": "unique",
+  "class": "roofrunner",
+  "flavor": "Each arrow tells a rumour on the way.",
+  "stats": [
+   {
+    "stat": "agility",
+    "min": 10,
+    "max": 16
+   },
+   {
+    "stat": "projectile_damage_pct",
+    "min": 15,
+    "max": 25
+   }
+  ],
+  "power": "pu_birch_whisper",
+  "drop": {
+   "boss": "mother_bark",
+   "chance": 0.00833
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_owlcrow_eye",
+  "name": "The Owlcrow's Eye",
+  "base": "ring_12",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "It always looks your way. Kindly, now.",
+  "stats": [
+   {
+    "stat": "crit_chance",
+    "min": 3,
+    "max": 5
+   },
+   {
+    "stat": "magic_find",
+    "min": 10,
+    "max": 15
+   }
+  ],
+  "power": "pu_owlcrow_eye",
+  "drop": {
+   "monster": "mb_great_hoot",
+   "chance": 0.03
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_puffcap_hood",
+  "name": "Puffcap Hood",
+  "base": "head_l_12",
+  "rarity": "unique",
+  "class": "stargazer",
+  "flavor": "Sneeze-proof. Sparkle-positive.",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 8,
+    "max": 12
+   },
+   {
+    "stat": "area_pct",
+    "min": 8,
+    "max": 12
+   }
+  ],
+  "power": "pu_puffcap_hood",
+  "drop": {
+   "monster": "sporecap",
+   "chance": 0.0015
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_moss_hound_collar",
+  "name": "Good Dog Collar",
+  "base": "amulet_lk_12",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "For the goodest hound in the Whisperwood.",
+  "stats": [
+   {
+    "stat": "life_pct",
+    "min": 5,
+    "max": 8
+   },
+   {
+    "stat": "move_speed_pct",
+    "min": 5,
+    "max": 8
+   }
+  ],
+  "power": "pu_moss_hound_collar",
+  "drop": {
+   "monster": "moss_hound",
+   "chance": 0.0015
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_hobs_acorn",
+  "name": "Hob's Carved Acorn",
+  "base": "charm_12",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "The rune on it says 'grow'. It's trying.",
+  "stats": [
+   {
+    "stat": "life",
+    "min": 60,
+    "max": 90
+   },
+   {
+    "stat": "resist_all",
+    "min": 6,
+    "max": 10
+   }
+  ],
+  "power": "pu_hobs_acorn",
+  "drop": {
+   "boss": "mother_bark",
+   "chance": 0.00833
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_twigling_crown",
+  "name": "Crown of Sticks",
+  "base": "head_12",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "Twiglings bow when they see it. Then they poke it.",
+  "stats": [
+   {
+    "stat": "thorns",
+    "min": 20,
+    "max": 35
+   },
+   {
+    "stat": "armor",
+    "min": 30,
+    "max": 45
+   }
+  ],
+  "power": "pu_twigling_crown",
+  "drop": {
+   "monster": "mb_briar_aunt",
+   "chance": 0.03
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_digdeep_pick",
+  "name": "Dig Deep",
+  "base": "great_axe_t_28",
+  "rarity": "unique",
+  "class": "bellstriker",
+  "flavor": "It hums the first line of an old song.",
+  "stats": [
+   {
+    "stat": "might",
+    "min": 16,
+    "max": 24
+   },
+   {
+    "stat": "physical_pct",
+    "min": 20,
+    "max": 30
+   }
+  ],
+  "power": "pu_digdeep_pick",
+  "drop": {
+   "boss": "great_echo",
+   "chance": 0.00833
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_digbright",
+  "name": "Dig Bright",
+  "base": "sword_28",
+  "rarity": "unique",
+  "class": "lanternbearer",
+  "flavor": "It hums the second line.",
+  "stats": [
+   {
+    "stat": "might",
+    "min": 14,
+    "max": 22
+   },
+   {
+    "stat": "holy_pct",
+    "min": 20,
+    "max": 30
+   }
+  ],
+  "power": "pu_digbright",
+  "drop": {
+   "boss": "great_echo",
+   "chance": 0.00833
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_crystal_spider_silk",
+  "name": "Clinking Silk Gloves",
+  "base": "hands_28",
+  "rarity": "unique",
+  "class": "roofrunner",
+  "flavor": "If they go quiet, check the ceiling.",
+  "stats": [
+   {
+    "stat": "agility",
+    "min": 12,
+    "max": 18
+   },
+   {
+    "stat": "attack_speed_pct",
+    "min": 6,
+    "max": 10
+   }
+  ],
+  "power": "pu_crystal_spider_silk",
+  "drop": {
+   "monster": "mb_crystal_matron",
+   "chance": 0.03
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_cart_six",
+  "name": "Cart Six's Wheel",
+  "base": "shield_28",
+  "rarity": "unique",
+  "class": "lanternbearer",
+  "flavor": "It always comes back.",
+  "stats": [
+   {
+    "stat": "vitality",
+    "min": 12,
+    "max": 18
+   },
+   {
+    "stat": "block",
+    "min": 5,
+    "max": 8
+   }
+  ],
+  "power": "pu_cart_six",
+  "drop": {
+   "monster": "cart_mimic",
+   "chance": 0.004
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_echo_annies_shawl",
+  "name": "Annie's Shawl",
+  "base": "chest_l_28",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "Warm. Warm.",
+  "stats": [
+   {
+    "stat": "life",
+    "min": 120,
+    "max": 170
+   },
+   {
+    "stat": "resist_all",
+    "min": 10,
+    "max": 15
+   }
+  ],
+  "power": "pu_echo_annies_shawl",
+  "drop": {
+   "boss": "great_echo",
+   "chance": 0.00833
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_salt_golem_heart",
+  "name": "Salty Heart",
+  "base": "belt_h_28",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "Tough on the outside. Salty in the middle.",
+  "stats": [
+   {
+    "stat": "life",
+    "min": 120,
+    "max": 170
+   },
+   {
+    "stat": "armor",
+    "min": 50,
+    "max": 80
+   }
+  ],
+  "power": "pu_salt_golem_heart",
+  "drop": {
+   "monster": "salt_golem",
+   "chance": 0.004
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_lou_levers_lever",
+  "name": "The Going-Up Lever",
+  "base": "staff_28",
+  "rarity": "unique",
+  "class": "stargazer",
+  "flavor": "Ding! Next stop: trouble.",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 16,
+    "max": 24
+   },
+   {
+    "stat": "cast_speed_pct",
+    "min": 8,
+    "max": 12
+   }
+  ],
+  "power": "pu_lou_levers_lever",
+  "drop": {
+   "monster": "mb_foreman_clank",
+   "chance": 0.03
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_toast_everlasting",
+  "name": "The Everlasting Toast",
+  "base": "wand_38",
+  "rarity": "unique",
+  "class": "stargazer",
+  "flavor": "Raised a year. Finished at last.",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 18,
+    "max": 26
+   },
+   {
+    "stat": "cold_pct",
+    "min": 20,
+    "max": 30
+   }
+  ],
+  "power": "pu_toast_everlasting",
+  "drop": {
+   "boss": "king_who_forgot",
+   "chance": 0.00833
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_warmhearth_crown",
+  "name": "Warmhearth Crown",
+  "base": "head_h_38",
+  "rarity": "unique",
+  "class": "lanternbearer",
+  "flavor": "It thaws anyone who wears it. Especially inside.",
+  "stats": [
+   {
+    "stat": "vitality",
+    "min": 18,
+    "max": 26
+   },
+   {
+    "stat": "resist_cold",
+    "min": 20,
+    "max": 30
+   }
+  ],
+  "power": "pu_warmhearth_crown",
+  "drop": {
+   "boss": "king_who_forgot",
+   "chance": 0.00833
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_mirror_butler_tray",
+  "name": "The Sorry Tray",
+  "base": "shield_crest_48",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "Serves trap tea. Deeply apologises.",
+  "stats": [
+   {
+    "stat": "armor",
+    "min": 60,
+    "max": 90
+   },
+   {
+    "stat": "resist_all",
+    "min": 10,
+    "max": 15
+   }
+  ],
+  "power": "pu_mirror_butler_tray",
+  "drop": {
+   "monster": "mb_head_butler",
+   "chance": 0.03
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_porcelain_smile",
+  "name": "Porcelain Smile",
+  "base": "amulet_38",
+  "rarity": "unique",
+  "class": "stitcher",
+  "flavor": "It only moves when you're not looking.",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 16,
+    "max": 24
+   },
+   {
+    "stat": "minion_damage_pct",
+    "min": 20,
+    "max": 30
+   }
+  ],
+  "power": "pu_porcelain_smile",
+  "drop": {
+   "monster": "porcelain_doll",
+   "chance": 0.0015
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_tinwhistle_medal",
+  "name": "Tinwhistle's Medal",
+  "base": "charm_38",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "For bravery. And for saluting anvils.",
+  "stats": [
+   {
+    "stat": "vitality",
+    "min": 14,
+    "max": 20
+   },
+   {
+    "stat": "armor_pct",
+    "min": 10,
+    "max": 15
+   }
+  ],
+  "power": "pu_tinwhistle_medal",
+  "drop": {
+   "monster": "mb_captain_tinwhistle",
+   "chance": 0.015
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_pips_tiara",
+  "name": "Pip's Bossy Tiara",
+  "base": "head_l_38",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "Royal orders, kindly given.",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 14,
+    "max": 20
+   },
+   {
+    "stat": "cdr_pct",
+    "min": 4,
+    "max": 6
+   }
+  ],
+  "power": "pu_pips_tiara",
+  "drop": {
+   "boss": "king_who_forgot",
+   "chance": 0.00833
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_rooftop_hood",
+  "name": "Chimney Kid's Hood",
+  "base": "head_38",
+  "rarity": "unique",
+  "class": "roofrunner",
+  "flavor": "Smells of soot and adventure.",
+  "stats": [
+   {
+    "stat": "agility",
+    "min": 16,
+    "max": 22
+   },
+   {
+    "stat": "dodge",
+    "min": 4,
+    "max": 6
+   }
+  ],
+  "power": "pu_rooftop_hood",
+  "drop": {
+   "monster": "frost_jester",
+   "chance": 0.0015
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_frost_jester_bells",
+  "name": "Jin-Jin",
+  "base": "ring_sig_38",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "Frozen jester bells. They only get halfway.",
+  "stats": [
+   {
+    "stat": "crit_damage",
+    "min": 20,
+    "max": 30
+   },
+   {
+    "stat": "cold_pct",
+    "min": 10,
+    "max": 15
+   }
+  ],
+  "power": "pu_frost_jester_bells",
+  "drop": {
+   "monster": "mb_captain_tinwhistle",
+   "chance": 0.015
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_nobodys_hat",
+  "name": "Nobody's Spare Hat",
+  "base": "head_l_48",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "…  (It is a very good hat.)",
+  "stats": [
+   {
+    "stat": "magic_find",
+    "min": 20,
+    "max": 30
+   },
+   {
+    "stat": "gold_find",
+    "min": 20,
+    "max": 30
+   }
+  ],
+  "power": "pu_nobodys_hat",
+  "drop": {
+   "monster": "nobody_hat",
+   "chance": 0.004
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_quiet_stair_boots",
+  "name": "Quiet Stair Slippers",
+  "base": "feet_l_48",
+  "rarity": "unique",
+  "class": "roofrunner",
+  "flavor": "Every step leaves a little light.",
+  "stats": [
+   {
+    "stat": "agility",
+    "min": 20,
+    "max": 28
+   },
+   {
+    "stat": "move_speed_pct",
+    "min": 10,
+    "max": 14
+   }
+  ],
+  "power": "pu_quiet_stair_boots",
+  "drop": {
+   "boss": "grey_guest",
+   "chance": 0.005
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_hollow_choir_bell",
+  "name": "The Hollow Choir's Bell",
+  "base": "tome_open_48",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "Rings without a sound. The Hush hears it.",
+  "stats": [
+   {
+    "stat": "resource_max",
+    "min": 30,
+    "max": 45
+   },
+   {
+    "stat": "area_damage_pct",
+    "min": 15,
+    "max": 25
+   }
+  ],
+  "power": "pu_hollow_choir_bell",
+  "drop": {
+   "monster": "mb_choirmaster",
+   "chance": 0.03
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_pells_trimmers",
+  "name": "Pell's Wick-Trimmers",
+  "base": "dagger_48",
+  "rarity": "unique",
+  "class": "roofrunner",
+  "flavor": "Snip. Snip. Every night. For so long.",
+  "stats": [
+   {
+    "stat": "agility",
+    "min": 20,
+    "max": 28
+   },
+   {
+    "stat": "crit_damage",
+    "min": 25,
+    "max": 35
+   }
+  ],
+  "power": "pu_pells_trimmers",
+  "drop": {
+   "boss": "grey_guest",
+   "chance": 0.005
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_ninety_nine_chairs",
+  "name": "The Ninety-Ninth Chair",
+  "base": "chest_h_48",
+  "rarity": "unique",
+  "class": "lanternbearer",
+  "flavor": "Someone finally sat in it.",
+  "stats": [
+   {
+    "stat": "vitality",
+    "min": 20,
+    "max": 28
+   },
+   {
+    "stat": "armor_pct",
+    "min": 12,
+    "max": 18
+   }
+  ],
+  "power": "pu_ninety_nine_chairs",
+  "drop": {
+   "boss": "grey_guest",
+   "chance": 0.005
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_lastlight_lens",
+  "name": "Lastlight Lens",
+  "base": "amulet_48",
+  "rarity": "unique",
+  "class": "stargazer",
+  "flavor": "Makes small lights look very, very big.",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 20,
+    "max": 28
+   },
+   {
+    "stat": "area_pct",
+    "min": 10,
+    "max": 15
+   }
+  ],
+  "power": "pu_lastlight_lens",
+  "drop": {
+   "monster": "mb_faded_champion",
+   "chance": 0.03
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_mother_simmers_ladle",
+  "name": "The Stirring Ladle",
+  "base": "axe_48",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "Stir left for luck.",
+  "stats": [
+   {
+    "stat": "might",
+    "min": 18,
+    "max": 26
+   },
+   {
+    "stat": "life_on_hit",
+    "min": 12,
+    "max": 18
+   }
+  ],
+  "power": "pu_mother_simmers_ladle",
+  "drop": {
+   "monster": "sound_eater",
+   "chance": 0.004
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_nibs_borrowing_glove",
+  "name": "Nib's Borrowing Glove",
+  "base": "hands_l_48",
+  "rarity": "unique",
+  "class": "roofrunner",
+  "flavor": "Borrows gold. Permanently. Legally.",
+  "stats": [
+   {
+    "stat": "gold_find",
+    "min": 30,
+    "max": 45
+   },
+   {
+    "stat": "attack_speed_pct",
+    "min": 6,
+    "max": 9
+   }
+  ],
+  "power": "pu_nibs_borrowing_glove",
+  "drop": {
+   "event": "magpie_imp",
+   "chance": 0.01
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_magpie_hoard_key",
+  "name": "Magpie's Hoard Key",
+  "base": "charm_tk_20",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "Opens a door that isn't there. Sometimes.",
+  "stats": [
+   {
+    "stat": "magic_find",
+    "min": 15,
+    "max": 25
+   },
+   {
+    "stat": "gold_find",
+    "min": 20,
+    "max": 30
+   }
+  ],
+  "power": "pu_magpie_hoard_key",
+  "drop": {
+   "event": "magpie_imp",
+   "chance": 0.01
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_moth_choir_cloak",
+  "name": "Cloak of a Thousand Wings",
+  "base": "chest_l_60",
+  "rarity": "unique",
+  "class": "stitcher",
+  "flavor": "Soft. Fluttery. Slightly ticklish.",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 22,
+    "max": 30
+   },
+   {
+    "stat": "minion_life_pct",
+    "min": 25,
+    "max": 40
+   }
+  ],
+  "power": "pu_moth_choir_cloak",
+  "drop": {
+   "boss": "grey_guest",
+   "chance": 0.005
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_first_spark",
+  "name": "The Wandering Spark",
+  "base": "ring_60",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "The first thing that ever remembered.",
+  "stats": [
+   {
+    "stat": "resist_all",
+    "min": 12,
+    "max": 18
+   },
+   {
+    "stat": "xp_pct",
+    "min": 8,
+    "max": 12
+   }
+  ],
+  "power": "pu_first_spark",
+  "drop": {
+   "boss": "grey_guest",
+   "chance": 0.005
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "u_long_shadow_mantle",
+  "name": "Mantle of the Long Shadow",
+  "base": "chest_85",
+  "rarity": "unique",
+  "class": "",
+  "flavor": "Every shadow wants to be close to a light.",
+  "stats": [
+   {
+    "stat": "life_pct",
+    "min": 10,
+    "max": 15
+   },
+   {
+    "stat": "dodge",
+    "min": 6,
+    "max": 9
+   }
+  ],
+  "power": "pu_long_shadow_mantle",
+  "drop": {
+   "boss": "long_shadow",
+   "chance": 0.025
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "scale_with_ilvl": true
  }
 ]

@@ -1,0 +1,66 @@
+[
+ {
+  "id": "puzzle_a1_bell_ropes",
+  "zone": "a1_z3",
+  "kind": "sequence",
+  "desc": "Three hand-bells hang in the nave. Ring them low, middle, high.",
+  "props": [
+   "hal:shrine_candles"
+  ],
+  "solution": [
+   1,
+   2,
+   3
+  ],
+  "hint_after_fails": 2
+ },
+ {
+  "id": "puzzle_a2_honest_birch",
+  "zone": "a2_z1",
+  "kind": "find_one",
+  "desc": "Every birch gossips. One tells the truth — it's the one that says it doesn't know.",
+  "count": 5
+ },
+ {
+  "id": "puzzle_a2_owlcrow_riddle",
+  "zone": "a2_z3",
+  "kind": "riddle",
+  "desc": "An Owlcrow asks a riddle with three answers to pick from.",
+  "choices": 3
+ },
+ {
+  "id": "puzzle_a3_song_order",
+  "zone": "a3_town",
+  "kind": "order",
+  "desc": "Put the three song scraps in the right order.",
+  "items": [
+   "qi_song_scrap"
+  ],
+  "solution": [
+   2,
+   1,
+   3
+  ]
+ },
+ {
+  "id": "puzzle_a4_third_mirror",
+  "zone": "a4_z2",
+  "kind": "find_one",
+  "desc": "Your reflection in the third mirror moves first. Step through it.",
+  "count": 7
+ },
+ {
+  "id": "puzzle_a5_silent_steps",
+  "zone": "a5_z3",
+  "kind": "path",
+  "desc": "Follow your own glowing footsteps down the Quiet Stair. Stray and they fade (no penalty).",
+  "length": 12
+ },
+ {
+  "id": "puzzle_dd_chair",
+  "zone": "a5_town",
+  "kind": "find_one",
+  "desc": "Ninety-nine chairs. One has your name.",
+  "count": 99
+ }
+]

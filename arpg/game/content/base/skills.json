@@ -29,7 +29,54 @@
   "icon": "sword",
   "class": "lanternbearer",
   "unlock_level": 1,
-  "max_rank": 5
+  "max_rank": 5,
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 2.64
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Practised",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 0.0
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 1.25
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "melee_arc",
+       "radius": 2.3,
+       "angle": 120,
+       "mult": 0.5,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "lb_flare",
@@ -63,7 +110,139 @@
   "icon": "shield",
   "class": "lanternbearer",
   "unlock_level": 1,
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Flare",
+      "desc": "Bigger blast.",
+      "patch": {
+       "effects.0.radius": 4.4
+      }
+     },
+     {
+      "id": "stun",
+      "name": "Blinding Flare",
+      "desc": "Always stuns.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 0.9,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "glow",
+      "name": "Hungry Flare",
+      "desc": "Costs 10 less Glow.",
+      "patch": {
+       "cost": 15
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "twice",
+      "name": "Double Flare",
+      "desc": "Flares a second time.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 3.2,
+        "mult": 1.2,
+        "delay": 0.35
+       }
+      ]
+     },
+     {
+      "id": "heal",
+      "name": "Warm Flare",
+      "desc": "Heals you a little.",
+      "add_effects": [
+       {
+        "type": "heal",
+        "pct": 0.05
+       }
+      ]
+     },
+     {
+      "id": "zone",
+      "name": "Lingering Light",
+      "desc": "Leaves a burning patch.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "at": "self",
+        "radius": 2.8,
+        "duration": 3,
+        "tick": 0.5,
+        "mult": 0.3
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Radiance",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 3.68
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 20
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 2.25
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.2,
+       "mult": 0.9,
+       "knockback": 7,
+       "status": {
+        "id": "stun",
+        "duration": 0.6,
+        "chance": 0.5
+       },
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "lb_charge",
@@ -93,7 +272,131 @@
   "desc": "Charge forward, knocking foes aside.",
   "icon": "dash",
   "class": "lanternbearer",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "far",
+      "name": "Long Charge",
+      "desc": "Charge further.",
+      "patch": {
+       "effects.0.distance": 10
+      }
+     },
+     {
+      "id": "stun",
+      "name": "Stunning Charge",
+      "desc": "Stun where you land.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 1.0,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Charge",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 3.5
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "flare",
+      "name": "Charge and Flare",
+      "desc": "Flare on landing.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 3.0,
+        "mult": 1.5
+       }
+      ]
+     },
+     {
+      "id": "guard",
+      "name": "Shield First",
+      "desc": "Take less damage after charging.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 3,
+        "stats": {
+         "damage_reduction": 25
+        }
+       }
+      ]
+     },
+     {
+      "id": "glow",
+      "name": "Glowing Path",
+      "desc": "Refund Glow.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 20
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Bulwark",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger landing.",
+     "patch": {
+      "effects.0.land_radius": 2.53
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 16
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 1.75
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 2.2,
+       "mult": 0.84,
+       "delay": 0.1
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "lb_consecrate",
@@ -125,7 +428,118 @@
   "desc": "Bless the ground: burns foes and heals you.",
   "icon": "sun",
   "class": "lanternbearer",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "big",
+      "name": "Holy Field",
+      "desc": "Wider field.",
+      "patch": {
+       "effects.0.radius": 5.2
+      }
+     },
+     {
+      "id": "long",
+      "name": "Long Blessing",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 9
+      }
+     },
+     {
+      "id": "slow",
+      "name": "Heavy Light",
+      "desc": "Slows foes inside.",
+      "patch": {
+       "effects.0.slow": 0.4
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "heal",
+      "name": "Hearth Ground",
+      "desc": "Heals much more.",
+      "patch": {
+       "effects.0.heal_pct": 0.05
+      }
+     },
+     {
+      "id": "burn",
+      "name": "Searing Ground",
+      "desc": "Burns harder.",
+      "patch": {
+       "effects.0.mult": 0.75
+      }
+     },
+     {
+      "id": "target",
+      "name": "Thrown Blessing",
+      "desc": "Place it where you aim.",
+      "patch": {
+       "effects.0.at": "target",
+       "targeted": true
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Radiance",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 4.6
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 32
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Lingering",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 8
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "ground_zone",
+       "at": "self",
+       "radius": 4.0,
+       "duration": 6,
+       "tick": 0.5,
+       "mult": 0.23,
+       "heal_pct": 0.02,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "lb_aegis",
@@ -156,7 +570,129 @@
   "desc": "Raise a wall of light: block and reflect.",
   "icon": "aegis",
   "class": "lanternbearer",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "long",
+      "name": "Stubborn Aegis",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 9
+      }
+     },
+     {
+      "id": "thorns",
+      "name": "Spiked Aegis",
+      "desc": "Much more thorns.",
+      "patch": {
+       "effects.0.stats": {
+        "damage_reduction": 35,
+        "block": 25,
+        "thorns": 120
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Ready Aegis",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 12
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "nova",
+      "name": "Bursting Aegis",
+      "desc": "Explodes when raised.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 3.5,
+        "mult": 2.0,
+        "knockback": 8
+       }
+      ]
+     },
+     {
+      "id": "heal",
+      "name": "Mending Aegis",
+      "desc": "Heals 20% life.",
+      "add_effects": [
+       {
+        "type": "heal",
+        "pct": 0.2
+       }
+      ]
+     },
+     {
+      "id": "glow",
+      "name": "Glowing Aegis",
+      "desc": "Fills Glow.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 50
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Bulwark",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Lasting",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 8
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Practised",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 15.3
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "cooldown": 13.5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "lb_judgement",
@@ -185,7 +721,137 @@
   "desc": "Call down a pillar of dawn on your target.",
   "icon": "pillar",
   "class": "lanternbearer",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Judgement",
+      "desc": "Bigger pillar.",
+      "patch": {
+       "effects.0.radius": 4.6
+      }
+     },
+     {
+      "id": "fast",
+      "name": "Swift Judgement",
+      "desc": "Lands faster.",
+      "patch": {
+       "effects.0.telegraph": 0.05
+      }
+     },
+     {
+      "id": "stun",
+      "name": "Stunning Judgement",
+      "desc": "Stuns.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 1.2,
+        "chance": 1.0
+       }
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "three",
+      "name": "Three Pillars",
+      "desc": "Two smaller pillars follow.",
+      "add_effects": [
+       {
+        "type": "aoe",
+        "radius": 2.5,
+        "mult": 1.6,
+        "delay": 0.3
+       },
+       {
+        "type": "aoe",
+        "radius": 2.5,
+        "mult": 1.6,
+        "delay": 0.3
+       }
+      ]
+     },
+     {
+      "id": "zone",
+      "name": "Scorched Judgement",
+      "desc": "Leaves holy fire.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "radius": 3.0,
+        "duration": 4,
+        "tick": 0.5,
+        "mult": 0.4
+       }
+      ]
+     },
+     {
+      "id": "cd",
+      "name": "Final Word",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 6
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Zeal",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 4.02
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 40
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 5.25
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "aoe",
+       "radius": 3.5,
+       "mult": 2.1,
+       "telegraph": 0.25,
+       "shake": 0.5,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "bs_clang",
@@ -217,7 +883,55 @@
   "icon": "axe",
   "class": "bellstriker",
   "unlock_level": 1,
-  "max_rank": 5
+  "max_rank": 5,
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 2.99
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Practised",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 0.0
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 1.56
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "melee_arc",
+       "radius": 2.6,
+       "angle": 140,
+       "mult": 0.62,
+       "shake": 0.22,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "bs_whirl",
@@ -246,7 +960,129 @@
   "icon": "whirl",
   "class": "bellstriker",
   "unlock_level": 1,
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Whirl",
+      "desc": "Bigger spin.",
+      "patch": {
+       "effects.0.radius": 3.5
+      }
+     },
+     {
+      "id": "long",
+      "name": "Long Whirl",
+      "desc": "Spins longer.",
+      "patch": {
+       "effects.0.ticks": 8
+      }
+     },
+     {
+      "id": "move",
+      "name": "Rolling Bell",
+      "desc": "Faster while spinning.",
+      "stats": {
+       "move_speed_pct": 10
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "pull",
+      "name": "Vortex",
+      "desc": "Pulls foes in first.",
+      "add_effects": [
+       {
+        "type": "pull",
+        "radius": 6,
+        "force": 10
+       }
+      ]
+     },
+     {
+      "id": "fury",
+      "name": "Ringing Fury",
+      "desc": "Gain Fury back.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 12
+       }
+      ]
+     },
+     {
+      "id": "final",
+      "name": "Big Finish",
+      "desc": "Ends with a slam.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 3.5,
+        "mult": 2.0,
+        "delay": 0.05,
+        "knockback": 8
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Bellstorm",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 3.22
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 24
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 0.88
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "spin",
+       "ticks": 5,
+       "interval": 0.19,
+       "radius": 2.8,
+       "mult": 0.35,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "bs_leap",
@@ -276,7 +1112,126 @@
   "desc": "Leap and crash down, shaking the ground.",
   "icon": "leap",
   "class": "bellstriker",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "far",
+      "name": "Long Leap",
+      "desc": "Jump further.",
+      "patch": {
+       "effects.0.distance": 11
+      }
+     },
+     {
+      "id": "wide",
+      "name": "Heavy Landing",
+      "desc": "Bigger landing.",
+      "patch": {
+       "effects.0.land_radius": 4.0
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Bouncy",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 4
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "stun",
+      "name": "Earth Ringer",
+      "desc": "Stuns on landing.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 1.0,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "quake",
+      "name": "Aftershock",
+      "desc": "Second shockwave.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 4.5,
+        "mult": 1.5,
+        "delay": 0.3
+       }
+      ]
+     },
+     {
+      "id": "fury",
+      "name": "Leap of Rage",
+      "desc": "Gain Fury.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 30
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Quake",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger landing.",
+     "patch": {
+      "effects.0.land_radius": 3.45
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 12
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 2.75
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.32,
+       "delay": 0.1
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "bs_roar",
@@ -310,7 +1265,136 @@
   "desc": "A deafening peal: more damage and speed.",
   "icon": "roar",
   "class": "bellstriker",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "long",
+      "name": "Long Peal",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 12
+      }
+     },
+     {
+      "id": "crit",
+      "name": "Sharp Peal",
+      "desc": "Adds crit.",
+      "patch": {
+       "effects.0.stats": {
+        "damage_pct": 40,
+        "attack_speed_pct": 20,
+        "crit_chance": 10
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Peal",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 10
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "stun",
+      "name": "Deafening",
+      "desc": "Stuns nearby foes.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 4,
+        "mult": 0.3,
+        "status": {
+         "id": "stun",
+         "duration": 1.5,
+         "chance": 1.0
+        }
+       }
+      ]
+     },
+     {
+      "id": "heal",
+      "name": "Second Wind",
+      "desc": "Heals 20%.",
+      "add_effects": [
+       {
+        "type": "heal",
+        "pct": 0.2
+       }
+      ]
+     },
+     {
+      "id": "tank",
+      "name": "Iron Peal",
+      "desc": "Take less damage.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 8,
+        "stats": {
+         "damage_reduction": 20
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Rage",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Lasting",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 10
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Practised",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 11.9
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "cooldown": 10.5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "bs_quake",
@@ -343,7 +1427,137 @@
   "desc": "Smash the ground; foes stagger and slow.",
   "icon": "quake",
   "class": "bellstriker",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Big Quake",
+      "desc": "Bigger.",
+      "patch": {
+       "effects.0.radius": 6.2
+      }
+     },
+     {
+      "id": "stun",
+      "name": "Stunning Quake",
+      "desc": "Stuns instead of slows.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 1.0,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Easy Stomp",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 30
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "after",
+      "name": "Aftershock",
+      "desc": "A second, bigger wave.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 7.0,
+        "mult": 1.8,
+        "delay": 0.4
+       }
+      ]
+     },
+     {
+      "id": "zone",
+      "name": "Cracked Earth",
+      "desc": "Leaves shaking ground.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "at": "self",
+        "radius": 4.0,
+        "duration": 4,
+        "tick": 0.5,
+        "mult": 0.4,
+        "slow": 0.3
+       }
+      ]
+     },
+     {
+      "id": "cd",
+      "name": "Restless Earth",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 4
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Quake",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 5.75
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 36
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 3.5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 5.0,
+       "mult": 1.4,
+       "status": {
+        "id": "slow",
+        "duration": 2,
+        "value": 0.4
+       },
+       "shake": 0.6,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "bs_chains",
@@ -374,7 +1588,128 @@
   "desc": "Yank enemies together, then strike.",
   "icon": "rope",
   "class": "bellstriker",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "far",
+      "name": "Long Rope",
+      "desc": "Pulls from further.",
+      "patch": {
+       "effects.0.radius": 9.5
+      }
+     },
+     {
+      "id": "hard",
+      "name": "Big Yank",
+      "desc": "Stronger strike.",
+      "patch": {
+       "effects.1.mult": 2.2
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Rope",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 6
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "stun",
+      "name": "Tangle",
+      "desc": "Stuns pulled foes.",
+      "patch": {
+       "effects.1.status": {
+        "id": "stun",
+        "duration": 1.2,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "spin",
+      "name": "Rope Spin",
+      "desc": "Spin after pulling.",
+      "add_effects": [
+       {
+        "type": "spin",
+        "ticks": 3,
+        "interval": 0.18,
+        "radius": 3.0,
+        "mult": 0.7,
+        "delay": 0.2
+       }
+      ]
+     },
+     {
+      "id": "fury",
+      "name": "Rope Rage",
+      "desc": "Gain Fury.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 25
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Bellstorm",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.1.radius": 3.45
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 16
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.1.mult": 1.5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "aoe",
+       "radius": 3,
+       "mult": 0.6,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "sg_spark",
@@ -404,7 +1739,55 @@
   "icon": "spark",
   "class": "stargazer",
   "unlock_level": 1,
-  "max_rank": 5
+  "max_rank": 5,
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 22.5,
+      "effects.0.range": 16.2
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Practised",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 0.0
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "speed": 18,
+       "range": 13,
+       "mult": 0.5,
+       "size": 0.22,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "sg_starfall",
@@ -432,7 +1815,140 @@
   "icon": "comet",
   "class": "stargazer",
   "unlock_level": 1,
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "big",
+      "name": "Great Star",
+      "desc": "Bigger star.",
+      "patch": {
+       "effects.0.radius": 3.6
+      }
+     },
+     {
+      "id": "fast",
+      "name": "Falling Fast",
+      "desc": "Lands faster.",
+      "patch": {
+       "effects.0.telegraph": 0.1
+      }
+     },
+     {
+      "id": "cold",
+      "name": "Frozen Star",
+      "desc": "Turns to cold, slows.",
+      "patch": {
+       "element": "cold",
+       "effects.0.status": {
+        "id": "slow",
+        "duration": 2,
+        "value": 0.4
+       }
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "split",
+      "name": "Shattering Star",
+      "desc": "Two shards follow.",
+      "add_effects": [
+       {
+        "type": "aoe",
+        "radius": 2.0,
+        "mult": 1.0,
+        "delay": 0.25
+       },
+       {
+        "type": "aoe",
+        "radius": 2.0,
+        "mult": 1.0,
+        "delay": 0.15
+       }
+      ]
+     },
+     {
+      "id": "burn",
+      "name": "Burning Crater",
+      "desc": "Leaves fire.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "radius": 2.5,
+        "duration": 3,
+        "tick": 0.5,
+        "mult": 0.35
+       }
+      ]
+     },
+     {
+      "id": "mana",
+      "name": "Star Harvest",
+      "desc": "Refunds mana.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 12
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Comets",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 3.22
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 24
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 3.0
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "aoe",
+       "radius": 2.8,
+       "mult": 1.2,
+       "telegraph": 0.3,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "sg_frostnova",
@@ -464,7 +1980,136 @@
   "desc": "Freeze everything around you.",
   "icon": "frost",
   "class": "stargazer",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Ring",
+      "desc": "Bigger ring.",
+      "patch": {
+       "effects.0.radius": 5.8
+      }
+     },
+     {
+      "id": "long",
+      "name": "Deep Freeze",
+      "desc": "Freezes longer.",
+      "patch": {
+       "effects.0.status": {
+        "id": "freeze",
+        "duration": 2.4
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Ring",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 4
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "hard",
+      "name": "Shatter",
+      "desc": "Much more damage.",
+      "patch": {
+       "effects.0.mult": 2.2
+      }
+     },
+     {
+      "id": "zone",
+      "name": "Frost Field",
+      "desc": "Leaves slowing frost.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "at": "self",
+        "radius": 4.5,
+        "duration": 4,
+        "tick": 0.5,
+        "mult": 0.3,
+        "slow": 0.5
+       }
+      ]
+     },
+     {
+      "id": "armor",
+      "name": "Ice Coat",
+      "desc": "Take less damage.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 5,
+        "stats": {
+         "damage_reduction": 25,
+         "armor_pct": 40
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Rime",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 5.17
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 20
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 1.25
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 4.5,
+       "mult": 0.5,
+       "status": {
+        "id": "freeze",
+        "duration": 1.6
+       },
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "sg_chain",
@@ -492,7 +2137,130 @@
   "desc": "Lightning links foes like stars.",
   "icon": "chain",
   "class": "stargazer",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "more",
+      "name": "Long Constellation",
+      "desc": "More jumps.",
+      "patch": {
+       "effects.0.jumps": 7
+      }
+     },
+     {
+      "id": "far",
+      "name": "Wide Constellation",
+      "desc": "Jumps further.",
+      "patch": {
+       "effects.0.range": 9
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Cheap Stars",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 14
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "fork",
+      "name": "Twin Constellation",
+      "desc": "Casts twice.",
+      "add_effects": [
+       {
+        "type": "chain",
+        "jumps": 3,
+        "range": 6,
+        "mult": 1.0,
+        "delay": 0.15
+       }
+      ]
+     },
+     {
+      "id": "stun",
+      "name": "Starstruck",
+      "desc": "May stun.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 0.5,
+        "chance": 0.35
+       }
+      }
+     },
+     {
+      "id": "cold",
+      "name": "Winter Stars",
+      "desc": "Turns to cold; slows.",
+      "patch": {
+       "element": "cold",
+       "effects.0.status": {
+        "id": "slow",
+        "duration": 1.5,
+        "value": 0.35
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Storm",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Jumps 1 more time.",
+     "patch": {
+      "effects.0.jumps": 5
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 18
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 1.62
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "chain",
+       "jumps": 4,
+       "range": 6,
+       "mult": 0.65,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "sg_blink",
@@ -519,7 +2287,131 @@
   "desc": "Blink through space.",
   "icon": "blink",
   "class": "stargazer",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "far",
+      "name": "Far Step",
+      "desc": "Blink further.",
+      "patch": {
+       "effects.0.distance": 10
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Step",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 2.5
+      }
+     },
+     {
+      "id": "free",
+      "name": "Free Step",
+      "desc": "Costs nothing.",
+      "patch": {
+       "cost": 0
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "nova",
+      "name": "Frost Step",
+      "desc": "Freeze where you left.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 3.0,
+        "mult": 0.8,
+        "status": {
+         "id": "freeze",
+         "duration": 1.2
+        }
+       }
+      ]
+     },
+     {
+      "id": "mana",
+      "name": "Mana Step",
+      "desc": "Restore mana.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 20
+       }
+      ]
+     },
+     {
+      "id": "shield",
+      "name": "Starlit Veil",
+      "desc": "Take less damage briefly.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 3,
+        "stats": {
+         "damage_reduction": 30
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Rime",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Swift",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 3.4
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 12
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "cooldown": 3.0
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "sg_meteor",
@@ -561,7 +2453,130 @@
   "desc": "Three comets in a row.",
   "icon": "meteor",
   "class": "stargazer",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "big",
+      "name": "Big Comets",
+      "desc": "Bigger comets.",
+      "patch": {
+       "effects.2.radius": 4.5
+      }
+     },
+     {
+      "id": "four",
+      "name": "Four Comets",
+      "desc": "One more comet.",
+      "add_effects": [
+       {
+        "type": "aoe",
+        "radius": 2.5,
+        "mult": 1.8,
+        "delay": 0.25
+       }
+      ]
+     },
+     {
+      "id": "cheap",
+      "name": "Small Shower",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 45
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "burn",
+      "name": "Burning Sky",
+      "desc": "Leave fire patches.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "radius": 3.0,
+        "duration": 4,
+        "tick": 0.5,
+        "mult": 0.4
+       }
+      ]
+     },
+     {
+      "id": "stun",
+      "name": "Heavy Comets",
+      "desc": "Last comet stuns.",
+      "patch": {
+       "effects.2.status": {
+        "id": "stun",
+        "duration": 1.2,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Frequent Showers",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 6
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Comets",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 2.88
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 48
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 2.25
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "aoe",
+       "radius": 2.5,
+       "mult": 0.9,
+       "telegraph": 0.3,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "st_needle",
@@ -592,7 +2607,56 @@
   "icon": "needle",
   "class": "stitcher",
   "unlock_level": 1,
-  "max_rank": 5
+  "max_rank": 5,
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 25.0,
+      "effects.0.range": 13.8
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Practised",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 0.0
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "speed": 20,
+       "range": 11,
+       "mult": 0.45,
+       "size": 0.14,
+       "pierce": 1,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "st_ragdoll",
@@ -620,7 +2684,117 @@
   "icon": "doll",
   "class": "stitcher",
   "unlock_level": 1,
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "more",
+      "name": "Bigger Family",
+      "desc": "Up to 5 dolls.",
+      "patch": {
+       "effects.0.max": 5
+      }
+     },
+     {
+      "id": "two",
+      "name": "Twin Stitch",
+      "desc": "Sew two at once.",
+      "patch": {
+       "effects.0.count": 2,
+       "cost": 45
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Scrap Dolls",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 20
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "tough",
+      "name": "Button Armour",
+      "desc": "Dolls are tougher.",
+      "stats": {
+       "minion_life_pct": 40
+      }
+     },
+     {
+      "id": "fierce",
+      "name": "Angry Dolls",
+      "desc": "Dolls hit harder.",
+      "stats": {
+       "minion_damage_pct": 30
+      }
+     },
+     {
+      "id": "heal",
+      "name": "Hug",
+      "desc": "Summoning heals you a little.",
+      "add_effects": [
+       {
+        "type": "heal",
+        "pct": 0.04
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Dolls",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Sturdy",
+     "desc": "Summons have 20% more life.",
+     "stats": {
+      "minion_life_pct": 20
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 24
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Crowd",
+     "desc": "+1 maximum summon.",
+     "patch": {
+      "effects.0.max": 5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "st_pins",
@@ -651,7 +2825,123 @@
   "desc": "A fan of pins.",
   "icon": "pins",
   "class": "stitcher",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "more",
+      "name": "Pin Storm",
+      "desc": "More pins.",
+      "patch": {
+       "effects.0.count": 8
+      }
+     },
+     {
+      "id": "pierce",
+      "name": "Long Pins",
+      "desc": "Pins pierce.",
+      "patch": {
+       "effects.0.pierce": 2
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Cheap Pins",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 10
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "slow",
+      "name": "Sticky Pins",
+      "desc": "Pins slow foes.",
+      "patch": {
+       "effects.0.status": {
+        "id": "slow",
+        "duration": 1.5,
+        "value": 0.35
+       }
+      }
+     },
+     {
+      "id": "shadow",
+      "name": "Hex Pins",
+      "desc": "Turn to shadow.",
+      "patch": {
+       "element": "shadow",
+       "effects.0.mult": 0.75
+      }
+     },
+     {
+      "id": "home",
+      "name": "Seeking Pins",
+      "desc": "Pins seek foes.",
+      "patch": {
+       "effects.0.homing": 2.0
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Needlework",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 22.5,
+      "effects.0.range": 12.5
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 14
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 6
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "count": 5,
+       "spread": 22,
+       "speed": 18,
+       "range": 10,
+       "mult": 0.3,
+       "size": 0.12,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "st_bigdoll",
@@ -679,7 +2969,121 @@
   "desc": "Stitch a giant teddy to crush foes.",
   "icon": "bear",
   "class": "stitcher",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "tough",
+      "name": "Stuffed Bear",
+      "desc": "Bear is tougher.",
+      "stats": {
+       "minion_life_pct": 30
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Stitch",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 12
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Old Blanket",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 35
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "two",
+      "name": "Two Bears",
+      "desc": "Up to 2 bears.",
+      "patch": {
+       "effects.0.max": 2
+      }
+     },
+     {
+      "id": "roar",
+      "name": "Bear Hug",
+      "desc": "Summon heals you.",
+      "add_effects": [
+       {
+        "type": "heal",
+        "pct": 0.12
+       }
+      ]
+     },
+     {
+      "id": "nova",
+      "name": "Bear Drop",
+      "desc": "Lands with a thump.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 3.2,
+        "mult": 1.6,
+        "knockback": 6
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Dolls",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Sturdy",
+     "desc": "Summons have 20% more life.",
+     "stats": {
+      "minion_life_pct": 20
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 40
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Crowd",
+     "desc": "+1 maximum summon.",
+     "patch": {
+      "effects.0.max": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "st_unravel",
@@ -709,7 +3113,121 @@
   "desc": "Tangle foes in shadow thread.",
   "icon": "thread",
   "class": "stitcher",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Tangle",
+      "desc": "Bigger.",
+      "patch": {
+       "effects.0.radius": 4.2
+      }
+     },
+     {
+      "id": "long",
+      "name": "Long Tangle",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 6
+      }
+     },
+     {
+      "id": "slow",
+      "name": "Knotted",
+      "desc": "Slows more.",
+      "patch": {
+       "effects.0.slow": 0.75
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "hard",
+      "name": "Hungry Thread",
+      "desc": "Hurts more.",
+      "patch": {
+       "effects.0.mult": 0.8
+      }
+     },
+     {
+      "id": "heal",
+      "name": "Mending Thread",
+      "desc": "Heals you inside.",
+      "patch": {
+       "effects.0.heal_pct": 0.02,
+       "effects.0.at": "self"
+      }
+     },
+     {
+      "id": "pull",
+      "name": "Drawstring",
+      "desc": "Pulls foes in first.",
+      "add_effects": [
+       {
+        "type": "pull",
+        "radius": 6,
+        "force": 10
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Hexes",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 3.68
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 24
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Lingering",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 6
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "ground_zone",
+       "radius": 3.2,
+       "duration": 4,
+       "tick": 0.4,
+       "mult": 0.25,
+       "slow": 0.5,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "st_mend",
@@ -742,7 +3260,131 @@
   "desc": "Patch yourself up; dolls fight harder.",
   "icon": "mend",
   "class": "stitcher",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "more",
+      "name": "Big Patch",
+      "desc": "Heals more.",
+      "patch": {
+       "effects.0.pct": 0.5
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Patch",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 8
+      }
+     },
+     {
+      "id": "long",
+      "name": "Long Cheer",
+      "desc": "Doll buff lasts longer.",
+      "patch": {
+       "effects.1.duration": 10
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "armor",
+      "name": "Thick Patch",
+      "desc": "Take less damage.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 6,
+        "stats": {
+         "damage_reduction": 20
+        }
+       }
+      ]
+     },
+     {
+      "id": "thread",
+      "name": "Spare Thread",
+      "desc": "Refunds Thread.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 30
+       }
+      ]
+     },
+     {
+      "id": "burst",
+      "name": "Pin Burst",
+      "desc": "Pins fly out.",
+      "add_effects": [
+       {
+        "type": "projectile",
+        "count": 10,
+        "spread": 180,
+        "speed": 16,
+        "range": 8,
+        "mult": 0.6,
+        "size": 0.12
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Hexes",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Swift",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 10.2
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 28
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "cooldown": 9.0
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "rr_bolt",
@@ -772,7 +3414,55 @@
   "icon": "bolt",
   "class": "roofrunner",
   "unlock_level": 1,
-  "max_rank": 5
+  "max_rank": 5,
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 30.0,
+      "effects.0.range": 17.5
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Practised",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 0.0
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "speed": 24,
+       "range": 14,
+       "mult": 0.5,
+       "size": 0.12,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "rr_fan",
@@ -803,7 +3493,132 @@
   "icon": "fan",
   "class": "roofrunner",
   "unlock_level": 1,
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "more",
+      "name": "Wide Fan",
+      "desc": "More bolts.",
+      "patch": {
+       "effects.0.count": 7
+      }
+     },
+     {
+      "id": "pierce",
+      "name": "Punchers",
+      "desc": "Bolts pierce more.",
+      "patch": {
+       "effects.0.pierce": 3
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Light Bolts",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 15
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "fire",
+      "name": "Tar Bolts",
+      "desc": "Turn to fire.",
+      "patch": {
+       "element": "fire"
+      }
+     },
+     {
+      "id": "slow",
+      "name": "Barbed Fan",
+      "desc": "Bolts slow.",
+      "patch": {
+       "effects.0.status": {
+        "id": "slow",
+        "duration": 1.5,
+        "value": 0.3
+       }
+      }
+     },
+     {
+      "id": "twice",
+      "name": "Second Fan",
+      "desc": "Fire again.",
+      "add_effects": [
+       {
+        "type": "projectile",
+        "count": 3,
+        "spread": 18,
+        "speed": 22,
+        "range": 12,
+        "mult": 0.6,
+        "size": 0.12,
+        "delay": 0.2
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Marksman",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 27.5,
+      "effects.0.range": 15.0
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 20
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 6
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "count": 5,
+       "spread": 28,
+       "speed": 22,
+       "range": 12,
+       "mult": 0.38,
+       "size": 0.12,
+       "pierce": 1,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "rr_roll",
@@ -837,7 +3652,133 @@
   "desc": "Roll away; next shots crit more.",
   "icon": "roll",
   "class": "roofrunner",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "far",
+      "name": "Long Roll",
+      "desc": "Roll further.",
+      "patch": {
+       "effects.0.distance": 8
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Roll",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 1.5
+      }
+     },
+     {
+      "id": "free",
+      "name": "Free Roll",
+      "desc": "Costs nothing.",
+      "patch": {
+       "cost": 0
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "trap",
+      "name": "Roll and Drop",
+      "desc": "Leave caltrops.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "at": "self",
+        "radius": 2.5,
+        "duration": 4,
+        "tick": 0.4,
+        "mult": 0.3,
+        "slow": 0.4
+       }
+      ]
+     },
+     {
+      "id": "shoot",
+      "name": "Roll and Shoot",
+      "desc": "Fire a fan after.",
+      "add_effects": [
+       {
+        "type": "projectile",
+        "count": 3,
+        "spread": 16,
+        "speed": 22,
+        "range": 12,
+        "mult": 0.8,
+        "size": 0.12
+       }
+      ]
+     },
+     {
+      "id": "energy",
+      "name": "Refresh",
+      "desc": "Restore Energy.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 20
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Shadow",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Swift",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 2.12
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 8
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "cooldown": 1.88
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "rr_trap",
@@ -866,7 +3807,127 @@
   "desc": "Drop a crackling fire trap.",
   "icon": "trap",
   "class": "roofrunner",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Big Trap",
+      "desc": "Bigger.",
+      "patch": {
+       "effects.0.radius": 3.4
+      }
+     },
+     {
+      "id": "long",
+      "name": "Slow Burn",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 8
+      }
+     },
+     {
+      "id": "cold",
+      "name": "Frost Trap",
+      "desc": "Turns to cold; slows.",
+      "patch": {
+       "element": "cold",
+       "effects.0.slow": 0.45
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "boom",
+      "name": "Kaboom",
+      "desc": "Explodes first.",
+      "add_effects": [
+       {
+        "type": "aoe",
+        "radius": 3.0,
+        "mult": 2.0
+       }
+      ]
+     },
+     {
+      "id": "two",
+      "name": "Double Trap",
+      "desc": "Drop a second one.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "radius": 2.5,
+        "duration": 5,
+        "tick": 0.5,
+        "mult": 0.9,
+        "delay": 0.2
+       }
+      ]
+     },
+     {
+      "id": "cd",
+      "name": "Tinkerer",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 2.5
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Tinker",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 2.88
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 20
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Lingering",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 7
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "ground_zone",
+       "radius": 2.5,
+       "duration": 5,
+       "tick": 0.5,
+       "mult": 0.45,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "rr_smoke",
@@ -905,7 +3966,136 @@
   "desc": "Blind foes and vanish into smoke.",
   "icon": "smoke",
   "class": "roofrunner",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Big Cloud",
+      "desc": "Bigger.",
+      "patch": {
+       "effects.0.radius": 5.2
+      }
+     },
+     {
+      "id": "long",
+      "name": "Thick Smoke",
+      "desc": "Buff lasts longer.",
+      "patch": {
+       "effects.1.duration": 6
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Pocket Smoke",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 7
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "crit",
+      "name": "Surprise!",
+      "desc": "Crit a lot after.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 4,
+        "stats": {
+         "crit_chance": 30,
+         "crit_damage": 50
+        }
+       }
+      ]
+     },
+     {
+      "id": "zone",
+      "name": "Choking Cloud",
+      "desc": "Leaves a hurting cloud.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "at": "self",
+        "radius": 4,
+        "duration": 4,
+        "tick": 0.5,
+        "mult": 0.4,
+        "slow": 0.3
+       }
+      ]
+     },
+     {
+      "id": "energy",
+      "name": "Catch Breath",
+      "desc": "Restore Energy.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 40
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Shadow",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 4.6
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 24
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 0.25
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 4,
+       "mult": 0.1,
+       "status": {
+        "id": "stun",
+        "duration": 1.2
+       },
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  },
  {
   "id": "rr_rain",
@@ -946,6 +4136,5600 @@
   "desc": "Volley after volley from above.",
   "icon": "rain",
   "class": "roofrunner",
-  "max_rank": 5
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Rain",
+      "desc": "Bigger.",
+      "patch": {
+       "effects.0.radius": 4.5,
+       "effects.1.radius": 4.5,
+       "effects.2.radius": 4.5
+      }
+     },
+     {
+      "id": "four",
+      "name": "Fourth Volley",
+      "desc": "One more volley.",
+      "add_effects": [
+       {
+        "type": "aoe",
+        "radius": 3.5,
+        "mult": 1.2,
+        "delay": 0.3
+       }
+      ]
+     },
+     {
+      "id": "cheap",
+      "name": "Light Rain",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 35
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "fire",
+      "name": "Fire Rain",
+      "desc": "Turns to fire.",
+      "patch": {
+       "element": "fire"
+      }
+     },
+     {
+      "id": "slow",
+      "name": "Pinning Rain",
+      "desc": "Slows foes.",
+      "patch": {
+       "effects.2.status": {
+        "id": "slow",
+        "duration": 2,
+        "value": 0.5
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Rain",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 5
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Marksman",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 4.02
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 40
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 1.5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "aoe",
+       "radius": 3.5,
+       "mult": 0.6,
+       "telegraph": 0.2,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "lb_beacon",
+  "name": "Beacon Toss",
+  "branch": "radiance",
+  "unlock_level": 15,
+  "cost": 30,
+  "cooldown": 3,
+  "tags": [
+   "projectile",
+   "area"
+  ],
+  "element": "holy",
+  "anim": "Throw",
+  "lock": 0.45,
+  "windup": 0.15,
+  "icon": "comet",
+  "color": "#ffe9a8",
+  "effects": [
+   {
+    "type": "projectile",
+    "speed": 13,
+    "range": 10,
+    "mult": 1.6,
+    "size": 0.35,
+    "explode_radius": 2.6,
+    "explode_mult": 1.0
+   }
+  ],
+  "desc": "Hurl a small lantern that bursts into holy flame.",
+  "class": "lanternbearer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "big",
+      "name": "Big Lantern",
+      "desc": "Bigger burst.",
+      "patch": {
+       "effects.0.explode_radius": 3.6
+      }
+     },
+     {
+      "id": "three",
+      "name": "Lantern Juggler",
+      "desc": "Throw three.",
+      "patch": {
+       "effects.0.count": 3,
+       "effects.0.spread": 18
+      }
+     },
+     {
+      "id": "fast",
+      "name": "Quick Toss",
+      "desc": "No cooldown.",
+      "patch": {
+       "cooldown": 0.8
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "pierce",
+      "name": "Rolling Lantern",
+      "desc": "Rolls through foes.",
+      "patch": {
+       "effects.0.pierce": 4
+      }
+     },
+     {
+      "id": "zone",
+      "name": "Spilled Oil",
+      "desc": "Leaves a flame patch.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "radius": 2.5,
+        "duration": 3,
+        "tick": 0.5,
+        "mult": 0.4,
+        "delay": 0.4
+       }
+      ]
+     },
+     {
+      "id": "home",
+      "name": "Faithful Lantern",
+      "desc": "Seeks the nearest foe.",
+      "patch": {
+       "effects.0.homing": 3.0
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Radiance",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 16.2,
+      "effects.0.range": 12.5
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 24
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "speed": 13,
+       "range": 10,
+       "mult": 0.8,
+       "size": 0.35,
+       "explode_radius": 2.6,
+       "explode_mult": 1.0,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "lb_rally",
+  "name": "Rally Cry",
+  "branch": "zeal",
+  "unlock_level": 22,
+  "cost": 0,
+  "cooldown": 20,
+  "tags": [
+   "buff"
+  ],
+  "targeted": false,
+  "anim": "Cheer",
+  "lock": 0.5,
+  "windup": 0.15,
+  "icon": "roar",
+  "color": "#ffd27a",
+  "effects": [
+   {
+    "type": "buff",
+    "duration": 8,
+    "stats": {
+     "damage_pct": 25,
+     "attack_speed_pct": 15,
+     "move_speed_pct": 15
+    }
+   },
+   {
+    "type": "resource",
+    "amount": 30
+   }
+  ],
+  "desc": "Shout the old watch-call: faster, fiercer, full of Glow.",
+  "class": "lanternbearer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "long",
+      "name": "Long Rally",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 12
+      }
+     },
+     {
+      "id": "crit",
+      "name": "Keen Rally",
+      "desc": "Adds crit chance.",
+      "patch": {
+       "effects.0.stats": {
+        "damage_pct": 25,
+        "attack_speed_pct": 15,
+        "move_speed_pct": 15,
+        "crit_chance": 10
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Rally",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 14
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "heal",
+      "name": "Hopeful Rally",
+      "desc": "Heals too.",
+      "add_effects": [
+       {
+        "type": "heal",
+        "pct": 0.15
+       }
+      ]
+     },
+     {
+      "id": "nova",
+      "name": "Shouted Light",
+      "desc": "Knocks foes back.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 4,
+        "mult": 1.0,
+        "knockback": 10
+       }
+      ]
+     },
+     {
+      "id": "res",
+      "name": "Brave Rally",
+      "desc": "Adds resistances.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 8,
+        "stats": {
+         "resist_all": 20
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Zeal",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Lasting",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 10
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Practised",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 17.0
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "cooldown": 15.0
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "lb_chain",
+  "name": "Lantern Chain",
+  "branch": "bulwark",
+  "unlock_level": 27,
+  "cost": 25,
+  "cooldown": 7,
+  "tags": [
+   "melee",
+   "area"
+  ],
+  "element": "holy",
+  "anim": "2H_Melee_Attack_Spin",
+  "lock": 0.6,
+  "windup": 0.2,
+  "icon": "rope",
+  "color": "#fff0b0",
+  "effects": [
+   {
+    "type": "pull",
+    "radius": 6.5,
+    "force": 12
+   },
+   {
+    "type": "nova",
+    "radius": 3.0,
+    "mult": 1.6,
+    "delay": 0.2,
+    "status": {
+     "id": "stun",
+     "duration": 0.8,
+     "chance": 0.6
+    }
+   }
+  ],
+  "desc": "Swing your lantern on its chain, dragging foes close and dazing them.",
+  "class": "lanternbearer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "far",
+      "name": "Long Chain",
+      "desc": "Pulls from further.",
+      "patch": {
+       "effects.0.radius": 8.5
+      }
+     },
+     {
+      "id": "stun",
+      "name": "Heavy Lantern",
+      "desc": "Always stuns.",
+      "patch": {
+       "effects.1.status": {
+        "id": "stun",
+        "duration": 1.2,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Chain",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 5
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "burn",
+      "name": "Burning Chain",
+      "desc": "Leaves holy fire.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "at": "self",
+        "radius": 3.0,
+        "duration": 3,
+        "tick": 0.5,
+        "mult": 0.4
+       }
+      ]
+     },
+     {
+      "id": "glow",
+      "name": "Glowing Chain",
+      "desc": "Refunds Glow.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 25
+       }
+      ]
+     },
+     {
+      "id": "twice",
+      "name": "Second Swing",
+      "desc": "Swings twice.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 3.0,
+        "mult": 1.2,
+        "delay": 0.3
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Bulwark",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.1.radius": 3.45
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 20
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.1.mult": 2.0
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 0.8,
+       "delay": 0.35,
+       "status": {
+        "id": "stun",
+        "duration": 0.8,
+        "chance": 0.6
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "lb_sanctuary",
+  "name": "Sanctuary",
+  "branch": "bulwark",
+  "unlock_level": 32,
+  "cost": 50,
+  "cooldown": 16,
+  "tags": [
+   "area",
+   "buff"
+  ],
+  "element": "holy",
+  "targeted": false,
+  "anim": "Spellcast_Long",
+  "lock": 0.7,
+  "windup": 0.3,
+  "icon": "aegis",
+  "color": "#fff6d0",
+  "effects": [
+   {
+    "type": "ground_zone",
+    "at": "self",
+    "radius": 4.5,
+    "duration": 6,
+    "tick": 0.5,
+    "mult": 0.3,
+    "heal_pct": 0.03,
+    "slow": 0.35
+   },
+   {
+    "type": "buff",
+    "duration": 6,
+    "stats": {
+     "resist_all": 20,
+     "armor_pct": 30
+    }
+   }
+  ],
+  "desc": "A dome of lamplight: you heal, foes inside slow down.",
+  "class": "lanternbearer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "big",
+      "name": "Great Dome",
+      "desc": "Bigger dome.",
+      "patch": {
+       "effects.0.radius": 6.0
+      }
+     },
+     {
+      "id": "long",
+      "name": "Long Vigil",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 9,
+       "effects.1.duration": 9
+      }
+     },
+     {
+      "id": "heal",
+      "name": "Hearthlight",
+      "desc": "Heals more.",
+      "patch": {
+       "effects.0.heal_pct": 0.05
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "burn",
+      "name": "Bright Dome",
+      "desc": "Burns foes harder.",
+      "patch": {
+       "effects.0.mult": 0.7
+      }
+     },
+     {
+      "id": "freeze",
+      "name": "Still Dome",
+      "desc": "Foes inside nearly stop.",
+      "patch": {
+       "effects.0.slow": 0.75
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Ready Sanctuary",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 11
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Bulwark",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 5.17
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 40
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Lingering",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 8
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "ground_zone",
+       "at": "self",
+       "radius": 4.5,
+       "duration": 6,
+       "tick": 0.5,
+       "mult": 0.15,
+       "heal_pct": 0.03,
+       "slow": 0.35,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "lb_dawnstrike",
+  "name": "Dawnstrike",
+  "branch": "zeal",
+  "unlock_level": 36,
+  "cost": 35,
+  "cooldown": 4,
+  "tags": [
+   "melee"
+  ],
+  "element": "holy",
+  "anim": "1H_Melee_Attack_Stab",
+  "lock": 0.45,
+  "windup": 0.12,
+  "icon": "sword",
+  "color": "#fff4c2",
+  "effects": [
+   {
+    "type": "dash",
+    "distance": 5,
+    "duration": 0.15,
+    "mult": 2.4,
+    "path_damage": true,
+    "width": 1.3
+   },
+   {
+    "type": "melee_arc",
+    "radius": 2.6,
+    "angle": 160,
+    "mult": 1.8
+   }
+  ],
+  "desc": "Lunge like the first ray of morning, then sweep.",
+  "class": "lanternbearer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "far",
+      "name": "Long Lunge",
+      "desc": "Lunge further.",
+      "patch": {
+       "effects.0.distance": 8
+      }
+     },
+     {
+      "id": "wide",
+      "name": "Sunwide Sweep",
+      "desc": "Wider sweep.",
+      "patch": {
+       "effects.1.angle": 300,
+       "effects.1.radius": 3.0
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Light Feet",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 20
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "twice",
+      "name": "Second Ray",
+      "desc": "Lunge again.",
+      "add_effects": [
+       {
+        "type": "dash",
+        "distance": 4,
+        "duration": 0.12,
+        "mult": 1.6,
+        "path_damage": true,
+        "width": 1.3,
+        "delay": 0.2
+       }
+      ]
+     },
+     {
+      "id": "stun",
+      "name": "Dazzle",
+      "desc": "Stuns what you sweep.",
+      "patch": {
+       "effects.1.status": {
+        "id": "stun",
+        "duration": 0.8,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "glow",
+      "name": "Morning Glow",
+      "desc": "Refunds Glow.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 20
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Zeal",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "+10% damage.",
+     "stats": {
+      "damage_pct": 0
+     },
+     "patch": {
+      "effects.0.mult": 2.64
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 28
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 3.0
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.44,
+       "delay": 0.1
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "lb_sunrise",
+  "name": "The Long Sunrise",
+  "branch": "radiance",
+  "unlock_level": 40,
+  "cost": 80,
+  "cooldown": 30,
+  "tags": [
+   "area"
+  ],
+  "element": "holy",
+  "anim": "Spellcast_Raise",
+  "lock": 1.0,
+  "windup": 0.4,
+  "icon": "sun",
+  "color": "#fff8d8",
+  "effects": [
+   {
+    "type": "aoe",
+    "radius": 4.5,
+    "mult": 3.0,
+    "telegraph": 0.4,
+    "shake": 0.6
+   },
+   {
+    "type": "aoe",
+    "radius": 6.0,
+    "mult": 3.5,
+    "delay": 0.5,
+    "shake": 0.8
+   },
+   {
+    "type": "heal",
+    "pct": 0.25
+   }
+  ],
+  "desc": "Kindle a small dawn. Two waves of light, then warmth.",
+  "class": "lanternbearer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Dawn",
+      "desc": "Bigger waves.",
+      "patch": {
+       "effects.1.radius": 7.5
+      }
+     },
+     {
+      "id": "heal",
+      "name": "Warm Dawn",
+      "desc": "Heals more.",
+      "patch": {
+       "effects.2.pct": 0.4
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Early Dawn",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 22
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "third",
+      "name": "Third Wave",
+      "desc": "A third wave.",
+      "add_effects": [
+       {
+        "type": "aoe",
+        "radius": 7.0,
+        "mult": 3.0,
+        "delay": 0.5
+       }
+      ]
+     },
+     {
+      "id": "zone",
+      "name": "Day Lingers",
+      "desc": "Leaves a field of light.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "radius": 5.0,
+        "duration": 6,
+        "tick": 0.5,
+        "mult": 0.5,
+        "heal_pct": 0.02
+       }
+      ]
+     },
+     {
+      "id": "buff",
+      "name": "New Day",
+      "desc": "Great buff after.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 8,
+        "stats": {
+         "damage_pct": 40,
+         "damage_reduction": 20
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Radiance",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 5.17
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 64
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 3.75
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "aoe",
+       "radius": 4.5,
+       "mult": 1.5,
+       "telegraph": 0.4,
+       "shake": 0.6,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "lb_smite",
+  "name": "Hallowed Smite",
+  "branch": "zeal",
+  "unlock_level": 10,
+  "cost": 15,
+  "cooldown": 2.5,
+  "tags": [
+   "melee"
+  ],
+  "element": "holy",
+  "anim": "1H_Melee_Attack_Chop",
+  "lock": 0.5,
+  "windup": 0.2,
+  "icon": "pillar",
+  "color": "#fff0b8",
+  "effects": [
+   {
+    "type": "melee_arc",
+    "radius": 2.5,
+    "angle": 90,
+    "mult": 2.6,
+    "shake": 0.35,
+    "hitstop_ms": 70
+   },
+   {
+    "type": "resource",
+    "amount": 10
+   }
+  ],
+  "desc": "One heavy, shining blow. Gives Glow back.",
+  "class": "lanternbearer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Broad Smite",
+      "desc": "Wider arc.",
+      "patch": {
+       "effects.0.angle": 160
+      }
+     },
+     {
+      "id": "stun",
+      "name": "Stunning Smite",
+      "desc": "Stuns.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 0.8,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Smite",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 1.5
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "pillar",
+      "name": "Smite from Above",
+      "desc": "A pillar follows.",
+      "add_effects": [
+       {
+        "type": "aoe",
+        "radius": 2.5,
+        "mult": 1.8,
+        "delay": 0.25
+       }
+      ]
+     },
+     {
+      "id": "heal",
+      "name": "Mending Smite",
+      "desc": "Heal a little.",
+      "add_effects": [
+       {
+        "type": "heal",
+        "pct": 0.04
+       }
+      ]
+     },
+     {
+      "id": "glow",
+      "name": "Bright Smite",
+      "desc": "Much more Glow.",
+      "patch": {
+       "effects.1.amount": 25
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Zeal",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 2.88
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 12
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 3.25
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "melee_arc",
+       "radius": 2.5,
+       "angle": 90,
+       "mult": 1.3,
+       "shake": 0.35,
+       "hitstop_ms": 70,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "bs_gong",
+  "name": "Gong Shield",
+  "branch": "rage",
+  "unlock_level": 15,
+  "cost": 0,
+  "cooldown": 16,
+  "tags": [
+   "buff"
+  ],
+  "targeted": false,
+  "anim": "Block",
+  "lock": 0.4,
+  "windup": 0.1,
+  "icon": "aegis",
+  "color": "#ffcf8a",
+  "effects": [
+   {
+    "type": "buff",
+    "duration": 6,
+    "stats": {
+     "damage_reduction": 30,
+     "thorns": 60
+    }
+   },
+   {
+    "type": "nova",
+    "radius": 3.2,
+    "mult": 0.8,
+    "knockback": 6
+   }
+  ],
+  "desc": "Beat your chest like a gong. Blows ring back at attackers.",
+  "class": "bellstriker",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "long",
+      "name": "Long Gong",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 9
+      }
+     },
+     {
+      "id": "thorns",
+      "name": "Spiky Gong",
+      "desc": "Much more thorns.",
+      "patch": {
+       "effects.0.stats": {
+        "damage_reduction": 30,
+        "thorns": 150
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Gong",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 11
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "big",
+      "name": "Great Gong",
+      "desc": "Bigger knockback blast.",
+      "patch": {
+       "effects.1.radius": 5.0,
+       "effects.1.mult": 1.6
+      }
+     },
+     {
+      "id": "heal",
+      "name": "Healing Hum",
+      "desc": "Heals 15%.",
+      "add_effects": [
+       {
+        "type": "heal",
+        "pct": 0.15
+       }
+      ]
+     },
+     {
+      "id": "fury",
+      "name": "Rage Gong",
+      "desc": "Gain Fury.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 40
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Rage",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.1.radius": 3.68
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Practised",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 13.6
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.1.mult": 1.0
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.2,
+       "mult": 0.4,
+       "knockback": 6,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "bs_throw",
+  "name": "Bell Toss",
+  "branch": "storm",
+  "unlock_level": 22,
+  "cost": 20,
+  "cooldown": 1.5,
+  "tags": [
+   "projectile"
+  ],
+  "element": "physical",
+  "anim": "Throw",
+  "lock": 0.45,
+  "windup": 0.15,
+  "icon": "axe",
+  "color": "#ffb35a",
+  "effects": [
+   {
+    "type": "projectile",
+    "speed": 16,
+    "range": 11,
+    "mult": 1.7,
+    "size": 0.3,
+    "pierce": 3
+   }
+  ],
+  "desc": "Hurl a hand-bell that rings through a line of foes.",
+  "class": "bellstriker",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "big",
+      "name": "Big Bell",
+      "desc": "Bigger bell.",
+      "patch": {
+       "effects.0.size": 0.45,
+       "effects.0.mult": 2.0
+      }
+     },
+     {
+      "id": "three",
+      "name": "Handbell Trio",
+      "desc": "Throw three.",
+      "patch": {
+       "effects.0.count": 3,
+       "effects.0.spread": 20
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Light Bell",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 10
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "boom",
+      "name": "Clanging Burst",
+      "desc": "Bursts at the end.",
+      "patch": {
+       "effects.0.explode_radius": 2.8,
+       "effects.0.explode_mult": 1.2
+      }
+     },
+     {
+      "id": "stun",
+      "name": "Ringing Ears",
+      "desc": "Stuns what it hits.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 0.6,
+        "chance": 0.6
+       }
+      }
+     },
+     {
+      "id": "home",
+      "name": "Homing Bell",
+      "desc": "Seeks foes.",
+      "patch": {
+       "effects.0.homing": 3.0
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Bellstorm",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 20.0,
+      "effects.0.range": 13.8
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 16
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "speed": 16,
+       "range": 11,
+       "mult": 0.85,
+       "size": 0.3,
+       "pierce": 3,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "bs_stomp",
+  "name": "Belfry Stomp",
+  "branch": "quake",
+  "unlock_level": 27,
+  "cost": 30,
+  "cooldown": 5,
+  "tags": [
+   "area",
+   "melee"
+  ],
+  "element": "physical",
+  "targeted": false,
+  "anim": "Unarmed_Melee_Attack_Kick",
+  "lock": 0.5,
+  "windup": 0.2,
+  "icon": "quake",
+  "color": "#e8b070",
+  "effects": [
+   {
+    "type": "nova",
+    "radius": 3.6,
+    "mult": 2.0,
+    "status": {
+     "id": "stun",
+     "duration": 1.0,
+     "chance": 0.7
+    },
+    "shake": 0.5
+   }
+  ],
+  "desc": "Stomp so hard the belfry bells answer. Stuns nearby foes.",
+  "class": "bellstriker",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Stomp",
+      "desc": "Bigger.",
+      "patch": {
+       "effects.0.radius": 4.6
+      }
+     },
+     {
+      "id": "long",
+      "name": "Long Daze",
+      "desc": "Stuns longer.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 1.6,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Tap Dance",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 3
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "double",
+      "name": "Double Stomp",
+      "desc": "Stomp twice.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 3.6,
+        "mult": 1.5,
+        "delay": 0.35
+       }
+      ]
+     },
+     {
+      "id": "fury",
+      "name": "Stomp of Rage",
+      "desc": "Gain Fury.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 20
+       }
+      ]
+     },
+     {
+      "id": "knock",
+      "name": "Launch",
+      "desc": "Sends foes flying.",
+      "patch": {
+       "effects.0.knockback": 12
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Quake",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 4.14
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 24
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 2.5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.6,
+       "mult": 1.0,
+       "status": {
+        "id": "stun",
+        "duration": 1.0,
+        "chance": 0.7
+       },
+       "shake": 0.5,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "bs_frenzy",
+  "name": "Carillon Frenzy",
+  "branch": "rage",
+  "unlock_level": 32,
+  "cost": 0,
+  "cooldown": 24,
+  "tags": [
+   "buff"
+  ],
+  "targeted": false,
+  "anim": "Cheer",
+  "lock": 0.5,
+  "windup": 0.1,
+  "icon": "roar",
+  "color": "#ff8a4a",
+  "effects": [
+   {
+    "type": "buff",
+    "duration": 10,
+    "stats": {
+     "attack_speed_pct": 35,
+     "crit_chance": 10,
+     "life_on_hit": 15
+    }
+   },
+   {
+    "type": "resource",
+    "amount": 60
+   }
+  ],
+  "desc": "Every bell at once! Swing faster, crit more, drink life.",
+  "class": "bellstriker",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "long",
+      "name": "Endless Chime",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 14
+      }
+     },
+     {
+      "id": "more",
+      "name": "Wild Chime",
+      "desc": "Even faster.",
+      "patch": {
+       "effects.0.stats": {
+        "attack_speed_pct": 50,
+        "crit_chance": 10,
+        "life_on_hit": 15
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Eager Chime",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 18
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "move",
+      "name": "Running Chime",
+      "desc": "Move faster too.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 10,
+        "stats": {
+         "move_speed_pct": 25
+        }
+       }
+      ]
+     },
+     {
+      "id": "tank",
+      "name": "Brass Skin",
+      "desc": "Take less damage.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 10,
+        "stats": {
+         "damage_reduction": 20
+        }
+       }
+      ]
+     },
+     {
+      "id": "nova",
+      "name": "Opening Clang",
+      "desc": "Blast when you start.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 4,
+        "mult": 2.2
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Rage",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Lasting",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 12
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Practised",
+     "desc": "15% shorter cooldown.",
+     "patch": {
+      "cooldown": 20.4
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "cooldown": 18.0
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "bs_quakeline",
+  "name": "Faultline",
+  "branch": "quake",
+  "unlock_level": 36,
+  "cost": 40,
+  "cooldown": 6,
+  "tags": [
+   "area"
+  ],
+  "element": "physical",
+  "anim": "2H_Melee_Attack_Chop",
+  "lock": 0.65,
+  "windup": 0.3,
+  "icon": "quake",
+  "color": "#d9a060",
+  "effects": [
+   {
+    "type": "aoe",
+    "radius": 2.4,
+    "mult": 1.6,
+    "telegraph": 0.15
+   },
+   {
+    "type": "aoe",
+    "radius": 3.0,
+    "mult": 1.8,
+    "delay": 0.2
+   },
+   {
+    "type": "aoe",
+    "radius": 3.6,
+    "mult": 2.2,
+    "delay": 0.2,
+    "shake": 0.6
+   }
+  ],
+  "desc": "Split the ground in three rolling cracks.",
+  "class": "bellstriker",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "big",
+      "name": "Deep Fault",
+      "desc": "Bigger cracks.",
+      "patch": {
+       "effects.2.radius": 4.4
+      }
+     },
+     {
+      "id": "slow",
+      "name": "Sticky Mud",
+      "desc": "Slows foes.",
+      "patch": {
+       "effects.2.status": {
+        "id": "slow",
+        "duration": 2,
+        "value": 0.5
+       }
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Easy Crack",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 25
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "four",
+      "name": "Fourth Crack",
+      "desc": "One more crack.",
+      "add_effects": [
+       {
+        "type": "aoe",
+        "radius": 4.0,
+        "mult": 2.4,
+        "delay": 0.2
+       }
+      ]
+     },
+     {
+      "id": "stun",
+      "name": "Shaken",
+      "desc": "Last crack stuns.",
+      "patch": {
+       "effects.2.status": {
+        "id": "stun",
+        "duration": 1.0,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "zone",
+      "name": "Open Ground",
+      "desc": "Leaves a rumbling zone.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "radius": 3.0,
+        "duration": 4,
+        "tick": 0.5,
+        "mult": 0.5
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Quake",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 2.76
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 32
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 2.0
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "aoe",
+       "radius": 2.4,
+       "mult": 0.8,
+       "telegraph": 0.15,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "bs_doom",
+  "name": "Last Toll",
+  "branch": "storm",
+  "unlock_level": 40,
+  "cost": 70,
+  "cooldown": 25,
+  "tags": [
+   "area",
+   "melee"
+  ],
+  "element": "physical",
+  "targeted": false,
+  "anim": "2H_Melee_Attack_Spinning",
+  "lock": 1.4,
+  "windup": 0.05,
+  "icon": "whirl",
+  "color": "#ffd08a",
+  "effects": [
+   {
+    "type": "spin",
+    "ticks": 8,
+    "interval": 0.17,
+    "radius": 3.4,
+    "mult": 0.9
+   },
+   {
+    "type": "nova",
+    "radius": 6.0,
+    "mult": 4.0,
+    "delay": 0.1,
+    "knockback": 10,
+    "shake": 1.0
+   }
+  ],
+  "desc": "Spin into a storm of bronze and finish with a toll that shakes the Hush.",
+  "class": "bellstriker",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Toll",
+      "desc": "Bigger finish.",
+      "patch": {
+       "effects.1.radius": 7.5
+      }
+     },
+     {
+      "id": "long",
+      "name": "Long Spin",
+      "desc": "Spin longer.",
+      "patch": {
+       "effects.0.ticks": 11
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Early Toll",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 18
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "stun",
+      "name": "Silence",
+      "desc": "Finish stuns everything.",
+      "patch": {
+       "effects.1.status": {
+        "id": "stun",
+        "duration": 2.0,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "heal",
+      "name": "Toll of Life",
+      "desc": "Heal after.",
+      "add_effects": [
+       {
+        "type": "heal",
+        "pct": 0.25
+       }
+      ]
+     },
+     {
+      "id": "pull",
+      "name": "Gathering Toll",
+      "desc": "Pull foes in first.",
+      "add_effects": [
+       {
+        "type": "pull",
+        "radius": 8,
+        "force": 14
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Bellstorm",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 3.91
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 56
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 1.12
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "spin",
+       "ticks": 8,
+       "interval": 0.17,
+       "radius": 3.4,
+       "mult": 0.45,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "bs_ringout",
+  "name": "Ring Out",
+  "branch": "rage",
+  "unlock_level": 10,
+  "cost": 20,
+  "cooldown": 3,
+  "tags": [
+   "melee",
+   "area"
+  ],
+  "element": "physical",
+  "targeted": false,
+  "anim": "2H_Melee_Attack_Spin",
+  "lock": 0.55,
+  "windup": 0.18,
+  "icon": "whirl",
+  "color": "#ffc070",
+  "effects": [
+   {
+    "type": "melee_arc",
+    "radius": 3.0,
+    "angle": 360,
+    "mult": 1.9,
+    "knockback": 9,
+    "shake": 0.4
+   }
+  ],
+  "desc": "A full swing that rings out and knocks everyone back.",
+  "class": "bellstriker",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Big Ring",
+      "desc": "Bigger.",
+      "patch": {
+       "effects.0.radius": 3.8
+      }
+     },
+     {
+      "id": "stun",
+      "name": "Dizzy",
+      "desc": "Stuns.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 0.8,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Easy Swing",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 10
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "pull",
+      "name": "Ring In",
+      "desc": "Pull instead of push.",
+      "patch": {
+       "effects.0.knockback": 0
+      },
+      "add_effects": [
+       {
+        "type": "pull",
+        "radius": 5,
+        "force": 10
+       }
+      ]
+     },
+     {
+      "id": "fury",
+      "name": "Ringing Rage",
+      "desc": "Gain Fury.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 18
+       }
+      ]
+     },
+     {
+      "id": "twice",
+      "name": "Echo Ring",
+      "desc": "Rings twice.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 3.4,
+        "mult": 1.2,
+        "delay": 0.3
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Rage",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 3.45
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 16
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 2.38
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "melee_arc",
+       "radius": 3.0,
+       "angle": 360,
+       "mult": 0.95,
+       "knockback": 9,
+       "shake": 0.4,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "sg_orbit",
+  "name": "Orbiting Motes",
+  "branch": "storm",
+  "unlock_level": 15,
+  "cost": 35,
+  "cooldown": 8,
+  "tags": [
+   "area"
+  ],
+  "element": "lightning",
+  "targeted": false,
+  "anim": "Spellcast_Raise",
+  "lock": 0.45,
+  "windup": 0.15,
+  "icon": "spark",
+  "color": "#e0f0ff",
+  "effects": [
+   {
+    "type": "ground_zone",
+    "at": "self",
+    "radius": 3.0,
+    "duration": 5,
+    "tick": 0.3,
+    "mult": 0.35
+   }
+  ],
+  "desc": "Tiny stars circle you, zapping anything close.",
+  "class": "stargazer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Orbit",
+      "desc": "Bigger circle.",
+      "patch": {
+       "effects.0.radius": 4.0
+      }
+     },
+     {
+      "id": "long",
+      "name": "Long Orbit",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 8
+      }
+     },
+     {
+      "id": "fast",
+      "name": "Fast Orbit",
+      "desc": "Zaps faster.",
+      "patch": {
+       "effects.0.tick": 0.2
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "cold",
+      "name": "Snow Motes",
+      "desc": "Turns to cold; slows.",
+      "patch": {
+       "element": "cold",
+       "effects.0.slow": 0.35
+      }
+     },
+     {
+      "id": "shield",
+      "name": "Mote Shield",
+      "desc": "Take less damage.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 5,
+        "stats": {
+         "damage_reduction": 15
+        }
+       }
+      ]
+     },
+     {
+      "id": "burst",
+      "name": "Mote Burst",
+      "desc": "Motes burst when cast.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 3.0,
+        "mult": 1.5
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Storm",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 3.45
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 28
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Lingering",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 7
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "ground_zone",
+       "at": "self",
+       "radius": 3.0,
+       "duration": 5,
+       "tick": 0.3,
+       "mult": 0.17,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "sg_icicle",
+  "name": "Icicle Lance",
+  "branch": "rime",
+  "unlock_level": 22,
+  "cost": 18,
+  "cooldown": 0,
+  "tags": [
+   "projectile"
+  ],
+  "element": "cold",
+  "anim": "Spellcast_Shoot",
+  "lock": 0.42,
+  "windup": 0.14,
+  "icon": "frost",
+  "color": "#bfefff",
+  "effects": [
+   {
+    "type": "projectile",
+    "speed": 20,
+    "range": 14,
+    "mult": 1.5,
+    "size": 0.2,
+    "pierce": 2,
+    "status": {
+     "id": "slow",
+     "duration": 1.5,
+     "value": 0.3
+    }
+   }
+  ],
+  "desc": "A spear of starlit ice that pierces and chills.",
+  "class": "stargazer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "three",
+      "name": "Icicle Fan",
+      "desc": "Three lances.",
+      "patch": {
+       "effects.0.count": 3,
+       "effects.0.spread": 14
+      }
+     },
+     {
+      "id": "pierce",
+      "name": "Needle Ice",
+      "desc": "Pierces everything.",
+      "patch": {
+       "effects.0.pierce": 8
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Cheap Ice",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 10
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "freeze",
+      "name": "Freezing Lance",
+      "desc": "Freezes.",
+      "patch": {
+       "effects.0.status": {
+        "id": "freeze",
+        "duration": 1.0
+       }
+      }
+     },
+     {
+      "id": "burst",
+      "name": "Shattering Lance",
+      "desc": "Bursts at the end.",
+      "patch": {
+       "effects.0.explode_radius": 2.4,
+       "effects.0.explode_mult": 1.0
+      }
+     },
+     {
+      "id": "home",
+      "name": "Seeking Ice",
+      "desc": "Seeks foes.",
+      "patch": {
+       "effects.0.homing": 2.5
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Rime",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 25.0,
+      "effects.0.range": 17.5
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 14
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "speed": 20,
+       "range": 14,
+       "mult": 0.75,
+       "size": 0.2,
+       "pierce": 2,
+       "status": {
+        "id": "slow",
+        "duration": 1.5,
+        "value": 0.3
+       },
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "sg_gravity",
+  "name": "Black Star",
+  "branch": "comet",
+  "unlock_level": 27,
+  "cost": 45,
+  "cooldown": 10,
+  "tags": [
+   "area"
+  ],
+  "element": "shadow",
+  "anim": "Spellcasting",
+  "lock": 0.7,
+  "windup": 0.25,
+  "icon": "blink",
+  "color": "#b8a0ff",
+  "effects": [
+   {
+    "type": "pull",
+    "radius": 6.0,
+    "force": 13
+   },
+   {
+    "type": "ground_zone",
+    "radius": 2.8,
+    "duration": 3,
+    "tick": 0.3,
+    "mult": 0.5,
+    "slow": 0.5,
+    "delay": 0.15
+   }
+  ],
+  "desc": "Open a tiny dark star that pulls foes in and crushes them.",
+  "class": "stargazer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Heavy Star",
+      "desc": "Pulls from further.",
+      "patch": {
+       "effects.0.radius": 8.0
+      }
+     },
+     {
+      "id": "long",
+      "name": "Lasting Dark",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.1.duration": 5
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Collapse",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 7
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "boom",
+      "name": "Collapse",
+      "desc": "Explodes at the end.",
+      "add_effects": [
+       {
+        "type": "aoe",
+        "radius": 3.5,
+        "mult": 3.0,
+        "delay": 2.8
+       }
+      ]
+     },
+     {
+      "id": "freeze",
+      "name": "Cold Dark",
+      "desc": "Turns to cold.",
+      "patch": {
+       "element": "cold",
+       "effects.1.slow": 0.8
+      }
+     },
+     {
+      "id": "mana",
+      "name": "Hungry Star",
+      "desc": "Refunds mana.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 20
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Comets",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.1.radius": 3.22
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 36
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Lingering",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.1.duration": 5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "ground_zone",
+       "radius": 2.8,
+       "duration": 3,
+       "tick": 0.3,
+       "mult": 0.25,
+       "slow": 0.5,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "sg_blizzard",
+  "name": "Snow of Stars",
+  "branch": "rime",
+  "unlock_level": 32,
+  "cost": 55,
+  "cooldown": 9,
+  "tags": [
+   "area"
+  ],
+  "element": "cold",
+  "anim": "Spellcast_Long",
+  "lock": 0.6,
+  "windup": 0.25,
+  "icon": "frost",
+  "color": "#dff6ff",
+  "effects": [
+   {
+    "type": "ground_zone",
+    "radius": 4.2,
+    "duration": 6,
+    "tick": 0.4,
+    "mult": 0.55,
+    "slow": 0.45
+   }
+  ],
+  "desc": "Starry snow falls over a wide area, slowing and freezing.",
+  "class": "stargazer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Snow",
+      "desc": "Bigger area.",
+      "patch": {
+       "effects.0.radius": 5.4
+      }
+     },
+     {
+      "id": "long",
+      "name": "Long Winter",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 9
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Light Snow",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 40
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "freeze",
+      "name": "Frozen Hush",
+      "desc": "Slows much more.",
+      "patch": {
+       "effects.0.slow": 0.75
+      }
+     },
+     {
+      "id": "hard",
+      "name": "Hail",
+      "desc": "Hits harder.",
+      "patch": {
+       "effects.0.mult": 0.8
+      }
+     },
+     {
+      "id": "nova",
+      "name": "First Frost",
+      "desc": "Freezes on landing.",
+      "add_effects": [
+       {
+        "type": "aoe",
+        "radius": 4.2,
+        "mult": 1.0,
+        "status": {
+         "id": "freeze",
+         "duration": 1.2
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Rime",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 4.83
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 44
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Lingering",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 8
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "ground_zone",
+       "radius": 4.2,
+       "duration": 6,
+       "tick": 0.4,
+       "mult": 0.28,
+       "slow": 0.45,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "sg_storm",
+  "name": "Thunder Veil",
+  "branch": "storm",
+  "unlock_level": 36,
+  "cost": 40,
+  "cooldown": 7,
+  "tags": [
+   "projectile",
+   "area"
+  ],
+  "element": "lightning",
+  "anim": "Spellcast_Shoot",
+  "lock": 0.5,
+  "windup": 0.15,
+  "icon": "chain",
+  "color": "#fff8b0",
+  "effects": [
+   {
+    "type": "chain",
+    "jumps": 6,
+    "range": 7,
+    "mult": 1.4
+   },
+   {
+    "type": "chain",
+    "jumps": 6,
+    "range": 7,
+    "mult": 1.4,
+    "delay": 0.25
+   }
+  ],
+  "desc": "Two forks of lightning leap from foe to foe.",
+  "class": "stargazer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "more",
+      "name": "Wild Forks",
+      "desc": "More jumps.",
+      "patch": {
+       "effects.0.jumps": 9,
+       "effects.1.jumps": 9
+      }
+     },
+     {
+      "id": "far",
+      "name": "Long Forks",
+      "desc": "Jumps further.",
+      "patch": {
+       "effects.0.range": 9,
+       "effects.1.range": 9
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Veil",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 4.5
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "third",
+      "name": "Third Fork",
+      "desc": "A third fork.",
+      "add_effects": [
+       {
+        "type": "chain",
+        "jumps": 6,
+        "range": 7,
+        "mult": 1.4,
+        "delay": 0.25
+       }
+      ]
+     },
+     {
+      "id": "stun",
+      "name": "Thunderstruck",
+      "desc": "May stun.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 0.6,
+        "chance": 0.4
+       }
+      }
+     },
+     {
+      "id": "mana",
+      "name": "Charged Veil",
+      "desc": "Refunds mana.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 18
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Storm",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Jumps 1 more time.",
+     "patch": {
+      "effects.0.jumps": 7
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 32
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 1.75
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "chain",
+       "jumps": 6,
+       "range": 7,
+       "mult": 0.7,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "sg_supernova",
+  "name": "Supernova",
+  "branch": "comet",
+  "unlock_level": 40,
+  "cost": 90,
+  "cooldown": 28,
+  "tags": [
+   "area"
+  ],
+  "element": "fire",
+  "targeted": false,
+  "anim": "Spellcast_Raise",
+  "lock": 1.0,
+  "windup": 0.5,
+  "icon": "meteor",
+  "color": "#ffcf7a",
+  "effects": [
+   {
+    "type": "nova",
+    "radius": 7.0,
+    "mult": 6.0,
+    "knockback": 12,
+    "shake": 1.0
+   }
+  ],
+  "desc": "Become a star for one heartbeat. Everything nearby is lit up.",
+  "class": "stargazer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Hypernova",
+      "desc": "Much bigger.",
+      "patch": {
+       "effects.0.radius": 9.0
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Frequent Star",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 20
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Small Sun",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 65
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "zone",
+      "name": "Afterglow",
+      "desc": "Leaves burning light.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "at": "self",
+        "radius": 6.0,
+        "duration": 5,
+        "tick": 0.5,
+        "mult": 0.6
+       }
+      ]
+     },
+     {
+      "id": "freeze",
+      "name": "Cold Star",
+      "desc": "Turns to cold; freezes.",
+      "patch": {
+       "element": "cold",
+       "effects.0.status": {
+        "id": "freeze",
+        "duration": 2.0
+       }
+      }
+     },
+     {
+      "id": "buff",
+      "name": "Stellar Heart",
+      "desc": "Great damage buff after.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 8,
+        "stats": {
+         "damage_pct": 50,
+         "cast_speed_pct": 20
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Comets",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 8.05
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 72
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 7.5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 7.0,
+       "mult": 3.0,
+       "knockback": 12,
+       "shake": 1.0,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "sg_moonbeam",
+  "name": "Moonbeam",
+  "branch": "storm",
+  "unlock_level": 10,
+  "cost": 20,
+  "cooldown": 1.2,
+  "tags": [
+   "projectile"
+  ],
+  "element": "holy",
+  "anim": "Spellcast_Shoot",
+  "lock": 0.4,
+  "windup": 0.12,
+  "icon": "blink",
+  "color": "#e8e0ff",
+  "effects": [
+   {
+    "type": "projectile",
+    "speed": 12,
+    "range": 15,
+    "mult": 1.8,
+    "size": 0.4,
+    "pierce": 99
+   }
+  ],
+  "desc": "A slow, wide beam of moonlight that passes through everything.",
+  "class": "stargazer",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Full Moon",
+      "desc": "Bigger beam.",
+      "patch": {
+       "effects.0.size": 0.6,
+       "effects.0.radius": 0.9
+      }
+     },
+     {
+      "id": "fast",
+      "name": "Quick Moon",
+      "desc": "Faster beam.",
+      "patch": {
+       "effects.0.speed": 18
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Crescent",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 12
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "three",
+      "name": "Three Moons",
+      "desc": "Three beams.",
+      "patch": {
+       "effects.0.count": 3,
+       "effects.0.spread": 16
+      }
+     },
+     {
+      "id": "slow",
+      "name": "Dreamy Beam",
+      "desc": "Slows foes.",
+      "patch": {
+       "effects.0.status": {
+        "id": "slow",
+        "duration": 2,
+        "value": 0.4
+       }
+      }
+     },
+     {
+      "id": "mana",
+      "name": "Moon Tide",
+      "desc": "Refunds mana.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 10
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Storm",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 15.0,
+      "effects.0.range": 18.8
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 16
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "speed": 12,
+       "range": 15,
+       "mult": 0.9,
+       "size": 0.4,
+       "pierce": 99,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "st_pinarcher",
+  "name": "Pin Archers",
+  "branch": "dolls",
+  "unlock_level": 15,
+  "cost": 35,
+  "cooldown": 2,
+  "tags": [
+   "minion"
+  ],
+  "targeted": false,
+  "anim": "Spellcast_Summon",
+  "lock": 0.5,
+  "windup": 0.2,
+  "icon": "pins",
+  "color": "#ffd0ea",
+  "effects": [
+   {
+    "type": "summon",
+    "minion": "pin_archer",
+    "count": 1,
+    "max": 2
+   }
+  ],
+  "desc": "Sew a little doll that shoots pins from a safe distance (max 2).",
+  "class": "stitcher",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "more",
+      "name": "Archer Club",
+      "desc": "Up to 3 archers.",
+      "patch": {
+       "effects.0.max": 3
+      }
+     },
+     {
+      "id": "tough",
+      "name": "Thimble Helmets",
+      "desc": "Archers are tougher.",
+      "stats": {
+       "minion_life_pct": 25
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Cheap Pins",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 25
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "fierce",
+      "name": "Sharp Pins",
+      "desc": "Minions hit harder.",
+      "stats": {
+       "minion_damage_pct": 25
+      }
+     },
+     {
+      "id": "volley",
+      "name": "Welcome Volley",
+      "desc": "Pins burst out when sewn.",
+      "add_effects": [
+       {
+        "type": "projectile",
+        "count": 5,
+        "spread": 30,
+        "speed": 18,
+        "range": 10,
+        "mult": 0.7,
+        "size": 0.12
+       }
+      ]
+     },
+     {
+      "id": "two",
+      "name": "Double Stitch",
+      "desc": "Sew two at once.",
+      "patch": {
+       "effects.0.count": 2
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Dolls",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Sturdy",
+     "desc": "Summons have 20% more life.",
+     "stats": {
+      "minion_life_pct": 20
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 28
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Crowd",
+     "desc": "+1 maximum summon.",
+     "patch": {
+      "effects.0.max": 3
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "st_hex",
+  "name": "Button Eyes",
+  "branch": "hexes",
+  "unlock_level": 22,
+  "cost": 25,
+  "cooldown": 6,
+  "tags": [
+   "area"
+  ],
+  "element": "shadow",
+  "anim": "Spellcast_Shoot",
+  "lock": 0.45,
+  "windup": 0.2,
+  "icon": "thread",
+  "color": "#c58cff",
+  "effects": [
+   {
+    "type": "aoe",
+    "radius": 3.4,
+    "mult": 1.2,
+    "telegraph": 0.2,
+    "status": {
+     "id": "slow",
+     "duration": 3,
+     "value": 0.4
+    }
+   }
+  ],
+  "desc": "Stitch buttons over foes' eyes: they stumble and slow.",
+  "class": "stitcher",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Big Buttons",
+      "desc": "Bigger.",
+      "patch": {
+       "effects.0.radius": 4.4
+      }
+     },
+     {
+      "id": "long",
+      "name": "Sewn Tight",
+      "desc": "Slows longer.",
+      "patch": {
+       "effects.0.status": {
+        "id": "slow",
+        "duration": 5,
+        "value": 0.4
+       }
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Hex",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 4
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "stun",
+      "name": "Blindfold",
+      "desc": "Stuns.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 1.2,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "zone",
+      "name": "Tangled Ground",
+      "desc": "Leaves thread.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "radius": 3.0,
+        "duration": 4,
+        "tick": 0.5,
+        "mult": 0.4,
+        "slow": 0.4
+       }
+      ]
+     },
+     {
+      "id": "minion",
+      "name": "Easy Target",
+      "desc": "Dolls hit harder briefly.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 5,
+        "stats": {
+         "minion_damage_pct": 40
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Hexes",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 3.91
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 20
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 1.5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "aoe",
+       "radius": 3.4,
+       "mult": 0.6,
+       "telegraph": 0.2,
+       "status": {
+        "id": "slow",
+        "duration": 3,
+        "value": 0.4
+       },
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "st_spool",
+  "name": "Runaway Spool",
+  "branch": "needlework",
+  "unlock_level": 27,
+  "cost": 30,
+  "cooldown": 3,
+  "tags": [
+   "projectile"
+  ],
+  "element": "physical",
+  "anim": "Throw",
+  "lock": 0.4,
+  "windup": 0.12,
+  "icon": "thread",
+  "color": "#ffb3d1",
+  "effects": [
+   {
+    "type": "projectile",
+    "speed": 11,
+    "range": 13,
+    "mult": 1.4,
+    "size": 0.32,
+    "pierce": 6,
+    "homing": 2.0
+   }
+  ],
+  "desc": "A spool of thread rolls after foes, tangling them all.",
+  "class": "stitcher",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "big",
+      "name": "Fat Spool",
+      "desc": "Bigger.",
+      "patch": {
+       "effects.0.size": 0.45,
+       "effects.0.mult": 1.8
+      }
+     },
+     {
+      "id": "two",
+      "name": "Two Spools",
+      "desc": "Throw two.",
+      "patch": {
+       "effects.0.count": 2,
+       "effects.0.spread": 15
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Cheap Spool",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 20
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "slow",
+      "name": "Tangling Spool",
+      "desc": "Slows foes.",
+      "patch": {
+       "effects.0.status": {
+        "id": "slow",
+        "duration": 2,
+        "value": 0.5
+       }
+      }
+     },
+     {
+      "id": "boom",
+      "name": "Snapping Thread",
+      "desc": "Bursts at the end.",
+      "patch": {
+       "effects.0.explode_radius": 3.0,
+       "effects.0.explode_mult": 1.2
+      }
+     },
+     {
+      "id": "shadow",
+      "name": "Shadow Spool",
+      "desc": "Turns to shadow.",
+      "patch": {
+       "element": "shadow",
+       "effects.0.mult": 1.7
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Needlework",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 13.8,
+      "effects.0.range": 16.2
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 24
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "speed": 11,
+       "range": 13,
+       "mult": 0.7,
+       "size": 0.32,
+       "pierce": 6,
+       "homing": 2.0,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "st_scarecrow",
+  "name": "Scarecrow",
+  "branch": "dolls",
+  "unlock_level": 32,
+  "cost": 45,
+  "cooldown": 18,
+  "tags": [
+   "minion"
+  ],
+  "targeted": false,
+  "anim": "Spellcast_Summon",
+  "lock": 0.6,
+  "windup": 0.25,
+  "icon": "doll",
+  "color": "#e8c080",
+  "effects": [
+   {
+    "type": "summon",
+    "minion": "scarecrow",
+    "count": 1,
+    "max": 1,
+    "duration": 20
+   }
+  ],
+  "desc": "Stake a straw friend that everyone wants to hit (lasts 20 s).",
+  "class": "stitcher",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "long",
+      "name": "Stubborn Straw",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 30
+      }
+     },
+     {
+      "id": "tough",
+      "name": "Stuffed Tight",
+      "desc": "Tougher.",
+      "stats": {
+       "minion_life_pct": 30
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Stake",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 12
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "fear",
+      "name": "Spooky",
+      "desc": "Stuns foes near it when sewn.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 4,
+        "mult": 0.5,
+        "status": {
+         "id": "stun",
+         "duration": 1.5,
+         "chance": 1.0
+        }
+       }
+      ]
+     },
+     {
+      "id": "two",
+      "name": "Two Scarecrows",
+      "desc": "Up to 2.",
+      "patch": {
+       "effects.0.max": 2
+      }
+     },
+     {
+      "id": "zone",
+      "name": "Crow Field",
+      "desc": "Surrounds itself with thread.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "radius": 3.5,
+        "duration": 6,
+        "tick": 0.5,
+        "mult": 0.4,
+        "slow": 0.4
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Dolls",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Sturdy",
+     "desc": "Summons have 20% more life.",
+     "stats": {
+      "minion_life_pct": 20
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 36
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Crowd",
+     "desc": "+1 maximum summon.",
+     "patch": {
+      "effects.0.max": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "st_quilt",
+  "name": "Patchwork Quilt",
+  "branch": "hexes",
+  "unlock_level": 36,
+  "cost": 40,
+  "cooldown": 14,
+  "tags": [
+   "buff",
+   "minion"
+  ],
+  "targeted": false,
+  "anim": "Use_Item",
+  "lock": 0.4,
+  "windup": 0.2,
+  "icon": "mend",
+  "color": "#9dffb8",
+  "effects": [
+   {
+    "type": "buff",
+    "duration": 8,
+    "stats": {
+     "damage_reduction": 25,
+     "minion_damage_pct": 40,
+     "life_regen": 30
+    }
+   },
+   {
+    "type": "heal",
+    "pct": 0.15
+   }
+  ],
+  "desc": "Wrap yourself in a warm quilt. Dolls are cheered on.",
+  "class": "stitcher",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "long",
+      "name": "Big Quilt",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 12
+      }
+     },
+     {
+      "id": "heal",
+      "name": "Warm Quilt",
+      "desc": "Heals more.",
+      "patch": {
+       "effects.1.pct": 0.3
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Quilt",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 10
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "thread",
+      "name": "Spare Thread",
+      "desc": "Refunds Thread.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 40
+       }
+      ]
+     },
+     {
+      "id": "thorn",
+      "name": "Pincushion Quilt",
+      "desc": "Adds thorns.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 8,
+        "stats": {
+         "thorns": 80
+        }
+       }
+      ]
+     },
+     {
+      "id": "minion",
+      "name": "Family Blanket",
+      "desc": "Dolls get huge damage.",
+      "patch": {
+       "effects.0.stats": {
+        "damage_reduction": 25,
+        "minion_damage_pct": 80,
+        "life_regen": 30
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Hexes",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Lasting",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 10
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 32
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "cooldown": 10.5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "st_puppetking",
+  "name": "Puppet Knight",
+  "branch": "needlework",
+  "unlock_level": 40,
+  "cost": 70,
+  "cooldown": 30,
+  "tags": [
+   "minion"
+  ],
+  "targeted": false,
+  "anim": "Spellcast_Summon",
+  "lock": 0.8,
+  "windup": 0.3,
+  "icon": "bear",
+  "color": "#ffd9a0",
+  "effects": [
+   {
+    "type": "summon",
+    "minion": "puppet_knight",
+    "count": 1,
+    "max": 1,
+    "duration": 30
+   }
+  ],
+  "desc": "Sew your finest work: a tiny knight with a real sword (lasts 30 s).",
+  "class": "stitcher",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "long",
+      "name": "Loyal Knight",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 45
+      }
+     },
+     {
+      "id": "tough",
+      "name": "Tin Armour",
+      "desc": "Tougher.",
+      "stats": {
+       "minion_life_pct": 30
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Needle",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 22
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "nova",
+      "name": "Grand Entrance",
+      "desc": "Lands with a shockwave.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 4,
+        "mult": 2.2,
+        "knockback": 8
+       }
+      ]
+     },
+     {
+      "id": "buff",
+      "name": "Knightly Oath",
+      "desc": "You fight better too.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 10,
+        "stats": {
+         "damage_pct": 30,
+         "minion_damage_pct": 30
+        }
+       }
+      ]
+     },
+     {
+      "id": "two",
+      "name": "Twin Knights",
+      "desc": "Up to 2.",
+      "patch": {
+       "effects.0.max": 2,
+       "effects.0.count": 2
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Needlework",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Sturdy",
+     "desc": "Summons have 20% more life.",
+     "stats": {
+      "minion_life_pct": 20
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 56
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Crowd",
+     "desc": "+1 maximum summon.",
+     "patch": {
+      "effects.0.max": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "st_thimble",
+  "name": "Thimble Bomb",
+  "branch": "needlework",
+  "unlock_level": 10,
+  "cost": 20,
+  "cooldown": 2,
+  "tags": [
+   "projectile",
+   "area"
+  ],
+  "element": "physical",
+  "anim": "Throw",
+  "lock": 0.4,
+  "windup": 0.12,
+  "icon": "pins",
+  "color": "#ffd9ec",
+  "effects": [
+   {
+    "type": "projectile",
+    "speed": 12,
+    "range": 9,
+    "mult": 1.3,
+    "size": 0.25,
+    "explode_radius": 2.6,
+    "explode_mult": 1.2
+   }
+  ],
+  "desc": "A thimble stuffed with pins. Pop!",
+  "class": "stitcher",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "big",
+      "name": "Big Thimble",
+      "desc": "Bigger pop.",
+      "patch": {
+       "effects.0.explode_radius": 3.4
+      }
+     },
+     {
+      "id": "three",
+      "name": "Thimble Trio",
+      "desc": "Three at once.",
+      "patch": {
+       "effects.0.count": 3,
+       "effects.0.spread": 18
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Tin Thimble",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 12
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "slow",
+      "name": "Sticky Pins",
+      "desc": "Slows.",
+      "patch": {
+       "effects.0.status": {
+        "id": "slow",
+        "duration": 2,
+        "value": 0.4
+       }
+      }
+     },
+     {
+      "id": "shadow",
+      "name": "Hex Thimble",
+      "desc": "Turns to shadow.",
+      "patch": {
+       "element": "shadow",
+       "effects.0.mult": 1.6
+      }
+     },
+     {
+      "id": "zone",
+      "name": "Pin Carpet",
+      "desc": "Leaves pins on the floor.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "radius": 2.4,
+        "duration": 3,
+        "tick": 0.4,
+        "mult": 0.35,
+        "delay": 0.4
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Needlework",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 15.0,
+      "effects.0.range": 11.2
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 16
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "speed": 12,
+       "range": 9,
+       "mult": 0.65,
+       "size": 0.25,
+       "explode_radius": 2.6,
+       "explode_mult": 1.2,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "rr_caltrops",
+  "name": "Caltrops",
+  "branch": "tinker",
+  "unlock_level": 15,
+  "cost": 20,
+  "cooldown": 5,
+  "tags": [
+   "area"
+  ],
+  "element": "physical",
+  "anim": "Throw",
+  "lock": 0.35,
+  "windup": 0.12,
+  "icon": "trap",
+  "color": "#c8d0c0",
+  "effects": [
+   {
+    "type": "ground_zone",
+    "radius": 3.0,
+    "duration": 6,
+    "tick": 0.4,
+    "mult": 0.45,
+    "slow": 0.5
+   }
+  ],
+  "desc": "Scatter sharp jacks. Foes hobble and yelp.",
+  "class": "roofrunner",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "wide",
+      "name": "Wide Scatter",
+      "desc": "Bigger.",
+      "patch": {
+       "effects.0.radius": 4.0
+      }
+     },
+     {
+      "id": "long",
+      "name": "Rusty Jacks",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 9
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Deep Pockets",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 3
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "stun",
+      "name": "Ouch!",
+      "desc": "May stun.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 0.5,
+        "chance": 0.25
+       }
+      }
+     },
+     {
+      "id": "fire",
+      "name": "Hot Jacks",
+      "desc": "Turn to fire; hurt more.",
+      "patch": {
+       "element": "fire",
+       "effects.0.mult": 0.7
+      }
+     },
+     {
+      "id": "energy",
+      "name": "Scrap Refund",
+      "desc": "Restore Energy.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 15
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Tinker",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger area.",
+     "patch": {
+      "effects.0.radius": 3.45
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 16
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Lingering",
+     "desc": "Lasts 2 s longer.",
+     "patch": {
+      "effects.0.duration": 8
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "ground_zone",
+       "radius": 3.0,
+       "duration": 6,
+       "tick": 0.4,
+       "mult": 0.23,
+       "slow": 0.5,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "rr_pinbolt",
+  "name": "Pinning Shot",
+  "branch": "marksman",
+  "unlock_level": 22,
+  "cost": 20,
+  "cooldown": 3,
+  "tags": [
+   "projectile"
+  ],
+  "element": "physical",
+  "anim": "2H_Ranged_Shoot",
+  "lock": 0.45,
+  "windup": 0.18,
+  "icon": "bolt",
+  "color": "#e9ffe0",
+  "effects": [
+   {
+    "type": "projectile",
+    "speed": 30,
+    "range": 16,
+    "mult": 2.6,
+    "size": 0.16,
+    "pierce": 4,
+    "status": {
+     "id": "stun",
+     "duration": 0.8,
+     "chance": 1.0
+    }
+   }
+  ],
+  "desc": "A heavy bolt that pins foes in place.",
+  "class": "roofrunner",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "pierce",
+      "name": "Through and Through",
+      "desc": "Pierces more.",
+      "patch": {
+       "effects.0.pierce": 8
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Pin",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 1.5
+      }
+     },
+     {
+      "id": "stun",
+      "name": "Long Pin",
+      "desc": "Stuns longer.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 1.5,
+        "chance": 1.0
+       }
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "boom",
+      "name": "Popping Bolt",
+      "desc": "Bursts at the end.",
+      "patch": {
+       "effects.0.explode_radius": 2.8,
+       "effects.0.explode_mult": 1.5
+      }
+     },
+     {
+      "id": "three",
+      "name": "Triple Pin",
+      "desc": "Three bolts.",
+      "patch": {
+       "effects.0.count": 3,
+       "effects.0.spread": 10
+      }
+     },
+     {
+      "id": "crit",
+      "name": "Marked",
+      "desc": "Crit more after.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 3,
+        "stats": {
+         "crit_chance": 15
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Marksman",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 37.5,
+      "effects.0.range": 20.0
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 16
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "speed": 30,
+       "range": 16,
+       "mult": 1.3,
+       "size": 0.16,
+       "pierce": 4,
+       "status": {
+        "id": "stun",
+        "duration": 0.8,
+        "chance": 1.0
+       },
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "rr_decoy",
+  "name": "Chimney Decoy",
+  "branch": "shadow",
+  "unlock_level": 27,
+  "cost": 30,
+  "cooldown": 14,
+  "tags": [
+   "minion"
+  ],
+  "targeted": false,
+  "anim": "Use_Item",
+  "lock": 0.3,
+  "windup": 0.1,
+  "icon": "smoke",
+  "color": "#b0ffc8",
+  "effects": [
+   {
+    "type": "summon",
+    "minion": "roof_decoy",
+    "count": 1,
+    "max": 1,
+    "duration": 8
+   },
+   {
+    "type": "dash",
+    "distance": 5,
+    "duration": 0.15
+   }
+  ],
+  "desc": "Leave a cloak-and-hat decoy behind and slip away.",
+  "class": "roofrunner",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "long",
+      "name": "Stubborn Decoy",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 12
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Spare Cloak",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 9
+      }
+     },
+     {
+      "id": "far",
+      "name": "Long Slip",
+      "desc": "Slip further.",
+      "patch": {
+       "effects.1.distance": 8
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "boom",
+      "name": "Exploding Decoy",
+      "desc": "Decoy leaves a bomb.",
+      "add_effects": [
+       {
+        "type": "aoe",
+        "radius": 3.5,
+        "mult": 2.5,
+        "at": "self",
+        "delay": 0.2
+       }
+      ]
+     },
+     {
+      "id": "two",
+      "name": "Twin Decoys",
+      "desc": "Up to 2 decoys.",
+      "patch": {
+       "effects.0.max": 2,
+       "effects.0.count": 2
+      }
+     },
+     {
+      "id": "crit",
+      "name": "From the Shadows",
+      "desc": "Crit much more after.",
+      "add_effects": [
+       {
+        "type": "buff",
+        "duration": 4,
+        "stats": {
+         "crit_chance": 25,
+         "crit_damage": 40
+        }
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Shadow",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Sturdy",
+     "desc": "Summons have 20% more life.",
+     "stats": {
+      "minion_life_pct": 20
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 24
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Crowd",
+     "desc": "+1 maximum summon.",
+     "patch": {
+      "effects.0.max": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "rr_firework",
+  "name": "Firework Bolt",
+  "branch": "tinker",
+  "unlock_level": 32,
+  "cost": 35,
+  "cooldown": 4,
+  "tags": [
+   "projectile",
+   "area"
+  ],
+  "element": "fire",
+  "anim": "1H_Ranged_Shoot",
+  "lock": 0.4,
+  "windup": 0.12,
+  "icon": "meteor",
+  "color": "#ffb060",
+  "effects": [
+   {
+    "type": "projectile",
+    "speed": 18,
+    "range": 13,
+    "mult": 1.6,
+    "size": 0.22,
+    "explode_radius": 3.0,
+    "explode_mult": 1.2
+   }
+  ],
+  "desc": "A bolt with a rocket tied on. It goes bang.",
+  "class": "roofrunner",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "big",
+      "name": "Big Bang",
+      "desc": "Bigger burst.",
+      "patch": {
+       "effects.0.explode_radius": 4.0
+      }
+     },
+     {
+      "id": "three",
+      "name": "Rocket Trio",
+      "desc": "Three rockets.",
+      "patch": {
+       "effects.0.count": 3,
+       "effects.0.spread": 20
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Cheap Powder",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 25
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "stun",
+      "name": "Loud Bang",
+      "desc": "Stuns.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 0.8,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "zone",
+      "name": "Sparkler",
+      "desc": "Leaves sparks.",
+      "add_effects": [
+       {
+        "type": "ground_zone",
+        "radius": 2.5,
+        "duration": 3,
+        "tick": 0.4,
+        "mult": 0.4,
+        "delay": 0.5
+       }
+      ]
+     },
+     {
+      "id": "home",
+      "name": "Guided Rocket",
+      "desc": "Seeks foes.",
+      "patch": {
+       "effects.0.homing": 3.0
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Tinker",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 22.5,
+      "effects.0.range": 16.2
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 28
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "speed": 18,
+       "range": 13,
+       "mult": 0.8,
+       "size": 0.22,
+       "explode_radius": 3.0,
+       "explode_mult": 1.2,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "rr_shadowstep",
+  "name": "Shadow Step",
+  "branch": "shadow",
+  "unlock_level": 36,
+  "cost": 25,
+  "cooldown": 6,
+  "tags": [
+   "melee",
+   "movement"
+  ],
+  "element": "shadow",
+  "anim": "Dualwield_Melee_Attack_Stab",
+  "lock": 0.35,
+  "windup": 0.05,
+  "icon": "blink",
+  "color": "#8fa8a0",
+  "effects": [
+   {
+    "type": "leap",
+    "distance": 8,
+    "duration": 0.2,
+    "mult": 2.8,
+    "land_radius": 2.0
+   },
+   {
+    "type": "buff",
+    "duration": 3,
+    "stats": {
+     "crit_chance": 20,
+     "crit_damage": 40
+    }
+   }
+  ],
+  "desc": "Step through a shadow, strike, and ready a deadly follow-up.",
+  "class": "roofrunner",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "far",
+      "name": "Long Shadow",
+      "desc": "Step further.",
+      "patch": {
+       "effects.0.distance": 11
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Shadow",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 4
+      }
+     },
+     {
+      "id": "wide",
+      "name": "Shadow Burst",
+      "desc": "Bigger landing.",
+      "patch": {
+       "effects.0.land_radius": 3.0
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "twice",
+      "name": "Double Step",
+      "desc": "Strike again.",
+      "add_effects": [
+       {
+        "type": "melee_arc",
+        "radius": 2.4,
+        "angle": 360,
+        "mult": 1.8,
+        "delay": 0.2
+       }
+      ]
+     },
+     {
+      "id": "stun",
+      "name": "Ambush",
+      "desc": "Stuns where you land.",
+      "patch": {
+       "effects.0.status": {
+        "id": "stun",
+        "duration": 1.0,
+        "chance": 1.0
+       }
+      }
+     },
+     {
+      "id": "energy",
+      "name": "Shadow Breath",
+      "desc": "Restore Energy.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 25
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Shadow",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Wider",
+     "desc": "15% larger landing.",
+     "patch": {
+      "effects.0.land_radius": 2.3
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 20
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Mighty",
+     "desc": "+25% damage/effect.",
+     "stats": {},
+     "patch": {
+      "effects.0.mult": 3.5
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 2.0,
+       "mult": 1.68,
+       "delay": 0.1
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "rr_rooftop",
+  "name": "Rooftop Barrage",
+  "branch": "marksman",
+  "unlock_level": 40,
+  "cost": 70,
+  "cooldown": 22,
+  "tags": [
+   "projectile",
+   "area"
+  ],
+  "element": "physical",
+  "anim": "1H_Ranged_Shooting",
+  "lock": 1.2,
+  "windup": 0.1,
+  "icon": "rain",
+  "color": "#dfffd0",
+  "effects": [
+   {
+    "type": "projectile",
+    "count": 7,
+    "spread": 40,
+    "speed": 24,
+    "range": 13,
+    "mult": 0.9,
+    "size": 0.12,
+    "pierce": 1
+   },
+   {
+    "type": "projectile",
+    "count": 7,
+    "spread": 40,
+    "speed": 24,
+    "range": 13,
+    "mult": 0.9,
+    "size": 0.12,
+    "pierce": 1,
+    "delay": 0.25
+   },
+   {
+    "type": "projectile",
+    "count": 7,
+    "spread": 40,
+    "speed": 24,
+    "range": 13,
+    "mult": 0.9,
+    "size": 0.12,
+    "pierce": 1,
+    "delay": 0.25
+   }
+  ],
+  "desc": "Three blistering fans of bolts in a row.",
+  "class": "roofrunner",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "more",
+      "name": "Wider Fans",
+      "desc": "More bolts.",
+      "patch": {
+       "effects.0.count": 9,
+       "effects.1.count": 9,
+       "effects.2.count": 9
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Barrage",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 15
+      }
+     },
+     {
+      "id": "cheap",
+      "name": "Light Barrage",
+      "desc": "Costs less.",
+      "patch": {
+       "cost": 50
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "fire",
+      "name": "Burning Barrage",
+      "desc": "Turns to fire.",
+      "patch": {
+       "element": "fire"
+      }
+     },
+     {
+      "id": "fourth",
+      "name": "Encore",
+      "desc": "A fourth fan.",
+      "add_effects": [
+       {
+        "type": "projectile",
+        "count": 7,
+        "spread": 40,
+        "speed": 24,
+        "range": 13,
+        "mult": 0.9,
+        "size": 0.12,
+        "pierce": 1,
+        "delay": 0.25
+       }
+      ]
+     },
+     {
+      "id": "pierce",
+      "name": "Punching Barrage",
+      "desc": "Bolts pierce more.",
+      "patch": {
+       "effects.0.pierce": 3,
+       "effects.1.pierce": 3,
+       "effects.2.pierce": 3
+      }
+     }
+    ]
+   }
+  ],
+  "branch_name": "Marksman",
+  "mastery": {
+   "per_rank": {
+    "damage_pct": 2.0
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Keen",
+     "desc": "Projectiles fly 25% faster and further.",
+     "patch": {
+      "effects.0.speed": 30.0,
+      "effects.0.range": 16.2
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 56
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Plenty",
+     "desc": "+1 projectile.",
+     "patch": {
+      "effects.0.count": 8
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Echo",
+     "desc": "The skill echoes once at half power.",
+     "add_effects": [
+      {
+       "type": "projectile",
+       "count": 7,
+       "spread": 40,
+       "speed": 24,
+       "range": 13,
+       "mult": 0.45,
+       "size": 0.12,
+       "pierce": 1,
+       "delay": 0.35
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
+ },
+ {
+  "id": "rr_sparrow",
+  "name": "Clockwork Sparrow",
+  "branch": "tinker",
+  "unlock_level": 10,
+  "cost": 30,
+  "cooldown": 10,
+  "tags": [
+   "minion"
+  ],
+  "targeted": false,
+  "anim": "Interact",
+  "lock": 0.4,
+  "windup": 0.15,
+  "icon": "trap",
+  "color": "#d0ffe0",
+  "effects": [
+   {
+    "type": "summon",
+    "minion": "clock_sparrow",
+    "count": 1,
+    "max": 1,
+    "duration": 15
+   }
+  ],
+  "desc": "Wind up a little tin sparrow that shoots at foes (lasts 15 s).",
+  "class": "roofrunner",
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "long",
+      "name": "Tightly Wound",
+      "desc": "Lasts longer.",
+      "patch": {
+       "effects.0.duration": 25
+      }
+     },
+     {
+      "id": "two",
+      "name": "Pair of Sparrows",
+      "desc": "Up to 2.",
+      "patch": {
+       "effects.0.max": 2,
+       "effects.0.count": 2
+      }
+     },
+     {
+      "id": "cd",
+      "name": "Quick Key",
+      "desc": "Shorter cooldown.",
+      "patch": {
+       "cooldown": 6
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "fierce",
+      "name": "Sharp Beaks",
+      "desc": "Minions hit harder.",
+      "stats": {
+       "minion_damage_pct": 30
+      }
+     },
+     {
+      "id": "boom",
+      "name": "Spring Pop",
+      "desc": "Pops when wound.",
+      "add_effects": [
+       {
+        "type": "nova",
+        "radius": 3.0,
+        "mult": 1.4
+       }
+      ]
+     },
+     {
+      "id": "energy",
+      "name": "Wind-up Rest",
+      "desc": "Restore Energy.",
+      "add_effects": [
+       {
+        "type": "resource",
+        "amount": 25
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "branch_name": "Tinker",
+  "mastery": {
+   "per_rank": {
+    "cdr_pct": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 5,
+     "name": "Sturdy",
+     "desc": "Summons have 20% more life.",
+     "stats": {
+      "minion_life_pct": 20
+     }
+    },
+    {
+     "rank": 10,
+     "name": "Thrifty",
+     "desc": "Costs 20% less.",
+     "patch": {
+      "cost": 24
+     }
+    },
+    {
+     "rank": 15,
+     "name": "Crowd",
+     "desc": "+1 maximum summon.",
+     "patch": {
+      "effects.0.max": 2
+     }
+    },
+    {
+     "rank": 20,
+     "name": "Mastered: Radiant",
+     "desc": "Also releases a small burst of light.",
+     "add_effects": [
+      {
+       "type": "nova",
+       "radius": 3.0,
+       "mult": 1.2,
+       "element": "holy"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_category": "skill"
  }
 ]

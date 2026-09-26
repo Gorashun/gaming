@@ -27,6 +27,7 @@ var _mount_check = 0.0
 # Channel (hearth etc.)
 var _channel = {}                # {what, t, dur, cb}
 var _walked = 0.0
+var _step_sfx = "step"
 var _aura: CPUParticles3D
 
 func setup(c: CharacterData) -> void:
@@ -55,6 +56,10 @@ func setup(c: CharacterData) -> void:
 	l.shadow_enabled = false
 	add_child(l)
 	hero_light = l
+	if Game.world and "biome" in Game.world:
+		var surf = str(Game.world.biome.get("surface", ""))
+		if surf != "":
+			_step_sfx = "step_" + surf
 	ch.stats.remove_source("mount")
 	refresh_gear()
 	refresh_companion_light()
@@ -270,7 +275,7 @@ func _physics_process(delta: float) -> void:
 		_step_timer -= delta
 		if _step_timer <= 0.0:
 			_step_timer = 0.32
-			Sfx.play("step", -14.0, 0.15)
+			Sfx.play(_step_sfx, -14.0, 0.15)
 	elif not anim_locked():
 		if mounted and anim and anim.has_animation("Sit_Chair_Idle"):
 			play("Sit_Chair_Idle")
@@ -443,7 +448,7 @@ func mount() -> bool:
 	if model:
 		model.position.y = float(Mounts.rec(ch.active_mount).get("seat_height", 0.55))
 	Fx.burst(global_position + Vector3(0, 0.5, 0), Color(0.9, 0.8, 0.6), 12, 3.0, 0.12, 0.5)
-	Sfx.play("pickup", -6.0)
+	Sfx.play("mount", -4.0)
 	Events.mount_changed.emit(true)
 	return true
 
@@ -460,6 +465,7 @@ func dismount(reason := "manual") -> void:
 	if model:
 		model.position.y = 0.0
 	Fx.burst(global_position + Vector3(0, 0.5, 0), Color(0.9, 0.8, 0.6), 8, 2.5, 0.1, 0.4)
+	Sfx.play("dismount", -6.0)
 	Events.mount_changed.emit(false)
 
 func toggle_mount() -> bool:
@@ -487,6 +493,7 @@ func start_channel(what: String, duration: float, cb: Callable) -> bool:
 	_channel = {"what": what, "t": 0.0, "dur": max(0.1, duration), "cb": cb, "grace": 0.25}
 	intent_move = Vector3.ZERO
 	Fx.ring(global_position, 1.6, Color(1, 0.8, 0.45), duration, false)
+	Sfx.play(what + "_channel", -4.0)
 	Events.channel_progress.emit(what, 0.0)
 	return true
 

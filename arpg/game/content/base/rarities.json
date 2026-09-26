@@ -8,7 +8,8 @@
   "affix_min": 0,
   "affix_max": 0,
   "weight": 56,
-  "kindle": 0
+  "kindle": 0,
+  "codex": false
  },
  {
   "id": "magic",
@@ -20,7 +21,8 @@
   "affix_max": 2,
   "weight": 30,
   "kindle": 6,
-  "mf_scale": 0.5
+  "mf_scale": 0.5,
+  "codex": false
  },
  {
   "id": "rare",
@@ -32,7 +34,8 @@
   "affix_max": 4,
   "weight": 9.5,
   "kindle": 10,
-  "pity_seconds": 240
+  "pity_seconds": 240,
+  "codex": false
  },
  {
   "id": "epic",
@@ -41,11 +44,12 @@
   "color": "#b46bff",
   "shape": "hexagon",
   "affix_min": 4,
-  "affix_max": 5,
+  "affix_max": 4,
   "greater": 1,
   "weight": 2.8,
   "kindle": 14,
-  "mf_scale": 1.2
+  "mf_scale": 1.2,
+  "codex": false
  },
  {
   "id": "legendary",
@@ -59,7 +63,8 @@
   "weight": 1.2,
   "kindle": 18,
   "mf_scale": 1.5,
-  "pity_seconds": 2700
+  "pity_seconds": 2700,
+  "codex": true
  },
  {
   "id": "mythic",
@@ -75,7 +80,9 @@
   "kindle": 22,
   "mf_scale": 1.5,
   "min_monster_level": 60,
-  "pity_seconds": 72000
+  "pity_seconds": 72000,
+  "codex": true,
+  "pity_soft_seconds": 28800
  },
  {
   "id": "unique",
@@ -84,7 +91,8 @@
   "color": "#3ddc84",
   "shape": "crown",
   "drops": false,
-  "kindle": 16
+  "kindle": 16,
+  "codex": true
  },
  {
   "id": "named",
@@ -93,6 +101,7 @@
   "color": "#aef6ff",
   "shape": "sun",
   "drops": false,
-  "kindle": 30
+  "kindle": 30,
+  "codex": true
  }
 ]

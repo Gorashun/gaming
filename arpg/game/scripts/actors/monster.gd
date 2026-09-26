@@ -283,6 +283,7 @@ func _flee(dist: float, delta: float) -> Vector3:
 	if _flee_started < 0.0:
 		_flee_started = time_now()
 		Events.toast.emit("It's running — catch it!", Color("#ffd84a"))
+		Sfx.play("magpie_laugh")
 	if time_now() - _flee_started > float(rec.get("escape_after", 20.0)):
 		_escape()
 		return Vector3.ZERO
@@ -315,6 +316,7 @@ func _escape() -> void:
 	Fx.burst(global_position + Vector3(0, 0.8, 0), Color("#ffd84a"), 30, 5.0, 0.12, 0.8, 2.0)
 	Fx.flash_light(global_position + Vector3(0, 1, 0), Color("#ffd84a"), 3.0, 0.6)
 	Events.toast.emit("The %s escaped through a shimmering portal!" % display_name, Color("#ffd84a"))
+	Sfx.play("portal", -2.0)
 	if Game.world:
 		Game.world.remove_monster(self)
 	var t = create_tween()
@@ -385,7 +387,7 @@ func _check_phase() -> void:
 		flash(Color(1, 0.5, 0.3), 1.0)
 		Fx.ring(global_position, 6.0, Color("#ff2b2b"), 0.8)
 		Fx.shake(0.5)
-		Sfx.play("slam", -2.0)
+		Sfx.play("boss_roar")
 		Events.boss_phase.emit(self, phase)
 		Events.toast.emit(str(ph.get("announce", "%s grows furious!" % display_name)), Color("#ff8a5a"))
 
@@ -420,7 +422,7 @@ func shield_active() -> bool:
 func _update_shield() -> void:
 	if _shield_fx and not shield_active():
 		Fx.burst(global_position + Vector3(0, 1, 0), Color(0.5, 0.8, 1.0), 24, 5.0, 0.1, 0.5)
-		Sfx.play("crit", -4.0)
+		Sfx.play("shield_block", -2.0)
 		_shield_fx.queue_free()
 		_shield_fx = null
 	elif _shield_fx:

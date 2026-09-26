@@ -104,5 +104,1711 @@
   "gold": 500,
   "known_from_start": true,
   "desc": "10 Bell Shards forge the Bellringer's Toll."
+ },
+ {
+  "id": "r_upgrade",
+  "name": "Upgrade (+1)",
+  "profession": "smith",
+  "kind": "upgrade_item",
+  "level": 1,
+  "xp": 8,
+  "cost": {},
+  "gold": 0,
+  "known_from_start": true,
+  "desc": "Raise an item's Upgrade level by 1 (max +15). Costs from config/upgrade. Never fails.",
+  "uses_config": "upgrade"
+ },
+ {
+  "id": "r_forge_rare_weapon",
+  "name": "Forge Rare Weapon",
+  "profession": "smith",
+  "kind": "forge",
+  "level": 10,
+  "xp": 30,
+  "cost": {
+   "soot": 15,
+   "wickthread": 4,
+   "bog_iron": 5
+  },
+  "gold": 180,
+  "known_from_start": true,
+  "desc": "Forge a Rare weapon of your favoured type.",
+  "rarity": "rare",
+  "slot": "main_hand"
+ },
+ {
+  "id": "r_forge_rare_armor",
+  "name": "Forge Rare Armour",
+  "profession": "smith",
+  "kind": "forge",
+  "level": 12,
+  "xp": 30,
+  "cost": {
+   "soot": 15,
+   "wickthread": 4,
+   "whisper_bark": 4
+  },
+  "gold": 180,
+  "known_from_start": true,
+  "desc": "Forge a Rare armour piece for a slot you choose.",
+  "rarity": "rare",
+  "slot": "choose_armor"
+ },
+ {
+  "id": "r_forge_epic_weapon",
+  "name": "Forge Epic Weapon",
+  "profession": "smith",
+  "kind": "forge",
+  "level": 25,
+  "xp": 80,
+  "cost": {
+   "wickthread": 10,
+   "dusk_essence": 4,
+   "glimmer_ore": 6
+  },
+  "gold": 1500,
+  "known_from_start": true,
+  "desc": "Forge an Epic weapon of your favoured type.",
+  "rarity": "epic",
+  "slot": "main_hand"
+ },
+ {
+  "id": "r_forge_legendary",
+  "name": "Forge Legendary",
+  "profession": "smith",
+  "kind": "forge",
+  "level": 40,
+  "xp": 200,
+  "cost": {
+   "dusk_essence": 12,
+   "ember_heart": 3,
+   "starmote": 1
+  },
+  "gold": 20000,
+  "known_from_start": true,
+  "desc": "Forge a random Legendary for your class. Slow, fair, certain.",
+  "rarity": "legendary"
+ },
+ {
+  "id": "r_reforge_implicit",
+  "name": "Reforge Implicit",
+  "profession": "smith",
+  "kind": "reroll_implicit",
+  "level": 20,
+  "xp": 25,
+  "cost": {
+   "wickthread": 3,
+   "glowcoal": 2
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Reroll the base (implicit) stat values of an item."
+ },
+ {
+  "id": "r_socket_plus",
+  "name": "Punch Second Socket",
+  "profession": "smith",
+  "kind": "add_socket",
+  "level": 30,
+  "xp": 60,
+  "cost": {
+   "dusk_essence": 3,
+   "glimmer_ore": 5
+  },
+  "gold": 3000,
+  "known_from_start": true,
+  "desc": "Add a socket to a weapon, chest, shield or helm (max 3)."
+ },
+ {
+  "id": "r_bark_relic",
+  "name": "Relic: Bark Knot",
+  "profession": "smith",
+  "kind": "forge_unique",
+  "level": 20,
+  "xp": 100,
+  "cost": {
+   "bark_knot": 10,
+   "wickthread": 5,
+   "moss_silk": 6
+  },
+  "gold": 4000,
+  "known_from_start": true,
+  "desc": "10 boss fragments forge a guaranteed Unique.",
+  "unique": "u_mother_barks_jar"
+ },
+ {
+  "id": "r_echo_relic",
+  "name": "Relic: Echo Fragment",
+  "profession": "smith",
+  "kind": "forge_unique",
+  "level": 30,
+  "xp": 100,
+  "cost": {
+   "echo_fragment": 10,
+   "wickthread": 5,
+   "glimmer_ore": 8
+  },
+  "gold": 6000,
+  "known_from_start": true,
+  "desc": "10 boss fragments forge a guaranteed Unique.",
+  "unique": "u_digdeep_pick"
+ },
+ {
+  "id": "r_crown_relic",
+  "name": "Relic: Crown Sliver",
+  "profession": "smith",
+  "kind": "forge_unique",
+  "level": 38,
+  "xp": 100,
+  "cost": {
+   "crown_sliver": 10,
+   "wickthread": 5,
+   "rime_shard": 8
+  },
+  "gold": 7600,
+  "known_from_start": true,
+  "desc": "10 boss fragments forge a guaranteed Unique.",
+  "unique": "u_warmhearth_crown"
+ },
+ {
+  "id": "r_guest_relic",
+  "name": "Relic: Guest Wick",
+  "profession": "smith",
+  "kind": "forge_unique",
+  "level": 45,
+  "xp": 100,
+  "cost": {
+   "guest_wick": 10,
+   "wickthread": 5,
+   "hush_ash": 10
+  },
+  "gold": 9000,
+  "known_from_start": true,
+  "desc": "10 boss fragments forge a guaranteed Unique.",
+  "unique": "u_first_spark"
+ },
+ {
+  "id": "r_potion_1",
+  "name": "Brew Minor Healing Potion",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 1,
+  "xp": 7,
+  "cost": {
+   "bone_meal": 2
+  },
+  "gold": 14,
+  "known_from_start": true,
+  "desc": "Brew 3 Minor Healing Potions.",
+  "output": {
+   "potion_1": 3
+  }
+ },
+ {
+  "id": "r_potion_2",
+  "name": "Brew Lesser Healing Potion",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 10,
+  "xp": 16,
+  "cost": {
+   "whisper_bark": 2,
+   "soot": 3
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Brew 3 Lesser Healing Potions.",
+  "output": {
+   "potion_2": 3
+  }
+ },
+ {
+  "id": "r_potion_3",
+  "name": "Brew Greater Healing Potion",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 20,
+  "xp": 26,
+  "cost": {
+   "echo_salt": 2,
+   "soot": 5
+  },
+  "gold": 90,
+  "known_from_start": true,
+  "desc": "Brew 3 Greater Healing Potions.",
+  "output": {
+   "potion_3": 3
+  }
+ },
+ {
+  "id": "r_potion_4",
+  "name": "Brew Grand Healing Potion",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 32,
+  "xp": 38,
+  "cost": {
+   "rime_shard": 2,
+   "wickthread": 1
+  },
+  "gold": 138,
+  "known_from_start": true,
+  "desc": "Brew 3 Grand Healing Potions.",
+  "output": {
+   "potion_4": 3
+  }
+ },
+ {
+  "id": "r_potion_5",
+  "name": "Brew Lantern Healing Potion",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 45,
+  "xp": 51,
+  "cost": {
+   "hush_ash": 2,
+   "wickthread": 2
+  },
+  "gold": 190,
+  "known_from_start": true,
+  "desc": "Brew 3 Lantern Healing Potions.",
+  "output": {
+   "potion_5": 3
+  }
+ },
+ {
+  "id": "r_elixir_might",
+  "name": "Brew Elixir of Might",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 5,
+  "xp": 15,
+  "cost": {
+   "bone_meal": 4,
+   "bog_iron": 2
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Brew one Elixir of Might.",
+  "output": {
+   "elixir_might": 1
+  }
+ },
+ {
+  "id": "r_elixir_agility",
+  "name": "Brew Elixir of Agility",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 5,
+  "xp": 15,
+  "cost": {
+   "bone_meal": 4,
+   "moss_silk": 1
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Brew one Elixir of Agility.",
+  "output": {
+   "elixir_agility": 1
+  }
+ },
+ {
+  "id": "r_elixir_wisdom",
+  "name": "Brew Elixir of Wisdom",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 5,
+  "xp": 15,
+  "cost": {
+   "bone_meal": 4,
+   "whisper_bark": 1
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Brew one Elixir of Wisdom.",
+  "output": {
+   "elixir_wisdom": 1
+  }
+ },
+ {
+  "id": "r_elixir_fortune",
+  "name": "Brew Elixir of Fortune",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 15,
+  "xp": 25,
+  "cost": {
+   "marsh_candle": 1,
+   "owl_quill": 1
+  },
+  "gold": 110,
+  "known_from_start": true,
+  "desc": "Brew one Elixir of Fortune.",
+  "output": {
+   "elixir_fortune": 1
+  }
+ },
+ {
+  "id": "r_elixir_learning",
+  "name": "Brew Elixir of Learning",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 20,
+  "xp": 30,
+  "cost": {
+   "owl_quill": 1,
+   "echo_salt": 3
+  },
+  "gold": 140,
+  "known_from_start": true,
+  "desc": "Brew one Elixir of Learning.",
+  "output": {
+   "elixir_learning": 1
+  }
+ },
+ {
+  "id": "r_elixir_ironskin",
+  "name": "Brew Elixir of Ironskin",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 25,
+  "xp": 35,
+  "cost": {
+   "glimmer_ore": 3,
+   "porcelain_chip": 1
+  },
+  "gold": 170,
+  "known_from_start": true,
+  "desc": "Brew one Elixir of Ironskin.",
+  "output": {
+   "elixir_ironskin": 1
+  }
+ },
+ {
+  "id": "r_elixir_frostward",
+  "name": "Brew Frostward Tonic",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 30,
+  "xp": 40,
+  "cost": {
+   "rime_shard": 3
+  },
+  "gold": 200,
+  "known_from_start": true,
+  "desc": "Brew one Frostward Tonic.",
+  "output": {
+   "elixir_frostward": 1
+  }
+ },
+ {
+  "id": "r_elixir_hushward",
+  "name": "Brew Hushward Tonic",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 40,
+  "xp": 50,
+  "cost": {
+   "hush_ash": 3,
+   "grey_feather": 1
+  },
+  "gold": 260,
+  "known_from_start": true,
+  "desc": "Brew one Hushward Tonic.",
+  "output": {
+   "elixir_hushward": 1
+  }
+ },
+ {
+  "id": "r_pet_treat",
+  "name": "Bake Pet Treats",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 3,
+  "xp": 8,
+  "cost": {
+   "bone_meal": 3
+  },
+  "gold": 30,
+  "known_from_start": true,
+  "desc": "Bake 5 pet treats (pet XP).",
+  "output": {
+   "pet_treat": 5
+  }
+ },
+ {
+  "id": "r_mount_feed",
+  "name": "Mix Mount Feed",
+  "profession": "alchemist",
+  "kind": "brew",
+  "level": 8,
+  "xp": 8,
+  "cost": {
+   "moss_silk": 2
+  },
+  "gold": 40,
+  "known_from_start": true,
+  "desc": "Mix 5 mount feeds.",
+  "output": {
+   "mount_feed": 5
+  }
+ },
+ {
+  "id": "r_tr_soot_thread",
+  "name": "Transmute: 1 Wickthread",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 1,
+  "xp": 5,
+  "cost": {
+   "soot": 20
+  },
+  "gold": 10,
+  "known_from_start": true,
+  "desc": "20 Soot Dust into 1 Wickthread.",
+  "output": {
+   "wickthread": 1
+  }
+ },
+ {
+  "id": "r_tr_thread_dusk",
+  "name": "Transmute: 1 Dusk Essence",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 10,
+  "xp": 10,
+  "cost": {
+   "wickthread": 10
+  },
+  "gold": 100,
+  "known_from_start": true,
+  "desc": "10 Wickthread into 1 Dusk Essence.",
+  "output": {
+   "dusk_essence": 1
+  }
+ },
+ {
+  "id": "r_tr_dusk_ember",
+  "name": "Transmute: 1 Ember Heart",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 25,
+  "xp": 17,
+  "cost": {
+   "dusk_essence": 10
+  },
+  "gold": 250,
+  "known_from_start": true,
+  "desc": "10 Dusk Essence into 1 Ember Heart.",
+  "output": {
+   "ember_heart": 1
+  }
+ },
+ {
+  "id": "r_tr_ember_glass",
+  "name": "Transmute: 1 Lanternglass",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 45,
+  "xp": 27,
+  "cost": {
+   "ember_heart": 12
+  },
+  "gold": 450,
+  "known_from_start": true,
+  "desc": "12 Ember Hearts into 1 Lanternglass.",
+  "output": {
+   "lanternglass": 1
+  }
+ },
+ {
+  "id": "r_tr_ember_down",
+  "name": "Transmute: 6 Dusk Essence",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 20,
+  "xp": 15,
+  "cost": {
+   "ember_heart": 1
+  },
+  "gold": 200,
+  "known_from_start": true,
+  "desc": "Break 1 Ember Heart into 6 Dusk Essence.",
+  "output": {
+   "dusk_essence": 6
+  }
+ },
+ {
+  "id": "r_tr_dusk_down",
+  "name": "Transmute: 6 Wickthread",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 5,
+  "xp": 7,
+  "cost": {
+   "dusk_essence": 1
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Break 1 Dusk Essence into 6 Wickthread.",
+  "output": {
+   "wickthread": 6
+  }
+ },
+ {
+  "id": "r_tr_coal",
+  "name": "Transmute: 1 Glowcoal",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 5,
+  "xp": 7,
+  "cost": {
+   "soot": 12
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Press 12 Soot Dust into 1 Glowcoal.",
+  "output": {
+   "glowcoal": 1
+  }
+ },
+ {
+  "id": "r_tr_starmote",
+  "name": "Transmute: a Starmote (the slow, certain way)",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 40,
+  "xp": 25,
+  "cost": {
+   "glowcoal": 60,
+   "dusk_essence": 5
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Kindle 60 Glowcoal into a Starmote (the slow, certain way).",
+  "output": {
+   "starmote": 1
+  }
+ },
+ {
+  "id": "r_tr_lost_bell",
+  "name": "Transmute: an Echo of a Lost Bell",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 45,
+  "xp": 27,
+  "cost": {
+   "bell_shard": 3,
+   "bark_knot": 3,
+   "echo_fragment": 3,
+   "crown_sliver": 3,
+   "guest_wick": 3
+  },
+  "gold": 450,
+  "known_from_start": true,
+  "desc": "Tune five boss fragments into an Echo of a Lost Bell.",
+  "output": {
+   "echo_lost_bell": 1
+  }
+ },
+ {
+  "id": "r_tr_act12",
+  "name": "Transmute",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 15,
+  "xp": 12,
+  "cost": {
+   "bog_iron": 6
+  },
+  "gold": 150,
+  "known_from_start": true,
+  "desc": "Trade bog iron for whisper bark.",
+  "output": {
+   "whisper_bark": 2
+  }
+ },
+ {
+  "id": "r_tr_act23",
+  "name": "Transmute",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 25,
+  "xp": 17,
+  "cost": {
+   "whisper_bark": 6
+  },
+  "gold": 250,
+  "known_from_start": true,
+  "desc": "Trade whisper bark for echo salt.",
+  "output": {
+   "echo_salt": 2
+  }
+ },
+ {
+  "id": "r_tr_act34",
+  "name": "Transmute",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 32,
+  "xp": 21,
+  "cost": {
+   "echo_salt": 6
+  },
+  "gold": 320,
+  "known_from_start": true,
+  "desc": "Trade echo salt for rime shards.",
+  "output": {
+   "rime_shard": 2
+  }
+ },
+ {
+  "id": "r_tr_act45",
+  "name": "Transmute",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 40,
+  "xp": 25,
+  "cost": {
+   "rime_shard": 6
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Trade rime shards for hush ash.",
+  "output": {
+   "hush_ash": 2
+  }
+ },
+ {
+  "id": "r_tr_act54",
+  "name": "Transmute",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 40,
+  "xp": 25,
+  "cost": {
+   "hush_ash": 4
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Trade hush ash back down.",
+  "output": {
+   "rime_shard": 3
+  }
+ },
+ {
+  "id": "r_tr_act21",
+  "name": "Transmute",
+  "profession": "alchemist",
+  "kind": "transmute",
+  "level": 15,
+  "xp": 12,
+  "cost": {
+   "whisper_bark": 3
+  },
+  "gold": 150,
+  "known_from_start": true,
+  "desc": "Trade whisper bark back down.",
+  "output": {
+   "bog_iron": 4
+  }
+ },
+ {
+  "id": "r_gem_ruby_2",
+  "name": "Combine Candle Ruby (grade 2)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 1,
+  "xp": 14,
+  "cost": {
+   "ruby_1": 3
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-1 into 1 grade-2.",
+  "output": {
+   "ruby": 1
+  }
+ },
+ {
+  "id": "r_gem_ruby_3",
+  "name": "Combine Candle Ruby (grade 3)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 10,
+  "xp": 22,
+  "cost": {
+   "ruby": 3
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-2 into 1 grade-3.",
+  "output": {
+   "ruby_3": 1
+  }
+ },
+ {
+  "id": "r_gem_ruby_4",
+  "name": "Combine Candle Ruby (grade 4)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 25,
+  "xp": 30,
+  "cost": {
+   "ruby_3": 3
+  },
+  "gold": 1350,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-3 into 1 grade-4.",
+  "output": {
+   "ruby_4": 1
+  }
+ },
+ {
+  "id": "r_gem_ruby_5",
+  "name": "Combine Candle Ruby (grade 5)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 40,
+  "xp": 38,
+  "cost": {
+   "ruby_4": 3
+  },
+  "gold": 3200,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-4 into 1 grade-5.",
+  "output": {
+   "ruby_5": 1
+  }
+ },
+ {
+  "id": "r_gem_sapphire_2",
+  "name": "Combine Frost Sapphire (grade 2)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 1,
+  "xp": 14,
+  "cost": {
+   "sapphire_1": 3
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-1 into 1 grade-2.",
+  "output": {
+   "sapphire": 1
+  }
+ },
+ {
+  "id": "r_gem_sapphire_3",
+  "name": "Combine Frost Sapphire (grade 3)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 10,
+  "xp": 22,
+  "cost": {
+   "sapphire": 3
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-2 into 1 grade-3.",
+  "output": {
+   "sapphire_3": 1
+  }
+ },
+ {
+  "id": "r_gem_sapphire_4",
+  "name": "Combine Frost Sapphire (grade 4)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 25,
+  "xp": 30,
+  "cost": {
+   "sapphire_3": 3
+  },
+  "gold": 1350,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-3 into 1 grade-4.",
+  "output": {
+   "sapphire_4": 1
+  }
+ },
+ {
+  "id": "r_gem_sapphire_5",
+  "name": "Combine Frost Sapphire (grade 5)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 40,
+  "xp": 38,
+  "cost": {
+   "sapphire_4": 3
+  },
+  "gold": 3200,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-4 into 1 grade-5.",
+  "output": {
+   "sapphire_5": 1
+  }
+ },
+ {
+  "id": "r_gem_topaz_2",
+  "name": "Combine Wick Topaz (grade 2)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 1,
+  "xp": 14,
+  "cost": {
+   "topaz_1": 3
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-1 into 1 grade-2.",
+  "output": {
+   "topaz": 1
+  }
+ },
+ {
+  "id": "r_gem_topaz_3",
+  "name": "Combine Wick Topaz (grade 3)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 10,
+  "xp": 22,
+  "cost": {
+   "topaz": 3
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-2 into 1 grade-3.",
+  "output": {
+   "topaz_3": 1
+  }
+ },
+ {
+  "id": "r_gem_topaz_4",
+  "name": "Combine Wick Topaz (grade 4)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 25,
+  "xp": 30,
+  "cost": {
+   "topaz_3": 3
+  },
+  "gold": 1350,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-3 into 1 grade-4.",
+  "output": {
+   "topaz_4": 1
+  }
+ },
+ {
+  "id": "r_gem_topaz_5",
+  "name": "Combine Wick Topaz (grade 5)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 40,
+  "xp": 38,
+  "cost": {
+   "topaz_4": 3
+  },
+  "gold": 3200,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-4 into 1 grade-5.",
+  "output": {
+   "topaz_5": 1
+  }
+ },
+ {
+  "id": "r_gem_emerald_2",
+  "name": "Combine Moss Emerald (grade 2)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 1,
+  "xp": 14,
+  "cost": {
+   "emerald_1": 3
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-1 into 1 grade-2.",
+  "output": {
+   "emerald": 1
+  }
+ },
+ {
+  "id": "r_gem_emerald_3",
+  "name": "Combine Moss Emerald (grade 3)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 10,
+  "xp": 22,
+  "cost": {
+   "emerald": 3
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-2 into 1 grade-3.",
+  "output": {
+   "emerald_3": 1
+  }
+ },
+ {
+  "id": "r_gem_emerald_4",
+  "name": "Combine Moss Emerald (grade 4)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 25,
+  "xp": 30,
+  "cost": {
+   "emerald_3": 3
+  },
+  "gold": 1350,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-3 into 1 grade-4.",
+  "output": {
+   "emerald_4": 1
+  }
+ },
+ {
+  "id": "r_gem_emerald_5",
+  "name": "Combine Moss Emerald (grade 5)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 40,
+  "xp": 38,
+  "cost": {
+   "emerald_4": 3
+  },
+  "gold": 3200,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-4 into 1 grade-5.",
+  "output": {
+   "emerald_5": 1
+  }
+ },
+ {
+  "id": "r_gem_amethyst_2",
+  "name": "Combine Dusk Amethyst (grade 2)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 1,
+  "xp": 14,
+  "cost": {
+   "amethyst_1": 3
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-1 into 1 grade-2.",
+  "output": {
+   "amethyst": 1
+  }
+ },
+ {
+  "id": "r_gem_amethyst_3",
+  "name": "Combine Dusk Amethyst (grade 3)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 10,
+  "xp": 22,
+  "cost": {
+   "amethyst": 3
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-2 into 1 grade-3.",
+  "output": {
+   "amethyst_3": 1
+  }
+ },
+ {
+  "id": "r_gem_amethyst_4",
+  "name": "Combine Dusk Amethyst (grade 4)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 25,
+  "xp": 30,
+  "cost": {
+   "amethyst_3": 3
+  },
+  "gold": 1350,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-3 into 1 grade-4.",
+  "output": {
+   "amethyst_4": 1
+  }
+ },
+ {
+  "id": "r_gem_amethyst_5",
+  "name": "Combine Dusk Amethyst (grade 5)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 40,
+  "xp": 38,
+  "cost": {
+   "amethyst_4": 3
+  },
+  "gold": 3200,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-4 into 1 grade-5.",
+  "output": {
+   "amethyst_5": 1
+  }
+ },
+ {
+  "id": "r_gem_pearl_2",
+  "name": "Combine Moon Pearl (grade 2)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 1,
+  "xp": 14,
+  "cost": {
+   "pearl_1": 3
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-1 into 1 grade-2.",
+  "output": {
+   "pearl": 1
+  }
+ },
+ {
+  "id": "r_gem_pearl_3",
+  "name": "Combine Moon Pearl (grade 3)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 10,
+  "xp": 22,
+  "cost": {
+   "pearl": 3
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-2 into 1 grade-3.",
+  "output": {
+   "pearl_3": 1
+  }
+ },
+ {
+  "id": "r_gem_pearl_4",
+  "name": "Combine Moon Pearl (grade 4)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 25,
+  "xp": 30,
+  "cost": {
+   "pearl_3": 3
+  },
+  "gold": 1350,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-3 into 1 grade-4.",
+  "output": {
+   "pearl_4": 1
+  }
+ },
+ {
+  "id": "r_gem_pearl_5",
+  "name": "Combine Moon Pearl (grade 5)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 40,
+  "xp": 38,
+  "cost": {
+   "pearl_4": 3
+  },
+  "gold": 3200,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-4 into 1 grade-5.",
+  "output": {
+   "pearl_5": 1
+  }
+ },
+ {
+  "id": "r_gem_onyx_2",
+  "name": "Combine Soot Onyx (grade 2)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 1,
+  "xp": 14,
+  "cost": {
+   "onyx_1": 3
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-1 into 1 grade-2.",
+  "output": {
+   "onyx": 1
+  }
+ },
+ {
+  "id": "r_gem_onyx_3",
+  "name": "Combine Soot Onyx (grade 3)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 10,
+  "xp": 22,
+  "cost": {
+   "onyx": 3
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-2 into 1 grade-3.",
+  "output": {
+   "onyx_3": 1
+  }
+ },
+ {
+  "id": "r_gem_onyx_4",
+  "name": "Combine Soot Onyx (grade 4)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 25,
+  "xp": 30,
+  "cost": {
+   "onyx_3": 3
+  },
+  "gold": 1350,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-3 into 1 grade-4.",
+  "output": {
+   "onyx_4": 1
+  }
+ },
+ {
+  "id": "r_gem_onyx_5",
+  "name": "Combine Soot Onyx (grade 5)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 40,
+  "xp": 38,
+  "cost": {
+   "onyx_4": 3
+  },
+  "gold": 3200,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-4 into 1 grade-5.",
+  "output": {
+   "onyx_5": 1
+  }
+ },
+ {
+  "id": "r_gem_opal_2",
+  "name": "Combine Storm Opal (grade 2)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 1,
+  "xp": 14,
+  "cost": {
+   "opal_1": 3
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-1 into 1 grade-2.",
+  "output": {
+   "opal": 1
+  }
+ },
+ {
+  "id": "r_gem_opal_3",
+  "name": "Combine Storm Opal (grade 3)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 10,
+  "xp": 22,
+  "cost": {
+   "opal": 3
+  },
+  "gold": 400,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-2 into 1 grade-3.",
+  "output": {
+   "opal_3": 1
+  }
+ },
+ {
+  "id": "r_gem_opal_4",
+  "name": "Combine Storm Opal (grade 4)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 25,
+  "xp": 30,
+  "cost": {
+   "opal_3": 3
+  },
+  "gold": 1350,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-3 into 1 grade-4.",
+  "output": {
+   "opal_4": 1
+  }
+ },
+ {
+  "id": "r_gem_opal_5",
+  "name": "Combine Storm Opal (grade 5)",
+  "profession": "jeweler",
+  "kind": "combine",
+  "level": 40,
+  "xp": 38,
+  "cost": {
+   "opal_4": 3
+  },
+  "gold": 3200,
+  "known_from_start": true,
+  "desc": "Combine 3 grade-4 into 1 grade-5.",
+  "output": {
+   "opal_5": 1
+  }
+ },
+ {
+  "id": "r_unsocket",
+  "name": "Unsocket Gem",
+  "profession": "jeweler",
+  "kind": "unsocket",
+  "level": 5,
+  "xp": 5,
+  "cost": {
+   "soot": 2
+  },
+  "gold": 50,
+  "known_from_start": true,
+  "desc": "Remove a gem safely. The gem is returned."
+ },
+ {
+  "id": "r_jewel_socket",
+  "name": "Set Jewellery Socket",
+  "profession": "jeweler",
+  "kind": "add_socket",
+  "level": 20,
+  "xp": 40,
+  "cost": {
+   "wickthread": 6,
+   "glimmer_ore": 2
+  },
+  "gold": 1200,
+  "known_from_start": true,
+  "desc": "Add a socket to a ring or amulet (max 1).",
+  "slots": [
+   "ring",
+   "amulet"
+  ]
+ },
+ {
+  "id": "r_forge_ring",
+  "name": "Craft Rare Ring",
+  "profession": "jeweler",
+  "kind": "forge",
+  "level": 8,
+  "xp": 25,
+  "cost": {
+   "soot": 10,
+   "wickthread": 3
+  },
+  "gold": 150,
+  "known_from_start": true,
+  "desc": "Craft a Rare ring.",
+  "rarity": "rare",
+  "slot": "ring"
+ },
+ {
+  "id": "r_forge_amulet",
+  "name": "Craft Rare Amulet",
+  "profession": "jeweler",
+  "kind": "forge",
+  "level": 12,
+  "xp": 30,
+  "cost": {
+   "soot": 12,
+   "wickthread": 4,
+   "owl_quill": 1
+  },
+  "gold": 220,
+  "known_from_start": true,
+  "desc": "Craft a Rare amulet.",
+  "rarity": "rare",
+  "slot": "amulet"
+ },
+ {
+  "id": "r_forge_epic_jewel",
+  "name": "Craft Epic Jewellery",
+  "profession": "jeweler",
+  "kind": "forge",
+  "level": 30,
+  "xp": 90,
+  "cost": {
+   "dusk_essence": 5,
+   "hollow_crystal": 1
+  },
+  "gold": 2500,
+  "known_from_start": true,
+  "desc": "Craft an Epic ring, amulet or charm.",
+  "rarity": "epic",
+  "slot": "choose_jewelry"
+ },
+ {
+  "id": "r_gem_recut",
+  "name": "Recut Gem",
+  "profession": "jeweler",
+  "kind": "gem_convert",
+  "level": 18,
+  "xp": 12,
+  "cost": {
+   "wickthread": 2
+  },
+  "gold": 200,
+  "known_from_start": true,
+  "desc": "Turn any gem into another type of the same grade."
+ },
+ {
+  "id": "r_rune_reroll_values",
+  "name": "Rune of Tides",
+  "profession": "runecarver",
+  "kind": "reroll_values",
+  "level": 1,
+  "xp": 8,
+  "cost": {
+   "soot": 5
+  },
+  "gold": 40,
+  "known_from_start": true,
+  "desc": "Reroll the numbers of every affix (same affixes, new values). Costs Kindle."
+ },
+ {
+  "id": "r_rune_remove",
+  "name": "Rune of Unravelling",
+  "profession": "runecarver",
+  "kind": "remove_affix",
+  "level": 10,
+  "xp": 20,
+  "cost": {
+   "wickthread": 3,
+   "whisper_bark": 2
+  },
+  "gold": 300,
+  "known_from_start": true,
+  "desc": "Remove one affix you choose. Costs Kindle."
+ },
+ {
+  "id": "r_rune_seal",
+  "name": "Rune of Keeping",
+  "profession": "runecarver",
+  "kind": "seal_affix",
+  "level": 25,
+  "xp": 60,
+  "cost": {
+   "dusk_essence": 3,
+   "echo_salt": 4
+  },
+  "gold": 2000,
+  "known_from_start": true,
+  "desc": "Seal one affix so rerolls never touch it (1 per item)."
+ },
+ {
+  "id": "r_rune_reroll_all",
+  "name": "Rune of Starting Over",
+  "profession": "runecarver",
+  "kind": "reroll_all",
+  "level": 15,
+  "xp": 30,
+  "cost": {
+   "wickthread": 5
+  },
+  "gold": 600,
+  "known_from_start": true,
+  "desc": "Reroll all unsealed affixes. Costs Kindle."
+ },
+ {
+  "id": "r_rune_imprint",
+  "name": "Rune of Remembering",
+  "profession": "runecarver",
+  "kind": "imprint_power",
+  "level": 30,
+  "xp": 120,
+  "cost": {
+   "ember_heart": 2,
+   "rime_shard": 4
+  },
+  "gold": 8000,
+  "known_from_start": true,
+  "desc": "Imprint a Legendary power from your Codex of Light onto a Legendary item.",
+  "codex": true
+ },
+ {
+  "id": "r_rune_greater",
+  "name": "Rune of Brightening",
+  "profession": "runecarver",
+  "kind": "make_greater",
+  "level": 45,
+  "xp": 200,
+  "cost": {
+   "starmote": 1,
+   "lanternglass": 1
+  },
+  "gold": 30000,
+  "known_from_start": true,
+  "desc": "Turn one affix into a greater (✦) affix. Once per item."
+ },
+ {
+  "id": "r_rune_kindle",
+  "name": "Rune of Rekindling",
+  "profession": "runecarver",
+  "kind": "restore_kindle",
+  "level": 35,
+  "xp": 100,
+  "cost": {
+   "ember_heart": 1,
+   "hush_ash": 3
+  },
+  "gold": 5000,
+  "known_from_start": true,
+  "desc": "Restore 5 Kindle to an item (once per item)."
+ },
+ {
+  "id": "r_cauldron_egg",
+  "name": "A Warm Surprise",
+  "profession": "cauldron",
+  "kind": "cauldron",
+  "level": 1,
+  "xp": 25,
+  "cost": {
+   "bone_meal": 3,
+   "moss_silk": 1,
+   "marsh_candle": 1
+  },
+  "gold": 0,
+  "known_from_start": false,
+  "desc": "Something bog-ish, something soft, something warm...",
+  "output": {
+   "mystery_egg": 1
+  },
+  "discovery": true
+ },
+ {
+  "id": "r_cauldron_hushmark",
+  "name": "Coin of Quiet",
+  "profession": "cauldron",
+  "kind": "cauldron",
+  "level": 1,
+  "xp": 25,
+  "cost": {
+   "silent_bell": 1,
+   "grey_feather": 3,
+   "hush_ash": 5
+  },
+  "gold": 0,
+  "known_from_start": false,
+  "desc": "Make something so quiet it becomes money.",
+  "output": {
+   "hushmark": 1
+  },
+  "discovery": true
+ },
+ {
+  "id": "r_cauldron_toffee",
+  "name": "Toffee Key",
+  "profession": "cauldron",
+  "kind": "cauldron",
+  "level": 1,
+  "xp": 25,
+  "cost": {
+   "bone_meal": 5,
+   "marsh_candle": 2,
+   "soot": 10
+  },
+  "gold": 0,
+  "known_from_start": false,
+  "desc": "Bones, candles and soot smell like... toffee?",
+  "output": {
+   "candy_key": 1
+  },
+  "discovery": true
+ },
+ {
+  "id": "r_cauldron_starmote",
+  "name": "Star Soup",
+  "profession": "cauldron",
+  "kind": "cauldron",
+  "level": 1,
+  "xp": 25,
+  "cost": {
+   "owl_quill": 3,
+   "hollow_crystal": 1,
+   "frozen_toast": 1
+  },
+  "gold": 0,
+  "known_from_start": false,
+  "desc": "A feather, a room and a crumb.",
+  "output": {
+   "starmote": 1
+  },
+  "discovery": true
+ },
+ {
+  "id": "r_named_morning_never_came",
+  "name": "Forge: The Morning That Never Came",
+  "profession": "smith",
+  "kind": "forge_named",
+  "named": "n_morning_never_came",
+  "level": 50,
+  "xp": 400,
+  "cost": {
+   "last_spark": 1,
+   "guest_wick": 10,
+   "starmote": 3,
+   "silent_bell": 5
+  },
+  "gold": 250000,
+  "known_from_start": false,
+  "learn_from": "secret",
+  "desc": "Forge a Named weapon. Needs an 'impossible' material found through a secret."
+ },
+ {
+  "id": "r_named_grandmothers_needles",
+  "name": "Forge: Grandmother's Needles",
+  "profession": "smith",
+  "kind": "forge_named",
+  "named": "n_grandmothers_needles",
+  "level": 50,
+  "xp": 400,
+  "cost": {
+   "moonthread": 1,
+   "moss_silk": 40,
+   "starmote": 3,
+   "bark_knot": 10
+  },
+  "gold": 250000,
+  "known_from_start": false,
+  "learn_from": "secret",
+  "desc": "Forge a Named weapon. Needs an 'impossible' material found through a secret."
+ },
+ {
+  "id": "r_named_bell_that_doesnt_ring",
+  "name": "Forge: The Bell That Doesn't Ring",
+  "profession": "smith",
+  "kind": "forge_named",
+  "named": "n_bell_that_doesnt_ring",
+  "level": 50,
+  "xp": 400,
+  "cost": {
+   "echo_of_stillness": 1,
+   "echo_fragment": 10,
+   "starmote": 3,
+   "echo_lost_bell": 1
+  },
+  "gold": 250000,
+  "known_from_start": false,
+  "learn_from": "secret",
+  "desc": "Forge a Named weapon. Needs an 'impossible' material found through a secret."
+ },
+ {
+  "id": "r_named_owls_last_question",
+  "name": "Forge: The Owl's Last Question",
+  "profession": "smith",
+  "kind": "forge_named",
+  "named": "n_owls_last_question",
+  "level": 50,
+  "xp": 400,
+  "cost": {
+   "answer_nobody_knew": 1,
+   "owl_quill": 25,
+   "starmote": 3,
+   "bark_knot": 10
+  },
+  "gold": 250000,
+  "known_from_start": false,
+  "learn_from": "secret",
+  "desc": "Forge a Named weapon. Needs an 'impossible' material found through a secret."
+ },
+ {
+  "id": "r_named_frog_kings_croak",
+  "name": "Forge: The Frog King's Croak",
+  "profession": "smith",
+  "kind": "forge_named",
+  "named": "n_frog_kings_croak",
+  "level": 50,
+  "xp": 400,
+  "cost": {
+   "frog_never_jumped": 1,
+   "bog_iron": 60,
+   "starmote": 3,
+   "bell_shard": 10
+  },
+  "gold": 250000,
+  "known_from_start": false,
+  "learn_from": "secret",
+  "desc": "Forge a Named weapon. Needs an 'impossible' material found through a secret."
+ },
+ {
+  "id": "r_named_tea_party_guestbook",
+  "name": "Forge: The Tea Party Guestbook",
+  "profession": "smith",
+  "kind": "forge_named",
+  "named": "n_tea_party_guestbook",
+  "level": 50,
+  "xp": 400,
+  "cost": {
+   "cold_tea": 1,
+   "porcelain_chip": 40,
+   "starmote": 2,
+   "crown_sliver": 10
+  },
+  "gold": 250000,
+  "known_from_start": false,
+  "learn_from": "secret",
+  "desc": "Forge a Named weapon. Needs an 'impossible' material found through a secret."
+ },
+ {
+  "id": "r_named_letter_opener",
+  "name": "Forge: The Answering Letter-Opener",
+  "profession": "smith",
+  "kind": "forge_named",
+  "named": "n_letter_opener",
+  "level": 50,
+  "xp": 400,
+  "cost": {
+   "unsent_letter": 1,
+   "owl_quill": 20,
+   "starmote": 3,
+   "hollow_crystal": 10
+  },
+  "gold": 250000,
+  "known_from_start": false,
+  "learn_from": "secret",
+  "desc": "Forge a Named weapon. Needs an 'impossible' material found through a secret."
+ },
+ {
+  "id": "r_named_magpies_last_coin",
+  "name": "Forge: The Magpie's Last Coin",
+  "profession": "smith",
+  "kind": "forge_named",
+  "named": "n_magpies_last_coin",
+  "level": 50,
+  "xp": 400,
+  "cost": {
+   "magpie_lucky_coin": 1,
+   "hushmark": 20,
+   "starmote": 3,
+   "frozen_toast": 5
+  },
+  "gold": 250000,
+  "known_from_start": false,
+  "learn_from": "secret",
+  "desc": "Forge a Named weapon. Needs an 'impossible' material found through a secret."
+ },
+ {
+  "id": "r_named_toffee_cleaver",
+  "name": "Forge: The Toffee Cleaver",
+  "profession": "smith",
+  "kind": "forge_named",
+  "named": "n_toffee_cleaver",
+  "level": 50,
+  "xp": 400,
+  "cost": {
+   "unbroken_toffee": 1,
+   "marsh_candle": 20,
+   "starmote": 2,
+   "echo_fragment": 10
+  },
+  "gold": 250000,
+  "known_from_start": false,
+  "learn_from": "secret",
+  "desc": "Forge a Named weapon. Needs an 'impossible' material found through a secret."
  }
 ]

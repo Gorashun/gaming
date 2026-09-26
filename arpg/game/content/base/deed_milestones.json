@@ -1,0 +1,52 @@
+[
+ {
+  "id": "dm_100",
+  "points": 100,
+  "reward": {
+   "cosmetic": "title_color_gold"
+  }
+ },
+ {
+  "id": "dm_250",
+  "points": 250,
+  "reward": {
+   "stats": {
+    "magic_find": 3
+   }
+  }
+ },
+ {
+  "id": "dm_500",
+  "points": 500,
+  "reward": {
+   "cosmetic": "title_color_star"
+  }
+ },
+ {
+  "id": "dm_1000",
+  "points": 1000,
+  "reward": {
+   "stats": {
+    "xp_pct": 2
+   }
+  }
+ },
+ {
+  "id": "dm_2000",
+  "points": 2000,
+  "reward": {
+   "cosmetic": "title_color_ember",
+   "title": "Beacon"
+  }
+ },
+ {
+  "id": "dm_3500",
+  "points": 3500,
+  "reward": {
+   "stats": {
+    "resist_all": 3
+   },
+   "title": "World-Lantern"
+  }
+ }
+]

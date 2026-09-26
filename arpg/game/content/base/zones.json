@@ -17,6 +17,7 @@
     "screen": "crafting",
     "model": "hal:shrine_candles",
     "color": "#ffb35a",
+    "npc_id": "npc_a1_smith",
     "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
     "attachments": [
      "2H_Axe"
@@ -28,14 +29,16 @@
     "name": "Stash",
     "screen": "stash",
     "model": "chest_gold",
-    "color": "#ffd23f"
+    "color": "#ffd23f",
+    "npc_id": "npc_a1_stash"
    },
    {
     "id": "waypoint",
     "name": "Waypoint",
     "screen": "map",
     "model": "hal:shrine",
-    "color": "#8fd0ff"
+    "color": "#8fd0ff",
+    "npc_id": "npc_a1_waypoint"
    },
    {
     "id": "vendor",
@@ -43,9 +46,49 @@
     "screen": "vendor",
     "model": "table_medium_tablecloth_decorated_B",
     "color": "#9cffb0",
+    "npc_id": "npc_a1_trader",
     "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
-    "attachments": [],
+    "attachments": [
+     "Rogue_Cape"
+    ],
     "npc_anim": "Idle"
+   }
+  ],
+  "npcs": [
+   "npc_a1_smith",
+   "npc_a1_alchemist",
+   "npc_a1_jeweler",
+   "npc_a1_runecarver",
+   "npc_a1_trader",
+   "npc_a1_stash",
+   "npc_a1_stablemaster",
+   "npc_a1_petkeeper",
+   "npc_a1_innkeeper",
+   "npc_a1_questgiver",
+   "npc_a1_storyteller",
+   "npc_a1_waypoint",
+   "npc_a1_board",
+   "npc_a1_curio"
+  ],
+  "waypoint": true,
+  "hearth_bind": true,
+  "lore": "zone_intro_a1_town",
+  "secrets": [
+   {
+    "id": "sc_tenth_lantern",
+    "lore": "sc_tenth_lantern",
+    "kind": "moon_night",
+    "reward": {
+     "material": "moonthread"
+    }
+   },
+   {
+    "id": "sc_hub_cat",
+    "lore": "sc_hub_cat",
+    "kind": "interact",
+    "reward": {
+     "deed": "deed_secrets"
+    }
    }
   ]
  },
@@ -54,56 +97,1050 @@
   "act": "act1",
   "name": "The Drowned Graves",
   "biome": "graveyard",
+  "art_biome": "wickmire",
   "size": 22,
   "rooms": 8,
   "room_min": 3,
   "room_max": 5,
   "level": 1,
   "packs": 9,
+  "waypoint": true,
+  "lore": "zone_intro_a1_z1",
+  "secrets": [
+   {
+    "id": "sc_frog",
+    "lore": "sc_frog",
+    "kind": "rain_walk",
+    "reward": {
+     "material": "frog_never_jumped"
+    }
+   }
+  ],
   "elite_chance": 0.12,
-  "next": "a1_z2"
+  "next": "a1_z2",
+  "minibosses": [],
+  "miniboss_chance": 0
  },
  {
   "id": "a1_z2",
   "act": "act1",
   "name": "Bellcrypt Halls",
   "biome": "crypt",
+  "art_biome": "wickmire",
   "size": 24,
   "rooms": 9,
   "room_min": 3,
   "room_max": 6,
   "level": 3,
   "packs": 11,
+  "waypoint": true,
+  "lore": "zone_intro_a1_z2",
+  "secrets": [
+   {
+    "id": "sc_candy_crypt",
+    "lore": "sc_candy_crypt",
+    "kind": "breakable_wall",
+    "reward": {
+     "portal": "candy_crypt"
+    }
+   },
+   {
+    "id": "sc_mailbox_1",
+    "lore": "sc_mailbox_1",
+    "kind": "mailbox",
+    "reward": {
+     "lore": "sc_mailbox_1"
+    }
+   }
+  ],
   "elite_chance": 0.18,
-  "next": "a1_z3"
+  "next": "a1_z3",
+  "minibosses": [
+   "mb_candlewife"
+  ],
+  "miniboss_chance": 0.35
  },
  {
   "id": "a1_z3",
   "act": "act1",
   "name": "The Sunken Nave",
   "biome": "crypt",
+  "art_biome": "wickmire",
   "size": 26,
   "rooms": 10,
   "room_min": 3,
   "room_max": 6,
   "level": 5,
   "packs": 13,
+  "waypoint": true,
+  "lore": "zone_intro_a1_z3",
+  "secrets": [
+   {
+    "id": "sc_a1_sunken_choir",
+    "kind": "sit",
+    "hint": "A pew faces the drowned altar. Sit a while.",
+    "reward": {
+     "item_rarity": "rare"
+    }
+   }
+  ],
   "elite_chance": 0.2,
-  "next": "a1_boss"
+  "next": "a1_boss",
+  "minibosses": [
+   "mb_mossjaw"
+  ],
+  "miniboss_chance": 0.35
  },
  {
   "id": "a1_boss",
   "act": "act1",
   "name": "Belfry of the Drowned",
   "biome": "crypt",
+  "art_biome": "wickmire",
   "size": 14,
   "rooms": 3,
   "room_min": 5,
   "room_max": 7,
   "level": 7,
   "packs": 3,
+  "waypoint": false,
+  "lore": "zone_intro_a1_boss",
+  "secrets": [
+   {
+    "id": "sc_a1_quiet_bell",
+    "kind": "no_hit_phase",
+    "hint": "Let the bell toll three times without being hit.",
+    "reward": {
+     "material": "bell_shard",
+     "count": 3
+    }
+   }
+  ],
   "boss": "sunken_bellringer",
-  "next": "a1_town",
+  "next": "a2_town",
   "music": "boss"
+ },
+ {
+  "id": "a2_town",
+  "act": "act2",
+  "name": "Owlstead",
+  "biome": "town",
+  "town": true,
+  "size": 8,
+  "rooms": 1,
+  "room_min": 6,
+  "room_max": 6,
+  "level": 14,
+  "stations": [
+   {
+    "id": "smith",
+    "name": "Smith",
+    "screen": "crafting",
+    "model": "hal:shrine_candles",
+    "color": "#ffb35a",
+    "npc_id": "npc_a2_smith",
+    "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+    "attachments": [
+     "2H_Axe"
+    ],
+    "npc_anim": "2H_Melee_Idle"
+   },
+   {
+    "id": "stash",
+    "name": "Stash",
+    "screen": "stash",
+    "model": "chest_gold",
+    "color": "#ffd23f",
+    "npc_id": "npc_a2_stash"
+   },
+   {
+    "id": "waypoint",
+    "name": "Waypoint",
+    "screen": "map",
+    "model": "hal:shrine",
+    "color": "#8fd0ff",
+    "npc_id": "npc_a2_waypoint"
+   },
+   {
+    "id": "vendor",
+    "name": "Trader",
+    "screen": "vendor",
+    "model": "table_medium_tablecloth_decorated_B",
+    "color": "#9cffb0",
+    "npc_id": "npc_a2_trader",
+    "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+    "attachments": [
+     "Rogue_Cape"
+    ],
+    "npc_anim": "Idle"
+   }
+  ],
+  "npcs": [
+   "npc_a2_smith",
+   "npc_a2_alchemist",
+   "npc_a2_jeweler",
+   "npc_a2_runecarver",
+   "npc_a2_trader",
+   "npc_a2_stash",
+   "npc_a2_stablemaster",
+   "npc_a2_petkeeper",
+   "npc_a2_innkeeper",
+   "npc_a2_questgiver",
+   "npc_a2_storyteller",
+   "npc_a2_waypoint",
+   "npc_a2_board",
+   "npc_a2_curio"
+  ],
+  "waypoint": true,
+  "hearth_bind": true,
+  "lore": "zone_intro_a2_town",
+  "secrets": [
+   {
+    "id": "sc_a2_owl_clock",
+    "kind": "interact",
+    "hint": "The owl clock hoots the wrong hour. Wind it.",
+    "reward": {
+     "gold": 500
+    }
+   }
+  ]
+ },
+ {
+  "id": "a2_z1",
+  "act": "act2",
+  "name": "The Gossiping Birches",
+  "biome": "whisperwood",
+  "art_biome": "whisperwood",
+  "size": 22,
+  "rooms": 8,
+  "room_min": 3,
+  "room_max": 5,
+  "level": 14,
+  "packs": 9,
+  "waypoint": true,
+  "lore": "zone_intro_a2_z1",
+  "secrets": [
+   {
+    "id": "sc_mailbox_2",
+    "lore": "sc_mailbox_2",
+    "kind": "mailbox",
+    "reward": {
+     "lore": "sc_mailbox_2"
+    }
+   }
+  ],
+  "elite_chance": 0.12,
+  "next": "a2_z2",
+  "minibosses": [],
+  "miniboss_chance": 0
+ },
+ {
+  "id": "a2_z2",
+  "act": "act2",
+  "name": "Puffcap Hollow",
+  "biome": "rootcellar",
+  "art_biome": "whisperwood",
+  "size": 24,
+  "rooms": 9,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 16,
+  "packs": 11,
+  "waypoint": true,
+  "lore": "zone_intro_a2_z2",
+  "secrets": [
+   {
+    "id": "sc_tea_party",
+    "lore": "sc_tea_party",
+    "kind": "waterfall",
+    "reward": {
+     "portal": "tea_party"
+    }
+   }
+  ],
+  "elite_chance": 0.18,
+  "next": "a2_z3",
+  "minibosses": [
+   "mb_great_hoot"
+  ],
+  "miniboss_chance": 0.35
+ },
+ {
+  "id": "a2_z3",
+  "act": "act2",
+  "name": "The Owl Towers",
+  "biome": "whisperwood",
+  "art_biome": "whisperwood",
+  "size": 26,
+  "rooms": 10,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 18,
+  "packs": 13,
+  "waypoint": true,
+  "lore": "zone_intro_a2_z3",
+  "secrets": [
+   {
+    "id": "sc_owlcrow",
+    "lore": "sc_owlcrow",
+    "kind": "riddles",
+    "reward": {
+     "material": "answer_nobody_knew"
+    }
+   }
+  ],
+  "elite_chance": 0.2,
+  "next": "a2_boss",
+  "minibosses": [
+   "mb_briar_aunt"
+  ],
+  "miniboss_chance": 0.35
+ },
+ {
+  "id": "a2_boss",
+  "act": "act2",
+  "name": "Mother Bark's Pantry",
+  "biome": "rootcellar",
+  "art_biome": "whisperwood",
+  "size": 14,
+  "rooms": 3,
+  "room_min": 5,
+  "room_max": 7,
+  "level": 20,
+  "packs": 3,
+  "waypoint": false,
+  "lore": "zone_intro_a2_boss",
+  "secrets": [
+   {
+    "id": "sc_a2_empty_jar",
+    "kind": "interact",
+    "hint": "One of Mother Bark's jars is empty. Put your shadow back in it.",
+    "reward": {
+     "pet": "pet_nutmeg"
+    }
+   }
+  ],
+  "boss": "mother_bark",
+  "next": "a3_town",
+  "music": "boss"
+ },
+ {
+  "id": "a3_town",
+  "act": "act3",
+  "name": "Clinkerton",
+  "biome": "town_mines",
+  "town": true,
+  "size": 8,
+  "rooms": 1,
+  "room_min": 6,
+  "room_max": 6,
+  "level": 26,
+  "stations": [
+   {
+    "id": "smith",
+    "name": "Smith",
+    "screen": "crafting",
+    "model": "hal:shrine_candles",
+    "color": "#ffb35a",
+    "npc_id": "npc_a3_smith",
+    "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+    "attachments": [
+     "2H_Axe"
+    ],
+    "npc_anim": "2H_Melee_Idle"
+   },
+   {
+    "id": "stash",
+    "name": "Stash",
+    "screen": "stash",
+    "model": "chest_gold",
+    "color": "#ffd23f",
+    "npc_id": "npc_a3_stash"
+   },
+   {
+    "id": "waypoint",
+    "name": "Waypoint",
+    "screen": "map",
+    "model": "hal:shrine",
+    "color": "#8fd0ff",
+    "npc_id": "npc_a3_waypoint"
+   },
+   {
+    "id": "vendor",
+    "name": "Trader",
+    "screen": "vendor",
+    "model": "table_medium_tablecloth_decorated_B",
+    "color": "#9cffb0",
+    "npc_id": "npc_a3_trader",
+    "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+    "attachments": [
+     "Rogue_Cape"
+    ],
+    "npc_anim": "Idle"
+   }
+  ],
+  "npcs": [
+   "npc_a3_smith",
+   "npc_a3_alchemist",
+   "npc_a3_jeweler",
+   "npc_a3_runecarver",
+   "npc_a3_trader",
+   "npc_a3_stash",
+   "npc_a3_stablemaster",
+   "npc_a3_petkeeper",
+   "npc_a3_innkeeper",
+   "npc_a3_questgiver",
+   "npc_a3_storyteller",
+   "npc_a3_waypoint",
+   "npc_a3_board",
+   "npc_a3_curio"
+  ],
+  "waypoint": true,
+  "hearth_bind": true,
+  "lore": "zone_intro_a3_town",
+  "secrets": [
+   {
+    "id": "sc_a3_song",
+    "kind": "talk_chain",
+    "hint": "Everyone in Clinkerton knows one line of the old song.",
+    "reward": {
+     "item_rarity": "epic"
+    }
+   }
+  ]
+ },
+ {
+  "id": "a3_z1",
+  "act": "act3",
+  "name": "Saltwhistle Shafts",
+  "biome": "echo_mines",
+  "art_biome": "echo_mines",
+  "size": 22,
+  "rooms": 8,
+  "room_min": 3,
+  "room_max": 5,
+  "level": 26,
+  "packs": 9,
+  "waypoint": true,
+  "lore": "zone_intro_a3_z1",
+  "secrets": [
+   {
+    "id": "sc_mailbox_3",
+    "lore": "sc_mailbox_3",
+    "kind": "mailbox",
+    "reward": {
+     "lore": "sc_mailbox_3"
+    }
+   }
+  ],
+  "elite_chance": 0.12,
+  "next": "a3_z2",
+  "minibosses": [],
+  "miniboss_chance": 0
+ },
+ {
+  "id": "a3_z2",
+  "act": "act3",
+  "name": "The Glittering Gallery",
+  "biome": "echo_caverns",
+  "art_biome": "echo_mines",
+  "size": 24,
+  "rooms": 9,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 28,
+  "packs": 11,
+  "waypoint": true,
+  "lore": "zone_intro_a3_z2",
+  "secrets": [
+   {
+    "id": "sc_a3_crystal_room",
+    "kind": "hidden_room",
+    "hint": "One crystal hums a different note.",
+    "reward": {
+     "material": "hollow_crystal",
+     "count": 2
+    }
+   }
+  ],
+  "elite_chance": 0.18,
+  "next": "a3_z3",
+  "minibosses": [
+   "mb_crystal_matron"
+  ],
+  "miniboss_chance": 0.35
+ },
+ {
+  "id": "a3_z3",
+  "act": "act3",
+  "name": "Rattletrack Rails",
+  "biome": "echo_mines",
+  "art_biome": "echo_mines",
+  "size": 26,
+  "rooms": 10,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 30,
+  "packs": 13,
+  "waypoint": true,
+  "lore": "zone_intro_a3_z3",
+  "secrets": [
+   {
+    "id": "sc_a3_cart_six",
+    "kind": "ride",
+    "hint": "Cart Six is waiting at the end of the rails.",
+    "reward": {
+     "deed": "deed_secrets"
+    }
+   }
+  ],
+  "elite_chance": 0.2,
+  "next": "a3_boss",
+  "minibosses": [
+   "mb_foreman_clank"
+  ],
+  "miniboss_chance": 0.35
+ },
+ {
+  "id": "a3_boss",
+  "act": "act3",
+  "name": "The Mouth of the Mountain",
+  "biome": "echo_caverns",
+  "art_biome": "echo_mines",
+  "size": 14,
+  "rooms": 3,
+  "room_min": 5,
+  "room_max": 7,
+  "level": 32,
+  "packs": 3,
+  "waypoint": false,
+  "lore": "zone_intro_a3_boss",
+  "secrets": [
+   {
+    "id": "sc_stillness",
+    "lore": "sc_stillness",
+    "kind": "stand_still",
+    "reward": {
+     "material": "echo_of_stillness"
+    }
+   }
+  ],
+  "boss": "great_echo",
+  "next": "a4_town",
+  "music": "boss"
+ },
+ {
+  "id": "a4_town",
+  "act": "act4",
+  "name": "Kettlekeep",
+  "biome": "town_frost",
+  "town": true,
+  "size": 8,
+  "rooms": 1,
+  "room_min": 6,
+  "room_max": 6,
+  "level": 38,
+  "stations": [
+   {
+    "id": "smith",
+    "name": "Smith",
+    "screen": "crafting",
+    "model": "hal:shrine_candles",
+    "color": "#ffb35a",
+    "npc_id": "npc_a4_smith",
+    "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+    "attachments": [
+     "2H_Axe"
+    ],
+    "npc_anim": "2H_Melee_Idle"
+   },
+   {
+    "id": "stash",
+    "name": "Stash",
+    "screen": "stash",
+    "model": "chest_gold",
+    "color": "#ffd23f",
+    "npc_id": "npc_a4_stash"
+   },
+   {
+    "id": "waypoint",
+    "name": "Waypoint",
+    "screen": "map",
+    "model": "hal:shrine",
+    "color": "#8fd0ff",
+    "npc_id": "npc_a4_waypoint"
+   },
+   {
+    "id": "vendor",
+    "name": "Trader",
+    "screen": "vendor",
+    "model": "table_medium_tablecloth_decorated_B",
+    "color": "#9cffb0",
+    "npc_id": "npc_a4_trader",
+    "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+    "attachments": [
+     "Rogue_Cape"
+    ],
+    "npc_anim": "Idle"
+   }
+  ],
+  "npcs": [
+   "npc_a4_smith",
+   "npc_a4_alchemist",
+   "npc_a4_jeweler",
+   "npc_a4_runecarver",
+   "npc_a4_trader",
+   "npc_a4_stash",
+   "npc_a4_stablemaster",
+   "npc_a4_petkeeper",
+   "npc_a4_innkeeper",
+   "npc_a4_questgiver",
+   "npc_a4_storyteller",
+   "npc_a4_waypoint",
+   "npc_a4_board",
+   "npc_a4_curio"
+  ],
+  "waypoint": true,
+  "hearth_bind": true,
+  "lore": "zone_intro_a4_town",
+  "secrets": [
+   {
+    "id": "sc_a4_snowglobe",
+    "kind": "interact",
+    "hint": "Shake the snowglobe on the mantelpiece.",
+    "reward": {
+     "mount": "mount_sleet"
+    }
+   }
+  ]
+ },
+ {
+  "id": "a4_z1",
+  "act": "act4",
+  "name": "The Frosted Gardens",
+  "biome": "rime_court",
+  "art_biome": "rimehall",
+  "size": 22,
+  "rooms": 8,
+  "room_min": 3,
+  "room_max": 5,
+  "level": 38,
+  "packs": 9,
+  "waypoint": true,
+  "lore": "zone_intro_a4_z1",
+  "secrets": [
+   {
+    "id": "sc_a4_hedge_maze",
+    "kind": "maze",
+    "hint": "The hedge maze has a centre. Nobody has found it.",
+    "reward": {
+     "item_rarity": "epic"
+    }
+   }
+  ],
+  "elite_chance": 0.12,
+  "next": "a4_z2",
+  "minibosses": [],
+  "miniboss_chance": 0
+ },
+ {
+  "id": "a4_z2",
+  "act": "act4",
+  "name": "The Looking-Glass Gallery",
+  "biome": "rimehall",
+  "art_biome": "rimehall",
+  "size": 24,
+  "rooms": 9,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 40,
+  "packs": 11,
+  "waypoint": true,
+  "lore": "zone_intro_a4_z2",
+  "secrets": [
+   {
+    "id": "sc_mailbox_4",
+    "lore": "sc_mailbox_4",
+    "kind": "third_mirror",
+    "reward": {
+     "lore": "sc_mailbox_4"
+    }
+   }
+  ],
+  "elite_chance": 0.18,
+  "next": "a4_z3",
+  "minibosses": [
+   "mb_head_butler"
+  ],
+  "miniboss_chance": 0.35
+ },
+ {
+  "id": "a4_z3",
+  "act": "act4",
+  "name": "The Everlasting Toast",
+  "biome": "rimehall",
+  "art_biome": "rimehall",
+  "size": 26,
+  "rooms": 10,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 42,
+  "packs": 13,
+  "waypoint": true,
+  "lore": "zone_intro_a4_z3",
+  "secrets": [
+   {
+    "id": "sc_a4_finish_toast",
+    "kind": "emote",
+    "hint": "Raise your mug with the frozen guests.",
+    "reward": {
+     "material": "frozen_toast",
+     "count": 2
+    }
+   }
+  ],
+  "elite_chance": 0.2,
+  "next": "a4_boss",
+  "minibosses": [
+   "mb_captain_tinwhistle"
+  ],
+  "miniboss_chance": 0.35
+ },
+ {
+  "id": "a4_boss",
+  "act": "act4",
+  "name": "The Throne of Frost",
+  "biome": "rime_court",
+  "art_biome": "rimehall",
+  "size": 14,
+  "rooms": 3,
+  "room_min": 5,
+  "room_max": 7,
+  "level": 44,
+  "packs": 3,
+  "waypoint": false,
+  "lore": "zone_intro_a4_boss",
+  "secrets": [
+   {
+    "id": "sc_a4_true_name",
+    "kind": "letters",
+    "hint": "Collect the King's four letters before you meet him.",
+    "reward": {
+     "item_rarity": "legendary"
+    }
+   }
+  ],
+  "boss": "king_who_forgot",
+  "next": "a5_town",
+  "music": "boss"
+ },
+ {
+  "id": "a5_town",
+  "act": "act5",
+  "name": "Lastlight Landing",
+  "biome": "town_hush",
+  "town": true,
+  "size": 8,
+  "rooms": 1,
+  "room_min": 6,
+  "room_max": 6,
+  "level": 50,
+  "stations": [
+   {
+    "id": "smith",
+    "name": "Smith",
+    "screen": "crafting",
+    "model": "hal:shrine_candles",
+    "color": "#ffb35a",
+    "npc_id": "npc_a5_smith",
+    "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+    "attachments": [
+     "2H_Axe"
+    ],
+    "npc_anim": "2H_Melee_Idle"
+   },
+   {
+    "id": "stash",
+    "name": "Stash",
+    "screen": "stash",
+    "model": "chest_gold",
+    "color": "#ffd23f",
+    "npc_id": "npc_a5_stash"
+   },
+   {
+    "id": "waypoint",
+    "name": "Waypoint",
+    "screen": "map",
+    "model": "hal:shrine",
+    "color": "#8fd0ff",
+    "npc_id": "npc_a5_waypoint"
+   },
+   {
+    "id": "vendor",
+    "name": "Trader",
+    "screen": "vendor",
+    "model": "table_medium_tablecloth_decorated_B",
+    "color": "#9cffb0",
+    "npc_id": "npc_a5_trader",
+    "npc": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+    "attachments": [
+     "Rogue_Cape"
+    ],
+    "npc_anim": "Idle"
+   }
+  ],
+  "npcs": [
+   "npc_a5_smith",
+   "npc_a5_alchemist",
+   "npc_a5_jeweler",
+   "npc_a5_runecarver",
+   "npc_a5_trader",
+   "npc_a5_stash",
+   "npc_a5_stablemaster",
+   "npc_a5_petkeeper",
+   "npc_a5_innkeeper",
+   "npc_a5_questgiver",
+   "npc_a5_storyteller",
+   "npc_a5_waypoint",
+   "npc_a5_board",
+   "npc_a5_pell",
+   "npc_a5_curio"
+  ],
+  "waypoint": true,
+  "hearth_bind": true,
+  "lore": "zone_intro_a5_town",
+  "secrets": [
+   {
+    "id": "sc_chair",
+    "lore": "sc_chair",
+    "kind": "story_complete",
+    "reward": {
+     "title": "Ninety-Ninth"
+    }
+   }
+  ]
+ },
+ {
+  "id": "a5_z1",
+  "act": "act5",
+  "name": "The Upside-Down Stars",
+  "biome": "well_of_hush",
+  "art_biome": "well_of_hush",
+  "size": 22,
+  "rooms": 8,
+  "room_min": 3,
+  "room_max": 5,
+  "level": 50,
+  "packs": 9,
+  "waypoint": true,
+  "lore": "zone_intro_a5_z1",
+  "secrets": [
+   {
+    "id": "sc_a5_falling_up",
+    "kind": "jump",
+    "hint": "Some stars are stepping stones.",
+    "reward": {
+     "material": "starmote"
+    }
+   }
+  ],
+  "elite_chance": 0.12,
+  "next": "a5_z2",
+  "minibosses": [],
+  "miniboss_chance": 0
+ },
+ {
+  "id": "a5_z2",
+  "act": "act5",
+  "name": "The Drift of Leftovers",
+  "biome": "hush_wastes",
+  "art_biome": "well_of_hush",
+  "size": 24,
+  "rooms": 9,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 52,
+  "packs": 11,
+  "waypoint": true,
+  "lore": "zone_intro_a5_z2",
+  "secrets": [
+   {
+    "id": "sc_mailbox_5",
+    "lore": "sc_mailbox_5",
+    "kind": "mailbox",
+    "reward": {
+     "lore": "sc_mailbox_5"
+    }
+   }
+  ],
+  "elite_chance": 0.18,
+  "next": "a5_z3",
+  "minibosses": [
+   "mb_faded_champion"
+  ],
+  "miniboss_chance": 0.35
+ },
+ {
+  "id": "a5_z3",
+  "act": "act5",
+  "name": "The Quiet Stair",
+  "biome": "well_of_hush",
+  "art_biome": "well_of_hush",
+  "size": 26,
+  "rooms": 10,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 55,
+  "packs": 13,
+  "waypoint": true,
+  "lore": "zone_intro_a5_z3",
+  "secrets": [
+   {
+    "id": "sc_a5_quiet_count",
+    "kind": "silence",
+    "hint": "Climb the Quiet Stair without attacking.",
+    "reward": {
+     "material": "silent_bell"
+    }
+   }
+  ],
+  "elite_chance": 0.2,
+  "next": "a5_boss",
+  "minibosses": [
+   "mb_choirmaster"
+  ],
+  "miniboss_chance": 0.35
+ },
+ {
+  "id": "a5_boss",
+  "act": "act5",
+  "name": "The Lantern Room",
+  "biome": "well_of_hush",
+  "art_biome": "well_of_hush",
+  "size": 14,
+  "rooms": 3,
+  "room_min": 5,
+  "room_max": 7,
+  "level": 58,
+  "packs": 3,
+  "waypoint": false,
+  "lore": "zone_intro_a5_boss",
+  "secrets": [
+   {
+    "id": "sc_a5_small_lantern",
+    "kind": "rekindle",
+    "hint": "Don't fight to win.",
+    "reward": {
+     "material": "last_spark",
+     "condition": "no_defeat_in_act"
+    }
+   }
+  ],
+  "boss": "grey_guest",
+  "next": "a5_town",
+  "music": "boss"
+ },
+ {
+  "id": "deepdark",
+  "act": "act5",
+  "name": "The Deepdark",
+  "biome": "deepdark",
+  "special": true,
+  "size": 20,
+  "rooms": 7,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 60,
+  "packs": 10,
+  "families": [
+   "rattlebones",
+   "thicket_kin",
+   "echoes",
+   "frozen_court",
+   "hushed"
+  ],
+  "next": "a5_town",
+  "lore": "zone_intro_deepdark",
+  "endgame": true
+ },
+ {
+  "id": "lightwell",
+  "act": "act5",
+  "name": "Lightwell",
+  "biome": "deepdark",
+  "special": true,
+  "size": 20,
+  "rooms": 7,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 60,
+  "packs": 10,
+  "families": [
+   "rattlebones",
+   "thicket_kin",
+   "echoes",
+   "frozen_court",
+   "hushed"
+  ],
+  "next": "a5_town",
+  "lore": "zone_intro_lightwell",
+  "endgame": true,
+  "timed_s": 300,
+  "key": "lightwell_key"
+ },
+ {
+  "id": "magpies_hoard",
+  "act": "act1",
+  "name": "Magpie's Hoard",
+  "biome": "crypt",
+  "special": true,
+  "size": 20,
+  "rooms": 7,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 1,
+  "packs": 10,
+  "families": [],
+  "next": "a1_town",
+  "lore": "zone_intro_magpies_hoard",
+  "loot_kind": "magpie",
+  "portal_from": "magpie_imp"
+ },
+ {
+  "id": "candy_crypt",
+  "act": "act1",
+  "name": "The Candy Crypt",
+  "biome": "crypt",
+  "special": true,
+  "size": 20,
+  "rooms": 7,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 3,
+  "packs": 8,
+  "families": [],
+  "next": "a1_town",
+  "lore": "zone_intro_candy_crypt",
+  "key": "candy_key",
+  "monsters": [
+   "candy_bones"
+  ]
+ },
+ {
+  "id": "tea_party",
+  "act": "act2",
+  "name": "The Tea Party",
+  "biome": "whisperwood",
+  "special": true,
+  "size": 20,
+  "rooms": 7,
+  "room_min": 3,
+  "room_max": 6,
+  "level": 16,
+  "packs": 0,
+  "families": [],
+  "next": "a2_town",
+  "lore": "zone_intro_tea_party",
+  "peaceful": true
  }
 ]

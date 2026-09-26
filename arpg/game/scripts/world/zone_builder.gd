@@ -507,17 +507,17 @@ func _build_showcase() -> void:
 	var small = CreatureFactory.SMALL
 	for i in small.size():
 		var a = TAU * i / small.size()
-		var c = CreatureFactory.build(small[i], Color(cols[i % cols.size()]), 0.8, {"eyes": "glow" if i % 4 == 3 else "cute"})
+		var c = CreatureFactory.build(small[i], Color(cols[i % cols.size()]), 1.5, {"eyes": "glow" if i % 4 == 3 else "cute"})
 		root.add_child(c)
-		c.position = center + Vector3(cos(a), 0, sin(a)) * 4.2 + (Vector3(0, 1.4, 0) if small[i] in ["bat", "moth", "lantern_moth"] else Vector3.ZERO)
+		c.position = center + Vector3(cos(a), 0, sin(a)) * 5.0 + (Vector3(0, 1.4, 0) if small[i] in ["bat", "moth", "lantern_moth"] else Vector3.ZERO)
 		c.rotation.y = deg_to_rad(45.0)
 		_showcase_label(c, small[i])
 	var mounts = CreatureFactory.MOUNTS
 	for i in mounts.size():
 		var a = TAU * i / mounts.size() + 0.3
-		var m = CreatureFactory.build(mounts[i], Color(cols[(i + 15) % cols.size()]), 1.0, {"outline": true})
+		var m = CreatureFactory.build(mounts[i], Color(cols[(i + 15) % cols.size()]), 1.3, {"outline": true})
 		root.add_child(m)
-		m.position = center + Vector3(cos(a), 0, sin(a)) * 8.0
+		m.position = center + Vector3(cos(a), 0, sin(a)) * 9.5
 		m.rotation.y = deg_to_rad(45.0)
 		_showcase_label(m, mounts[i])
 

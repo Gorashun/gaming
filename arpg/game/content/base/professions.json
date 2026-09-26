@@ -4,27 +4,57 @@
   "name": "Smith",
   "max_level": 50,
   "unlock_act": "act1",
-  "desc": "Salvage gear, kindle affixes, forge weapons and armour."
+  "desc": "Salvage gear, kindle affixes, forge weapons and armour.",
+  "station": "a1_town",
+  "guided_first_craft": "r_upgrade",
+  "xp_sources": [
+   "craft",
+   "salvage"
+  ]
  },
  {
   "id": "alchemist",
   "name": "Alchemist",
   "max_level": 50,
   "unlock_act": "act2",
-  "desc": "Potions, elixirs and material transmutation."
+  "desc": "Potions, elixirs and material transmutation.",
+  "station": "a2_town",
+  "guided_first_craft": "r_potion_1",
+  "xp_sources": [
+   "craft"
+  ]
  },
  {
   "id": "jeweler",
   "name": "Jeweler",
   "max_level": 50,
   "unlock_act": "act3",
-  "desc": "Gems, sockets, rings and amulets."
+  "desc": "Gems, sockets, rings and amulets.",
+  "station": "a3_town",
+  "guided_first_craft": "r_gem_ruby_2",
+  "xp_sources": [
+   "craft"
+  ]
  },
  {
   "id": "runecarver",
   "name": "Runecarver",
   "max_level": 50,
   "unlock_act": "act4",
-  "desc": "Runes that reroll and empower affixes."
+  "desc": "Runes that reroll and empower affixes.",
+  "station": "a4_town",
+  "guided_first_craft": "r_rune_reroll_values",
+  "xp_sources": [
+   "craft"
+  ]
+ },
+ {
+  "id": "cauldron",
+  "name": "Cauldron",
+  "max_level": 1,
+  "unlock_act": "act5",
+  "station": "a5_town",
+  "desc": "Combine any materials to discover secret recipes. Never destroys items; failed mixes return everything.",
+  "discovery": true
  }
 ]

@@ -1,0 +1,245 @@
+[
+ {
+  "id": "curio_sword",
+  "name": "Mystery Sword",
+  "category": {
+   "weapon_type": "sword"
+  },
+  "price_hushmarks": 4,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_greatsword",
+  "name": "Mystery Greatsword",
+  "category": {
+   "weapon_type": "greatsword"
+  },
+  "price_hushmarks": 6,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_axe",
+  "name": "Mystery Axe",
+  "category": {
+   "weapon_type": "axe"
+  },
+  "price_hushmarks": 4,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_axe2h",
+  "name": "Mystery Great Axe",
+  "category": {
+   "weapon_type": "axe2h"
+  },
+  "price_hushmarks": 6,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_staff",
+  "name": "Mystery Staff",
+  "category": {
+   "weapon_type": "staff"
+  },
+  "price_hushmarks": 6,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_wand",
+  "name": "Mystery Wand",
+  "category": {
+   "weapon_type": "wand"
+  },
+  "price_hushmarks": 4,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_dagger",
+  "name": "Mystery Dagger",
+  "category": {
+   "weapon_type": "dagger"
+  },
+  "price_hushmarks": 4,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_crossbow",
+  "name": "Mystery Crossbow",
+  "category": {
+   "weapon_type": "crossbow"
+  },
+  "price_hushmarks": 4,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_arbalest",
+  "name": "Mystery Arbalest",
+  "category": {
+   "weapon_type": "arbalest"
+  },
+  "price_hushmarks": 6,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_shield",
+  "name": "Mystery Shield",
+  "category": {
+   "weapon_type": "shield"
+  },
+  "price_hushmarks": 4,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_tome",
+  "name": "Mystery Tome",
+  "category": {
+   "weapon_type": "tome"
+  },
+  "price_hushmarks": 4,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_quiver",
+  "name": "Mystery Quiver",
+  "category": {
+   "weapon_type": "quiver"
+  },
+  "price_hushmarks": 4,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_head",
+  "name": "Mystery Helm",
+  "category": {
+   "slot": "head"
+  },
+  "price_hushmarks": 3,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_chest",
+  "name": "Mystery Chest",
+  "category": {
+   "slot": "chest"
+  },
+  "price_hushmarks": 4,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_hands",
+  "name": "Mystery Gloves",
+  "category": {
+   "slot": "hands"
+  },
+  "price_hushmarks": 3,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_legs",
+  "name": "Mystery Legs",
+  "category": {
+   "slot": "legs"
+  },
+  "price_hushmarks": 3,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_feet",
+  "name": "Mystery Boots",
+  "category": {
+   "slot": "feet"
+  },
+  "price_hushmarks": 3,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_belt",
+  "name": "Mystery Belt",
+  "category": {
+   "slot": "belt"
+  },
+  "price_hushmarks": 3,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_ring",
+  "name": "Mystery Ring",
+  "category": {
+   "slot": "ring"
+  },
+  "price_hushmarks": 8,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_amulet",
+  "name": "Mystery Amulet",
+  "category": {
+   "slot": "amulet"
+  },
+  "price_hushmarks": 10,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_charm",
+  "name": "Mystery Charm",
+  "category": {
+   "slot": "charm"
+  },
+  "price_hushmarks": 6,
+  "min_level": 1,
+  "roll": "standard_drop",
+  "desc": "Rolled with the normal drop rules at your level. The true rarity shows instantly."
+ },
+ {
+  "id": "curio_gem",
+  "name": "Mystery Gem Pouch",
+  "category": {
+   "material": "gem",
+   "grade": "by_level"
+  },
+  "price_hushmarks": 2,
+  "min_level": 10,
+  "roll": "standard_drop",
+  "desc": "A random gem of a grade that fits your level."
+ }
+]

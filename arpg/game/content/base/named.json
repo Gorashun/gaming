@@ -1,1 +1,326 @@
-[]
+[
+ {
+  "id": "n_morning_never_came",
+  "name": "The Morning That Never Came",
+  "base": "sword_100",
+  "class": "lanternbearer",
+  "flavor": "Forged for a dawn that was cancelled. It is still waiting.",
+  "rarity": "named",
+  "stats": [
+   {
+    "stat": "might",
+    "min": 80,
+    "max": 110
+   },
+   {
+    "stat": "holy_pct",
+    "min": 40,
+    "max": 60
+   },
+   {
+    "stat": "crit_chance",
+    "min": 5,
+    "max": 8
+   }
+  ],
+  "power": "pn_morning_never_came",
+  "recipe": "r_named_morning_never_came",
+  "secret": "secret_n_morning_never_came",
+  "grows": {
+   "echoes": 5,
+   "boss_kills_per_echo": 25,
+   "stat_per_echo_pct": 4
+  },
+  "codex": true,
+  "codex_category": "named",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "n_grandmothers_needles",
+  "name": "Grandmother's Needles",
+  "base": "dagger_100",
+  "class": "stitcher",
+  "flavor": "She knitted a scarf for every child in the village. The last one was never finished.",
+  "rarity": "named",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 80,
+    "max": 110
+   },
+   {
+    "stat": "minion_damage_pct",
+    "min": 50,
+    "max": 70
+   },
+   {
+    "stat": "attack_speed_pct",
+    "min": 10,
+    "max": 15
+   }
+  ],
+  "power": "pn_grandmothers_needles",
+  "recipe": "r_named_grandmothers_needles",
+  "secret": "secret_n_grandmothers_needles",
+  "grows": {
+   "echoes": 5,
+   "boss_kills_per_echo": 25,
+   "stat_per_echo_pct": 4
+  },
+  "codex": true,
+  "codex_category": "named",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "n_bell_that_doesnt_ring",
+  "name": "The Bell That Doesn't Ring",
+  "base": "great_axe_t_100",
+  "class": "bellstriker",
+  "flavor": "The quietest bell in the world. The Snuffed hear it anyway.",
+  "rarity": "named",
+  "stats": [
+   {
+    "stat": "might",
+    "min": 90,
+    "max": 120
+   },
+   {
+    "stat": "area_pct",
+    "min": 25,
+    "max": 35
+   },
+   {
+    "stat": "physical_pct",
+    "min": 40,
+    "max": 60
+   }
+  ],
+  "power": "pn_bell_that_doesnt_ring",
+  "recipe": "r_named_bell_that_doesnt_ring",
+  "secret": "secret_n_bell_that_doesnt_ring",
+  "grows": {
+   "echoes": 5,
+   "boss_kills_per_echo": 25,
+   "stat_per_echo_pct": 4
+  },
+  "codex": true,
+  "codex_category": "named",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "n_owls_last_question",
+  "name": "The Owl's Last Question",
+  "base": "staff_100",
+  "class": "stargazer",
+  "flavor": "The answer isn't in any book. We checked. All the books.",
+  "rarity": "named",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 90,
+    "max": 120
+   },
+   {
+    "stat": "cdr_pct",
+    "min": 10,
+    "max": 15
+   },
+   {
+    "stat": "cast_speed_pct",
+    "min": 10,
+    "max": 15
+   }
+  ],
+  "power": "pn_owls_last_question",
+  "recipe": "r_named_owls_last_question",
+  "secret": "secret_n_owls_last_question",
+  "grows": {
+   "echoes": 5,
+   "boss_kills_per_echo": 25,
+   "stat_per_echo_pct": 4
+  },
+  "codex": true,
+  "codex_category": "named",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "n_frog_kings_croak",
+  "name": "The Frog King's Croak",
+  "base": "crossbow_100",
+  "class": "roofrunner",
+  "flavor": "Every bolt croaks. That's not a bug. It's tradition.",
+  "rarity": "named",
+  "stats": [
+   {
+    "stat": "agility",
+    "min": 80,
+    "max": 110
+   },
+   {
+    "stat": "projectile_damage_pct",
+    "min": 40,
+    "max": 60
+   },
+   {
+    "stat": "pierce",
+    "min": 1,
+    "max": 2
+   }
+  ],
+  "power": "pn_frog_kings_croak",
+  "recipe": "r_named_frog_kings_croak",
+  "secret": "secret_n_frog_kings_croak",
+  "grows": {
+   "echoes": 5,
+   "boss_kills_per_echo": 25,
+   "stat_per_echo_pct": 4
+  },
+  "codex": true,
+  "codex_category": "named",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "n_tea_party_guestbook",
+  "name": "The Tea Party Guestbook",
+  "base": "tome_open_100",
+  "class": "",
+  "flavor": "Every Snuffed guest signed it. Some signed twice, politely.",
+  "rarity": "named",
+  "stats": [
+   {
+    "stat": "resource_max",
+    "min": 80,
+    "max": 120
+   },
+   {
+    "stat": "life_pct",
+    "min": 10,
+    "max": 15
+   },
+   {
+    "stat": "resist_all",
+    "min": 15,
+    "max": 20
+   }
+  ],
+  "power": "pn_tea_party_guestbook",
+  "recipe": "r_named_tea_party_guestbook",
+  "secret": "",
+  "grows": {
+   "echoes": 5,
+   "boss_kills_per_echo": 25,
+   "stat_per_echo_pct": 4
+  },
+  "codex": true,
+  "codex_category": "named",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "n_letter_opener",
+  "name": "The Answering Letter-Opener",
+  "base": "wand_100",
+  "class": "stargazer",
+  "flavor": "It opens letters you haven't written yet.",
+  "rarity": "named",
+  "stats": [
+   {
+    "stat": "wisdom",
+    "min": 80,
+    "max": 110
+   },
+   {
+    "stat": "lightning_pct",
+    "min": 40,
+    "max": 60
+   },
+   {
+    "stat": "cold_pct",
+    "min": 40,
+    "max": 60
+   }
+  ],
+  "power": "pn_letter_opener",
+  "recipe": "r_named_letter_opener",
+  "secret": "",
+  "grows": {
+   "echoes": 5,
+   "boss_kills_per_echo": 25,
+   "stat_per_echo_pct": 4
+  },
+  "codex": true,
+  "codex_category": "named",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "n_magpies_last_coin",
+  "name": "The Magpie's Last Coin",
+  "base": "arbalest_100",
+  "class": "roofrunner",
+  "flavor": "Flipped once. Landed on its edge. Has been lucky ever since.",
+  "rarity": "named",
+  "stats": [
+   {
+    "stat": "agility",
+    "min": 90,
+    "max": 120
+   },
+   {
+    "stat": "crit_chance",
+    "min": 6,
+    "max": 9
+   },
+   {
+    "stat": "gold_find",
+    "min": 40,
+    "max": 60
+   }
+  ],
+  "power": "pn_magpies_last_coin",
+  "recipe": "r_named_magpies_last_coin",
+  "secret": "",
+  "grows": {
+   "echoes": 5,
+   "boss_kills_per_echo": 25,
+   "stat_per_echo_pct": 4
+  },
+  "codex": true,
+  "codex_category": "named",
+  "scale_with_ilvl": true
+ },
+ {
+  "id": "n_toffee_cleaver",
+  "name": "The Toffee Cleaver",
+  "base": "greatsword_100",
+  "class": "",
+  "flavor": "Sticky, sweet and somehow sharper than steel.",
+  "rarity": "named",
+  "stats": [
+   {
+    "stat": "might",
+    "min": 90,
+    "max": 120
+   },
+   {
+    "stat": "attack_speed_pct",
+    "min": 10,
+    "max": 15
+   },
+   {
+    "stat": "life_on_hit",
+    "min": 30,
+    "max": 45
+   }
+  ],
+  "power": "pn_toffee_cleaver",
+  "recipe": "r_named_toffee_cleaver",
+  "secret": "",
+  "grows": {
+   "echoes": 5,
+   "boss_kills_per_echo": 25,
+   "stat_per_echo_pct": 4
+  },
+  "codex": true,
+  "codex_category": "named",
+  "scale_with_ilvl": true
+ }
+]

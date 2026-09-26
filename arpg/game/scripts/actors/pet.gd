@@ -41,6 +41,14 @@ func setup(id: String, p: Player) -> void:
 	add_child(_visual)
 	top_level = true
 	global_position = p.global_position + Vector3(1.0, 0, 1.0)
+	Events.pet_level_up.connect(_on_level_up)
+
+func _on_level_up(id: String, lvl: int) -> void:
+	if id != pet_id or not is_inside_tree():
+		return
+	Sfx.play("pet_levelup", -2.0)
+	Fx.burst(global_position, Color(rec.get("tint", "#ffd98a")), 20, 3.0, 0.1, 0.8, 1.0)
+	Fx.float_text(global_position, "%s Lv %d!" % [rec.get("name", "Pet"), lvl], Color(rec.get("tint", "#ffd98a")), 30)
 
 func _tint_meshes(n: Node, tint: Color) -> void:
 	for mi in n.find_children("*", "MeshInstance3D", true, false):
@@ -197,4 +205,5 @@ func _set_away(v: bool) -> void:
 		global_position = player.global_position + Vector3(0, 6, 0)
 		tw.tween_property(self, "global_position", player.global_position + Vector3(1, 1, 1), 0.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		Events.pet_ferry.emit("returned", {})
+		Sfx.play("pet_happy", -4.0)
 		Events.toast.emit("%s is back from town!" % rec.get("name", "Your pet"), Color(rec.get("tint", "#ffd98a")))

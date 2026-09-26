@@ -1,0 +1,272 @@
+[
+ {
+  "id": "cape_act1",
+  "kind": "cape_tint",
+  "color": "#8fd9a0",
+  "desc": "A cape dyed in Act 1's colours."
+ },
+ {
+  "id": "cape_act2",
+  "kind": "cape_tint",
+  "color": "#7fb8e0",
+  "desc": "A cape dyed in Act 2's colours."
+ },
+ {
+  "id": "cape_act3",
+  "kind": "cape_tint",
+  "color": "#cfe8f0",
+  "desc": "A cape dyed in Act 3's colours."
+ },
+ {
+  "id": "cape_act4",
+  "kind": "cape_tint",
+  "color": "#9cc8e0",
+  "desc": "A cape dyed in Act 4's colours."
+ },
+ {
+  "id": "cape_act5",
+  "kind": "cape_tint",
+  "color": "#f4f4f8",
+  "desc": "A cape dyed in Act 5's colours."
+ },
+ {
+  "id": "cape_gold",
+  "kind": "cape_tint",
+  "color": "#ffd23f",
+  "desc": "Golden cape of an elite hunter."
+ },
+ {
+  "id": "cape_steel",
+  "kind": "cape_tint",
+  "color": "#b8c0d0",
+  "desc": "Steel-grey cape."
+ },
+ {
+  "id": "cape_ember",
+  "kind": "cape_tint",
+  "color": "#ff8a1f",
+  "desc": "Ember-orange cape."
+ },
+ {
+  "id": "cape_curio",
+  "kind": "cape_tint",
+  "color": "#b0a0d0",
+  "desc": "Masked-peddler purple."
+ },
+ {
+  "id": "aura_starlight",
+  "kind": "aura",
+  "color": "#fff4c0",
+  "desc": "Tiny stars circle you."
+ },
+ {
+  "id": "aura_mist",
+  "kind": "aura",
+  "color": "#c8d8e0",
+  "desc": "A soft mist at your feet."
+ },
+ {
+  "id": "aura_heart",
+  "kind": "aura",
+  "color": "#ff9eb8",
+  "desc": "Little hearts."
+ },
+ {
+  "id": "aura_key",
+  "kind": "aura",
+  "color": "#ffd9a0",
+  "desc": "A floating key."
+ },
+ {
+  "id": "aura_forge",
+  "kind": "aura",
+  "color": "#ffb35a",
+  "desc": "Forge sparks."
+ },
+ {
+  "id": "aura_sun",
+  "kind": "aura",
+  "color": "#fff8d8",
+  "desc": "A small sun on your shoulder."
+ },
+ {
+  "id": "aura_flame",
+  "kind": "aura",
+  "color": "#ff3355",
+  "desc": "Crimson flicker."
+ },
+ {
+  "id": "aura_codex",
+  "kind": "aura",
+  "color": "#e0d0ff",
+  "desc": "Pages flutter around you."
+ },
+ {
+  "id": "aura_bright",
+  "kind": "aura",
+  "color": "#ffffff",
+  "desc": "You glow a little brighter."
+ },
+ {
+  "id": "aura_hush",
+  "kind": "aura",
+  "color": "#c8b8ff",
+  "desc": "The Hush keeps a polite distance."
+ },
+ {
+  "id": "aura_mastery",
+  "kind": "aura",
+  "color": "#9fe8ff",
+  "desc": "Skill runes orbit you."
+ },
+ {
+  "id": "aura_stars",
+  "kind": "aura",
+  "color": "#aef6ff",
+  "desc": "A tiny constellation."
+ },
+ {
+  "id": "frame_rattlebones",
+  "kind": "name_frame",
+  "color": "#8fd9a0",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_thicket_kin",
+  "kind": "name_frame",
+  "color": "#7fb8e0",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_echoes",
+  "kind": "name_frame",
+  "color": "#cfe8f0",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_frozen_court",
+  "kind": "name_frame",
+  "color": "#9cc8e0",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_hushed",
+  "kind": "name_frame",
+  "color": "#f4f4f8",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_sunken_bellringer",
+  "kind": "name_frame",
+  "color": "#9fe8ff",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_mother_bark",
+  "kind": "name_frame",
+  "color": "#a0e070",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_great_echo",
+  "kind": "name_frame",
+  "color": "#ffffff",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_king_who_forgot",
+  "kind": "name_frame",
+  "color": "#e8f8ff",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_grey_guest",
+  "kind": "name_frame",
+  "color": "#c0c0c8",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_long_shadow",
+  "kind": "name_frame",
+  "color": "#6060a0",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_star",
+  "kind": "name_frame",
+  "color": "#ff8a1f",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_crown",
+  "kind": "name_frame",
+  "color": "#3ddc84",
+  "desc": "A name frame."
+ },
+ {
+  "id": "frame_lastflame",
+  "kind": "name_frame",
+  "color": "#ffd27a",
+  "desc": "A name frame."
+ },
+ {
+  "id": "pet_hat_button",
+  "kind": "pet_hat",
+  "color": "#ffb3d1",
+  "desc": "A button hat for your pet."
+ },
+ {
+  "id": "pet_hat_teacup",
+  "kind": "pet_hat",
+  "color": "#ffd9f0",
+  "desc": "A teacup hat."
+ },
+ {
+  "id": "pet_hat_crown",
+  "kind": "pet_hat",
+  "color": "#ffd23f",
+  "desc": "A tiny crown."
+ },
+ {
+  "id": "pet_hat_shovel",
+  "kind": "pet_hat",
+  "color": "#c8a070",
+  "desc": "A little shovel on a string."
+ },
+ {
+  "id": "mount_tint_map",
+  "kind": "mount_tint",
+  "color": "#d8c8a0",
+  "desc": "Mount colours."
+ },
+ {
+  "id": "mount_tint_gold",
+  "kind": "mount_tint",
+  "color": "#ffd23f",
+  "desc": "Mount colours."
+ },
+ {
+  "id": "mount_tint_ember",
+  "kind": "mount_tint",
+  "color": "#ff8a1f",
+  "desc": "Mount colours."
+ },
+ {
+  "id": "title_color_gold",
+  "kind": "title_color",
+  "color": "#ffd23f",
+  "desc": "Title colour."
+ },
+ {
+  "id": "title_color_star",
+  "kind": "title_color",
+  "color": "#aef6ff",
+  "desc": "Title colour."
+ },
+ {
+  "id": "title_color_ember",
+  "kind": "title_color",
+  "color": "#ff8a1f",
+  "desc": "Title colour."
+ }
+]

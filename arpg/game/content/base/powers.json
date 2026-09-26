@@ -1,86 +1,1435 @@
 [
  {
   "id": "p_ember_trail",
-  "name": "Ember Trail",
-  "desc": "Legendary: Moving leaves burning embers that scorch foes.",
+  "name": "Cinder Trail",
+  "desc": "Legendary: Run faster; fire damage +20%.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "move_speed_pct": 10,
+   "fire_pct": 20
+  },
+  "codex": true,
+  "codex_category": "movement",
+  "pool": "legendary",
   "hook": "move_zone",
-  "stats": {}
+  "hook_desc": "Future: moving leaves burning embers."
  },
  {
   "id": "p_doubled_doll",
   "name": "Twin Stitch",
   "desc": "Legendary: +1 Rag Doll; dolls deal 30% more damage.",
   "class": "stitcher",
+  "slots": [],
   "stats": {
    "summon_count": 1,
    "minion_damage_pct": 30
-  }
+  },
+  "codex": true,
+  "codex_category": "minion",
+  "pool": "legendary"
  },
  {
   "id": "p_star_pierce",
   "name": "Comet Tail",
-  "desc": "Legendary: Projectiles pierce 2 more enemies.",
+  "desc": "Legendary: Projectiles pierce 2 more foes.",
+  "class": "",
+  "slots": [],
   "stats": {
    "pierce": 2
-  }
+  },
+  "codex": true,
+  "codex_category": "projectile",
+  "pool": "legendary"
  },
  {
   "id": "p_extra_bolt",
   "name": "Split Quarrel",
-  "desc": "Legendary: +2 projectiles on every shot.",
+  "desc": "Legendary: Fire 2 extra projectiles.",
+  "class": "",
+  "slots": [
+   "main_hand",
+   "off_hand",
+   "hands"
+  ],
   "stats": {
    "projectiles": 2
-  }
+  },
+  "codex": true,
+  "codex_category": "projectile",
+  "pool": "legendary"
  },
  {
   "id": "p_giant",
   "name": "Giant's Swing",
-  "desc": "Legendary: +30% area of effect.",
+  "desc": "Legendary: Your areas are 30% bigger.",
+  "class": "",
+  "slots": [],
   "stats": {
    "area_pct": 30
-  }
+  },
+  "codex": true,
+  "codex_category": "area",
+  "pool": "legendary"
  },
  {
   "id": "p_vamp",
   "name": "Candle-Drinker",
-  "desc": "Legendary: Heal 2% of damage dealt... in light.",
+  "desc": "Legendary: Every hit heals you 25 life.",
+  "class": "",
+  "slots": [],
   "stats": {
    "life_on_hit": 25
-  }
+  },
+  "codex": true,
+  "codex_category": "defense",
+  "pool": "legendary"
  },
  {
   "id": "p_wall",
   "name": "Unbroken Wick",
-  "desc": "Legendary: 15% damage reduction; +20% block.",
+  "desc": "Legendary: Take 15% less damage; +20% block.",
+  "class": "",
+  "slots": [],
   "stats": {
    "damage_reduction": 15,
    "block": 20
-  }
+  },
+  "codex": true,
+  "codex_category": "defense",
+  "pool": "legendary"
  },
  {
   "id": "p_swift",
   "name": "Rooftop Heels",
-  "desc": "Legendary: +25% movement and attack speed.",
+  "desc": "Legendary: Move 25% and attack 10% faster.",
+  "class": "",
+  "slots": [],
   "stats": {
    "move_speed_pct": 25,
    "attack_speed_pct": 10
-  }
+  },
+  "codex": true,
+  "codex_category": "movement",
+  "pool": "legendary"
  },
  {
   "id": "p_crit",
   "name": "Fortune's Eye",
   "desc": "Legendary: +8% crit chance, +50% crit damage.",
+  "class": "",
+  "slots": [],
   "stats": {
    "crit_chance": 8,
    "crit_damage": 50
-  }
+  },
+  "codex": true,
+  "codex_category": "crit",
+  "pool": "legendary"
  },
  {
   "id": "p_cdr",
   "name": "Clockwork Heart",
-  "desc": "Legendary: 20% cooldown reduction.",
+  "desc": "Legendary: Skills recharge 20% faster.",
+  "class": "",
+  "slots": [],
   "stats": {
    "cdr_pct": 20
-  }
+  },
+  "codex": true,
+  "codex_category": "utility",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_bell_heart",
+  "name": "Heart Like a Bell",
+  "desc": "Legendary: Deal 15% more damage with everything.",
+  "class": "",
+  "slots": [
+   "amulet",
+   "chest",
+   "main_hand"
+  ],
+  "stats": {
+   "more_damage": 15
+  },
+  "codex": true,
+  "codex_category": "damage",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_moonlit",
+  "name": "Moonlit Path",
+  "desc": "Legendary: Holy and cold damage +30%.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "holy_pct": 30,
+   "cold_pct": 30
+  },
+  "codex": true,
+  "codex_category": "element",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_stormglass",
+  "name": "Stormglass",
+  "desc": "Legendary: Lightning damage +40%.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "lightning_pct": 40
+  },
+  "codex": true,
+  "codex_category": "element",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_hearthfire",
+  "name": "Hearthfire",
+  "desc": "Legendary: Fire damage +40%.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "fire_pct": 40
+  },
+  "codex": true,
+  "codex_category": "element",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_frostbloom",
+  "name": "Frostbloom",
+  "desc": "Legendary: Cold damage +40%.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "cold_pct": 40
+  },
+  "codex": true,
+  "codex_category": "element",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_inkwell",
+  "name": "Inkwell Shadow",
+  "desc": "Legendary: Shadow damage +40%.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "shadow_pct": 40
+  },
+  "codex": true,
+  "codex_category": "element",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_dawnsong",
+  "name": "Dawnsong",
+  "desc": "Legendary: Holy damage +40%.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "holy_pct": 40
+  },
+  "codex": true,
+  "codex_category": "element",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_ironbark",
+  "name": "Ironbark",
+  "desc": "Legendary: Physical damage +40%.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "physical_pct": 40
+  },
+  "codex": true,
+  "codex_category": "element",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_brawler",
+  "name": "Brawler's Knuckles",
+  "desc": "Legendary: Melee damage +35%.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "melee_damage_pct": 35
+  },
+  "codex": true,
+  "codex_category": "melee",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_fletcher",
+  "name": "Fletcher's Pride",
+  "desc": "Legendary: Projectile damage +35%.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "projectile_damage_pct": 35
+  },
+  "codex": true,
+  "codex_category": "projectile",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_sweeper",
+  "name": "Chimney Sweeper",
+  "desc": "Legendary: Area damage +35%.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "area_damage_pct": 35
+  },
+  "codex": true,
+  "codex_category": "area",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_first_blow",
+  "name": "First Blow",
+  "desc": "Legendary: Basic attacks deal 60% more damage.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "basic_damage_pct": 60
+  },
+  "codex": true,
+  "codex_category": "melee",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_deep_wick",
+  "name": "Deep Wick",
+  "desc": "Legendary: +60 maximum resource.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "resource_max": 60
+  },
+  "codex": true,
+  "codex_category": "utility",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_flowing",
+  "name": "Flowing Wax",
+  "desc": "Legendary: Regenerate 6 resource per second.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "resource_regen": 6
+  },
+  "codex": true,
+  "codex_category": "utility",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_quickcast",
+  "name": "Quick Fingers",
+  "desc": "Legendary: Cast 20% faster.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "cast_speed_pct": 20
+  },
+  "codex": true,
+  "codex_category": "utility",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_thornskin",
+  "name": "Thornskin",
+  "desc": "Legendary: Attackers take 150 thorns damage.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "thorns": 150
+  },
+  "codex": true,
+  "codex_category": "defense",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_mist_cloak",
+  "name": "Mist Cloak",
+  "desc": "Legendary: +15% dodge.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "dodge": 15
+  },
+  "codex": true,
+  "codex_category": "defense",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_hearth_heart",
+  "name": "Hearth Heart",
+  "desc": "Legendary: +20% life; +20 life per second.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "life_pct": 20,
+   "life_regen": 20
+  },
+  "codex": true,
+  "codex_category": "defense",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_all_weather",
+  "name": "All-Weather Coat",
+  "desc": "Legendary: +20% all resistances.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "resist_all": 20
+  },
+  "codex": true,
+  "codex_category": "defense",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_magpie_eye",
+  "name": "Magpie's Eye",
+  "desc": "Legendary: +50% magic find and gold find.",
+  "class": "",
+  "slots": [
+   "charm",
+   "ring",
+   "amulet",
+   "head"
+  ],
+  "stats": {
+   "magic_find": 50,
+   "gold_find": 50
+  },
+  "codex": true,
+  "codex_category": "utility",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_scholar",
+  "name": "Scholar's Candle",
+  "desc": "Legendary: +15% experience.",
+  "class": "",
+  "slots": [
+   "charm",
+   "ring",
+   "amulet",
+   "head"
+  ],
+  "stats": {
+   "xp_pct": 15
+  },
+  "codex": true,
+  "codex_category": "utility",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_seven_league",
+  "name": "Seven-League Boots",
+  "desc": "Legendary: Move 35% faster.",
+  "class": "",
+  "slots": [
+   "feet"
+  ],
+  "stats": {
+   "move_speed_pct": 35
+  },
+  "codex": true,
+  "codex_category": "movement",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_ringing_blows",
+  "name": "Ringing Blows",
+  "desc": "Legendary: Attack 25% faster.",
+  "class": "",
+  "slots": [
+   "main_hand",
+   "hands",
+   "ring"
+  ],
+  "stats": {
+   "attack_speed_pct": 25
+  },
+  "codex": true,
+  "codex_category": "melee",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_many_hands",
+  "name": "Many Hands",
+  "desc": "Legendary: Minions deal 60% more damage.",
+  "class": "",
+  "slots": [],
+  "stats": {
+   "minion_damage_pct": 60
+  },
+  "codex": true,
+  "codex_category": "minion",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_lb_glowshield",
+  "name": "Glowshield",
+  "desc": "Legendary: Block 25% more; +30% armour.",
+  "class": "lanternbearer",
+  "slots": [],
+  "stats": {
+   "block": 25,
+   "armor_pct": 30
+  },
+  "codex": true,
+  "codex_category": "defense",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_lb_noonday",
+  "name": "Noonday Sun",
+  "desc": "Legendary: Holy damage +50%; areas 15% bigger.",
+  "class": "lanternbearer",
+  "slots": [],
+  "stats": {
+   "holy_pct": 50,
+   "area_pct": 15
+  },
+  "codex": true,
+  "codex_category": "element",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_lb_wick_oath",
+  "name": "Oath of the Wick",
+  "desc": "Legendary: +20% damage and +10% damage reduction.",
+  "class": "lanternbearer",
+  "slots": [],
+  "stats": {
+   "damage_pct": 20,
+   "damage_reduction": 10
+  },
+  "codex": true,
+  "codex_category": "defense",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_bs_carillon",
+  "name": "Carillon Core",
+  "desc": "Legendary: Area damage +50%; attack 10% faster.",
+  "class": "bellstriker",
+  "slots": [],
+  "stats": {
+   "area_damage_pct": 50,
+   "attack_speed_pct": 10
+  },
+  "codex": true,
+  "codex_category": "area",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_bs_bronze_lungs",
+  "name": "Bronze Lungs",
+  "desc": "Legendary: +80 maximum Fury; +20 life on hit.",
+  "class": "bellstriker",
+  "slots": [],
+  "stats": {
+   "resource_max": 80,
+   "life_on_hit": 20
+  },
+  "codex": true,
+  "codex_category": "utility",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_bs_quakefoot",
+  "name": "Quakefoot",
+  "desc": "Legendary: Physical damage +50%; +15% area.",
+  "class": "bellstriker",
+  "slots": [],
+  "stats": {
+   "physical_pct": 50,
+   "area_pct": 15
+  },
+  "codex": true,
+  "codex_category": "area",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_sg_orrery",
+  "name": "Pocket Orrery",
+  "desc": "Legendary: Skills recharge 25% faster; +10% cast speed.",
+  "class": "stargazer",
+  "slots": [],
+  "stats": {
+   "cdr_pct": 25,
+   "cast_speed_pct": 10
+  },
+  "codex": true,
+  "codex_category": "utility",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_sg_twin_stars",
+  "name": "Twin Stars",
+  "desc": "Legendary: Fire 1 extra projectile; +25% projectile damage.",
+  "class": "stargazer",
+  "slots": [],
+  "stats": {
+   "projectiles": 1,
+   "projectile_damage_pct": 25
+  },
+  "codex": true,
+  "codex_category": "projectile",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_sg_nebula",
+  "name": "Nebula Mantle",
+  "desc": "Legendary: Area damage +40%; +12% area.",
+  "class": "stargazer",
+  "slots": [],
+  "stats": {
+   "area_damage_pct": 40,
+   "area_pct": 12
+  },
+  "codex": true,
+  "codex_category": "area",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_st_big_family",
+  "name": "Big Family Blanket",
+  "desc": "Legendary: +2 dolls; dolls deal 15% more damage.",
+  "class": "stitcher",
+  "slots": [],
+  "stats": {
+   "summon_count": 2,
+   "minion_damage_pct": 15
+  },
+  "codex": true,
+  "codex_category": "minion",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_st_pinstorm",
+  "name": "Pinstorm",
+  "desc": "Legendary: Throw 2 extra pins; pins pierce 1 more.",
+  "class": "stitcher",
+  "slots": [],
+  "stats": {
+   "projectiles": 2,
+   "pierce": 1
+  },
+  "codex": true,
+  "codex_category": "projectile",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_st_knotwork",
+  "name": "Knotwork",
+  "desc": "Legendary: Shadow damage +50%; +10% cooldown recovery.",
+  "class": "stitcher",
+  "slots": [],
+  "stats": {
+   "shadow_pct": 50,
+   "cdr_pct": 10
+  },
+  "codex": true,
+  "codex_category": "element",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_rr_chimney",
+  "name": "Chimney Sweep's Luck",
+  "desc": "Legendary: +12% crit chance; +10% dodge.",
+  "class": "roofrunner",
+  "slots": [],
+  "stats": {
+   "crit_chance": 12,
+   "dodge": 10
+  },
+  "codex": true,
+  "codex_category": "crit",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_rr_repeater",
+  "name": "Repeater Springs",
+  "desc": "Legendary: Attack 30% faster with every weapon.",
+  "class": "roofrunner",
+  "slots": [],
+  "stats": {
+   "attack_speed_pct": 30
+  },
+  "codex": true,
+  "codex_category": "projectile",
+  "pool": "legendary"
+ },
+ {
+  "id": "p_rr_blackpowder",
+  "name": "Black Powder",
+  "desc": "Legendary: Fire damage +40%; area damage +25%.",
+  "class": "roofrunner",
+  "slots": [],
+  "stats": {
+   "fire_pct": 40,
+   "area_damage_pct": 25
+  },
+  "codex": true,
+  "codex_category": "area",
+  "pool": "legendary"
+ },
+ {
+  "id": "pu_tollys_morning_note",
+  "name": "Morning Note",
+  "desc": "Unique: Every swing rings: attack 20% faster.",
+  "class": "bellstriker",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "attack_speed_pct": 20
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_warden_helm",
+  "name": "Grow Into It",
+  "desc": "Unique: Take 12% less damage.",
+  "class": "lanternbearer",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "damage_reduction": 12
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_purls_scarf",
+  "name": "Nearly Long Enough",
+  "desc": "Unique: +1 Rag Doll.",
+  "class": "stitcher",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "summon_count": 1
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_bog_newt_boots",
+  "name": "Squelch!",
+  "desc": "Unique: Move 20% faster.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "move_speed_pct": 20
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_candle_mages_last_wick",
+  "name": "Politely Returned",
+  "desc": "Unique: Fire damage +40%.",
+  "class": "stargazer",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "fire_pct": 40
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_rattlers_nightcap",
+  "name": "Sleep Tight",
+  "desc": "Unique: Gain 12% more experience.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "xp_pct": 12
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_mother_barks_jar",
+  "name": "Bottled Shadow",
+  "desc": "Unique: Shadow damage +45%.",
+  "class": "stitcher",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "shadow_pct": 45
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_birch_whisper",
+  "name": "Rumour Arrows",
+  "desc": "Unique: Bolts pierce 3 more foes.",
+  "class": "roofrunner",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "pierce": 3
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_owlcrow_eye",
+  "name": "Always Watching",
+  "desc": "Unique: +10% crit chance.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "crit_chance": 10
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_puffcap_hood",
+  "name": "Sparkle Sneeze",
+  "desc": "Unique: Areas are 25% bigger.",
+  "class": "stargazer",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "area_pct": 25
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_moss_hound_collar",
+  "name": "Goodest Boy",
+  "desc": "Unique: Pets gain 50% more experience; you move 10% faster.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "pet_xp_pct": 50,
+   "move_speed_pct": 10
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_hobs_acorn",
+  "name": "Grow",
+  "desc": "Unique: +15% life.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "life_pct": 15
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_twigling_crown",
+  "name": "Poke Back",
+  "desc": "Unique: Attackers take 120 thorns damage.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "thorns": 120
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_digdeep_pick",
+  "name": "First Line",
+  "desc": "Unique: Physical damage +50%.",
+  "class": "bellstriker",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "physical_pct": 50
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_digbright",
+  "name": "Second Line",
+  "desc": "Unique: Holy damage +50%.",
+  "class": "lanternbearer",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "holy_pct": 50
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_crystal_spider_silk",
+  "name": "Clink Clink",
+  "desc": "Unique: +8% crit chance, attack 10% faster.",
+  "class": "roofrunner",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "crit_chance": 8,
+   "attack_speed_pct": 10
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_cart_six",
+  "name": "It Always Comes Back",
+  "desc": "Unique: Block 20% more.",
+  "class": "lanternbearer",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "block": 20
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_echo_annies_shawl",
+  "name": "Warm. Warm.",
+  "desc": "Unique: +20 life per second.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "life_regen": 20
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_salt_golem_heart",
+  "name": "Salty Middle",
+  "desc": "Unique: Take 10% less damage.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "damage_reduction": 10
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_lou_levers_lever",
+  "name": "Ding!",
+  "desc": "Unique: Skills recharge 20% faster.",
+  "class": "stargazer",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "cdr_pct": 20
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_toast_everlasting",
+  "name": "Cheers!",
+  "desc": "Unique: Cold damage +50%.",
+  "class": "stargazer",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "cold_pct": 50
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_warmhearth_crown",
+  "name": "Thaw",
+  "desc": "Unique: +15% all resistances.",
+  "class": "lanternbearer",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "resist_all": 15
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_mirror_butler_tray",
+  "name": "Deepest Apologies",
+  "desc": "Unique: Attackers take 200 thorns damage.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "thorns": 200
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_porcelain_smile",
+  "name": "Don't Blink",
+  "desc": "Unique: Dolls deal 50% more damage.",
+  "class": "stitcher",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "minion_damage_pct": 50
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_tinwhistle_medal",
+  "name": "For Bravery",
+  "desc": "Unique: +25% armour.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "armor_pct": 25
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_pips_tiara",
+  "name": "Royal Orders",
+  "desc": "Unique: Your minions deal 30% more damage and you gain 10% cooldown recovery.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "minion_damage_pct": 30,
+   "cdr_pct": 10
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_rooftop_hood",
+  "name": "Soot and Adventure",
+  "desc": "Unique: +12% dodge.",
+  "class": "roofrunner",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "dodge": 12
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_frost_jester_bells",
+  "name": "Half a Joke",
+  "desc": "Unique: +40% crit damage.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "crit_damage": 40
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_nobodys_hat",
+  "name": "Very Good Hat",
+  "desc": "Unique: +60% magic find.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "magic_find": 60
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_quiet_stair_boots",
+  "name": "Little Lights",
+  "desc": "Unique: Move 25% faster.",
+  "class": "roofrunner",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "move_speed_pct": 25
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_hollow_choir_bell",
+  "name": "Silent Peal",
+  "desc": "Unique: Area damage +40%.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "area_damage_pct": 40
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_pells_trimmers",
+  "name": "Snip Snip",
+  "desc": "Unique: +10% crit chance.",
+  "class": "roofrunner",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "crit_chance": 10
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_ninety_nine_chairs",
+  "name": "Someone Sat Down",
+  "desc": "Unique: Take 15% less damage.",
+  "class": "lanternbearer",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "damage_reduction": 15
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_lastlight_lens",
+  "name": "Very Big Lights",
+  "desc": "Unique: Areas are 35% bigger.",
+  "class": "stargazer",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "area_pct": 35
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_mother_simmers_ladle",
+  "name": "Stir Left",
+  "desc": "Unique: Heal 40 life on every hit.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "life_on_hit": 40
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_nibs_borrowing_glove",
+  "name": "Borrowed Forever",
+  "desc": "Unique: +80% gold find.",
+  "class": "roofrunner",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "gold_find": 80
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_magpie_hoard_key",
+  "name": "The Door That Isn't",
+  "desc": "Unique: +40% magic find.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "magic_find": 40
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_moth_choir_cloak",
+  "name": "A Thousand Wings",
+  "desc": "Unique: +1 doll and dolls are 40% tougher.",
+  "class": "stitcher",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "summon_count": 1,
+   "minion_life_pct": 40
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_first_spark",
+  "name": "The First Memory",
+  "desc": "Unique: Deal 10% more damage with everything.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "more_damage": 10
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pu_long_shadow_mantle",
+  "name": "Close to the Light",
+  "desc": "Unique: +15% dodge; move 15% faster.",
+  "class": "",
+  "slots": [
+   "__unique"
+  ],
+  "stats": {
+   "dodge": 15,
+   "move_speed_pct": 15
+  },
+  "codex": true,
+  "codex_category": "unique",
+  "pool": "unique"
+ },
+ {
+  "id": "pn_morning_never_came",
+  "name": "Dawn Postponed",
+  "desc": "Named: Deal 30% more damage; holy damage +50%.",
+  "class": "lanternbearer",
+  "slots": [
+   "__named"
+  ],
+  "stats": {
+   "more_damage": 30,
+   "holy_pct": 50
+  },
+  "codex": true,
+  "codex_category": "named",
+  "pool": "named"
+ },
+ {
+  "id": "pn_grandmothers_needles",
+  "name": "The Last Scarf",
+  "desc": "Named: +2 dolls; dolls deal 60% more damage.",
+  "class": "stitcher",
+  "slots": [
+   "__named"
+  ],
+  "stats": {
+   "summon_count": 2,
+   "minion_damage_pct": 60
+  },
+  "codex": true,
+  "codex_category": "named",
+  "pool": "named"
+ },
+ {
+  "id": "pn_bell_that_doesnt_ring",
+  "name": "Silent Toll",
+  "desc": "Named: Deal 35% more damage; areas 25% bigger.",
+  "class": "bellstriker",
+  "slots": [
+   "__named"
+  ],
+  "stats": {
+   "more_damage": 35,
+   "area_pct": 25
+  },
+  "codex": true,
+  "codex_category": "named",
+  "pool": "named"
+ },
+ {
+  "id": "pn_owls_last_question",
+  "name": "I Don't Know",
+  "desc": "Named: Skills recharge 30% faster; deal 20% more damage.",
+  "class": "stargazer",
+  "slots": [
+   "__named"
+  ],
+  "stats": {
+   "cdr_pct": 30,
+   "more_damage": 20
+  },
+  "codex": true,
+  "codex_category": "named",
+  "pool": "named"
+ },
+ {
+  "id": "pn_frog_kings_croak",
+  "name": "Croak Volley",
+  "desc": "Named: Fire 3 extra bolts.",
+  "class": "roofrunner",
+  "slots": [
+   "__named"
+  ],
+  "stats": {
+   "projectiles": 3
+  },
+  "codex": true,
+  "codex_category": "named",
+  "pool": "named"
+ },
+ {
+  "id": "pn_tea_party_guestbook",
+  "name": "Cold Tea, Warm Heart",
+  "desc": "Named: Take 15% less damage; +30 life per second.",
+  "class": "",
+  "slots": [
+   "__named"
+  ],
+  "stats": {
+   "damage_reduction": 15,
+   "life_regen": 30
+  },
+  "codex": true,
+  "codex_category": "named",
+  "pool": "named"
+ },
+ {
+  "id": "pn_letter_opener",
+  "name": "Dear You",
+  "desc": "Named: Fire 2 extra projectiles; +30% cast speed.",
+  "class": "stargazer",
+  "slots": [
+   "__named"
+  ],
+  "stats": {
+   "projectiles": 2,
+   "cast_speed_pct": 30
+  },
+  "codex": true,
+  "codex_category": "named",
+  "pool": "named"
+ },
+ {
+  "id": "pn_magpies_last_coin",
+  "name": "Heads, You Win",
+  "desc": "Named: +15% crit chance, +80% crit damage.",
+  "class": "roofrunner",
+  "slots": [
+   "__named"
+  ],
+  "stats": {
+   "crit_chance": 15,
+   "crit_damage": 80
+  },
+  "codex": true,
+  "codex_category": "named",
+  "pool": "named"
+ },
+ {
+  "id": "pn_toffee_cleaver",
+  "name": "Sugar Rush",
+  "desc": "Named: Attack 25% faster; move 15% faster.",
+  "class": "",
+  "slots": [
+   "__named"
+  ],
+  "stats": {
+   "attack_speed_pct": 25,
+   "move_speed_pct": 15
+  },
+  "codex": true,
+  "codex_category": "named",
+  "pool": "named"
  }
 ]

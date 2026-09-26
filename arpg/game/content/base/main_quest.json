@@ -1,0 +1,1354 @@
+[
+ {
+  "id": "mq_a1_01",
+  "act": "act1",
+  "order": 1,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a1_town",
+    "count": 1,
+    "zone": "a1_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a1_questgiver",
+    "count": 1,
+    "zone": "a1_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 210
+  },
+  "requires": "",
+  "next": "mq_a1_02",
+  "text_ref": "mq_a1_01"
+ },
+ {
+  "id": "mq_a1_02",
+  "act": "act1",
+  "order": 2,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a1_z1",
+    "count": 1,
+    "zone": "a1_z1"
+   },
+   {
+    "type": "rekindle",
+    "target": "rattler",
+    "count": 8,
+    "zone": "a1_z1"
+   },
+   {
+    "type": "collect",
+    "target": "qi_floating_lamp",
+    "count": 5,
+    "zone": "a1_z1",
+    "drop_while_active": {
+     "chance": 0.25,
+     "from": "zone_monsters"
+    }
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 210
+  },
+  "requires": "mq_a1_01",
+  "next": "mq_a1_03",
+  "text_ref": "mq_a1_02"
+ },
+ {
+  "id": "mq_a1_03",
+  "act": "act1",
+  "order": 3,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a1_waypoint",
+    "count": 1,
+    "zone": "a1_town"
+   },
+   {
+    "type": "escort",
+    "target": "escort_wisp_glim",
+    "count": 1,
+    "zone": "a1_town"
+   },
+   {
+    "type": "reach",
+    "target": "a1_z2",
+    "count": 1,
+    "zone": "a1_z2"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 210
+  },
+  "requires": "mq_a1_02",
+  "next": "mq_a1_04",
+  "text_ref": "mq_a1_03"
+ },
+ {
+  "id": "mq_a1_04",
+  "act": "act1",
+  "order": 4,
+  "objectives": [
+   {
+    "type": "rekindle",
+    "target": "magpie_imp",
+    "count": 1,
+    "zone": "a1_town"
+   },
+   {
+    "type": "collect",
+    "target": "qi_crypt_key",
+    "count": 1,
+    "zone": "a1_town",
+    "drop_while_active": {
+     "chance": 0.25,
+     "from": "zone_monsters"
+    }
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 210,
+   "hook": "first_legendary",
+   "item_rarity": "legendary"
+  },
+  "requires": "mq_a1_03",
+  "next": "mq_a1_05",
+  "text_ref": "mq_a1_04"
+ },
+ {
+  "id": "mq_a1_05",
+  "act": "act1",
+  "order": 5,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a1_z3",
+    "count": 1,
+    "zone": "a1_z3"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a1_bell_ropes",
+    "count": 1,
+    "zone": "a1_z3"
+   },
+   {
+    "type": "rekindle",
+    "target": "warden",
+    "count": 1,
+    "zone": "a1_z3"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 210
+  },
+  "requires": "mq_a1_04",
+  "next": "mq_a1_06",
+  "text_ref": "mq_a1_05"
+ },
+ {
+  "id": "mq_a1_06",
+  "act": "act1",
+  "order": 6,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a1_storyteller",
+    "count": 1,
+    "zone": "a1_town"
+   },
+   {
+    "type": "collect",
+    "target": "jr_bell_log",
+    "count": 1,
+    "zone": "a1_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a1_smith",
+    "count": 1,
+    "zone": "a1_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 210,
+   "unlock": "profession:smith"
+  },
+  "requires": "mq_a1_05",
+  "next": "mq_a1_07",
+  "text_ref": "mq_a1_06"
+ },
+ {
+  "id": "mq_a1_07",
+  "act": "act1",
+  "order": 7,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a1_boss",
+    "count": 1,
+    "zone": "a1_boss"
+   },
+   {
+    "type": "boss",
+    "target": "sunken_bellringer",
+    "count": 1,
+    "zone": "a1_boss"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.6,
+   "gold": 210,
+   "skill_points": 1,
+   "item_rarity": "legendary",
+   "unlock": "act:act2"
+  },
+  "requires": "mq_a1_06",
+  "next": "mq_a1_08",
+  "text_ref": "mq_a1_07"
+ },
+ {
+  "id": "mq_a1_08",
+  "act": "act1",
+  "order": 8,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a1_town",
+    "count": 1,
+    "zone": "a1_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a1_questgiver",
+    "count": 1,
+    "zone": "a1_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 210
+  },
+  "requires": "mq_a1_07",
+  "next": "mq_a2_01",
+  "text_ref": "mq_a1_08"
+ },
+ {
+  "id": "mq_a2_01",
+  "act": "act2",
+  "order": 1,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a2_town",
+    "count": 1,
+    "zone": "a2_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a2_questgiver",
+    "count": 1,
+    "zone": "a2_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 730
+  },
+  "requires": "mq_a1_08",
+  "next": "mq_a2_02",
+  "text_ref": "mq_a2_01"
+ },
+ {
+  "id": "mq_a2_02",
+  "act": "act2",
+  "order": 2,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a2_z1",
+    "count": 1,
+    "zone": "a2_z1"
+   },
+   {
+    "type": "rekindle",
+    "target": "twigling",
+    "count": 12,
+    "zone": "a2_z1"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a2_honest_birch",
+    "count": 1,
+    "zone": "a2_z1"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 730
+  },
+  "requires": "mq_a2_01",
+  "next": "mq_a2_03",
+  "text_ref": "mq_a2_02"
+ },
+ {
+  "id": "mq_a2_03",
+  "act": "act2",
+  "order": 3,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a2_storyteller",
+    "count": 1,
+    "zone": "a2_town"
+   },
+   {
+    "type": "collect",
+    "target": "qi_shadow_moth",
+    "count": 3,
+    "zone": "a2_town",
+    "drop_while_active": {
+     "chance": 0.25,
+     "from": "zone_monsters"
+    }
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 730,
+   "unlock": "profession:alchemist"
+  },
+  "requires": "mq_a2_02",
+  "next": "mq_a2_04",
+  "text_ref": "mq_a2_03"
+ },
+ {
+  "id": "mq_a2_04",
+  "act": "act2",
+  "order": 4,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a2_z2",
+    "count": 1,
+    "zone": "a2_z2"
+   },
+   {
+    "type": "escort",
+    "target": "escort_owlet_doughnut",
+    "count": 1,
+    "zone": "a2_z2"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a2_alchemist",
+    "count": 1,
+    "zone": "a2_z2"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 730
+  },
+  "requires": "mq_a2_03",
+  "next": "mq_a2_05",
+  "text_ref": "mq_a2_04"
+ },
+ {
+  "id": "mq_a2_05",
+  "act": "act2",
+  "order": 5,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a2_z3",
+    "count": 1,
+    "zone": "a2_z3"
+   },
+   {
+    "type": "rekindle",
+    "target": "owlcrow",
+    "count": 10,
+    "zone": "a2_z3"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a2_owlcrow_riddle",
+    "count": 1,
+    "zone": "a2_z3"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 730
+  },
+  "requires": "mq_a2_04",
+  "next": "mq_a2_06",
+  "text_ref": "mq_a2_05"
+ },
+ {
+  "id": "mq_a2_06",
+  "act": "act2",
+  "order": 6,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a2_boss",
+    "count": 1,
+    "zone": "a2_boss"
+   },
+   {
+    "type": "boss",
+    "target": "mother_bark",
+    "count": 1,
+    "zone": "a2_boss"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.6,
+   "gold": 730,
+   "skill_points": 1,
+   "item_rarity": "epic",
+   "unlock": "act:act3"
+  },
+  "requires": "mq_a2_05",
+  "next": "mq_a2_07",
+  "text_ref": "mq_a2_06"
+ },
+ {
+  "id": "mq_a2_07",
+  "act": "act2",
+  "order": 7,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "mother_bark",
+    "count": 1,
+    "zone": "a2_town"
+   },
+   {
+    "type": "collect",
+    "target": "qi_empty_jar",
+    "count": 1,
+    "zone": "a2_town",
+    "drop_while_active": {
+     "chance": 0.25,
+     "from": "zone_monsters"
+    }
+   },
+   {
+    "type": "talk",
+    "target": "npc_a2_questgiver",
+    "count": 1,
+    "zone": "a2_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 730
+  },
+  "requires": "mq_a2_06",
+  "next": "mq_a3_01",
+  "text_ref": "mq_a2_07"
+ },
+ {
+  "id": "mq_a3_01",
+  "act": "act3",
+  "order": 1,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a3_town",
+    "count": 1,
+    "zone": "a3_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a3_waypoint",
+    "count": 1,
+    "zone": "a3_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a3_questgiver",
+    "count": 1,
+    "zone": "a3_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1210
+  },
+  "requires": "mq_a2_07",
+  "next": "mq_a3_02",
+  "text_ref": "mq_a3_01"
+ },
+ {
+  "id": "mq_a3_02",
+  "act": "act3",
+  "order": 2,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a3_z1",
+    "count": 1,
+    "zone": "a3_z1"
+   },
+   {
+    "type": "rekindle",
+    "target": "digling",
+    "count": 15,
+    "zone": "a3_z1"
+   },
+   {
+    "type": "collect",
+    "target": "qi_song_scrap",
+    "count": 3,
+    "zone": "a3_z1",
+    "drop_while_active": {
+     "chance": 0.25,
+     "from": "zone_monsters"
+    }
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1210
+  },
+  "requires": "mq_a3_01",
+  "next": "mq_a3_03",
+  "text_ref": "mq_a3_02"
+ },
+ {
+  "id": "mq_a3_03",
+  "act": "act3",
+  "order": 3,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a3_z2",
+    "count": 1,
+    "zone": "a3_z2"
+   },
+   {
+    "type": "rekindle",
+    "target": "crystal_spider",
+    "count": 10,
+    "zone": "a3_z2"
+   },
+   {
+    "type": "escort",
+    "target": "escort_lamp_lenny",
+    "count": 1,
+    "zone": "a3_z2"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1210
+  },
+  "requires": "mq_a3_02",
+  "next": "mq_a3_04",
+  "text_ref": "mq_a3_03"
+ },
+ {
+  "id": "mq_a3_04",
+  "act": "act3",
+  "order": 4,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a3_z3",
+    "count": 1,
+    "zone": "a3_z3"
+   },
+   {
+    "type": "rekindle",
+    "target": "cart_mimic",
+    "count": 1,
+    "zone": "a3_z3"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a3_stash",
+    "count": 1,
+    "zone": "a3_z3"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1210
+  },
+  "requires": "mq_a3_03",
+  "next": "mq_a3_05",
+  "text_ref": "mq_a3_04"
+ },
+ {
+  "id": "mq_a3_05",
+  "act": "act3",
+  "order": 5,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a3_storyteller",
+    "count": 1,
+    "zone": "a3_town"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a3_song_order",
+    "count": 1,
+    "zone": "a3_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a3_smith",
+    "count": 1,
+    "zone": "a3_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1210,
+   "unlock": "profession:jeweler"
+  },
+  "requires": "mq_a3_04",
+  "next": "mq_a3_06",
+  "text_ref": "mq_a3_05"
+ },
+ {
+  "id": "mq_a3_06",
+  "act": "act3",
+  "order": 6,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a3_boss",
+    "count": 1,
+    "zone": "a3_boss"
+   },
+   {
+    "type": "boss",
+    "target": "great_echo",
+    "count": 1,
+    "zone": "a3_boss"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.6,
+   "gold": 1210,
+   "skill_points": 1,
+   "item_rarity": "epic",
+   "unlock": "act:act4"
+  },
+  "requires": "mq_a3_05",
+  "next": "mq_a3_07",
+  "text_ref": "mq_a3_06"
+ },
+ {
+  "id": "mq_a3_07",
+  "act": "act3",
+  "order": 7,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "great_echo",
+    "count": 1,
+    "zone": "a3_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a3_jeweler",
+    "count": 1,
+    "zone": "a3_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1210
+  },
+  "requires": "mq_a3_06",
+  "next": "mq_a4_01",
+  "text_ref": "mq_a3_07"
+ },
+ {
+  "id": "mq_a4_01",
+  "act": "act4",
+  "order": 1,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a4_town",
+    "count": 1,
+    "zone": "a4_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a4_innkeeper",
+    "count": 1,
+    "zone": "a4_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a4_questgiver",
+    "count": 1,
+    "zone": "a4_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1690
+  },
+  "requires": "mq_a3_07",
+  "next": "mq_a4_02",
+  "text_ref": "mq_a4_01"
+ },
+ {
+  "id": "mq_a4_02",
+  "act": "act4",
+  "order": 2,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a4_petkeeper",
+    "count": 1,
+    "zone": "a4_town"
+   },
+   {
+    "type": "escort",
+    "target": "escort_sir_wobble",
+    "count": 1,
+    "zone": "a4_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1690
+  },
+  "requires": "mq_a4_01",
+  "next": "mq_a4_03",
+  "text_ref": "mq_a4_02"
+ },
+ {
+  "id": "mq_a4_03",
+  "act": "act4",
+  "order": 3,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a4_z1",
+    "count": 1,
+    "zone": "a4_z1"
+   },
+   {
+    "type": "rekindle",
+    "target": "snow_hound",
+    "count": 10,
+    "zone": "a4_z1"
+   },
+   {
+    "type": "collect",
+    "target": "qi_name_letter_a",
+    "count": 1,
+    "zone": "a4_z1",
+    "drop_while_active": {
+     "chance": 0.25,
+     "from": "zone_monsters"
+    }
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1690
+  },
+  "requires": "mq_a4_02",
+  "next": "mq_a4_04",
+  "text_ref": "mq_a4_03"
+ },
+ {
+  "id": "mq_a4_04",
+  "act": "act4",
+  "order": 4,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a4_z2",
+    "count": 1,
+    "zone": "a4_z2"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a4_third_mirror",
+    "count": 1,
+    "zone": "a4_z2"
+   },
+   {
+    "type": "rekindle",
+    "target": "mirror_butler",
+    "count": 6,
+    "zone": "a4_z2"
+   },
+   {
+    "type": "collect",
+    "target": "qi_name_letter_l",
+    "count": 1,
+    "zone": "a4_z2",
+    "drop_while_active": {
+     "chance": 0.25,
+     "from": "zone_monsters"
+    }
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1690
+  },
+  "requires": "mq_a4_03",
+  "next": "mq_a4_05",
+  "text_ref": "mq_a4_04"
+ },
+ {
+  "id": "mq_a4_05",
+  "act": "act4",
+  "order": 5,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a4_z3",
+    "count": 1,
+    "zone": "a4_z3"
+   },
+   {
+    "type": "rekindle",
+    "target": "tin_soldier",
+    "count": 12,
+    "zone": "a4_z3"
+   },
+   {
+    "type": "collect",
+    "target": "qi_name_letter_d",
+    "count": 1,
+    "zone": "a4_z3",
+    "drop_while_active": {
+     "chance": 0.25,
+     "from": "zone_monsters"
+    }
+   },
+   {
+    "type": "collect",
+    "target": "qi_name_letter_r",
+    "count": 1,
+    "zone": "a4_z3",
+    "drop_while_active": {
+     "chance": 0.25,
+     "from": "zone_monsters"
+    }
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1690
+  },
+  "requires": "mq_a4_04",
+  "next": "mq_a4_06",
+  "text_ref": "mq_a4_05"
+ },
+ {
+  "id": "mq_a4_06",
+  "act": "act4",
+  "order": 6,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a4_boss",
+    "count": 1,
+    "zone": "a4_boss"
+   },
+   {
+    "type": "boss",
+    "target": "king_who_forgot",
+    "count": 1,
+    "zone": "a4_boss"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.6,
+   "gold": 1690,
+   "skill_points": 1,
+   "item_rarity": "epic",
+   "unlock": "act:act5"
+  },
+  "requires": "mq_a4_05",
+  "next": "mq_a4_07",
+  "text_ref": "mq_a4_06"
+ },
+ {
+  "id": "mq_a4_07",
+  "act": "act4",
+  "order": 7,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "king_who_forgot",
+    "count": 1,
+    "zone": "a4_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a4_runecarver",
+    "count": 1,
+    "zone": "a4_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 1690,
+   "unlock": "profession:runecarver"
+  },
+  "requires": "mq_a4_06",
+  "next": "mq_a5_01",
+  "text_ref": "mq_a4_07"
+ },
+ {
+  "id": "mq_a5_01",
+  "act": "act5",
+  "order": 1,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_town",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a5_innkeeper",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a5_questgiver",
+    "count": 1,
+    "zone": "a5_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 2210
+  },
+  "requires": "mq_a4_07",
+  "next": "mq_a5_02",
+  "text_ref": "mq_a5_01"
+ },
+ {
+  "id": "mq_a5_02",
+  "act": "act5",
+  "order": 2,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_z1",
+    "count": 1,
+    "zone": "a5_z1"
+   },
+   {
+    "type": "rekindle",
+    "target": "hushling",
+    "count": 15,
+    "zone": "a5_z1"
+   },
+   {
+    "type": "escort",
+    "target": "escort_nobody",
+    "count": 1,
+    "zone": "a5_z1"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 2210
+  },
+  "requires": "mq_a5_01",
+  "next": "mq_a5_03",
+  "text_ref": "mq_a5_02"
+ },
+ {
+  "id": "mq_a5_03",
+  "act": "act5",
+  "order": 3,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_z2",
+    "count": 1,
+    "zone": "a5_z2"
+   },
+   {
+    "type": "collect",
+    "target": "qi_lost_colour",
+    "count": 5,
+    "zone": "a5_z2",
+    "drop_while_active": {
+     "chance": 0.25,
+     "from": "zone_monsters"
+    }
+   },
+   {
+    "type": "rekindle",
+    "target": "faded_knight",
+    "count": 6,
+    "zone": "a5_z2"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 2210
+  },
+  "requires": "mq_a5_02",
+  "next": "mq_a5_04",
+  "text_ref": "mq_a5_03"
+ },
+ {
+  "id": "mq_a5_04",
+  "act": "act5",
+  "order": 4,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a5_storyteller",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "collect",
+    "target": "jr_pell_5",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a5_questgiver",
+    "count": 1,
+    "zone": "a5_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 2210,
+   "unlock": "feature:cauldron"
+  },
+  "requires": "mq_a5_03",
+  "next": "mq_a5_05",
+  "text_ref": "mq_a5_04"
+ },
+ {
+  "id": "mq_a5_05",
+  "act": "act5",
+  "order": 5,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_z3",
+    "count": 1,
+    "zone": "a5_z3"
+   },
+   {
+    "type": "rekindle",
+    "target": "sound_eater",
+    "count": 8,
+    "zone": "a5_z3"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a5_silent_steps",
+    "count": 1,
+    "zone": "a5_z3"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 2210
+  },
+  "requires": "mq_a5_04",
+  "next": "mq_a5_06",
+  "text_ref": "mq_a5_05"
+ },
+ {
+  "id": "mq_a5_06",
+  "act": "act5",
+  "order": 6,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "sunken_bellringer",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "talk",
+    "target": "mother_bark",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "talk",
+    "target": "great_echo",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "talk",
+    "target": "king_who_forgot",
+    "count": 1,
+    "zone": "a5_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 2210
+  },
+  "requires": "mq_a5_05",
+  "next": "mq_a5_07",
+  "text_ref": "mq_a5_06"
+ },
+ {
+  "id": "mq_a5_07",
+  "act": "act5",
+  "order": 7,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_boss",
+    "count": 1,
+    "zone": "a5_boss"
+   },
+   {
+    "type": "boss",
+    "target": "grey_guest",
+    "count": 1,
+    "zone": "a5_boss"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.6,
+   "gold": 2210,
+   "skill_points": 1,
+   "item_rarity": "epic",
+   "unlock": "difficulty:nightfall"
+  },
+  "requires": "mq_a5_06",
+  "next": "mq_a5_08",
+  "text_ref": "mq_a5_07"
+ },
+ {
+  "id": "mq_a5_08",
+  "act": "act5",
+  "order": 8,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "grey_guest",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "reach",
+    "target": "a5_town",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a5_questgiver",
+    "count": 1,
+    "zone": "a5_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 2210
+  },
+  "requires": "mq_a5_07",
+  "next": "mq_dd_01",
+  "text_ref": "mq_a5_08"
+ },
+ {
+  "id": "mq_dd_01",
+  "act": "deepdark",
+  "order": 1,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a5_pell",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "reach",
+    "target": "deepdark",
+    "count": 1,
+    "zone": "deepdark"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 2450,
+   "unlock": "feature:deepdark"
+  },
+  "requires": "mq_a5_08",
+  "next": "mq_dd_02",
+  "text_ref": "mq_dd_01"
+ },
+ {
+  "id": "mq_dd_02",
+  "act": "deepdark",
+  "order": 2,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a1_questgiver",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "reach",
+    "target": "lightwell",
+    "count": 1,
+    "zone": "lightwell"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 2450,
+   "unlock": "feature:lightwells"
+  },
+  "requires": "mq_dd_01",
+  "next": "mq_dd_03",
+  "text_ref": "mq_dd_02"
+ },
+ {
+  "id": "mq_dd_03",
+  "act": "deepdark",
+  "order": 3,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a5_smith",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "reach",
+    "target": "deepdark",
+    "count": 3,
+    "zone": "deepdark"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 2450
+  },
+  "requires": "mq_dd_02",
+  "next": "mq_dd_04",
+  "text_ref": "mq_dd_03"
+ },
+ {
+  "id": "mq_dd_04",
+  "act": "deepdark",
+  "order": 4,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "mother_bark",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "boss",
+    "target": "long_shadow",
+    "count": 1,
+    "zone": "a5_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.6,
+   "gold": 2450,
+   "skill_points": 1,
+   "item_rarity": "epic"
+  },
+  "requires": "mq_dd_03",
+  "next": "mq_dd_05",
+  "text_ref": "mq_dd_04"
+ },
+ {
+  "id": "mq_dd_05",
+  "act": "deepdark",
+  "order": 5,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_town",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a5_questgiver",
+    "count": 1,
+    "zone": "a5_town"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_dd_chair",
+    "count": 1,
+    "zone": "a5_town"
+   }
+  ],
+  "rewards": {
+   "xp_levels": 0.25,
+   "gold": 2450
+  },
+  "requires": "mq_dd_04",
+  "next": "mq_dd_06",
+  "text_ref": "mq_dd_05"
+ },
+ {
+  "id": "mq_dd_06",
+  "act": "deepdark",
+  "order": 6,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "brightness",
+    "count": 200,
+    "zone": ""
+   },
+   {
+    "type": "collect",
+    "target": "sc_mailbox_last",
+    "count": 1,
+    "zone": "a5_town"
+   }
+  ],
+  "rewards": {
+   "title": "Wickwright",
+   "cosmetic": "aura_starlight"
+  },
+  "requires": "mq_dd_05",
+  "next": "",
+  "text_ref": "mq_dd_06"
+ }
+]

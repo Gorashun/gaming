@@ -1,1 +1,9481 @@
-[]
+[
+ {
+  "id": "origin",
+  "kind": "star",
+  "name": "The Lantern",
+  "pos": [
+   1000,
+   1000
+  ],
+  "links": [],
+  "stats": {},
+  "class": "",
+  "cost": 0,
+  "free": true
+ },
+ {
+  "id": "c_kettle_1",
+  "kind": "star",
+  "name": "The Kettle 1",
+  "constellation": "c_kettle",
+  "pos": [
+   1209,
+   932
+  ],
+  "links": [
+   "origin"
+  ],
+  "stats": {
+   "life": 30
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kettle_2",
+  "kind": "star",
+  "name": "The Kettle 2",
+  "constellation": "c_kettle",
+  "pos": [
+   1271,
+   938
+  ],
+  "links": [
+   "c_kettle_1"
+  ],
+  "stats": {
+   "life": 30
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kettle_3",
+  "kind": "star",
+  "name": "The Kettle 3",
+  "constellation": "c_kettle",
+  "pos": [
+   1249,
+   966
+  ],
+  "links": [
+   "c_kettle_2"
+  ],
+  "stats": {
+   "life": 30
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kettle_4",
+  "kind": "star",
+  "name": "The Kettle 4",
+  "constellation": "c_kettle",
+  "pos": [
+   1179,
+   992
+  ],
+  "links": [
+   "c_kettle_3"
+  ],
+  "stats": {
+   "life": 30
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kettle_5",
+  "kind": "star",
+  "name": "The Kettle 5",
+  "constellation": "c_kettle",
+  "pos": [
+   1167,
+   1008
+  ],
+  "links": [
+   "c_kettle_4"
+  ],
+  "stats": {
+   "life": 30
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kettle_6",
+  "kind": "star",
+  "name": "The Kettle 6",
+  "constellation": "c_kettle",
+  "pos": [
+   1231,
+   1031
+  ],
+  "links": [
+   "c_kettle_5"
+  ],
+  "stats": {
+   "life": 30
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kettle_7",
+  "kind": "star",
+  "name": "The Kettle 7",
+  "constellation": "c_kettle",
+  "pos": [
+   1273,
+   1062
+  ],
+  "links": [
+   "c_kettle_6"
+  ],
+  "stats": {
+   "life": 30
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_1",
+  "kind": "star",
+  "name": "The Sleeping Cat 1",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1213,
+   1053
+  ],
+  "links": [
+   "origin"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_2",
+  "kind": "star",
+  "name": "The Sleeping Cat 2",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1262,
+   1091
+  ],
+  "links": [
+   "c_sleeping_cat_1"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_3",
+  "kind": "star",
+  "name": "The Sleeping Cat 3",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1229,
+   1104
+  ],
+  "links": [
+   "c_sleeping_cat_2"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_4",
+  "kind": "star",
+  "name": "The Sleeping Cat 4",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1156,
+   1088
+  ],
+  "links": [
+   "c_sleeping_cat_3"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_5",
+  "kind": "star",
+  "name": "The Sleeping Cat 5",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1137,
+   1095
+  ],
+  "links": [
+   "c_sleeping_cat_4"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_6",
+  "kind": "star",
+  "name": "The Sleeping Cat 6",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1179,
+   1149
+  ],
+  "links": [
+   "c_sleeping_cat_5"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_7",
+  "kind": "star",
+  "name": "The Sleeping Cat 7",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1198,
+   1198
+  ],
+  "links": [
+   "c_sleeping_cat_6"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_8",
+  "kind": "star",
+  "name": "The Sleeping Cat 8",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1153,
+   1184
+  ],
+  "links": [
+   "c_sleeping_cat_7"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_9",
+  "kind": "star",
+  "name": "The Sleeping Cat 9",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1097,
+   1140
+  ],
+  "links": [
+   "c_sleeping_cat_8"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_10",
+  "kind": "star",
+  "name": "The Sleeping Cat 10",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1086,
+   1152
+  ],
+  "links": [
+   "c_sleeping_cat_9"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_11",
+  "kind": "star",
+  "name": "The Sleeping Cat 11",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1101,
+   1223
+  ],
+  "links": [
+   "c_sleeping_cat_10"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sleeping_cat_12",
+  "kind": "star",
+  "name": "The Sleeping Cat 12",
+  "constellation": "c_sleeping_cat",
+  "pos": [
+   1092,
+   1264
+  ],
+  "links": [
+   "c_sleeping_cat_11"
+  ],
+  "stats": {
+   "damage_pct": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bell_tower_1",
+  "kind": "star",
+  "name": "The Bell-Tower 1",
+  "constellation": "c_bell_tower",
+  "pos": [
+   1096,
+   1198
+  ],
+  "links": [
+   "origin"
+  ],
+  "stats": {
+   "armor": 25
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bell_tower_2",
+  "kind": "star",
+  "name": "The Bell-Tower 2",
+  "constellation": "c_bell_tower",
+  "pos": [
+   1098,
+   1260
+  ],
+  "links": [
+   "c_bell_tower_1"
+  ],
+  "stats": {
+   "armor": 25
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bell_tower_3",
+  "kind": "star",
+  "name": "The Bell-Tower 3",
+  "constellation": "c_bell_tower",
+  "pos": [
+   1067,
+   1242
+  ],
+  "links": [
+   "c_bell_tower_2"
+  ],
+  "stats": {
+   "armor": 25
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bell_tower_4",
+  "kind": "star",
+  "name": "The Bell-Tower 4",
+  "constellation": "c_bell_tower",
+  "pos": [
+   1032,
+   1176
+  ],
+  "links": [
+   "c_bell_tower_3"
+  ],
+  "stats": {
+   "armor": 25
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bell_tower_5",
+  "kind": "star",
+  "name": "The Bell-Tower 5",
+  "constellation": "c_bell_tower",
+  "pos": [
+   1015,
+   1166
+  ],
+  "links": [
+   "c_bell_tower_4"
+  ],
+  "stats": {
+   "armor": 25
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bell_tower_6",
+  "kind": "star",
+  "name": "The Bell-Tower 6",
+  "constellation": "c_bell_tower",
+  "pos": [
+   1000,
+   1233
+  ],
+  "links": [
+   "c_bell_tower_5"
+  ],
+  "stats": {
+   "armor": 25
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bell_tower_7",
+  "kind": "star",
+  "name": "The Bell-Tower 7",
+  "constellation": "c_bell_tower",
+  "pos": [
+   975,
+   1279
+  ],
+  "links": [
+   "c_bell_tower_6"
+  ],
+  "stats": {
+   "armor": 25
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bell_tower_8",
+  "kind": "star",
+  "name": "The Bell-Tower 8",
+  "constellation": "c_bell_tower",
+  "pos": [
+   957,
+   1235
+  ],
+  "links": [
+   "c_bell_tower_7"
+  ],
+  "stats": {
+   "armor": 25
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bell_tower_9",
+  "kind": "star",
+  "name": "The Bell-Tower 9",
+  "constellation": "c_bell_tower",
+  "pos": [
+   955,
+   1164
+  ],
+  "links": [
+   "c_bell_tower_8"
+  ],
+  "stats": {
+   "armor": 25
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bell_tower_10",
+  "kind": "star",
+  "name": "The Bell-Tower 10",
+  "constellation": "c_bell_tower",
+  "pos": [
+   939,
+   1163
+  ],
+  "links": [
+   "c_bell_tower_9"
+  ],
+  "stats": {
+   "armor": 25
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_button_1",
+  "kind": "star",
+  "name": "The Button 1",
+  "constellation": "c_button",
+  "pos": [
+   909,
+   1200
+  ],
+  "links": [
+   "origin"
+  ],
+  "stats": {
+   "crit_chance": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_button_2",
+  "kind": "star",
+  "name": "The Button 2",
+  "constellation": "c_button",
+  "pos": [
+   863,
+   1242
+  ],
+  "links": [
+   "c_button_1"
+  ],
+  "stats": {
+   "crit_chance": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_button_3",
+  "kind": "star",
+  "name": "The Button 3",
+  "constellation": "c_button",
+  "pos": [
+   857,
+   1206
+  ],
+  "links": [
+   "c_button_2"
+  ],
+  "stats": {
+   "crit_chance": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_button_4",
+  "kind": "star",
+  "name": "The Button 4",
+  "constellation": "c_button",
+  "pos": [
+   885,
+   1137
+  ],
+  "links": [
+   "c_button_3"
+  ],
+  "stats": {
+   "crit_chance": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_button_5",
+  "kind": "star",
+  "name": "The Button 5",
+  "constellation": "c_button",
+  "pos": [
+   882,
+   1118
+  ],
+  "links": [
+   "c_button_4"
+  ],
+  "stats": {
+   "crit_chance": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_button_6",
+  "kind": "star",
+  "name": "The Button 6",
+  "constellation": "c_button",
+  "pos": [
+   821,
+   1149
+  ],
+  "links": [
+   "c_button_5"
+  ],
+  "stats": {
+   "crit_chance": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_button_7",
+  "kind": "star",
+  "name": "The Button 7",
+  "constellation": "c_button",
+  "pos": [
+   770,
+   1159
+  ],
+  "links": [
+   "c_button_6"
+  ],
+  "stats": {
+   "crit_chance": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_button_8",
+  "kind": "star",
+  "name": "The Button 8",
+  "constellation": "c_button",
+  "pos": [
+   792,
+   1118
+  ],
+  "links": [
+   "c_button_7"
+  ],
+  "stats": {
+   "crit_chance": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_1",
+  "kind": "star",
+  "name": "The Lamplighter 1",
+  "constellation": "c_lamplighter",
+  "pos": [
+   817,
+   1121
+  ],
+  "links": [
+   "origin"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_2",
+  "kind": "star",
+  "name": "The Lamplighter 2",
+  "constellation": "c_lamplighter",
+  "pos": [
+   756,
+   1132
+  ],
+  "links": [
+   "c_lamplighter_1"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_3",
+  "kind": "star",
+  "name": "The Lamplighter 3",
+  "constellation": "c_lamplighter",
+  "pos": [
+   769,
+   1099
+  ],
+  "links": [
+   "c_lamplighter_2"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_4",
+  "kind": "star",
+  "name": "The Lamplighter 4",
+  "constellation": "c_lamplighter",
+  "pos": [
+   830,
+   1055
+  ],
+  "links": [
+   "c_lamplighter_3"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_5",
+  "kind": "star",
+  "name": "The Lamplighter 5",
+  "constellation": "c_lamplighter",
+  "pos": [
+   837,
+   1037
+  ],
+  "links": [
+   "c_lamplighter_4"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_6",
+  "kind": "star",
+  "name": "The Lamplighter 6",
+  "constellation": "c_lamplighter",
+  "pos": [
+   769,
+   1031
+  ],
+  "links": [
+   "c_lamplighter_5"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_7",
+  "kind": "star",
+  "name": "The Lamplighter 7",
+  "constellation": "c_lamplighter",
+  "pos": [
+   720,
+   1013
+  ],
+  "links": [
+   "c_lamplighter_6"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_8",
+  "kind": "star",
+  "name": "The Lamplighter 8",
+  "constellation": "c_lamplighter",
+  "pos": [
+   761,
+   989
+  ],
+  "links": [
+   "c_lamplighter_7"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_9",
+  "kind": "star",
+  "name": "The Lamplighter 9",
+  "constellation": "c_lamplighter",
+  "pos": [
+   831,
+   977
+  ],
+  "links": [
+   "c_lamplighter_8"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_10",
+  "kind": "star",
+  "name": "The Lamplighter 10",
+  "constellation": "c_lamplighter",
+  "pos": [
+   830,
+   961
+  ],
+  "links": [
+   "c_lamplighter_9"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_11",
+  "kind": "star",
+  "name": "The Lamplighter 11",
+  "constellation": "c_lamplighter",
+  "pos": [
+   767,
+   924
+  ],
+  "links": [
+   "c_lamplighter_10"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_12",
+  "kind": "star",
+  "name": "The Lamplighter 12",
+  "constellation": "c_lamplighter",
+  "pos": [
+   743,
+   890
+  ],
+  "links": [
+   "c_lamplighter_11"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lamplighter_13",
+  "kind": "star",
+  "name": "The Lamplighter 13",
+  "constellation": "c_lamplighter",
+  "pos": [
+   801,
+   892
+  ],
+  "links": [
+   "c_lamplighter_12"
+  ],
+  "stats": {
+   "resist_all": 1.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_thimble_1",
+  "kind": "star",
+  "name": "The Thimble 1",
+  "constellation": "c_thimble",
+  "pos": [
+   789,
+   937
+  ],
+  "links": [
+   "origin"
+  ],
+  "stats": {
+   "attack_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_thimble_2",
+  "kind": "star",
+  "name": "The Thimble 2",
+  "constellation": "c_thimble",
+  "pos": [
+   742,
+   897
+  ],
+  "links": [
+   "c_thimble_1"
+  ],
+  "stats": {
+   "attack_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_thimble_3",
+  "kind": "star",
+  "name": "The Thimble 3",
+  "constellation": "c_thimble",
+  "pos": [
+   776,
+   886
+  ],
+  "links": [
+   "c_thimble_2"
+  ],
+  "stats": {
+   "attack_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_thimble_4",
+  "kind": "star",
+  "name": "The Thimble 4",
+  "constellation": "c_thimble",
+  "pos": [
+   849,
+   905
+  ],
+  "links": [
+   "c_thimble_3"
+  ],
+  "stats": {
+   "attack_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_thimble_5",
+  "kind": "star",
+  "name": "The Thimble 5",
+  "constellation": "c_thimble",
+  "pos": [
+   867,
+   899
+  ],
+  "links": [
+   "c_thimble_4"
+  ],
+  "stats": {
+   "attack_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_thimble_6",
+  "kind": "star",
+  "name": "The Thimble 6",
+  "constellation": "c_thimble",
+  "pos": [
+   828,
+   843
+  ],
+  "links": [
+   "c_thimble_5"
+  ],
+  "stats": {
+   "attack_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_thimble_7",
+  "kind": "star",
+  "name": "The Thimble 7",
+  "constellation": "c_thimble",
+  "pos": [
+   811,
+   793
+  ],
+  "links": [
+   "c_thimble_6"
+  ],
+  "stats": {
+   "attack_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_thimble_8",
+  "kind": "star",
+  "name": "The Thimble 8",
+  "constellation": "c_thimble",
+  "pos": [
+   855,
+   810
+  ],
+  "links": [
+   "c_thimble_7"
+  ],
+  "stats": {
+   "attack_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_thimble_9",
+  "kind": "star",
+  "name": "The Thimble 9",
+  "constellation": "c_thimble",
+  "pos": [
+   909,
+   856
+  ],
+  "links": [
+   "c_thimble_8"
+  ],
+  "stats": {
+   "attack_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_thimble_10",
+  "kind": "star",
+  "name": "The Thimble 10",
+  "constellation": "c_thimble",
+  "pos": [
+   921,
+   845
+  ],
+  "links": [
+   "c_thimble_9"
+  ],
+  "stats": {
+   "attack_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_thimble_11",
+  "kind": "star",
+  "name": "The Thimble 11",
+  "constellation": "c_thimble",
+  "pos": [
+   909,
+   772
+  ],
+  "links": [
+   "c_thimble_10"
+  ],
+  "stats": {
+   "attack_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_paper_boat_1",
+  "kind": "star",
+  "name": "The Paper Boat 1",
+  "constellation": "c_paper_boat",
+  "pos": [
+   913,
+   798
+  ],
+  "links": [
+   "origin"
+  ],
+  "stats": {
+   "cast_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_paper_boat_2",
+  "kind": "star",
+  "name": "The Paper Boat 2",
+  "constellation": "c_paper_boat",
+  "pos": [
+   914,
+   736
+  ],
+  "links": [
+   "c_paper_boat_1"
+  ],
+  "stats": {
+   "cast_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_paper_boat_3",
+  "kind": "star",
+  "name": "The Paper Boat 3",
+  "constellation": "c_paper_boat",
+  "pos": [
+   944,
+   755
+  ],
+  "links": [
+   "c_paper_boat_2"
+  ],
+  "stats": {
+   "cast_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_paper_boat_4",
+  "kind": "star",
+  "name": "The Paper Boat 4",
+  "constellation": "c_paper_boat",
+  "pos": [
+   976,
+   823
+  ],
+  "links": [
+   "c_paper_boat_3"
+  ],
+  "stats": {
+   "cast_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_paper_boat_5",
+  "kind": "star",
+  "name": "The Paper Boat 5",
+  "constellation": "c_paper_boat",
+  "pos": [
+   992,
+   833
+  ],
+  "links": [
+   "c_paper_boat_4"
+  ],
+  "stats": {
+   "cast_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_paper_boat_6",
+  "kind": "star",
+  "name": "The Paper Boat 6",
+  "constellation": "c_paper_boat",
+  "pos": [
+   1010,
+   767
+  ],
+  "links": [
+   "c_paper_boat_5"
+  ],
+  "stats": {
+   "cast_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_paper_boat_7",
+  "kind": "star",
+  "name": "The Paper Boat 7",
+  "constellation": "c_paper_boat",
+  "pos": [
+   1038,
+   723
+  ],
+  "links": [
+   "c_paper_boat_6"
+  ],
+  "stats": {
+   "cast_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_paper_boat_8",
+  "kind": "star",
+  "name": "The Paper Boat 8",
+  "constellation": "c_paper_boat",
+  "pos": [
+   1053,
+   767
+  ],
+  "links": [
+   "c_paper_boat_7"
+  ],
+  "stats": {
+   "cast_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_paper_boat_9",
+  "kind": "star",
+  "name": "The Paper Boat 9",
+  "constellation": "c_paper_boat",
+  "pos": [
+   1053,
+   838
+  ],
+  "links": [
+   "c_paper_boat_8"
+  ],
+  "stats": {
+   "cast_speed_pct": 1
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_teapot_1",
+  "kind": "star",
+  "name": "The Teapot 1",
+  "constellation": "c_teapot",
+  "pos": [
+   1100,
+   804
+  ],
+  "links": [
+   "origin"
+  ],
+  "stats": {
+   "magic_find": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_teapot_2",
+  "kind": "star",
+  "name": "The Teapot 2",
+  "constellation": "c_teapot",
+  "pos": [
+   1148,
+   765
+  ],
+  "links": [
+   "c_teapot_1"
+  ],
+  "stats": {
+   "magic_find": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_teapot_3",
+  "kind": "star",
+  "name": "The Teapot 3",
+  "constellation": "c_teapot",
+  "pos": [
+   1152,
+   800
+  ],
+  "links": [
+   "c_teapot_2"
+  ],
+  "stats": {
+   "magic_find": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_teapot_4",
+  "kind": "star",
+  "name": "The Teapot 4",
+  "constellation": "c_teapot",
+  "pos": [
+   1121,
+   868
+  ],
+  "links": [
+   "c_teapot_3"
+  ],
+  "stats": {
+   "magic_find": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_teapot_5",
+  "kind": "star",
+  "name": "The Teapot 5",
+  "constellation": "c_teapot",
+  "pos": [
+   1123,
+   887
+  ],
+  "links": [
+   "c_teapot_4"
+  ],
+  "stats": {
+   "magic_find": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_teapot_6",
+  "kind": "star",
+  "name": "The Teapot 6",
+  "constellation": "c_teapot",
+  "pos": [
+   1185,
+   859
+  ],
+  "links": [
+   "c_teapot_5"
+  ],
+  "stats": {
+   "magic_find": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_teapot_7",
+  "kind": "star",
+  "name": "The Teapot 7",
+  "constellation": "c_teapot",
+  "pos": [
+   1237,
+   851
+  ],
+  "links": [
+   "c_teapot_6"
+  ],
+  "stats": {
+   "magic_find": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_1",
+  "kind": "star",
+  "name": "The Weathervane 1",
+  "constellation": "c_weathervane",
+  "pos": [
+   1500,
+   857
+  ],
+  "links": [
+   "c_kettle_7"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_2",
+  "kind": "star",
+  "name": "The Weathervane 2",
+  "constellation": "c_weathervane",
+  "pos": [
+   1568,
+   892
+  ],
+  "links": [
+   "c_weathervane_1"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_3",
+  "kind": "star",
+  "name": "The Weathervane 3",
+  "constellation": "c_weathervane",
+  "pos": [
+   1548,
+   946
+  ],
+  "links": [
+   "c_weathervane_2"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_4",
+  "kind": "star",
+  "name": "The Weathervane 4",
+  "constellation": "c_weathervane",
+  "pos": [
+   1479,
+   996
+  ],
+  "links": [
+   "c_weathervane_3"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_5",
+  "kind": "star",
+  "name": "The Weathervane 5",
+  "constellation": "c_weathervane",
+  "pos": [
+   1465,
+   1038
+  ],
+  "links": [
+   "c_weathervane_4"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_6",
+  "kind": "star",
+  "name": "The Weathervane 6",
+  "constellation": "c_weathervane",
+  "pos": [
+   1525,
+   1091
+  ],
+  "links": [
+   "c_weathervane_5"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_7",
+  "kind": "star",
+  "name": "The Weathervane 7",
+  "constellation": "c_weathervane",
+  "pos": [
+   1560,
+   1150
+  ],
+  "links": [
+   "c_weathervane_6"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_8",
+  "kind": "star",
+  "name": "The Weathervane 8",
+  "constellation": "c_weathervane",
+  "pos": [
+   1506,
+   1186
+  ],
+  "links": [
+   "c_weathervane_7"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_9",
+  "kind": "star",
+  "name": "The Weathervane 9",
+  "constellation": "c_weathervane",
+  "pos": [
+   1425,
+   1201
+  ],
+  "links": [
+   "c_weathervane_8"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_10",
+  "kind": "star",
+  "name": "The Weathervane 10",
+  "constellation": "c_weathervane",
+  "pos": [
+   1409,
+   1241
+  ],
+  "links": [
+   "c_weathervane_9"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_11",
+  "kind": "star",
+  "name": "The Weathervane 11",
+  "constellation": "c_weathervane",
+  "pos": [
+   1443,
+   1318
+  ],
+  "links": [
+   "c_weathervane_10"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_weathervane_12",
+  "kind": "star",
+  "name": "The Weathervane 12",
+  "constellation": "c_weathervane",
+  "pos": [
+   1439,
+   1378
+  ],
+  "links": [
+   "c_weathervane_11"
+  ],
+  "stats": {
+   "move_speed_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_snail_1",
+  "kind": "star",
+  "name": "The Snail 1",
+  "constellation": "c_snail",
+  "pos": [
+   1491,
+   1171
+  ],
+  "links": [
+   "c_sleeping_cat_12"
+  ],
+  "stats": {
+   "life_regen": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_snail_2",
+  "kind": "star",
+  "name": "The Snail 2",
+  "constellation": "c_snail",
+  "pos": [
+   1526,
+   1238
+  ],
+  "links": [
+   "c_snail_1"
+  ],
+  "stats": {
+   "life_regen": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_snail_3",
+  "kind": "star",
+  "name": "The Snail 3",
+  "constellation": "c_snail",
+  "pos": [
+   1479,
+   1272
+  ],
+  "links": [
+   "c_snail_2"
+  ],
+  "stats": {
+   "life_regen": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_snail_4",
+  "kind": "star",
+  "name": "The Snail 4",
+  "constellation": "c_snail",
+  "pos": [
+   1394,
+   1272
+  ],
+  "links": [
+   "c_snail_3"
+  ],
+  "stats": {
+   "life_regen": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_snail_5",
+  "kind": "star",
+  "name": "The Snail 5",
+  "constellation": "c_snail",
+  "pos": [
+   1359,
+   1299
+  ],
+  "links": [
+   "c_snail_4"
+  ],
+  "stats": {
+   "life_regen": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_snail_6",
+  "kind": "star",
+  "name": "The Snail 6",
+  "constellation": "c_snail",
+  "pos": [
+   1377,
+   1377
+  ],
+  "links": [
+   "c_snail_5"
+  ],
+  "stats": {
+   "life_regen": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_snail_7",
+  "kind": "star",
+  "name": "The Snail 7",
+  "constellation": "c_snail",
+  "pos": [
+   1372,
+   1445
+  ],
+  "links": [
+   "c_snail_6"
+  ],
+  "stats": {
+   "life_regen": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_snail_8",
+  "kind": "star",
+  "name": "The Snail 8",
+  "constellation": "c_snail",
+  "pos": [
+   1307,
+   1443
+  ],
+  "links": [
+   "c_snail_7"
+  ],
+  "stats": {
+   "life_regen": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_snail_9",
+  "kind": "star",
+  "name": "The Snail 9",
+  "constellation": "c_snail",
+  "pos": [
+   1232,
+   1409
+  ],
+  "links": [
+   "c_snail_8"
+  ],
+  "stats": {
+   "life_regen": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_snail_10",
+  "kind": "star",
+  "name": "The Snail 10",
+  "constellation": "c_snail",
+  "pos": [
+   1196,
+   1432
+  ],
+  "links": [
+   "c_snail_9"
+  ],
+  "stats": {
+   "life_regen": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_spindle_1",
+  "kind": "star",
+  "name": "The Spindle 1",
+  "constellation": "c_spindle",
+  "pos": [
+   1303,
+   1423
+  ],
+  "links": [
+   "c_bell_tower_10"
+  ],
+  "stats": {
+   "area_pct": 1.2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_spindle_2",
+  "kind": "star",
+  "name": "The Spindle 2",
+  "constellation": "c_spindle",
+  "pos": [
+   1293,
+   1498
+  ],
+  "links": [
+   "c_spindle_1"
+  ],
+  "stats": {
+   "area_pct": 1.2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_spindle_3",
+  "kind": "star",
+  "name": "The Spindle 3",
+  "constellation": "c_spindle",
+  "pos": [
+   1236,
+   1498
+  ],
+  "links": [
+   "c_spindle_2"
+  ],
+  "stats": {
+   "area_pct": 1.2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_spindle_4",
+  "kind": "star",
+  "name": "The Spindle 4",
+  "constellation": "c_spindle",
+  "pos": [
+   1165,
+   1449
+  ],
+  "links": [
+   "c_spindle_3"
+  ],
+  "stats": {
+   "area_pct": 1.2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_spindle_5",
+  "kind": "star",
+  "name": "The Spindle 5",
+  "constellation": "c_spindle",
+  "pos": [
+   1121,
+   1451
+  ],
+  "links": [
+   "c_spindle_4"
+  ],
+  "stats": {
+   "area_pct": 1.2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_spindle_6",
+  "kind": "star",
+  "name": "The Spindle 6",
+  "constellation": "c_spindle",
+  "pos": [
+   1091,
+   1525
+  ],
+  "links": [
+   "c_spindle_5"
+  ],
+  "stats": {
+   "area_pct": 1.2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_spindle_7",
+  "kind": "star",
+  "name": "The Spindle 7",
+  "constellation": "c_spindle",
+  "pos": [
+   1047,
+   1578
+  ],
+  "links": [
+   "c_spindle_6"
+  ],
+  "stats": {
+   "area_pct": 1.2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_spindle_8",
+  "kind": "star",
+  "name": "The Spindle 8",
+  "constellation": "c_spindle",
+  "pos": [
+   996,
+   1539
+  ],
+  "links": [
+   "c_spindle_7"
+  ],
+  "stats": {
+   "area_pct": 1.2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_1",
+  "kind": "star",
+  "name": "The Ladle 1",
+  "constellation": "c_ladle",
+  "pos": [
+   1165,
+   1493
+  ],
+  "links": [
+   "c_bell_tower_10"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_2",
+  "kind": "star",
+  "name": "The Ladle 2",
+  "constellation": "c_ladle",
+  "pos": [
+   1134,
+   1562
+  ],
+  "links": [
+   "c_ladle_1"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_3",
+  "kind": "star",
+  "name": "The Ladle 3",
+  "constellation": "c_ladle",
+  "pos": [
+   1079,
+   1545
+  ],
+  "links": [
+   "c_ladle_2"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_4",
+  "kind": "star",
+  "name": "The Ladle 4",
+  "constellation": "c_ladle",
+  "pos": [
+   1025,
+   1478
+  ],
+  "links": [
+   "c_ladle_3"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_5",
+  "kind": "star",
+  "name": "The Ladle 5",
+  "constellation": "c_ladle",
+  "pos": [
+   983,
+   1467
+  ],
+  "links": [
+   "c_ladle_4"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_6",
+  "kind": "star",
+  "name": "The Ladle 6",
+  "constellation": "c_ladle",
+  "pos": [
+   933,
+   1529
+  ],
+  "links": [
+   "c_ladle_5"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_7",
+  "kind": "star",
+  "name": "The Ladle 7",
+  "constellation": "c_ladle",
+  "pos": [
+   875,
+   1566
+  ],
+  "links": [
+   "c_ladle_6"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_8",
+  "kind": "star",
+  "name": "The Ladle 8",
+  "constellation": "c_ladle",
+  "pos": [
+   837,
+   1514
+  ],
+  "links": [
+   "c_ladle_7"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_9",
+  "kind": "star",
+  "name": "The Ladle 9",
+  "constellation": "c_ladle",
+  "pos": [
+   818,
+   1434
+  ],
+  "links": [
+   "c_ladle_8"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_10",
+  "kind": "star",
+  "name": "The Ladle 10",
+  "constellation": "c_ladle",
+  "pos": [
+   778,
+   1419
+  ],
+  "links": [
+   "c_ladle_9"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_11",
+  "kind": "star",
+  "name": "The Ladle 11",
+  "constellation": "c_ladle",
+  "pos": [
+   703,
+   1457
+  ],
+  "links": [
+   "c_ladle_10"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_12",
+  "kind": "star",
+  "name": "The Ladle 12",
+  "constellation": "c_ladle",
+  "pos": [
+   642,
+   1455
+  ],
+  "links": [
+   "c_ladle_11"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladle_13",
+  "kind": "star",
+  "name": "The Ladle 13",
+  "constellation": "c_ladle",
+  "pos": [
+   639,
+   1383
+  ],
+  "links": [
+   "c_ladle_12"
+  ],
+  "stats": {
+   "minion_damage_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lost_glove_1",
+  "kind": "star",
+  "name": "The Lost Glove 1",
+  "constellation": "c_lost_glove",
+  "pos": [
+   851,
+   1498
+  ],
+  "links": [
+   "c_button_8"
+  ],
+  "stats": {
+   "fire_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lost_glove_2",
+  "kind": "star",
+  "name": "The Lost Glove 2",
+  "constellation": "c_lost_glove",
+  "pos": [
+   785,
+   1537
+  ],
+  "links": [
+   "c_lost_glove_1"
+  ],
+  "stats": {
+   "fire_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lost_glove_3",
+  "kind": "star",
+  "name": "The Lost Glove 3",
+  "constellation": "c_lost_glove",
+  "pos": [
+   750,
+   1491
+  ],
+  "links": [
+   "c_lost_glove_2"
+  ],
+  "stats": {
+   "fire_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lost_glove_4",
+  "kind": "star",
+  "name": "The Lost Glove 4",
+  "constellation": "c_lost_glove",
+  "pos": [
+   746,
+   1406
+  ],
+  "links": [
+   "c_lost_glove_3"
+  ],
+  "stats": {
+   "fire_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lost_glove_5",
+  "kind": "star",
+  "name": "The Lost Glove 5",
+  "constellation": "c_lost_glove",
+  "pos": [
+   717,
+   1372
+  ],
+  "links": [
+   "c_lost_glove_4"
+  ],
+  "stats": {
+   "fire_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lost_glove_6",
+  "kind": "star",
+  "name": "The Lost Glove 6",
+  "constellation": "c_lost_glove",
+  "pos": [
+   641,
+   1393
+  ],
+  "links": [
+   "c_lost_glove_5"
+  ],
+  "stats": {
+   "fire_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lost_glove_7",
+  "kind": "star",
+  "name": "The Lost Glove 7",
+  "constellation": "c_lost_glove",
+  "pos": [
+   572,
+   1391
+  ],
+  "links": [
+   "c_lost_glove_6"
+  ],
+  "stats": {
+   "fire_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lost_glove_8",
+  "kind": "star",
+  "name": "The Lost Glove 8",
+  "constellation": "c_lost_glove",
+  "pos": [
+   571,
+   1326
+  ],
+  "links": [
+   "c_lost_glove_7"
+  ],
+  "stats": {
+   "fire_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lost_glove_9",
+  "kind": "star",
+  "name": "The Lost Glove 9",
+  "constellation": "c_lost_glove",
+  "pos": [
+   602,
+   1250
+  ],
+  "links": [
+   "c_lost_glove_8"
+  ],
+  "stats": {
+   "fire_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lost_glove_10",
+  "kind": "star",
+  "name": "The Lost Glove 10",
+  "constellation": "c_lost_glove",
+  "pos": [
+   577,
+   1215
+  ],
+  "links": [
+   "c_lost_glove_9"
+  ],
+  "stats": {
+   "fire_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lost_glove_11",
+  "kind": "star",
+  "name": "The Lost Glove 11",
+  "constellation": "c_lost_glove",
+  "pos": [
+   494,
+   1202
+  ],
+  "links": [
+   "c_lost_glove_10"
+  ],
+  "stats": {
+   "fire_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_umbrella_1",
+  "kind": "star",
+  "name": "The Umbrella 1",
+  "constellation": "c_umbrella",
+  "pos": [
+   591,
+   1322
+  ],
+  "links": [
+   "c_lamplighter_13"
+  ],
+  "stats": {
+   "cold_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_umbrella_2",
+  "kind": "star",
+  "name": "The Umbrella 2",
+  "constellation": "c_umbrella",
+  "pos": [
+   516,
+   1315
+  ],
+  "links": [
+   "c_umbrella_1"
+  ],
+  "stats": {
+   "cold_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_umbrella_3",
+  "kind": "star",
+  "name": "The Umbrella 3",
+  "constellation": "c_umbrella",
+  "pos": [
+   513,
+   1258
+  ],
+  "links": [
+   "c_umbrella_2"
+  ],
+  "stats": {
+   "cold_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_umbrella_4",
+  "kind": "star",
+  "name": "The Umbrella 4",
+  "constellation": "c_umbrella",
+  "pos": [
+   558,
+   1185
+  ],
+  "links": [
+   "c_umbrella_3"
+  ],
+  "stats": {
+   "cold_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_umbrella_5",
+  "kind": "star",
+  "name": "The Umbrella 5",
+  "constellation": "c_umbrella",
+  "pos": [
+   555,
+   1141
+  ],
+  "links": [
+   "c_umbrella_4"
+  ],
+  "stats": {
+   "cold_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_umbrella_6",
+  "kind": "star",
+  "name": "The Umbrella 6",
+  "constellation": "c_umbrella",
+  "pos": [
+   480,
+   1115
+  ],
+  "links": [
+   "c_umbrella_5"
+  ],
+  "stats": {
+   "cold_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_umbrella_7",
+  "kind": "star",
+  "name": "The Umbrella 7",
+  "constellation": "c_umbrella",
+  "pos": [
+   425,
+   1073
+  ],
+  "links": [
+   "c_umbrella_6"
+  ],
+  "stats": {
+   "cold_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_umbrella_8",
+  "kind": "star",
+  "name": "The Umbrella 8",
+  "constellation": "c_umbrella",
+  "pos": [
+   461,
+   1020
+  ],
+  "links": [
+   "c_umbrella_7"
+  ],
+  "stats": {
+   "cold_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_umbrella_9",
+  "kind": "star",
+  "name": "The Umbrella 9",
+  "constellation": "c_umbrella",
+  "pos": [
+   530,
+   975
+  ],
+  "links": [
+   "c_umbrella_8"
+  ],
+  "stats": {
+   "cold_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_1",
+  "kind": "star",
+  "name": "The Chimney 1",
+  "constellation": "c_chimney",
+  "pos": [
+   481,
+   1028
+  ],
+  "links": [
+   "c_lamplighter_13"
+  ],
+  "stats": {
+   "lightning_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_2",
+  "kind": "star",
+  "name": "The Chimney 2",
+  "constellation": "c_chimney",
+  "pos": [
+   423,
+   979
+  ],
+  "links": [
+   "c_chimney_1"
+  ],
+  "stats": {
+   "lightning_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_3",
+  "kind": "star",
+  "name": "The Chimney 3",
+  "constellation": "c_chimney",
+  "pos": [
+   453,
+   930
+  ],
+  "links": [
+   "c_chimney_2"
+  ],
+  "stats": {
+   "lightning_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_4",
+  "kind": "star",
+  "name": "The Chimney 4",
+  "constellation": "c_chimney",
+  "pos": [
+   532,
+   897
+  ],
+  "links": [
+   "c_chimney_3"
+  ],
+  "stats": {
+   "lightning_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_5",
+  "kind": "star",
+  "name": "The Chimney 5",
+  "constellation": "c_chimney",
+  "pos": [
+   555,
+   859
+  ],
+  "links": [
+   "c_chimney_4"
+  ],
+  "stats": {
+   "lightning_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_6",
+  "kind": "star",
+  "name": "The Chimney 6",
+  "constellation": "c_chimney",
+  "pos": [
+   508,
+   794
+  ],
+  "links": [
+   "c_chimney_5"
+  ],
+  "stats": {
+   "lightning_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_7",
+  "kind": "star",
+  "name": "The Chimney 7",
+  "constellation": "c_chimney",
+  "pos": [
+   487,
+   729
+  ],
+  "links": [
+   "c_chimney_6"
+  ],
+  "stats": {
+   "lightning_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_1",
+  "kind": "star",
+  "name": "The Old Key 1",
+  "constellation": "c_old_key",
+  "pos": [
+   496,
+   874
+  ],
+  "links": [
+   "c_thimble_11"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_2",
+  "kind": "star",
+  "name": "The Old Key 2",
+  "constellation": "c_old_key",
+  "pos": [
+   454,
+   810
+  ],
+  "links": [
+   "c_old_key_1"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_3",
+  "kind": "star",
+  "name": "The Old Key 3",
+  "constellation": "c_old_key",
+  "pos": [
+   498,
+   773
+  ],
+  "links": [
+   "c_old_key_2"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_4",
+  "kind": "star",
+  "name": "The Old Key 4",
+  "constellation": "c_old_key",
+  "pos": [
+   583,
+   764
+  ],
+  "links": [
+   "c_old_key_3"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_5",
+  "kind": "star",
+  "name": "The Old Key 5",
+  "constellation": "c_old_key",
+  "pos": [
+   616,
+   734
+  ],
+  "links": [
+   "c_old_key_4"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_6",
+  "kind": "star",
+  "name": "The Old Key 6",
+  "constellation": "c_old_key",
+  "pos": [
+   591,
+   659
+  ],
+  "links": [
+   "c_old_key_5"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_7",
+  "kind": "star",
+  "name": "The Old Key 7",
+  "constellation": "c_old_key",
+  "pos": [
+   590,
+   590
+  ],
+  "links": [
+   "c_old_key_6"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_8",
+  "kind": "star",
+  "name": "The Old Key 8",
+  "constellation": "c_old_key",
+  "pos": [
+   655,
+   586
+  ],
+  "links": [
+   "c_old_key_7"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_9",
+  "kind": "star",
+  "name": "The Old Key 9",
+  "constellation": "c_old_key",
+  "pos": [
+   732,
+   613
+  ],
+  "links": [
+   "c_old_key_8"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_10",
+  "kind": "star",
+  "name": "The Old Key 10",
+  "constellation": "c_old_key",
+  "pos": [
+   766,
+   587
+  ],
+  "links": [
+   "c_old_key_9"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_11",
+  "kind": "star",
+  "name": "The Old Key 11",
+  "constellation": "c_old_key",
+  "pos": [
+   775,
+   503
+  ],
+  "links": [
+   "c_old_key_10"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_old_key_12",
+  "kind": "star",
+  "name": "The Old Key 12",
+  "constellation": "c_old_key",
+  "pos": [
+   809,
+   453
+  ],
+  "links": [
+   "c_old_key_11"
+  ],
+  "stats": {
+   "shadow_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kite_1",
+  "kind": "star",
+  "name": "The Kite 1",
+  "constellation": "c_kite",
+  "pos": [
+   660,
+   606
+  ],
+  "links": [
+   "c_paper_boat_9"
+  ],
+  "stats": {
+   "holy_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kite_2",
+  "kind": "star",
+  "name": "The Kite 2",
+  "constellation": "c_kite",
+  "pos": [
+   663,
+   530
+  ],
+  "links": [
+   "c_kite_1"
+  ],
+  "stats": {
+   "holy_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kite_3",
+  "kind": "star",
+  "name": "The Kite 3",
+  "constellation": "c_kite",
+  "pos": [
+   721,
+   525
+  ],
+  "links": [
+   "c_kite_2"
+  ],
+  "stats": {
+   "holy_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kite_4",
+  "kind": "star",
+  "name": "The Kite 4",
+  "constellation": "c_kite",
+  "pos": [
+   795,
+   567
+  ],
+  "links": [
+   "c_kite_3"
+  ],
+  "stats": {
+   "holy_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kite_5",
+  "kind": "star",
+  "name": "The Kite 5",
+  "constellation": "c_kite",
+  "pos": [
+   839,
+   562
+  ],
+  "links": [
+   "c_kite_4"
+  ],
+  "stats": {
+   "holy_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kite_6",
+  "kind": "star",
+  "name": "The Kite 6",
+  "constellation": "c_kite",
+  "pos": [
+   862,
+   485
+  ],
+  "links": [
+   "c_kite_5"
+  ],
+  "stats": {
+   "holy_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kite_7",
+  "kind": "star",
+  "name": "The Kite 7",
+  "constellation": "c_kite",
+  "pos": [
+   901,
+   429
+  ],
+  "links": [
+   "c_kite_6"
+  ],
+  "stats": {
+   "holy_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kite_8",
+  "kind": "star",
+  "name": "The Kite 8",
+  "constellation": "c_kite",
+  "pos": [
+   956,
+   463
+  ],
+  "links": [
+   "c_kite_7"
+  ],
+  "stats": {
+   "holy_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kite_9",
+  "kind": "star",
+  "name": "The Kite 9",
+  "constellation": "c_kite",
+  "pos": [
+   1004,
+   530
+  ],
+  "links": [
+   "c_kite_8"
+  ],
+  "stats": {
+   "holy_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_kite_10",
+  "kind": "star",
+  "name": "The Kite 10",
+  "constellation": "c_kite",
+  "pos": [
+   1046,
+   528
+  ],
+  "links": [
+   "c_kite_9"
+  ],
+  "stats": {
+   "holy_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_acorn_1",
+  "kind": "star",
+  "name": "The Acorn 1",
+  "constellation": "c_acorn",
+  "pos": [
+   949,
+   483
+  ],
+  "links": [
+   "c_paper_boat_9"
+  ],
+  "stats": {
+   "physical_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_acorn_2",
+  "kind": "star",
+  "name": "The Acorn 2",
+  "constellation": "c_acorn",
+  "pos": [
+   995,
+   422
+  ],
+  "links": [
+   "c_acorn_1"
+  ],
+  "stats": {
+   "physical_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_acorn_3",
+  "kind": "star",
+  "name": "The Acorn 3",
+  "constellation": "c_acorn",
+  "pos": [
+   1045,
+   451
+  ],
+  "links": [
+   "c_acorn_2"
+  ],
+  "stats": {
+   "physical_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_acorn_4",
+  "kind": "star",
+  "name": "The Acorn 4",
+  "constellation": "c_acorn",
+  "pos": [
+   1082,
+   528
+  ],
+  "links": [
+   "c_acorn_3"
+  ],
+  "stats": {
+   "physical_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_acorn_5",
+  "kind": "star",
+  "name": "The Acorn 5",
+  "constellation": "c_acorn",
+  "pos": [
+   1121,
+   549
+  ],
+  "links": [
+   "c_acorn_4"
+  ],
+  "stats": {
+   "physical_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_acorn_6",
+  "kind": "star",
+  "name": "The Acorn 6",
+  "constellation": "c_acorn",
+  "pos": [
+   1184,
+   500
+  ],
+  "links": [
+   "c_acorn_5"
+  ],
+  "stats": {
+   "physical_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_acorn_7",
+  "kind": "star",
+  "name": "The Acorn 7",
+  "constellation": "c_acorn",
+  "pos": [
+   1248,
+   476
+  ],
+  "links": [
+   "c_acorn_6"
+  ],
+  "stats": {
+   "physical_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_acorn_8",
+  "kind": "star",
+  "name": "The Acorn 8",
+  "constellation": "c_acorn",
+  "pos": [
+   1273,
+   535
+  ],
+  "links": [
+   "c_acorn_7"
+  ],
+  "stats": {
+   "physical_pct": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_1",
+  "kind": "star",
+  "name": "The Puffcap 1",
+  "constellation": "c_puffcap",
+  "pos": [
+   1104,
+   490
+  ],
+  "links": [
+   "c_teapot_7"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_2",
+  "kind": "star",
+  "name": "The Puffcap 2",
+  "constellation": "c_puffcap",
+  "pos": [
+   1165,
+   446
+  ],
+  "links": [
+   "c_puffcap_1"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_3",
+  "kind": "star",
+  "name": "The Puffcap 3",
+  "constellation": "c_puffcap",
+  "pos": [
+   1205,
+   488
+  ],
+  "links": [
+   "c_puffcap_2"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_4",
+  "kind": "star",
+  "name": "The Puffcap 4",
+  "constellation": "c_puffcap",
+  "pos": [
+   1217,
+   573
+  ],
+  "links": [
+   "c_puffcap_3"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_5",
+  "kind": "star",
+  "name": "The Puffcap 5",
+  "constellation": "c_puffcap",
+  "pos": [
+   1248,
+   604
+  ],
+  "links": [
+   "c_puffcap_4"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_6",
+  "kind": "star",
+  "name": "The Puffcap 6",
+  "constellation": "c_puffcap",
+  "pos": [
+   1323,
+   576
+  ],
+  "links": [
+   "c_puffcap_5"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_7",
+  "kind": "star",
+  "name": "The Puffcap 7",
+  "constellation": "c_puffcap",
+  "pos": [
+   1391,
+   572
+  ],
+  "links": [
+   "c_puffcap_6"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_8",
+  "kind": "star",
+  "name": "The Puffcap 8",
+  "constellation": "c_puffcap",
+  "pos": [
+   1398,
+   636
+  ],
+  "links": [
+   "c_puffcap_7"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_9",
+  "kind": "star",
+  "name": "The Puffcap 9",
+  "constellation": "c_puffcap",
+  "pos": [
+   1374,
+   715
+  ],
+  "links": [
+   "c_puffcap_8"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_10",
+  "kind": "star",
+  "name": "The Puffcap 10",
+  "constellation": "c_puffcap",
+  "pos": [
+   1402,
+   748
+  ],
+  "links": [
+   "c_puffcap_9"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_11",
+  "kind": "star",
+  "name": "The Puffcap 11",
+  "constellation": "c_puffcap",
+  "pos": [
+   1486,
+   753
+  ],
+  "links": [
+   "c_puffcap_10"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_12",
+  "kind": "star",
+  "name": "The Puffcap 12",
+  "constellation": "c_puffcap",
+  "pos": [
+   1538,
+   785
+  ],
+  "links": [
+   "c_puffcap_11"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_puffcap_13",
+  "kind": "star",
+  "name": "The Puffcap 13",
+  "constellation": "c_puffcap",
+  "pos": [
+   1504,
+   849
+  ],
+  "links": [
+   "c_puffcap_12"
+  ],
+  "stats": {
+   "projectile_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_odd_sock_1",
+  "kind": "star",
+  "name": "The Odd Sock 1",
+  "constellation": "c_odd_sock",
+  "pos": [
+   1378,
+   643
+  ],
+  "links": [
+   "c_kettle_7"
+  ],
+  "stats": {
+   "melee_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_odd_sock_2",
+  "kind": "star",
+  "name": "The Odd Sock 2",
+  "constellation": "c_odd_sock",
+  "pos": [
+   1454,
+   643
+  ],
+  "links": [
+   "c_odd_sock_1"
+  ],
+  "stats": {
+   "melee_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_odd_sock_3",
+  "kind": "star",
+  "name": "The Odd Sock 3",
+  "constellation": "c_odd_sock",
+  "pos": [
+   1462,
+   700
+  ],
+  "links": [
+   "c_odd_sock_2"
+  ],
+  "stats": {
+   "melee_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_odd_sock_4",
+  "kind": "star",
+  "name": "The Odd Sock 4",
+  "constellation": "c_odd_sock",
+  "pos": [
+   1423,
+   776
+  ],
+  "links": [
+   "c_odd_sock_3"
+  ],
+  "stats": {
+   "melee_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_odd_sock_5",
+  "kind": "star",
+  "name": "The Odd Sock 5",
+  "constellation": "c_odd_sock",
+  "pos": [
+   1431,
+   820
+  ],
+  "links": [
+   "c_odd_sock_4"
+  ],
+  "stats": {
+   "melee_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_odd_sock_6",
+  "kind": "star",
+  "name": "The Odd Sock 6",
+  "constellation": "c_odd_sock",
+  "pos": [
+   1508,
+   839
+  ],
+  "links": [
+   "c_odd_sock_5"
+  ],
+  "stats": {
+   "melee_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_odd_sock_7",
+  "kind": "star",
+  "name": "The Odd Sock 7",
+  "constellation": "c_odd_sock",
+  "pos": [
+   1566,
+   875
+  ],
+  "links": [
+   "c_odd_sock_6"
+  ],
+  "stats": {
+   "melee_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_odd_sock_8",
+  "kind": "star",
+  "name": "The Odd Sock 8",
+  "constellation": "c_odd_sock",
+  "pos": [
+   1535,
+   932
+  ],
+  "links": [
+   "c_odd_sock_7"
+  ],
+  "stats": {
+   "melee_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_odd_sock_9",
+  "kind": "star",
+  "name": "The Odd Sock 9",
+  "constellation": "c_odd_sock",
+  "pos": [
+   1470,
+   983
+  ],
+  "links": [
+   "c_odd_sock_8"
+  ],
+  "stats": {
+   "melee_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_odd_sock_10",
+  "kind": "star",
+  "name": "The Odd Sock 10",
+  "constellation": "c_odd_sock",
+  "pos": [
+   1474,
+   1025
+  ],
+  "links": [
+   "c_odd_sock_9"
+  ],
+  "stats": {
+   "melee_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_odd_sock_11",
+  "kind": "star",
+  "name": "The Odd Sock 11",
+  "constellation": "c_odd_sock",
+  "pos": [
+   1540,
+   1078
+  ],
+  "links": [
+   "c_odd_sock_10"
+  ],
+  "stats": {
+   "melee_damage_pct": 2.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladder_1",
+  "kind": "star",
+  "name": "The Ladder 1",
+  "constellation": "c_ladder",
+  "pos": [
+   1820,
+   990
+  ],
+  "links": [
+   "c_weathervane_12"
+  ],
+  "stats": {
+   "resource_max": 5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladder_2",
+  "kind": "star",
+  "name": "The Ladder 2",
+  "constellation": "c_ladder",
+  "pos": [
+   1875,
+   1068
+  ],
+  "links": [
+   "c_ladder_1"
+  ],
+  "stats": {
+   "resource_max": 5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladder_3",
+  "kind": "star",
+  "name": "The Ladder 3",
+  "constellation": "c_ladder",
+  "pos": [
+   1839,
+   1142
+  ],
+  "links": [
+   "c_ladder_2"
+  ],
+  "stats": {
+   "resource_max": 5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladder_4",
+  "kind": "star",
+  "name": "The Ladder 4",
+  "constellation": "c_ladder",
+  "pos": [
+   1753,
+   1198
+  ],
+  "links": [
+   "c_ladder_3"
+  ],
+  "stats": {
+   "resource_max": 5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladder_5",
+  "kind": "star",
+  "name": "The Ladder 5",
+  "constellation": "c_ladder",
+  "pos": [
+   1721,
+   1261
+  ],
+  "links": [
+   "c_ladder_4"
+  ],
+  "stats": {
+   "resource_max": 5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladder_6",
+  "kind": "star",
+  "name": "The Ladder 6",
+  "constellation": "c_ladder",
+  "pos": [
+   1754,
+   1353
+  ],
+  "links": [
+   "c_ladder_5"
+  ],
+  "stats": {
+   "resource_max": 5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladder_7",
+  "kind": "star",
+  "name": "The Ladder 7",
+  "constellation": "c_ladder",
+  "pos": [
+   1760,
+   1443
+  ],
+  "links": [
+   "c_ladder_6"
+  ],
+  "stats": {
+   "resource_max": 5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladder_8",
+  "kind": "star",
+  "name": "The Ladder 8",
+  "constellation": "c_ladder",
+  "pos": [
+   1684,
+   1486
+  ],
+  "links": [
+   "c_ladder_7"
+  ],
+  "stats": {
+   "resource_max": 5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_ladder_9",
+  "kind": "star",
+  "name": "The Ladder 9",
+  "constellation": "c_ladder",
+  "pos": [
+   1585,
+   1501
+  ],
+  "links": [
+   "c_ladder_8"
+  ],
+  "stats": {
+   "resource_max": 5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_candle_stub_1",
+  "kind": "star",
+  "name": "The Candle Stub 1",
+  "constellation": "c_candle_stub",
+  "pos": [
+   1731,
+   1372
+  ],
+  "links": [
+   "c_snail_10"
+  ],
+  "stats": {
+   "dodge": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_candle_stub_2",
+  "kind": "star",
+  "name": "The Candle Stub 2",
+  "constellation": "c_candle_stub",
+  "pos": [
+   1744,
+   1467
+  ],
+  "links": [
+   "c_candle_stub_1"
+  ],
+  "stats": {
+   "dodge": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_candle_stub_3",
+  "kind": "star",
+  "name": "The Candle Stub 3",
+  "constellation": "c_candle_stub",
+  "pos": [
+   1677,
+   1515
+  ],
+  "links": [
+   "c_candle_stub_2"
+  ],
+  "stats": {
+   "dodge": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_candle_stub_4",
+  "kind": "star",
+  "name": "The Candle Stub 4",
+  "constellation": "c_candle_stub",
+  "pos": [
+   1575,
+   1525
+  ],
+  "links": [
+   "c_candle_stub_3"
+  ],
+  "stats": {
+   "dodge": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_candle_stub_5",
+  "kind": "star",
+  "name": "The Candle Stub 5",
+  "constellation": "c_candle_stub",
+  "pos": [
+   1517,
+   1566
+  ],
+  "links": [
+   "c_candle_stub_4"
+  ],
+  "stats": {
+   "dodge": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_candle_stub_6",
+  "kind": "star",
+  "name": "The Candle Stub 6",
+  "constellation": "c_candle_stub",
+  "pos": [
+   1504,
+   1663
+  ],
+  "links": [
+   "c_candle_stub_5"
+  ],
+  "stats": {
+   "dodge": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_candle_stub_7",
+  "kind": "star",
+  "name": "The Candle Stub 7",
+  "constellation": "c_candle_stub",
+  "pos": [
+   1468,
+   1745
+  ],
+  "links": [
+   "c_candle_stub_6"
+  ],
+  "stats": {
+   "dodge": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_1",
+  "kind": "star",
+  "name": "The Crown of Sticks 1",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   1659,
+   1488
+  ],
+  "links": [
+   "c_spindle_8"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_2",
+  "kind": "star",
+  "name": "The Crown of Sticks 2",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   1655,
+   1584
+  ],
+  "links": [
+   "c_crown_of_sticks_1"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_3",
+  "kind": "star",
+  "name": "The Crown of Sticks 3",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   1582,
+   1621
+  ],
+  "links": [
+   "c_crown_of_sticks_2"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_4",
+  "kind": "star",
+  "name": "The Crown of Sticks 4",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   1479,
+   1614
+  ],
+  "links": [
+   "c_crown_of_sticks_3"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_5",
+  "kind": "star",
+  "name": "The Crown of Sticks 5",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   1416,
+   1645
+  ],
+  "links": [
+   "c_crown_of_sticks_4"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_6",
+  "kind": "star",
+  "name": "The Crown of Sticks 6",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   1387,
+   1738
+  ],
+  "links": [
+   "c_crown_of_sticks_5"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_7",
+  "kind": "star",
+  "name": "The Crown of Sticks 7",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   1337,
+   1813
+  ],
+  "links": [
+   "c_crown_of_sticks_6"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_8",
+  "kind": "star",
+  "name": "The Crown of Sticks 8",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   1250,
+   1801
+  ],
+  "links": [
+   "c_crown_of_sticks_7"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_9",
+  "kind": "star",
+  "name": "The Crown of Sticks 9",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   1163,
+   1753
+  ],
+  "links": [
+   "c_crown_of_sticks_8"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_10",
+  "kind": "star",
+  "name": "The Crown of Sticks 10",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   1095,
+   1768
+  ],
+  "links": [
+   "c_crown_of_sticks_9"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_11",
+  "kind": "star",
+  "name": "The Crown of Sticks 11",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   1028,
+   1845
+  ],
+  "links": [
+   "c_crown_of_sticks_10"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_crown_of_sticks_12",
+  "kind": "star",
+  "name": "The Crown of Sticks 12",
+  "constellation": "c_crown_of_sticks",
+  "pos": [
+   950,
+   1878
+  ],
+  "links": [
+   "c_crown_of_sticks_11"
+  ],
+  "stats": {
+   "block": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mailbox_1",
+  "kind": "star",
+  "name": "The Mailbox 1",
+  "constellation": "c_mailbox",
+  "pos": [
+   1357,
+   1738
+  ],
+  "links": [
+   "c_spindle_8"
+  ],
+  "stats": {
+   "xp_pct": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mailbox_2",
+  "kind": "star",
+  "name": "The Mailbox 2",
+  "constellation": "c_mailbox",
+  "pos": [
+   1309,
+   1822
+  ],
+  "links": [
+   "c_mailbox_1"
+  ],
+  "stats": {
+   "xp_pct": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mailbox_3",
+  "kind": "star",
+  "name": "The Mailbox 3",
+  "constellation": "c_mailbox",
+  "pos": [
+   1227,
+   1820
+  ],
+  "links": [
+   "c_mailbox_2"
+  ],
+  "stats": {
+   "xp_pct": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mailbox_4",
+  "kind": "star",
+  "name": "The Mailbox 4",
+  "constellation": "c_mailbox",
+  "pos": [
+   1139,
+   1766
+  ],
+  "links": [
+   "c_mailbox_3"
+  ],
+  "stats": {
+   "xp_pct": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mailbox_5",
+  "kind": "star",
+  "name": "The Mailbox 5",
+  "constellation": "c_mailbox",
+  "pos": [
+   1069,
+   1764
+  ],
+  "links": [
+   "c_mailbox_4"
+  ],
+  "stats": {
+   "xp_pct": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mailbox_6",
+  "kind": "star",
+  "name": "The Mailbox 6",
+  "constellation": "c_mailbox",
+  "pos": [
+   1000,
+   1833
+  ],
+  "links": [
+   "c_mailbox_5"
+  ],
+  "stats": {
+   "xp_pct": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mailbox_7",
+  "kind": "star",
+  "name": "The Mailbox 7",
+  "constellation": "c_mailbox",
+  "pos": [
+   921,
+   1876
+  ],
+  "links": [
+   "c_mailbox_6"
+  ],
+  "stats": {
+   "xp_pct": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mailbox_8",
+  "kind": "star",
+  "name": "The Mailbox 8",
+  "constellation": "c_mailbox",
+  "pos": [
+   850,
+   1826
+  ],
+  "links": [
+   "c_mailbox_7"
+  ],
+  "stats": {
+   "xp_pct": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mailbox_9",
+  "kind": "star",
+  "name": "The Mailbox 9",
+  "constellation": "c_mailbox",
+  "pos": [
+   795,
+   1742
+  ],
+  "links": [
+   "c_mailbox_8"
+  ],
+  "stats": {
+   "xp_pct": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mailbox_10",
+  "kind": "star",
+  "name": "The Mailbox 10",
+  "constellation": "c_mailbox",
+  "pos": [
+   727,
+   1725
+  ],
+  "links": [
+   "c_mailbox_9"
+  ],
+  "stats": {
+   "xp_pct": 0.5
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_rocking_chair_1",
+  "kind": "star",
+  "name": "The Rocking Chair 1",
+  "constellation": "c_rocking_chair",
+  "pos": [
+   973,
+   1820
+  ],
+  "links": [
+   "c_ladle_13"
+  ],
+  "stats": {
+   "thorns": 15
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_rocking_chair_2",
+  "kind": "star",
+  "name": "The Rocking Chair 2",
+  "constellation": "c_rocking_chair",
+  "pos": [
+   893,
+   1871
+  ],
+  "links": [
+   "c_rocking_chair_1"
+  ],
+  "stats": {
+   "thorns": 15
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_rocking_chair_3",
+  "kind": "star",
+  "name": "The Rocking Chair 3",
+  "constellation": "c_rocking_chair",
+  "pos": [
+   820,
+   1832
+  ],
+  "links": [
+   "c_rocking_chair_2"
+  ],
+  "stats": {
+   "thorns": 15
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_rocking_chair_4",
+  "kind": "star",
+  "name": "The Rocking Chair 4",
+  "constellation": "c_rocking_chair",
+  "pos": [
+   768,
+   1743
+  ],
+  "links": [
+   "c_rocking_chair_3"
+  ],
+  "stats": {
+   "thorns": 15
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_rocking_chair_5",
+  "kind": "star",
+  "name": "The Rocking Chair 5",
+  "constellation": "c_rocking_chair",
+  "pos": [
+   706,
+   1709
+  ],
+  "links": [
+   "c_rocking_chair_4"
+  ],
+  "stats": {
+   "thorns": 15
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_rocking_chair_6",
+  "kind": "star",
+  "name": "The Rocking Chair 6",
+  "constellation": "c_rocking_chair",
+  "pos": [
+   613,
+   1738
+  ],
+  "links": [
+   "c_rocking_chair_5"
+  ],
+  "stats": {
+   "thorns": 15
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_rocking_chair_7",
+  "kind": "star",
+  "name": "The Rocking Chair 7",
+  "constellation": "c_rocking_chair",
+  "pos": [
+   523,
+   1740
+  ],
+  "links": [
+   "c_rocking_chair_6"
+  ],
+  "stats": {
+   "thorns": 15
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_rocking_chair_8",
+  "kind": "star",
+  "name": "The Rocking Chair 8",
+  "constellation": "c_rocking_chair",
+  "pos": [
+   484,
+   1662
+  ],
+  "links": [
+   "c_rocking_chair_7"
+  ],
+  "stats": {
+   "thorns": 15
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_1",
+  "kind": "star",
+  "name": "The Music Box 1",
+  "constellation": "c_music_box",
+  "pos": [
+   837,
+   1804
+  ],
+  "links": [
+   "c_lost_glove_11"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_2",
+  "kind": "star",
+  "name": "The Music Box 2",
+  "constellation": "c_music_box",
+  "pos": [
+   749,
+   1841
+  ],
+  "links": [
+   "c_music_box_1"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_3",
+  "kind": "star",
+  "name": "The Music Box 3",
+  "constellation": "c_music_box",
+  "pos": [
+   684,
+   1790
+  ],
+  "links": [
+   "c_music_box_2"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_4",
+  "kind": "star",
+  "name": "The Music Box 4",
+  "constellation": "c_music_box",
+  "pos": [
+   647,
+   1694
+  ],
+  "links": [
+   "c_music_box_3"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_5",
+  "kind": "star",
+  "name": "The Music Box 5",
+  "constellation": "c_music_box",
+  "pos": [
+   592,
+   1650
+  ],
+  "links": [
+   "c_music_box_4"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_6",
+  "kind": "star",
+  "name": "The Music Box 6",
+  "constellation": "c_music_box",
+  "pos": [
+   496,
+   1663
+  ],
+  "links": [
+   "c_music_box_5"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_7",
+  "kind": "star",
+  "name": "The Music Box 7",
+  "constellation": "c_music_box",
+  "pos": [
+   406,
+   1650
+  ],
+  "links": [
+   "c_music_box_6"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_8",
+  "kind": "star",
+  "name": "The Music Box 8",
+  "constellation": "c_music_box",
+  "pos": [
+   381,
+   1566
+  ],
+  "links": [
+   "c_music_box_7"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_9",
+  "kind": "star",
+  "name": "The Music Box 9",
+  "constellation": "c_music_box",
+  "pos": [
+   387,
+   1466
+  ],
+  "links": [
+   "c_music_box_8"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_10",
+  "kind": "star",
+  "name": "The Music Box 10",
+  "constellation": "c_music_box",
+  "pos": [
+   344,
+   1412
+  ],
+  "links": [
+   "c_music_box_9"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_11",
+  "kind": "star",
+  "name": "The Music Box 11",
+  "constellation": "c_music_box",
+  "pos": [
+   247,
+   1383
+  ],
+  "links": [
+   "c_music_box_10"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_12",
+  "kind": "star",
+  "name": "The Music Box 12",
+  "constellation": "c_music_box",
+  "pos": [
+   184,
+   1326
+  ],
+  "links": [
+   "c_music_box_11"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_music_box_13",
+  "kind": "star",
+  "name": "The Music Box 13",
+  "constellation": "c_music_box",
+  "pos": [
+   208,
+   1237
+  ],
+  "links": [
+   "c_music_box_12"
+  ],
+  "stats": {
+   "might": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wishing_well_1",
+  "kind": "star",
+  "name": "The Wishing Well 1",
+  "constellation": "c_wishing_well",
+  "pos": [
+   482,
+   1636
+  ],
+  "links": [
+   "c_umbrella_9"
+  ],
+  "stats": {
+   "agility": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wishing_well_2",
+  "kind": "star",
+  "name": "The Wishing Well 2",
+  "constellation": "c_wishing_well",
+  "pos": [
+   387,
+   1628
+  ],
+  "links": [
+   "c_wishing_well_1"
+  ],
+  "stats": {
+   "agility": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wishing_well_3",
+  "kind": "star",
+  "name": "The Wishing Well 3",
+  "constellation": "c_wishing_well",
+  "pos": [
+   353,
+   1553
+  ],
+  "links": [
+   "c_wishing_well_2"
+  ],
+  "stats": {
+   "agility": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wishing_well_4",
+  "kind": "star",
+  "name": "The Wishing Well 4",
+  "constellation": "c_wishing_well",
+  "pos": [
+   365,
+   1451
+  ],
+  "links": [
+   "c_wishing_well_3"
+  ],
+  "stats": {
+   "agility": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wishing_well_5",
+  "kind": "star",
+  "name": "The Wishing Well 5",
+  "constellation": "c_wishing_well",
+  "pos": [
+   337,
+   1386
+  ],
+  "links": [
+   "c_wishing_well_4"
+  ],
+  "stats": {
+   "agility": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wishing_well_6",
+  "kind": "star",
+  "name": "The Wishing Well 6",
+  "constellation": "c_wishing_well",
+  "pos": [
+   246,
+   1353
+  ],
+  "links": [
+   "c_wishing_well_5"
+  ],
+  "stats": {
+   "agility": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wishing_well_7",
+  "kind": "star",
+  "name": "The Wishing Well 7",
+  "constellation": "c_wishing_well",
+  "pos": [
+   173,
+   1300
+  ],
+  "links": [
+   "c_wishing_well_6"
+  ],
+  "stats": {
+   "agility": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wishing_well_8",
+  "kind": "star",
+  "name": "The Wishing Well 8",
+  "constellation": "c_wishing_well",
+  "pos": [
+   189,
+   1214
+  ],
+  "links": [
+   "c_wishing_well_7"
+  ],
+  "stats": {
+   "agility": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wishing_well_9",
+  "kind": "star",
+  "name": "The Wishing Well 9",
+  "constellation": "c_wishing_well",
+  "pos": [
+   240,
+   1129
+  ],
+  "links": [
+   "c_wishing_well_8"
+  ],
+  "stats": {
+   "agility": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wishing_well_10",
+  "kind": "star",
+  "name": "The Wishing Well 10",
+  "constellation": "c_wishing_well",
+  "pos": [
+   228,
+   1060
+  ],
+  "links": [
+   "c_wishing_well_9"
+  ],
+  "stats": {
+   "agility": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wishing_well_11",
+  "kind": "star",
+  "name": "The Wishing Well 11",
+  "constellation": "c_wishing_well",
+  "pos": [
+   155,
+   990
+  ],
+  "links": [
+   "c_wishing_well_10"
+  ],
+  "stats": {
+   "agility": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mitten_1",
+  "kind": "star",
+  "name": "The Mitten 1",
+  "constellation": "c_mitten",
+  "pos": [
+   246,
+   1323
+  ],
+  "links": [
+   "c_umbrella_9"
+  ],
+  "stats": {
+   "wisdom": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mitten_2",
+  "kind": "star",
+  "name": "The Mitten 2",
+  "constellation": "c_mitten",
+  "pos": [
+   165,
+   1272
+  ],
+  "links": [
+   "c_mitten_1"
+  ],
+  "stats": {
+   "wisdom": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mitten_3",
+  "kind": "star",
+  "name": "The Mitten 3",
+  "constellation": "c_mitten",
+  "pos": [
+   171,
+   1190
+  ],
+  "links": [
+   "c_mitten_2"
+  ],
+  "stats": {
+   "wisdom": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mitten_4",
+  "kind": "star",
+  "name": "The Mitten 4",
+  "constellation": "c_mitten",
+  "pos": [
+   228,
+   1105
+  ],
+  "links": [
+   "c_mitten_3"
+  ],
+  "stats": {
+   "wisdom": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mitten_5",
+  "kind": "star",
+  "name": "The Mitten 5",
+  "constellation": "c_mitten",
+  "pos": [
+   234,
+   1035
+  ],
+  "links": [
+   "c_mitten_4"
+  ],
+  "stats": {
+   "wisdom": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mitten_6",
+  "kind": "star",
+  "name": "The Mitten 6",
+  "constellation": "c_mitten",
+  "pos": [
+   168,
+   963
+  ],
+  "links": [
+   "c_mitten_5"
+  ],
+  "stats": {
+   "wisdom": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mitten_7",
+  "kind": "star",
+  "name": "The Mitten 7",
+  "constellation": "c_mitten",
+  "pos": [
+   128,
+   882
+  ],
+  "links": [
+   "c_mitten_6"
+  ],
+  "stats": {
+   "wisdom": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mitten_8",
+  "kind": "star",
+  "name": "The Mitten 8",
+  "constellation": "c_mitten",
+  "pos": [
+   182,
+   813
+  ],
+  "links": [
+   "c_mitten_7"
+  ],
+  "stats": {
+   "wisdom": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_mitten_9",
+  "kind": "star",
+  "name": "The Mitten 9",
+  "constellation": "c_mitten",
+  "pos": [
+   268,
+   761
+  ],
+  "links": [
+   "c_mitten_8"
+  ],
+  "stats": {
+   "wisdom": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_pinwheel_1",
+  "kind": "star",
+  "name": "The Pinwheel 1",
+  "constellation": "c_pinwheel",
+  "pos": [
+   182,
+   936
+  ],
+  "links": [
+   "c_chimney_7"
+  ],
+  "stats": {
+   "vitality": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_pinwheel_2",
+  "kind": "star",
+  "name": "The Pinwheel 2",
+  "constellation": "c_pinwheel",
+  "pos": [
+   135,
+   853
+  ],
+  "links": [
+   "c_pinwheel_1"
+  ],
+  "stats": {
+   "vitality": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_pinwheel_3",
+  "kind": "star",
+  "name": "The Pinwheel 3",
+  "constellation": "c_pinwheel",
+  "pos": [
+   177,
+   783
+  ],
+  "links": [
+   "c_pinwheel_2"
+  ],
+  "stats": {
+   "vitality": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_pinwheel_4",
+  "kind": "star",
+  "name": "The Pinwheel 4",
+  "constellation": "c_pinwheel",
+  "pos": [
+   268,
+   735
+  ],
+  "links": [
+   "c_pinwheel_3"
+  ],
+  "stats": {
+   "vitality": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_pinwheel_5",
+  "kind": "star",
+  "name": "The Pinwheel 5",
+  "constellation": "c_pinwheel",
+  "pos": [
+   305,
+   675
+  ],
+  "links": [
+   "c_pinwheel_4"
+  ],
+  "stats": {
+   "vitality": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_pinwheel_6",
+  "kind": "star",
+  "name": "The Pinwheel 6",
+  "constellation": "c_pinwheel",
+  "pos": [
+   280,
+   581
+  ],
+  "links": [
+   "c_pinwheel_5"
+  ],
+  "stats": {
+   "vitality": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_pinwheel_7",
+  "kind": "star",
+  "name": "The Pinwheel 7",
+  "constellation": "c_pinwheel",
+  "pos": [
+   283,
+   490
+  ],
+  "links": [
+   "c_pinwheel_6"
+  ],
+  "stats": {
+   "vitality": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_1",
+  "kind": "star",
+  "name": "The Sugar Cube 1",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   205,
+   801
+  ],
+  "links": [
+   "c_old_key_12"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_2",
+  "kind": "star",
+  "name": "The Sugar Cube 2",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   171,
+   711
+  ],
+  "links": [
+   "c_sugar_cube_1"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_3",
+  "kind": "star",
+  "name": "The Sugar Cube 3",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   225,
+   649
+  ],
+  "links": [
+   "c_sugar_cube_2"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_4",
+  "kind": "star",
+  "name": "The Sugar Cube 4",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   322,
+   616
+  ],
+  "links": [
+   "c_sugar_cube_3"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_5",
+  "kind": "star",
+  "name": "The Sugar Cube 5",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   369,
+   564
+  ],
+  "links": [
+   "c_sugar_cube_4"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_6",
+  "kind": "star",
+  "name": "The Sugar Cube 6",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   360,
+   466
+  ],
+  "links": [
+   "c_sugar_cube_5"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_7",
+  "kind": "star",
+  "name": "The Sugar Cube 7",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   378,
+   378
+  ],
+  "links": [
+   "c_sugar_cube_6"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_8",
+  "kind": "star",
+  "name": "The Sugar Cube 8",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   462,
+   356
+  ],
+  "links": [
+   "c_sugar_cube_7"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_9",
+  "kind": "star",
+  "name": "The Sugar Cube 9",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   562,
+   367
+  ],
+  "links": [
+   "c_sugar_cube_8"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_10",
+  "kind": "star",
+  "name": "The Sugar Cube 10",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   618,
+   326
+  ],
+  "links": [
+   "c_sugar_cube_9"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_11",
+  "kind": "star",
+  "name": "The Sugar Cube 11",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   651,
+   230
+  ],
+  "links": [
+   "c_sugar_cube_10"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_sugar_cube_12",
+  "kind": "star",
+  "name": "The Sugar Cube 12",
+  "constellation": "c_sugar_cube",
+  "pos": [
+   711,
+   170
+  ],
+  "links": [
+   "c_sugar_cube_11"
+  ],
+  "stats": {
+   "damage": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wick_1",
+  "kind": "star",
+  "name": "The Wick 1",
+  "constellation": "c_wick",
+  "pos": [
+   388,
+   454
+  ],
+  "links": [
+   "c_kite_10"
+  ],
+  "stats": {
+   "cdr_pct": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wick_2",
+  "kind": "star",
+  "name": "The Wick 2",
+  "constellation": "c_wick",
+  "pos": [
+   400,
+   359
+  ],
+  "links": [
+   "c_wick_1"
+  ],
+  "stats": {
+   "cdr_pct": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wick_3",
+  "kind": "star",
+  "name": "The Wick 3",
+  "constellation": "c_wick",
+  "pos": [
+   476,
+   329
+  ],
+  "links": [
+   "c_wick_2"
+  ],
+  "stats": {
+   "cdr_pct": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wick_4",
+  "kind": "star",
+  "name": "The Wick 4",
+  "constellation": "c_wick",
+  "pos": [
+   578,
+   346
+  ],
+  "links": [
+   "c_wick_3"
+  ],
+  "stats": {
+   "cdr_pct": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wick_5",
+  "kind": "star",
+  "name": "The Wick 5",
+  "constellation": "c_wick",
+  "pos": [
+   644,
+   321
+  ],
+  "links": [
+   "c_wick_4"
+  ],
+  "stats": {
+   "cdr_pct": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wick_6",
+  "kind": "star",
+  "name": "The Wick 6",
+  "constellation": "c_wick",
+  "pos": [
+   681,
+   230
+  ],
+  "links": [
+   "c_wick_5"
+  ],
+  "stats": {
+   "cdr_pct": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wick_7",
+  "kind": "star",
+  "name": "The Wick 7",
+  "constellation": "c_wick",
+  "pos": [
+   738,
+   160
+  ],
+  "links": [
+   "c_wick_6"
+  ],
+  "stats": {
+   "cdr_pct": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wick_8",
+  "kind": "star",
+  "name": "The Wick 8",
+  "constellation": "c_wick",
+  "pos": [
+   823,
+   180
+  ],
+  "links": [
+   "c_wick_7"
+  ],
+  "stats": {
+   "cdr_pct": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wick_9",
+  "kind": "star",
+  "name": "The Wick 9",
+  "constellation": "c_wick",
+  "pos": [
+   906,
+   235
+  ],
+  "links": [
+   "c_wick_8"
+  ],
+  "stats": {
+   "cdr_pct": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_wick_10",
+  "kind": "star",
+  "name": "The Wick 10",
+  "constellation": "c_wick",
+  "pos": [
+   975,
+   226
+  ],
+  "links": [
+   "c_wick_9"
+  ],
+  "stats": {
+   "cdr_pct": 0.4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_swing_1",
+  "kind": "star",
+  "name": "The Swing 1",
+  "constellation": "c_swing",
+  "pos": [
+   711,
+   233
+  ],
+  "links": [
+   "c_kite_10"
+  ],
+  "stats": {
+   "gold_find": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_swing_2",
+  "kind": "star",
+  "name": "The Swing 2",
+  "constellation": "c_swing",
+  "pos": [
+   766,
+   154
+  ],
+  "links": [
+   "c_swing_1"
+  ],
+  "stats": {
+   "gold_find": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_swing_3",
+  "kind": "star",
+  "name": "The Swing 3",
+  "constellation": "c_swing",
+  "pos": [
+   848,
+   163
+  ],
+  "links": [
+   "c_swing_2"
+  ],
+  "stats": {
+   "gold_find": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_swing_4",
+  "kind": "star",
+  "name": "The Swing 4",
+  "constellation": "c_swing",
+  "pos": [
+   930,
+   224
+  ],
+  "links": [
+   "c_swing_3"
+  ],
+  "stats": {
+   "gold_find": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_swing_5",
+  "kind": "star",
+  "name": "The Swing 5",
+  "constellation": "c_swing",
+  "pos": [
+   1000,
+   233
+  ],
+  "links": [
+   "c_swing_4"
+  ],
+  "stats": {
+   "gold_find": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_swing_6",
+  "kind": "star",
+  "name": "The Swing 6",
+  "constellation": "c_swing",
+  "pos": [
+   1075,
+   170
+  ],
+  "links": [
+   "c_swing_5"
+  ],
+  "stats": {
+   "gold_find": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_swing_7",
+  "kind": "star",
+  "name": "The Swing 7",
+  "constellation": "c_swing",
+  "pos": [
+   1158,
+   134
+  ],
+  "links": [
+   "c_swing_6"
+  ],
+  "stats": {
+   "gold_find": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_swing_8",
+  "kind": "star",
+  "name": "The Swing 8",
+  "constellation": "c_swing",
+  "pos": [
+   1224,
+   191
+  ],
+  "links": [
+   "c_swing_7"
+  ],
+  "stats": {
+   "gold_find": 4
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_1",
+  "kind": "star",
+  "name": "The Scarecrow 1",
+  "constellation": "c_scarecrow",
+  "pos": [
+   843,
+   195
+  ],
+  "links": [
+   "c_acorn_8"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_2",
+  "kind": "star",
+  "name": "The Scarecrow 2",
+  "constellation": "c_scarecrow",
+  "pos": [
+   910,
+   127
+  ],
+  "links": [
+   "c_scarecrow_1"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_3",
+  "kind": "star",
+  "name": "The Scarecrow 3",
+  "constellation": "c_scarecrow",
+  "pos": [
+   990,
+   149
+  ],
+  "links": [
+   "c_scarecrow_2"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_4",
+  "kind": "star",
+  "name": "The Scarecrow 4",
+  "constellation": "c_scarecrow",
+  "pos": [
+   1060,
+   224
+  ],
+  "links": [
+   "c_scarecrow_3"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_5",
+  "kind": "star",
+  "name": "The Scarecrow 5",
+  "constellation": "c_scarecrow",
+  "pos": [
+   1128,
+   244
+  ],
+  "links": [
+   "c_scarecrow_4"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_6",
+  "kind": "star",
+  "name": "The Scarecrow 6",
+  "constellation": "c_scarecrow",
+  "pos": [
+   1212,
+   195
+  ],
+  "links": [
+   "c_scarecrow_5"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_7",
+  "kind": "star",
+  "name": "The Scarecrow 7",
+  "constellation": "c_scarecrow",
+  "pos": [
+   1300,
+   173
+  ],
+  "links": [
+   "c_scarecrow_6"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_8",
+  "kind": "star",
+  "name": "The Scarecrow 8",
+  "constellation": "c_scarecrow",
+  "pos": [
+   1356,
+   240
+  ],
+  "links": [
+   "c_scarecrow_7"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_9",
+  "kind": "star",
+  "name": "The Scarecrow 9",
+  "constellation": "c_scarecrow",
+  "pos": [
+   1388,
+   334
+  ],
+  "links": [
+   "c_scarecrow_8"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_10",
+  "kind": "star",
+  "name": "The Scarecrow 10",
+  "constellation": "c_scarecrow",
+  "pos": [
+   1448,
+   369
+  ],
+  "links": [
+   "c_scarecrow_9"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_11",
+  "kind": "star",
+  "name": "The Scarecrow 11",
+  "constellation": "c_scarecrow",
+  "pos": [
+   1549,
+   358
+  ],
+  "links": [
+   "c_scarecrow_10"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_12",
+  "kind": "star",
+  "name": "The Scarecrow 12",
+  "constellation": "c_scarecrow",
+  "pos": [
+   1629,
+   386
+  ],
+  "links": [
+   "c_scarecrow_11"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_scarecrow_13",
+  "kind": "star",
+  "name": "The Scarecrow 13",
+  "constellation": "c_scarecrow",
+  "pos": [
+   1641,
+   478
+  ],
+  "links": [
+   "c_scarecrow_12"
+  ],
+  "stats": {
+   "life_pct": 0.6
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lighthouse_1",
+  "kind": "star",
+  "name": "The Lighthouse 1",
+  "constellation": "c_lighthouse",
+  "pos": [
+   1235,
+   214
+  ],
+  "links": [
+   "c_puffcap_13"
+  ],
+  "stats": {
+   "crit_damage": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lighthouse_2",
+  "kind": "star",
+  "name": "The Lighthouse 2",
+  "constellation": "c_lighthouse",
+  "pos": [
+   1326,
+   185
+  ],
+  "links": [
+   "c_lighthouse_1"
+  ],
+  "stats": {
+   "crit_damage": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lighthouse_3",
+  "kind": "star",
+  "name": "The Lighthouse 3",
+  "constellation": "c_lighthouse",
+  "pos": [
+   1386,
+   241
+  ],
+  "links": [
+   "c_lighthouse_2"
+  ],
+  "stats": {
+   "crit_damage": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lighthouse_4",
+  "kind": "star",
+  "name": "The Lighthouse 4",
+  "constellation": "c_lighthouse",
+  "pos": [
+   1414,
+   340
+  ],
+  "links": [
+   "c_lighthouse_3"
+  ],
+  "stats": {
+   "crit_damage": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lighthouse_5",
+  "kind": "star",
+  "name": "The Lighthouse 5",
+  "constellation": "c_lighthouse",
+  "pos": [
+   1464,
+   390
+  ],
+  "links": [
+   "c_lighthouse_4"
+  ],
+  "stats": {
+   "crit_damage": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lighthouse_6",
+  "kind": "star",
+  "name": "The Lighthouse 6",
+  "constellation": "c_lighthouse",
+  "pos": [
+   1562,
+   385
+  ],
+  "links": [
+   "c_lighthouse_5"
+  ],
+  "stats": {
+   "crit_damage": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lighthouse_7",
+  "kind": "star",
+  "name": "The Lighthouse 7",
+  "constellation": "c_lighthouse",
+  "pos": [
+   1650,
+   406
+  ],
+  "links": [
+   "c_lighthouse_6"
+  ],
+  "stats": {
+   "crit_damage": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lighthouse_8",
+  "kind": "star",
+  "name": "The Lighthouse 8",
+  "constellation": "c_lighthouse",
+  "pos": [
+   1668,
+   492
+  ],
+  "links": [
+   "c_lighthouse_7"
+  ],
+  "stats": {
+   "crit_damage": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lighthouse_9",
+  "kind": "star",
+  "name": "The Lighthouse 9",
+  "constellation": "c_lighthouse",
+  "pos": [
+   1653,
+   591
+  ],
+  "links": [
+   "c_lighthouse_8"
+  ],
+  "stats": {
+   "crit_damage": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lighthouse_10",
+  "kind": "star",
+  "name": "The Lighthouse 10",
+  "constellation": "c_lighthouse",
+  "pos": [
+   1690,
+   649
+  ],
+  "links": [
+   "c_lighthouse_9"
+  ],
+  "stats": {
+   "crit_damage": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lighthouse_11",
+  "kind": "star",
+  "name": "The Lighthouse 11",
+  "constellation": "c_lighthouse",
+  "pos": [
+   1785,
+   686
+  ],
+  "links": [
+   "c_lighthouse_10"
+  ],
+  "stats": {
+   "crit_damage": 3
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bellrope_1",
+  "kind": "star",
+  "name": "The Bellrope 1",
+  "constellation": "c_bellrope",
+  "pos": [
+   1573,
+   413
+  ],
+  "links": [
+   "c_odd_sock_11"
+  ],
+  "stats": {
+   "resist_shadow": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bellrope_2",
+  "kind": "star",
+  "name": "The Bellrope 2",
+  "constellation": "c_bellrope",
+  "pos": [
+   1667,
+   429
+  ],
+  "links": [
+   "c_bellrope_1"
+  ],
+  "stats": {
+   "resist_shadow": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bellrope_3",
+  "kind": "star",
+  "name": "The Bellrope 3",
+  "constellation": "c_bellrope",
+  "pos": [
+   1694,
+   507
+  ],
+  "links": [
+   "c_bellrope_2"
+  ],
+  "stats": {
+   "resist_shadow": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bellrope_4",
+  "kind": "star",
+  "name": "The Bellrope 4",
+  "constellation": "c_bellrope",
+  "pos": [
+   1673,
+   608
+  ],
+  "links": [
+   "c_bellrope_3"
+  ],
+  "stats": {
+   "resist_shadow": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bellrope_5",
+  "kind": "star",
+  "name": "The Bellrope 5",
+  "constellation": "c_bellrope",
+  "pos": [
+   1695,
+   675
+  ],
+  "links": [
+   "c_bellrope_4"
+  ],
+  "stats": {
+   "resist_shadow": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bellrope_6",
+  "kind": "star",
+  "name": "The Bellrope 6",
+  "constellation": "c_bellrope",
+  "pos": [
+   1783,
+   716
+  ],
+  "links": [
+   "c_bellrope_5"
+  ],
+  "stats": {
+   "resist_shadow": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bellrope_7",
+  "kind": "star",
+  "name": "The Bellrope 7",
+  "constellation": "c_bellrope",
+  "pos": [
+   1851,
+   776
+  ],
+  "links": [
+   "c_bellrope_6"
+  ],
+  "stats": {
+   "resist_shadow": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bellrope_8",
+  "kind": "star",
+  "name": "The Bellrope 8",
+  "constellation": "c_bellrope",
+  "pos": [
+   1827,
+   860
+  ],
+  "links": [
+   "c_bellrope_7"
+  ],
+  "stats": {
+   "resist_shadow": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_bellrope_9",
+  "kind": "star",
+  "name": "The Bellrope 9",
+  "constellation": "c_bellrope",
+  "pos": [
+   1768,
+   940
+  ],
+  "links": [
+   "c_bellrope_8"
+  ],
+  "stats": {
+   "resist_shadow": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_nightcap_1",
+  "kind": "star",
+  "name": "The Nightcap 1",
+  "constellation": "c_nightcap",
+  "pos": [
+   1780,
+   746
+  ],
+  "links": [
+   "c_weathervane_12"
+  ],
+  "stats": {
+   "life_on_hit": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_nightcap_2",
+  "kind": "star",
+  "name": "The Nightcap 2",
+  "constellation": "c_nightcap",
+  "pos": [
+   1856,
+   804
+  ],
+  "links": [
+   "c_nightcap_1"
+  ],
+  "stats": {
+   "life_on_hit": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_nightcap_3",
+  "kind": "star",
+  "name": "The Nightcap 3",
+  "constellation": "c_nightcap",
+  "pos": [
+   1843,
+   885
+  ],
+  "links": [
+   "c_nightcap_2"
+  ],
+  "stats": {
+   "life_on_hit": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_nightcap_4",
+  "kind": "star",
+  "name": "The Nightcap 4",
+  "constellation": "c_nightcap",
+  "pos": [
+   1778,
+   965
+  ],
+  "links": [
+   "c_nightcap_3"
+  ],
+  "stats": {
+   "life_on_hit": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_nightcap_5",
+  "kind": "star",
+  "name": "The Nightcap 5",
+  "constellation": "c_nightcap",
+  "pos": [
+   1766,
+   1035
+  ],
+  "links": [
+   "c_nightcap_4"
+  ],
+  "stats": {
+   "life_on_hit": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_nightcap_6",
+  "kind": "star",
+  "name": "The Nightcap 6",
+  "constellation": "c_nightcap",
+  "pos": [
+   1825,
+   1112
+  ],
+  "links": [
+   "c_nightcap_5"
+  ],
+  "stats": {
+   "life_on_hit": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_nightcap_7",
+  "kind": "star",
+  "name": "The Nightcap 7",
+  "constellation": "c_nightcap",
+  "pos": [
+   1858,
+   1196
+  ],
+  "links": [
+   "c_nightcap_6"
+  ],
+  "stats": {
+   "life_on_hit": 2
+  },
+  "class": "",
+  "cost": 1
+ },
+ {
+  "id": "c_lantern_knight_1",
+  "kind": "star",
+  "name": "The Lantern Knight 1",
+  "constellation": "c_lantern_knight",
+  "pos": [
+   1414,
+   800
+  ],
+  "links": [
+   "c_weathervane_12"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_lantern_knight_2",
+  "kind": "star",
+  "name": "The Lantern Knight 2",
+  "constellation": "c_lantern_knight",
+  "pos": [
+   1485,
+   818
+  ],
+  "links": [
+   "c_lantern_knight_1"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_lantern_knight_3",
+  "kind": "star",
+  "name": "The Lantern Knight 3",
+  "constellation": "c_lantern_knight",
+  "pos": [
+   1473,
+   869
+  ],
+  "links": [
+   "c_lantern_knight_2"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_lantern_knight_4",
+  "kind": "star",
+  "name": "The Lantern Knight 4",
+  "constellation": "c_lantern_knight",
+  "pos": [
+   1412,
+   925
+  ],
+  "links": [
+   "c_lantern_knight_3"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_lantern_knight_5",
+  "kind": "star",
+  "name": "The Lantern Knight 5",
+  "constellation": "c_lantern_knight",
+  "pos": [
+   1405,
+   963
+  ],
+  "links": [
+   "c_lantern_knight_4"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_lantern_knight_6",
+  "kind": "star",
+  "name": "The Lantern Knight 6",
+  "constellation": "c_lantern_knight",
+  "pos": [
+   1473,
+   1000
+  ],
+  "links": [
+   "c_lantern_knight_5"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_lantern_knight_7",
+  "kind": "star",
+  "name": "The Lantern Knight 7",
+  "constellation": "c_lantern_knight",
+  "pos": [
+   1518,
+   1047
+  ],
+  "links": [
+   "c_lantern_knight_6"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_lantern_knight_8",
+  "kind": "star",
+  "name": "The Lantern Knight 8",
+  "constellation": "c_lantern_knight",
+  "pos": [
+   1471,
+   1086
+  ],
+  "links": [
+   "c_lantern_knight_7"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_lantern_knight_9",
+  "kind": "star",
+  "name": "The Lantern Knight 9",
+  "constellation": "c_lantern_knight",
+  "pos": [
+   1395,
+   1109
+  ],
+  "links": [
+   "c_lantern_knight_8"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_lantern_knight_10",
+  "kind": "star",
+  "name": "The Lantern Knight 10",
+  "constellation": "c_lantern_knight",
+  "pos": [
+   1388,
+   1146
+  ],
+  "links": [
+   "c_lantern_knight_9"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_hearthguard_1",
+  "kind": "star",
+  "name": "The Hearthguard 1",
+  "constellation": "c_hearthguard",
+  "pos": [
+   1458,
+   954
+  ],
+  "links": [
+   "c_weathervane_12"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_hearthguard_2",
+  "kind": "star",
+  "name": "The Hearthguard 2",
+  "constellation": "c_hearthguard",
+  "pos": [
+   1518,
+   994
+  ],
+  "links": [
+   "c_hearthguard_1"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_hearthguard_3",
+  "kind": "star",
+  "name": "The Hearthguard 3",
+  "constellation": "c_hearthguard",
+  "pos": [
+   1489,
+   1039
+  ],
+  "links": [
+   "c_hearthguard_2"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_hearthguard_4",
+  "kind": "star",
+  "name": "The Hearthguard 4",
+  "constellation": "c_hearthguard",
+  "pos": [
+   1413,
+   1070
+  ],
+  "links": [
+   "c_hearthguard_3"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_hearthguard_5",
+  "kind": "star",
+  "name": "The Hearthguard 5",
+  "constellation": "c_hearthguard",
+  "pos": [
+   1393,
+   1104
+  ],
+  "links": [
+   "c_hearthguard_4"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_hearthguard_6",
+  "kind": "star",
+  "name": "The Hearthguard 6",
+  "constellation": "c_hearthguard",
+  "pos": [
+   1444,
+   1162
+  ],
+  "links": [
+   "c_hearthguard_5"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_hearthguard_7",
+  "kind": "star",
+  "name": "The Hearthguard 7",
+  "constellation": "c_hearthguard",
+  "pos": [
+   1471,
+   1221
+  ],
+  "links": [
+   "c_hearthguard_6"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_hearthguard_8",
+  "kind": "star",
+  "name": "The Hearthguard 8",
+  "constellation": "c_hearthguard",
+  "pos": [
+   1414,
+   1242
+  ],
+  "links": [
+   "c_hearthguard_7"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_hearthguard_9",
+  "kind": "star",
+  "name": "The Hearthguard 9",
+  "constellation": "c_hearthguard",
+  "pos": [
+   1334,
+   1238
+  ],
+  "links": [
+   "c_hearthguard_8"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_hearthguard_10",
+  "kind": "star",
+  "name": "The Hearthguard 10",
+  "constellation": "c_hearthguard",
+  "pos": [
+   1314,
+   1270
+  ],
+  "links": [
+   "c_hearthguard_9"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "lanternbearer",
+  "cost": 1
+ },
+ {
+  "id": "c_great_bell_1",
+  "kind": "star",
+  "name": "The Great Bell 1",
+  "constellation": "c_great_bell",
+  "pos": [
+   1318,
+   1332
+  ],
+  "links": [
+   "c_spindle_8"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_great_bell_2",
+  "kind": "star",
+  "name": "The Great Bell 2",
+  "constellation": "c_great_bell",
+  "pos": [
+   1323,
+   1405
+  ],
+  "links": [
+   "c_great_bell_1"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_great_bell_3",
+  "kind": "star",
+  "name": "The Great Bell 3",
+  "constellation": "c_great_bell",
+  "pos": [
+   1271,
+   1410
+  ],
+  "links": [
+   "c_great_bell_2"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_great_bell_4",
+  "kind": "star",
+  "name": "The Great Bell 4",
+  "constellation": "c_great_bell",
+  "pos": [
+   1199,
+   1369
+  ],
+  "links": [
+   "c_great_bell_3"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_great_bell_5",
+  "kind": "star",
+  "name": "The Great Bell 5",
+  "constellation": "c_great_bell",
+  "pos": [
+   1160,
+   1374
+  ],
+  "links": [
+   "c_great_bell_4"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_great_bell_6",
+  "kind": "star",
+  "name": "The Great Bell 6",
+  "constellation": "c_great_bell",
+  "pos": [
+   1146,
+   1450
+  ],
+  "links": [
+   "c_great_bell_5"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_great_bell_7",
+  "kind": "star",
+  "name": "The Great Bell 7",
+  "constellation": "c_great_bell",
+  "pos": [
+   1116,
+   1507
+  ],
+  "links": [
+   "c_great_bell_6"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_great_bell_8",
+  "kind": "star",
+  "name": "The Great Bell 8",
+  "constellation": "c_great_bell",
+  "pos": [
+   1064,
+   1475
+  ],
+  "links": [
+   "c_great_bell_7"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_great_bell_9",
+  "kind": "star",
+  "name": "The Great Bell 9",
+  "constellation": "c_great_bell",
+  "pos": [
+   1018,
+   1410
+  ],
+  "links": [
+   "c_great_bell_8"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_great_bell_10",
+  "kind": "star",
+  "name": "The Great Bell 10",
+  "constellation": "c_great_bell",
+  "pos": [
+   981,
+   1414
+  ],
+  "links": [
+   "c_great_bell_9"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_brass_drum_1",
+  "kind": "star",
+  "name": "The Brass Drum 1",
+  "constellation": "c_brass_drum",
+  "pos": [
+   1186,
+   1421
+  ],
+  "links": [
+   "c_ladle_13"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_brass_drum_2",
+  "kind": "star",
+  "name": "The Brass Drum 2",
+  "constellation": "c_brass_drum",
+  "pos": [
+   1165,
+   1491
+  ],
+  "links": [
+   "c_brass_drum_1"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_brass_drum_3",
+  "kind": "star",
+  "name": "The Brass Drum 3",
+  "constellation": "c_brass_drum",
+  "pos": [
+   1114,
+   1477
+  ],
+  "links": [
+   "c_brass_drum_2"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_brass_drum_4",
+  "kind": "star",
+  "name": "The Brass Drum 4",
+  "constellation": "c_brass_drum",
+  "pos": [
+   1061,
+   1414
+  ],
+  "links": [
+   "c_brass_drum_3"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_brass_drum_5",
+  "kind": "star",
+  "name": "The Brass Drum 5",
+  "constellation": "c_brass_drum",
+  "pos": [
+   1022,
+   1406
+  ],
+  "links": [
+   "c_brass_drum_4"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_brass_drum_6",
+  "kind": "star",
+  "name": "The Brass Drum 6",
+  "constellation": "c_brass_drum",
+  "pos": [
+   983,
+   1473
+  ],
+  "links": [
+   "c_brass_drum_5"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_brass_drum_7",
+  "kind": "star",
+  "name": "The Brass Drum 7",
+  "constellation": "c_brass_drum",
+  "pos": [
+   935,
+   1516
+  ],
+  "links": [
+   "c_brass_drum_6"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_brass_drum_8",
+  "kind": "star",
+  "name": "The Brass Drum 8",
+  "constellation": "c_brass_drum",
+  "pos": [
+   898,
+   1468
+  ],
+  "links": [
+   "c_brass_drum_7"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_brass_drum_9",
+  "kind": "star",
+  "name": "The Brass Drum 9",
+  "constellation": "c_brass_drum",
+  "pos": [
+   877,
+   1391
+  ],
+  "links": [
+   "c_brass_drum_8"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_brass_drum_10",
+  "kind": "star",
+  "name": "The Brass Drum 10",
+  "constellation": "c_brass_drum",
+  "pos": [
+   841,
+   1382
+  ],
+  "links": [
+   "c_brass_drum_9"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "bellstriker",
+  "cost": 1
+ },
+ {
+  "id": "c_telescope_1",
+  "kind": "star",
+  "name": "The Telescope 1",
+  "constellation": "c_telescope",
+  "pos": [
+   783,
+   1405
+  ],
+  "links": [
+   "c_lost_glove_11"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_telescope_2",
+  "kind": "star",
+  "name": "The Telescope 2",
+  "constellation": "c_telescope",
+  "pos": [
+   715,
+   1432
+  ],
+  "links": [
+   "c_telescope_1"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_telescope_3",
+  "kind": "star",
+  "name": "The Telescope 3",
+  "constellation": "c_telescope",
+  "pos": [
+   694,
+   1384
+  ],
+  "links": [
+   "c_telescope_2"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_telescope_4",
+  "kind": "star",
+  "name": "The Telescope 4",
+  "constellation": "c_telescope",
+  "pos": [
+   711,
+   1303
+  ],
+  "links": [
+   "c_telescope_3"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_telescope_5",
+  "kind": "star",
+  "name": "The Telescope 5",
+  "constellation": "c_telescope",
+  "pos": [
+   694,
+   1268
+  ],
+  "links": [
+   "c_telescope_4"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_telescope_6",
+  "kind": "star",
+  "name": "The Telescope 6",
+  "constellation": "c_telescope",
+  "pos": [
+   617,
+   1278
+  ],
+  "links": [
+   "c_telescope_5"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_telescope_7",
+  "kind": "star",
+  "name": "The Telescope 7",
+  "constellation": "c_telescope",
+  "pos": [
+   554,
+   1267
+  ],
+  "links": [
+   "c_telescope_6"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_telescope_8",
+  "kind": "star",
+  "name": "The Telescope 8",
+  "constellation": "c_telescope",
+  "pos": [
+   568,
+   1208
+  ],
+  "links": [
+   "c_telescope_7"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_telescope_9",
+  "kind": "star",
+  "name": "The Telescope 9",
+  "constellation": "c_telescope",
+  "pos": [
+   616,
+   1144
+  ],
+  "links": [
+   "c_telescope_8"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_telescope_10",
+  "kind": "star",
+  "name": "The Telescope 10",
+  "constellation": "c_telescope",
+  "pos": [
+   601,
+   1110
+  ],
+  "links": [
+   "c_telescope_9"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_orrery_1",
+  "kind": "star",
+  "name": "The Orrery 1",
+  "constellation": "c_orrery",
+  "pos": [
+   657,
+   1307
+  ],
+  "links": [
+   "c_umbrella_9"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_orrery_2",
+  "kind": "star",
+  "name": "The Orrery 2",
+  "constellation": "c_orrery",
+  "pos": [
+   584,
+   1309
+  ],
+  "links": [
+   "c_orrery_1"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_orrery_3",
+  "kind": "star",
+  "name": "The Orrery 3",
+  "constellation": "c_orrery",
+  "pos": [
+   581,
+   1256
+  ],
+  "links": [
+   "c_orrery_2"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_orrery_4",
+  "kind": "star",
+  "name": "The Orrery 4",
+  "constellation": "c_orrery",
+  "pos": [
+   625,
+   1186
+  ],
+  "links": [
+   "c_orrery_3"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_orrery_5",
+  "kind": "star",
+  "name": "The Orrery 5",
+  "constellation": "c_orrery",
+  "pos": [
+   620,
+   1147
+  ],
+  "links": [
+   "c_orrery_4"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_orrery_6",
+  "kind": "star",
+  "name": "The Orrery 6",
+  "constellation": "c_orrery",
+  "pos": [
+   545,
+   1130
+  ],
+  "links": [
+   "c_orrery_5"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_orrery_7",
+  "kind": "star",
+  "name": "The Orrery 7",
+  "constellation": "c_orrery",
+  "pos": [
+   489,
+   1098
+  ],
+  "links": [
+   "c_orrery_6"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_orrery_8",
+  "kind": "star",
+  "name": "The Orrery 8",
+  "constellation": "c_orrery",
+  "pos": [
+   523,
+   1047
+  ],
+  "links": [
+   "c_orrery_7"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_orrery_9",
+  "kind": "star",
+  "name": "The Orrery 9",
+  "constellation": "c_orrery",
+  "pos": [
+   590,
+   1004
+  ],
+  "links": [
+   "c_orrery_8"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_orrery_10",
+  "kind": "star",
+  "name": "The Orrery 10",
+  "constellation": "c_orrery",
+  "pos": [
+   587,
+   967
+  ],
+  "links": [
+   "c_orrery_9"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stargazer",
+  "cost": 1
+ },
+ {
+  "id": "c_rag_doll_1",
+  "kind": "star",
+  "name": "The Rag Doll 1",
+  "constellation": "c_rag_doll",
+  "pos": [
+   547,
+   918
+  ],
+  "links": [
+   "c_old_key_12"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_rag_doll_2",
+  "kind": "star",
+  "name": "The Rag Doll 2",
+  "constellation": "c_rag_doll",
+  "pos": [
+   501,
+   863
+  ],
+  "links": [
+   "c_rag_doll_1"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_rag_doll_3",
+  "kind": "star",
+  "name": "The Rag Doll 3",
+  "constellation": "c_rag_doll",
+  "pos": [
+   540,
+   828
+  ],
+  "links": [
+   "c_rag_doll_2"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_rag_doll_4",
+  "kind": "star",
+  "name": "The Rag Doll 4",
+  "constellation": "c_rag_doll",
+  "pos": [
+   623,
+   818
+  ],
+  "links": [
+   "c_rag_doll_3"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_rag_doll_5",
+  "kind": "star",
+  "name": "The Rag Doll 5",
+  "constellation": "c_rag_doll",
+  "pos": [
+   651,
+   791
+  ],
+  "links": [
+   "c_rag_doll_4"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_rag_doll_6",
+  "kind": "star",
+  "name": "The Rag Doll 6",
+  "constellation": "c_rag_doll",
+  "pos": [
+   617,
+   722
+  ],
+  "links": [
+   "c_rag_doll_5"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_rag_doll_7",
+  "kind": "star",
+  "name": "The Rag Doll 7",
+  "constellation": "c_rag_doll",
+  "pos": [
+   609,
+   658
+  ],
+  "links": [
+   "c_rag_doll_6"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_rag_doll_8",
+  "kind": "star",
+  "name": "The Rag Doll 8",
+  "constellation": "c_rag_doll",
+  "pos": [
+   669,
+   654
+  ],
+  "links": [
+   "c_rag_doll_7"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_rag_doll_9",
+  "kind": "star",
+  "name": "The Rag Doll 9",
+  "constellation": "c_rag_doll",
+  "pos": [
+   744,
+   679
+  ],
+  "links": [
+   "c_rag_doll_8"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_rag_doll_10",
+  "kind": "star",
+  "name": "The Rag Doll 10",
+  "constellation": "c_rag_doll",
+  "pos": [
+   772,
+   654
+  ],
+  "links": [
+   "c_rag_doll_9"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_needle_1",
+  "kind": "star",
+  "name": "The Needle 1",
+  "constellation": "c_needle",
+  "pos": [
+   603,
+   768
+  ],
+  "links": [
+   "c_old_key_12"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_needle_2",
+  "kind": "star",
+  "name": "The Needle 2",
+  "constellation": "c_needle",
+  "pos": [
+   578,
+   700
+  ],
+  "links": [
+   "c_needle_1"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_needle_3",
+  "kind": "star",
+  "name": "The Needle 3",
+  "constellation": "c_needle",
+  "pos": [
+   627,
+   681
+  ],
+  "links": [
+   "c_needle_2"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_needle_4",
+  "kind": "star",
+  "name": "The Needle 4",
+  "constellation": "c_needle",
+  "pos": [
+   707,
+   700
+  ],
+  "links": [
+   "c_needle_3"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_needle_5",
+  "kind": "star",
+  "name": "The Needle 5",
+  "constellation": "c_needle",
+  "pos": [
+   743,
+   684
+  ],
+  "links": [
+   "c_needle_4"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_needle_6",
+  "kind": "star",
+  "name": "The Needle 6",
+  "constellation": "c_needle",
+  "pos": [
+   736,
+   608
+  ],
+  "links": [
+   "c_needle_5"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_needle_7",
+  "kind": "star",
+  "name": "The Needle 7",
+  "constellation": "c_needle",
+  "pos": [
+   749,
+   545
+  ],
+  "links": [
+   "c_needle_6"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_needle_8",
+  "kind": "star",
+  "name": "The Needle 8",
+  "constellation": "c_needle",
+  "pos": [
+   808,
+   561
+  ],
+  "links": [
+   "c_needle_7"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_needle_9",
+  "kind": "star",
+  "name": "The Needle 9",
+  "constellation": "c_needle",
+  "pos": [
+   870,
+   611
+  ],
+  "links": [
+   "c_needle_8"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_needle_10",
+  "kind": "star",
+  "name": "The Needle 10",
+  "constellation": "c_needle",
+  "pos": [
+   904,
+   597
+  ],
+  "links": [
+   "c_needle_9"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "stitcher",
+  "cost": 1
+ },
+ {
+  "id": "c_rooftop_cat_1",
+  "kind": "star",
+  "name": "The Rooftop Cat 1",
+  "constellation": "c_rooftop_cat",
+  "pos": [
+   938,
+   544
+  ],
+  "links": [
+   "c_acorn_8"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_rooftop_cat_2",
+  "kind": "star",
+  "name": "The Rooftop Cat 2",
+  "constellation": "c_rooftop_cat",
+  "pos": [
+   976,
+   483
+  ],
+  "links": [
+   "c_rooftop_cat_1"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_rooftop_cat_3",
+  "kind": "star",
+  "name": "The Rooftop Cat 3",
+  "constellation": "c_rooftop_cat",
+  "pos": [
+   1022,
+   510
+  ],
+  "links": [
+   "c_rooftop_cat_2"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_rooftop_cat_4",
+  "kind": "star",
+  "name": "The Rooftop Cat 4",
+  "constellation": "c_rooftop_cat",
+  "pos": [
+   1056,
+   585
+  ],
+  "links": [
+   "c_rooftop_cat_3"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_rooftop_cat_5",
+  "kind": "star",
+  "name": "The Rooftop Cat 5",
+  "constellation": "c_rooftop_cat",
+  "pos": [
+   1090,
+   603
+  ],
+  "links": [
+   "c_rooftop_cat_4"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_rooftop_cat_6",
+  "kind": "star",
+  "name": "The Rooftop Cat 6",
+  "constellation": "c_rooftop_cat",
+  "pos": [
+   1146,
+   550
+  ],
+  "links": [
+   "c_rooftop_cat_5"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_rooftop_cat_7",
+  "kind": "star",
+  "name": "The Rooftop Cat 7",
+  "constellation": "c_rooftop_cat",
+  "pos": [
+   1204,
+   522
+  ],
+  "links": [
+   "c_rooftop_cat_6"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_rooftop_cat_8",
+  "kind": "star",
+  "name": "The Rooftop Cat 8",
+  "constellation": "c_rooftop_cat",
+  "pos": [
+   1227,
+   578
+  ],
+  "links": [
+   "c_rooftop_cat_7"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_rooftop_cat_9",
+  "kind": "star",
+  "name": "The Rooftop Cat 9",
+  "constellation": "c_rooftop_cat",
+  "pos": [
+   1226,
+   658
+  ],
+  "links": [
+   "c_rooftop_cat_8"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_rooftop_cat_10",
+  "kind": "star",
+  "name": "The Rooftop Cat 10",
+  "constellation": "c_rooftop_cat",
+  "pos": [
+   1259,
+   676
+  ],
+  "links": [
+   "c_rooftop_cat_9"
+  ],
+  "stats": {
+   "life_pct": 0.8
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_pot_1",
+  "kind": "star",
+  "name": "The Chimney Pot 1",
+  "constellation": "c_chimney_pot",
+  "pos": [
+   1097,
+   550
+  ],
+  "links": [
+   "c_puffcap_13"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_pot_2",
+  "kind": "star",
+  "name": "The Chimney Pot 2",
+  "constellation": "c_chimney_pot",
+  "pos": [
+   1155,
+   506
+  ],
+  "links": [
+   "c_chimney_pot_1"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_pot_3",
+  "kind": "star",
+  "name": "The Chimney Pot 3",
+  "constellation": "c_chimney_pot",
+  "pos": [
+   1188,
+   547
+  ],
+  "links": [
+   "c_chimney_pot_2"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_pot_4",
+  "kind": "star",
+  "name": "The Chimney Pot 4",
+  "constellation": "c_chimney_pot",
+  "pos": [
+   1195,
+   629
+  ],
+  "links": [
+   "c_chimney_pot_3"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_pot_5",
+  "kind": "star",
+  "name": "The Chimney Pot 5",
+  "constellation": "c_chimney_pot",
+  "pos": [
+   1221,
+   658
+  ],
+  "links": [
+   "c_chimney_pot_4"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_pot_6",
+  "kind": "star",
+  "name": "The Chimney Pot 6",
+  "constellation": "c_chimney_pot",
+  "pos": [
+   1291,
+   627
+  ],
+  "links": [
+   "c_chimney_pot_5"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_pot_7",
+  "kind": "star",
+  "name": "The Chimney Pot 7",
+  "constellation": "c_chimney_pot",
+  "pos": [
+   1356,
+   621
+  ],
+  "links": [
+   "c_chimney_pot_6"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_pot_8",
+  "kind": "star",
+  "name": "The Chimney Pot 8",
+  "constellation": "c_chimney_pot",
+  "pos": [
+   1358,
+   681
+  ],
+  "links": [
+   "c_chimney_pot_7"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_pot_9",
+  "kind": "star",
+  "name": "The Chimney Pot 9",
+  "constellation": "c_chimney_pot",
+  "pos": [
+   1330,
+   756
+  ],
+  "links": [
+   "c_chimney_pot_8"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_chimney_pot_10",
+  "kind": "star",
+  "name": "The Chimney Pot 10",
+  "constellation": "c_chimney_pot",
+  "pos": [
+   1354,
+   784
+  ],
+  "links": [
+   "c_chimney_pot_9"
+  ],
+  "stats": {
+   "damage_pct": 2.5
+  },
+  "class": "roofrunner",
+  "cost": 1
+ },
+ {
+  "id": "c_kettle",
+  "kind": "constellation",
+  "name": "The Kettle",
+  "nodes": [
+   "c_kettle_1",
+   "c_kettle_2",
+   "c_kettle_3",
+   "c_kettle_4",
+   "c_kettle_5",
+   "c_kettle_6",
+   "c_kettle_7"
+  ],
+  "bonus": {
+   "life_pct": 5
+  },
+  "class": "",
+  "ring": 0,
+  "pos": [
+   1220,
+   1000
+  ],
+  "requires_points_in_ring_below": 0
+ },
+ {
+  "id": "c_sleeping_cat",
+  "kind": "constellation",
+  "name": "The Sleeping Cat",
+  "nodes": [
+   "c_sleeping_cat_1",
+   "c_sleeping_cat_2",
+   "c_sleeping_cat_3",
+   "c_sleeping_cat_4",
+   "c_sleeping_cat_5",
+   "c_sleeping_cat_6",
+   "c_sleeping_cat_7",
+   "c_sleeping_cat_8",
+   "c_sleeping_cat_9",
+   "c_sleeping_cat_10",
+   "c_sleeping_cat_11",
+   "c_sleeping_cat_12"
+  ],
+  "bonus": {
+   "more_damage": 3
+  },
+  "class": "",
+  "ring": 0,
+  "pos": [
+   1156,
+   1156
+  ],
+  "requires_points_in_ring_below": 0
+ },
+ {
+  "id": "c_bell_tower",
+  "kind": "constellation",
+  "name": "The Bell-Tower",
+  "nodes": [
+   "c_bell_tower_1",
+   "c_bell_tower_2",
+   "c_bell_tower_3",
+   "c_bell_tower_4",
+   "c_bell_tower_5",
+   "c_bell_tower_6",
+   "c_bell_tower_7",
+   "c_bell_tower_8",
+   "c_bell_tower_9",
+   "c_bell_tower_10"
+  ],
+  "bonus": {
+   "armor_pct": 8
+  },
+  "class": "",
+  "ring": 0,
+  "pos": [
+   1000,
+   1220
+  ],
+  "requires_points_in_ring_below": 0
+ },
+ {
+  "id": "c_button",
+  "kind": "constellation",
+  "name": "The Button",
+  "nodes": [
+   "c_button_1",
+   "c_button_2",
+   "c_button_3",
+   "c_button_4",
+   "c_button_5",
+   "c_button_6",
+   "c_button_7",
+   "c_button_8"
+  ],
+  "bonus": {
+   "crit_damage": 20
+  },
+  "class": "",
+  "ring": 0,
+  "pos": [
+   844,
+   1156
+  ],
+  "requires_points_in_ring_below": 0
+ },
+ {
+  "id": "c_lamplighter",
+  "kind": "constellation",
+  "name": "The Lamplighter",
+  "nodes": [
+   "c_lamplighter_1",
+   "c_lamplighter_2",
+   "c_lamplighter_3",
+   "c_lamplighter_4",
+   "c_lamplighter_5",
+   "c_lamplighter_6",
+   "c_lamplighter_7",
+   "c_lamplighter_8",
+   "c_lamplighter_9",
+   "c_lamplighter_10",
+   "c_lamplighter_11",
+   "c_lamplighter_12",
+   "c_lamplighter_13"
+  ],
+  "bonus": {
+   "resist_all": 6
+  },
+  "class": "",
+  "ring": 0,
+  "pos": [
+   780,
+   1000
+  ],
+  "requires_points_in_ring_below": 0
+ },
+ {
+  "id": "c_thimble",
+  "kind": "constellation",
+  "name": "The Thimble",
+  "nodes": [
+   "c_thimble_1",
+   "c_thimble_2",
+   "c_thimble_3",
+   "c_thimble_4",
+   "c_thimble_5",
+   "c_thimble_6",
+   "c_thimble_7",
+   "c_thimble_8",
+   "c_thimble_9",
+   "c_thimble_10",
+   "c_thimble_11"
+  ],
+  "bonus": {
+   "attack_speed_pct": 5
+  },
+  "class": "",
+  "ring": 0,
+  "pos": [
+   844,
+   844
+  ],
+  "requires_points_in_ring_below": 0
+ },
+ {
+  "id": "c_paper_boat",
+  "kind": "constellation",
+  "name": "The Paper Boat",
+  "nodes": [
+   "c_paper_boat_1",
+   "c_paper_boat_2",
+   "c_paper_boat_3",
+   "c_paper_boat_4",
+   "c_paper_boat_5",
+   "c_paper_boat_6",
+   "c_paper_boat_7",
+   "c_paper_boat_8",
+   "c_paper_boat_9"
+  ],
+  "bonus": {
+   "cdr_pct": 4
+  },
+  "class": "",
+  "ring": 0,
+  "pos": [
+   1000,
+   780
+  ],
+  "requires_points_in_ring_below": 0
+ },
+ {
+  "id": "c_teapot",
+  "kind": "constellation",
+  "name": "The Teapot",
+  "nodes": [
+   "c_teapot_1",
+   "c_teapot_2",
+   "c_teapot_3",
+   "c_teapot_4",
+   "c_teapot_5",
+   "c_teapot_6",
+   "c_teapot_7"
+  ],
+  "bonus": {
+   "gold_find": 15
+  },
+  "class": "",
+  "ring": 0,
+  "pos": [
+   1156,
+   844
+  ],
+  "requires_points_in_ring_below": 0
+ },
+ {
+  "id": "c_weathervane",
+  "kind": "constellation",
+  "name": "The Weathervane",
+  "nodes": [
+   "c_weathervane_1",
+   "c_weathervane_2",
+   "c_weathervane_3",
+   "c_weathervane_4",
+   "c_weathervane_5",
+   "c_weathervane_6",
+   "c_weathervane_7",
+   "c_weathervane_8",
+   "c_weathervane_9",
+   "c_weathervane_10",
+   "c_weathervane_11",
+   "c_weathervane_12"
+  ],
+  "bonus": {
+   "move_speed_pct": 4
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   1502,
+   1135
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_snail",
+  "kind": "constellation",
+  "name": "The Snail",
+  "nodes": [
+   "c_snail_1",
+   "c_snail_2",
+   "c_snail_3",
+   "c_snail_4",
+   "c_snail_5",
+   "c_snail_6",
+   "c_snail_7",
+   "c_snail_8",
+   "c_snail_9",
+   "c_snail_10"
+  ],
+  "bonus": {
+   "life_on_hit": 10
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   1368,
+   1368
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_spindle",
+  "kind": "constellation",
+  "name": "The Spindle",
+  "nodes": [
+   "c_spindle_1",
+   "c_spindle_2",
+   "c_spindle_3",
+   "c_spindle_4",
+   "c_spindle_5",
+   "c_spindle_6",
+   "c_spindle_7",
+   "c_spindle_8"
+  ],
+  "bonus": {
+   "area_damage_pct": 8
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   1135,
+   1502
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_ladle",
+  "kind": "constellation",
+  "name": "The Ladle",
+  "nodes": [
+   "c_ladle_1",
+   "c_ladle_2",
+   "c_ladle_3",
+   "c_ladle_4",
+   "c_ladle_5",
+   "c_ladle_6",
+   "c_ladle_7",
+   "c_ladle_8",
+   "c_ladle_9",
+   "c_ladle_10",
+   "c_ladle_11",
+   "c_ladle_12",
+   "c_ladle_13"
+  ],
+  "bonus": {
+   "summon_count": 1
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   865,
+   1502
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_lost_glove",
+  "kind": "constellation",
+  "name": "The Lost Glove",
+  "nodes": [
+   "c_lost_glove_1",
+   "c_lost_glove_2",
+   "c_lost_glove_3",
+   "c_lost_glove_4",
+   "c_lost_glove_5",
+   "c_lost_glove_6",
+   "c_lost_glove_7",
+   "c_lost_glove_8",
+   "c_lost_glove_9",
+   "c_lost_glove_10",
+   "c_lost_glove_11"
+  ],
+  "bonus": {
+   "fire_pct": 10
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   632,
+   1368
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_umbrella",
+  "kind": "constellation",
+  "name": "The Umbrella",
+  "nodes": [
+   "c_umbrella_1",
+   "c_umbrella_2",
+   "c_umbrella_3",
+   "c_umbrella_4",
+   "c_umbrella_5",
+   "c_umbrella_6",
+   "c_umbrella_7",
+   "c_umbrella_8",
+   "c_umbrella_9"
+  ],
+  "bonus": {
+   "cold_pct": 10
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   498,
+   1135
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_chimney",
+  "kind": "constellation",
+  "name": "The Chimney",
+  "nodes": [
+   "c_chimney_1",
+   "c_chimney_2",
+   "c_chimney_3",
+   "c_chimney_4",
+   "c_chimney_5",
+   "c_chimney_6",
+   "c_chimney_7"
+  ],
+  "bonus": {
+   "lightning_pct": 10
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   498,
+   865
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_old_key",
+  "kind": "constellation",
+  "name": "The Old Key",
+  "nodes": [
+   "c_old_key_1",
+   "c_old_key_2",
+   "c_old_key_3",
+   "c_old_key_4",
+   "c_old_key_5",
+   "c_old_key_6",
+   "c_old_key_7",
+   "c_old_key_8",
+   "c_old_key_9",
+   "c_old_key_10",
+   "c_old_key_11",
+   "c_old_key_12"
+  ],
+  "bonus": {
+   "shadow_pct": 10
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   632,
+   632
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_kite",
+  "kind": "constellation",
+  "name": "The Kite",
+  "nodes": [
+   "c_kite_1",
+   "c_kite_2",
+   "c_kite_3",
+   "c_kite_4",
+   "c_kite_5",
+   "c_kite_6",
+   "c_kite_7",
+   "c_kite_8",
+   "c_kite_9",
+   "c_kite_10"
+  ],
+  "bonus": {
+   "holy_pct": 10
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   865,
+   498
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_acorn",
+  "kind": "constellation",
+  "name": "The Acorn",
+  "nodes": [
+   "c_acorn_1",
+   "c_acorn_2",
+   "c_acorn_3",
+   "c_acorn_4",
+   "c_acorn_5",
+   "c_acorn_6",
+   "c_acorn_7",
+   "c_acorn_8"
+  ],
+  "bonus": {
+   "physical_pct": 10
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   1135,
+   498
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_puffcap",
+  "kind": "constellation",
+  "name": "The Puffcap",
+  "nodes": [
+   "c_puffcap_1",
+   "c_puffcap_2",
+   "c_puffcap_3",
+   "c_puffcap_4",
+   "c_puffcap_5",
+   "c_puffcap_6",
+   "c_puffcap_7",
+   "c_puffcap_8",
+   "c_puffcap_9",
+   "c_puffcap_10",
+   "c_puffcap_11",
+   "c_puffcap_12",
+   "c_puffcap_13"
+  ],
+  "bonus": {
+   "pierce": 1
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   1368,
+   632
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_odd_sock",
+  "kind": "constellation",
+  "name": "The Odd Sock",
+  "nodes": [
+   "c_odd_sock_1",
+   "c_odd_sock_2",
+   "c_odd_sock_3",
+   "c_odd_sock_4",
+   "c_odd_sock_5",
+   "c_odd_sock_6",
+   "c_odd_sock_7",
+   "c_odd_sock_8",
+   "c_odd_sock_9",
+   "c_odd_sock_10",
+   "c_odd_sock_11"
+  ],
+  "bonus": {
+   "damage_reduction": 3
+  },
+  "class": "",
+  "ring": 1,
+  "pos": [
+   1502,
+   865
+  ],
+  "requires_points_in_ring_below": 20
+ },
+ {
+  "id": "c_ladder",
+  "kind": "constellation",
+  "name": "The Ladder",
+  "nodes": [
+   "c_ladder_1",
+   "c_ladder_2",
+   "c_ladder_3",
+   "c_ladder_4",
+   "c_ladder_5",
+   "c_ladder_6",
+   "c_ladder_7",
+   "c_ladder_8",
+   "c_ladder_9"
+  ],
+  "bonus": {
+   "resource_regen": 3
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   1758,
+   1314
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_candle_stub",
+  "kind": "constellation",
+  "name": "The Candle Stub",
+  "nodes": [
+   "c_candle_stub_1",
+   "c_candle_stub_2",
+   "c_candle_stub_3",
+   "c_candle_stub_4",
+   "c_candle_stub_5",
+   "c_candle_stub_6",
+   "c_candle_stub_7"
+  ],
+  "bonus": {
+   "dodge": 4
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   1580,
+   1580
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_crown_of_sticks",
+  "kind": "constellation",
+  "name": "The Crown of Sticks",
+  "nodes": [
+   "c_crown_of_sticks_1",
+   "c_crown_of_sticks_2",
+   "c_crown_of_sticks_3",
+   "c_crown_of_sticks_4",
+   "c_crown_of_sticks_5",
+   "c_crown_of_sticks_6",
+   "c_crown_of_sticks_7",
+   "c_crown_of_sticks_8",
+   "c_crown_of_sticks_9",
+   "c_crown_of_sticks_10",
+   "c_crown_of_sticks_11",
+   "c_crown_of_sticks_12"
+  ],
+  "bonus": {
+   "block": 5
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   1314,
+   1758
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_mailbox",
+  "kind": "constellation",
+  "name": "The Mailbox",
+  "nodes": [
+   "c_mailbox_1",
+   "c_mailbox_2",
+   "c_mailbox_3",
+   "c_mailbox_4",
+   "c_mailbox_5",
+   "c_mailbox_6",
+   "c_mailbox_7",
+   "c_mailbox_8",
+   "c_mailbox_9",
+   "c_mailbox_10"
+  ],
+  "bonus": {
+   "xp_pct": 4
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   1000,
+   1820
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_rocking_chair",
+  "kind": "constellation",
+  "name": "The Rocking Chair",
+  "nodes": [
+   "c_rocking_chair_1",
+   "c_rocking_chair_2",
+   "c_rocking_chair_3",
+   "c_rocking_chair_4",
+   "c_rocking_chair_5",
+   "c_rocking_chair_6",
+   "c_rocking_chair_7",
+   "c_rocking_chair_8"
+  ],
+  "bonus": {
+   "thorns": 100
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   686,
+   1758
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_music_box",
+  "kind": "constellation",
+  "name": "The Music Box",
+  "nodes": [
+   "c_music_box_1",
+   "c_music_box_2",
+   "c_music_box_3",
+   "c_music_box_4",
+   "c_music_box_5",
+   "c_music_box_6",
+   "c_music_box_7",
+   "c_music_box_8",
+   "c_music_box_9",
+   "c_music_box_10",
+   "c_music_box_11",
+   "c_music_box_12",
+   "c_music_box_13"
+  ],
+  "bonus": {
+   "might_pct": 5
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   420,
+   1580
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_wishing_well",
+  "kind": "constellation",
+  "name": "The Wishing Well",
+  "nodes": [
+   "c_wishing_well_1",
+   "c_wishing_well_2",
+   "c_wishing_well_3",
+   "c_wishing_well_4",
+   "c_wishing_well_5",
+   "c_wishing_well_6",
+   "c_wishing_well_7",
+   "c_wishing_well_8",
+   "c_wishing_well_9",
+   "c_wishing_well_10",
+   "c_wishing_well_11"
+  ],
+  "bonus": {
+   "agility_pct": 5
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   242,
+   1314
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_mitten",
+  "kind": "constellation",
+  "name": "The Mitten",
+  "nodes": [
+   "c_mitten_1",
+   "c_mitten_2",
+   "c_mitten_3",
+   "c_mitten_4",
+   "c_mitten_5",
+   "c_mitten_6",
+   "c_mitten_7",
+   "c_mitten_8",
+   "c_mitten_9"
+  ],
+  "bonus": {
+   "wisdom_pct": 5
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   180,
+   1000
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_pinwheel",
+  "kind": "constellation",
+  "name": "The Pinwheel",
+  "nodes": [
+   "c_pinwheel_1",
+   "c_pinwheel_2",
+   "c_pinwheel_3",
+   "c_pinwheel_4",
+   "c_pinwheel_5",
+   "c_pinwheel_6",
+   "c_pinwheel_7"
+  ],
+  "bonus": {
+   "vitality_pct": 5
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   242,
+   686
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_sugar_cube",
+  "kind": "constellation",
+  "name": "The Sugar Cube",
+  "nodes": [
+   "c_sugar_cube_1",
+   "c_sugar_cube_2",
+   "c_sugar_cube_3",
+   "c_sugar_cube_4",
+   "c_sugar_cube_5",
+   "c_sugar_cube_6",
+   "c_sugar_cube_7",
+   "c_sugar_cube_8",
+   "c_sugar_cube_9",
+   "c_sugar_cube_10",
+   "c_sugar_cube_11",
+   "c_sugar_cube_12"
+  ],
+  "bonus": {
+   "basic_damage_pct": 15
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   420,
+   420
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_wick",
+  "kind": "constellation",
+  "name": "The Wick",
+  "nodes": [
+   "c_wick_1",
+   "c_wick_2",
+   "c_wick_3",
+   "c_wick_4",
+   "c_wick_5",
+   "c_wick_6",
+   "c_wick_7",
+   "c_wick_8",
+   "c_wick_9",
+   "c_wick_10"
+  ],
+  "bonus": {
+   "cdr_pct": 4
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   686,
+   242
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_swing",
+  "kind": "constellation",
+  "name": "The Swing",
+  "nodes": [
+   "c_swing_1",
+   "c_swing_2",
+   "c_swing_3",
+   "c_swing_4",
+   "c_swing_5",
+   "c_swing_6",
+   "c_swing_7",
+   "c_swing_8"
+  ],
+  "bonus": {
+   "magic_find": 12
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   1000,
+   180
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_scarecrow",
+  "kind": "constellation",
+  "name": "The Scarecrow",
+  "nodes": [
+   "c_scarecrow_1",
+   "c_scarecrow_2",
+   "c_scarecrow_3",
+   "c_scarecrow_4",
+   "c_scarecrow_5",
+   "c_scarecrow_6",
+   "c_scarecrow_7",
+   "c_scarecrow_8",
+   "c_scarecrow_9",
+   "c_scarecrow_10",
+   "c_scarecrow_11",
+   "c_scarecrow_12",
+   "c_scarecrow_13"
+  ],
+  "bonus": {
+   "damage_reduction": 3
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   1314,
+   242
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_lighthouse",
+  "kind": "constellation",
+  "name": "The Lighthouse",
+  "nodes": [
+   "c_lighthouse_1",
+   "c_lighthouse_2",
+   "c_lighthouse_3",
+   "c_lighthouse_4",
+   "c_lighthouse_5",
+   "c_lighthouse_6",
+   "c_lighthouse_7",
+   "c_lighthouse_8",
+   "c_lighthouse_9",
+   "c_lighthouse_10",
+   "c_lighthouse_11"
+  ],
+  "bonus": {
+   "crit_chance": 2
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   1580,
+   420
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_bellrope",
+  "kind": "constellation",
+  "name": "The Bellrope",
+  "nodes": [
+   "c_bellrope_1",
+   "c_bellrope_2",
+   "c_bellrope_3",
+   "c_bellrope_4",
+   "c_bellrope_5",
+   "c_bellrope_6",
+   "c_bellrope_7",
+   "c_bellrope_8",
+   "c_bellrope_9"
+  ],
+  "bonus": {
+   "resist_all": 5
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   1758,
+   686
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_nightcap",
+  "kind": "constellation",
+  "name": "The Nightcap",
+  "nodes": [
+   "c_nightcap_1",
+   "c_nightcap_2",
+   "c_nightcap_3",
+   "c_nightcap_4",
+   "c_nightcap_5",
+   "c_nightcap_6",
+   "c_nightcap_7"
+  ],
+  "bonus": {
+   "life_regen": 15
+  },
+  "class": "",
+  "ring": 2,
+  "pos": [
+   1820,
+   1000
+  ],
+  "requires_points_in_ring_below": 60
+ },
+ {
+  "id": "c_lantern_knight",
+  "kind": "constellation",
+  "name": "The Lantern Knight",
+  "nodes": [
+   "c_lantern_knight_1",
+   "c_lantern_knight_2",
+   "c_lantern_knight_3",
+   "c_lantern_knight_4",
+   "c_lantern_knight_5",
+   "c_lantern_knight_6",
+   "c_lantern_knight_7",
+   "c_lantern_knight_8",
+   "c_lantern_knight_9",
+   "c_lantern_knight_10"
+  ],
+  "bonus": {
+   "damage_reduction": 4
+  },
+  "class": "lanternbearer",
+  "ring": 1.5,
+  "pos": [
+   1460,
+   1000
+  ],
+  "requires_points_in_ring_below": 30
+ },
+ {
+  "id": "c_hearthguard",
+  "kind": "constellation",
+  "name": "The Hearthguard",
+  "nodes": [
+   "c_hearthguard_1",
+   "c_hearthguard_2",
+   "c_hearthguard_3",
+   "c_hearthguard_4",
+   "c_hearthguard_5",
+   "c_hearthguard_6",
+   "c_hearthguard_7",
+   "c_hearthguard_8",
+   "c_hearthguard_9",
+   "c_hearthguard_10"
+  ],
+  "bonus": {
+   "more_damage": 5
+  },
+  "class": "lanternbearer",
+  "ring": 1.5,
+  "pos": [
+   1432,
+   1157
+  ],
+  "requires_points_in_ring_below": 30
+ },
+ {
+  "id": "c_great_bell",
+  "kind": "constellation",
+  "name": "The Great Bell",
+  "nodes": [
+   "c_great_bell_1",
+   "c_great_bell_2",
+   "c_great_bell_3",
+   "c_great_bell_4",
+   "c_great_bell_5",
+   "c_great_bell_6",
+   "c_great_bell_7",
+   "c_great_bell_8",
+   "c_great_bell_9",
+   "c_great_bell_10"
+  ],
+  "bonus": {
+   "damage_reduction": 4
+  },
+  "class": "bellstriker",
+  "ring": 1.5,
+  "pos": [
+   1142,
+   1437
+  ],
+  "requires_points_in_ring_below": 30
+ },
+ {
+  "id": "c_brass_drum",
+  "kind": "constellation",
+  "name": "The Brass Drum",
+  "nodes": [
+   "c_brass_drum_1",
+   "c_brass_drum_2",
+   "c_brass_drum_3",
+   "c_brass_drum_4",
+   "c_brass_drum_5",
+   "c_brass_drum_6",
+   "c_brass_drum_7",
+   "c_brass_drum_8",
+   "c_brass_drum_9",
+   "c_brass_drum_10"
+  ],
+  "bonus": {
+   "more_damage": 5
+  },
+  "class": "bellstriker",
+  "ring": 1.5,
+  "pos": [
+   984,
+   1460
+  ],
+  "requires_points_in_ring_below": 30
+ },
+ {
+  "id": "c_telescope",
+  "kind": "constellation",
+  "name": "The Telescope",
+  "nodes": [
+   "c_telescope_1",
+   "c_telescope_2",
+   "c_telescope_3",
+   "c_telescope_4",
+   "c_telescope_5",
+   "c_telescope_6",
+   "c_telescope_7",
+   "c_telescope_8",
+   "c_telescope_9",
+   "c_telescope_10"
+  ],
+  "bonus": {
+   "damage_reduction": 4
+  },
+  "class": "stargazer",
+  "ring": 1.5,
+  "pos": [
+   628,
+   1270
+  ],
+  "requires_points_in_ring_below": 30
+ },
+ {
+  "id": "c_orrery",
+  "kind": "constellation",
+  "name": "The Orrery",
+  "nodes": [
+   "c_orrery_1",
+   "c_orrery_2",
+   "c_orrery_3",
+   "c_orrery_4",
+   "c_orrery_5",
+   "c_orrery_6",
+   "c_orrery_7",
+   "c_orrery_8",
+   "c_orrery_9",
+   "c_orrery_10"
+  ],
+  "bonus": {
+   "more_damage": 5
+  },
+  "class": "stargazer",
+  "ring": 1.5,
+  "pos": [
+   558,
+   1127
+  ],
+  "requires_points_in_ring_below": 30
+ },
+ {
+  "id": "c_rag_doll",
+  "kind": "constellation",
+  "name": "The Rag Doll",
+  "nodes": [
+   "c_rag_doll_1",
+   "c_rag_doll_2",
+   "c_rag_doll_3",
+   "c_rag_doll_4",
+   "c_rag_doll_5",
+   "c_rag_doll_6",
+   "c_rag_doll_7",
+   "c_rag_doll_8",
+   "c_rag_doll_9",
+   "c_rag_doll_10"
+  ],
+  "bonus": {
+   "damage_reduction": 4
+  },
+  "class": "stitcher",
+  "ring": 1.5,
+  "pos": [
+   628,
+   730
+  ],
+  "requires_points_in_ring_below": 30
+ },
+ {
+  "id": "c_needle",
+  "kind": "constellation",
+  "name": "The Needle",
+  "nodes": [
+   "c_needle_1",
+   "c_needle_2",
+   "c_needle_3",
+   "c_needle_4",
+   "c_needle_5",
+   "c_needle_6",
+   "c_needle_7",
+   "c_needle_8",
+   "c_needle_9",
+   "c_needle_10"
+  ],
+  "bonus": {
+   "more_damage": 5
+  },
+  "class": "stitcher",
+  "ring": 1.5,
+  "pos": [
+   743,
+   619
+  ],
+  "requires_points_in_ring_below": 30
+ },
+ {
+  "id": "c_rooftop_cat",
+  "kind": "constellation",
+  "name": "The Rooftop Cat",
+  "nodes": [
+   "c_rooftop_cat_1",
+   "c_rooftop_cat_2",
+   "c_rooftop_cat_3",
+   "c_rooftop_cat_4",
+   "c_rooftop_cat_5",
+   "c_rooftop_cat_6",
+   "c_rooftop_cat_7",
+   "c_rooftop_cat_8",
+   "c_rooftop_cat_9",
+   "c_rooftop_cat_10"
+  ],
+  "bonus": {
+   "damage_reduction": 4
+  },
+  "class": "roofrunner",
+  "ring": 1.5,
+  "pos": [
+   1142,
+   563
+  ],
+  "requires_points_in_ring_below": 30
+ },
+ {
+  "id": "c_chimney_pot",
+  "kind": "constellation",
+  "name": "The Chimney Pot",
+  "nodes": [
+   "c_chimney_pot_1",
+   "c_chimney_pot_2",
+   "c_chimney_pot_3",
+   "c_chimney_pot_4",
+   "c_chimney_pot_5",
+   "c_chimney_pot_6",
+   "c_chimney_pot_7",
+   "c_chimney_pot_8",
+   "c_chimney_pot_9",
+   "c_chimney_pot_10"
+  ],
+  "bonus": {
+   "more_damage": 5
+  },
+  "class": "roofrunner",
+  "ring": 1.5,
+  "pos": [
+   1283,
+   638
+  ],
+  "requires_points_in_ring_below": 30
+ }
+]

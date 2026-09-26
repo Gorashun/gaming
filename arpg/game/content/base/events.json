@@ -8,6 +8,159 @@
   "force_zone": "a1_z2",
   "loot_kind": "magpie",
   "announce": "A Magpie Imp! Catch it before it escapes!",
-  "color": "#ffd84a"
+  "color": "#ffd84a",
+  "portal_chance": 0.05,
+  "portal": "magpies_hoard"
+ },
+ {
+  "id": "goblets",
+  "name": "Treasure Goblets",
+  "monster": "goblet_runner",
+  "kind": "normal",
+  "count": 5,
+  "chance": 0.05,
+  "loot_kind": "goblet",
+  "announce": "Jingle jingle! A pack of Treasure Goblets!",
+  "color": "#ffe070"
+ },
+ {
+  "id": "cursed_shrine",
+  "name": "Cursed Shrine",
+  "monster": "shrine_wraith",
+  "kind": "rare",
+  "chance": 0.05,
+  "loot_kind": "shrine",
+  "announce": "A cursed shrine flickers. Break the curse for its gift!",
+  "color": "#c080ff"
+ },
+ {
+  "id": "mystery_egg",
+  "name": "Mystery Egg",
+  "monster": "egg_snatcher",
+  "kind": "normal",
+  "chance": 0.03,
+  "loot_kind": "egg",
+  "announce": "Someone ran off with a warm egg! Catch them!",
+  "color": "#9cffb0",
+  "reward_material": {
+   "id": "mystery_egg",
+   "count": 1
+  }
+ },
+ {
+  "id": "lantern_moth",
+  "name": "Lantern Moth",
+  "monster": "lantern_moth",
+  "kind": "normal",
+  "chance": 0.04,
+  "loot_kind": "moth",
+  "announce": "A Lantern Moth! Catch the little light!",
+  "color": "#ffe9a0"
+ },
+ {
+  "id": "candy_portal",
+  "name": "Toffee Smell",
+  "chance": 0.0,
+  "chance_future": 0.01,
+  "zones_future": [
+   "a1_z2"
+  ],
+  "portal": "candy_crypt",
+  "announce": "A cracked wall smells of toffee...",
+  "color": "#ff9ed8",
+  "note": "Needs portal support in code; chance 0 until then."
+ },
+ {
+  "id": "tea_party",
+  "name": "Tea Party",
+  "chance": 0.0,
+  "chance_future": 0.02,
+  "zones_future": [
+   "a2_z2"
+  ],
+  "portal": "tea_party",
+  "announce": "Tiny cups clink behind the waterfall...",
+  "color": "#ffd9f0",
+  "note": "Needs portal support in code."
+ },
+ {
+  "id": "ambush_a1",
+  "name": "Named Foe",
+  "monster": "mb_mossjaw",
+  "alt_monster": "mb_candlewife",
+  "kind": "rare",
+  "chance": 0.0,
+  "chance_future": 0.06,
+  "acts_future": [
+   "act1"
+  ],
+  "loot_kind": "rare",
+  "announce": "A named foe blocks the way!",
+  "color": "#ffd23f",
+  "note": "Act-filtered; chance 0 until events support acts_future (minibosses also placed by zones.minibosses)."
+ },
+ {
+  "id": "ambush_a2",
+  "name": "Named Foe",
+  "monster": "mb_briar_aunt",
+  "alt_monster": "mb_great_hoot",
+  "kind": "rare",
+  "chance": 0.0,
+  "chance_future": 0.06,
+  "acts_future": [
+   "act2"
+  ],
+  "loot_kind": "rare",
+  "announce": "A named foe blocks the way!",
+  "color": "#ffd23f",
+  "note": "Act-filtered; chance 0 until events support acts_future (minibosses also placed by zones.minibosses)."
+ },
+ {
+  "id": "ambush_a3",
+  "name": "Named Foe",
+  "monster": "mb_foreman_clank",
+  "alt_monster": "mb_crystal_matron",
+  "kind": "rare",
+  "chance": 0.0,
+  "chance_future": 0.06,
+  "acts_future": [
+   "act3"
+  ],
+  "loot_kind": "rare",
+  "announce": "A named foe blocks the way!",
+  "color": "#ffd23f",
+  "note": "Act-filtered; chance 0 until events support acts_future (minibosses also placed by zones.minibosses)."
+ },
+ {
+  "id": "ambush_a4",
+  "name": "Named Foe",
+  "monster": "mb_captain_tinwhistle",
+  "alt_monster": "mb_head_butler",
+  "kind": "rare",
+  "chance": 0.0,
+  "chance_future": 0.06,
+  "acts_future": [
+   "act4"
+  ],
+  "loot_kind": "rare",
+  "announce": "A named foe blocks the way!",
+  "color": "#ffd23f",
+  "note": "Act-filtered; chance 0 until events support acts_future (minibosses also placed by zones.minibosses)."
+ },
+ {
+  "id": "ambush_a5",
+  "name": "Named Foe",
+  "monster": "mb_choirmaster",
+  "alt_monster": "mb_faded_champion",
+  "kind": "rare",
+  "chance": 0.0,
+  "chance_future": 0.06,
+  "acts_future": [
+   "act5"
+  ],
+  "loot_kind": "rare",
+  "announce": "A named foe blocks the way!",
+  "color": "#ffd23f",
+  "note": "Act-filtered; chance 0 until events support acts_future (minibosses also placed by zones.minibosses)."
  }
 ]

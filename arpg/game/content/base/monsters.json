@@ -37,6 +37,14 @@
     "id": "bone_meal",
     "chance": 0.08
    }
+  ],
+  "act": 1,
+  "soul_color": "#8fd9a0",
+  "uniques": [
+   {
+    "id": "u_rattlers_nightcap",
+    "chance": 0.0015
+   }
   ]
  },
  {
@@ -75,7 +83,9 @@
   },
   "pack_min": 2,
   "pack_max": 4,
-  "spawn_weight": 18
+  "spawn_weight": 18,
+  "act": 1,
+  "soul_color": "#8fd9a0"
  },
  {
   "id": "bog_archer",
@@ -113,7 +123,9 @@
   },
   "pack_min": 2,
   "pack_max": 4,
-  "spawn_weight": 16
+  "spawn_weight": 16,
+  "act": 1,
+  "soul_color": "#8fd9a0"
  },
  {
   "id": "candle_mage",
@@ -166,7 +178,8 @@
   "pack_min": 1,
   "pack_max": 2,
   "spawn_weight": 10,
-  "soul_color": "#ffb070"
+  "soul_color": "#ffb070",
+  "act": 1
  },
  {
   "id": "bonepile",
@@ -191,7 +204,9 @@
   "spawn_anim": "Spawn_Ground_Skeletons",
   "pack_min": 5,
   "pack_max": 8,
-  "spawn_weight": 12
+  "spawn_weight": 12,
+  "act": 1,
+  "soul_color": "#8fd9a0"
  },
  {
   "id": "warden",
@@ -239,84 +254,2236 @@
   "pack_min": 1,
   "pack_max": 1,
   "spawn_weight": 4,
-  "tint": "#c9c2ff"
+  "tint": "#c9c2ff",
+  "act": 1,
+  "soul_color": "#8fd9a0",
+  "elite_only_hint": false,
+  "uniques": [
+   {
+    "id": "u_tollys_morning_note",
+    "chance": 0.004
+   }
+  ]
  },
  {
-  "id": "ragdoll",
-  "name": "Rag Doll",
-  "family": "player_minion",
-  "summon_only": true,
+  "id": "mud_frog",
+  "name": "Mud Frog",
+  "family": "rattlebones",
+  "act": 1,
   "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
-  "scale": 0.62,
-  "tint": "#ffb3d1",
-  "rim": "#ffc2e0",
-  "life_mult": 1,
-  "dmg_mult": 1,
-  "speed": 5.0,
-  "xp": 0,
+  "scale": 0.7,
+  "tint": "#6f8a4a",
+  "rim": "#a8d080",
+  "attachments": [],
+  "life_mult": 0.7,
+  "dmg_mult": 0.8,
+  "speed": 3.8,
+  "xp": 9,
+  "ai": "ranged",
+  "keep_distance": 4.0,
+  "attack": {
+   "range": 7,
+   "windup": 0.5,
+   "cooldown": 2.2,
+   "anim": [
+    "Throw"
+   ],
+   "projectile": {
+    "speed": 7,
+    "range": 9,
+    "size": 0.3
+   },
+   "element": "shadow",
+   "explode_radius": 1.2
+  },
+  "spawn_anim": "Spawn_Ground",
+  "pack_min": 2,
+  "pack_max": 5,
+  "spawn_weight": 8,
+  "color": "#9fd060",
+  "desc": "Blows bubbles that pop into darkness. Croaks backwards when rekindled.",
+  "materials": [
+   {
+    "id": "bog_iron",
+    "chance": 0.05
+   }
+  ],
+  "soul_color": "#8fd9a0",
+  "pet_drops": [
+   {
+    "id": "pet_puddle",
+    "chance": 0.003
+   }
+  ]
+ },
+ {
+  "id": "mist_snail",
+  "name": "Mist Snail",
+  "family": "rattlebones",
+  "act": 1,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.75,
+  "tint": "#9aa8b0",
+  "rim": "#c8e0ff",
+  "attachments": [],
+  "life_mult": 1.8,
+  "dmg_mult": 0.7,
+  "speed": 1.6,
+  "xp": 12,
   "ai": "melee",
   "attack": {
+   "range": 1.3,
+   "windup": 0.8,
+   "cooldown": 2.2,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_A"
+   ],
+   "mult": 1.0,
+   "element": "cold"
+  },
+  "abilities": [
+   {
+    "id": "trail",
+    "type": "slam",
+    "at": "self",
+    "radius": 2.6,
+    "mult": 0.6,
+    "cooldown": 6,
+    "range": 3,
+    "telegraph": 1.2,
+    "element": "cold",
+    "anim": "Idle_Combat"
+   }
+  ],
+  "pack_min": 1,
+  "pack_max": 3,
+  "spawn_weight": 6,
+  "desc": "Slow, but its trail of forgetting makes you slow too.",
+  "soul_color": "#8fd9a0"
+ },
+ {
+  "id": "lily_ghost",
+  "name": "Lily Ghost",
+  "family": "rattlebones",
+  "act": 1,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 0.9,
+  "tint": "#bff0d8",
+  "rim": "#e0fff0",
+  "attachments": [
+   "Skeleton_Mage_Hat"
+  ],
+  "life_mult": 0.7,
+  "dmg_mult": 0.9,
+  "speed": 3.0,
+  "xp": 13,
+  "ai": "caster",
+  "keep_distance": 6.0,
+  "color": "#9fffd0",
+  "attack": {
+   "range": 10,
+   "windup": 0.7,
+   "cooldown": 2.4,
+   "anim": [
+    "Spellcast_Shoot"
+   ],
+   "projectile": {
+    "speed": 8,
+    "range": 14,
+    "size": 0.26
+   },
+   "element": "cold"
+  },
+  "abilities": [
+   {
+    "id": "blink",
+    "type": "teleport",
+    "cooldown": 7,
+    "range": 6,
+    "telegraph": 0.5
+   }
+  ],
+  "spawn_anim": "Spawn_Air",
+  "pack_min": 1,
+  "pack_max": 3,
+  "spawn_weight": 6,
+  "desc": "A drowned lily's memory. It drifts away when you get close.",
+  "soul_color": "#8fd9a0",
+  "pet_drops": [
+   {
+    "id": "pet_dimple",
+    "chance": 0.003
+   }
+  ]
+ },
+ {
+  "id": "twigling",
+  "name": "Twigling",
+  "family": "thicket_kin",
+  "act": 2,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.85,
+  "tint": "#7a6a4a",
+  "rim": "#c8b080",
+  "attachments": [],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Blade.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 0.9,
+  "dmg_mult": 0.9,
+  "speed": 3.6,
+  "xp": 10,
+  "ai": "melee",
+  "attack": {
+   "range": 1.5,
+   "windup": 0.5,
+   "cooldown": 1.5,
+   "anim": [
+    "1H_Melee_Attack_Chop",
+    "1H_Melee_Attack_Slice_Diagonal"
+   ],
+   "mult": 1.0
+  },
+  "spawn_anim": "Skeletons_Awaken_Standing",
+  "pack_min": 3,
+  "pack_max": 6,
+  "spawn_weight": 30,
+  "desc": "Pretends to be an ordinary stick until you walk past.",
+  "materials": [
+   {
+    "id": "whisper_bark",
+    "chance": 0.06
+   }
+  ],
+  "soul_color": "#7fb8e0",
+  "pet_drops": [
+   {
+    "id": "pet_nutmeg",
+    "chance": 0.002
+   }
+  ]
+ },
+ {
+  "id": "owlcrow",
+  "name": "Owlcrow",
+  "family": "thicket_kin",
+  "act": 2,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "scale": 0.9,
+  "tint": "#4a3a5a",
+  "rim": "#b8a8d8",
+  "attachments": [
+   "Skeleton_Rogue_Hood",
+   "Skeleton_Rogue_Cape"
+  ],
+  "life_mult": 0.75,
+  "dmg_mult": 0.85,
+  "speed": 3.2,
+  "xp": 12,
+  "ai": "ranged",
+  "keep_distance": 5.5,
+  "attack": {
+   "range": 9,
+   "windup": 0.55,
+   "cooldown": 2.0,
+   "anim": [
+    "Throw"
+   ],
+   "projectile": {
+    "speed": 12,
+    "range": 14,
+    "size": 0.14
+   },
+   "element": "shadow"
+  },
+  "abilities": [
+   {
+    "id": "feathers",
+    "type": "volley",
+    "count": 5,
+    "spread": 40,
+    "mult": 0.6,
+    "cooldown": 8,
+    "range": 9,
+    "telegraph": 0.9,
+    "element": "shadow",
+    "anim": "Throw",
+    "projectile": {
+     "speed": 10,
+     "range": 12,
+     "size": 0.14
+    }
+   }
+  ],
+  "pack_min": 2,
+  "pack_max": 4,
+  "spawn_weight": 16,
+  "desc": "Turns its head all the way round. Always looking your way.",
+  "materials": [
+   {
+    "id": "owl_quill",
+    "chance": 0.02
+   }
+  ],
+  "soul_color": "#7fb8e0"
+ },
+ {
+  "id": "moss_hound",
+  "name": "Moss Hound",
+  "family": "thicket_kin",
+  "act": 2,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.8,
+  "tint": "#4f7a3a",
+  "rim": "#a0e080",
+  "attachments": [],
+  "life_mult": 0.8,
+  "dmg_mult": 1.0,
+  "speed": 5.0,
+  "xp": 11,
+  "ai": "melee",
+  "attack": {
+   "range": 1.3,
+   "windup": 0.35,
+   "cooldown": 1.2,
+   "anim": [
+    "Unarmed_Melee_Attack_Kick",
+    "Unarmed_Melee_Attack_Punch_A"
+   ],
+   "mult": 0.9
+  },
+  "abilities": [
+   {
+    "id": "pounce",
+    "type": "charge",
+    "distance": 6,
+    "mult": 1.4,
+    "cooldown": 7,
+    "range": 8,
+    "min_range": 3,
+    "telegraph": 0.9
+   }
+  ],
+  "pack_min": 3,
+  "pack_max": 5,
+  "spawn_weight": 14,
+  "desc": "Friendly in daylight. There is no daylight.",
+  "soul_color": "#7fb8e0",
+  "uniques": [
+   {
+    "id": "u_moss_hound_collar",
+    "chance": 0.0015
+   }
+  ]
+ },
+ {
+  "id": "sporecap",
+  "name": "Sporecap",
+  "family": "thicket_kin",
+  "act": 2,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 1.0,
+  "tint": "#5a7ab8",
+  "rim": "#7fb8e0",
+  "attachments": [
+   "Skeleton_Mage_Hat"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Staff.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 0.85,
+  "dmg_mult": 1.0,
+  "speed": 2.6,
+  "xp": 15,
+  "ai": "caster",
+  "keep_distance": 6.0,
+  "color": "#7fb8e0",
+  "attack": {
+   "range": 10,
+   "windup": 0.7,
+   "cooldown": 2.6,
+   "anim": [
+    "Spellcast_Shoot"
+   ],
+   "projectile": {
+    "speed": 7,
+    "range": 13,
+    "size": 0.3
+   },
+   "element": "shadow",
+   "explode_radius": 1.6
+  },
+  "abilities": [
+   {
+    "id": "puff",
+    "type": "nova_ring",
+    "count": 8,
+    "mult": 0.55,
+    "cooldown": 9,
+    "range": 7,
+    "telegraph": 1.0,
+    "element": "shadow",
+    "anim": "Spellcast_Raise",
+    "projectile": {
+     "speed": 5.5,
+     "range": 8,
+     "size": 0.25
+    }
+   }
+  ],
+  "pack_min": 1,
+  "pack_max": 2,
+  "spawn_weight": 10,
+  "desc": "Sneezes clouds of glittering spores.",
+  "materials": [
+   {
+    "id": "moss_silk",
+    "chance": 0.06
+   }
+  ],
+  "soul_color": "#7fb8e0",
+  "uniques": [
+   {
+    "id": "u_puffcap_hood",
+    "chance": 0.0015
+   }
+  ]
+ },
+ {
+  "id": "thorn_sprite",
+  "name": "Thorn Sprite",
+  "family": "thicket_kin",
+  "act": 2,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.55,
+  "tint": "#a0e070",
+  "rim": "#d8ffb0",
+  "attachments": [],
+  "life_mult": 0.4,
+  "dmg_mult": 0.7,
+  "speed": 4.6,
+  "xp": 6,
+  "ai": "swarm",
+  "attack": {
+   "range": 7,
+   "windup": 0.4,
+   "cooldown": 1.6,
+   "anim": [
+    "Throw"
+   ],
+   "projectile": {
+    "speed": 13,
+    "range": 10,
+    "size": 0.1
+   }
+  },
+  "abilities": [
+   {
+    "id": "zip",
+    "type": "teleport",
+    "cooldown": 6,
+    "range": 8,
+    "telegraph": 0.4
+   }
+  ],
+  "spawn_anim": "Spawn_Air",
+  "pack_min": 4,
+  "pack_max": 8,
+  "spawn_weight": 10,
+  "desc": "Tiny, prickly, giggly.",
+  "soul_color": "#7fb8e0"
+ },
+ {
+  "id": "stump_grumble",
+  "name": "Stump Grumble",
+  "family": "thicket_kin",
+  "act": 2,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 1.4,
+  "tint": "#6b5234",
+  "rim": "#c8a070",
+  "attachments": [],
+  "life_mult": 3.0,
+  "dmg_mult": 1.5,
+  "speed": 2.3,
+  "xp": 38,
+  "armor_mult": 1.8,
+  "ai": "melee",
+  "attack": {
+   "range": 2.0,
+   "windup": 0.8,
+   "cooldown": 2.3,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_B",
+    "2H_Melee_Attack_Chop"
+   ],
+   "mult": 1.3
+  },
+  "abilities": [
+   {
+    "id": "root",
+    "type": "slam",
+    "at": "target",
+    "radius": 2.8,
+    "mult": 1.6,
+    "cooldown": 8,
+    "range": 9,
+    "telegraph": 1.1,
+    "anim": "Spellcast_Raise"
+   }
+  ],
+  "pack_min": 1,
+  "pack_max": 1,
+  "spawn_weight": 4,
+  "desc": "An old stump that woke up grumpy.",
+  "soul_color": "#7fb8e0"
+ },
+ {
+  "id": "digling",
+  "name": "Digling",
+  "family": "echoes",
+  "act": 3,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.85,
+  "tint": "#8a7a6a",
+  "rim": "#ffc070",
+  "attachments": [
+   "Skeleton_Minion_Cloak"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Axe.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 0.95,
+  "dmg_mult": 0.95,
+  "speed": 3.4,
+  "xp": 10,
+  "ai": "melee",
+  "attack": {
+   "range": 1.5,
+   "windup": 0.5,
+   "cooldown": 1.5,
+   "anim": [
+    "1H_Melee_Attack_Chop"
+   ],
+   "mult": 1.0
+  },
+  "spawn_anim": "Skeletons_Awaken_Floor",
+  "pack_min": 3,
+  "pack_max": 6,
+  "spawn_weight": 30,
+  "desc": "A miner who forgot why he digs. He keeps digging anyway.",
+  "materials": [
+   {
+    "id": "echo_salt",
+    "chance": 0.06
+   }
+  ],
+  "soul_color": "#cfe8f0"
+ },
+ {
+  "id": "crystal_spider",
+  "name": "Crystal Spider",
+  "family": "echoes",
+  "act": 3,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.7,
+  "tint": "#cfe8f0",
+  "rim": "#ffffff",
+  "attachments": [],
+  "life_mult": 0.7,
+  "dmg_mult": 0.9,
+  "speed": 4.4,
+  "xp": 10,
+  "ai": "swarm",
+  "attack": {
    "range": 1.2,
-   "windup": 0.25,
-   "cooldown": 0.9,
+   "windup": 0.35,
+   "cooldown": 1.1,
    "anim": [
     "Unarmed_Melee_Attack_Punch_A",
     "Unarmed_Melee_Attack_Punch_B"
    ],
-   "mult": 1.0
+   "mult": 0.8
   },
-  "owner_damage_mult": 0.45,
-  "owner_life_mult": 0.4,
-  "soul_color": "#ffc2e0"
+  "abilities": [
+   {
+    "id": "drop",
+    "type": "teleport",
+    "cooldown": 8,
+    "range": 9,
+    "telegraph": 0.6
+   }
+  ],
+  "pack_min": 3,
+  "pack_max": 6,
+  "spawn_weight": 16,
+  "desc": "Clinks when it walks. If it goes quiet, it's above you.",
+  "materials": [
+   {
+    "id": "glimmer_ore",
+    "chance": 0.05
+   }
+  ],
+  "soul_color": "#cfe8f0"
  },
  {
-  "id": "patch_bear",
-  "name": "Patchwork Bear",
-  "family": "player_minion",
-  "summon_only": true,
-  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
-  "scale": 1.35,
-  "tint": "#d9a07a",
-  "rim": "#ffc2a0",
+  "id": "cart_mimic",
+  "name": "Cart Mimic",
+  "family": "echoes",
+  "act": 3,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 1.3,
+  "tint": "#6a5a4a",
+  "rim": "#ffb060",
   "attachments": [],
-  "life_mult": 1,
-  "dmg_mult": 1,
-  "speed": 4.0,
-  "xp": 0,
+  "life_mult": 2.4,
+  "dmg_mult": 1.4,
+  "speed": 2.8,
+  "xp": 30,
+  "armor_mult": 1.6,
   "ai": "melee",
   "attack": {
    "range": 1.8,
+   "windup": 0.6,
+   "cooldown": 2.0,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_B"
+   ],
+   "mult": 1.2
+  },
+  "abilities": [
+   {
+    "id": "rush",
+    "type": "charge",
+    "distance": 10,
+    "mult": 1.9,
+    "cooldown": 7,
+    "range": 12,
+    "min_range": 4,
+    "telegraph": 1.0
+   }
+  ],
+  "pack_min": 1,
+  "pack_max": 1,
+  "spawn_weight": 5,
+  "desc": "A mine cart with teeth. It follows the rails. Or pretends to.",
+  "soul_color": "#cfe8f0",
+  "uniques": [
+   {
+    "id": "u_cart_six",
+    "chance": 0.004
+   }
+  ]
+ },
+ {
+  "id": "echo_bat",
+  "name": "Echo Bat",
+  "family": "echoes",
+  "act": 3,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "scale": 0.6,
+  "tint": "#5a5070",
+  "rim": "#cfe8f0",
+  "attachments": [
+   "Skeleton_Rogue_Cape"
+  ],
+  "life_mult": 0.45,
+  "dmg_mult": 0.7,
+  "speed": 5.2,
+  "xp": 6,
+  "ai": "swarm",
+  "attack": {
+   "range": 1.1,
+   "windup": 0.3,
+   "cooldown": 1.0,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_A",
+    "Unarmed_Melee_Attack_Punch_B"
+   ],
+   "mult": 0.7
+  },
+  "spawn_anim": "Spawn_Air",
+  "pack_min": 4,
+  "pack_max": 8,
+  "spawn_weight": 12,
+  "desc": "Squeaks your own footsteps back at you.",
+  "soul_color": "#cfe8f0",
+  "pet_drops": [
+   {
+    "id": "pet_nibbles",
+    "chance": 0.002
+   }
+  ]
+ },
+ {
+  "id": "salt_golem",
+  "name": "Salt Golem",
+  "family": "echoes",
+  "act": 3,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 1.6,
+  "tint": "#e8e4dc",
+  "rim": "#ffffff",
+  "attachments": [
+   "Skeleton_Warrior_Helmet"
+  ],
+  "life_mult": 3.4,
+  "dmg_mult": 1.6,
+  "speed": 2.2,
+  "xp": 42,
+  "armor_mult": 2.2,
+  "ai": "melee",
+  "attack": {
+   "range": 2.1,
+   "windup": 0.8,
+   "cooldown": 2.4,
+   "anim": [
+    "2H_Melee_Attack_Chop"
+   ],
+   "mult": 1.4
+  },
+  "abilities": [
+   {
+    "id": "crash",
+    "type": "slam",
+    "at": "self",
+    "radius": 3.4,
+    "mult": 1.7,
+    "cooldown": 8,
+    "range": 3.5,
+    "telegraph": 1.1,
+    "anim": "2H_Melee_Attack_Spinning"
+   }
+  ],
+  "pack_min": 1,
+  "pack_max": 1,
+  "spawn_weight": 4,
+  "desc": "Tough on the outside. Salty in the middle.",
+  "soul_color": "#cfe8f0",
+  "uniques": [
+   {
+    "id": "u_salt_golem_heart",
+    "chance": 0.004
+   }
+  ]
+ },
+ {
+  "id": "lamp_ghost",
+  "name": "Lamp Ghost",
+  "family": "echoes",
+  "act": 3,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 0.95,
+  "tint": "#ffd890",
+  "rim": "#ffe8b0",
+  "attachments": [
+   "Skeleton_Mage_Hat"
+  ],
+  "life_mult": 0.8,
+  "dmg_mult": 1.0,
+  "speed": 2.9,
+  "xp": 15,
+  "ai": "caster",
+  "keep_distance": 6.0,
+  "color": "#ffb050",
+  "attack": {
+   "range": 10,
+   "windup": 0.7,
+   "cooldown": 2.4,
+   "anim": [
+    "Spellcast_Shoot"
+   ],
+   "projectile": {
+    "speed": 8,
+    "range": 14,
+    "size": 0.3
+   },
+   "element": "fire",
+   "explode_radius": 1.5
+  },
+  "abilities": [
+   {
+    "id": "call",
+    "type": "summon",
+    "monster": "echo_bat",
+    "count": 3,
+    "cooldown": 15,
+    "range": 12,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon"
+   }
+  ],
+  "pack_min": 1,
+  "pack_max": 2,
+  "spawn_weight": 10,
+  "desc": "A miner's lamp still looking for its miner.",
+  "soul_color": "#cfe8f0"
+ },
+ {
+  "id": "porcelain_doll",
+  "name": "Porcelain Doll",
+  "family": "frozen_court",
+  "act": 4,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.8,
+  "tint": "#f4e8ec",
+  "rim": "#ffffff",
+  "attachments": [
+   "Skeleton_Minion_Cloak"
+  ],
+  "life_mult": 0.9,
+  "dmg_mult": 1.0,
+  "speed": 3.6,
+  "xp": 10,
+  "ai": "melee",
+  "attack": {
+   "range": 1.3,
    "windup": 0.4,
    "cooldown": 1.3,
    "anim": [
     "Unarmed_Melee_Attack_Punch_A",
-    "Unarmed_Melee_Attack_Kick"
+    "Unarmed_Melee_Attack_Punch_B"
    ],
-   "mult": 1.0
+   "mult": 0.95
   },
-  "owner_damage_mult": 1.6,
-  "owner_life_mult": 1.2
+  "abilities": [
+   {
+    "id": "peek",
+    "type": "teleport",
+    "cooldown": 9,
+    "range": 7,
+    "telegraph": 0.5
+   }
+  ],
+  "pack_min": 3,
+  "pack_max": 6,
+  "spawn_weight": 28,
+  "desc": "Only moves when you're not looking.",
+  "materials": [
+   {
+    "id": "porcelain_chip",
+    "chance": 0.06
+   }
+  ],
+  "soul_color": "#9cc8e0",
+  "uniques": [
+   {
+    "id": "u_porcelain_smile",
+    "chance": 0.0015
+   }
+  ]
  },
  {
-  "id": "magpie_imp",
-  "name": "Magpie Imp",
-  "family": "event",
-  "summon_only": true,
-  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
-  "scale": 0.7,
-  "tint": "#ffd84a",
-  "rim": "#ffe98a",
-  "attachments": [],
-  "life_mult": 5.0,
-  "dmg_mult": 0.1,
-  "speed": 5.5,
-  "xp": 60,
-  "ai": "flee",
+  "id": "tin_soldier",
+  "name": "Tin Soldier",
+  "family": "frozen_court",
+  "act": 4,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 1.0,
+  "tint": "#b8c0d0",
+  "rim": "#e0f0ff",
+  "attachments": [
+   "Skeleton_Warrior_Helmet"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+    "bone": "handslot.r"
+   },
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Shield_Small_B.gltf",
+    "bone": "handslot.l"
+   }
+  ],
+  "life_mult": 1.5,
+  "dmg_mult": 1.1,
+  "speed": 2.9,
+  "xp": 15,
+  "armor_mult": 2.0,
+  "ai": "melee",
   "attack": {
-   "range": 0.1,
-   "cooldown": 99
+   "range": 1.6,
+   "windup": 0.55,
+   "cooldown": 1.7,
+   "anim": [
+    "1H_Melee_Attack_Stab",
+    "1H_Melee_Attack_Chop"
+   ],
+   "mult": 1.15
   },
-  "soul_color": "#ffe070"
+  "pack_min": 2,
+  "pack_max": 4,
+  "spawn_weight": 18,
+  "desc": "Still marching in a parade that ended long ago.",
+  "soul_color": "#9cc8e0"
+ },
+ {
+  "id": "mirror_butler",
+  "name": "Mirror Butler",
+  "family": "frozen_court",
+  "act": 4,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 1.0,
+  "tint": "#d8e0e8",
+  "rim": "#ffffff",
+  "attachments": [],
+  "life_mult": 0.85,
+  "dmg_mult": 0.9,
+  "speed": 2.8,
+  "xp": 14,
+  "ai": "ranged",
+  "keep_distance": 5.5,
+  "attack": {
+   "range": 9,
+   "windup": 0.6,
+   "cooldown": 2.0,
+   "anim": [
+    "Throw"
+   ],
+   "projectile": {
+    "speed": 10,
+    "range": 13,
+    "size": 0.18
+   },
+   "element": "cold"
+  },
+  "abilities": [
+   {
+    "id": "tea",
+    "type": "volley",
+    "count": 4,
+    "spread": 30,
+    "mult": 0.6,
+    "cooldown": 8,
+    "range": 9,
+    "telegraph": 0.9,
+    "element": "cold",
+    "anim": "Throw",
+    "projectile": {
+     "speed": 9,
+     "range": 12,
+     "size": 0.18
+    }
+   }
+  ],
+  "pack_min": 1,
+  "pack_max": 3,
+  "spawn_weight": 12,
+  "desc": "Serves tea. The tea is a trap. It is very sorry.",
+  "soul_color": "#9cc8e0"
+ },
+ {
+  "id": "frost_jester",
+  "name": "Frost Jester",
+  "family": "frozen_court",
+  "act": 4,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "scale": 0.9,
+  "tint": "#7ab0e0",
+  "rim": "#d0f0ff",
+  "attachments": [
+   "Skeleton_Rogue_Hood"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/adventurers/props/dagger.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 0.8,
+  "dmg_mult": 1.1,
+  "speed": 4.2,
+  "xp": 13,
+  "ai": "melee",
+  "attack": {
+   "range": 1.3,
+   "windup": 0.35,
+   "cooldown": 1.2,
+   "anim": [
+    "1H_Melee_Attack_Stab"
+   ],
+   "mult": 0.9,
+   "element": "cold"
+  },
+  "abilities": [
+   {
+    "id": "juggle",
+    "type": "teleport",
+    "cooldown": 5,
+    "range": 8,
+    "telegraph": 0.4
+   }
+  ],
+  "pack_min": 2,
+  "pack_max": 3,
+  "spawn_weight": 10,
+  "desc": "Tells half a joke, then freezes.",
+  "soul_color": "#9cc8e0",
+  "uniques": [
+   {
+    "id": "u_rooftop_hood",
+    "chance": 0.0015
+   }
+  ]
+ },
+ {
+  "id": "ice_courtier",
+  "name": "Ice Courtier",
+  "family": "frozen_court",
+  "act": 4,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 1.0,
+  "tint": "#a8d8f0",
+  "rim": "#e8f8ff",
+  "attachments": [
+   "Skeleton_Mage_Hat"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/adventurers/props/wand.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 0.85,
+  "dmg_mult": 1.0,
+  "speed": 2.7,
+  "xp": 16,
+  "ai": "caster",
+  "keep_distance": 6.0,
+  "color": "#9fe8ff",
+  "attack": {
+   "range": 10,
+   "windup": 0.7,
+   "cooldown": 2.5,
+   "anim": [
+    "Spellcast_Shoot"
+   ],
+   "projectile": {
+    "speed": 8,
+    "range": 14,
+    "size": 0.28
+   },
+   "element": "cold",
+   "explode_radius": 1.4
+  },
+  "abilities": [
+   {
+    "id": "mend",
+    "type": "heal_allies",
+    "radius": 7,
+    "pct": 0.12,
+    "cooldown": 10,
+    "range": 14,
+    "telegraph": 0.9
+   }
+  ],
+  "pack_min": 1,
+  "pack_max": 2,
+  "spawn_weight": 8,
+  "desc": "Keeps the party going, even frozen.",
+  "materials": [
+   {
+    "id": "rime_shard",
+    "chance": 0.05
+   }
+  ],
+  "soul_color": "#9cc8e0"
+ },
+ {
+  "id": "snow_hound",
+  "name": "Snow Hound",
+  "family": "frozen_court",
+  "act": 4,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.8,
+  "tint": "#e8f0f8",
+  "rim": "#ffffff",
+  "attachments": [],
+  "life_mult": 0.75,
+  "dmg_mult": 1.0,
+  "speed": 5.2,
+  "xp": 10,
+  "ai": "melee",
+  "attack": {
+   "range": 1.3,
+   "windup": 0.3,
+   "cooldown": 1.1,
+   "anim": [
+    "Unarmed_Melee_Attack_Kick"
+   ],
+   "mult": 0.9,
+   "element": "cold"
+  },
+  "abilities": [
+   {
+    "id": "bound",
+    "type": "charge",
+    "distance": 7,
+    "mult": 1.3,
+    "cooldown": 7,
+    "range": 9,
+    "min_range": 3,
+    "telegraph": 0.9
+   }
+  ],
+  "pack_min": 3,
+  "pack_max": 5,
+  "spawn_weight": 12,
+  "desc": "Wags its frozen tail. Bites anyway.",
+  "soul_color": "#9cc8e0"
+ },
+ {
+  "id": "hushling",
+  "name": "Hushling",
+  "family": "hushed",
+  "act": 5,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.9,
+  "tint": "#8a8a90",
+  "rim": "#f0f0f4",
+  "attachments": [],
+  "life_mult": 0.95,
+  "dmg_mult": 1.0,
+  "speed": 3.6,
+  "xp": 10,
+  "ai": "melee",
+  "attack": {
+   "range": 1.4,
+   "windup": 0.45,
+   "cooldown": 1.4,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_A",
+    "Unarmed_Melee_Attack_Punch_B"
+   ],
+   "mult": 1.0,
+   "element": "shadow"
+  },
+  "spawn_anim": "Spawn_Ground",
+  "pack_min": 3,
+  "pack_max": 6,
+  "spawn_weight": 28,
+  "desc": "No face, no sound. Just a soft grey shape.",
+  "materials": [
+   {
+    "id": "hush_ash",
+    "chance": 0.06
+   }
+  ],
+  "soul_color": "#f4f4f8"
+ },
+ {
+  "id": "sound_eater",
+  "name": "Sound Eater",
+  "family": "hushed",
+  "act": 5,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 1.3,
+  "tint": "#6a6a70",
+  "rim": "#ffffff",
+  "attachments": [],
+  "life_mult": 2.6,
+  "dmg_mult": 1.5,
+  "speed": 2.6,
+  "xp": 32,
+  "ai": "melee",
+  "attack": {
+   "range": 1.8,
+   "windup": 0.7,
+   "cooldown": 2.1,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_B"
+   ],
+   "mult": 1.3,
+   "element": "shadow"
+  },
+  "abilities": [
+   {
+    "id": "gulp",
+    "type": "slam",
+    "at": "self",
+    "radius": 3.6,
+    "mult": 1.5,
+    "cooldown": 8,
+    "range": 3.8,
+    "telegraph": 1.2,
+    "element": "shadow",
+    "anim": "Spellcast_Raise"
+   }
+  ],
+  "pack_min": 1,
+  "pack_max": 1,
+  "spawn_weight": 5,
+  "desc": "Everything goes quiet when it's near.",
+  "soul_color": "#f4f4f8",
+  "uniques": [
+   {
+    "id": "u_mother_simmers_ladle",
+    "chance": 0.004
+   }
+  ]
+ },
+ {
+  "id": "grey_moth",
+  "name": "Grey Moth",
+  "family": "hushed",
+  "act": 5,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "scale": 0.7,
+  "tint": "#b0b0b8",
+  "rim": "#ffffff",
+  "attachments": [
+   "Skeleton_Rogue_Cape"
+  ],
+  "life_mult": 0.5,
+  "dmg_mult": 0.8,
+  "speed": 4.8,
+  "xp": 7,
+  "ai": "swarm",
+  "attack": {
+   "range": 1.2,
+   "windup": 0.3,
+   "cooldown": 1.0,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_A",
+    "Unarmed_Melee_Attack_Punch_B"
+   ],
+   "mult": 0.75,
+   "element": "shadow"
+  },
+  "spawn_anim": "Spawn_Air",
+  "pack_min": 4,
+  "pack_max": 8,
+  "spawn_weight": 14,
+  "desc": "Eats colour. Especially yours.",
+  "materials": [
+   {
+    "id": "grey_feather",
+    "chance": 0.05
+   }
+  ],
+  "soul_color": "#f4f4f8",
+  "pet_drops": [
+   {
+    "id": "pet_mothball",
+    "chance": 0.002
+   }
+  ]
+ },
+ {
+  "id": "faded_knight",
+  "name": "Faded Knight",
+  "family": "hushed",
+  "act": 5,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 1.1,
+  "tint": "#9a9aa4",
+  "rim": "#ffffff",
+  "attachments": [
+   "Skeleton_Warrior_Helmet",
+   "Skeleton_Warrior_Cloak"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+    "bone": "handslot.r"
+   },
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Shield_Large_B.gltf",
+    "bone": "handslot.l"
+   }
+  ],
+  "life_mult": 1.7,
+  "dmg_mult": 1.2,
+  "speed": 2.9,
+  "xp": 17,
+  "armor_mult": 2.2,
+  "ai": "melee",
+  "attack": {
+   "range": 1.7,
+   "windup": 0.55,
+   "cooldown": 1.7,
+   "anim": [
+    "1H_Melee_Attack_Slice_Horizontal",
+    "1H_Melee_Attack_Chop"
+   ],
+   "mult": 1.2
+  },
+  "abilities": [
+   {
+    "id": "lunge",
+    "type": "charge",
+    "distance": 6,
+    "mult": 1.5,
+    "cooldown": 8,
+    "range": 8,
+    "min_range": 3,
+    "telegraph": 1.0
+   }
+  ],
+  "pack_min": 2,
+  "pack_max": 3,
+  "spawn_weight": 14,
+  "desc": "Guarded the Lantern once. Still guarding. Forgot what.",
+  "soul_color": "#f4f4f8"
+ },
+ {
+  "id": "hollow_choir",
+  "name": "Hollow Choir",
+  "family": "hushed",
+  "act": 5,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 1.0,
+  "tint": "#c0c0c8",
+  "rim": "#ffffff",
+  "attachments": [
+   "Skeleton_Mage_Hat"
+  ],
+  "life_mult": 0.9,
+  "dmg_mult": 1.0,
+  "speed": 2.6,
+  "xp": 16,
+  "ai": "caster",
+  "keep_distance": 6.5,
+  "color": "#d0d0e0",
+  "attack": {
+   "range": 10,
+   "windup": 0.75,
+   "cooldown": 2.6,
+   "anim": [
+    "Spellcast_Shoot"
+   ],
+   "projectile": {
+    "speed": 7,
+    "range": 14,
+    "size": 0.3
+   },
+   "element": "shadow"
+  },
+  "abilities": [
+   {
+    "id": "silent_song",
+    "type": "nova_ring",
+    "count": 10,
+    "mult": 0.55,
+    "cooldown": 10,
+    "range": 8,
+    "telegraph": 1.1,
+    "element": "shadow",
+    "anim": "Spellcasting",
+    "projectile": {
+     "speed": 5.5,
+     "range": 10,
+     "size": 0.25
+    }
+   }
+  ],
+  "pack_min": 1,
+  "pack_max": 3,
+  "spawn_weight": 9,
+  "desc": "Sings a song with no sound in it.",
+  "soul_color": "#f4f4f8"
+ },
+ {
+  "id": "nobody_hat",
+  "name": "Nobody's Hat",
+  "family": "hushed",
+  "act": 5,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 0.8,
+  "tint": "#505058",
+  "rim": "#ffffff",
+  "attachments": [
+   "Skeleton_Mage_Hat"
+  ],
+  "life_mult": 1.2,
+  "dmg_mult": 0.9,
+  "speed": 3.8,
+  "xp": 24,
+  "ai": "caster",
+  "keep_distance": 5.0,
+  "attack": {
+   "range": 8,
+   "windup": 0.6,
+   "cooldown": 2.0,
+   "anim": [
+    "Spellcast_Shoot"
+   ],
+   "projectile": {
+    "speed": 9,
+    "range": 12,
+    "size": 0.22
+   },
+   "element": "shadow"
+  },
+  "abilities": [
+   {
+    "id": "vanish",
+    "type": "teleport",
+    "cooldown": 4,
+    "range": 9,
+    "telegraph": 0.4
+   },
+   {
+    "id": "hats",
+    "type": "summon",
+    "monster": "hushling",
+    "count": 2,
+    "cooldown": 14,
+    "range": 12,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon"
+   }
+  ],
+  "pack_min": 1,
+  "pack_max": 1,
+  "spawn_weight": 2,
+  "loot_mult": 2.0,
+  "desc": "A hat with nobody under it. Rare, shy, generous.",
+  "soul_color": "#f4f4f8",
+  "uniques": [
+   {
+    "id": "u_nobodys_hat",
+    "chance": 0.004
+   }
+  ]
+ },
+ {
+  "id": "mb_mossjaw",
+  "name": "Mossjaw, Keeper of Graves",
+  "family": "rattlebones",
+  "act": 1,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 1.7,
+  "tint": "#7a9a70",
+  "rim": "#8fd9a0",
+  "attachments": [
+   "Skeleton_Warrior_Helmet",
+   "Skeleton_Warrior_Cloak"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Axe.gltf",
+    "bone": "handslot.r"
+   },
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Shield_Large_A.gltf",
+    "bone": "handslot.l"
+   }
+  ],
+  "life_mult": 9.0,
+  "dmg_mult": 1.6,
+  "speed": 2.7,
+  "xp": 120,
+  "armor_mult": 2.0,
+  "ai": "melee",
+  "attack": {
+   "range": 2.0,
+   "windup": 0.7,
+   "cooldown": 2.0,
+   "anim": [
+    "1H_Melee_Attack_Chop"
+   ],
+   "mult": 1.3
+  },
+  "abilities": [
+   {
+    "id": "shieldbash",
+    "type": "charge",
+    "distance": 7,
+    "mult": 1.6,
+    "cooldown": 8,
+    "range": 9,
+    "min_range": 3,
+    "telegraph": 1.0
+   },
+   {
+    "id": "graves",
+    "type": "summon",
+    "monster": "rattler",
+    "count": 3,
+    "cooldown": 14,
+    "range": 14,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon",
+    "life_below": 0.6
+   }
+  ],
+  "materials": [
+   {
+    "id": "bog_iron",
+    "chance": 1.0,
+    "min": 2,
+    "max": 4
+   }
+  ],
+  "summon_only": true,
+  "miniboss": true,
+  "level_bonus": 1,
+  "pack_min": 1,
+  "pack_max": 1,
+  "loot_mult": 3.0,
+  "soul_color": "#8fd9a0",
+  "uniques": [
+   {
+    "id": "u_warden_helm",
+    "chance": 0.03
+   }
+  ]
+ },
+ {
+  "id": "mb_candlewife",
+  "name": "The Candlewife",
+  "family": "rattlebones",
+  "act": 1,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 1.6,
+  "tint": "#ffb070",
+  "rim": "#ffd9a0",
+  "attachments": [
+   "Skeleton_Mage_Hat"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Staff.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 7.0,
+  "dmg_mult": 1.4,
+  "speed": 2.6,
+  "xp": 120,
+  "ai": "caster",
+  "keep_distance": 6.0,
+  "color": "#ff8a3c",
+  "attack": {
+   "range": 10,
+   "windup": 0.7,
+   "cooldown": 2.2,
+   "anim": [
+    "Spellcast_Shoot"
+   ],
+   "projectile": {
+    "speed": 8,
+    "range": 14,
+    "size": 0.34
+   },
+   "element": "fire",
+   "explode_radius": 1.8
+  },
+  "abilities": [
+   {
+    "id": "ring",
+    "type": "nova_ring",
+    "count": 10,
+    "mult": 0.7,
+    "cooldown": 9,
+    "range": 9,
+    "telegraph": 1.1,
+    "element": "fire",
+    "anim": "Spellcast_Raise",
+    "projectile": {
+     "speed": 6,
+     "range": 11,
+     "size": 0.3
+    }
+   },
+   {
+    "id": "wicks",
+    "type": "summon",
+    "monster": "candle_mage",
+    "count": 2,
+    "cooldown": 18,
+    "range": 14,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon"
+   }
+  ],
+  "materials": [
+   {
+    "id": "marsh_candle",
+    "chance": 0.5
+   }
+  ],
+  "summon_only": true,
+  "miniboss": true,
+  "level_bonus": 1,
+  "pack_min": 1,
+  "pack_max": 1,
+  "loot_mult": 3.0,
+  "soul_color": "#8fd9a0",
+  "uniques": [
+   {
+    "id": "u_purls_scarf",
+    "chance": 0.03
+   }
+  ]
+ },
+ {
+  "id": "mb_briar_aunt",
+  "name": "The Briar Aunt",
+  "family": "thicket_kin",
+  "act": 2,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 1.8,
+  "tint": "#5a6a3a",
+  "rim": "#a0e070",
+  "attachments": [
+   "Skeleton_Mage_Hat"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Staff.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 9.0,
+  "dmg_mult": 1.5,
+  "speed": 2.5,
+  "xp": 130,
+  "ai": "caster",
+  "keep_distance": 5.0,
+  "attack": {
+   "range": 10,
+   "windup": 0.7,
+   "cooldown": 2.2,
+   "anim": [
+    "Spellcast_Shoot"
+   ],
+   "projectile": {
+    "speed": 9,
+    "range": 14,
+    "size": 0.3
+   },
+   "element": "shadow"
+  },
+  "abilities": [
+   {
+    "id": "brambles",
+    "type": "slam",
+    "at": "target",
+    "radius": 3.0,
+    "mult": 1.8,
+    "cooldown": 7,
+    "range": 10,
+    "telegraph": 1.1,
+    "anim": "Spellcast_Raise"
+   },
+   {
+    "id": "sprites",
+    "type": "summon",
+    "monster": "thorn_sprite",
+    "count": 4,
+    "cooldown": 15,
+    "range": 14,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon"
+   }
+  ],
+  "materials": [
+   {
+    "id": "whisper_bark",
+    "chance": 1.0,
+    "min": 2,
+    "max": 4
+   }
+  ],
+  "summon_only": true,
+  "miniboss": true,
+  "level_bonus": 1,
+  "pack_min": 1,
+  "pack_max": 1,
+  "loot_mult": 3.0,
+  "soul_color": "#7fb8e0",
+  "uniques": [
+   {
+    "id": "u_twigling_crown",
+    "chance": 0.03
+   }
+  ]
+ },
+ {
+  "id": "mb_great_hoot",
+  "name": "Great Hoot",
+  "family": "thicket_kin",
+  "act": 2,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "scale": 1.7,
+  "tint": "#3a2a4a",
+  "rim": "#b8a8d8",
+  "attachments": [
+   "Skeleton_Rogue_Hood",
+   "Skeleton_Rogue_Cape"
+  ],
+  "life_mult": 8.0,
+  "dmg_mult": 1.4,
+  "speed": 3.2,
+  "xp": 130,
+  "ai": "ranged",
+  "keep_distance": 6.0,
+  "attack": {
+   "range": 10,
+   "windup": 0.55,
+   "cooldown": 1.8,
+   "anim": [
+    "Throw"
+   ],
+   "projectile": {
+    "speed": 12,
+    "range": 14,
+    "size": 0.16
+   },
+   "element": "shadow"
+  },
+  "abilities": [
+   {
+    "id": "storm",
+    "type": "volley",
+    "count": 9,
+    "spread": 70,
+    "mult": 0.6,
+    "cooldown": 7,
+    "range": 10,
+    "telegraph": 1.0,
+    "element": "shadow",
+    "anim": "Throw",
+    "projectile": {
+     "speed": 10,
+     "range": 13,
+     "size": 0.15
+    }
+   },
+   {
+    "id": "swoop",
+    "type": "teleport",
+    "cooldown": 6,
+    "range": 9,
+    "telegraph": 0.5
+   }
+  ],
+  "materials": [
+   {
+    "id": "owl_quill",
+    "chance": 1.0,
+    "min": 1,
+    "max": 2
+   }
+  ],
+  "summon_only": true,
+  "miniboss": true,
+  "level_bonus": 1,
+  "pack_min": 1,
+  "pack_max": 1,
+  "loot_mult": 3.0,
+  "soul_color": "#7fb8e0",
+  "uniques": [
+   {
+    "id": "u_owlcrow_eye",
+    "chance": 0.03
+   }
+  ]
+ },
+ {
+  "id": "mb_foreman_clank",
+  "name": "Foreman Clank",
+  "family": "echoes",
+  "act": 3,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 1.8,
+  "tint": "#8a7050",
+  "rim": "#ffc070",
+  "attachments": [
+   "Skeleton_Warrior_Helmet"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/adventurers/props/axe_2handed.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 10.0,
+  "dmg_mult": 1.6,
+  "speed": 2.6,
+  "xp": 140,
+  "armor_mult": 2.0,
+  "ai": "melee",
+  "attack": {
+   "range": 2.2,
+   "windup": 0.75,
+   "cooldown": 2.2,
+   "anim": [
+    "2H_Melee_Attack_Chop"
+   ],
+   "mult": 1.4
+  },
+  "abilities": [
+   {
+    "id": "clang",
+    "type": "slam",
+    "at": "self",
+    "radius": 4.0,
+    "mult": 1.8,
+    "cooldown": 8,
+    "range": 4,
+    "telegraph": 1.1,
+    "anim": "2H_Melee_Attack_Spinning"
+   },
+   {
+    "id": "shift",
+    "type": "summon",
+    "monster": "digling",
+    "count": 4,
+    "cooldown": 15,
+    "range": 14,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon"
+   }
+  ],
+  "materials": [
+   {
+    "id": "glimmer_ore",
+    "chance": 1.0,
+    "min": 2,
+    "max": 4
+   }
+  ],
+  "summon_only": true,
+  "miniboss": true,
+  "level_bonus": 1,
+  "pack_min": 1,
+  "pack_max": 1,
+  "loot_mult": 3.0,
+  "soul_color": "#cfe8f0",
+  "uniques": [
+   {
+    "id": "u_lou_levers_lever",
+    "chance": 0.03
+   }
+  ]
+ },
+ {
+  "id": "mb_crystal_matron",
+  "name": "Crystal Matron",
+  "family": "echoes",
+  "act": 3,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 1.5,
+  "tint": "#dff4ff",
+  "rim": "#ffffff",
+  "attachments": [],
+  "life_mult": 8.0,
+  "dmg_mult": 1.4,
+  "speed": 3.8,
+  "xp": 140,
+  "ai": "melee",
+  "attack": {
+   "range": 1.6,
+   "windup": 0.4,
+   "cooldown": 1.2,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_A",
+    "Unarmed_Melee_Attack_Punch_B"
+   ],
+   "mult": 1.1
+  },
+  "abilities": [
+   {
+    "id": "brood",
+    "type": "summon",
+    "monster": "crystal_spider",
+    "count": 4,
+    "cooldown": 12,
+    "range": 14,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon"
+   },
+   {
+    "id": "shards",
+    "type": "nova_ring",
+    "count": 12,
+    "mult": 0.6,
+    "cooldown": 9,
+    "range": 8,
+    "telegraph": 1.1,
+    "element": "cold",
+    "projectile": {
+     "speed": 7,
+     "range": 10,
+     "size": 0.2
+    }
+   }
+  ],
+  "materials": [
+   {
+    "id": "hollow_crystal",
+    "chance": 0.5
+   }
+  ],
+  "summon_only": true,
+  "miniboss": true,
+  "level_bonus": 1,
+  "pack_min": 1,
+  "pack_max": 1,
+  "loot_mult": 3.0,
+  "soul_color": "#cfe8f0",
+  "uniques": [
+   {
+    "id": "u_crystal_spider_silk",
+    "chance": 0.03
+   }
+  ],
+  "pet_drops": [
+   {
+    "id": "pet_glim",
+    "chance": 0.08
+   }
+  ]
+ },
+ {
+  "id": "mb_captain_tinwhistle",
+  "name": "Captain Tinwhistle",
+  "family": "frozen_court",
+  "act": 4,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 1.7,
+  "tint": "#c0c8d8",
+  "rim": "#e0f0ff",
+  "attachments": [
+   "Skeleton_Warrior_Helmet",
+   "Skeleton_Warrior_Cloak"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/adventurers/props/sword_2handed.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 10.0,
+  "dmg_mult": 1.6,
+  "speed": 2.8,
+  "xp": 150,
+  "armor_mult": 2.2,
+  "ai": "melee",
+  "attack": {
+   "range": 2.2,
+   "windup": 0.7,
+   "cooldown": 2.0,
+   "anim": [
+    "2H_Melee_Attack_Slice",
+    "2H_Melee_Attack_Stab"
+   ],
+   "mult": 1.4
+  },
+  "abilities": [
+   {
+    "id": "parade",
+    "type": "summon",
+    "monster": "tin_soldier",
+    "count": 3,
+    "cooldown": 14,
+    "range": 14,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon"
+   },
+   {
+    "id": "march",
+    "type": "charge",
+    "distance": 9,
+    "mult": 1.8,
+    "cooldown": 8,
+    "range": 11,
+    "min_range": 4,
+    "telegraph": 1.1
+   }
+  ],
+  "materials": [
+   {
+    "id": "rime_shard",
+    "chance": 1.0,
+    "min": 2,
+    "max": 4
+   }
+  ],
+  "summon_only": true,
+  "miniboss": true,
+  "level_bonus": 1,
+  "pack_min": 1,
+  "pack_max": 1,
+  "loot_mult": 3.0,
+  "soul_color": "#9cc8e0",
+  "uniques": [
+   {
+    "id": "u_tinwhistle_medal",
+    "chance": 0.015
+   },
+   {
+    "id": "u_frost_jester_bells",
+    "chance": 0.015
+   }
+  ]
+ },
+ {
+  "id": "mb_head_butler",
+  "name": "Head Butler Glass",
+  "family": "frozen_court",
+  "act": 4,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 1.6,
+  "tint": "#e8f0f8",
+  "rim": "#ffffff",
+  "attachments": [],
+  "life_mult": 8.0,
+  "dmg_mult": 1.4,
+  "speed": 2.8,
+  "xp": 150,
+  "ai": "ranged",
+  "keep_distance": 6.0,
+  "attack": {
+   "range": 10,
+   "windup": 0.6,
+   "cooldown": 1.8,
+   "anim": [
+    "Throw"
+   ],
+   "projectile": {
+    "speed": 10,
+    "range": 13,
+    "size": 0.2
+   },
+   "element": "cold"
+  },
+  "abilities": [
+   {
+    "id": "service",
+    "type": "volley",
+    "count": 7,
+    "spread": 60,
+    "mult": 0.65,
+    "cooldown": 7,
+    "range": 10,
+    "telegraph": 1.0,
+    "element": "cold",
+    "anim": "Throw",
+    "projectile": {
+     "speed": 9,
+     "range": 12,
+     "size": 0.2
+    }
+   },
+   {
+    "id": "polish",
+    "type": "heal_allies",
+    "radius": 8,
+    "pct": 0.1,
+    "cooldown": 12,
+    "range": 14,
+    "telegraph": 1.0
+   },
+   {
+    "id": "reflect",
+    "type": "teleport",
+    "cooldown": 7,
+    "range": 8,
+    "telegraph": 0.5
+   }
+  ],
+  "materials": [
+   {
+    "id": "porcelain_chip",
+    "chance": 1.0,
+    "min": 2,
+    "max": 4
+   }
+  ],
+  "summon_only": true,
+  "miniboss": true,
+  "level_bonus": 1,
+  "pack_min": 1,
+  "pack_max": 1,
+  "loot_mult": 3.0,
+  "soul_color": "#9cc8e0",
+  "uniques": [
+   {
+    "id": "u_mirror_butler_tray",
+    "chance": 0.03
+   }
+  ]
+ },
+ {
+  "id": "mb_choirmaster",
+  "name": "The Choirmaster",
+  "family": "hushed",
+  "act": 5,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 1.8,
+  "tint": "#d0d0d8",
+  "rim": "#ffffff",
+  "attachments": [
+   "Skeleton_Mage_Hat"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Staff.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 10.0,
+  "dmg_mult": 1.6,
+  "speed": 2.6,
+  "xp": 160,
+  "ai": "caster",
+  "keep_distance": 6.0,
+  "attack": {
+   "range": 10,
+   "windup": 0.7,
+   "cooldown": 2.0,
+   "anim": [
+    "Spellcast_Shoot"
+   ],
+   "projectile": {
+    "speed": 8,
+    "range": 14,
+    "size": 0.3
+   },
+   "element": "shadow"
+  },
+  "abilities": [
+   {
+    "id": "hush",
+    "type": "nova_ring",
+    "count": 16,
+    "mult": 0.6,
+    "cooldown": 8,
+    "range": 9,
+    "telegraph": 1.2,
+    "element": "shadow",
+    "anim": "Spellcasting",
+    "projectile": {
+     "speed": 5.5,
+     "range": 12,
+     "size": 0.26
+    }
+   },
+   {
+    "id": "choir",
+    "type": "summon",
+    "monster": "hollow_choir",
+    "count": 2,
+    "cooldown": 16,
+    "range": 14,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon"
+   }
+  ],
+  "materials": [
+   {
+    "id": "hush_ash",
+    "chance": 1.0,
+    "min": 2,
+    "max": 4
+   }
+  ],
+  "summon_only": true,
+  "miniboss": true,
+  "level_bonus": 1,
+  "pack_min": 1,
+  "pack_max": 1,
+  "loot_mult": 3.0,
+  "soul_color": "#f4f4f8",
+  "uniques": [
+   {
+    "id": "u_hollow_choir_bell",
+    "chance": 0.03
+   }
+  ]
+ },
+ {
+  "id": "mb_faded_champion",
+  "name": "The Faded Champion",
+  "family": "hushed",
+  "act": 5,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 1.8,
+  "tint": "#a0a0aa",
+  "rim": "#ffffff",
+  "attachments": [
+   "Skeleton_Warrior_Helmet",
+   "Skeleton_Warrior_Cloak"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/adventurers/props/sword_2handed.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 11.0,
+  "dmg_mult": 1.7,
+  "speed": 2.8,
+  "xp": 160,
+  "armor_mult": 2.4,
+  "ai": "melee",
+  "attack": {
+   "range": 2.3,
+   "windup": 0.75,
+   "cooldown": 2.0,
+   "anim": [
+    "2H_Melee_Attack_Slice",
+    "2H_Melee_Attack_Chop"
+   ],
+   "mult": 1.5
+  },
+  "abilities": [
+   {
+    "id": "whirl",
+    "type": "slam",
+    "at": "self",
+    "radius": 4.0,
+    "mult": 1.9,
+    "cooldown": 8,
+    "range": 4,
+    "telegraph": 1.1,
+    "anim": "2H_Melee_Attack_Spinning"
+   },
+   {
+    "id": "charge",
+    "type": "charge",
+    "distance": 10,
+    "mult": 1.9,
+    "cooldown": 9,
+    "range": 12,
+    "min_range": 4,
+    "telegraph": 1.1
+   }
+  ],
+  "materials": [
+   {
+    "id": "grey_feather",
+    "chance": 1.0,
+    "min": 2,
+    "max": 4
+   }
+  ],
+  "summon_only": true,
+  "miniboss": true,
+  "level_bonus": 1,
+  "pack_min": 1,
+  "pack_max": 1,
+  "loot_mult": 3.0,
+  "soul_color": "#f4f4f8",
+  "uniques": [
+   {
+    "id": "u_lastlight_lens",
+    "chance": 0.03
+   }
+  ]
  },
  {
   "id": "sunken_bellringer",
@@ -407,11 +2574,19 @@
   "uniques": [
    {
     "id": "u_bellringers_toll",
-    "chance": 0.08
+    "chance": 0.00625
    },
    {
     "id": "u_drowned_lantern",
-    "chance": 0.08
+    "chance": 0.00625
+   },
+   {
+    "id": "u_bog_newt_boots",
+    "chance": 0.00625
+   },
+   {
+    "id": "u_candle_mages_last_wick",
+    "chance": 0.00625
    }
   ],
   "materials": [
@@ -422,6 +2597,1120 @@
     "max": 2
    }
   ],
-  "soul_color": "#9fe8ff"
+  "soul_color": "#9fe8ff",
+  "act": 1,
+  "phases": [
+   {
+    "life_below": 0.7,
+    "abilities_add": [
+     "raise"
+    ],
+    "speed_mult": 1.0,
+    "announce": "The bell starts to wake the drowned!"
+   },
+   {
+    "life_below": 0.35,
+    "abilities_add": [],
+    "speed_mult": 1.2,
+    "announce": "The Bellringer tolls in a fury!"
+   }
+  ]
+ },
+ {
+  "id": "mother_bark",
+  "name": "Mother Bark",
+  "family": "thicket_kin",
+  "act": 2,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "boss": true,
+  "scale": 3.0,
+  "tint": "#6b5a3a",
+  "rim": "#a0e070",
+  "attachments": [
+   "Skeleton_Mage_Hat"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Staff.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 1,
+  "boss_life_mult": 30,
+  "dmg_mult": 1.5,
+  "speed": 2.6,
+  "xp": 70,
+  "level_bonus": 2,
+  "ai": "caster",
+  "keep_distance": 5.0,
+  "color": "#a0e070",
+  "attack": {
+   "range": 11,
+   "windup": 0.75,
+   "cooldown": 2.0,
+   "anim": [
+    "Spellcast_Shoot"
+   ],
+   "projectile": {
+    "speed": 9,
+    "range": 15,
+    "size": 0.35
+   },
+   "element": "shadow",
+   "explode_radius": 1.8
+  },
+  "abilities": [
+   {
+    "id": "roots",
+    "type": "slam",
+    "at": "target",
+    "radius": 3.2,
+    "mult": 2.0,
+    "cooldown": 7,
+    "range": 12,
+    "telegraph": 1.3,
+    "anim": "Spellcast_Raise"
+   },
+   {
+    "id": "thorns",
+    "type": "nova_ring",
+    "count": 14,
+    "mult": 0.85,
+    "cooldown": 10,
+    "range": 14,
+    "telegraph": 1.2,
+    "anim": "Spellcasting",
+    "element": "shadow",
+    "projectile": {
+     "speed": 6.5,
+     "range": 15,
+     "size": 0.32
+    }
+   },
+   {
+    "id": "children",
+    "type": "summon",
+    "monster": "twigling",
+    "count": 4,
+    "cooldown": 16,
+    "range": 20,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon",
+    "life_below": 0.75
+   },
+   {
+    "id": "jar_step",
+    "type": "teleport",
+    "cooldown": 9,
+    "range": 14,
+    "telegraph": 0.8,
+    "life_below": 0.4
+   }
+  ],
+  "phases": [
+   {
+    "life_below": 0.75,
+    "abilities_add": [
+     "children"
+    ],
+    "speed_mult": 1.0,
+    "announce": "Mother Bark calls her little sticks!"
+   },
+   {
+    "life_below": 0.4,
+    "abilities_add": [
+     "jar_step"
+    ],
+    "speed_mult": 1.25,
+    "announce": "She opens a shadow jar and steps inside!"
+   }
+  ],
+  "materials": [
+   {
+    "id": "bark_knot",
+    "chance": 1.0,
+    "min": 1,
+    "max": 2
+   }
+  ],
+  "soul_color": "#7fb8e0",
+  "uniques": [
+   {
+    "id": "u_mother_barks_jar",
+    "chance": 0.00833
+   },
+   {
+    "id": "u_birch_whisper",
+    "chance": 0.00833
+   },
+   {
+    "id": "u_hobs_acorn",
+    "chance": 0.00833
+   }
+  ]
+ },
+ {
+  "id": "great_echo",
+  "name": "The Great Echo",
+  "family": "echoes",
+  "act": 3,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "boss": true,
+  "scale": 3.2,
+  "tint": "#cfe0e8",
+  "rim": "#ffffff",
+  "attachments": [
+   "Skeleton_Warrior_Helmet"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/skeletons/props/Skeleton_Axe.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 1,
+  "boss_life_mult": 32,
+  "dmg_mult": 1.55,
+  "speed": 2.8,
+  "xp": 80,
+  "level_bonus": 2,
+  "ai": "melee",
+  "attack": {
+   "range": 2.8,
+   "windup": 0.8,
+   "cooldown": 2.0,
+   "anim": [
+    "2H_Melee_Attack_Chop",
+    "1H_Melee_Attack_Slice_Horizontal"
+   ],
+   "mult": 1.4,
+   "angle": 130
+  },
+  "abilities": [
+   {
+    "id": "copy",
+    "type": "volley",
+    "count": 7,
+    "spread": 45,
+    "mult": 0.9,
+    "cooldown": 7,
+    "range": 12,
+    "telegraph": 1.2,
+    "anim": "Throw",
+    "projectile": {
+     "speed": 9,
+     "range": 14,
+     "size": 0.3
+    }
+   },
+   {
+    "id": "rumble",
+    "type": "slam",
+    "at": "self",
+    "radius": 5.5,
+    "mult": 2.2,
+    "cooldown": 10,
+    "range": 6,
+    "telegraph": 1.5,
+    "anim": "2H_Melee_Attack_Spinning"
+   },
+   {
+    "id": "rush",
+    "type": "charge",
+    "distance": 10,
+    "mult": 1.9,
+    "cooldown": 9,
+    "range": 13,
+    "min_range": 4,
+    "telegraph": 1.1
+   },
+   {
+    "id": "bats",
+    "type": "summon",
+    "monster": "echo_bat",
+    "count": 6,
+    "cooldown": 16,
+    "range": 20,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon",
+    "life_below": 0.6
+   },
+   {
+    "id": "reverb",
+    "type": "nova_ring",
+    "count": 18,
+    "mult": 0.8,
+    "cooldown": 12,
+    "range": 14,
+    "telegraph": 1.3,
+    "anim": "Spellcast_Raise",
+    "life_below": 0.35,
+    "projectile": {
+     "speed": 6,
+     "range": 16,
+     "size": 0.32
+    }
+   }
+  ],
+  "phases": [
+   {
+    "life_below": 0.6,
+    "abilities_add": [
+     "bats"
+    ],
+    "speed_mult": 1.0,
+    "announce": "The cave squeaks back at you!"
+   },
+   {
+    "life_below": 0.35,
+    "abilities_add": [
+     "reverb"
+    ],
+    "speed_mult": 1.2,
+    "announce": "The whole mountain echoes!"
+   }
+  ],
+  "secret": "Stand completely still for 30 s during the fight: the Echo has nothing to copy and drops an Echo of Stillness.",
+  "materials": [
+   {
+    "id": "echo_fragment",
+    "chance": 1.0,
+    "min": 1,
+    "max": 2
+   }
+  ],
+  "soul_color": "#cfe8f0",
+  "uniques": [
+   {
+    "id": "u_digdeep_pick",
+    "chance": 0.00833
+   },
+   {
+    "id": "u_digbright",
+    "chance": 0.00833
+   },
+   {
+    "id": "u_echo_annies_shawl",
+    "chance": 0.00833
+   }
+  ]
+ },
+ {
+  "id": "king_who_forgot",
+  "name": "The King Who Forgot His Name",
+  "family": "frozen_court",
+  "act": 4,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "boss": true,
+  "scale": 3.0,
+  "tint": "#b8d8f0",
+  "rim": "#e8f8ff",
+  "attachments": [
+   "Skeleton_Warrior_Helmet",
+   "Skeleton_Warrior_Cloak"
+  ],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/adventurers/props/sword_2handed_color.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 1,
+  "boss_life_mult": 34,
+  "dmg_mult": 1.6,
+  "speed": 2.9,
+  "xp": 90,
+  "level_bonus": 2,
+  "ai": "melee",
+  "attack": {
+   "range": 3.0,
+   "windup": 0.8,
+   "cooldown": 2.0,
+   "anim": [
+    "2H_Melee_Attack_Slice",
+    "2H_Melee_Attack_Chop"
+   ],
+   "mult": 1.45,
+   "angle": 140,
+   "element": "cold"
+  },
+  "abilities": [
+   {
+    "id": "decree",
+    "type": "slam",
+    "at": "target",
+    "radius": 3.6,
+    "mult": 2.2,
+    "cooldown": 8,
+    "range": 12,
+    "telegraph": 1.4,
+    "element": "cold",
+    "anim": "2H_Melee_Attack_Chop"
+   },
+   {
+    "id": "frost_ring",
+    "type": "nova_ring",
+    "count": 16,
+    "mult": 0.85,
+    "cooldown": 11,
+    "range": 14,
+    "telegraph": 1.3,
+    "element": "cold",
+    "anim": "Spellcast_Raise",
+    "projectile": {
+     "speed": 6.5,
+     "range": 16,
+     "size": 0.32
+    }
+   },
+   {
+    "id": "guard",
+    "type": "summon",
+    "monster": "tin_soldier",
+    "count": 4,
+    "cooldown": 18,
+    "range": 20,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Summon",
+    "life_below": 0.7
+   },
+   {
+    "id": "who",
+    "type": "charge",
+    "distance": 11,
+    "mult": 2.0,
+    "cooldown": 9,
+    "range": 14,
+    "min_range": 4,
+    "telegraph": 1.2,
+    "life_below": 0.4
+   },
+   {
+    "id": "toast",
+    "type": "heal_allies",
+    "radius": 12,
+    "pct": 0.04,
+    "cooldown": 20,
+    "range": 30,
+    "telegraph": 1.6,
+    "life_below": 0.4
+   }
+  ],
+  "phases": [
+   {
+    "life_below": 0.7,
+    "abilities_add": [
+     "guard"
+    ],
+    "speed_mult": 1.0,
+    "announce": "\"Guards! Who is this? Who am I?\""
+   },
+   {
+    "life_below": 0.4,
+    "abilities_add": [
+     "who",
+     "toast"
+    ],
+    "speed_mult": 1.25,
+    "announce": "The King forgets to be careful!"
+   }
+  ],
+  "materials": [
+   {
+    "id": "crown_sliver",
+    "chance": 1.0,
+    "min": 1,
+    "max": 2
+   }
+  ],
+  "soul_color": "#9cc8e0",
+  "uniques": [
+   {
+    "id": "u_toast_everlasting",
+    "chance": 0.00833
+   },
+   {
+    "id": "u_warmhearth_crown",
+    "chance": 0.00833
+   },
+   {
+    "id": "u_pips_tiara",
+    "chance": 0.00833
+   }
+  ]
+ },
+ {
+  "id": "grey_guest",
+  "name": "The Grey Guest",
+  "family": "hushed",
+  "act": 5,
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "boss": true,
+  "scale": 3.0,
+  "tint": "#a8a8b0",
+  "rim": "#ffffff",
+  "attachments": [
+   "Knight_Helmet",
+   "Knight_Cape",
+   "1H_Sword"
+  ],
+  "life_mult": 1,
+  "boss_life_mult": 40,
+  "dmg_mult": 1.7,
+  "speed": 3.0,
+  "xp": 110,
+  "level_bonus": 3,
+  "ai": "melee",
+  "attack": {
+   "range": 3.0,
+   "windup": 0.8,
+   "cooldown": 1.9,
+   "anim": [
+    "1H_Melee_Attack_Slice_Diagonal",
+    "1H_Melee_Attack_Chop"
+   ],
+   "mult": 1.5,
+   "angle": 140,
+   "element": "shadow"
+  },
+  "abilities": [
+   {
+    "id": "snuff",
+    "type": "nova_ring",
+    "count": 18,
+    "mult": 0.9,
+    "cooldown": 9,
+    "range": 14,
+    "telegraph": 1.4,
+    "element": "shadow",
+    "anim": "Spellcast_Raise",
+    "projectile": {
+     "speed": 6,
+     "range": 16,
+     "size": 0.34
+    }
+   },
+   {
+    "id": "grey_step",
+    "type": "teleport",
+    "cooldown": 8,
+    "range": 12,
+    "telegraph": 0.9
+   },
+   {
+    "id": "quiet",
+    "type": "slam",
+    "at": "target",
+    "radius": 4.0,
+    "mult": 2.3,
+    "cooldown": 8,
+    "range": 12,
+    "telegraph": 1.5,
+    "element": "shadow",
+    "anim": "Spellcast_Long"
+   },
+   {
+    "id": "tired",
+    "type": "summon",
+    "monster": "hushling",
+    "count": 5,
+    "cooldown": 16,
+    "range": 20,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Raise",
+    "life_below": 0.66
+   },
+   {
+    "id": "last_volley",
+    "type": "volley",
+    "count": 11,
+    "spread": 80,
+    "mult": 0.8,
+    "cooldown": 8,
+    "range": 14,
+    "telegraph": 1.3,
+    "element": "shadow",
+    "anim": "Spellcast_Long",
+    "life_below": 0.33,
+    "projectile": {
+     "speed": 8,
+     "range": 15,
+     "size": 0.3
+    }
+   }
+  ],
+  "phases": [
+   {
+    "life_below": 0.66,
+    "abilities_add": [
+     "tired"
+    ],
+    "speed_mult": 1.0,
+    "announce": "\"Let someone else carry it for once...\""
+   },
+   {
+    "life_below": 0.33,
+    "abilities_add": [
+     "last_volley"
+    ],
+    "speed_mult": 1.2,
+    "announce": "His little lantern flickers. Light it!"
+   }
+  ],
+  "end": "rekindle",
+  "materials": [
+   {
+    "id": "guest_wick",
+    "chance": 1.0,
+    "min": 1,
+    "max": 2
+   }
+  ],
+  "soul_color": "#f4f4f8",
+  "uniques": [
+   {
+    "id": "u_quiet_stair_boots",
+    "chance": 0.005
+   },
+   {
+    "id": "u_pells_trimmers",
+    "chance": 0.005
+   },
+   {
+    "id": "u_ninety_nine_chairs",
+    "chance": 0.005
+   },
+   {
+    "id": "u_moth_choir_cloak",
+    "chance": 0.005
+   },
+   {
+    "id": "u_first_spark",
+    "chance": 0.005
+   }
+  ]
+ },
+ {
+  "id": "long_shadow",
+  "name": "The Long Shadow",
+  "family": "hushed",
+  "act": 5,
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "boss": true,
+  "weekly": true,
+  "summon_only": true,
+  "scale": 3.2,
+  "tint": "#3a3a48",
+  "rim": "#c0c0ff",
+  "attachments": [
+   "Rogue_Cape",
+   "Knife",
+   "Knife_Offhand"
+  ],
+  "life_mult": 1,
+  "boss_life_mult": 60,
+  "dmg_mult": 1.9,
+  "speed": 3.4,
+  "xp": 140,
+  "level_bonus": 3,
+  "ai": "melee",
+  "attack": {
+   "range": 2.6,
+   "windup": 0.6,
+   "cooldown": 1.5,
+   "anim": [
+    "Dualwield_Melee_Attack_Slice",
+    "Dualwield_Melee_Attack_Stab"
+   ],
+   "mult": 1.3,
+   "element": "shadow"
+  },
+  "abilities": [
+   {
+    "id": "stretch",
+    "type": "charge",
+    "distance": 12,
+    "mult": 2.0,
+    "cooldown": 7,
+    "range": 14,
+    "min_range": 4,
+    "telegraph": 1.2
+   },
+   {
+    "id": "dusk",
+    "type": "nova_ring",
+    "count": 20,
+    "mult": 0.8,
+    "cooldown": 10,
+    "range": 14,
+    "telegraph": 1.4,
+    "element": "shadow",
+    "anim": "Spellcast_Raise",
+    "projectile": {
+     "speed": 7,
+     "range": 16,
+     "size": 0.3
+    }
+   },
+   {
+    "id": "blink",
+    "type": "teleport",
+    "cooldown": 6,
+    "range": 12,
+    "telegraph": 0.8
+   },
+   {
+    "id": "shadows",
+    "type": "summon",
+    "monster": "grey_moth",
+    "count": 6,
+    "cooldown": 15,
+    "range": 20,
+    "telegraph": 1.0,
+    "anim": "Spellcast_Raise",
+    "life_below": 0.5
+   }
+  ],
+  "phases": [
+   {
+    "life_below": 0.5,
+    "abilities_add": [
+     "shadows"
+    ],
+    "speed_mult": 1.25
+   }
+  ],
+  "materials": [
+   {
+    "id": "starmote",
+    "chance": 0.35
+   }
+  ],
+  "soul_color": "#f4f4f8",
+  "uniques": [
+   {
+    "id": "u_long_shadow_mantle",
+    "chance": 0.025
+   }
+  ]
+ },
+ {
+  "id": "magpie_imp",
+  "name": "Magpie Imp",
+  "family": "event",
+  "summon_only": true,
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "scale": 0.7,
+  "tint": "#ffd84a",
+  "rim": "#ffe98a",
+  "attachments": [],
+  "life_mult": 5.0,
+  "dmg_mult": 0.1,
+  "speed": 5.5,
+  "xp": 60,
+  "ai": "flee",
+  "attack": {
+   "range": 0.1,
+   "cooldown": 99
+  },
+  "soul_color": "#ffe070",
+  "act": 0,
+  "desc": "A thieving imp stuffed with shinies. Catch it before it pops home!",
+  "uniques": [
+   {
+    "id": "u_nibs_borrowing_glove",
+    "chance": 0.01
+   },
+   {
+    "id": "u_magpie_hoard_key",
+    "chance": 0.01
+   }
+  ]
+ },
+ {
+  "id": "goblet_runner",
+  "name": "Treasure Goblet",
+  "family": "event",
+  "act": 0,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "summon_only": true,
+  "scale": 0.55,
+  "tint": "#ffd84a",
+  "rim": "#fff0a0",
+  "attachments": [],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/adventurers/props/mug_full.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 2.0,
+  "dmg_mult": 0.1,
+  "speed": 4.8,
+  "xp": 25,
+  "ai": "flee",
+  "attack": {
+   "range": 0.1,
+   "cooldown": 99
+  },
+  "desc": "Little golden goblets on legs. They run in a pack and jingle.",
+  "soul_color": "#ffe070"
+ },
+ {
+  "id": "shrine_wraith",
+  "name": "Shrine Wraith",
+  "family": "event",
+  "act": 0,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "summon_only": true,
+  "scale": 1.3,
+  "tint": "#b060ff",
+  "rim": "#e0b0ff",
+  "attachments": [
+   "Skeleton_Mage_Hat"
+  ],
+  "life_mult": 3.0,
+  "dmg_mult": 1.3,
+  "speed": 3.0,
+  "xp": 45,
+  "ai": "caster",
+  "keep_distance": 5.0,
+  "color": "#c080ff",
+  "attack": {
+   "range": 10,
+   "windup": 0.6,
+   "cooldown": 2.0,
+   "anim": [
+    "Spellcast_Shoot"
+   ],
+   "projectile": {
+    "speed": 9,
+    "range": 14,
+    "size": 0.3
+   },
+   "element": "shadow"
+  },
+  "abilities": [
+   {
+    "id": "curse",
+    "type": "nova_ring",
+    "count": 12,
+    "mult": 0.6,
+    "cooldown": 8,
+    "range": 9,
+    "telegraph": 1.0,
+    "element": "shadow",
+    "projectile": {
+     "speed": 6,
+     "range": 11,
+     "size": 0.26
+    }
+   }
+  ],
+  "desc": "Guards a cursed shrine. Beat it for the shrine's gift.",
+  "soul_color": "#ffe070"
+ },
+ {
+  "id": "candy_bones",
+  "name": "Candy Bones",
+  "family": "event",
+  "act": 0,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "summon_only": true,
+  "scale": 0.8,
+  "tint": "#ff9ed8",
+  "rim": "#ffe0f4",
+  "attachments": [
+   "Skeleton_Minion_Cloak"
+  ],
+  "life_mult": 0.8,
+  "dmg_mult": 0.6,
+  "speed": 3.8,
+  "xp": 12,
+  "ai": "melee",
+  "attack": {
+   "range": 1.3,
+   "windup": 0.4,
+   "cooldown": 1.3,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_A",
+    "Unarmed_Melee_Attack_Punch_B"
+   ],
+   "mult": 0.8
+  },
+  "spawn_anim": "Spawn_Ground_Skeletons",
+  "desc": "Made of toffee and giggles. Found only in the Candy Crypt.",
+  "soul_color": "#ffe070"
+ },
+ {
+  "id": "egg_snatcher",
+  "name": "Egg Snatcher",
+  "family": "event",
+  "act": 0,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "summon_only": true,
+  "scale": 0.7,
+  "tint": "#9cffb0",
+  "rim": "#e0ffe8",
+  "attachments": [
+   "Skeleton_Rogue_Hood"
+  ],
+  "life_mult": 2.5,
+  "dmg_mult": 0.2,
+  "speed": 5.0,
+  "xp": 30,
+  "ai": "flee",
+  "attack": {
+   "range": 0.1,
+   "cooldown": 99
+  },
+  "desc": "Stole a warm, wiggling egg. Get it back!",
+  "soul_color": "#ffe070"
+ },
+ {
+  "id": "lantern_moth",
+  "name": "Lantern Moth",
+  "family": "event",
+  "act": 0,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "summon_only": true,
+  "scale": 0.6,
+  "tint": "#ffe9a0",
+  "rim": "#fffbe0",
+  "attachments": [
+   "Skeleton_Rogue_Cape"
+  ],
+  "life_mult": 1.5,
+  "dmg_mult": 0.1,
+  "speed": 5.5,
+  "xp": 30,
+  "ai": "flee",
+  "attack": {
+   "range": 0.1,
+   "cooldown": 99
+  },
+  "desc": "Glows like a tiny lantern. Catch it for a wish of light.",
+  "soul_color": "#ffe070"
+ },
+ {
+  "id": "ragdoll",
+  "name": "Rag Doll",
+  "family": "player_minion",
+  "summon_only": true,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.62,
+  "tint": "#ffb3d1",
+  "rim": "#ffc2e0",
+  "life_mult": 1,
+  "dmg_mult": 1,
+  "speed": 5.0,
+  "xp": 0,
+  "ai": "melee",
+  "attack": {
+   "range": 1.2,
+   "windup": 0.25,
+   "cooldown": 0.9,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_A",
+    "Unarmed_Melee_Attack_Punch_B"
+   ],
+   "mult": 1.0
+  },
+  "owner_damage_mult": 0.45,
+  "owner_life_mult": 0.4,
+  "soul_color": "#ffc2e0"
+ },
+ {
+  "id": "patch_bear",
+  "name": "Patchwork Bear",
+  "family": "player_minion",
+  "summon_only": true,
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "scale": 1.35,
+  "tint": "#d9a07a",
+  "rim": "#ffc2a0",
+  "attachments": [],
+  "life_mult": 1,
+  "dmg_mult": 1,
+  "speed": 4.0,
+  "xp": 0,
+  "ai": "melee",
+  "attack": {
+   "range": 1.8,
+   "windup": 0.4,
+   "cooldown": 1.3,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_A",
+    "Unarmed_Melee_Attack_Kick"
+   ],
+   "mult": 1.0
+  },
+  "owner_damage_mult": 1.6,
+  "owner_life_mult": 1.2
+ },
+ {
+  "id": "pin_archer",
+  "name": "Pin Archer",
+  "family": "player_minion",
+  "summon_only": true,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.6,
+  "tint": "#ffc8e0",
+  "rim": "#ffe0f0",
+  "attachments": [
+   "Skeleton_Minion_Cloak"
+  ],
+  "life_mult": 1,
+  "dmg_mult": 1,
+  "speed": 4.6,
+  "xp": 0,
+  "ai": "ranged",
+  "keep_distance": 4.0,
+  "attack": {
+   "range": 8,
+   "windup": 0.3,
+   "cooldown": 1.2,
+   "anim": [
+    "Throw"
+   ],
+   "projectile": {
+    "speed": 18,
+    "range": 10,
+    "size": 0.1
+   }
+  },
+  "owner_damage_mult": 0.4,
+  "owner_life_mult": 0.25,
+  "soul_color": "#ffc2e0"
+ },
+ {
+  "id": "scarecrow",
+  "name": "Scarecrow",
+  "family": "player_minion",
+  "summon_only": true,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 1.2,
+  "tint": "#d8b070",
+  "rim": "#ffe0a0",
+  "attachments": [
+   "Skeleton_Warrior_Cloak"
+  ],
+  "life_mult": 1,
+  "dmg_mult": 1,
+  "speed": 0.1,
+  "xp": 0,
+  "ai": "melee",
+  "attack": {
+   "range": 1.8,
+   "windup": 0.4,
+   "cooldown": 1.6,
+   "anim": [
+    "Unarmed_Melee_Attack_Punch_B"
+   ],
+   "mult": 1.0
+  },
+  "owner_damage_mult": 0.3,
+  "owner_life_mult": 1.6,
+  "taunt": true,
+  "soul_color": "#ffe0a0"
+ },
+ {
+  "id": "puppet_knight",
+  "name": "Puppet Knight",
+  "family": "player_minion",
+  "summon_only": true,
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "scale": 0.75,
+  "tint": "#ffd9c0",
+  "rim": "#ffe0c0",
+  "attachments": [
+   "1H_Sword",
+   "Round_Shield",
+   "Knight_Helmet"
+  ],
+  "life_mult": 1,
+  "dmg_mult": 1,
+  "speed": 4.4,
+  "xp": 0,
+  "ai": "melee",
+  "attack": {
+   "range": 1.8,
+   "windup": 0.35,
+   "cooldown": 1.1,
+   "anim": [
+    "1H_Melee_Attack_Slice_Diagonal",
+    "1H_Melee_Attack_Chop"
+   ],
+   "mult": 1.0
+  },
+  "owner_damage_mult": 1.8,
+  "owner_life_mult": 1.0,
+  "soul_color": "#ffd9a0"
+ },
+ {
+  "id": "roof_decoy",
+  "name": "Chimney Decoy",
+  "family": "player_minion",
+  "summon_only": true,
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "scale": 1.0,
+  "tint": "#607068",
+  "rim": "#b0ffc8",
+  "attachments": [
+   "Rogue_Cape"
+  ],
+  "life_mult": 1,
+  "dmg_mult": 1,
+  "speed": 0.1,
+  "xp": 0,
+  "ai": "melee",
+  "attack": {
+   "range": 0.1,
+   "cooldown": 99
+  },
+  "idle_anim": "Idle",
+  "owner_damage_mult": 0.0,
+  "owner_life_mult": 0.8,
+  "taunt": true,
+  "soul_color": "#b0ffc8"
+ },
+ {
+  "id": "clock_sparrow",
+  "name": "Clockwork Sparrow",
+  "family": "player_minion",
+  "summon_only": true,
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "scale": 0.45,
+  "tint": "#c8d0a0",
+  "rim": "#e0ffe0",
+  "attachments": [],
+  "props": [
+   {
+    "path": "res://assets/thirdparty/kaykit/adventurers/props/crossbow_1handed.gltf",
+    "bone": "handslot.r"
+   }
+  ],
+  "life_mult": 1,
+  "dmg_mult": 1,
+  "speed": 5.0,
+  "xp": 0,
+  "ai": "ranged",
+  "keep_distance": 4.0,
+  "attack": {
+   "range": 9,
+   "windup": 0.25,
+   "cooldown": 0.9,
+   "anim": [
+    "1H_Ranged_Shoot"
+   ],
+   "projectile": {
+    "speed": 22,
+    "range": 11,
+    "size": 0.1
+   }
+  },
+  "owner_damage_mult": 0.5,
+  "owner_life_mult": 0.3,
+  "soul_color": "#d0ffe0"
  }
 ]

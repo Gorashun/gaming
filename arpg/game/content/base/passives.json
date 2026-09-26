@@ -1,1 +1,1114 @@
-[]
+[
+ {
+  "id": "lbp_warm_hands",
+  "name": "Warm Hands",
+  "class": "lanternbearer",
+  "branch": "",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "life_regen": 2,
+   "life_pct": 3
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 2,
+  "desc": "A little warmth every second."
+ },
+ {
+  "id": "lbp_squire",
+  "name": "Squire's Drill",
+  "class": "lanternbearer",
+  "branch": "",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "block": 3,
+   "armor_pct": 5
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 6,
+  "desc": "Shield up, chin down."
+ },
+ {
+  "id": "lbp_radiant_edge",
+  "name": "Radiant Edge",
+  "class": "lanternbearer",
+  "branch": "radiance",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "holy_pct": 8
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Holy damage +8% per rank."
+ },
+ {
+  "id": "lbp_kindled",
+  "name": "Kindled Wick",
+  "class": "lanternbearer",
+  "branch": "radiance",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "area_pct": 8,
+   "resource_max": 10
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Bigger light, deeper Glow."
+ },
+ {
+  "id": "lbp_dawnbringer",
+  "name": "Dawnbringer",
+  "class": "lanternbearer",
+  "branch": "radiance",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "more_damage": 12,
+   "area_pct": 10
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: your holy area skills leave a small burning patch.",
+  "hook": "holy_area_leaves_zone",
+  "params": {
+   "radius": 2.0,
+   "duration": 2.5,
+   "mult": 0.25
+  }
+ },
+ {
+  "id": "lbp_iron_oath",
+  "name": "Iron Oath",
+  "class": "lanternbearer",
+  "branch": "bulwark",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "armor_pct": 10,
+   "block": 2
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Stand firm."
+ },
+ {
+  "id": "lbp_hearth_ward",
+  "name": "Hearth Ward",
+  "class": "lanternbearer",
+  "branch": "bulwark",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "resist_all": 6,
+   "damage_reduction": 2
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Every hearth you ever saw protects you."
+ },
+ {
+  "id": "lbp_unbreakable",
+  "name": "The Unbreakable Wick",
+  "class": "lanternbearer",
+  "branch": "bulwark",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "damage_reduction": 8,
+   "block": 8,
+   "thorns": 40
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: blocking a hit releases a Shield Flare (2 s cooldown).",
+  "hook": "block_casts",
+  "params": {
+   "skill": "lb_flare",
+   "cooldown": 2
+  }
+ },
+ {
+  "id": "lbp_zealous",
+  "name": "Zealous Strikes",
+  "class": "lanternbearer",
+  "branch": "zeal",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "attack_speed_pct": 4,
+   "melee_damage_pct": 5
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Faster, harder swings."
+ },
+ {
+  "id": "lbp_vigil",
+  "name": "Long Vigil",
+  "class": "lanternbearer",
+  "branch": "zeal",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "crit_chance": 3,
+   "cdr_pct": 3
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Patience sharpens the blade."
+ },
+ {
+  "id": "lbp_judgement_day",
+  "name": "Every Blow a Verdict",
+  "class": "lanternbearer",
+  "branch": "zeal",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "crit_damage": 40,
+   "more_damage": 8
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: critical hits refund 5 Glow.",
+  "hook": "crit_gain_resource",
+  "params": {
+   "amount": 5
+  }
+ },
+ {
+  "id": "bsp_thick_skull",
+  "name": "Thick Skull",
+  "class": "bellstriker",
+  "branch": "",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "life_pct": 4,
+   "vitality": 3
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 2,
+  "desc": "Bonk-proof."
+ },
+ {
+  "id": "bsp_loud",
+  "name": "Loudest in the Room",
+  "class": "bellstriker",
+  "branch": "",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "damage_pct": 5
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 6,
+  "desc": "Everything is louder, including your axe."
+ },
+ {
+  "id": "bsp_bronze_storm",
+  "name": "Bronze Storm",
+  "class": "bellstriker",
+  "branch": "storm",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "area_damage_pct": 6,
+   "attack_speed_pct": 3
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Spin, swing, repeat."
+ },
+ {
+  "id": "bsp_undertow",
+  "name": "Undertow",
+  "class": "bellstriker",
+  "branch": "storm",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "area_pct": 10,
+   "move_speed_pct": 4
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Foes are dragged into your orbit."
+ },
+ {
+  "id": "bsp_carillon",
+  "name": "The Great Carillon",
+  "class": "bellstriker",
+  "branch": "storm",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "more_damage": 12,
+   "area_pct": 12
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: every 5th hit of a spin rings a free Ring Out.",
+  "hook": "spin_every_n_casts",
+  "params": {
+   "n": 5,
+   "skill": "bs_ringout"
+  }
+ },
+ {
+  "id": "bsp_bedrock",
+  "name": "Bedrock",
+  "class": "bellstriker",
+  "branch": "quake",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "armor_pct": 8,
+   "physical_pct": 5
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Your feet are rooted like old stone."
+ },
+ {
+  "id": "bsp_aftershock",
+  "name": "Aftershock",
+  "class": "bellstriker",
+  "branch": "quake",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "area_pct": 8,
+   "damage_pct": 6
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "The ground remembers every stomp."
+ },
+ {
+  "id": "bsp_earthbell",
+  "name": "Earthbell",
+  "class": "bellstriker",
+  "branch": "quake",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "more_damage": 10,
+   "damage_reduction": 5
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: landing a leap or quake stuns for 0.5 s longer.",
+  "hook": "quake_stun_bonus",
+  "params": {
+   "seconds": 0.5
+  }
+ },
+ {
+  "id": "bsp_red_mist",
+  "name": "Red Mist",
+  "class": "bellstriker",
+  "branch": "rage",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "life_on_hit": 3,
+   "crit_chance": 1.5
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Fury tastes like pennies."
+ },
+ {
+  "id": "bsp_no_quiet",
+  "name": "No Quiet Allowed",
+  "class": "bellstriker",
+  "branch": "rage",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "resource_max": 15,
+   "attack_speed_pct": 5
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Fury fades slower."
+ },
+ {
+  "id": "bsp_berserk",
+  "name": "Unmuffled",
+  "class": "bellstriker",
+  "branch": "rage",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "crit_damage": 50,
+   "more_damage": 8,
+   "life_on_hit": 10
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: below half life you swing 20% faster.",
+  "hook": "low_life_buff",
+  "params": {
+   "below": 0.5,
+   "stats": {
+    "attack_speed_pct": 20
+   }
+  }
+ },
+ {
+  "id": "sgp_scholar",
+  "name": "Night Scholar",
+  "class": "stargazer",
+  "branch": "",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "resource_max": 10,
+   "wisdom": 3
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 2,
+  "desc": "Stayed up reading. Worth it."
+ },
+ {
+  "id": "sgp_lenses",
+  "name": "Polished Lenses",
+  "class": "stargazer",
+  "branch": "",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "crit_chance": 1.5,
+   "cast_speed_pct": 3
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 6,
+  "desc": "See the weak spot."
+ },
+ {
+  "id": "sgp_meteorite",
+  "name": "Heavy Meteors",
+  "class": "stargazer",
+  "branch": "comet",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "fire_pct": 8
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Fire damage +8% per rank."
+ },
+ {
+  "id": "sgp_gravity",
+  "name": "Gravity Well",
+  "class": "stargazer",
+  "branch": "comet",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "area_pct": 10,
+   "area_damage_pct": 6
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Comets land wider."
+ },
+ {
+  "id": "sgp_starfire",
+  "name": "Starfire Heart",
+  "class": "stargazer",
+  "branch": "comet",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "more_damage": 14
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: each comet has a 20% chance to fall twice.",
+  "hook": "aoe_repeat_chance",
+  "params": {
+   "chance": 0.2
+  }
+ },
+ {
+  "id": "sgp_frostbite",
+  "name": "Frostbite",
+  "class": "stargazer",
+  "branch": "rime",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "cold_pct": 8
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Cold damage +8% per rank."
+ },
+ {
+  "id": "sgp_glacier",
+  "name": "Glacier Skin",
+  "class": "stargazer",
+  "branch": "rime",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "armor_pct": 15,
+   "resist_cold": 10,
+   "damage_reduction": 2
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Ice clings to you like armour."
+ },
+ {
+  "id": "sgp_absolute_zero",
+  "name": "Absolute Zero",
+  "class": "stargazer",
+  "branch": "rime",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "more_damage": 10,
+   "cdr_pct": 6
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: you deal 25% more damage to frozen or slowed foes.",
+  "hook": "bonus_vs_status",
+  "params": {
+   "statuses": [
+    "freeze",
+    "slow"
+   ],
+   "more": 25
+  }
+ },
+ {
+  "id": "sgp_static",
+  "name": "Static Charge",
+  "class": "stargazer",
+  "branch": "storm",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "lightning_pct": 8
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Lightning damage +8% per rank."
+ },
+ {
+  "id": "sgp_conductor",
+  "name": "Conductor",
+  "class": "stargazer",
+  "branch": "storm",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "cast_speed_pct": 6,
+   "resource_regen": 1.5
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Mana crackles back faster."
+ },
+ {
+  "id": "sgp_astral",
+  "name": "Astral Chorus",
+  "class": "stargazer",
+  "branch": "storm",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "more_damage": 12,
+   "crit_chance": 4
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: chains jump 2 more times.",
+  "hook": "chain_bonus_jumps",
+  "params": {
+   "jumps": 2
+  }
+ },
+ {
+  "id": "stp_thimble",
+  "name": "Thimble Armour",
+  "class": "stitcher",
+  "branch": "",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "armor_pct": 6,
+   "life_pct": 3
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 2,
+  "desc": "A thimble on every finger."
+ },
+ {
+  "id": "stp_patterns",
+  "name": "Old Patterns",
+  "class": "stitcher",
+  "branch": "",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "resource_regen": 1,
+   "cdr_pct": 1.5
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 6,
+  "desc": "Grandmother's patterns, by heart."
+ },
+ {
+  "id": "stp_family",
+  "name": "Big Family",
+  "class": "stitcher",
+  "branch": "dolls",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "minion_damage_pct": 8,
+   "minion_life_pct": 8
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Every doll has a name."
+ },
+ {
+  "id": "stp_stuffing",
+  "name": "Extra Stuffing",
+  "class": "stitcher",
+  "branch": "dolls",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "minion_life_pct": 15,
+   "summon_count": 0
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Dolls take a lot more hugs."
+ },
+ {
+  "id": "stp_matriarch",
+  "name": "Doll Matriarch",
+  "class": "stitcher",
+  "branch": "dolls",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "summon_count": 1,
+   "minion_damage_pct": 20
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: +1 Rag Doll. When a doll is defeated it bursts into pins.",
+  "hook": "minion_death_burst",
+  "params": {
+   "mult": 0.8,
+   "radius": 2.5
+  }
+ },
+ {
+  "id": "stp_sharp",
+  "name": "Sharp Needles",
+  "class": "stitcher",
+  "branch": "needlework",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "projectile_damage_pct": 6,
+   "physical_pct": 4
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Freshly sharpened."
+ },
+ {
+  "id": "stp_seamstress",
+  "name": "Quick Seams",
+  "class": "stitcher",
+  "branch": "needlework",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "cast_speed_pct": 5,
+   "pierce": 0.5
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Pins slip through the gaps."
+ },
+ {
+  "id": "stp_tailor",
+  "name": "Master Tailor",
+  "class": "stitcher",
+  "branch": "needlework",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "projectiles": 1,
+   "more_damage": 8
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: +1 pin, needle or spool with every throw."
+ },
+ {
+  "id": "stp_hexweave",
+  "name": "Hexweave",
+  "class": "stitcher",
+  "branch": "hexes",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "shadow_pct": 8
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Shadow damage +8% per rank."
+ },
+ {
+  "id": "stp_knots",
+  "name": "Knots and Tangles",
+  "class": "stitcher",
+  "branch": "hexes",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "area_pct": 8,
+   "resist_shadow": 10
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Every thread is a trap."
+ },
+ {
+  "id": "stp_unraveler",
+  "name": "The Unraveller",
+  "class": "stitcher",
+  "branch": "hexes",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "more_damage": 10,
+   "life_regen": 15
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: foes inside your thread zones take 20% more damage from dolls.",
+  "hook": "zone_minion_bonus",
+  "params": {
+   "more": 20
+  }
+ },
+ {
+  "id": "rrp_lightfoot",
+  "name": "Light Feet",
+  "class": "roofrunner",
+  "branch": "",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "move_speed_pct": 3,
+   "dodge": 2
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 2,
+  "desc": "Tiles don't creak under you."
+ },
+ {
+  "id": "rrp_pockets",
+  "name": "Deep Pockets",
+  "class": "roofrunner",
+  "branch": "",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "gold_find": 8,
+   "magic_find": 4
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 6,
+  "desc": "Finders keepers."
+ },
+ {
+  "id": "rrp_steady",
+  "name": "Steady Aim",
+  "class": "roofrunner",
+  "branch": "marksman",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "projectile_damage_pct": 6,
+   "crit_chance": 1
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Breathe out, then shoot."
+ },
+ {
+  "id": "rrp_quickdraw",
+  "name": "Quickdraw",
+  "class": "roofrunner",
+  "branch": "marksman",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "attack_speed_pct": 6,
+   "pierce": 0.5
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Reload while blinking."
+ },
+ {
+  "id": "rrp_hawkeye",
+  "name": "Hawkeye",
+  "class": "roofrunner",
+  "branch": "marksman",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "projectiles": 1,
+   "crit_damage": 40
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: every volley fires one more bolt."
+ },
+ {
+  "id": "rrp_shade",
+  "name": "Chimney Shade",
+  "class": "roofrunner",
+  "branch": "shadow",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "dodge": 3,
+   "crit_damage": 8
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Hard to see, harder to hit."
+ },
+ {
+  "id": "rrp_ambusher",
+  "name": "Ambusher",
+  "class": "roofrunner",
+  "branch": "shadow",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "crit_chance": 3,
+   "shadow_pct": 8
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "First strike, best strike."
+ },
+ {
+  "id": "rrp_phantom",
+  "name": "Phantom of the Roofs",
+  "class": "roofrunner",
+  "branch": "shadow",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "more_damage": 12,
+   "dodge": 5
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: after a dodge, your next hit is a guaranteed critical.",
+  "hook": "dodge_next_crit"
+ },
+ {
+  "id": "rrp_gadgets",
+  "name": "Gadgeteer",
+  "class": "roofrunner",
+  "branch": "tinker",
+  "kind": "passive",
+  "max_rank": 3,
+  "stats": {
+   "area_damage_pct": 6,
+   "fire_pct": 5
+  },
+  "requires_branch_points": 5,
+  "unlock_level": 1,
+  "desc": "Tinkering pays off."
+ },
+ {
+  "id": "rrp_springs",
+  "name": "Spare Springs",
+  "class": "roofrunner",
+  "branch": "tinker",
+  "kind": "passive",
+  "max_rank": 2,
+  "stats": {
+   "cdr_pct": 4,
+   "minion_damage_pct": 12
+  },
+  "requires_branch_points": 15,
+  "unlock_level": 1,
+  "desc": "Traps reset faster."
+ },
+ {
+  "id": "rrp_inventor",
+  "name": "Mad Inventor",
+  "class": "roofrunner",
+  "branch": "tinker",
+  "kind": "capstone",
+  "max_rank": 1,
+  "stats": {
+   "more_damage": 10,
+   "area_pct": 12
+  },
+  "requires_branch_points": 25,
+  "unlock_level": 1,
+  "desc": "Capstone: traps and caltrops explode when they expire.",
+  "hook": "zone_expire_burst",
+  "params": {
+   "mult": 1.5
+  }
+ },
+ {
+  "id": "pact_lb_ember",
+  "name": "Pact of the Hearth",
+  "class": "lanternbearer",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "life_pct": 12,
+   "life_regen": 10,
+   "resist_all": 8
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Tank: you are the wall the Hush breaks on."
+ },
+ {
+  "id": "pact_lb_sun",
+  "name": "Pact of the Noon Sun",
+  "class": "lanternbearer",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "holy_pct": 25,
+   "more_damage": 8
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Damage: every blow is a small sunrise."
+ },
+ {
+  "id": "pact_lb_road",
+  "name": "Pact of the Long Road",
+  "class": "lanternbearer",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "move_speed_pct": 10,
+   "cdr_pct": 8,
+   "resource_regen": 2
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Tempo: faster, again, again."
+ },
+ {
+  "id": "pact_bs_brass",
+  "name": "Pact of Brass",
+  "class": "bellstriker",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "armor_pct": 25,
+   "thorns": 120,
+   "damage_reduction": 5
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Tank: ring like a bell when struck."
+ },
+ {
+  "id": "pact_bs_thunder",
+  "name": "Pact of Thunder",
+  "class": "bellstriker",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "area_pct": 20,
+   "area_damage_pct": 15
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Area: every swing is a shockwave."
+ },
+ {
+  "id": "pact_bs_frenzy",
+  "name": "Pact of Frenzy",
+  "class": "bellstriker",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "attack_speed_pct": 15,
+   "life_on_hit": 12,
+   "crit_chance": 5
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Speed: never stop swinging."
+ },
+ {
+  "id": "pact_sg_comet",
+  "name": "Pact of Comets",
+  "class": "stargazer",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "fire_pct": 25,
+   "area_pct": 10
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Fire: the sky falls where you point."
+ },
+ {
+  "id": "pact_sg_winter",
+  "name": "Pact of Winter",
+  "class": "stargazer",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "cold_pct": 25,
+   "armor_pct": 20
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Cold: freeze the world, stay safe."
+ },
+ {
+  "id": "pact_sg_storm",
+  "name": "Pact of Storms",
+  "class": "stargazer",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "lightning_pct": 25,
+   "cast_speed_pct": 10
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Lightning: the fastest spark in Lumenholm."
+ },
+ {
+  "id": "pact_st_family",
+  "name": "Pact of the Big Family",
+  "class": "stitcher",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "summon_count": 1,
+   "minion_life_pct": 25
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Minions: more dolls, sturdier dolls."
+ },
+ {
+  "id": "pact_st_needle",
+  "name": "Pact of the Needle",
+  "class": "stitcher",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "projectile_damage_pct": 25,
+   "pierce": 1
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Needles: a storm of pins."
+ },
+ {
+  "id": "pact_st_hex",
+  "name": "Pact of Knots",
+  "class": "stitcher",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "shadow_pct": 25,
+   "area_pct": 10
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Hexes: shadow thread everywhere."
+ },
+ {
+  "id": "pact_rr_sniper",
+  "name": "Pact of the Weathervane",
+  "class": "roofrunner",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "projectile_damage_pct": 20,
+   "crit_damage": 40
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Sniper: one bolt, one spark."
+ },
+ {
+  "id": "pact_rr_trapper",
+  "name": "Pact of Springs",
+  "class": "roofrunner",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "area_damage_pct": 20,
+   "cdr_pct": 8
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Traps: the roofs are yours."
+ },
+ {
+  "id": "pact_rr_shadow",
+  "name": "Pact of Chimney Smoke",
+  "class": "roofrunner",
+  "branch": "",
+  "kind": "pact",
+  "max_rank": 1,
+  "stats": {
+   "dodge": 10,
+   "crit_chance": 6,
+   "move_speed_pct": 8
+  },
+  "requires_branch_points": 0,
+  "unlock_level": 30,
+  "desc": "Assassin: never where they look."
+ }
+]

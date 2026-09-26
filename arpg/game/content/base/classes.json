@@ -53,7 +53,56 @@
    "buckler",
    "padded_vest"
   ],
-  "desc": "A stalwart knight who turns every blow taken into holy light."
+  "desc": "A stalwart knight who turns every blow taken into holy light.",
+  "affinities": {
+   "sword": {
+    "damage_pct": 15,
+    "attack_speed_pct": 5
+   },
+   "greatsword": {
+    "damage_pct": 10,
+    "attack_speed_pct": 0
+   },
+   "axe": {
+    "damage_pct": 8,
+    "attack_speed_pct": 5
+   }
+  },
+  "branches": [
+   {
+    "id": "radiance",
+    "name": "Radiance",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   },
+   {
+    "id": "bulwark",
+    "name": "Bulwark",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   },
+   {
+    "id": "zeal",
+    "name": "Zeal",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   }
+  ],
+  "pacts": [
+   "pact_lb_ember",
+   "pact_lb_sun",
+   "pact_lb_road"
+  ],
+  "pact_level": 30
  },
  {
   "id": "bellstriker",
@@ -104,7 +153,56 @@
    "great_axe",
    "padded_vest"
   ],
-  "desc": "A roaring berserker whose great bell-hammer shakes the Hush loose."
+  "desc": "A roaring berserker whose great bell-hammer shakes the Hush loose.",
+  "affinities": {
+   "axe2h": {
+    "damage_pct": 15,
+    "attack_speed_pct": 5
+   },
+   "greatsword": {
+    "damage_pct": 12,
+    "attack_speed_pct": 5
+   },
+   "axe": {
+    "damage_pct": 8,
+    "attack_speed_pct": 10
+   }
+  },
+  "branches": [
+   {
+    "id": "storm",
+    "name": "Bellstorm",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   },
+   {
+    "id": "quake",
+    "name": "Quake",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   },
+   {
+    "id": "rage",
+    "name": "Rage",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   }
+  ],
+  "pacts": [
+   "pact_bs_brass",
+   "pact_bs_thunder",
+   "pact_bs_frenzy"
+  ],
+  "pact_level": 30
  },
  {
   "id": "stargazer",
@@ -153,7 +251,52 @@
    "apprentice_staff",
    "padded_vest"
   ],
-  "desc": "A young astronomer who bends starlight into bolts, novas and falling comets."
+  "desc": "A young astronomer who bends starlight into bolts, novas and falling comets.",
+  "affinities": {
+   "staff": {
+    "damage_pct": 15,
+    "attack_speed_pct": 5
+   },
+   "wand": {
+    "damage_pct": 10,
+    "attack_speed_pct": 10
+   }
+  },
+  "branches": [
+   {
+    "id": "comet",
+    "name": "Comets",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   },
+   {
+    "id": "rime",
+    "name": "Rime",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   },
+   {
+    "id": "storm",
+    "name": "Storm",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   }
+  ],
+  "pacts": [
+   "pact_sg_comet",
+   "pact_sg_winter",
+   "pact_sg_storm"
+  ],
+  "pact_level": 30
  },
  {
   "id": "stitcher",
@@ -201,7 +344,56 @@
    "needle_dagger",
    "padded_vest"
   ],
-  "desc": "A tailor who sews brave cloth dolls to fight beside her."
+  "desc": "A tailor who sews brave cloth dolls to fight beside her.",
+  "affinities": {
+   "dagger": {
+    "damage_pct": 12,
+    "attack_speed_pct": 8
+   },
+   "wand": {
+    "damage_pct": 12,
+    "attack_speed_pct": 5
+   },
+   "staff": {
+    "damage_pct": 8,
+    "attack_speed_pct": 0
+   }
+  },
+  "branches": [
+   {
+    "id": "dolls",
+    "name": "Dolls",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   },
+   {
+    "id": "needlework",
+    "name": "Needlework",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   },
+   {
+    "id": "hexes",
+    "name": "Hexes",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   }
+  ],
+  "pacts": [
+   "pact_st_family",
+   "pact_st_needle",
+   "pact_st_hex"
+  ],
+  "pact_level": 30
  },
  {
   "id": "roofrunner",
@@ -250,6 +442,55 @@
    "hand_crossbow",
    "padded_vest"
   ],
-  "desc": "A nimble rooftop scout with a crossbow, traps and smoke."
+  "desc": "A nimble rooftop scout with a crossbow, traps and smoke.",
+  "affinities": {
+   "crossbow": {
+    "damage_pct": 15,
+    "attack_speed_pct": 8
+   },
+   "arbalest": {
+    "damage_pct": 12,
+    "attack_speed_pct": 0
+   },
+   "dagger": {
+    "damage_pct": 8,
+    "attack_speed_pct": 10
+   }
+  },
+  "branches": [
+   {
+    "id": "marksman",
+    "name": "Marksman",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   },
+   {
+    "id": "shadow",
+    "name": "Shadow",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   },
+   {
+    "id": "tinker",
+    "name": "Tinker",
+    "passive_tiers": [
+     5,
+     15,
+     25
+    ]
+   }
+  ],
+  "pacts": [
+   "pact_rr_sniper",
+   "pact_rr_trapper",
+   "pact_rr_shadow"
+  ],
+  "pact_level": 30
  }
 ]

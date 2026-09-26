@@ -1,0 +1,90 @@
+[
+ {
+  "id": "escort_wisp_glim",
+  "zone": "a1_z1",
+  "creature": {
+   "name": "Glim",
+   "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+   "scale": 0.3,
+   "tint": "#8fd9a0"
+  },
+  "path": "start_to_exit",
+  "speed": 3.0,
+  "waits_for_player": true,
+  "can_fail": false
+ },
+ {
+  "id": "escort_owlet_doughnut",
+  "zone": "a2_z2",
+  "creature": {
+   "name": "Doughnut",
+   "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+   "scale": 0.35,
+   "tint": "#8a7050"
+  },
+  "path": "start_to_exit",
+  "speed": 3.0,
+  "waits_for_player": true,
+  "can_fail": false
+ },
+ {
+  "id": "escort_lamp_lenny",
+  "zone": "a3_z2",
+  "creature": {
+   "name": "Lenny",
+   "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+   "scale": 0.6,
+   "tint": "#ffd890"
+  },
+  "path": "start_to_exit",
+  "speed": 2.8,
+  "waits_for_player": true,
+  "can_fail": false
+ },
+ {
+  "id": "escort_sir_wobble",
+  "zone": "a4_z1",
+  "creature": {
+   "name": "Sir Wobble",
+   "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+   "scale": 0.5,
+   "tint": "#b8c0d0"
+  },
+  "path": "start_to_exit",
+  "speed": 2.6,
+  "waits_for_player": true,
+  "can_fail": false
+ },
+ {
+  "id": "escort_nobody",
+  "zone": "a5_z1",
+  "creature": {
+   "name": "Nobody",
+   "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+   "scale": 0.7,
+   "tint": "#505058",
+   "attachments": [
+    "Skeleton_Mage_Hat"
+   ]
+  },
+  "path": "start_to_exit",
+  "speed": 3.2,
+  "waits_for_player": true,
+  "can_fail": false
+ },
+ {
+  "id": "npc_lamplighter",
+  "zone": "any",
+  "creature": {
+   "name": "Lost Lamplighter",
+   "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+   "scale": 0.8,
+   "tint": "#ffd27a"
+  },
+  "path": "random_room_chain",
+  "speed": 2.8,
+  "waits_for_player": true,
+  "can_fail": true,
+  "note": "Used by Hushfall wev_lost_lamplighter; failing only hides the NPC (partial reward)."
+ }
+]

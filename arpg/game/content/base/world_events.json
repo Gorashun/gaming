@@ -1,0 +1,402 @@
+[
+ {
+  "id": "wev_bone_tide",
+  "name": "Hushfall: The Bone Tide",
+  "kind": "invasion",
+  "chance_per_zone": 0.055,
+  "min_level": 5,
+  "stages": [
+   {
+    "waves": [
+     {
+      "monsters": [
+       "family:rattlebones"
+      ],
+      "count": 10,
+      "elite_chance": 0.1
+     },
+     {
+      "monsters": [
+       "family:thicket_kin"
+      ],
+      "count": 8,
+      "elite_chance": 0.15
+     }
+    ]
+   },
+   {
+    "waves": [
+     {
+      "monsters": [
+       "bonepile",
+       "rattler"
+      ],
+      "count": 16,
+      "elite_chance": 0.1
+     }
+    ],
+    "modifier": "fast"
+   }
+  ],
+  "boss": "mb_mossjaw",
+  "reward": {
+   "loot_kind": "hushfall_cache",
+   "materials": [
+    {
+     "id": "hushmark",
+     "chance": 0.3,
+     "min": 1,
+     "max": 2
+    },
+    {
+     "id": "glowcoal",
+     "chance": 1.0,
+     "min": 2,
+     "max": 5
+    }
+   ],
+   "bonus_rarity": {
+    "epic": 2.0
+   }
+  },
+  "announce": "The ground goes quiet... a Hushfall! Bones pour out of the dark!",
+  "color": "#c8b8ff",
+  "never_in_towns": true
+ },
+ {
+  "id": "wev_frost_parade",
+  "name": "Hushfall: The Frozen Parade",
+  "kind": "invasion",
+  "chance_per_zone": 0.04,
+  "min_level": 15,
+  "stages": [
+   {
+    "waves": [
+     {
+      "monsters": [
+       "tin_soldier",
+       "snow_hound"
+      ],
+      "count": 10,
+      "elite_chance": 0.15
+     }
+    ]
+   },
+   {
+    "waves": [
+     {
+      "monsters": [
+       "family:frozen_court"
+      ],
+      "count": 12,
+      "elite_chance": 0.2
+     }
+    ],
+    "modifier": "frozen"
+   }
+  ],
+  "boss": "mb_captain_tinwhistle",
+  "reward": {
+   "loot_kind": "hushfall_cache",
+   "materials": [
+    {
+     "id": "hushmark",
+     "chance": 0.35,
+     "min": 1,
+     "max": 2
+    },
+    {
+     "id": "rime_shard",
+     "chance": 1.0,
+     "min": 2,
+     "max": 4
+    }
+   ],
+   "bonus_rarity": {
+    "epic": 2.0
+   },
+   "mount_chance": {
+    "id": "mount_sleet",
+    "chance": 0.03
+   }
+  },
+  "announce": "Drums in the snow... the Frozen Parade marches in from Rimehall!",
+  "color": "#9cc8e0",
+  "never_in_towns": true
+ },
+ {
+  "id": "wev_cursed_ring",
+  "name": "Hushfall: Circle of Candles",
+  "kind": "cursed_shrine",
+  "chance_per_zone": 0.04,
+  "min_level": 1,
+  "stages": [
+   {
+    "waves": [
+     {
+      "monsters": [
+       "any_family"
+      ],
+      "count": 12,
+      "elite_chance": 0.2
+     }
+    ],
+    "curse": {
+     "damage_reduction": -10,
+     "move_speed_pct": -10
+    },
+    "survive_s": 30
+   },
+   {
+    "waves": [
+     {
+      "monsters": [
+       "shrine_wraith"
+      ],
+      "count": 1,
+      "elite_chance": 1.0
+     }
+    ]
+   }
+  ],
+  "boss": "",
+  "reward": {
+   "loot_kind": "hushfall_cache",
+   "materials": [
+    {
+     "id": "hushmark",
+     "chance": 0.25,
+     "min": 1,
+     "max": 1
+    },
+    {
+     "id": "dusk_essence",
+     "chance": 0.6,
+     "min": 1,
+     "max": 2
+    }
+   ],
+   "bonus_rarity": {
+    "legendary": 1.5
+   }
+  },
+  "announce": "Candles light themselves in a circle. Survive 30 seconds inside!",
+  "color": "#c080ff",
+  "never_in_towns": true
+ },
+ {
+  "id": "wev_goblet_swarm",
+  "name": "Hushfall: Runaway Treasure",
+  "kind": "treasure_swarm",
+  "chance_per_zone": 0.035,
+  "min_level": 1,
+  "stages": [
+   {
+    "waves": [
+     {
+      "monsters": [
+       "goblet_runner"
+      ],
+      "count": 8,
+      "elite_chance": 0.0
+     }
+    ],
+    "timer_s": 20
+   }
+  ],
+  "boss": "",
+  "reward": {
+   "loot_kind": "goblet",
+   "materials": [
+    {
+     "id": "hushmark",
+     "chance": 0.15,
+     "min": 1,
+     "max": 1
+    },
+    {
+     "id": "glowcoal",
+     "chance": 1.0,
+     "min": 3,
+     "max": 6
+    }
+   ]
+  },
+  "announce": "The treasure is running away! Catch as many goblets as you can!",
+  "color": "#ffe070",
+  "never_in_towns": true
+ },
+ {
+  "id": "wev_lost_lamplighter",
+  "name": "Hushfall: The Lost Lamplighter",
+  "kind": "escort",
+  "chance_per_zone": 0.035,
+  "min_level": 10,
+  "stages": [
+   {
+    "escort": "npc_lamplighter",
+    "distance_m": 60,
+    "waves": [
+     {
+      "monsters": [
+       "any_family"
+      ],
+      "count": 6,
+      "elite_chance": 0.1
+     },
+     {
+      "monsters": [
+       "family:hushed"
+      ],
+      "count": 6,
+      "elite_chance": 0.1
+     }
+    ]
+   }
+  ],
+  "boss": "",
+  "reward": {
+   "loot_kind": "hushfall_cache",
+   "materials": [
+    {
+     "id": "hushmark",
+     "chance": 0.35,
+     "min": 1,
+     "max": 2
+    }
+   ],
+   "bonus_rarity": {
+    "rare": 2.0,
+    "epic": 1.5
+   },
+   "pet_chance": {
+    "id": "pet_glowworm",
+    "chance": 0.02
+   }
+  },
+  "announce": "A lost lamplighter needs to get home. Walk with them!",
+  "color": "#ffd27a",
+  "failure": "The lamplighter hides; you keep what you earned (partial reward).",
+  "never_in_towns": true
+ },
+ {
+  "id": "wev_echo_duel",
+  "name": "Hushfall: Your Echo",
+  "kind": "echo_duel",
+  "chance_per_zone": 0.02,
+  "min_level": 25,
+  "stages": [
+   {
+    "waves": [
+     {
+      "monsters": [
+       "family:echoes"
+      ],
+      "count": 8,
+      "elite_chance": 0.1
+     }
+    ]
+   },
+   {
+    "waves": [
+     {
+      "monsters": [
+       "mb_crystal_matron"
+      ],
+      "count": 1,
+      "elite_chance": 1.0
+     }
+    ]
+   }
+  ],
+  "boss": "great_echo",
+  "boss_scale": 0.6,
+  "boss_life_mult": 0.25,
+  "reward": {
+   "loot_kind": "hushfall_cache",
+   "materials": [
+    {
+     "id": "hushmark",
+     "chance": 0.5,
+     "min": 1,
+     "max": 3
+    },
+    {
+     "id": "echo_fragment",
+     "chance": 0.5,
+     "min": 1,
+     "max": 1
+    }
+   ],
+   "bonus_rarity": {
+    "legendary": 2.0
+   }
+  },
+  "announce": "The air repeats your footsteps... a small Echo wants to duel!",
+  "color": "#cfe8f0",
+  "never_in_towns": true
+ },
+ {
+  "id": "wev_moth_storm",
+  "name": "Hushfall: Grey Wings",
+  "kind": "invasion",
+  "chance_per_zone": 0.03,
+  "min_level": 30,
+  "stages": [
+   {
+    "waves": [
+     {
+      "monsters": [
+       "grey_moth"
+      ],
+      "count": 16,
+      "elite_chance": 0.1
+     },
+     {
+      "monsters": [
+       "family:thicket_kin"
+      ],
+      "count": 8,
+      "elite_chance": 0.1
+     }
+    ]
+   },
+   {
+    "waves": [
+     {
+      "monsters": [
+       "family:hushed"
+      ],
+      "count": 10,
+      "elite_chance": 0.25
+     }
+    ],
+    "modifier": "teleporter"
+   }
+  ],
+  "boss": "mb_choirmaster",
+  "reward": {
+   "loot_kind": "hushfall_cache",
+   "materials": [
+    {
+     "id": "hushmark",
+     "chance": 0.4,
+     "min": 1,
+     "max": 2
+    },
+    {
+     "id": "grey_feather",
+     "chance": 1.0,
+     "min": 2,
+     "max": 4
+    }
+   ],
+   "bonus_rarity": {
+    "epic": 2.5
+   }
+  },
+  "announce": "The colour drains from the sky. Grey Wings, everywhere!",
+  "color": "#c8c8d0",
+  "never_in_towns": true
+ }
+]

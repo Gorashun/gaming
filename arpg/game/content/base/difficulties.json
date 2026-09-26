@@ -25,12 +25,12 @@
   "order": 2,
   "unlock": "twilight",
   "level_band": [
-   30,
-   80
+   40,
+   90
   ],
-  "level_offset": 30,
-  "life_mult": 2.2,
-  "damage_mult": 1.8,
+  "level_offset": 35,
+  "life_mult": 2.5,
+  "damage_mult": 1.9,
   "resist_penalty": 20,
   "xp_mult": 1.6,
   "magic_find": 40,
@@ -41,7 +41,14 @@
    "epic": 1.5,
    "legendary": 2.0
   },
-  "desc": "Monsters grow bolder. Better loot."
+  "unique_mult": 1.25,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.02
+   }
+  ],
+  "desc": "Monsters grow bolder. Better loot. Mythics from monster level 60."
  },
  {
   "id": "abyss",
@@ -49,11 +56,11 @@
   "order": 3,
   "unlock": "nightfall",
   "level_band": [
-   60,
-   110
+   70,
+   120
   ],
-  "level_offset": 60,
-  "life_mult": 4.5,
+  "level_offset": 65,
+  "life_mult": 5.0,
   "damage_mult": 3.0,
   "resist_penalty": 45,
   "xp_mult": 2.4,
@@ -66,6 +73,17 @@
    "legendary": 3.0,
    "mythic": 1.0
   },
+  "unique_mult": 1.5,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.03
+   },
+   {
+    "id": "starmote",
+    "chance": 0.0003
+   }
+  ],
   "desc": "Only the brave. Mythics stir in the dark."
  },
  {
@@ -77,8 +95,8 @@
    100,
    200
   ],
-  "level_offset": 100,
-  "life_mult": 7,
+  "level_offset": 95,
+  "life_mult": 7.0,
   "damage_mult": 4.5,
   "resist_penalty": 60,
   "xp_mult": 3.2,
@@ -91,7 +109,22 @@
    "legendary": 4.0,
    "mythic": 2.0
   },
-  "desc": "The endgame begins."
+  "unique_mult": 1.75,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.04
+   },
+   {
+    "id": "starmote",
+    "chance": 0.0005
+   },
+   {
+    "id": "echo_lost_bell",
+    "chance": 0.0002
+   }
+  ],
+  "desc": "The endgame. Named materials glimmer in the dark."
  },
  {
   "id": "eclipse2",
@@ -99,23 +132,39 @@
   "order": 5,
   "unlock": "eclipse1",
   "level_band": [
-   120,
+   110,
    200
   ],
-  "level_offset": 120,
-  "life_mult": 11,
-  "damage_mult": 6.5,
+  "level_offset": 105,
+  "life_mult": 9.3,
+  "damage_mult": 5.6,
   "resist_penalty": 60,
-  "xp_mult": 4.0,
-  "magic_find": 210,
-  "gold_mult": 3.6,
-  "elite_mult": 2.0,
+  "xp_mult": 3.6,
+  "magic_find": 190,
+  "gold_mult": 3.3,
+  "elite_mult": 1.9,
   "min_telegraph": 0.8,
   "rarity_bonus": {
-   "epic": 3.0,
-   "legendary": 5.0,
-   "mythic": 3.0
-  }
+   "epic": 2.75,
+   "legendary": 4.5,
+   "mythic": 2.5
+  },
+  "unique_mult": 1.9,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.04
+   },
+   {
+    "id": "starmote",
+    "chance": 0.001
+   },
+   {
+    "id": "echo_lost_bell",
+    "chance": 0.0004
+   }
+  ],
+  "desc": "Deeper. Brighter rewards."
  },
  {
   "id": "eclipse3",
@@ -123,15 +172,95 @@
   "order": 6,
   "unlock": "eclipse2",
   "level_band": [
+   120,
+   200
+  ],
+  "level_offset": 115,
+  "life_mult": 12.4,
+  "damage_mult": 7.0,
+  "resist_penalty": 60,
+  "xp_mult": 4.0,
+  "magic_find": 230,
+  "gold_mult": 3.6,
+  "elite_mult": 2.0,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 3.0,
+   "legendary": 5.0,
+   "mythic": 3.0
+  },
+  "unique_mult": 2.05,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.04
+   },
+   {
+    "id": "starmote",
+    "chance": 0.0015
+   },
+   {
+    "id": "echo_lost_bell",
+    "chance": 0.0006
+   }
+  ],
+  "desc": "Deeper. Brighter rewards."
+ },
+ {
+  "id": "eclipse4",
+  "name": "Eclipse IV",
+  "order": 7,
+  "unlock": "eclipse3",
+  "level_band": [
+   130,
+   200
+  ],
+  "level_offset": 125,
+  "life_mult": 16.5,
+  "damage_mult": 8.8,
+  "resist_penalty": 60,
+  "xp_mult": 4.4,
+  "magic_find": 270,
+  "gold_mult": 3.9,
+  "elite_mult": 2.1,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 3.25,
+   "legendary": 5.5,
+   "mythic": 3.5
+  },
+  "unique_mult": 2.2,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.04
+   },
+   {
+    "id": "starmote",
+    "chance": 0.002
+   },
+   {
+    "id": "echo_lost_bell",
+    "chance": 0.0008
+   }
+  ],
+  "desc": "Deeper. Brighter rewards."
+ },
+ {
+  "id": "eclipse5",
+  "name": "Eclipse V",
+  "order": 8,
+  "unlock": "eclipse4",
+  "level_band": [
    140,
    200
   ],
-  "level_offset": 140,
-  "life_mult": 17,
-  "damage_mult": 9,
+  "level_offset": 135,
+  "life_mult": 21.9,
+  "damage_mult": 11.0,
   "resist_penalty": 60,
-  "xp_mult": 5.0,
-  "magic_find": 280,
+  "xp_mult": 4.8,
+  "magic_find": 310,
   "gold_mult": 4.2,
   "elite_mult": 2.2,
   "min_telegraph": 0.8,
@@ -139,6 +268,222 @@
    "epic": 3.5,
    "legendary": 6.0,
    "mythic": 4.0
-  }
+  },
+  "unique_mult": 2.35,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.04
+   },
+   {
+    "id": "starmote",
+    "chance": 0.0025
+   },
+   {
+    "id": "echo_lost_bell",
+    "chance": 0.001
+   }
+  ],
+  "desc": "Deeper. Brighter rewards."
+ },
+ {
+  "id": "eclipse6",
+  "name": "Eclipse VI",
+  "order": 9,
+  "unlock": "eclipse5",
+  "level_band": [
+   150,
+   200
+  ],
+  "level_offset": 145,
+  "life_mult": 29.1,
+  "damage_mult": 13.7,
+  "resist_penalty": 60,
+  "xp_mult": 5.2,
+  "magic_find": 350,
+  "gold_mult": 4.5,
+  "elite_mult": 2.3,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 3.75,
+   "legendary": 6.5,
+   "mythic": 4.5
+  },
+  "unique_mult": 2.5,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.04
+   },
+   {
+    "id": "starmote",
+    "chance": 0.003
+   },
+   {
+    "id": "echo_lost_bell",
+    "chance": 0.0012
+   }
+  ],
+  "desc": "Deeper. Brighter rewards."
+ },
+ {
+  "id": "eclipse7",
+  "name": "Eclipse VII",
+  "order": 10,
+  "unlock": "eclipse6",
+  "level_band": [
+   160,
+   200
+  ],
+  "level_offset": 155,
+  "life_mult": 38.7,
+  "damage_mult": 17.2,
+  "resist_penalty": 60,
+  "xp_mult": 5.6,
+  "magic_find": 390,
+  "gold_mult": 4.8,
+  "elite_mult": 2.4,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 4.0,
+   "legendary": 7.0,
+   "mythic": 5.0
+  },
+  "unique_mult": 2.65,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.04
+   },
+   {
+    "id": "starmote",
+    "chance": 0.0035
+   },
+   {
+    "id": "echo_lost_bell",
+    "chance": 0.0014
+   }
+  ],
+  "desc": "Deeper. Brighter rewards."
+ },
+ {
+  "id": "eclipse8",
+  "name": "Eclipse VIII",
+  "order": 11,
+  "unlock": "eclipse7",
+  "level_band": [
+   170,
+   200
+  ],
+  "level_offset": 165,
+  "life_mult": 51.5,
+  "damage_mult": 21.5,
+  "resist_penalty": 60,
+  "xp_mult": 6.0,
+  "magic_find": 430,
+  "gold_mult": 5.1,
+  "elite_mult": 2.5,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 4.25,
+   "legendary": 7.5,
+   "mythic": 5.5
+  },
+  "unique_mult": 2.8,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.04
+   },
+   {
+    "id": "starmote",
+    "chance": 0.004
+   },
+   {
+    "id": "echo_lost_bell",
+    "chance": 0.0016
+   }
+  ],
+  "desc": "Deeper. Brighter rewards."
+ },
+ {
+  "id": "eclipse9",
+  "name": "Eclipse IX",
+  "order": 12,
+  "unlock": "eclipse8",
+  "level_band": [
+   180,
+   200
+  ],
+  "level_offset": 175,
+  "life_mult": 68.5,
+  "damage_mult": 26.8,
+  "resist_penalty": 60,
+  "xp_mult": 6.4,
+  "magic_find": 470,
+  "gold_mult": 5.4,
+  "elite_mult": 2.6,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 4.5,
+   "legendary": 8.0,
+   "mythic": 6.0
+  },
+  "unique_mult": 2.95,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.04
+   },
+   {
+    "id": "starmote",
+    "chance": 0.0045
+   },
+   {
+    "id": "echo_lost_bell",
+    "chance": 0.0018
+   }
+  ],
+  "desc": "Deeper. Brighter rewards."
+ },
+ {
+  "id": "eclipse10",
+  "name": "Eclipse X",
+  "order": 13,
+  "unlock": "eclipse9",
+  "level_band": [
+   190,
+   200
+  ],
+  "level_offset": 185,
+  "life_mult": 91.2,
+  "damage_mult": 33.5,
+  "resist_penalty": 60,
+  "xp_mult": 6.8,
+  "magic_find": 510,
+  "gold_mult": 5.7,
+  "elite_mult": 2.6,
+  "min_telegraph": 0.8,
+  "rarity_bonus": {
+   "epic": 4.75,
+   "legendary": 8.5,
+   "mythic": 6.5
+  },
+  "unique_mult": 3.1,
+  "materials": [
+   {
+    "id": "glowcoal",
+    "chance": 0.04
+   },
+   {
+    "id": "starmote",
+    "chance": 0.005
+   },
+   {
+    "id": "echo_lost_bell",
+    "chance": 0.002
+   }
+  ],
+  "desc": "Deeper. Brighter rewards."
  }
 ]

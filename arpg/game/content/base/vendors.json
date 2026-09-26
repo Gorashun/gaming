@@ -1,0 +1,1027 @@
+[
+ {
+  "id": "vendor_a1",
+  "npc": "npc_a1_trader",
+  "town": "a1_town",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "potion_1",
+    "price_gold": 15
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_2",
+    "price_gold": 60
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_might",
+    "price_gold": 120
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_agility",
+    "price_gold": 120
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_wisdom",
+    "price_gold": 120
+   },
+   {
+    "kind": "consumable",
+    "id": "pet_treat",
+    "price_gold": 40
+   },
+   {
+    "kind": "consumable",
+    "id": "mount_feed",
+    "price_gold": 50
+   },
+   {
+    "kind": "consumable",
+    "id": "hearth_charge",
+    "price_gold": 0
+   },
+   {
+    "kind": "item_base",
+    "id": "short_sword",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "buckler",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "great_axe",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "apprentice_staff",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "needle_dagger",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "hand_crossbow",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "padded_vest",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_wand",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_axe",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_greatsword",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_arbalest",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_tome",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_quiver",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_hood",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_boots",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_gloves",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_trousers",
+    "rarity": "common",
+    "price_gold": 25,
+    "ilvl": "player_level"
+   }
+  ],
+  "restock": "never_needed",
+  "desc": "Basic supplies only. No random items for sale."
+ },
+ {
+  "id": "vendor_a1_pets",
+  "npc": "npc_a1_petkeeper",
+  "town": "a1_town",
+  "stock": [
+   {
+    "kind": "pet",
+    "id": "pet_button",
+    "price_gold": 800
+   },
+   {
+    "kind": "consumable",
+    "id": "pet_treat",
+    "price_gold": 40
+   }
+  ]
+ },
+ {
+  "id": "vendor_a1_stable",
+  "npc": "npc_a1_stablemaster",
+  "town": "a1_town",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "mount_feed",
+    "price_gold": 50
+   }
+  ]
+ },
+ {
+  "id": "vendor_a2",
+  "npc": "npc_a2_trader",
+  "town": "a2_town",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "potion_1",
+    "price_gold": 15
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_2",
+    "price_gold": 60
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_3",
+    "price_gold": 180
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_might",
+    "price_gold": 240
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_agility",
+    "price_gold": 240
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_wisdom",
+    "price_gold": 240
+   },
+   {
+    "kind": "consumable",
+    "id": "pet_treat",
+    "price_gold": 80
+   },
+   {
+    "kind": "consumable",
+    "id": "mount_feed",
+    "price_gold": 100
+   },
+   {
+    "kind": "consumable",
+    "id": "hearth_charge",
+    "price_gold": 0
+   },
+   {
+    "kind": "item_base",
+    "id": "short_sword",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "buckler",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "great_axe",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "apprentice_staff",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "needle_dagger",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "hand_crossbow",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "padded_vest",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_wand",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_axe",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_greatsword",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_arbalest",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_tome",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_quiver",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_hood",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_boots",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_gloves",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_trousers",
+    "rarity": "common",
+    "price_gold": 50,
+    "ilvl": "player_level"
+   }
+  ],
+  "restock": "never_needed",
+  "desc": "Basic supplies only. No random items for sale."
+ },
+ {
+  "id": "vendor_a2_pets",
+  "npc": "npc_a2_petkeeper",
+  "town": "a2_town",
+  "stock": [
+   {
+    "kind": "pet",
+    "id": "pet_crumpet",
+    "price_gold": 800
+   },
+   {
+    "kind": "consumable",
+    "id": "pet_treat",
+    "price_gold": 80
+   }
+  ]
+ },
+ {
+  "id": "vendor_a2_stable",
+  "npc": "npc_a2_stablemaster",
+  "town": "a2_town",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "mount_feed",
+    "price_gold": 100
+   }
+  ]
+ },
+ {
+  "id": "vendor_a3",
+  "npc": "npc_a3_trader",
+  "town": "a3_town",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "potion_1",
+    "price_gold": 15
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_2",
+    "price_gold": 60
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_3",
+    "price_gold": 180
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_4",
+    "price_gold": 420
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_might",
+    "price_gold": 360
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_agility",
+    "price_gold": 360
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_wisdom",
+    "price_gold": 360
+   },
+   {
+    "kind": "consumable",
+    "id": "pet_treat",
+    "price_gold": 120
+   },
+   {
+    "kind": "consumable",
+    "id": "mount_feed",
+    "price_gold": 150
+   },
+   {
+    "kind": "consumable",
+    "id": "hearth_charge",
+    "price_gold": 0
+   },
+   {
+    "kind": "item_base",
+    "id": "short_sword",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "buckler",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "great_axe",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "apprentice_staff",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "needle_dagger",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "hand_crossbow",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "padded_vest",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_wand",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_axe",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_greatsword",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_arbalest",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_tome",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_quiver",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_hood",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_boots",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_gloves",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_trousers",
+    "rarity": "common",
+    "price_gold": 75,
+    "ilvl": "player_level"
+   }
+  ],
+  "restock": "never_needed",
+  "desc": "Basic supplies only. No random items for sale."
+ },
+ {
+  "id": "vendor_a3_pets",
+  "npc": "npc_a3_petkeeper",
+  "town": "a3_town",
+  "stock": [
+   {
+    "kind": "pet",
+    "id": "pet_biscuit",
+    "price_gold": 800
+   },
+   {
+    "kind": "consumable",
+    "id": "pet_treat",
+    "price_gold": 120
+   }
+  ]
+ },
+ {
+  "id": "vendor_a3_stable",
+  "npc": "npc_a3_stablemaster",
+  "town": "a3_town",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "mount_feed",
+    "price_gold": 150
+   }
+  ]
+ },
+ {
+  "id": "vendor_a4",
+  "npc": "npc_a4_trader",
+  "town": "a4_town",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "potion_1",
+    "price_gold": 15
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_2",
+    "price_gold": 60
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_3",
+    "price_gold": 180
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_4",
+    "price_gold": 420
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_5",
+    "price_gold": 900
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_might",
+    "price_gold": 480
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_agility",
+    "price_gold": 480
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_wisdom",
+    "price_gold": 480
+   },
+   {
+    "kind": "consumable",
+    "id": "pet_treat",
+    "price_gold": 160
+   },
+   {
+    "kind": "consumable",
+    "id": "mount_feed",
+    "price_gold": 200
+   },
+   {
+    "kind": "consumable",
+    "id": "hearth_charge",
+    "price_gold": 0
+   },
+   {
+    "kind": "item_base",
+    "id": "short_sword",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "buckler",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "great_axe",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "apprentice_staff",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "needle_dagger",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "hand_crossbow",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "padded_vest",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_wand",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_axe",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_greatsword",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_arbalest",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_tome",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_quiver",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_hood",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_boots",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_gloves",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_trousers",
+    "rarity": "common",
+    "price_gold": 100,
+    "ilvl": "player_level"
+   }
+  ],
+  "restock": "never_needed",
+  "desc": "Basic supplies only. No random items for sale."
+ },
+ {
+  "id": "vendor_a4_pets",
+  "npc": "npc_a4_petkeeper",
+  "town": "a4_town",
+  "stock": [
+   {
+    "kind": "pet",
+    "id": "pet_flurry",
+    "price_gold": 800
+   },
+   {
+    "kind": "consumable",
+    "id": "pet_treat",
+    "price_gold": 160
+   }
+  ]
+ },
+ {
+  "id": "vendor_a4_stable",
+  "npc": "npc_a4_stablemaster",
+  "town": "a4_town",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "mount_feed",
+    "price_gold": 200
+   }
+  ]
+ },
+ {
+  "id": "vendor_a5",
+  "npc": "npc_a5_trader",
+  "town": "a5_town",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "potion_1",
+    "price_gold": 15
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_2",
+    "price_gold": 60
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_3",
+    "price_gold": 180
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_4",
+    "price_gold": 420
+   },
+   {
+    "kind": "consumable",
+    "id": "potion_5",
+    "price_gold": 900
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_might",
+    "price_gold": 600
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_agility",
+    "price_gold": 600
+   },
+   {
+    "kind": "consumable",
+    "id": "elixir_wisdom",
+    "price_gold": 600
+   },
+   {
+    "kind": "consumable",
+    "id": "pet_treat",
+    "price_gold": 200
+   },
+   {
+    "kind": "consumable",
+    "id": "mount_feed",
+    "price_gold": 250
+   },
+   {
+    "kind": "consumable",
+    "id": "hearth_charge",
+    "price_gold": 0
+   },
+   {
+    "kind": "item_base",
+    "id": "short_sword",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "buckler",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "great_axe",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "apprentice_staff",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "needle_dagger",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "hand_crossbow",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "padded_vest",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_wand",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_axe",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_greatsword",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_arbalest",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_tome",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_quiver",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_hood",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_boots",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_gloves",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   },
+   {
+    "kind": "item_base",
+    "id": "starter_trousers",
+    "rarity": "common",
+    "price_gold": 125,
+    "ilvl": "player_level"
+   }
+  ],
+  "restock": "never_needed",
+  "desc": "Basic supplies only. No random items for sale."
+ },
+ {
+  "id": "vendor_a5_pets",
+  "npc": "npc_a5_petkeeper",
+  "town": "a5_town",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "pet_treat",
+    "price_gold": 200
+   }
+  ]
+ },
+ {
+  "id": "vendor_a5_stable",
+  "npc": "npc_a5_stablemaster",
+  "town": "a5_town",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "mount_feed",
+    "price_gold": 250
+   }
+  ]
+ }
+]

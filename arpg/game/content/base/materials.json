@@ -4,49 +4,517 @@
   "name": "Soot Dust",
   "tier": 1,
   "color": "#8a8a96",
-  "desc": "Salvaged from Common and Magic gear."
+  "desc": "Salvaged from Common and Magic gear.",
+  "category": "salvage"
  },
  {
   "id": "wickthread",
   "name": "Wickthread",
   "tier": 2,
   "color": "#ffd23f",
-  "desc": "Salvaged from Rare gear."
+  "desc": "Salvaged from Rare gear.",
+  "category": "salvage"
  },
  {
   "id": "dusk_essence",
   "name": "Dusk Essence",
   "tier": 3,
   "color": "#b46bff",
-  "desc": "Salvaged from Epic gear."
+  "desc": "Salvaged from Epic gear.",
+  "category": "salvage"
  },
  {
   "id": "ember_heart",
   "name": "Ember Heart",
   "tier": 4,
   "color": "#ff8a1f",
-  "desc": "Salvaged from Legendary gear."
+  "desc": "Salvaged from Legendary gear.",
+  "category": "salvage"
+ },
+ {
+  "id": "lanternglass",
+  "name": "Lanternglass",
+  "tier": 5,
+  "color": "#ff3355",
+  "desc": "Salvaged from Mythic gear. Glows from the inside.",
+  "category": "salvage"
+ },
+ {
+  "id": "glowcoal",
+  "name": "Glowcoal",
+  "tier": 2,
+  "color": "#ffb35a",
+  "desc": "Coal that remembers being a candle. Found everywhere, a little at a time.",
+  "category": "upgrade"
+ },
+ {
+  "id": "starmote",
+  "name": "Starmote",
+  "tier": 6,
+  "color": "#fff4c0",
+  "desc": "A speck of the old World-Lantern. Very rare; also made from 60 Glowcoal at the Alchemist.",
+  "category": "upgrade"
+ },
+ {
+  "id": "echo_lost_bell",
+  "name": "Echo of a Lost Bell",
+  "tier": 6,
+  "color": "#d9e8ff",
+  "desc": "A bell-note that never came home. Very rare; also made from lots of act materials.",
+  "category": "upgrade"
  },
  {
   "id": "bone_meal",
   "name": "Bone Meal",
   "tier": 1,
   "color": "#e8dcc0",
-  "desc": "Dropped by the Rattlebones."
+  "desc": "Dropped by the Rattlebones.",
+  "category": "act",
+  "act": "act1"
+ },
+ {
+  "id": "bog_iron",
+  "name": "Bog Iron",
+  "tier": 1,
+  "color": "#7a8a70",
+  "desc": "Rusty lumps from the Wickmire.",
+  "category": "act",
+  "act": "act1"
+ },
+ {
+  "id": "marsh_candle",
+  "name": "Drowned Candle",
+  "tier": 2,
+  "color": "#9fe8c0",
+  "desc": "Still warm under the water. Rare.",
+  "category": "act",
+  "act": "act1"
+ },
+ {
+  "id": "whisper_bark",
+  "name": "Whisper Bark",
+  "tier": 2,
+  "color": "#8a7050",
+  "desc": "Peel of a gossiping birch. It murmurs.",
+  "category": "act",
+  "act": "act2"
+ },
+ {
+  "id": "moss_silk",
+  "name": "Moss Silk",
+  "tier": 2,
+  "color": "#7fb87a",
+  "desc": "Soft green thread from Puffcap Hollow.",
+  "category": "act",
+  "act": "act2"
+ },
+ {
+  "id": "owl_quill",
+  "name": "Owl Quill",
+  "tier": 3,
+  "color": "#b8a8d8",
+  "desc": "A feather that always points north-ish. Rare.",
+  "category": "act",
+  "act": "act2"
+ },
+ {
+  "id": "echo_salt",
+  "name": "Echo Salt",
+  "tier": 3,
+  "color": "#e8e4dc",
+  "desc": "Salt that repeats your footsteps.",
+  "category": "act",
+  "act": "act3"
+ },
+ {
+  "id": "glimmer_ore",
+  "name": "Glimmer Ore",
+  "tier": 3,
+  "color": "#cfe8f0",
+  "desc": "Crystal-flecked ore from the Glittering Gallery.",
+  "category": "act",
+  "act": "act3"
+ },
+ {
+  "id": "hollow_crystal",
+  "name": "Hollow Crystal",
+  "tier": 4,
+  "color": "#dff4ff",
+  "desc": "A crystal with a tiny room inside. Rare.",
+  "category": "act",
+  "act": "act3"
+ },
+ {
+  "id": "rime_shard",
+  "name": "Rime Shard",
+  "tier": 4,
+  "color": "#9cc8e0",
+  "desc": "Never melts. Not even in your pocket.",
+  "category": "act",
+  "act": "act4"
+ },
+ {
+  "id": "porcelain_chip",
+  "name": "Porcelain Chip",
+  "tier": 4,
+  "color": "#f4e8ec",
+  "desc": "A piece of a very polite smile.",
+  "category": "act",
+  "act": "act4"
+ },
+ {
+  "id": "frozen_toast",
+  "name": "Frozen Toast Crumb",
+  "tier": 5,
+  "color": "#f0d8a0",
+  "desc": "A crumb from a toast raised a year ago. Rare.",
+  "category": "act",
+  "act": "act4"
+ },
+ {
+  "id": "hush_ash",
+  "name": "Hush Ash",
+  "tier": 5,
+  "color": "#9a9aa0",
+  "desc": "Grey ash that makes no sound when it falls.",
+  "category": "act",
+  "act": "act5"
+ },
+ {
+  "id": "grey_feather",
+  "name": "Grey Feather",
+  "tier": 5,
+  "color": "#c8c8d0",
+  "desc": "From a moth that ate its own colour.",
+  "category": "act",
+  "act": "act5"
+ },
+ {
+  "id": "silent_bell",
+  "name": "Silent Bell",
+  "tier": 6,
+  "color": "#ffffff",
+  "desc": "A bell with the ring taken out. Rare.",
+  "category": "act",
+  "act": "act5"
  },
  {
   "id": "bell_shard",
   "name": "Bell Shard",
   "tier": 3,
   "color": "#d9b56a",
-  "desc": "From the Sunken Bellringer. 10 make a Bell Relic."
+  "desc": "From Sunken Bellringer. 10 forge a relic at the Smith.",
+  "category": "boss_fragment",
+  "act": "act1"
+ },
+ {
+  "id": "bark_knot",
+  "name": "Bark Knot",
+  "tier": 4,
+  "color": "#8a6a4a",
+  "desc": "From Mother Bark. 10 forge a relic at the Smith.",
+  "category": "boss_fragment",
+  "act": "act2"
+ },
+ {
+  "id": "echo_fragment",
+  "name": "Echo Fragment",
+  "tier": 4,
+  "color": "#cfe0e8",
+  "desc": "From Great Echo. 10 forge a relic at the Smith.",
+  "category": "boss_fragment",
+  "act": "act3"
+ },
+ {
+  "id": "crown_sliver",
+  "name": "Crown Sliver",
+  "tier": 5,
+  "color": "#b8d8f0",
+  "desc": "From King Who Forgot. 10 forge a relic at the Smith.",
+  "category": "boss_fragment",
+  "act": "act4"
+ },
+ {
+  "id": "guest_wick",
+  "name": "Guest's Wick",
+  "tier": 5,
+  "color": "#c0c0c8",
+  "desc": "From Grey Guest. 10 forge a relic at the Smith.",
+  "category": "boss_fragment",
+  "act": "act5"
+ },
+ {
+  "id": "qi_floating_lamp",
+  "name": "Floating Lamp",
+  "tier": 4,
+  "color": "#e0d0ff",
+  "desc": "A little lamp that drifted off the bog. Catch it gently.",
+  "category": "quest",
+  "act": "act1",
+  "quest_item": true,
+  "stack_max": 99,
+  "drop_while_quest_active": 0.25
+ },
+ {
+  "id": "qi_crypt_key",
+  "name": "Crypt Key",
+  "tier": 4,
+  "color": "#e0d0ff",
+  "desc": "The Magpie Imp borrowed it. Permanently, it hoped.",
+  "category": "quest",
+  "act": "act1",
+  "quest_item": true,
+  "stack_max": 99,
+  "drop_while_quest_active": 0.25
+ },
+ {
+  "id": "qi_shadow_moth",
+  "name": "Shadow-Moth",
+  "tier": 4,
+  "color": "#e0d0ff",
+  "desc": "A moth made of somebody's lost shadow.",
+  "category": "quest",
+  "act": "act2",
+  "quest_item": true,
+  "stack_max": 99,
+  "drop_while_quest_active": 0.25
+ },
+ {
+  "id": "qi_empty_jar",
+  "name": "Empty Shadow Jar",
+  "tier": 4,
+  "color": "#e0d0ff",
+  "desc": "Mother Bark's jar. It hums a lullaby.",
+  "category": "quest",
+  "act": "act2",
+  "quest_item": true,
+  "stack_max": 99,
+  "drop_while_quest_active": 0.25
+ },
+ {
+  "id": "qi_song_scrap",
+  "name": "Song Scrap",
+  "tier": 4,
+  "color": "#e0d0ff",
+  "desc": "One line of the miners' old song.",
+  "category": "quest",
+  "act": "act3",
+  "quest_item": true,
+  "stack_max": 99,
+  "drop_while_quest_active": 0.25
+ },
+ {
+  "id": "qi_name_letter_a",
+  "name": "Frozen Letter A",
+  "tier": 4,
+  "color": "#e0d0ff",
+  "desc": "A letter from the King's name.",
+  "category": "quest",
+  "act": "act4",
+  "quest_item": true,
+  "stack_max": 99,
+  "drop_while_quest_active": 0.25
+ },
+ {
+  "id": "qi_name_letter_l",
+  "name": "Frozen Letter L",
+  "tier": 4,
+  "color": "#e0d0ff",
+  "desc": "A letter from the King's name.",
+  "category": "quest",
+  "act": "act4",
+  "quest_item": true,
+  "stack_max": 99,
+  "drop_while_quest_active": 0.25
+ },
+ {
+  "id": "qi_name_letter_d",
+  "name": "Frozen Letter D",
+  "tier": 4,
+  "color": "#e0d0ff",
+  "desc": "A letter from the King's name.",
+  "category": "quest",
+  "act": "act4",
+  "quest_item": true,
+  "stack_max": 99,
+  "drop_while_quest_active": 0.25
+ },
+ {
+  "id": "qi_name_letter_r",
+  "name": "Frozen Letter R",
+  "tier": 4,
+  "color": "#e0d0ff",
+  "desc": "A letter from the King's name.",
+  "category": "quest",
+  "act": "act4",
+  "quest_item": true,
+  "stack_max": 99,
+  "drop_while_quest_active": 0.25
+ },
+ {
+  "id": "qi_place_card",
+  "name": "Place Card",
+  "tier": 4,
+  "color": "#e0d0ff",
+  "desc": "A frosty place card from the everlasting party.",
+  "category": "quest",
+  "act": "act4",
+  "quest_item": true,
+  "stack_max": 99,
+  "drop_while_quest_active": 0.25
+ },
+ {
+  "id": "qi_lost_colour",
+  "name": "Lost Colour",
+  "tier": 4,
+  "color": "#e0d0ff",
+  "desc": "A drop of colour the Hush ate. Warm to the touch.",
+  "category": "quest",
+  "act": "act5",
+  "quest_item": true,
+  "stack_max": 99,
+  "drop_while_quest_active": 0.25
+ },
+ {
+  "id": "hushmark",
+  "name": "Hushmark",
+  "tier": 5,
+  "color": "#c8b8ff",
+  "desc": "A coin of silence. Earned only by play, rarely. The masked peddler of the Curio Cart accepts nothing else.",
+  "category": "currency",
+  "never_sold": true
+ },
+ {
+  "id": "mystery_egg",
+  "name": "Warm Egg",
+  "tier": 3,
+  "color": "#fff0c0",
+  "desc": "It's warm. It wiggles. Hatches after 300 rekindlings.",
+  "category": "egg",
+  "hatch_kills": 300
+ },
+ {
+  "id": "last_spark",
+  "name": "Last Spark of the World-Lantern",
+  "tier": 7,
+  "color": "#aef6ff",
+  "desc": "Rekindle all of Act V (any tier) without being defeated once.",
+  "category": "named",
+  "secret": "secret_n_morning_never_came",
+  "unique_per_character": false
+ },
+ {
+  "id": "moonthread",
+  "name": "Moonthread",
+  "tier": 7,
+  "color": "#aef6ff",
+  "desc": "Light the Tenth Lantern in Lamplight Hollow on an in-game full-moon night (every 8th in-game night).",
+  "category": "named",
+  "secret": "secret_n_grandmothers_needles",
+  "unique_per_character": false
+ },
+ {
+  "id": "echo_of_stillness",
+  "name": "Echo of Stillness",
+  "tier": 7,
+  "color": "#aef6ff",
+  "desc": "Stand completely still for 30 s while the Great Echo copies you.",
+  "category": "named",
+  "secret": "secret_n_bell_that_doesnt_ring",
+  "unique_per_character": false
+ },
+ {
+  "id": "answer_nobody_knew",
+  "name": "An Answer Nobody Knew",
+  "tier": 7,
+  "color": "#aef6ff",
+  "desc": "Answer 50 Owlcrow riddles in a row, then say 'I don't know'.",
+  "category": "named",
+  "secret": "secret_n_owls_last_question",
+  "unique_per_character": false
+ },
+ {
+  "id": "frog_never_jumped",
+  "name": "A Frog That Never Jumped",
+  "tier": 7,
+  "color": "#aef6ff",
+  "desc": "Walk (never run) up to the frog on a Wickmire lily pad while it rains in-game.",
+  "category": "named",
+  "secret": "secret_n_frog_kings_croak",
+  "unique_per_character": false
+ },
+ {
+  "id": "cold_tea",
+  "name": "The Nicest Cold Tea",
+  "tier": 7,
+  "color": "#aef6ff",
+  "desc": "Sit in the empty chair at the Tea Party and don't touch the controls for a minute.",
+  "category": "named",
+  "secret": "sc_tea_party",
+  "unique_per_character": false
+ },
+ {
+  "id": "unsent_letter",
+  "name": "The Unsent Letter",
+  "tier": 7,
+  "color": "#aef6ff",
+  "desc": "Read the answering mailbox in all five acts.",
+  "category": "named",
+  "secret": "sc_mailbox_5",
+  "unique_per_character": false
+ },
+ {
+  "id": "magpie_lucky_coin",
+  "name": "Magpie's Lucky Coin",
+  "tier": 7,
+  "color": "#aef6ff",
+  "desc": "Catch a Magpie Imp within 5 seconds of it appearing.",
+  "category": "named",
+  "secret": "sc_mailbox_1",
+  "unique_per_character": false
+ },
+ {
+  "id": "unbroken_toffee",
+  "name": "Unbroken Toffee",
+  "tier": 7,
+  "color": "#aef6ff",
+  "desc": "Clear the Candy Crypt without being hit once.",
+  "category": "named",
+  "secret": "sc_candy_crypt",
+  "unique_per_character": false
+ },
+ {
+  "id": "ruby_1",
+  "name": "Chipped Candle Ruby",
+  "tier": 2,
+  "color": "#ff4d5e",
+  "desc": "Grade 1 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "ruby",
+  "grade": 1,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "damage_pct": 4
+   },
+   "armor": {
+    "life": 20
+   },
+   "jewelry": {
+    "crit_damage": 5
+   }
+  }
  },
  {
   "id": "ruby",
   "name": "Candle Ruby",
-  "tier": 2,
+  "tier": 3,
   "color": "#ff4d5e",
+  "desc": "Grade 2 gem. Combine 3 at the Jeweler for the next grade.",
   "gem": true,
+  "gem_type": "ruby",
+  "grade": 2,
+  "category": "gem",
   "socket": {
    "weapon": {
     "damage_pct": 8
@@ -60,11 +528,103 @@
   }
  },
  {
-  "id": "sapphire",
-  "name": "Frost Sapphire",
+  "id": "ruby_3",
+  "name": "Bright Candle Ruby",
+  "tier": 4,
+  "color": "#ff4d5e",
+  "desc": "Grade 3 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "ruby",
+  "grade": 3,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "damage_pct": 13
+   },
+   "armor": {
+    "life": 64
+   },
+   "jewelry": {
+    "crit_damage": 16
+   }
+  }
+ },
+ {
+  "id": "ruby_4",
+  "name": "Radiant Candle Ruby",
+  "tier": 5,
+  "color": "#ff4d5e",
+  "desc": "Grade 4 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "ruby",
+  "grade": 4,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "damage_pct": 19
+   },
+   "armor": {
+    "life": 96
+   },
+   "jewelry": {
+    "crit_damage": 24
+   }
+  }
+ },
+ {
+  "id": "ruby_5",
+  "name": "Lantern Candle Ruby",
+  "tier": 6,
+  "color": "#ff4d5e",
+  "desc": "Grade 5 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "ruby",
+  "grade": 5,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "damage_pct": 28
+   },
+   "armor": {
+    "life": 140
+   },
+   "jewelry": {
+    "crit_damage": 35
+   }
+  }
+ },
+ {
+  "id": "sapphire_1",
+  "name": "Chipped Frost Sapphire",
   "tier": 2,
   "color": "#4da3ff",
+  "desc": "Grade 1 gem. Combine 3 at the Jeweler for the next grade.",
   "gem": true,
+  "gem_type": "sapphire",
+  "grade": 1,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "cold_pct": 5
+   },
+   "armor": {
+    "resist_all": 2
+   },
+   "jewelry": {
+    "cdr_pct": 1.5
+   }
+  }
+ },
+ {
+  "id": "sapphire",
+  "name": "Frost Sapphire",
+  "tier": 3,
+  "color": "#4da3ff",
+  "desc": "Grade 2 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "sapphire",
+  "grade": 2,
+  "category": "gem",
   "socket": {
    "weapon": {
     "cold_pct": 10
@@ -73,19 +633,111 @@
     "resist_all": 4
    },
    "jewelry": {
-    "cdr_pct": 3
+    "cdr_pct": 3.0
+   }
+  }
+ },
+ {
+  "id": "sapphire_3",
+  "name": "Bright Frost Sapphire",
+  "tier": 4,
+  "color": "#4da3ff",
+  "desc": "Grade 3 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "sapphire",
+  "grade": 3,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "cold_pct": 16
+   },
+   "armor": {
+    "resist_all": 6
+   },
+   "jewelry": {
+    "cdr_pct": 4.8
+   }
+  }
+ },
+ {
+  "id": "sapphire_4",
+  "name": "Radiant Frost Sapphire",
+  "tier": 5,
+  "color": "#4da3ff",
+  "desc": "Grade 4 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "sapphire",
+  "grade": 4,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "cold_pct": 24
+   },
+   "armor": {
+    "resist_all": 10
+   },
+   "jewelry": {
+    "cdr_pct": 7.2
+   }
+  }
+ },
+ {
+  "id": "sapphire_5",
+  "name": "Lantern Frost Sapphire",
+  "tier": 6,
+  "color": "#4da3ff",
+  "desc": "Grade 5 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "sapphire",
+  "grade": 5,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "cold_pct": 35
+   },
+   "armor": {
+    "resist_all": 14
+   },
+   "jewelry": {
+    "cdr_pct": 10
+   }
+  }
+ },
+ {
+  "id": "topaz_1",
+  "name": "Chipped Wick Topaz",
+  "tier": 2,
+  "color": "#ffd23f",
+  "desc": "Grade 1 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "topaz",
+  "grade": 1,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "crit_chance": 1.0
+   },
+   "armor": {
+    "magic_find": 4
+   },
+   "jewelry": {
+    "gold_find": 6
    }
   }
  },
  {
   "id": "topaz",
   "name": "Wick Topaz",
-  "tier": 2,
+  "tier": 3,
   "color": "#ffd23f",
+  "desc": "Grade 2 gem. Combine 3 at the Jeweler for the next grade.",
   "gem": true,
+  "gem_type": "topaz",
+  "grade": 2,
+  "category": "gem",
   "socket": {
    "weapon": {
-    "crit_chance": 2
+    "crit_chance": 2.0
    },
    "armor": {
     "magic_find": 8
@@ -96,11 +748,103 @@
   }
  },
  {
-  "id": "emerald",
-  "name": "Moss Emerald",
+  "id": "topaz_3",
+  "name": "Bright Wick Topaz",
+  "tier": 4,
+  "color": "#ffd23f",
+  "desc": "Grade 3 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "topaz",
+  "grade": 3,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "crit_chance": 3.2
+   },
+   "armor": {
+    "magic_find": 13
+   },
+   "jewelry": {
+    "gold_find": 19
+   }
+  }
+ },
+ {
+  "id": "topaz_4",
+  "name": "Radiant Wick Topaz",
+  "tier": 5,
+  "color": "#ffd23f",
+  "desc": "Grade 4 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "topaz",
+  "grade": 4,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "crit_chance": 4.8
+   },
+   "armor": {
+    "magic_find": 19
+   },
+   "jewelry": {
+    "gold_find": 29
+   }
+  }
+ },
+ {
+  "id": "topaz_5",
+  "name": "Lantern Wick Topaz",
+  "tier": 6,
+  "color": "#ffd23f",
+  "desc": "Grade 5 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "topaz",
+  "grade": 5,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "crit_chance": 7.0
+   },
+   "armor": {
+    "magic_find": 28
+   },
+   "jewelry": {
+    "gold_find": 42
+   }
+  }
+ },
+ {
+  "id": "emerald_1",
+  "name": "Chipped Moss Emerald",
   "tier": 2,
   "color": "#3ddc84",
+  "desc": "Grade 1 gem. Combine 3 at the Jeweler for the next grade.",
   "gem": true,
+  "gem_type": "emerald",
+  "grade": 1,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "life_on_hit": 3
+   },
+   "armor": {
+    "life_regen": 2
+   },
+   "jewelry": {
+    "xp_pct": 2
+   }
+  }
+ },
+ {
+  "id": "emerald",
+  "name": "Moss Emerald",
+  "tier": 3,
+  "color": "#3ddc84",
+  "desc": "Grade 2 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "emerald",
+  "grade": 2,
+  "category": "gem",
   "socket": {
    "weapon": {
     "life_on_hit": 6
@@ -110,6 +854,512 @@
    },
    "jewelry": {
     "xp_pct": 4
+   }
+  }
+ },
+ {
+  "id": "emerald_3",
+  "name": "Bright Moss Emerald",
+  "tier": 4,
+  "color": "#3ddc84",
+  "desc": "Grade 3 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "emerald",
+  "grade": 3,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "life_on_hit": 10
+   },
+   "armor": {
+    "life_regen": 6
+   },
+   "jewelry": {
+    "xp_pct": 6
+   }
+  }
+ },
+ {
+  "id": "emerald_4",
+  "name": "Radiant Moss Emerald",
+  "tier": 5,
+  "color": "#3ddc84",
+  "desc": "Grade 4 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "emerald",
+  "grade": 4,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "life_on_hit": 14
+   },
+   "armor": {
+    "life_regen": 10
+   },
+   "jewelry": {
+    "xp_pct": 10
+   }
+  }
+ },
+ {
+  "id": "emerald_5",
+  "name": "Lantern Moss Emerald",
+  "tier": 6,
+  "color": "#3ddc84",
+  "desc": "Grade 5 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "emerald",
+  "grade": 5,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "life_on_hit": 21
+   },
+   "armor": {
+    "life_regen": 14
+   },
+   "jewelry": {
+    "xp_pct": 14
+   }
+  }
+ },
+ {
+  "id": "amethyst_1",
+  "name": "Chipped Dusk Amethyst",
+  "tier": 2,
+  "color": "#a86bff",
+  "desc": "Grade 1 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "amethyst",
+  "grade": 1,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "shadow_pct": 5
+   },
+   "armor": {
+    "resist_shadow": 4
+   },
+   "jewelry": {
+    "minion_damage_pct": 4
+   }
+  }
+ },
+ {
+  "id": "amethyst",
+  "name": "Dusk Amethyst",
+  "tier": 3,
+  "color": "#a86bff",
+  "desc": "Grade 2 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "amethyst",
+  "grade": 2,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "shadow_pct": 10
+   },
+   "armor": {
+    "resist_shadow": 8
+   },
+   "jewelry": {
+    "minion_damage_pct": 8
+   }
+  }
+ },
+ {
+  "id": "amethyst_3",
+  "name": "Bright Dusk Amethyst",
+  "tier": 4,
+  "color": "#a86bff",
+  "desc": "Grade 3 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "amethyst",
+  "grade": 3,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "shadow_pct": 16
+   },
+   "armor": {
+    "resist_shadow": 13
+   },
+   "jewelry": {
+    "minion_damage_pct": 13
+   }
+  }
+ },
+ {
+  "id": "amethyst_4",
+  "name": "Radiant Dusk Amethyst",
+  "tier": 5,
+  "color": "#a86bff",
+  "desc": "Grade 4 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "amethyst",
+  "grade": 4,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "shadow_pct": 24
+   },
+   "armor": {
+    "resist_shadow": 19
+   },
+   "jewelry": {
+    "minion_damage_pct": 19
+   }
+  }
+ },
+ {
+  "id": "amethyst_5",
+  "name": "Lantern Dusk Amethyst",
+  "tier": 6,
+  "color": "#a86bff",
+  "desc": "Grade 5 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "amethyst",
+  "grade": 5,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "shadow_pct": 35
+   },
+   "armor": {
+    "resist_shadow": 28
+   },
+   "jewelry": {
+    "minion_damage_pct": 28
+   }
+  }
+ },
+ {
+  "id": "pearl_1",
+  "name": "Chipped Moon Pearl",
+  "tier": 2,
+  "color": "#f0ecff",
+  "desc": "Grade 1 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "pearl",
+  "grade": 1,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "holy_pct": 5
+   },
+   "armor": {
+    "armor_pct": 3
+   },
+   "jewelry": {
+    "resource_regen": 0.5
+   }
+  }
+ },
+ {
+  "id": "pearl",
+  "name": "Moon Pearl",
+  "tier": 3,
+  "color": "#f0ecff",
+  "desc": "Grade 2 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "pearl",
+  "grade": 2,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "holy_pct": 10
+   },
+   "armor": {
+    "armor_pct": 6
+   },
+   "jewelry": {
+    "resource_regen": 1.0
+   }
+  }
+ },
+ {
+  "id": "pearl_3",
+  "name": "Bright Moon Pearl",
+  "tier": 4,
+  "color": "#f0ecff",
+  "desc": "Grade 3 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "pearl",
+  "grade": 3,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "holy_pct": 16
+   },
+   "armor": {
+    "armor_pct": 10
+   },
+   "jewelry": {
+    "resource_regen": 1.6
+   }
+  }
+ },
+ {
+  "id": "pearl_4",
+  "name": "Radiant Moon Pearl",
+  "tier": 5,
+  "color": "#f0ecff",
+  "desc": "Grade 4 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "pearl",
+  "grade": 4,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "holy_pct": 24
+   },
+   "armor": {
+    "armor_pct": 14
+   },
+   "jewelry": {
+    "resource_regen": 2.4
+   }
+  }
+ },
+ {
+  "id": "pearl_5",
+  "name": "Lantern Moon Pearl",
+  "tier": 6,
+  "color": "#f0ecff",
+  "desc": "Grade 5 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "pearl",
+  "grade": 5,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "holy_pct": 35
+   },
+   "armor": {
+    "armor_pct": 21
+   },
+   "jewelry": {
+    "resource_regen": 3.5
+   }
+  }
+ },
+ {
+  "id": "onyx_1",
+  "name": "Chipped Soot Onyx",
+  "tier": 2,
+  "color": "#5a5a66",
+  "desc": "Grade 1 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "onyx",
+  "grade": 1,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "physical_pct": 5
+   },
+   "armor": {
+    "armor": 20
+   },
+   "jewelry": {
+    "thorns": 10
+   }
+  }
+ },
+ {
+  "id": "onyx",
+  "name": "Soot Onyx",
+  "tier": 3,
+  "color": "#5a5a66",
+  "desc": "Grade 2 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "onyx",
+  "grade": 2,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "physical_pct": 10
+   },
+   "armor": {
+    "armor": 40
+   },
+   "jewelry": {
+    "thorns": 20
+   }
+  }
+ },
+ {
+  "id": "onyx_3",
+  "name": "Bright Soot Onyx",
+  "tier": 4,
+  "color": "#5a5a66",
+  "desc": "Grade 3 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "onyx",
+  "grade": 3,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "physical_pct": 16
+   },
+   "armor": {
+    "armor": 64
+   },
+   "jewelry": {
+    "thorns": 32
+   }
+  }
+ },
+ {
+  "id": "onyx_4",
+  "name": "Radiant Soot Onyx",
+  "tier": 5,
+  "color": "#5a5a66",
+  "desc": "Grade 4 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "onyx",
+  "grade": 4,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "physical_pct": 24
+   },
+   "armor": {
+    "armor": 96
+   },
+   "jewelry": {
+    "thorns": 48
+   }
+  }
+ },
+ {
+  "id": "onyx_5",
+  "name": "Lantern Soot Onyx",
+  "tier": 6,
+  "color": "#5a5a66",
+  "desc": "Grade 5 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "onyx",
+  "grade": 5,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "physical_pct": 35
+   },
+   "armor": {
+    "armor": 140
+   },
+   "jewelry": {
+    "thorns": 70
+   }
+  }
+ },
+ {
+  "id": "opal_1",
+  "name": "Chipped Storm Opal",
+  "tier": 2,
+  "color": "#9fe8ff",
+  "desc": "Grade 1 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "opal",
+  "grade": 1,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "lightning_pct": 5
+   },
+   "armor": {
+    "resist_lightning": 4
+   },
+   "jewelry": {
+    "attack_speed_pct": 1.5
+   }
+  }
+ },
+ {
+  "id": "opal",
+  "name": "Storm Opal",
+  "tier": 3,
+  "color": "#9fe8ff",
+  "desc": "Grade 2 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "opal",
+  "grade": 2,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "lightning_pct": 10
+   },
+   "armor": {
+    "resist_lightning": 8
+   },
+   "jewelry": {
+    "attack_speed_pct": 3.0
+   }
+  }
+ },
+ {
+  "id": "opal_3",
+  "name": "Bright Storm Opal",
+  "tier": 4,
+  "color": "#9fe8ff",
+  "desc": "Grade 3 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "opal",
+  "grade": 3,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "lightning_pct": 16
+   },
+   "armor": {
+    "resist_lightning": 13
+   },
+   "jewelry": {
+    "attack_speed_pct": 4.8
+   }
+  }
+ },
+ {
+  "id": "opal_4",
+  "name": "Radiant Storm Opal",
+  "tier": 5,
+  "color": "#9fe8ff",
+  "desc": "Grade 4 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "opal",
+  "grade": 4,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "lightning_pct": 24
+   },
+   "armor": {
+    "resist_lightning": 19
+   },
+   "jewelry": {
+    "attack_speed_pct": 7.2
+   }
+  }
+ },
+ {
+  "id": "opal_5",
+  "name": "Lantern Storm Opal",
+  "tier": 6,
+  "color": "#9fe8ff",
+  "desc": "Grade 5 gem. Combine 3 at the Jeweler for the next grade.",
+  "gem": true,
+  "gem_type": "opal",
+  "grade": 5,
+  "category": "gem",
+  "socket": {
+   "weapon": {
+    "lightning_pct": 35
+   },
+   "armor": {
+    "resist_lightning": 28
+   },
+   "jewelry": {
+    "attack_speed_pct": 10
    }
   }
  }

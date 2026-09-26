@@ -1,0 +1,874 @@
+[
+ {
+  "id": "pet_sootkin",
+  "name": "Sootkin",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.3,
+  "tint": "#2a2a30",
+  "rarity": "common",
+  "source": "quest",
+  "source_ref": "q_a1_lost_rattlers",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "gold_find": 1.0,
+   "pickup_radius": 2
+  },
+  "perk": "fetch",
+  "perk_params": {
+   "radius": 6
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A soot sprite. Brings you coins.",
+  "codex": true
+ },
+ {
+  "id": "pet_button",
+  "name": "Button",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.28,
+  "tint": "#ffb3d1",
+  "rarity": "common",
+  "source": "vendor",
+  "source_ref": "npc_a1_petkeeper",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "magic_find": 0.6,
+   "pickup_radius": 2
+  },
+  "perk": "fetch",
+  "perk_params": {
+   "radius": 5
+  },
+  "combat_for": [
+   "stitcher"
+  ],
+  "price_gold": 800,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A rag-doll puppy with button eyes. Fights beside Stitchers.",
+  "codex": true
+ },
+ {
+  "id": "pet_mothball",
+  "name": "Mothball",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "scale": 0.28,
+  "tint": "#f0f0e8",
+  "rarity": "common",
+  "source": "drop",
+  "source_ref": "grey_moth",
+  "drop_chance": 0.002,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "material_find": 0.8
+  },
+  "perk": "glow",
+  "perk_params": {
+   "light_radius": 1.5
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A fluffy white moth that glows softly.",
+  "codex": true
+ },
+ {
+  "id": "pet_pip",
+  "name": "Pip",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.25,
+  "tint": "#ffd84a",
+  "rarity": "rare",
+  "source": "event",
+  "source_ref": "magpie",
+  "drop_chance": 0.05,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "gold_find": 2.0
+  },
+  "perk": "lucky",
+  "perk_params": {
+   "double_gold_chance": 0.05
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A tiny magpie imp who reformed. Mostly.",
+  "codex": true
+ },
+ {
+  "id": "pet_dimple",
+  "name": "Dimple",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 0.28,
+  "tint": "#9fffd0",
+  "rarity": "common",
+  "source": "drop",
+  "source_ref": "lily_ghost",
+  "drop_chance": 0.003,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "xp_pct": 0.3
+  },
+  "perk": "glow",
+  "perk_params": {
+   "light_radius": 1.5
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A lily-ghost who follows you giggling.",
+  "codex": true
+ },
+ {
+  "id": "pet_wicklet",
+  "name": "Wicklet",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "scale": 0.3,
+  "tint": "#ffd27a",
+  "rarity": "rare",
+  "source": "craft",
+  "source_ref": "r_cauldron_egg",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "magic_find": 1.0,
+   "xp_pct": 0.2
+  },
+  "perk": "glow",
+  "perk_params": {
+   "light_radius": 3.0
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A little candle-person. Hatched from a warm egg.",
+  "codex": true
+ },
+ {
+  "id": "pet_crumpet",
+  "name": "Crumpet",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.32,
+  "tint": "#c89060",
+  "rarity": "common",
+  "source": "vendor",
+  "source_ref": "npc_a2_petkeeper",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "pickup_radius": 3,
+   "material_find": 0.4
+  },
+  "perk": "fetch",
+  "perk_params": {
+   "radius": 7
+  },
+  "combat_for": [],
+  "price_gold": 800,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A moss-hound pup. Fetches everything. Everything.",
+  "codex": true
+ },
+ {
+  "id": "pet_hoot",
+  "name": "Hoot",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "scale": 0.3,
+  "tint": "#4a3a5a",
+  "rarity": "rare",
+  "source": "quest",
+  "source_ref": "q_a2_owlcrows",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "magic_find": 1.2
+  },
+  "perk": "lucky",
+  "perk_params": {
+   "extra_affix_chance": 0.01
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A baby owlcrow. Knows one riddle. Tells it constantly.",
+  "codex": true
+ },
+ {
+  "id": "pet_puddle",
+  "name": "Puddle",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.3,
+  "tint": "#6f8a4a",
+  "rarity": "common",
+  "source": "drop",
+  "source_ref": "mud_frog",
+  "drop_chance": 0.003,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "gold_find": 0.8,
+   "material_find": 0.4
+  },
+  "perk": "dig",
+  "perk_params": {
+   "chance": 0.02
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A mud frog who digs up shiny things.",
+  "codex": true
+ },
+ {
+  "id": "pet_gravel",
+  "name": "Gravel",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 0.3,
+  "tint": "#8a7a6a",
+  "rarity": "common",
+  "source": "quest",
+  "source_ref": "q_a3_diglings",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "material_find": 1.2
+  },
+  "perk": "dig",
+  "perk_params": {
+   "chance": 0.03
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A pebble golem. Very proud of his pebbles.",
+  "codex": true
+ },
+ {
+  "id": "pet_glim",
+  "name": "Glim",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.25,
+  "tint": "#cfe8f0",
+  "rarity": "rare",
+  "source": "drop",
+  "source_ref": "mb_crystal_matron",
+  "drop_chance": 0.08,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "magic_find": 1.0,
+   "pickup_radius": 2
+  },
+  "perk": "glow",
+  "perk_params": {
+   "light_radius": 2.5
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A crystal spiderling. Clinks happily.",
+  "codex": true
+ },
+ {
+  "id": "pet_lanternbug",
+  "name": "Lanternbug",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "scale": 0.22,
+  "tint": "#ffe9a0",
+  "rarity": "epic",
+  "source": "event",
+  "source_ref": "lantern_moth",
+  "drop_chance": 0.2,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "xp_pct": 0.5,
+   "magic_find": 0.8
+  },
+  "perk": "glow",
+  "perk_params": {
+   "light_radius": 4.0
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "It lights the way. Literally.",
+  "codex": true
+ },
+ {
+  "id": "pet_sir_wobble",
+  "name": "Sir Wobble",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Warrior.glb",
+  "scale": 0.32,
+  "tint": "#b8c0d0",
+  "rarity": "rare",
+  "source": "quest",
+  "source_ref": "q_a4_tin_soldiers",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "gold_find": 1.0,
+   "pickup_radius": 2
+  },
+  "perk": "ferry",
+  "perk_params": {
+   "trip_seconds": 3
+  },
+  "combat_for": [
+   "stitcher"
+  ],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A tin soldier who salutes everything. Carries loot to town.",
+  "codex": true
+ },
+ {
+  "id": "pet_flurry",
+  "name": "Flurry",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.3,
+  "tint": "#e8f0f8",
+  "rarity": "common",
+  "source": "vendor",
+  "source_ref": "npc_a4_petkeeper",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "pickup_radius": 3,
+   "gold_find": 0.6
+  },
+  "perk": "fetch",
+  "perk_params": {
+   "radius": 8
+  },
+  "combat_for": [],
+  "price_gold": 800,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A snow-hound pup. Cold nose, warm heart.",
+  "codex": true
+ },
+ {
+  "id": "pet_toffee",
+  "name": "Toffee",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.28,
+  "tint": "#ff9ed8",
+  "rarity": "epic",
+  "source": "event",
+  "source_ref": "candy_crypt",
+  "drop_chance": 0.1,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "magic_find": 1.5,
+   "gold_find": 1.5
+  },
+  "perk": "lucky",
+  "perk_params": {
+   "double_gold_chance": 0.08
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A candy skeleton. Slightly sticky.",
+  "codex": true
+ },
+ {
+  "id": "pet_mumble",
+  "name": "Mumble",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 0.28,
+  "tint": "#8a8a90",
+  "rarity": "rare",
+  "source": "quest",
+  "source_ref": "q_a5_hushlings",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "xp_pct": 0.6
+  },
+  "perk": "ferry",
+  "perk_params": {
+   "trip_seconds": 3
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A hushling who decided to be your friend. Carries loot to town.",
+  "codex": true
+ },
+ {
+  "id": "pet_biscuit",
+  "name": "Biscuit",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.3,
+  "tint": "#d9a07a",
+  "rarity": "common",
+  "source": "vendor",
+  "source_ref": "npc_a3_petkeeper",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "material_find": 0.6,
+   "gold_find": 0.4
+  },
+  "perk": "dig",
+  "perk_params": {
+   "chance": 0.02
+  },
+  "combat_for": [
+   "stitcher"
+  ],
+  "price_gold": 800,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A patchwork bear cub. Fights beside Stitchers.",
+  "codex": true
+ },
+ {
+  "id": "pet_nibbles",
+  "name": "Nibbles",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "scale": 0.25,
+  "tint": "#9a8a70",
+  "rarity": "common",
+  "source": "drop",
+  "source_ref": "echo_bat",
+  "drop_chance": 0.002,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "pickup_radius": 3
+  },
+  "perk": "fetch",
+  "perk_params": {
+   "radius": 7
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "An echo bat who squeaks your name.",
+  "codex": true
+ },
+ {
+  "id": "pet_marshmallow",
+  "name": "Marshmallow",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.3,
+  "tint": "#fff4f0",
+  "rarity": "rare",
+  "source": "event",
+  "source_ref": "mystery_egg",
+  "drop_chance": 0.25,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "xp_pct": 0.4,
+   "magic_find": 0.8
+  },
+  "perk": "lucky",
+  "perk_params": {
+   "extra_affix_chance": 0.01
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "Hatched from a mystery egg. Unbearably soft.",
+  "codex": true
+ },
+ {
+  "id": "pet_sprocket",
+  "name": "Sprocket",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Rogue.glb",
+  "scale": 0.25,
+  "tint": "#c8d0a0",
+  "rarity": "rare",
+  "source": "craft",
+  "source_ref": "r_cauldron_egg",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "gold_find": 0.8,
+   "material_find": 0.8
+  },
+  "perk": "ferry",
+  "perk_params": {
+   "trip_seconds": 3
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A wind-up tin sparrow. Carries loot to town and back.",
+  "codex": true
+ },
+ {
+  "id": "pet_nutmeg",
+  "name": "Nutmeg",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.3,
+  "tint": "#8a6a4a",
+  "rarity": "common",
+  "source": "drop",
+  "source_ref": "twigling",
+  "drop_chance": 0.002,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "material_find": 0.8
+  },
+  "perk": "dig",
+  "perk_params": {
+   "chance": 0.025
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A twigling sprout. Buries things. Finds better things.",
+  "codex": true
+ },
+ {
+  "id": "pet_quill",
+  "name": "Quill",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Mage.glb",
+  "scale": 0.26,
+  "tint": "#e0d0ff",
+  "rarity": "epic",
+  "source": "quest",
+  "source_ref": "q_a4_place_cards",
+  "drop_chance": 0,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "xp_pct": 0.5,
+   "magic_find": 1.0
+  },
+  "perk": "lucky",
+  "perk_params": {
+   "extra_affix_chance": 0.015
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A living letter. Spells your name wrong on purpose.",
+  "codex": true
+ },
+ {
+  "id": "pet_glowworm",
+  "name": "Wisp",
+  "model": "res://assets/thirdparty/kaykit/skeletons/characters/Skeleton_Minion.glb",
+  "scale": 0.2,
+  "tint": "#8fd9a0",
+  "rarity": "legendary",
+  "source": "event",
+  "source_ref": "hushfall",
+  "drop_chance": 0.02,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "magic_find": 2.0,
+   "xp_pct": 0.5
+  },
+  "perk": "glow",
+  "perk_params": {
+   "light_radius": 5.0
+  },
+  "combat_for": [],
+  "price_gold": 0,
+  "tricks": [
+   {
+    "level": 5,
+    "trick": "sit"
+   },
+   {
+    "level": 15,
+    "trick": "spin"
+   },
+   {
+    "level": 30,
+    "trick": "fetch_star"
+   }
+  ],
+  "desc": "A wisp of the old World-Lantern. Found after a Hushfall.",
+  "codex": true
+ }
+]

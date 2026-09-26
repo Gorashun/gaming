@@ -289,6 +289,7 @@ func hearth() -> Dictionary:
 		Travel.consume_hearth(ch)
 		_remember_return_point()
 		Events.hearth_used.emit()
+		Sfx.play("hearth_done")
 		Fx.burst(world.player.global_position + Vector3(0, 1, 0), Color(1, 0.8, 0.45), 30, 4.0, 0.12, 0.8, 2.0)
 		travel(Travel.hearth_target(ch)))
 	return {"ok": ok, "message": "", "channel_s": Travel.hearth_channel_s()}
@@ -339,6 +340,8 @@ func set_active_pet(pet_id: String) -> Dictionary:
 
 func pet_ferry(mode := "sell", max_rank := -1) -> Dictionary:
 	var r = Pets.ferry(Game.character, mode, max_rank)
+	if r.ok:
+		Sfx.play("pet_happy")
 	_refresh()
 	return _result(r.ok, r.message, r)
 
@@ -389,6 +392,7 @@ func quest_state(quest_id: String) -> String:
 func accept(quest_id: String) -> bool:
 	var ok = Quests.accept(Game.character, quest_id)
 	if ok:
+		Sfx.play("quest_accept")
 		Events.toast.emit("New quest: %s" % Quests.rec(quest_id).get("name", quest_id), Color(1, 0.9, 0.5))
 		Game.save_character()
 	return ok
@@ -396,6 +400,7 @@ func accept(quest_id: String) -> bool:
 func turn_in(quest_id: String) -> Dictionary:
 	var r = Quests.turn_in(Game.character, quest_id, world)
 	if r.ok:
+		Sfx.play("quest_done")
 		if world and Game.character.active_pet != "" and (world.pet == null or not is_instance_valid(world.pet)):
 			world.spawn_pet()
 		_refresh()
@@ -457,6 +462,7 @@ func upgrade_preview(item: Dictionary) -> Dictionary:
 func upgrade_item(item: Dictionary) -> Dictionary:
 	var r = Upgrade.upgrade(Game.character, item)
 	if r.ok:
+		Sfx.play("upgrade")
 		_refresh()
 		Events.equipment_changed.emit()
 		Events.inventory_changed.emit()
@@ -469,6 +475,8 @@ func vendor_buy(vendor_id: String, entry) -> Dictionary:
 
 func curio_buy(offer_id: String) -> Dictionary:
 	var r = Merchants.curio_buy(Game.character, offer_id)
+	if r.ok:
+		Sfx.play("drop_" + str(r.item.rarity), -2.0, 0.0)
 	if r.ok and Items.rarity_index(r.item.rarity) >= 4:
 		Events.golden_moment.emit(r.item)
 	Game.save_character()

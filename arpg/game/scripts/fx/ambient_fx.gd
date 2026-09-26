@@ -11,10 +11,10 @@ var _t = 0.0
 const PRESETS := {
 	# kind: [amount, lifetime, box extents, gravity, vel min, vel max, size min, size max, additive, texture]
 	"snow":      [48, 6.0, Vector3(14, 5, 14), Vector3(0.35, -1.1, 0.1), 0.1, 0.3, 0.07, 0.14, false, "dot"],
-	"motes":     [36, 5.0, Vector3(13, 3, 13), Vector3(0, 0.18, 0), 0.05, 0.2, 0.05, 0.1, true, "dot"],
+	"motes":     [36, 5.0, Vector3(13, 3, 13), Vector3(0, 0.18, 0), 0.05, 0.2, 0.035, 0.07, true, "dot"],
 	"spores":    [32, 7.0, Vector3(13, 3, 13), Vector3(0.05, 0.08, 0), 0.05, 0.15, 0.05, 0.09, true, "dot"],
 	"fireflies": [18, 4.0, Vector3(12, 1.6, 12), Vector3(0, 0.05, 0), 0.2, 0.6, 0.06, 0.1, true, "dot"],
-	"dust":      [36, 6.0, Vector3(12, 3, 12), Vector3(0.05, -0.02, 0), 0.02, 0.1, 0.04, 0.07, false, "dot"],
+	"dust":      [30, 6.0, Vector3(12, 3, 12), Vector3(0.05, -0.02, 0), 0.02, 0.1, 0.025, 0.045, false, "dot"],
 	"embers":    [24, 3.5, Vector3(12, 1.0, 12), Vector3(0, 0.6, 0), 0.2, 0.5, 0.04, 0.07, true, "dot"],
 	"ash":       [36, 6.0, Vector3(14, 5, 14), Vector3(0.2, -0.5, 0.0), 0.05, 0.2, 0.05, 0.1, false, "dot"],
 	"wisps":     [8, 6.0, Vector3(12, 1.4, 12), Vector3(0, 0.1, 0), 0.1, 0.3, 0.18, 0.3, true, "dot"],

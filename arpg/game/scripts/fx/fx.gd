@@ -132,6 +132,7 @@ func additive_sprite_mat(texname := "dot") -> StandardMaterial3D:
 		m.vertex_color_use_as_albedo = true
 		m.albedo_texture = tex(texname)
 		m.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+		m.billboard_keep_scale = true      # glows inside scaled creatures / tweened souls
 		m.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
 		m.disable_fog = true
 		_std_cache[key] = m
@@ -201,11 +202,28 @@ func later(t: float, f: Callable) -> void:
 	else:
 		get_tree().create_timer(t, false).timeout.connect(f)
 
+var _recent_numbers = {}   # grid key -> {label, amount, t}: merges rapid hits into one number
+var _active_numbers = 0
+const MAX_NUMBERS := 24
+
 func damage_number(pos: Vector3, amount: float, crit: bool, color := Color.WHITE, is_player := false) -> void:
 	if not Settings.get_value("damage_numbers", true):
 		return
 	var r = root3d()
 	if r == null:
+		return
+	# Declutter crowded fights: hits on the same spot within 0.3 s add up into one number.
+	var key = "%d_%d_%s_%s" % [int(round(pos.x)), int(round(pos.z)), is_player, crit]
+	var now = Time.get_ticks_msec()
+	if _recent_numbers.has(key):
+		var rec = _recent_numbers[key]
+		if now - int(rec.t) < 300 and is_instance_valid(rec.label) and rec.label.is_inside_tree():
+			rec.amount = float(rec.amount) + amount
+			rec.t = now
+			(rec.label as Label3D).text = _fmt(rec.amount) + ("!" if crit else "")
+			(rec.label as Label3D).scale = Vector3.ONE * (1.9 if crit else 1.3)
+			return
+	if _active_numbers >= MAX_NUMBERS and not crit and not is_player:
 		return
 	var l: Label3D
 	if _dmg_pool.size() > 0:
@@ -226,14 +244,19 @@ func damage_number(pos: Vector3, amount: float, crit: bool, color := Color.WHITE
 	l.modulate = Color(1.0, 0.8, 0.25) if crit else color
 	if is_player:
 		l.modulate = Color("#ff6b6b")
-	l.global_position = pos + Vector3(randf_range(-0.3, 0.3), 1.8, randf_range(-0.3, 0.3))
+	l.global_position = pos + Vector3(randf_range(-0.4, 0.4), 1.9, randf_range(-0.4, 0.4))
 	l.scale = Vector3.ONE * (1.7 if crit else 1.15)
+	_recent_numbers[key] = {"label": l, "amount": amount, "t": now}
+	if _recent_numbers.size() > 64:
+		_recent_numbers.clear()
+	_active_numbers += 1
 	var t = l.create_tween()
 	t.set_parallel(true)
 	t.tween_property(l, "global_position", l.global_position + Vector3(0, 1.2, 0), 0.7).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	t.tween_property(l, "scale", Vector3.ONE * (1.1 if crit else 0.8), 0.25).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	t.tween_property(l, "modulate:a", 0.0, 0.3).set_delay(0.45)
 	t.chain().tween_callback(func():
+		_active_numbers = maxi(0, _active_numbers - 1)
 		if is_instance_valid(l):
 			l.get_parent().remove_child(l)
 			l.modulate.a = 1.0
@@ -1062,16 +1085,18 @@ func _decorate_hero(p: Actor) -> void:
 	for c in p.get_children():
 		if c is OmniLight3D:
 			light = c
-	var wick = CreatureFactory.build("wick", Color("#ffb54a"), 0.32)
+	var wick = CreatureFactory.build("wick", Color("#ffb54a"), 0.26)
 	wick.name = "Wick"
 	p.add_child(wick)
-	wick.position = Vector3(0.55, 2.05, 0.1)
+	wick.position = Vector3(-0.75, 1.75, -0.35)   # floats beside the shoulder, never over the face
 	if light:
+		# High and slightly behind: a warm pool on the ground around the hero without blowing
+		# out the hero's own colours (Art Bible 4: #FFB54A, "the Wick").
 		light.light_color = Color("#ffb869")
-		light.light_energy = 1.45
-		light.omni_range = 8.5
-		light.omni_attenuation = 0.9
-		light.position = Vector3(0.4, 2.3, 0.3)
+		light.light_energy = 1.25
+		light.omni_range = 9.0
+		light.omni_attenuation = 0.8
+		light.position = Vector3(-0.5, 3.6, -0.4)
 		wick.set_meta("light", light)
 
 func decorate_drop(d: Node, rarity: String) -> void:

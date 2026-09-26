@@ -19,6 +19,12 @@
    "saturation": 0.6,
    "brightness": 0.72
   },
+  "floor_tint": {
+   "saturation": 0.45,
+   "brightness": 0.55,
+   "top_color": "#3a3028",
+   "top_amount": 0.2
+  },
   "boundary_props": [
    "hal:fence",
    "hal:fence_pillar",
@@ -205,6 +211,12 @@
    "saturation": 0.75,
    "brightness": 0.9
   },
+  "floor_tint": {
+   "saturation": 0.45,
+   "brightness": 0.55,
+   "top_color": "#3a3028",
+   "top_amount": 0.2
+  },
   "boundary_props": [
    "hex:nature/rock_single_A",
    "hex:nature/rock_single_D",
@@ -378,6 +390,9 @@
    "top_color": "#eef4ff",
    "top_amount": 0.55
   },
+  "floor_tint": {
+   "top_amount": 0.35
+  },
   "boundary_props": [
    "hal:tree_dead_large",
    "hal:tree_dead_medium",
@@ -515,9 +530,6 @@
    "outline": "#1a2230"
   },
   "music": "town",
-  "floor_tint": {
-   "top_amount": 0.35
-  },
   "ambience": "amb_ice"
  },
  {
@@ -538,6 +550,12 @@
   "tint": {
    "saturation": 0.45,
    "brightness": 0.9
+  },
+  "floor_tint": {
+   "saturation": 0.45,
+   "brightness": 0.55,
+   "top_color": "#3a3028",
+   "top_amount": 0.2
   },
   "boundary_props": [
    "hal:tree_dead_large",
@@ -1681,11 +1699,11 @@
   "tint": {
    "color": "#c8a890",
    "saturation": 0.5,
-   "brightness": 0.72
+   "brightness": 0.8
   },
   "wall_tint": {
-   "color": "#a89080",
-   "brightness": 0.6
+   "color": "#b8a090",
+   "brightness": 0.75
   },
   "props": [
    {
@@ -1755,7 +1773,7 @@
      "hal:post_lantern"
     ],
     "where": "any",
-    "density": 0.025,
+    "density": 0.04,
     "light": {
      "color": "#ffc070",
      "energy": 1.6,
@@ -1848,8 +1866,8 @@
   ],
   "env": {
    "sky": "#060404",
-   "ambient": "#3a2e24",
-   "ambient_energy": 1.0,
+   "ambient": "#4a3a2c",
+   "ambient_energy": 1.15,
    "fog": "#1e1916",
    "fog_begin": 18,
    "fog_end": 44,
@@ -2044,7 +2062,13 @@
   },
   "floor_tint": {
    "top_amount": 0.35,
-   "brightness": 0.95
+   "brightness": 0.85
+  },
+  "wall_tint": {
+   "color": "#90a8c8",
+   "saturation": 0.45,
+   "brightness": 0.7,
+   "top_amount": 0.7
   },
   "props": [
    {
@@ -2181,9 +2205,9 @@
    }
   ],
   "env": {
-   "sky": "#9fb2c6",
+   "sky": "#5a6a7e",
    "ambient": "#5a6e80",
-   "ambient_energy": 1.05,
+   "ambient_energy": 1.0,
    "fog": "#afc4d6",
    "fog_begin": 20,
    "fog_end": 50,
@@ -2415,7 +2439,7 @@
   "tint": {
    "color": "#d8d8e0",
    "saturation": 0.0,
-   "brightness": 0.72
+   "brightness": 0.85
   },
   "props": [
    {
@@ -2521,8 +2545,8 @@
   ],
   "env": {
    "sky": "#0c0c0e",
-   "ambient": "#34343a",
-   "ambient_energy": 1.0,
+   "ambient": "#48484e",
+   "ambient_energy": 1.15,
    "fog": "#18181c",
    "fog_begin": 18,
    "fog_end": 44,
@@ -2706,9 +2730,9 @@
   ],
   "corner_pillar": "wall_pillar",
   "tint": {
-   "color": "#8a88b8",
-   "saturation": 0.35,
-   "brightness": 0.55,
+   "color": "#9a98c8",
+   "saturation": 0.4,
+   "brightness": 0.75,
    "hue": 20
   },
   "props": [
@@ -2828,8 +2852,8 @@
   ],
   "env": {
    "sky": "#040308",
-   "ambient": "#2a2440",
-   "ambient_energy": 1.0,
+   "ambient": "#3c3460",
+   "ambient_energy": 1.2,
    "fog": "#0c0a14",
    "fog_begin": 18,
    "fog_end": 44,

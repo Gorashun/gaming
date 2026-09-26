@@ -1,0 +1,1934 @@
+[
+ {
+  "id": "npc_a1_smith",
+  "name": "Brannoc Sparkwell",
+  "title": "Smith",
+  "role": "smith",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "2H_Axe"
+  ],
+  "tint": "#ffffff",
+  "anim": "2H_Melee_Idle",
+  "screen": "crafting:smith",
+  "greeting": "Big Bran's forge! Mind the sparks. And the moths. Mostly the moths.",
+  "barks": [
+   "This is Hammer Gerald. Say hello to Gerald.",
+   "Upgrading never breaks a thing. Not on my anvil.",
+   "Is that a moth? Tell me that's not a moth.",
+   "Bring me Soot Dust. I'll bring the shine.",
+   "Hot iron, warm heart. That's the rule.",
+   "Hammer Gerald's cousin is Hammer Gertrude. She's for fancy work.",
+   "Every sword remembers the hand that made it. Mine remember hugs."
+  ],
+  "quest_ids": [
+   "q_a1_shieldbones"
+  ],
+  "text_ref": "npc_a1_smith"
+ },
+ {
+  "id": "npc_a1_alchemist",
+  "name": "Nettle Pim",
+  "title": "Alchemist",
+  "role": "alchemist",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Mage_Hat"
+  ],
+  "tint": "#d8ffd8",
+  "anim": "Idle",
+  "screen": "crafting:alchemist",
+  "greeting": "Oh! A customer! Hold on, I need to climb onto my stool.",
+  "barks": [
+   "Red potion: feel better. Blue potion: don't drink the blue one.",
+   "Ah— ah— ACHOO! Sorry. Glitter. It happens.",
+   "Bone Meal makes lovely potions. Don't ask how.",
+   "Tall people always knock over my shelves.",
+   "Fizzing means it's working! Or broken. Usually working.",
+   "Drink a potion when your light gets low. Easy!"
+  ],
+  "quest_ids": [
+   "q_a1_bone_meal"
+  ],
+  "text_ref": "npc_a1_alchemist"
+ },
+ {
+  "id": "npc_a1_jeweler",
+  "name": "Madame Glimmerwick",
+  "title": "Jeweler",
+  "role": "jeweler",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Mage_Hat",
+   "Spellbook_open"
+  ],
+  "tint": "#ffe8f8",
+  "anim": "Idle",
+  "screen": "crafting:jeweler",
+  "greeting": "Welcome, darling! Have you seen my blue ring? …Oh. Found it.",
+  "barks": [
+   "Forty rings, and not one is the right one.",
+   "A gem in a socket is a little star in your pocket.",
+   "Candle Ruby for courage. Frost Sapphire for calm.",
+   "I polish my rings so often they polish me back.",
+   "Never trust a Magpie Imp near a jewellery box.",
+   "Darling, that amulet is SO you."
+  ],
+  "quest_ids": [
+   "q_a1_ring_hunt"
+  ],
+  "text_ref": "npc_a1_jeweler"
+ },
+ {
+  "id": "npc_a1_runecarver",
+  "name": "Grandpa Knurl",
+  "title": "Runecarver",
+  "role": "runecarver",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "Knight_Cape"
+  ],
+  "tint": "#d8d0ff",
+  "anim": "Idle",
+  "screen": "crafting:runecarver",
+  "greeting": "Hm? Oh, hello. Mind the table. I carved a rune on it.",
+  "barks": [
+   "This spoon has a rune for 'soup'. Very useful.",
+   "Runes are just words that remember to work.",
+   "Carve slow. The wood tells you where.",
+   "I once carved 'brave' on my boots. Didn't help.",
+   "When you reach Rimehall, find Master Quillon. He carves ice!",
+   "My chair says 'sit'. So I do."
+  ],
+  "quest_ids": [
+   "q_a1_candle_mages",
+   "q_a1_rune_spoon"
+  ],
+  "text_ref": "npc_a1_runecarver"
+ },
+ {
+  "id": "npc_a1_trader",
+  "name": "Pocket Polly",
+  "title": "Trader",
+  "role": "trader",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [
+   "Rogue_Cape"
+  ],
+  "tint": "#ffffff",
+  "anim": "Idle",
+  "screen": "vendor",
+  "greeting": "Buying? Selling? Let me check my pockets. All of them.",
+  "barks": [
+   "Pocket forty-two… no, that's a frog. Sorry, frog.",
+   "I've got a pocket for everything. Finding it is extra.",
+   "I buy anything shiny. Except Magpie Imps. They buy back.",
+   "Fair prices, honest pockets!",
+   "One of my pockets hums at night. I don't check that one.",
+   "Something you don't need? I'll give you coins for it."
+  ],
+  "quest_ids": [
+   "q_a1_magpie"
+  ],
+  "text_ref": "npc_a1_trader",
+  "shop": "vendor_a1"
+ },
+ {
+  "id": "npc_a1_stash",
+  "name": "Humphrey",
+  "title": "Stash Keeper",
+  "role": "stash",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Mug"
+  ],
+  "tint": "#e8e0d0",
+  "anim": "Sit_Chair_Idle",
+  "screen": "stash",
+  "greeting": "Your… things… are… safe. One. One. Two. Two.",
+  "barks": [
+   "Nothing… lost… in… a hundred… years.",
+   "Slow… and… safe.",
+   "Your stash… follows you… to every… town. Clever… that.",
+   "I counted… your socks. Twice. All there.",
+   "Don't… rush. I never… do.",
+   "Shell… is also… a stash."
+  ],
+  "quest_ids": [
+   "q_a1_humphrey_count"
+  ],
+  "text_ref": "npc_a1_stash"
+ },
+ {
+  "id": "npc_a1_stablemaster",
+  "name": "Hattie Hayloft",
+  "title": "Stablemaster",
+  "role": "stablemaster",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Barbarian_Hat"
+  ],
+  "tint": "#f0e0c0",
+  "anim": "Idle",
+  "screen": "stable",
+  "greeting": "Hello! Puddle says hello too. Don't you, Puddle? She does.",
+  "barks": [
+   "Puddle says you look like a good rider.",
+   "A newt on the path is faster than two boots in the mud.",
+   "If something bonks you, you'll hop off. Newts are shy.",
+   "Squelch says he wants a snack. Squelch always wants a snack.",
+   "Riding's quicker in the zones and in town, dear.",
+   "Pat them on the nose. Gently. They like that."
+  ],
+  "quest_ids": [
+   "q_a1_newt_ride"
+  ],
+  "text_ref": "npc_a1_stablemaster"
+ },
+ {
+  "id": "npc_a1_petkeeper",
+  "name": "Wren Whistleby",
+  "title": "Pet Keeper",
+  "role": "petkeeper",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [],
+  "tint": "#ffe0f0",
+  "anim": "Sit_Floor_Idle",
+  "screen": "pets",
+  "greeting": "State your pet's name and favourite snack, please.",
+  "barks": [
+   "Pets pick up loot for you. Very professional.",
+   "Pets get stronger when you go adventuring together.",
+   "Some pets dig up treasure. I'm not jealous. I'm a bit jealous.",
+   "Every pet deserves a good name. Not 'Pet'.",
+   "I've got a list of all the pets in Lumenholm. It's long.",
+   "Pets don't fight. They help. That's different."
+  ],
+  "quest_ids": [
+   "q_a1_pet_egg"
+  ],
+  "text_ref": "npc_a1_petkeeper"
+ },
+ {
+  "id": "npc_a1_innkeeper",
+  "name": "Mother Mabble",
+  "title": "Innkeeper",
+  "role": "innkeeper",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Mug"
+  ],
+  "tint": "#ffe0c0",
+  "anim": "Idle",
+  "screen": "inn",
+  "greeting": "Sit down, pet. Soup's hot. Everything's better after soup.",
+  "barks": [
+   "Rest here and the Homeward Wick will bring you back.",
+   "Resting makes your light glow brighter. That's just true.",
+   "Soup of the day: soup.",
+   "The roof leaks, but only on people who complain.",
+   "You look tired. Tired is allowed.",
+   "A warm bed, a warm bowl, a warm light. That's home."
+  ],
+  "quest_ids": [
+   "q_a1_bonepiles"
+  ],
+  "text_ref": "npc_a1_innkeeper"
+ },
+ {
+  "id": "npc_a1_questgiver",
+  "name": "Warden Hollis Reed",
+  "title": "Warden",
+  "role": "questgiver",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "Knight_Helmet",
+   "Knight_Cape",
+   "1H_Sword"
+  ],
+  "tint": "#ffffff",
+  "anim": "Idle",
+  "screen": "quests",
+  "greeting": "Wickbearer! Thank the light. I mean it. I really need help.",
+  "barks": [
+   "The helmet was my father's. I'll grow into it.",
+   "Stay in your light and you'll be alright.",
+   "The Rattlebones aren't bad. They're just lost.",
+   "Every lamp we tie down is one more we keep.",
+   "When you're tired, come back. The bog will wait.",
+   "I heard a bell under the water last night.",
+   "One step at a time. That's how you cross a bog."
+  ],
+  "quest_ids": [
+   "q_a1_bellringer",
+   "q_a1_lost_rattlers",
+   "q_a1_warden_crypt"
+  ],
+  "text_ref": "npc_a1_questgiver"
+ },
+ {
+  "id": "npc_a1_storyteller",
+  "name": "Grandmother Purl",
+  "title": "Storyteller",
+  "role": "storyteller",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Spellbook"
+  ],
+  "tint": "#e0e0ff",
+  "anim": "Sit_Chair_Idle",
+  "screen": "lore",
+  "greeting": "Come sit, little light. Pass me that yarn and I'll tell you a tale.",
+  "barks": [
+   "Knit one, purl one, tell one story.",
+   "This scarf is for everyone in the village. It's a long scarf.",
+   "Once, the sky had a lantern, and nobody thought to thank it.",
+   "The Grey Guest knocked on my door once. I gave him tea.",
+   "My granddaughter sews dolls that talk back. Takes after me.",
+   "Every story is a light you can carry in your head.",
+   "Lost your way? Follow the lamps. They float toward home."
+  ],
+  "quest_ids": [
+   "q_a1_purl_yarn"
+  ],
+  "text_ref": "npc_a1_storyteller"
+ },
+ {
+  "id": "npc_a1_waypoint",
+  "name": "Flicker",
+  "title": "Waypoint Keeper",
+  "role": "waypoint",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "attachments": [
+   "Rogue_Cape"
+  ],
+  "tint": "#d0f0ff",
+  "anim": "Idle",
+  "screen": "map",
+  "greeting": "Hi! I'm Flicker! I'm not scared at all! *flicker*",
+  "barks": [
+   "Touch a waypoint once and you can come back any time!",
+   "Travelling to town is free. The rest costs a little gold.",
+   "I've been to every waypoint. *flicker* Okay, two.",
+   "Wisps like me show the way. Not like the bad wisps. We're nice.",
+   "Tap the map to go places!",
+   "I'm the brightest wisp in Wickmire! *flicker flicker*"
+  ],
+  "quest_ids": [
+   "q_a1_drowned_graves",
+   "q_a1_wisp_lights"
+  ],
+  "text_ref": "npc_a1_waypoint"
+ },
+ {
+  "id": "npc_a1_board",
+  "name": "Bounty Board",
+  "title": "Bounty Board",
+  "role": "board",
+  "town": "a1_town",
+  "model": "prop:hal:sign",
+  "attachments": [],
+  "tint": "#ffffff",
+  "anim": "",
+  "screen": "bounties",
+  "greeting": "The Lamplight Hollow Bounty Board. Pinned notes flap in the bog breeze.",
+  "barks": [
+   "Bounties wait here. They never go stale.",
+   "Finished bounties bank up. Come back whenever you like.",
+   "New notes appear as you adventure.",
+   "A bounty a day? A bounty a month? Up to you.",
+   "Someone has drawn a smiley face on this note.",
+   "Unfinished bounties don't mind waiting."
+  ],
+  "quest_ids": [
+   "q_a1_bounty_archers",
+   "q_a1_bounty_bonemeal",
+   "q_a1_bounty_bones"
+  ],
+  "text_ref": "npc_a1_board"
+ },
+ {
+  "id": "npc_a1_curio",
+  "name": "The Masked Peddler",
+  "title": "Curio Cart",
+  "role": "curio",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "attachments": [
+   "Rogue_Cape",
+   "Throwable"
+  ],
+  "tint": "#b0a0d0",
+  "anim": "Idle",
+  "screen": "curio",
+  "greeting": "Hushmarks only, dearie. No coins, no crowns, no tricks. What you see is what you get... eventually.",
+  "barks": [
+   "Every mystery is honest. The rarity shows the moment you pay.",
+   "Hushmarks come from the quiet places. Keep looking.",
+   "I never tell where I'll park next. Always the same town, though. Funny, that.",
+   "No refunds. No regrets. Only surprises."
+  ],
+  "quest_ids": [],
+  "text_ref": "",
+  "shop": "curio_offers"
+ },
+ {
+  "id": "npc_a2_smith",
+  "name": "Tamsin Knotwood",
+  "title": "Smith",
+  "role": "smith",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "2H_Axe"
+  ],
+  "tint": "#ffffff",
+  "anim": "2H_Melee_Idle",
+  "screen": "crafting:smith",
+  "greeting": "Sorry, tree. Oh! Hello. Sorry. I talk to trees.",
+  "barks": [
+   "Sorry, log. This won't hurt a bit.",
+   "Wood remembers where it grew. Be kind to it.",
+   "Axe handles, bow staves, and one very nice spoon.",
+   "Upgrading here is just like Big Bran's. Only woodier.",
+   "The birches told me a secret about you. I didn't listen.",
+   "Every nick in a blade is a story."
+  ],
+  "quest_ids": [
+   "q_a2_gossip",
+   "q_a2_thorn_sprites"
+  ],
+  "text_ref": "npc_a2_smith"
+ },
+ {
+  "id": "npc_a2_alchemist",
+  "name": "Professor Fennimore Puffcap",
+  "title": "Alchemist",
+  "role": "alchemist",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Mage_Hat"
+  ],
+  "tint": "#d8ffd8",
+  "anim": "Idle",
+  "screen": "crafting:alchemist",
+  "greeting": "Ah, a student! Welcome to the finest laboratory in any tree. *puff*",
+  "barks": [
+   "Alchemy: turning 'oops' into 'ooh!'",
+   "Potions, elixirs, transmutes. All the -ions and -irs.",
+   "Don't startle me. *puff* See? Sparkles everywhere.",
+   "Two small things can become one useful thing. That's the trick.",
+   "Mushrooms are excellent listeners. Terrible at maths.",
+   "Let me show you the station. Just one little brew to start.",
+   "Elixirs last a while. Enjoy the glow."
+  ],
+  "quest_ids": [
+   "q_a2_spores"
+  ],
+  "text_ref": "npc_a2_alchemist"
+ },
+ {
+  "id": "npc_a2_jeweler",
+  "name": "Cress Dewdrop",
+  "title": "Jeweler",
+  "role": "jeweler",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Mage_Hat",
+   "Spellbook_open"
+  ],
+  "tint": "#ffe8f8",
+  "anim": "Idle",
+  "screen": "crafting:jeweler",
+  "greeting": "Hello! Careful where you step. That's a jewel. Was a jewel.",
+  "barks": [
+   "My best gem evaporated this morning. Again.",
+   "Moss Emeralds don't evaporate. That's why I like them.",
+   "Put a gem in a socket and it helps you forever.",
+   "Dew is just tiny water that dreams of being a gem.",
+   "Pretty things are best shared.",
+   "I found a gem in an owl's nest. The owl found me."
+  ],
+  "quest_ids": [
+   "q_a2_dew_gems"
+  ],
+  "text_ref": "npc_a2_jeweler"
+ },
+ {
+  "id": "npc_a2_runecarver",
+  "name": "Hob Mossbeard",
+  "title": "Runecarver",
+  "role": "runecarver",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "Knight_Cape"
+  ],
+  "tint": "#d8d0ff",
+  "anim": "Idle",
+  "screen": "crafting:runecarver",
+  "greeting": "Mm. Welcome. Don't mind the beard. It's thriving.",
+  "barks": [
+   "A rune on an acorn grows into a rune on a tree.",
+   "Something is living in my beard. We have an agreement.",
+   "Slow carving, quick magic.",
+   "My brother Knurl carves spoons. Spoons. Honestly.",
+   "The forest has its own runes. You just have to read bark.",
+   "Beard's getting long. It's got a mushroom now."
+  ],
+  "quest_ids": [
+   "q_a2_acorn_runes"
+  ],
+  "text_ref": "npc_a2_runecarver"
+ },
+ {
+  "id": "npc_a2_trader",
+  "name": "Mister Quibble",
+  "title": "Trader",
+  "role": "trader",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [
+   "Rogue_Cape"
+  ],
+  "tint": "#ffffff",
+  "anim": "Idle",
+  "screen": "vendor",
+  "greeting": "Whooo's buying? What has pockets but no coat? My shop!",
+  "barks": [
+   "What's cheaper than cheap? A good deal!",
+   "I sell by day, I sell by night. Well. Mostly night.",
+   "Riddle me this: what's worth more once you use it?",
+   "Everything here is lightly loved.",
+   "Hoo-hoo! Sharp eyes, fair prices.",
+   "The answer to every riddle is 'buy one'. Just kidding."
+  ],
+  "quest_ids": [
+   "q_a2_trader_riddle"
+  ],
+  "text_ref": "npc_a2_trader",
+  "shop": "vendor_a2"
+ },
+ {
+  "id": "npc_a2_stash",
+  "name": "Nutsy",
+  "title": "Stash Keeper",
+  "role": "stash",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Mug"
+  ],
+  "tint": "#e8e0d0",
+  "anim": "Sit_Chair_Idle",
+  "screen": "stash",
+  "greeting": "Stash? STASH! Yes! I buried it! It's… somewhere! Good spot!",
+  "barks": [
+   "I remember EVERY hiding place! …Most of them!",
+   "Your stash is the same in every town. Magic! Or tunnels.",
+   "I found an acorn from last year! Snack!",
+   "Buried treasure is the best treasure!",
+   "Don't worry. I've never lost anything. Recently.",
+   "Chitter chitter! That means 'safe' in squirrel."
+  ],
+  "quest_ids": [
+   "q_a2_moss_hounds",
+   "q_a2_nutsy_lost"
+  ],
+  "text_ref": "npc_a2_stash"
+ },
+ {
+  "id": "npc_a2_stablemaster",
+  "name": "Ferris Longstride",
+  "title": "Stablemaster",
+  "role": "stablemaster",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Barbarian_Hat"
+  ],
+  "tint": "#f0e0c0",
+  "anim": "Idle",
+  "screen": "stable",
+  "greeting": "*whistles* That means welcome. Want a deer?",
+  "barks": [
+   "*whistles* That means yes.",
+   "Moss-deer never trip on roots. Never.",
+   "Get bumped and you'll hop down. Deer don't like fights.",
+   "This one's Fern. That one's also Fern. They like it.",
+   "Faster through the woods, faster through the town.",
+   "*long whistle* That means 'have a good ride'."
+  ],
+  "quest_ids": [
+   "q_a2_deer_ride"
+  ],
+  "text_ref": "npc_a2_stablemaster"
+ },
+ {
+  "id": "npc_a2_petkeeper",
+  "name": "Juniper Fitch",
+  "title": "Pet Keeper",
+  "role": "petkeeper",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [],
+  "tint": "#ffe0f0",
+  "anim": "Sit_Floor_Idle",
+  "screen": "pets",
+  "greeting": "Hello! Shh. Owlet nap time. Hoo. Sorry. Hello.",
+  "barks": [
+   "Owlets sleep all day. Best job ever.",
+   "Hoo? Oh, sorry. What did you ask?",
+   "A pet finds shiny things you'd walk right past.",
+   "Level up your pet by adventuring together.",
+   "Wren from Lamplight Hollow writes me pet letters!",
+   "This owlet is called Doughnut. Don't ask why. She knows why."
+  ],
+  "quest_ids": [
+   "q_a2_owlcrows"
+  ],
+  "text_ref": "npc_a2_petkeeper"
+ },
+ {
+  "id": "npc_a2_innkeeper",
+  "name": "Bramble Hartwell",
+  "title": "Innkeeper",
+  "role": "innkeeper",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Mug"
+  ],
+  "tint": "#ffe0c0",
+  "anim": "Idle",
+  "screen": "inn",
+  "greeting": "Welcome to The Hollow Knot! Beds are hammocks. Don't fall out.",
+  "barks": [
+   "All our beds rock. Literally.",
+   "Bind your Homeward Wick here and you'll always get home.",
+   "Nap in a hammock and the forest sings you to sleep.",
+   "A rest is not a stop. It's a refill.",
+   "Tea? It's acorn tea. It's a bit crunchy.",
+   "Nobody's fallen out of a hammock this week. Big week."
+  ],
+  "quest_ids": [
+   "q_a2_stump_grumble"
+  ],
+  "text_ref": "npc_a2_innkeeper"
+ },
+ {
+  "id": "npc_a2_questgiver",
+  "name": "Ranger Sorrel Vane",
+  "title": "Ranger",
+  "role": "questgiver",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "Knight_Helmet",
+   "Knight_Cape",
+   "1H_Sword"
+  ],
+  "tint": "#ffffff",
+  "anim": "Idle",
+  "screen": "quests",
+  "greeting": "AH! Oh. It's you. Sorry. The trees keep whispering.",
+  "barks": [
+   "Did you hear that? That was a whisper. Probably about me.",
+   "Brave doesn't mean not scared. I'm very brave.",
+   "The Owlcrows see everything. Even when you sneak.",
+   "The shadows are missing. Look at your feet in the woods.",
+   "Twiglings pretend to be sticks. Poke every stick.",
+   "When it gets too much, take a break. I do. Often."
+  ],
+  "quest_ids": [
+   "q_a2_mother_bark",
+   "q_a2_twiglings"
+  ],
+  "text_ref": "npc_a2_questgiver"
+ },
+ {
+  "id": "npc_a2_storyteller",
+  "name": "Old Hoot",
+  "title": "Storyteller",
+  "role": "storyteller",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Spellbook"
+  ],
+  "tint": "#e0e0ff",
+  "anim": "Sit_Chair_Idle",
+  "screen": "lore",
+  "greeting": "Who comes to Old Hoot? And why? And who's asking?",
+  "barks": [
+   "What is a shadow, if not light's best friend?",
+   "Did you know my apprentice pulls stars from the sky? Did I teach her that?",
+   "Why do trees whisper? What would you say, if you were a tree?",
+   "Who blew out the Lantern? Why would anyone?",
+   "Is the dark empty, or just waiting?",
+   "What's heavier: a lantern, or carrying it alone?"
+  ],
+  "quest_ids": [
+   "q_a2_hoot_question",
+   "q_a2_owl_towers"
+  ],
+  "text_ref": "npc_a2_storyteller"
+ },
+ {
+  "id": "npc_a2_waypoint",
+  "name": "Lumen the Glowworm",
+  "title": "Waypoint Keeper",
+  "role": "waypoint",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "attachments": [
+   "Rogue_Cape"
+  ],
+  "tint": "#d0f0ff",
+  "anim": "Idle",
+  "screen": "map",
+  "greeting": "Hello, hello, a traveller's here! Pick a place, and I'll steer.",
+  "barks": [
+   "Touch a stone, it's yours to keep. Travel there before you sleep!",
+   "To town is free, the rest a coin. Where would you like to join?",
+   "I glow, I glow, from tail to head. The map is where you go instead.",
+   "Waypoints shine like little stars. Near or far, the path is ours.",
+   "Lost in the wood? Don't make a fuss. Come back here and ride with us.",
+   "A rhyme a day keeps the Hush away!"
+  ],
+  "quest_ids": [],
+  "text_ref": "npc_a2_waypoint"
+ },
+ {
+  "id": "npc_a2_board",
+  "name": "Bounty Board",
+  "title": "Bounty Board",
+  "role": "board",
+  "town": "a2_town",
+  "model": "prop:hal:sign",
+  "attachments": [],
+  "tint": "#ffffff",
+  "anim": "",
+  "screen": "bounties",
+  "greeting": "The Owlstead Bounty Board. Notes are pinned with acorns.",
+  "barks": [
+   "Bounties wait here. They never go stale.",
+   "Finished bounties bank up. Come back whenever you like.",
+   "New notes appear as you adventure.",
+   "A bounty a day? A bounty a month? Up to you.",
+   "Someone has drawn a smiley face on this note.",
+   "Unfinished bounties don't mind waiting."
+  ],
+  "quest_ids": [
+   "q_a2_bounty_essence",
+   "q_a2_bounty_puffers",
+   "q_a2_bounty_twigs"
+  ],
+  "text_ref": "npc_a2_board"
+ },
+ {
+  "id": "npc_a2_curio",
+  "name": "The Masked Peddler",
+  "title": "Curio Cart",
+  "role": "curio",
+  "town": "a2_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "attachments": [
+   "Rogue_Cape",
+   "Throwable"
+  ],
+  "tint": "#b0a0d0",
+  "anim": "Idle",
+  "screen": "curio",
+  "greeting": "Hushmarks only, dearie. No coins, no crowns, no tricks. What you see is what you get... eventually.",
+  "barks": [
+   "Every mystery is honest. The rarity shows the moment you pay.",
+   "Hushmarks come from the quiet places. Keep looking.",
+   "I never tell where I'll park next. Always the same town, though. Funny, that.",
+   "No refunds. No regrets. Only surprises."
+  ],
+  "quest_ids": [],
+  "text_ref": "",
+  "shop": "curio_offers"
+ },
+ {
+  "id": "npc_a3_smith",
+  "name": "Dorra Anvilsong",
+  "title": "Smith",
+  "role": "smith",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "2H_Axe"
+  ],
+  "tint": "#ffffff",
+  "anim": "2H_Melee_Idle",
+  "screen": "crafting:smith",
+  "greeting": "WELCOME TO THE FORGE! SORRY! IT'S A LOUD FORGE!",
+  "barks": [
+   "CLANG! That's the chorus.",
+   "My nephew's got a bell for a hammer. Runs in the family!",
+   "SING while you hammer and the metal sits up straight!",
+   "Upgrades never fail here. Loud AND reliable.",
+   "Mines are quiet now. Too quiet. Needs more CLANG.",
+   "If you see my nephew, tell him to wear a scarf."
+  ],
+  "quest_ids": [
+   "q_a3_crystal_spiders"
+  ],
+  "text_ref": "npc_a3_smith"
+ },
+ {
+  "id": "npc_a3_alchemist",
+  "name": "Fizzwick Drabb",
+  "title": "Alchemist",
+  "role": "alchemist",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Mage_Hat"
+  ],
+  "tint": "#d8ffd8",
+  "anim": "Idle",
+  "screen": "crafting:alchemist",
+  "greeting": "Welcome! Don't mind the smoke. Or the eyebrows. They're coming back.",
+  "barks": [
+   "Pop! That was supposed to happen. Mostly.",
+   "Salt makes everything better. Even potions. Especially potions.",
+   "Professor Puffcap taught me. He still sends me spore letters.",
+   "Safety goggles! I should wear those.",
+   "My eyebrows grow back faster every time. Science!",
+   "This one's a transmute. Tiny stuff into better stuff."
+  ],
+  "quest_ids": [
+   "q_a3_salt"
+  ],
+  "text_ref": "npc_a3_alchemist"
+ },
+ {
+  "id": "npc_a3_jeweler",
+  "name": "Opaline Facet",
+  "title": "Jeweler",
+  "role": "jeweler",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Mage_Hat",
+   "Spellbook_open"
+  ],
+  "tint": "#ffe8f8",
+  "anim": "Idle",
+  "screen": "crafting:jeweler",
+  "greeting": "Oh, you're a bit dusty. Hold still. *polish polish* There.",
+  "barks": [
+   "Every gem was once a bit of mountain dreaming.",
+   "Sockets, gems, rings, amulets. I do all of it. Shinily.",
+   "Let me show you the station. One gem, one socket, one smile.",
+   "Crystal Spiders are made of gems. Don't polish them.",
+   "Dust is just shine that's shy.",
+   "*polish* Sorry. Habit. Your elbow was dull."
+  ],
+  "quest_ids": [
+   "q_a3_ruby_polish"
+  ],
+  "text_ref": "npc_a3_jeweler"
+ },
+ {
+  "id": "npc_a3_runecarver",
+  "name": "Chisel",
+  "title": "Runecarver",
+  "role": "runecarver",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "Knight_Cape"
+  ],
+  "tint": "#d8d0ff",
+  "anim": "Idle",
+  "screen": "crafting:runecarver",
+  "greeting": "Hello. Rune. Please.",
+  "barks": [
+   "Carve. Tap. Glow.",
+   "Stone. Friend.",
+   "Rune. Strong.",
+   "Me. Small. Rock. Big.",
+   "Quillon. Ice. Teacher. Far.",
+   "You. Nice."
+  ],
+  "quest_ids": [
+   "q_a3_chisel_friend"
+  ],
+  "text_ref": "npc_a3_runecarver"
+ },
+ {
+  "id": "npc_a3_trader",
+  "name": "Gus Two-Carts",
+  "title": "Trader",
+  "role": "trader",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [
+   "Rogue_Cape"
+  ],
+  "tint": "#ffffff",
+  "anim": "Idle",
+  "screen": "vendor",
+  "greeting": "Left cart buys, right cart sells. Or the other way. Let's find out!",
+  "barks": [
+   "Two carts, twice the bargains!",
+   "Found it in the mines! It's basically new. Basically.",
+   "If one cart rolls away, the prices roll with it.",
+   "Sell me what you don't need. I'll find it a good home.",
+   "Best prices under the mountain! Only prices under the mountain!",
+   "Ever seen a cart with teeth? Don't buy that one."
+  ],
+  "quest_ids": [
+   "q_a3_gus_carts"
+  ],
+  "text_ref": "npc_a3_trader",
+  "shop": "vendor_a3"
+ },
+ {
+  "id": "npc_a3_stash",
+  "name": "Pickett",
+  "title": "Stash Keeper",
+  "role": "stash",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Mug"
+  ],
+  "tint": "#e8e0d0",
+  "anim": "Sit_Chair_Idle",
+  "screen": "stash",
+  "greeting": "Stash cart's ready! Wait. Where's cart six? Oh, there it goes.",
+  "barks": [
+   "Don't worry. The carts always come back. The track's a circle.",
+   "Your stash is safe in every town. Even on wheels.",
+   "Cart six is the adventurous one.",
+   "I oil the wheels every morning. Squeak-free stashing!",
+   "Everything you put in, stays in. Rails' honour.",
+   "Here comes cart six! Told you."
+  ],
+  "quest_ids": [
+   "q_a3_cart_mimic"
+  ],
+  "text_ref": "npc_a3_stash"
+ },
+ {
+  "id": "npc_a3_stablemaster",
+  "name": "Mags Rattlebridle",
+  "title": "Stablemaster",
+  "role": "stablemaster",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Barbarian_Hat"
+  ],
+  "tint": "#f0e0c0",
+  "anim": "Idle",
+  "screen": "stable",
+  "greeting": "Need to get somewhere? I know a shortcut. I always know a shortcut.",
+  "barks": [
+   "Rock-ponies never get tired. They get sleepy. It's different.",
+   "Shortest way to the lift? Left, left, down, whee.",
+   "Get bonked and you're off the pony. Rules of the rocks.",
+   "This is Gravel. That's Pebble. That's Other Gravel.",
+   "Riding's faster. Walking's scenic. Your choice.",
+   "Shortcut to happiness? Pat a pony."
+  ],
+  "quest_ids": [
+   "q_a3_pony_route"
+  ],
+  "text_ref": "npc_a3_stablemaster"
+ },
+ {
+  "id": "npc_a3_petkeeper",
+  "name": "Tuppence",
+  "title": "Pet Keeper",
+  "role": "petkeeper",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [],
+  "tint": "#ffe0f0",
+  "anim": "Sit_Floor_Idle",
+  "screen": "pets",
+  "greeting": "This is Dimple. She's a glow-mole. She likes you. I can tell.",
+  "barks": [
+   "Dimple digs up treasure! Some pets do that!",
+   "I'm not scared of anything. Except baths.",
+   "Pets help find materials. Dimple found a whole sandwich.",
+   "Echo bats make great pets. They copy your giggles.",
+   "Pets get better the more you explore together.",
+   "Dimple says hi. That was the hi. The wiggle."
+  ],
+  "quest_ids": [
+   "q_a3_dimple_dig",
+   "q_a3_lamp_ghosts"
+  ],
+  "text_ref": "npc_a3_petkeeper"
+ },
+ {
+  "id": "npc_a3_innkeeper",
+  "name": "Barnaby Ballast",
+  "title": "Innkeeper",
+  "role": "innkeeper",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Mug"
+  ],
+  "tint": "#ffe0c0",
+  "anim": "Idle",
+  "screen": "inn",
+  "greeting": "Welcome to The Deep Breath! HA HA! Sorry. Lift's fine. Probably.",
+  "barks": [
+   "We pump fresh air all the way down! Breathe deep!",
+   "Bind your Homeward Wick here. HA! Home is where the laugh is!",
+   "Rest up. A tired miner digs holes in the wrong places.",
+   "My laugh broke a crystal once. Now it's two crystals. Bonus!",
+   "Stew's got salt. Everything's got salt. It's a salt mine.",
+   "Stay as long as you like, friend."
+  ],
+  "quest_ids": [
+   "q_a3_lift_laugh"
+  ],
+  "text_ref": "npc_a3_innkeeper"
+ },
+ {
+  "id": "npc_a3_questgiver",
+  "name": "Foreman Hilda Pickwell",
+  "title": "Foreman",
+  "role": "questgiver",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "Knight_Helmet",
+   "Knight_Cape",
+   "1H_Sword"
+  ],
+  "tint": "#ffffff",
+  "anim": "Idle",
+  "screen": "quests",
+  "greeting": "Wickbearer. Good. I have a list of jobs. And a list of reasons. One's blank.",
+  "barks": [
+   "Why do we dig? It's on my list. The list is blank.",
+   "Diglings were my crew. They're not bad. They forgot.",
+   "Lamp ghosts wander the tunnels looking for their miners.",
+   "Keep your light up in the shafts. It's dark down there.",
+   "When your pack's full, come up. The mine's not going anywhere.",
+   "There used to be a song. I can almost hear it."
+  ],
+  "quest_ids": [
+   "q_a3_diglings",
+   "q_a3_great_echo",
+   "q_a3_salt_golem"
+  ],
+  "text_ref": "npc_a3_questgiver"
+ },
+ {
+  "id": "npc_a3_storyteller",
+  "name": "Echo Annie",
+  "title": "Storyteller",
+  "role": "storyteller",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Spellbook"
+  ],
+  "tint": "#e0e0ff",
+  "anim": "Sit_Chair_Idle",
+  "screen": "lore",
+  "greeting": "Sit down, dearie, and I'll tell you a story. Story.",
+  "barks": [
+   "The mountain used to sing to us. Us.",
+   "Every tunnel holds a memory. Memory.",
+   "When the lamps went out, the song went too. Too.",
+   "The Great Echo copies everything. Everything.",
+   "I've always done this. Nobody knows why. Why.",
+   "A quiet mountain is a lonely mountain. Mountain."
+  ],
+  "quest_ids": [
+   "q_a3_annie_song"
+  ],
+  "text_ref": "npc_a3_storyteller"
+ },
+ {
+  "id": "npc_a3_waypoint",
+  "name": "Lou Lever",
+  "title": "Waypoint Keeper",
+  "role": "waypoint",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "attachments": [
+   "Rogue_Cape"
+  ],
+  "tint": "#d0f0ff",
+  "anim": "Idle",
+  "screen": "map",
+  "greeting": "Going up! Going down! Going sideways, if you like the map!",
+  "barks": [
+   "Floor one: waypoints. Floor two: also waypoints.",
+   "Mind the gap. There's no gap. Mind it anyway.",
+   "Town trips are free. Other stops cost a coin.",
+   "Ding! That's my lift bell. Not your nephew, Dorra.",
+   "Next stop: wherever you tap.",
+   "Doors closing! There are no doors."
+  ],
+  "quest_ids": [
+   "q_a3_saltwhistle"
+  ],
+  "text_ref": "npc_a3_waypoint"
+ },
+ {
+  "id": "npc_a3_board",
+  "name": "Bounty Board",
+  "title": "Bounty Board",
+  "role": "board",
+  "town": "a3_town",
+  "model": "prop:hal:sign",
+  "attachments": [],
+  "tint": "#ffffff",
+  "anim": "",
+  "screen": "bounties",
+  "greeting": "The Clinkerton Bounty Board. Chalk on a slate. Someone drew a pickaxe with a face.",
+  "barks": [
+   "Bounties wait here. They never go stale.",
+   "Finished bounties bank up. Come back whenever you like.",
+   "New notes appear as you adventure.",
+   "A bounty a day? A bounty a month? Up to you.",
+   "Someone has drawn a smiley face on this note.",
+   "Unfinished bounties don't mind waiting."
+  ],
+  "quest_ids": [
+   "q_a3_bounty_bats",
+   "q_a3_bounty_diglings",
+   "q_a3_bounty_wick"
+  ],
+  "text_ref": "npc_a3_board"
+ },
+ {
+  "id": "npc_a3_curio",
+  "name": "The Masked Peddler",
+  "title": "Curio Cart",
+  "role": "curio",
+  "town": "a3_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "attachments": [
+   "Rogue_Cape",
+   "Throwable"
+  ],
+  "tint": "#b0a0d0",
+  "anim": "Idle",
+  "screen": "curio",
+  "greeting": "Hushmarks only, dearie. No coins, no crowns, no tricks. What you see is what you get... eventually.",
+  "barks": [
+   "Every mystery is honest. The rarity shows the moment you pay.",
+   "Hushmarks come from the quiet places. Keep looking.",
+   "I never tell where I'll park next. Always the same town, though. Funny, that.",
+   "No refunds. No regrets. Only surprises."
+  ],
+  "quest_ids": [],
+  "text_ref": "",
+  "shop": "curio_offers"
+ },
+ {
+  "id": "npc_a4_smith",
+  "name": "Corporal Tinwhistle",
+  "title": "Smith",
+  "role": "smith",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "2H_Axe"
+  ],
+  "tint": "#ffffff",
+  "anim": "2H_Melee_Idle",
+  "screen": "crafting:smith",
+  "greeting": "Attention! *salute* A visitor! *salute* To the anvil! *salute*",
+  "barks": [
+   "*salute* That was for the hammer.",
+   "Polished boots, polished blade, polished upgrade!",
+   "I was a soldier once. Now I'm a smith. Still saluting.",
+   "Upgrades succeed on first try. That is an order!",
+   "My old regiment froze in the hall. I'll wait for them.",
+   "Left, right, left, CLANG."
+  ],
+  "quest_ids": [
+   "q_a4_tin_soldiers",
+   "q_a4_tinwhistle_drill"
+  ],
+  "text_ref": "npc_a4_smith"
+ },
+ {
+  "id": "npc_a4_alchemist",
+  "name": "Cook Dumplina",
+  "title": "Alchemist",
+  "role": "alchemist",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Mage_Hat"
+  ],
+  "tint": "#d8ffd8",
+  "anim": "Idle",
+  "screen": "crafting:alchemist",
+  "greeting": "Hungry? Hurt? Same thing, pet. Have a soup.",
+  "barks": [
+   "Healing soup. Strength soup. Soup soup.",
+   "Every potion's a soup if you believe.",
+   "Mother Mabble in Wickmire? My cousin! Soup runs in families.",
+   "Don't drink it too hot. Or do. It's a warming soup.",
+   "The frozen guests haven't eaten in a year. I've kept the pot on.",
+   "Carrots help you see in the dark. Very useful now."
+  ],
+  "quest_ids": [
+   "q_a4_soup"
+  ],
+  "text_ref": "npc_a4_alchemist"
+ },
+ {
+  "id": "npc_a4_jeweler",
+  "name": "Lady Facetta Frostglass",
+  "title": "Jeweler",
+  "role": "jeweler",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Mage_Hat",
+   "Spellbook_open"
+  ],
+  "tint": "#ffe8f8",
+  "anim": "Idle",
+  "screen": "crafting:jeweler",
+  "greeting": "Good evening. One does jewels here. Properly. *tiny giggle*",
+  "barks": [
+   "A lady never giggles. *giggle* Oh dear.",
+   "The crown jewels are frozen. I polish them anyway.",
+   "Frost Sapphire. Terribly elegant. Terribly cold.",
+   "Please do not lick the ice. One has seen it happen.",
+   "A ring for the brave, a gem for the kind.",
+   "One's cousin Glimmerwick has too many rings. One has just enough."
+  ],
+  "quest_ids": [
+   "q_a4_sapphires"
+  ],
+  "text_ref": "npc_a4_jeweler"
+ },
+ {
+  "id": "npc_a4_runecarver",
+  "name": "Master Quillon Rimecarve",
+  "title": "Runecarver",
+  "role": "runecarver",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "Knight_Cape"
+  ],
+  "tint": "#d8d0ff",
+  "anim": "Idle",
+  "screen": "crafting:runecarver",
+  "greeting": "Close the door. Warmth is getting in. Ugh. Kitchens.",
+  "barks": [
+   "Ice holds a rune perfectly. Until it melts. Hence: no kettles.",
+   "Enchant, reroll, refine. Precision is kindness.",
+   "Let me show you the station. One rune. Clean lines.",
+   "Chisel sends me letters. One word each. I treasure them.",
+   "Knurl carves spoons. I carve spoons too. In ice. Better spoons.",
+   "Someone put the kettle on again. *sigh*"
+  ],
+  "quest_ids": [
+   "q_a4_quillon_cold"
+  ],
+  "text_ref": "npc_a4_runecarver"
+ },
+ {
+  "id": "npc_a4_trader",
+  "name": "Crumbsworth",
+  "title": "Trader",
+  "role": "trader",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [
+   "Rogue_Cape"
+  ],
+  "tint": "#ffffff",
+  "anim": "Idle",
+  "screen": "vendor",
+  "greeting": "Welcome to Crumbsworth's Teacup Emporium! Mind the handle.",
+  "barks": [
+   "Small shop. Big deals.",
+   "I accept gold, crumbs, and particularly good cheese.",
+   "Everything here fits in a teacup. Except that sword. Somehow.",
+   "The mirror butlers kept trying to serve my shop.",
+   "Sell anything! I'll squeeze it in. Squeak.",
+   "Crumbsworth's rule: never trade with a cat."
+  ],
+  "quest_ids": [
+   "q_a4_crumbs"
+  ],
+  "text_ref": "npc_a4_trader",
+  "shop": "vendor_a4"
+ },
+ {
+  "id": "npc_a4_stash",
+  "name": "Mister Ledger",
+  "title": "Stash Keeper",
+  "role": "stash",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Mug"
+  ],
+  "tint": "#e8e0d0",
+  "anim": "Sit_Chair_Idle",
+  "screen": "stash",
+  "greeting": "Good evening. Your belongings are catalogued. Page nine thousand.",
+  "barks": [
+   "Item received. Item noted. Item cherished.",
+   "I did not freeze because I was busy writing. Recommend it.",
+   "Your stash is shared in every town. I have the records.",
+   "One sock, blue, slightly heroic. Noted.",
+   "The mirror butlers were my colleagues. They serve tea wrongly now.",
+   "Everything in order. As always."
+  ],
+  "quest_ids": [
+   "q_a4_mirror_tea"
+  ],
+  "text_ref": "npc_a4_stash"
+ },
+ {
+  "id": "npc_a4_stablemaster",
+  "name": "Noll Frostmane",
+  "title": "Stablemaster",
+  "role": "stablemaster",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Barbarian_Hat"
+  ],
+  "tint": "#f0e0c0",
+  "anim": "Idle",
+  "screen": "stable",
+  "greeting": "Wrap up warm! Then pick a hare. Then wrap up warmer.",
+  "barks": [
+   "Snow-hares hop over drifts. Boots don't.",
+   "Scarf? Scarf. Put on a scarf.",
+   "Take a bump and you'll tumble off. Hares are gentle souls.",
+   "This one's Flurry. That's Sleet. That's Mister Fluffington.",
+   "Faster in the gardens, faster in the halls.",
+   "Did you wrap up warm? Just checking."
+  ],
+  "quest_ids": [
+   "q_a4_gardens",
+   "q_a4_sleigh_run"
+  ],
+  "text_ref": "npc_a4_stablemaster"
+ },
+ {
+  "id": "npc_a4_petkeeper",
+  "name": "Princess Pip",
+  "title": "Pet Keeper",
+  "role": "petkeeper",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [],
+  "tint": "#ffe0f0",
+  "anim": "Sit_Floor_Idle",
+  "screen": "pets",
+  "greeting": "I'm Princess Pip and I'm in charge of the royal pets. Bow. Or wave. Waving's fine.",
+  "barks": [
+   "The royal corgi-hare is called Sir Wobble. Salute him.",
+   "Pets need love, snacks, and adventures. In that order.",
+   "Kit taught me to climb roofs. Don't tell Nan Kettleby.",
+   "My dad forgot my name. I'll help him remember.",
+   "A pet can find treasure you'd never see.",
+   "I'm not sad. I'm just busy being brave."
+  ],
+  "quest_ids": [
+   "q_a4_pip_letter",
+   "q_a4_porcelain"
+  ],
+  "text_ref": "npc_a4_petkeeper"
+ },
+ {
+  "id": "npc_a4_innkeeper",
+  "name": "Nan Kettleby",
+  "title": "Innkeeper",
+  "role": "innkeeper",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Mug"
+  ],
+  "tint": "#ffe0c0",
+  "anim": "Idle",
+  "screen": "inn",
+  "greeting": "Kettle's on, dearie. It's always on. Sit by the warm.",
+  "barks": [
+   "Tea for the cold, tea for the sad, tea for the tired.",
+   "Bind your Homeward Wick here. The kettle will be on.",
+   "A cup and a sit-down. Nothing's so bad after that.",
+   "Rest is how heroes get heroic.",
+   "Master Quillon hates my kettle. I make him tea anyway.",
+   "That child Pip is climbing the roof again, isn't she."
+  ],
+  "quest_ids": [],
+  "text_ref": "npc_a4_innkeeper"
+ },
+ {
+  "id": "npc_a4_questgiver",
+  "name": "Chancellor Pellinore Snowdrop",
+  "title": "Chancellor",
+  "role": "questgiver",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "Knight_Helmet",
+   "Knight_Cape",
+   "1H_Sword"
+  ],
+  "tint": "#ffffff",
+  "anim": "Idle",
+  "screen": "quests",
+  "greeting": "Ah. You're on my list. My list of people who might help. It's short.",
+  "barks": [
+   "List of lists: item one, this list.",
+   "Half my moustache thawed. The other half is thinking about it.",
+   "His Majesty grows colder the less he remembers.",
+   "Letters of his name are scattered in the halls. Find them.",
+   "Mind the mirrors. Reflections here are running late.",
+   "Do take breaks. It's on my list. Near the top."
+  ],
+  "quest_ids": [
+   "q_a4_courtiers",
+   "q_a4_place_cards",
+   "q_a4_the_king"
+  ],
+  "text_ref": "npc_a4_questgiver"
+ },
+ {
+  "id": "npc_a4_storyteller",
+  "name": "Tumblewit the Jester",
+  "title": "Storyteller",
+  "role": "storyteller",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Spellbook"
+  ],
+  "tint": "#e0e0ff",
+  "anim": "Sit_Chair_Idle",
+  "screen": "lore",
+  "greeting": "A tale, a tale! Shall it be sad? It'll be funny. Or the other way.",
+  "barks": [
+   "Once there was a king with the warmest hall. …That's the sad part.",
+   "Why did the snowman cry? He was having a meltdown.",
+   "Jingle jingle. My bells are frozen. So they just go 'jin'.",
+   "The toast was never finished. That's the saddest joke I know.",
+   "Laughing keeps you warm. Try it! Ha. See?",
+   "Every king needs a fool. Every fool needs a friend."
+  ],
+  "quest_ids": [
+   "q_a4_jester_joke"
+  ],
+  "text_ref": "npc_a4_storyteller"
+ },
+ {
+  "id": "npc_a4_waypoint",
+  "name": "Tick",
+  "title": "Waypoint Keeper",
+  "role": "waypoint",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "attachments": [
+   "Rogue_Cape"
+  ],
+  "tint": "#d0f0ff",
+  "anim": "Idle",
+  "screen": "map",
+  "greeting": "Hello. Tick. Tick. Where would you like to go?",
+  "barks": [
+   "Tick. Tick. Calculating route. Tick. Done.",
+   "Waypoints remember you once you've touched them.",
+   "Town is free. Other places: small fee. Tick.",
+   "I was built to keep time. Now I keep places.",
+   "Wind me up if I slow down. Please.",
+   "Tick tock. That's my happy noise."
+  ],
+  "quest_ids": [],
+  "text_ref": "npc_a4_waypoint"
+ },
+ {
+  "id": "npc_a4_board",
+  "name": "Bounty Board",
+  "title": "Bounty Board",
+  "role": "board",
+  "town": "a4_town",
+  "model": "prop:hal:sign",
+  "attachments": [],
+  "tint": "#ffffff",
+  "anim": "",
+  "screen": "bounties",
+  "greeting": "The Kettlekeep Bounty Board. Notes written in very neat handwriting. Mister Ledger's, probably.",
+  "barks": [
+   "Bounties wait here. They never go stale.",
+   "Finished bounties bank up. Come back whenever you like.",
+   "New notes appear as you adventure.",
+   "A bounty a day? A bounty a month? Up to you.",
+   "Someone has drawn a smiley face on this note.",
+   "Unfinished bounties don't mind waiting."
+  ],
+  "quest_ids": [
+   "q_a4_bounty_dolls",
+   "q_a4_bounty_jesters",
+   "q_a4_bounty_soot"
+  ],
+  "text_ref": "npc_a4_board"
+ },
+ {
+  "id": "npc_a4_curio",
+  "name": "The Masked Peddler",
+  "title": "Curio Cart",
+  "role": "curio",
+  "town": "a4_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "attachments": [
+   "Rogue_Cape",
+   "Throwable"
+  ],
+  "tint": "#b0a0d0",
+  "anim": "Idle",
+  "screen": "curio",
+  "greeting": "Hushmarks only, dearie. No coins, no crowns, no tricks. What you see is what you get... eventually.",
+  "barks": [
+   "Every mystery is honest. The rarity shows the moment you pay.",
+   "Hushmarks come from the quiet places. Keep looking.",
+   "I never tell where I'll park next. Always the same town, though. Funny, that.",
+   "No refunds. No regrets. Only surprises."
+  ],
+  "quest_ids": [],
+  "text_ref": "",
+  "shop": "curio_offers"
+ },
+ {
+  "id": "npc_a5_smith",
+  "name": "Mae Coalbright",
+  "title": "Smith",
+  "role": "smith",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "2H_Axe"
+  ],
+  "tint": "#ffffff",
+  "anim": "2H_Melee_Idle",
+  "screen": "crafting:smith",
+  "greeting": "Come in, come in. I'm still just learning, mind. Only seventy years.",
+  "barks": [
+   "I made your lantern's great-great-grandmother.",
+   "Upgrades never fail. After seventy years, I should hope not.",
+   "Every lantern needs a good cap, a good glass and a good friend.",
+   "Big Bran was my apprentice! He's still scared of moths.",
+   "Out here, the only colour is the one we make.",
+   "A good hammer is a patient hammer."
+  ],
+  "quest_ids": [
+   "q_a5_faded_knights"
+  ],
+  "text_ref": "npc_a5_smith"
+ },
+ {
+  "id": "npc_a5_alchemist",
+  "name": "Mother Simmer",
+  "title": "Cauldron Keeper",
+  "role": "alchemist",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Mage_Hat"
+  ],
+  "tint": "#d8ffd8",
+  "anim": "Idle",
+  "screen": "crafting:alchemist",
+  "greeting": "Hello, dearie. The Cauldron says hello too. *burble*",
+  "barks": [
+   "Put anything in. See what comes out. The Cauldron never breaks a thing.",
+   "*burble* She likes you. She only burbles twice for friends.",
+   "Secret recipes are just surprises with instructions.",
+   "Every discovery goes in your journal. Keep it handy.",
+   "Let me show you. One little mix to start.",
+   "Stir left for luck. Stir right for soup."
+  ],
+  "quest_ids": [
+   "q_a5_essence"
+  ],
+  "text_ref": "npc_a5_alchemist"
+ },
+ {
+  "id": "npc_a5_jeweler",
+  "name": "Twinkle",
+  "title": "Jeweler",
+  "role": "jeweler",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Mage_Hat",
+   "Spellbook_open"
+  ],
+  "tint": "#ffe8f8",
+  "anim": "Idle",
+  "screen": "crafting:jeweler",
+  "greeting": "I'm a star! A real one! I'm just… compact.",
+  "barks": [
+   "Don't call me small. Call me concentrated.",
+   "I fell from the sky the night the Lantern went out.",
+   "Gems are just stars that decided to stay.",
+   "I can socket anything. With help. From a stool.",
+   "Stargazers keep trying to throw me. Please don't.",
+   "Big twinkle or small twinkle, still a twinkle."
+  ],
+  "quest_ids": [
+   "q_a5_twinkle_home"
+  ],
+  "text_ref": "npc_a5_jeweler"
+ },
+ {
+  "id": "npc_a5_runecarver",
+  "name": "Vesper Inkwell",
+  "title": "Runecarver",
+  "role": "runecarver",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "Knight_Cape"
+  ],
+  "tint": "#d8d0ff",
+  "anim": "Idle",
+  "screen": "crafting:runecarver",
+  "greeting": "Don't blink. There. You blinked. Let me write it again.",
+  "barks": [
+   "A rune of light lasts as long as someone reads it.",
+   "Ink, light, patience.",
+   "Quillon carves ice. I write light. We argue by letter.",
+   "Every rune is a small promise.",
+   "Read slowly. The words like it.",
+   "*writes* *you blink* *sigh* Again."
+  ],
+  "quest_ids": [
+   "q_a5_vesper_blink"
+  ],
+  "text_ref": "npc_a5_runecarver"
+ },
+ {
+  "id": "npc_a5_trader",
+  "name": "Nib",
+  "title": "Trader",
+  "role": "trader",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [
+   "Rogue_Cape"
+  ],
+  "tint": "#ffffff",
+  "anim": "Idle",
+  "screen": "vendor",
+  "greeting": "Shinies! Lovely shinies! All borrowed! Permanently! Legally!",
+  "barks": [
+   "I used to be a Magpie Imp. Now I'm a magpie businessman.",
+   "You caught my cousin in Wickmire. She says hi. Grumpily.",
+   "Fair prices! Mostly fair! Fairly fair!",
+   "Ooh, is that shiny? Can I— no. No. I'm reformed.",
+   "The Hoard? Never heard of it. What Hoard.",
+   "Sell me your shinies and I'll give them a good home."
+  ],
+  "quest_ids": [
+   "q_a5_leftovers",
+   "q_a5_nib_shinies"
+  ],
+  "text_ref": "npc_a5_trader",
+  "shop": "vendor_a5"
+ },
+ {
+  "id": "npc_a5_stash",
+  "name": "Keeper Stillwater",
+  "title": "Stash Keeper",
+  "role": "stash",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Mug"
+  ],
+  "tint": "#e8e0d0",
+  "anim": "Sit_Chair_Idle",
+  "screen": "stash",
+  "greeting": "Welcome. Take your time. There is always time.",
+  "barks": [
+   "Nothing here is in a hurry. Least of all me.",
+   "Your stash is safe. Breathe in. Breathe out.",
+   "Hurrying makes you drop things. So I never hurry.",
+   "Everything you keep, I keep.",
+   "The Hush is quiet. So am I. We're different, though.",
+   "Rest is not wasted time."
+  ],
+  "quest_ids": [],
+  "text_ref": "npc_a5_stash"
+ },
+ {
+  "id": "npc_a5_stablemaster",
+  "name": "Captain Loft",
+  "title": "Stablemaster",
+  "role": "stablemaster",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Barbarian_Hat"
+  ],
+  "tint": "#f0e0c0",
+  "anim": "Idle",
+  "screen": "stable",
+  "greeting": "Goggles on! Moths ready! Captain Loft, at your service!",
+  "barks": [
+   "Great moths fly toward light. That's you. Handy!",
+   "Bump into trouble and you'll hop off. Moths hate fuss.",
+   "Goggles indoors? Can't be too careful.",
+   "This is Dusty. She's very soft and very fast.",
+   "Faster on the islands. Faster through the Landing.",
+   "Big Bran's scared of my moths. Tell him they're friendly!"
+  ],
+  "quest_ids": [
+   "q_a5_moth_ride"
+  ],
+  "text_ref": "npc_a5_stablemaster"
+ },
+ {
+  "id": "npc_a5_petkeeper",
+  "name": "Tansy Glow",
+  "title": "Pet Keeper",
+  "role": "petkeeper",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [],
+  "tint": "#ffe0f0",
+  "anim": "Sit_Floor_Idle",
+  "screen": "pets",
+  "greeting": "Hello! These are my fireflies. They're only visiting.",
+  "barks": [
+   "Every night I open the jars. Every morning they come back.",
+   "Pets are friends who choose to stay.",
+   "Mystery eggs hatch into all sorts. Carry one around!",
+   "A pet at full level is a proper best friend.",
+   "Juniper sends me owl feathers. I send her fireflies.",
+   "Light is better shared. Even firefly light."
+  ],
+  "quest_ids": [
+   "q_a5_fireflies"
+  ],
+  "text_ref": "npc_a5_petkeeper"
+ },
+ {
+  "id": "npc_a5_innkeeper",
+  "name": "Aunt Lumi",
+  "title": "Innkeeper",
+  "role": "innkeeper",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Mug"
+  ],
+  "tint": "#ffe0c0",
+  "anim": "Idle",
+  "screen": "inn",
+  "greeting": "Come in from the grey, love. There's a light in every window for you.",
+  "barks": [
+   "A lit window means someone's waiting for you.",
+   "Bind your Homeward Wick here. There'll always be a light on.",
+   "The Well is cold. The Last Lamp isn't.",
+   "Resting is part of carrying the light. Ada forgets that.",
+   "Sit. Warm up. The Well will still be there.",
+   "Nobody's too tired to be welcome."
+  ],
+  "quest_ids": [
+   "q_a5_ada_talk",
+   "q_a5_stillwater_tea"
+  ],
+  "text_ref": "npc_a5_innkeeper"
+ },
+ {
+  "id": "npc_a5_questgiver",
+  "name": "Ada Brightly",
+  "title": "Master Wickwright",
+  "role": "questgiver",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "Knight_Helmet",
+   "Knight_Cape",
+   "1H_Sword"
+  ],
+  "tint": "#ffffff",
+  "anim": "Idle",
+  "screen": "quests",
+  "greeting": "A Wickbearer. At last. Sit, sit. I'll stand. I always stand.",
+  "barks": [
+   "A light shared is not a light lost. That's the Guild's rule.",
+   "I knew the Grey Guest once. Before he was grey.",
+   "Ninety-nine chairs in our hall. Only one is ever sat in.",
+   "Down is up in the Well. Walk carefully.",
+   "I should rest more. Don't tell Aunt Lumi I said that.",
+   "Carry the light. Share it when you can. Rest when you need to."
+  ],
+  "quest_ids": [
+   "q_a5_grey_guest",
+   "q_a5_hushlings"
+  ],
+  "text_ref": "npc_a5_questgiver"
+ },
+ {
+  "id": "npc_a5_storyteller",
+  "name": "The Moth Choir",
+  "title": "Storyteller",
+  "role": "storyteller",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Spellbook"
+  ],
+  "tint": "#e0e0ff",
+  "anim": "Sit_Chair_Idle",
+  "screen": "lore",
+  "greeting": "*tiny chorus* Hellooo, little light! Lean in, lean in!",
+  "barks": [
+   "*sing* Once was a spark that wandered alone…",
+   "*sing* The Hush said nothing, and so it shone…",
+   "*hum* Where moths gather, secrets hide.",
+   "*sing* One keeper climbed, and nobody came…",
+   "*giggle* You're very bright. We like bright.",
+   "*sing* Carry the light, and then pass it on…"
+  ],
+  "quest_ids": [
+   "q_a5_grey_moths",
+   "q_a5_hollow_choir"
+  ],
+  "text_ref": "npc_a5_storyteller"
+ },
+ {
+  "id": "npc_a5_waypoint",
+  "name": "Nobody",
+  "title": "Waypoint Keeper",
+  "role": "waypoint",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "attachments": [
+   "Rogue_Cape"
+  ],
+  "tint": "#d0f0ff",
+  "anim": "Idle",
+  "screen": "map",
+  "greeting": "…  (Nobody tips its hat. The map glows.)",
+  "barks": [
+   "…  (Nobody points at the map. Politely.)",
+   "…  (Nobody waves. You think it's a wave.)",
+   "…  (A tiny, happy silence.)",
+   "…  (Nobody straightens its hat. It is very proud of the hat.)",
+   "…  (Nobody seems to be saying: town trips are free.)",
+   "…  (Somewhere, very quietly, a hum.)"
+  ],
+  "quest_ids": [
+   "q_a5_quiet_stair"
+  ],
+  "text_ref": "npc_a5_waypoint"
+ },
+ {
+  "id": "npc_a5_board",
+  "name": "Bounty Board",
+  "title": "Bounty Board",
+  "role": "board",
+  "town": "a5_town",
+  "model": "prop:hal:sign",
+  "attachments": [],
+  "tint": "#ffffff",
+  "anim": "",
+  "screen": "bounties",
+  "greeting": "The Lastlight Bounty Board. The notes glow faintly. Nobody pinned them. They were just there.",
+  "barks": [
+   "Bounties wait here. They never go stale.",
+   "Finished bounties bank up. Come back whenever you like.",
+   "New notes appear as you adventure.",
+   "A bounty a day? A bounty a month? Up to you.",
+   "Someone has drawn a smiley face on this note.",
+   "Unfinished bounties don't mind waiting."
+  ],
+  "quest_ids": [
+   "q_a5_bounty_essence",
+   "q_a5_bounty_hush",
+   "q_a5_bounty_moths"
+  ],
+  "text_ref": "npc_a5_board"
+ },
+ {
+  "id": "npc_a5_pell",
+  "name": "Pell",
+  "title": "Retired Keeper",
+  "role": "pell",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "Knight_Cape"
+  ],
+  "tint": "#c8c8d0",
+  "anim": "Sit_Chair_Idle",
+  "screen": "lore",
+  "greeting": "Oh, hello. Sit down, if you like. I've learned that sitting down is allowed.",
+  "barks": [
+   "I trim the wick on Sundays. Only Sundays.",
+   "Thank you for asking me in. Everyone did, in the end.",
+   "Ada makes me rest. I make Ada rest. It's a system.",
+   "The Hush isn't bad. It's just night that forgot about morning.",
+   "Rest when you need to. I wish I had.",
+   "Tolly rings his bell when I visit. I like that very much.",
+   "Aldric saved me a seat. I sit in it every week."
+  ],
+  "quest_ids": [],
+  "text_ref": "npc_a5_pell"
+ },
+ {
+  "id": "npc_a5_curio",
+  "name": "The Masked Peddler",
+  "title": "Curio Cart",
+  "role": "curio",
+  "town": "a5_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue_Hooded.glb",
+  "attachments": [
+   "Rogue_Cape",
+   "Throwable"
+  ],
+  "tint": "#b0a0d0",
+  "anim": "Idle",
+  "screen": "curio",
+  "greeting": "Hushmarks only, dearie. No coins, no crowns, no tricks. What you see is what you get... eventually.",
+  "barks": [
+   "Every mystery is honest. The rarity shows the moment you pay.",
+   "Hushmarks come from the quiet places. Keep looking.",
+   "I never tell where I'll park next. Always the same town, though. Funny, that.",
+   "No refunds. No regrets. Only surprises."
+  ],
+  "quest_ids": [],
+  "text_ref": "",
+  "shop": "curio_offers"
+ }
+]

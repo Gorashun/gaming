@@ -1,0 +1,159 @@
+[
+ {
+  "id": "sword",
+  "name": "Sword",
+  "hand": "main",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+  "attach": "handslot.r",
+  "anim_set": "1h",
+  "proficiency_bonus": {
+   "damage_pct": 0.4,
+   "crit_chance": 0.06
+  },
+  "desc": "Balanced one-handed blade. Pairs with a shield or tome."
+ },
+ {
+  "id": "greatsword",
+  "name": "Greatsword",
+  "hand": "two",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/sword_2handed.gltf",
+  "attach": "handslot.r",
+  "anim_set": "2h",
+  "proficiency_bonus": {
+   "damage_pct": 0.5,
+   "area_pct": 0.2
+  },
+  "desc": "Two-handed blade with wide, heavy arcs."
+ },
+ {
+  "id": "axe",
+  "name": "Axe",
+  "hand": "main",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/axe_1handed.gltf",
+  "attach": "handslot.r",
+  "anim_set": "1h",
+  "proficiency_bonus": {
+   "damage_pct": 0.5,
+   "life_on_hit": 0.2
+  },
+  "desc": "Chopping one-hander that bites deep."
+ },
+ {
+  "id": "axe2h",
+  "name": "Great Axe",
+  "hand": "two",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/axe_2handed.gltf",
+  "attach": "handslot.r",
+  "anim_set": "2h",
+  "proficiency_bonus": {
+   "damage_pct": 0.6,
+   "area_pct": 0.2
+  },
+  "desc": "Huge bell-axe. Slow, loud, devastating."
+ },
+ {
+  "id": "staff",
+  "name": "Staff",
+  "hand": "two",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/staff.gltf",
+  "attach": "handslot.r",
+  "anim_set": "caster",
+  "proficiency_bonus": {
+   "damage_pct": 0.4,
+   "cast_speed_pct": 0.15,
+   "resource_max": 0.6
+  },
+  "desc": "Two-handed focus for big spells."
+ },
+ {
+  "id": "wand",
+  "name": "Wand",
+  "hand": "main",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/wand.gltf",
+  "attach": "handslot.r",
+  "anim_set": "caster",
+  "proficiency_bonus": {
+   "cast_speed_pct": 0.25,
+   "resource_regen": 0.04
+  },
+  "desc": "Quick one-handed focus. Pairs with a tome."
+ },
+ {
+  "id": "dagger",
+  "name": "Dagger",
+  "hand": "main",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/dagger.gltf",
+  "attach": "handslot.r",
+  "anim_set": "dual",
+  "proficiency_bonus": {
+   "crit_damage": 0.8,
+   "attack_speed_pct": 0.12
+  },
+  "desc": "Fast, sharp, critical."
+ },
+ {
+  "id": "crossbow",
+  "name": "Crossbow",
+  "hand": "main",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/crossbow_1handed.gltf",
+  "attach": "handslot.r",
+  "anim_set": "ranged",
+  "proficiency_bonus": {
+   "projectile_damage_pct": 0.4,
+   "attack_speed_pct": 0.1
+  },
+  "desc": "One-handed repeating crossbow."
+ },
+ {
+  "id": "arbalest",
+  "name": "Arbalest",
+  "hand": "two",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/crossbow_2handed.gltf",
+  "attach": "handslot.r",
+  "anim_set": "ranged",
+  "proficiency_bonus": {
+   "projectile_damage_pct": 0.6,
+   "crit_damage": 0.5
+  },
+  "desc": "Heavy two-handed crossbow. Every bolt lands like a bell."
+ },
+ {
+  "id": "shield",
+  "name": "Shield",
+  "hand": "off",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/shield_round.gltf",
+  "attach": "handslot.l",
+  "anim_set": "1h",
+  "proficiency_bonus": {
+   "block": 0.1,
+   "armor_pct": 0.3
+  },
+  "desc": "Off-hand. Blocks blows and builds Glow."
+ },
+ {
+  "id": "tome",
+  "name": "Tome",
+  "hand": "off",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/spellbook_open.gltf",
+  "attach": "handslot.l",
+  "anim_set": "caster",
+  "proficiency_bonus": {
+   "resource_max": 0.5,
+   "cdr_pct": 0.1
+  },
+  "desc": "Off-hand spellbook full of star charts and sewing patterns."
+ },
+ {
+  "id": "quiver",
+  "name": "Quiver",
+  "hand": "off",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/quiver.gltf",
+  "attach": "handslot.l",
+  "anim_set": "ranged",
+  "proficiency_bonus": {
+   "projectile_damage_pct": 0.3,
+   "pierce": 0.02
+  },
+  "desc": "Off-hand bolts. Worn on the hip; shown in the off hand for now."
+ }
+]

@@ -182,5 +182,472 @@
  {
   "id": "summon_count",
   "format": "+{v} Minions"
+ },
+ {
+  "id": "might_pct",
+  "format": "+{v}% Might"
+ },
+ {
+  "id": "agility_pct",
+  "format": "+{v}% Agility"
+ },
+ {
+  "id": "wisdom_pct",
+  "format": "+{v}% Wisdom"
+ },
+ {
+  "id": "vitality_pct",
+  "format": "+{v}% Vitality"
+ },
+ {
+  "id": "resource_max_pct",
+  "format": "+{v}% Maximum resource"
+ },
+ {
+  "id": "more_damage",
+  "format": "{v}% more Damage"
+ },
+ {
+  "id": "basic_damage_pct",
+  "format": "+{v}% Basic attack damage"
+ },
+ {
+  "id": "resist_holy",
+  "format": "+{v}% Holy resistance"
+ },
+ {
+  "id": "pickup_radius",
+  "format": "+{v}% Pickup radius",
+  "hook": "future"
+ },
+ {
+  "id": "pet_xp_pct",
+  "format": "+{v}% Pet experience",
+  "hook": "future"
+ },
+ {
+  "id": "potion_effect_pct",
+  "format": "+{v}% Potion healing",
+  "hook": "future"
+ },
+ {
+  "id": "potion_charges",
+  "format": "+{v} Potion charges",
+  "hook": "future"
+ },
+ {
+  "id": "material_find",
+  "format": "+{v}% Material find",
+  "hook": "future"
+ },
+ {
+  "id": "proficiency_xp_pct",
+  "format": "+{v}% Weapon proficiency gain",
+  "hook": "future"
+ },
+ {
+  "id": "mastery_xp_pct",
+  "format": "+{v}% Skill mastery gain",
+  "hook": "future"
+ },
+ {
+  "id": "life_per_kill",
+  "format": "+{v} Life per rekindle",
+  "hook": "future"
+ },
+ {
+  "id": "resource_on_kill",
+  "format": "+{v} Resource per rekindle",
+  "hook": "future"
+ },
+ {
+  "id": "elite_damage_pct",
+  "format": "+{v}% Damage to elites",
+  "hook": "future"
+ },
+ {
+  "id": "boss_damage_pct",
+  "format": "+{v}% Damage to bosses",
+  "hook": "future"
+ },
+ {
+  "id": "mount_speed_pct",
+  "format": "+{v}% Mount speed",
+  "hook": "future"
+ },
+ {
+  "id": "minion_life_pct",
+  "format": "+{v}% Minion life",
+  "hook": "future"
+ },
+ {
+  "id": "all_skill_rank",
+  "format": "+{v} to all skills",
+  "hook": "future"
+ },
+ {
+  "id": "hushmark_find",
+  "format": "+{v}% Hushmark find",
+  "hook": "future"
+ },
+ {
+  "id": "skill_rank:lb_flare",
+  "format": "+{v} to Shield Flare",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:lb_charge",
+  "format": "+{v} to Beacon Charge",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:lb_consecrate",
+  "format": "+{v} to Hallowed Ground",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:lb_aegis",
+  "format": "+{v} to Aegis of Dawn",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:lb_judgement",
+  "format": "+{v} to Judgement",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:bs_whirl",
+  "format": "+{v} to Bell Whirl",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:bs_leap",
+  "format": "+{v} to Toll Leap",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:bs_roar",
+  "format": "+{v} to Great Peal",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:bs_quake",
+  "format": "+{v} to Earthshaker",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:bs_chains",
+  "format": "+{v} to Bellrope",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:sg_starfall",
+  "format": "+{v} to Starfall",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:sg_frostnova",
+  "format": "+{v} to Frost Ring",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:sg_chain",
+  "format": "+{v} to Constellation",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:sg_blink",
+  "format": "+{v} to Moonstep",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:sg_meteor",
+  "format": "+{v} to Comet Shower",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:st_ragdoll",
+  "format": "+{v} to Rag Doll",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:st_pins",
+  "format": "+{v} to Pincushion",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:st_bigdoll",
+  "format": "+{v} to Patchwork Bear",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:st_unravel",
+  "format": "+{v} to Unravel",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:st_mend",
+  "format": "+{v} to Mend",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:rr_fan",
+  "format": "+{v} to Fan of Bolts",
+  "hook": "skill_rank",
+  "class": "roofrunner"
+ },
+ {
+  "id": "skill_rank:rr_roll",
+  "format": "+{v} to Tumble",
+  "hook": "skill_rank",
+  "class": "roofrunner"
+ },
+ {
+  "id": "skill_rank:rr_trap",
+  "format": "+{v} to Snap Trap",
+  "hook": "skill_rank",
+  "class": "roofrunner"
+ },
+ {
+  "id": "skill_rank:rr_smoke",
+  "format": "+{v} to Smoke Bomb",
+  "hook": "skill_rank",
+  "class": "roofrunner"
+ },
+ {
+  "id": "skill_rank:rr_rain",
+  "format": "+{v} to Bolt Rain",
+  "hook": "skill_rank",
+  "class": "roofrunner"
+ },
+ {
+  "id": "skill_rank:lb_beacon",
+  "format": "+{v} to Beacon Toss",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:lb_rally",
+  "format": "+{v} to Rally Cry",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:lb_chain",
+  "format": "+{v} to Lantern Chain",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:lb_sanctuary",
+  "format": "+{v} to Sanctuary",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:lb_dawnstrike",
+  "format": "+{v} to Dawnstrike",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:lb_sunrise",
+  "format": "+{v} to The Long Sunrise",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:lb_smite",
+  "format": "+{v} to Hallowed Smite",
+  "hook": "skill_rank",
+  "class": "lanternbearer"
+ },
+ {
+  "id": "skill_rank:bs_gong",
+  "format": "+{v} to Gong Shield",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:bs_throw",
+  "format": "+{v} to Bell Toss",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:bs_stomp",
+  "format": "+{v} to Belfry Stomp",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:bs_frenzy",
+  "format": "+{v} to Carillon Frenzy",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:bs_quakeline",
+  "format": "+{v} to Faultline",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:bs_doom",
+  "format": "+{v} to Last Toll",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:bs_ringout",
+  "format": "+{v} to Ring Out",
+  "hook": "skill_rank",
+  "class": "bellstriker"
+ },
+ {
+  "id": "skill_rank:sg_orbit",
+  "format": "+{v} to Orbiting Motes",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:sg_icicle",
+  "format": "+{v} to Icicle Lance",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:sg_gravity",
+  "format": "+{v} to Black Star",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:sg_blizzard",
+  "format": "+{v} to Snow of Stars",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:sg_storm",
+  "format": "+{v} to Thunder Veil",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:sg_supernova",
+  "format": "+{v} to Supernova",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:sg_moonbeam",
+  "format": "+{v} to Moonbeam",
+  "hook": "skill_rank",
+  "class": "stargazer"
+ },
+ {
+  "id": "skill_rank:st_pinarcher",
+  "format": "+{v} to Pin Archers",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:st_hex",
+  "format": "+{v} to Button Eyes",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:st_spool",
+  "format": "+{v} to Runaway Spool",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:st_scarecrow",
+  "format": "+{v} to Scarecrow",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:st_quilt",
+  "format": "+{v} to Patchwork Quilt",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:st_puppetking",
+  "format": "+{v} to Puppet Knight",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:st_thimble",
+  "format": "+{v} to Thimble Bomb",
+  "hook": "skill_rank",
+  "class": "stitcher"
+ },
+ {
+  "id": "skill_rank:rr_caltrops",
+  "format": "+{v} to Caltrops",
+  "hook": "skill_rank",
+  "class": "roofrunner"
+ },
+ {
+  "id": "skill_rank:rr_pinbolt",
+  "format": "+{v} to Pinning Shot",
+  "hook": "skill_rank",
+  "class": "roofrunner"
+ },
+ {
+  "id": "skill_rank:rr_decoy",
+  "format": "+{v} to Chimney Decoy",
+  "hook": "skill_rank",
+  "class": "roofrunner"
+ },
+ {
+  "id": "skill_rank:rr_firework",
+  "format": "+{v} to Firework Bolt",
+  "hook": "skill_rank",
+  "class": "roofrunner"
+ },
+ {
+  "id": "skill_rank:rr_shadowstep",
+  "format": "+{v} to Shadow Step",
+  "hook": "skill_rank",
+  "class": "roofrunner"
+ },
+ {
+  "id": "skill_rank:rr_rooftop",
+  "format": "+{v} to Rooftop Barrage",
+  "hook": "skill_rank",
+  "class": "roofrunner"
+ },
+ {
+  "id": "skill_rank:rr_sparrow",
+  "format": "+{v} to Clockwork Sparrow",
+  "hook": "skill_rank",
+  "class": "roofrunner"
  }
 ]

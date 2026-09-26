@@ -91,6 +91,11 @@ func load_zone(zone_id: String, seed_value := -1) -> void:
 		add_child(world_events)
 		world_events.setup(self)
 	Sfx.play_music(zone.get("music", biome.get("music", "")))
+	var amb = str(zone.get("ambience", biome.get("ambience", "")))
+	if amb != "":
+		Sfx.play_ambience(amb)
+	else:
+		Sfx.stop_ambience()
 	Quests.notify(ch, "explore", zone_id)
 	ch.track("zones_visited")
 	MainQuest.notify(ch, "reach_zone", zone_id)
@@ -387,6 +392,7 @@ func _spawn_npcs(recs: Array, center: Vector3) -> void:
 ## Talking to an NPC: bark, quest turn-ins + talk progress, innkeeper binding, then its screen.
 func interact_npc(n: Npc) -> void:
 	var ch = Game.character
+	Sfx.play("npc_talk", -4.0)
 	Events.npc_talked.emit(n.npc_id)
 	Quests.notify(ch, "talk", n.npc_id)
 	MainQuest.notify(ch, "talk", n.npc_id)
@@ -394,6 +400,7 @@ func interact_npc(n: Npc) -> void:
 	for q in done:
 		var res = Quests.turn_in(ch, q.id, self)
 		if res.ok:
+			Sfx.play("quest_done")
 			n.bark(res.message)
 			Fx.burst(player.global_position + Vector3(0, 1.2, 0), Color(1, 0.85, 0.4), 24, 4.0, 0.12, 0.9, 1.0)
 	if done.is_empty():
@@ -491,7 +498,7 @@ func spill_coins(m: Monster) -> void:
 	var amount = int((2.0 + m.level * 0.8) * Rng.range_on("loot", 0.6, 1.4) * (1.0 + Game.character.stats.total("gold_find") / 100.0))
 	spawn_gold(m.global_position, max(1, amount))
 	Fx.burst(m.global_position + Vector3(0, 1.0, 0), Color(1, 0.85, 0.3), 10, 4.0, 0.08, 0.5, -8.0)
-	Sfx.play("gold", -8.0)
+	Sfx.play("coin_burst", -6.0)
 
 ## Pet "dig" perk: a small treasure pops out of the ground next to the pet.
 func pet_dig() -> void:
@@ -537,6 +544,7 @@ func deal_damage(src: Actor, target: Actor, mult: float, element: String, tags: 
 	var amount = Combat.mitigate(hit, def, src.level)
 	if target is Monster and target.shield_active():
 		amount *= 0.5
+		Sfx.play("shield_block", -10.0)
 	_apply_damage(target, amount, hit.crit, element, src)
 	# On-hit effects
 	var owner: Actor = src.owner_actor if (src is Monster and src.owner_actor) else src
@@ -654,6 +662,7 @@ func _on_monster_died(a: Actor) -> void:
 	var new_pet = Pets.roll_drop(ch, m.kind)
 	if new_pet != "" and Pets.grant_pet(ch, new_pet):
 		Fx.burst(m.global_position + Vector3(0, 1, 0), Color(Pets.rec(new_pet).get("tint", "#ffd98a")), 30, 4.0, 0.12, 1.0, 1.0)
+		Sfx.play("pet_happy")
 		Events.toast.emit("A companion found you: %s!" % Pets.rec(new_pet).get("name", new_pet), Color(1, 0.8, 0.95))
 		if ch.active_pet == new_pet:
 			spawn_pet()

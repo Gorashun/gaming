@@ -1,0 +1,260 @@
+[
+ {
+  "id": "potion_1",
+  "name": "Minor Healing Potion",
+  "kind": "potion",
+  "min_level": 1,
+  "effect": {
+   "heal_pct": 0.35
+  },
+  "price_gold": 15,
+  "stack_max": 20,
+  "desc": "Restore 35% life."
+ },
+ {
+  "id": "potion_2",
+  "name": "Lesser Healing Potion",
+  "kind": "potion",
+  "min_level": 10,
+  "effect": {
+   "heal_pct": 0.45
+  },
+  "price_gold": 60,
+  "stack_max": 20,
+  "desc": "Restore 45% life."
+ },
+ {
+  "id": "potion_3",
+  "name": "Greater Healing Potion",
+  "kind": "potion",
+  "min_level": 20,
+  "effect": {
+   "heal_pct": 0.55
+  },
+  "price_gold": 180,
+  "stack_max": 20,
+  "desc": "Restore 55% life."
+ },
+ {
+  "id": "potion_4",
+  "name": "Grand Healing Potion",
+  "kind": "potion",
+  "min_level": 32,
+  "effect": {
+   "heal_pct": 0.65
+  },
+  "price_gold": 420,
+  "stack_max": 20,
+  "desc": "Restore 65% life."
+ },
+ {
+  "id": "potion_5",
+  "name": "Lantern Healing Potion",
+  "kind": "potion",
+  "min_level": 45,
+  "effect": {
+   "heal_pct": 0.8
+  },
+  "price_gold": 900,
+  "stack_max": 20,
+  "desc": "Restore 80% life."
+ },
+ {
+  "id": "elixir_might",
+  "name": "Elixir of Might",
+  "kind": "elixir",
+  "min_level": 5,
+  "effect": {
+   "stats": {
+    "might": 10,
+    "might_pct": 5
+   },
+   "duration_s": 1800,
+   "counts": "play_time"
+  },
+  "price_gold": 120,
+  "stack_max": 10,
+  "desc": "Lasts 30 minutes of play. One elixir at a time."
+ },
+ {
+  "id": "elixir_agility",
+  "name": "Elixir of Agility",
+  "kind": "elixir",
+  "min_level": 5,
+  "effect": {
+   "stats": {
+    "agility": 10,
+    "agility_pct": 5
+   },
+   "duration_s": 1800,
+   "counts": "play_time"
+  },
+  "price_gold": 120,
+  "stack_max": 10,
+  "desc": "Lasts 30 minutes of play. One elixir at a time."
+ },
+ {
+  "id": "elixir_wisdom",
+  "name": "Elixir of Wisdom",
+  "kind": "elixir",
+  "min_level": 5,
+  "effect": {
+   "stats": {
+    "wisdom": 10,
+    "wisdom_pct": 5
+   },
+   "duration_s": 1800,
+   "counts": "play_time"
+  },
+  "price_gold": 120,
+  "stack_max": 10,
+  "desc": "Lasts 30 minutes of play. One elixir at a time."
+ },
+ {
+  "id": "elixir_fortune",
+  "name": "Elixir of Fortune",
+  "kind": "elixir",
+  "min_level": 15,
+  "effect": {
+   "stats": {
+    "magic_find": 25,
+    "gold_find": 25
+   },
+   "duration_s": 1800,
+   "counts": "play_time"
+  },
+  "price_gold": 400,
+  "stack_max": 10,
+  "desc": "Lasts 30 minutes of play. One elixir at a time."
+ },
+ {
+  "id": "elixir_learning",
+  "name": "Elixir of Learning",
+  "kind": "elixir",
+  "min_level": 20,
+  "effect": {
+   "stats": {
+    "xp_pct": 10
+   },
+   "duration_s": 1800,
+   "counts": "play_time"
+  },
+  "price_gold": 600,
+  "stack_max": 10,
+  "desc": "Lasts 30 minutes of play. One elixir at a time."
+ },
+ {
+  "id": "elixir_ironskin",
+  "name": "Elixir of Ironskin",
+  "kind": "elixir",
+  "min_level": 25,
+  "effect": {
+   "stats": {
+    "armor_pct": 25
+   },
+   "duration_s": 1800,
+   "counts": "play_time"
+  },
+  "price_gold": 700,
+  "stack_max": 10,
+  "desc": "Lasts 30 minutes of play. One elixir at a time."
+ },
+ {
+  "id": "elixir_frostward",
+  "name": "Frostward Tonic",
+  "kind": "elixir",
+  "min_level": 30,
+  "effect": {
+   "stats": {
+    "resist_cold": 25,
+    "resist_fire": 10
+   },
+   "duration_s": 1800,
+   "counts": "play_time"
+  },
+  "price_gold": 800,
+  "stack_max": 10,
+  "desc": "Lasts 30 minutes of play. One elixir at a time."
+ },
+ {
+  "id": "elixir_hushward",
+  "name": "Hushward Tonic",
+  "kind": "elixir",
+  "min_level": 40,
+  "effect": {
+   "stats": {
+    "resist_shadow": 25,
+    "resist_all": 8
+   },
+   "duration_s": 1800,
+   "counts": "play_time"
+  },
+  "price_gold": 1200,
+  "stack_max": 10,
+  "desc": "Lasts 30 minutes of play. One elixir at a time."
+ },
+ {
+  "id": "hearth_charge",
+  "name": "Homeward Wick",
+  "kind": "hearth",
+  "min_level": 1,
+  "effect": {
+   "hearth": true
+  },
+  "price_gold": 0,
+  "stack_max": 1,
+  "desc": "Return to your bound town. Free and reusable (5 min cooldown); sold for 0 gold so nobody is ever stuck."
+ },
+ {
+  "id": "pet_treat",
+  "name": "Pet Treat",
+  "kind": "pet_treat",
+  "min_level": 1,
+  "effect": {
+   "pet_xp": 150
+  },
+  "price_gold": 40,
+  "stack_max": 50,
+  "desc": "Your pet gains a little experience. Crunch."
+ },
+ {
+  "id": "mount_feed",
+  "name": "Mount Feed",
+  "kind": "mount_feed",
+  "min_level": 1,
+  "effect": {
+   "stats": {
+    "mount_speed_pct": 10
+   },
+   "duration_s": 1800,
+   "counts": "play_time"
+  },
+  "price_gold": 50,
+  "stack_max": 50,
+  "desc": "Your mount runs 10% faster for 30 minutes of play."
+ },
+ {
+  "id": "candy_key",
+  "name": "Toffee Key",
+  "kind": "key",
+  "min_level": 1,
+  "effect": {
+   "opens": "candy_crypt"
+  },
+  "price_gold": 0,
+  "stack_max": 5,
+  "desc": "Sticky. Opens a cracked wall that smells of toffee."
+ },
+ {
+  "id": "lightwell_key",
+  "name": "Lightwell Key",
+  "kind": "key",
+  "min_level": 60,
+  "effect": {
+   "opens": "lightwell"
+  },
+  "price_gold": 0,
+  "stack_max": 99,
+  "desc": "Opens a Lightwell run. Found in the Deepdark."
+ }
+]

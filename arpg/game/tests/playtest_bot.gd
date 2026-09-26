@@ -1,6 +1,7 @@
 extends Node
 ## Autonomous playtest bot. Drives the player through intents (same path as touch input).
 ## Args: --bot[=novice|competent|expert] --duration=<s> --metrics-out=<path.jsonl> --auto-equip
+##       --pet=<id|first> --mount=<id|first> (grant + use) --exercise (hearth → town NPCs → portal back)
 ## Writes one JSON line per event + a summary line at the end.
 
 var args := {}
@@ -20,6 +21,8 @@ var _ttk := []
 var _engaged := {}
 var _zones_done := 0
 var _start_level := 1
+var _ex_stage := 0
+var _ex_t := 0.0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -36,6 +39,69 @@ func _ready() -> void:
 	Events.zone_cleared.connect(func(z): _zones_done += 1; _write({"ev": "zone_cleared", "zone": z, "t": _t}))
 	await get_tree().create_timer(1.0).timeout
 	_start_level = Game.character.level if Game.character else 1
+	_grant_companions()
+
+func _pick(table: String, want: String) -> String:
+	if want == "first" or want == "true":
+		var all = Content.all(table)
+		return all[0].id if all.size() > 0 else ""
+	return want if Content.has_rec(table, want) else ""
+
+func _grant_companions() -> void:
+	var sess = Game.world.get_parent() if Game.world else null
+	if sess == null:
+		return
+	if args.has("pet"):
+		var id = _pick("pets", args.pet)
+		if id != "":
+			sess.grant_pet(id)
+			sess.set_active_pet(id)
+			_write({"ev": "pet", "id": id})
+	if args.has("mount"):
+		var id = _pick("mounts", args.mount)
+		if id != "":
+			sess.grant_mount(id)
+			Game.world.player.wants_mount = true
+			_write({"ev": "mount", "id": id})
+
+## Scripted systems walk-through: hearth home, talk to every NPC, portal back.
+func _exercise(w: GameWorld, p: Player, delta: float) -> bool:
+	var sess = w.get_parent()
+	_ex_t += delta
+	match _ex_stage:
+		0:
+			if _t > 12.0 and not w.is_town:
+				var r = sess.hearth()
+				_write({"ev": "hearth", "ok": r.ok, "t": _t})
+				_ex_stage = 1 if r.ok else 9
+				_ex_t = 0.0
+		1:
+			p.intent_move = Vector3.ZERO
+			if w.is_town:
+				_ex_stage = 2
+				_ex_t = 0.0
+			elif not p.is_channeling() and _ex_t > 1.0:
+				_ex_stage = 0   # interrupted (hit) → retry later
+			return true
+		2:
+			p.intent_move = Vector3.ZERO
+			if _ex_t > 1.5:
+				for n in w.npcs:
+					if is_instance_valid(n):
+						w.interact_npc(n)
+				sess.bind_town()
+				_write({"ev": "town", "npcs": w.npcs.size(), "return_portal": w.return_portal != null, "t": _t})
+				_ex_stage = 3
+				_ex_t = 0.0
+			return true
+		3:
+			p.intent_move = Vector3.ZERO
+			if _ex_t > 3.0:
+				var r = sess.portal_back()
+				_write({"ev": "portal_back", "ok": r.ok, "t": _t})
+				_ex_stage = 9
+			return true
+	return false
 
 func _write(d: Dictionary) -> void:
 	if _log:
@@ -69,6 +135,8 @@ func _process(delta: float) -> void:
 		_handle_pause(w)
 		return
 	if not p.alive:
+		return
+	if args.has("exercise") and _exercise(w, p, delta):
 		return
 	if args.has("auto-equip") and int(_t * 2) % 20 == 0:
 		if InventoryOps.best_gear(p.ch) > 0:
