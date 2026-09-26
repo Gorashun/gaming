@@ -69,13 +69,13 @@ func _ready() -> void:
 	_build()
 	Events.health_changed.connect(_on_health)
 	Events.resource_changed.connect(_on_resource)
-	Events.xp_gained.connect(func(_x): _update_xp())
+	# Object-bound callables (not lambdas) so the global signals drop this HUD when it is freed on travel
+	Events.xp_gained.connect(_update_xp.unbind(1))
 	Events.level_up.connect(_on_level_up)
 	Events.toast.connect(toast)
 	Events.boss_spawned.connect(_on_boss)
-	Events.boss_defeated.connect(func(_b): _hide_boss())
-	Events.golden_moment.connect(func(it): _golden_queue.append(it))
-	Events.gold_changed.connect(func(_g): pass)
+	Events.boss_defeated.connect(_hide_boss.unbind(1))
+	Events.golden_moment.connect(_queue_golden)
 	Events.item_picked_up.connect(_on_pickup)
 	_connect_opt("boss_phase", func(_b, ph): _on_boss_phase(ph))
 	_connect_opt("skill_mastery_ready", func(sid): toast("%s can be mastered!" % Content.get_rec("skills", sid).get("name", "A skill"), UiTheme.GOLD, "skills"))
@@ -1121,3 +1121,6 @@ func _bag_index(ch: CharacterData, it: Dictionary) -> int:
 		if x and str(x.get("uid", "")) == str(it.get("uid", "?")):
 			return i
 	return -1
+
+func _queue_golden(it: Dictionary) -> void:
+	_golden_queue.append(it)

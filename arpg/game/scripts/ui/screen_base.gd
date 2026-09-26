@@ -76,9 +76,7 @@ static func _retire(c: Node) -> void:
 	if c.has_signal("closed"):
 		for con in c.closed.get_connections():
 			c.closed.disconnect(con.callable)
-	c.get_tree().create_timer(0.25, true, false, true).timeout.connect(func():
-		if is_instance_valid(c):
-			c.queue_free())
+	c.get_tree().create_timer(0.25, true, false, true).timeout.connect(c.queue_free)
 
 func goto(which: String, context_in := {}) -> void:
 	## Switch to another screen (hub tabs). Keeps the game paused.

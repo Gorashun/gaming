@@ -48,6 +48,19 @@ const PATH_RES := 2.0
 func _init() -> void:
 	name = "GameWorld"
 
+## Delayed call tied to this zone: dropped if the world is freed first (travel), so pending
+## callbacks never run against a freed world ("Lambda capture was freed").
+func after(delay: float, cb: Callable) -> void:
+	var tm = Timer.new()
+	tm.one_shot = true
+	tm.wait_time = max(0.001, delay)
+	add_child(tm)
+	tm.timeout.connect(func():
+		tm.queue_free()
+		if cb.is_valid():
+			cb.call())
+	tm.start()
+
 func load_zone(zone_id: String, seed_value := -1) -> void:
 	zone = Content.get_rec("zones", zone_id)
 	if zone.is_empty():
@@ -477,7 +490,7 @@ func interact_npc(n: Npc) -> void:
 	if scr == "" and not Quests.available_for(ch, n.npc_id).is_empty():
 		scr = "quests"
 	if scr != "" and sess and sess.has_method("open_screen") and not suppress_npc_screens:
-		get_tree().create_timer(0.6).timeout.connect(func():
+		after(0.6, func():
 			if is_instance_valid(sess) and is_instance_valid(self):
 				sess.open_screen(scr))
 
@@ -1002,7 +1015,7 @@ func _on_monster_died(a: Actor) -> void:
 			deal_damage(m.owner_actor, t, float(Hooks.param(m.owner_actor.ch, "minion_death_burst", "mult", 0.8)), "physical", ["minion"], {}, true)
 	if m.kind == "minion":
 		Fx.soul_puff(m.global_position, Color(1.0, 0.8, 0.6))
-		get_tree().create_timer(0.6).timeout.connect(m.queue_free)
+		after(0.6, m.queue_free)
 		return
 	kills += 1
 	stats_session.kills += 1
@@ -1091,7 +1104,7 @@ func _on_monster_died(a: Actor) -> void:
 		Events.toast.emit("%s is rekindled!" % m.display_name, Color(1, 0.85, 0.4))
 	Events.actor_died.emit(m, player)
 	var mref = weakref(m)
-	get_tree().create_timer(1.4).timeout.connect(func():
+	after(1.4, func():
 		var m2 = mref.get_ref()
 		if is_instance_valid(m2):
 			var t = m2.create_tween()
@@ -1304,7 +1317,7 @@ func draw_bolt(a: Vector3, b: Vector3, col: Color) -> void:
 	im.surface_end()
 	fx_root.add_child(mi)
 	Fx.flash_light(b, col, 2.0, 0.2)
-	get_tree().create_timer(0.12).timeout.connect(mi.queue_free)
+	after(0.12, mi.queue_free)
 
 # ------------------------------------------------------------------ queries
 func _hostiles_for(a: Actor) -> Array:
