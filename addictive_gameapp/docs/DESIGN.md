@@ -266,3 +266,9 @@ Källa: research/economy-research.md §5. Ersätter §14.3 (intjäning) och §14
 - Nästa sets siluett är en generisk okänd Glimt med lås (setet lottas först vid upplåsning).
 - Hjälten är en leksak: tryck ger kompisens uppvisning.
 - Mått skalade till 360×640 (SPELA 268×88, kort 101×104).
+
+## 19. Return lanes and rating (decision 2026-09-26, producer)
+- Anders asked for lanes that bring players back often. Daily return rewards put the game at **PEGI 7** (with the "play by appointment"-type descriptor) under the June 2026 criteria. The target audience is 7+, so PEGI 7 is accepted. **Penalties for absence (PEGI 12) remain forbidden.**
+- Daily lanes ship together in one release so the rating and store text change once. Store text is updated from PEGI 3 assumptions to PEGI 7.
+- No notifications in v1.
+- Source: `docs/research/retention-lanes.md`, safety patterns: `docs/reviews/2026-09-26-baseline.md`.
