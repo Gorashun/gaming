@@ -1,0 +1,38 @@
+[
+ {
+  "id": "dev_blade_base",
+  "name": "Dev Blade",
+  "slot": "main_hand",
+  "type": "dev_blade",
+  "type_name": "Dev Blade",
+  "min_ilvl": 1,
+  "model": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+  "weight": 0.001,
+  "dmg": [
+   10,
+   20
+  ],
+  "aps": 1.2,
+  "implicit": {
+   "crit_chance": [
+    2,
+    2
+   ]
+  }
+ },
+ {
+  "id": "dev_plate",
+  "name": "Dev Plate",
+  "slot": "chest",
+  "type": "chest",
+  "min_ilvl": 1,
+  "weight": 0.001,
+  "armor": 100,
+  "implicit": {
+   "life": [
+    20,
+    20
+   ]
+  }
+ }
+]

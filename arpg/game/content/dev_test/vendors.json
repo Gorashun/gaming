@@ -1,0 +1,44 @@
+[
+ {
+  "id": "dev_vendor",
+  "name": "Dev Trader",
+  "npc": "dev_smith",
+  "stock": [
+   {
+    "kind": "consumable",
+    "id": "potion",
+    "name": "Healing Draught",
+    "price_gold": 10
+   },
+   {
+    "kind": "consumable",
+    "id": "wick_charge",
+    "name": "Homeward Wick charge",
+    "price_gold": 50
+   },
+   {
+    "kind": "consumable",
+    "id": "pet_treat",
+    "name": "Pet treat",
+    "price_gold": 15
+   },
+   {
+    "kind": "consumable",
+    "id": "mount_feed",
+    "name": "Mount feed",
+    "price_gold": 15
+   },
+   {
+    "kind": "material",
+    "id": "soot",
+    "count": 5,
+    "price_gold": 20
+   },
+   {
+    "kind": "item_base",
+    "id": "dev_plate",
+    "price_gold": 30
+   }
+  ]
+ }
+]

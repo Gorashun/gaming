@@ -1,0 +1,106 @@
+[
+ {
+  "id": "dev_menagerie",
+  "name": "Lamplight Hollow",
+  "act": "act1",
+  "outdoor": true,
+  "corridor_width": 2,
+  "floor": [
+   "floor_wood_large",
+   "floor_tile_large"
+  ],
+  "floor_alt": [
+   "floor_wood_large_dark",
+   "hal:floor_dirt"
+  ],
+  "floor_alt_chance": 0.2,
+  "ground": "#2a2018",
+  "tint": {
+   "saturation": 0.85,
+   "brightness": 0.95
+  },
+  "boundary_props": [
+   "hal:fence",
+   "hal:fence_pillar",
+   "hal:tree_pine_yellow_large",
+   "hal:tree_pine_orange_large",
+   "hal:tree_dead_medium"
+  ],
+  "boundary_tint": {
+   "saturation": 0.6,
+   "brightness": 0.8
+  },
+  "near_boundary": [
+   "hex:buildings_neutral/fence_wood_straight",
+   "hal:fence_broken",
+   "hal:pumpkin_orange"
+  ],
+  "backdrop": [
+   {
+    "models": [
+     "hex:nature/trees_A_large",
+     "hex:nature/trees_B_large"
+    ],
+    "density": 0.55,
+    "scale": [
+     0.9,
+     1.15
+    ],
+    "tint": {
+     "color": "#8a7a6a",
+     "saturation": 0.35,
+     "brightness": 0.55
+    }
+   }
+  ],
+  "props": [
+   {
+    "models": [
+     "hal:post_lantern"
+    ],
+    "where": "any",
+    "density": 0.07,
+    "light": {
+     "color": "#ffb54a",
+     "energy": 1.6,
+     "range": 8.0,
+     "y": 2.6,
+     "halo": 0.55,
+     "halo_size": 1.0
+    }
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "fireflies",
+    "color": "#ffd28a",
+    "amount": 16
+   },
+   {
+    "kind": "embers",
+    "color": "#ffb060",
+    "amount": 10
+   }
+  ],
+  "critters": [],
+  "env": {
+   "sky": "#120d10",
+   "ambient": "#5a4636",
+   "ambient_energy": 1.1,
+   "fog": "#2a1e16",
+   "fog_begin": 18,
+   "fog_end": 52,
+   "sun": "#ffcf9a",
+   "sun_energy": 0.45,
+   "sun_yaw": 35,
+   "mist": 0.12,
+   "mist_color": "#6a5040",
+   "glow": 0.7,
+   "contrast": 1.08,
+   "saturation": 1.0,
+   "outline": "#1c1208"
+  },
+  "music": "town",
+  "showcase_creatures": true
+ }
+]

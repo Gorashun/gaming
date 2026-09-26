@@ -1,145 +1,657 @@
 [
  {
-  "id": "crypt",
-  "name": "Crypt",
+  "id": "town",
+  "name": "Lamplight Hollow",
+  "act": "act1",
+  "outdoor": true,
+  "corridor_width": 2,
   "floor": [
+   "floor_wood_large",
    "floor_tile_large"
   ],
   "floor_alt": [
-   "floor_tile_large_rocks",
-   "floor_tile_big_grate",
-   "floor_dirt_large"
+   "floor_wood_large_dark",
+   "hal:floor_dirt"
   ],
-  "floor_alt_chance": 0.18,
-  "wall": "wall",
-  "wall_near": "wall_half",
-  "wall_variants": [
-   "wall_cracked",
-   "wall_broken",
-   "wall_archedwindow_gated"
+  "floor_alt_chance": 0.2,
+  "ground": "#2a2018",
+  "tint": {
+   "saturation": 0.85,
+   "brightness": 0.95
+  },
+  "boundary_props": [
+   "hal:fence",
+   "hal:fence_pillar",
+   "hal:tree_pine_yellow_large",
+   "hal:tree_pine_orange_large",
+   "hal:tree_dead_medium"
   ],
-  "corner_pillar": "wall_pillar",
+  "boundary_tint": {
+   "saturation": 0.6,
+   "brightness": 0.8
+  },
+  "near_boundary": [
+   "hex:buildings_neutral/fence_wood_straight",
+   "hal:fence_broken",
+   "hal:pumpkin_orange"
+  ],
+  "backdrop": [
+   {
+    "models": [
+     "hex:nature/trees_A_large",
+     "hex:nature/trees_B_large"
+    ],
+    "density": 0.55,
+    "scale": [
+     0.9,
+     1.15
+    ],
+    "tint": {
+     "color": "#8a7a6a",
+     "saturation": 0.35,
+     "brightness": 0.55
+    }
+   }
+  ],
   "props": [
    {
     "models": [
-     "torch_mounted"
+     "hal:post_lantern"
     ],
-    "where": "wall_mount",
-    "density": 0.14,
+    "where": "any",
+    "density": 0.07,
     "light": {
-     "color": "#ff9a40",
+     "color": "#ffb54a",
      "energy": 1.6,
-     "range": 8,
-     "y": 2.3
-    },
-    "y": 1.4
-   },
-   {
-    "models": [
-     "barrel_large",
-     "barrel_small",
-     "box_small",
-     "box_stacked",
-     "crates_stacked",
-     "keg"
-    ],
-    "where": "corner",
-    "density": 0.35,
-    "blocking": true,
-    "scale": [
-     0.9,
-     1.1
-    ],
-    "shadow": true
-   },
-   {
-    "models": [
-     "banner_patternA_red",
-     "banner_patternB_brown",
-     "banner_thin_red",
-     "banner_shield_brown"
-    ],
-    "where": "wall",
-    "density": 0.08
-   },
-   {
-    "models": [
-     "candle_triple",
-     "candle_melted",
-     "candle_thin_lit"
-    ],
-    "where": "wall",
-    "density": 0.1,
-    "light": {
-     "color": "#ffb566",
-     "energy": 0.9,
-     "range": 5,
-     "y": 1.2
+     "range": 8.0,
+     "y": 2.6,
+     "halo": 0.55,
+     "halo_size": 1.0
     }
    },
    {
     "models": [
-     "hal:skull",
-     "hal:bone_A",
-     "hal:bone_B",
-     "hal:ribcage",
-     "rubble_half"
+     "hex:props/tent"
     ],
-    "where": "any",
-    "density": 0.12
+    "where": "corner",
+    "density": 0.25,
+    "scale": [
+     1.125,
+     1.25
+    ],
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
    },
    {
     "models": [
-     "pillar"
+     "barrel_large",
+     "crates_stacked",
+     "keg_decorated",
+     "hex:props/crate_A_big",
+     "hex:props/sack"
     ],
-    "where": "center",
-    "density": 0.06,
+    "where": "any",
+    "density": 0.05,
+    "blocking": true,
+    "shadow": true,
+    "scale": [
+     1.0,
+     1.1
+    ]
+   },
+   {
+    "models": [
+     "hex:props/weaponrack",
+     "hex:props/flag_yellow",
+     "hex:props/flag_red"
+    ],
+    "where": "corner",
+    "density": 0.12,
+    "scale": [
+     1.375,
+     1.5
+    ],
+    "blocking": true
+   },
+   {
+    "models": [
+     "hal:pumpkin_yellow",
+     "hal:pumpkin_orange_small",
+     "hal:pumpkin_orange_jackolantern",
+     "candle_triple"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "tint": {
+     "saturation": 0.55,
+     "brightness": 0.75
+    }
+   },
+   {
+    "models": [
+     "table_medium_tablecloth_decorated_B",
+     "stool",
+     "hal:bench_decorated"
+    ],
+    "where": "any",
+    "density": 0.03,
+    "blocking": true,
+    "shadow": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "fireflies",
+    "color": "#ffd28a",
+    "amount": 16
+   },
+   {
+    "kind": "embers",
+    "color": "#ffb060",
+    "amount": 10
+   }
+  ],
+  "critters": [
+   {
+    "kind": "cat",
+    "color": "#4a4050",
+    "count": 2,
+    "scale": 0.7
+   },
+   {
+    "kind": "crow",
+    "color": "#2e2a36",
+    "count": 2,
+    "scale": 0.55
+   }
+  ],
+  "env": {
+   "sky": "#120d10",
+   "ambient": "#5a4636",
+   "ambient_energy": 1.1,
+   "fog": "#2a1e16",
+   "fog_begin": 18,
+   "fog_end": 52,
+   "sun": "#ffcf9a",
+   "sun_energy": 0.45,
+   "sun_yaw": 35,
+   "mist": 0.12,
+   "mist_color": "#6a5040",
+   "glow": 0.7,
+   "contrast": 1.08,
+   "saturation": 1.0,
+   "outline": "#1c1208"
+  },
+  "music": "town"
+ },
+ {
+  "id": "town_mines",
+  "name": "Pitlamp Camp",
+  "act": "act3",
+  "outdoor": true,
+  "corridor_width": 2,
+  "floor": [
+   "floor_wood_large",
+   "floor_dirt_large"
+  ],
+  "floor_alt": [
+   "floor_dirt_large_rocky",
+   "floor_wood_large_dark"
+  ],
+  "floor_alt_chance": 0.2,
+  "ground": "#221a14",
+  "tint": {
+   "saturation": 0.75,
+   "brightness": 0.9
+  },
+  "boundary_props": [
+   "hex:nature/rock_single_A",
+   "hex:nature/rock_single_D",
+   "hex:buildings_neutral/fence_wood_straight",
+   "proc:stalagmite"
+  ],
+  "boundary_tint": {
+   "color": "#b0a090",
+   "saturation": 0.5,
+   "brightness": 0.75
+  },
+  "near_boundary": [
+   "hex:props/resource_stone",
+   "proc:rock_pile",
+   "hex:props/crate_long_A"
+  ],
+  "backdrop": [
+   {
+    "models": [
+     "hex:nature/mountain_A",
+     "hex:nature/mountain_B",
+     "hex:nature/mountain_C"
+    ],
+    "density": 0.6,
+    "scale": [
+     1.25,
+     1.75
+    ],
+    "tint": {
+     "color": "#7a6a5a",
+     "saturation": 0.3,
+     "brightness": 0.45
+    }
+   }
+  ],
+  "props": [
+   {
+    "models": [
+     "hal:post_lantern"
+    ],
+    "where": "any",
+    "density": 0.07,
+    "light": {
+     "color": "#ffc070",
+     "energy": 1.6,
+     "range": 8.0,
+     "y": 2.6,
+     "halo": 0.55,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "hex:props/tent"
+    ],
+    "where": "corner",
+    "density": 0.25,
+    "scale": [
+     1.125,
+     1.25
+    ],
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
+   },
+   {
+    "models": [
+     "proc:minecart",
+     "hex:props/wheelbarrow",
+     "barrel_large",
+     "crates_stacked"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "blocking": true,
+    "shadow": true,
+    "scale": [
+     1.0,
+     1.1
+    ]
+   },
+   {
+    "models": [
+     "proc:crystal_small"
+    ],
+    "where": "corner",
+    "density": 0.2,
+    "crystal": {
+     "base": "#6a8ea0",
+     "glow": "#cfe8f0",
+     "strength": 1.1
+    }
+   },
+   {
+    "models": [
+     "hex:props/resource_stone",
+     "hex:props/bucket_water",
+     "hex:props/sack"
+    ],
+    "where": "any",
+    "density": 0.04,
+    "scale": [
+     1.0,
+     1.25
+    ]
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "dust",
+    "color": "#c8a880",
+    "amount": 24
+   },
+   {
+    "kind": "embers",
+    "color": "#ffb060",
+    "amount": 10
+   }
+  ],
+  "critters": [
+   {
+    "kind": "cat",
+    "color": "#6a5a4a",
+    "count": 1,
+    "scale": 0.7
+   },
+   {
+    "kind": "bat",
+    "color": "#3a3040",
+    "count": 2,
+    "scale": 0.5,
+    "fly": true
+   }
+  ],
+  "env": {
+   "sky": "#0f0c0a",
+   "ambient": "#4a3a2c",
+   "ambient_energy": 1.1,
+   "fog": "#2a1e16",
+   "fog_begin": 18,
+   "fog_end": 50,
+   "sun": "#ffc890",
+   "sun_energy": 0.3,
+   "mist": 0.15,
+   "mist_color": "#5a4838",
+   "glow": 0.7,
+   "contrast": 1.08,
+   "outline": "#1c1208"
+  },
+  "music": "town"
+ },
+ {
+  "id": "town_frost",
+  "name": "Hearthward",
+  "act": "act4",
+  "outdoor": true,
+  "corridor_width": 2,
+  "floor": [
+   "floor_wood_large",
+   "hal:floor_dirt"
+  ],
+  "floor_alt": [
+   "floor_tile_large"
+  ],
+  "floor_alt_chance": 0.2,
+  "ground": "#b8c4d0",
+  "tint": {
+   "saturation": 0.7,
+   "brightness": 0.95,
+   "top_color": "#eef4ff",
+   "top_amount": 0.55
+  },
+  "boundary_props": [
+   "hal:tree_dead_large",
+   "hal:tree_dead_medium",
+   "hex:buildings_neutral/fence_stone_straight",
+   "hal:fence"
+  ],
+  "boundary_tint": {
+   "color": "#c8d4e0",
+   "saturation": 0.35,
+   "brightness": 0.85,
+   "top_color": "#f4f8ff",
+   "top_amount": 0.8
+  },
+  "near_boundary": [
+   "proc:snow_mound",
+   "hex:buildings_neutral/fence_stone_straight"
+  ],
+  "backdrop": [
+   {
+    "models": [
+     "hex:nature/mountain_A",
+     "hex:nature/mountain_B"
+    ],
+    "density": 0.55,
+    "scale": [
+     1.25,
+     1.75
+    ],
+    "tint": {
+     "color": "#c8d8ea",
+     "saturation": 0.25,
+     "brightness": 0.8,
+     "top_color": "#ffffff",
+     "top_amount": 0.9
+    }
+   }
+  ],
+  "props": [
+   {
+    "models": [
+     "hal:post_lantern"
+    ],
+    "where": "any",
+    "density": 0.08,
+    "light": {
+     "color": "#ffb54a",
+     "energy": 1.7,
+     "range": 8.0,
+     "y": 2.6,
+     "halo": 0.6,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "hex:props/tent"
+    ],
+    "where": "corner",
+    "density": 0.25,
+    "scale": [
+     1.125,
+     1.25
+    ],
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
+   },
+   {
+    "models": [
+     "barrel_large",
+     "crates_stacked",
+     "keg_decorated",
+     "hex:props/sack"
+    ],
+    "where": "any",
+    "density": 0.05,
     "blocking": true,
     "shadow": true
    },
    {
     "models": [
-     "chest"
+     "proc:snow_mound"
     ],
-    "where": "deadend",
-    "density": 0.7,
-    "chest": true
+    "where": "any",
+    "density": 0.05
    },
    {
     "models": [
-     "chest_gold"
+     "hex:props/flag_blue",
+     "hex:props/weaponrack"
     ],
     "where": "corner",
-    "density": 0.01,
-    "chest": true
-   },
-   {
-    "models": [
-     "hal:coffin",
-     "hal:coffin_decorated"
+    "density": 0.1,
+    "scale": [
+     1.375,
+     1.5
     ],
-    "where": "corner",
-    "density": 0.06,
     "blocking": true
    }
   ],
+  "ambient": [
+   {
+    "kind": "snow",
+    "color": "#ffffff",
+    "amount": 40
+   }
+  ],
+  "critters": [
+   {
+    "kind": "bunny",
+    "color": "#eef0f4",
+    "count": 2,
+    "scale": 0.6
+   },
+   {
+    "kind": "owl",
+    "color": "#d8dce4",
+    "count": 1,
+    "scale": 0.7
+   }
+  ],
   "env": {
-   "sky": "#050409",
-   "ambient": "#3b3452",
-   "ambient_energy": 1.1,
-   "fog": "#120f1c",
-   "fog_density": 0.02,
-   "sun": "#7f8bd0",
-   "sun_energy": 0.45,
-   "mist": 0.25,
-   "mist_color": "#4a4a6a",
-   "glow": 0.7
+   "sky": "#8a9aac",
+   "ambient": "#6a7a8c",
+   "ambient_energy": 1.0,
+   "fog": "#aebfd2",
+   "fog_begin": 16,
+   "fog_end": 46,
+   "sun": "#e0f0ff",
+   "sun_energy": 0.7,
+   "mist": 0.12,
+   "mist_color": "#dde8f4",
+   "glow": 0.6,
+   "contrast": 1.05,
+   "outline": "#1a2230"
   },
-  "music": "crypt"
+  "music": "town",
+  "floor_tint": {
+   "top_amount": 0.35
+  }
+ },
+ {
+  "id": "town_hush",
+  "name": "The Last Wick",
+  "act": "act5",
+  "outdoor": true,
+  "corridor_width": 2,
+  "floor": [
+   "floor_tile_large",
+   "floor_wood_large"
+  ],
+  "floor_alt": [
+   "floor_tile_large_rocks"
+  ],
+  "floor_alt_chance": 0.2,
+  "ground": "#1a1a1e",
+  "tint": {
+   "saturation": 0.45,
+   "brightness": 0.9
+  },
+  "boundary_props": [
+   "hal:tree_dead_large",
+   "hal:tree_dead_medium",
+   "hal:fence_broken",
+   "proc:hush_obelisk"
+  ],
+  "boundary_tint": {
+   "saturation": 0.0,
+   "brightness": 0.7
+  },
+  "near_boundary": [
+   "hal:grave_A",
+   "hal:fence_broken"
+  ],
+  "backdrop": [
+   {
+    "models": [
+     "hal:tree_dead_large",
+     "proc:hush_obelisk"
+    ],
+    "density": 0.45,
+    "scale": [
+     1.0,
+     1.4
+    ],
+    "tint": {
+     "saturation": 0.0,
+     "brightness": 0.45
+    }
+   }
+  ],
+  "props": [
+   {
+    "models": [
+     "hal:post_lantern"
+    ],
+    "where": "any",
+    "density": 0.09,
+    "light": {
+     "color": "#ffb54a",
+     "energy": 1.7,
+     "range": 8.0,
+     "y": 2.6,
+     "halo": 0.6,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "hex:props/tent"
+    ],
+    "where": "corner",
+    "density": 0.2,
+    "scale": [
+     1.125,
+     1.25
+    ],
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
+   },
+   {
+    "models": [
+     "barrel_large",
+     "crates_stacked",
+     "candle_triple",
+     "hex:props/sack"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "blocking": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "motes",
+    "color": "#ffffff",
+    "amount": 24
+   },
+   {
+    "kind": "embers",
+    "color": "#ffb060",
+    "amount": 12
+   }
+  ],
+  "critters": [
+   {
+    "kind": "cat",
+    "color": "#5a5a60",
+    "count": 1,
+    "scale": 0.7
+   }
+  ],
+  "env": {
+   "sky": "#101012",
+   "ambient": "#3c3a3a",
+   "ambient_energy": 1.0,
+   "fog": "#18181c",
+   "fog_begin": 16,
+   "fog_end": 44,
+   "sun": "#c8c8d0",
+   "sun_energy": 0.2,
+   "mist": 0.2,
+   "mist_color": "#4a4a50",
+   "glow": 0.7,
+   "contrast": 1.1,
+   "saturation": 0.9,
+   "outline": "#101012"
+  },
+  "music": "town"
  },
  {
   "id": "graveyard",
   "name": "Graveyard",
+  "act": "act1",
   "outdoor": true,
   "corridor_width": 2,
   "floor": [
@@ -149,15 +661,53 @@
    "hal:floor_dirt_grave"
   ],
   "floor_alt_chance": 0.1,
+  "ground": "#161c1e",
+  "tint": {
+   "color": "#c8d4d4",
+   "saturation": 0.55,
+   "brightness": 0.8,
+   "top_color": "#4a5a48",
+   "top_amount": 0.25,
+   "top_scale": 0.1
+  },
   "boundary_props": [
    "hal:tree_dead_large",
    "hal:tree_dead_medium",
    "hal:fence",
    "hal:fence_broken",
-   "hal:tree_pine_orange_large",
-   "hal:crypt"
+   "hal:crypt",
+   "hal:tree_dead_large_decorated"
   ],
-  "near_boundary": "hal:grave_A",
+  "boundary_tint": {
+   "color": "#b0bcc0",
+   "saturation": 0.45,
+   "brightness": 0.7
+  },
+  "near_boundary": [
+   "hal:grave_A",
+   "hal:gravestone",
+   "hal:fence_broken",
+   "hal:gravemarker_A"
+  ],
+  "backdrop": [
+   {
+    "models": [
+     "hal:tree_dead_large",
+     "hal:tree_dead_medium",
+     "hex:nature/trees_B_large"
+    ],
+    "density": 0.5,
+    "scale": [
+     1.0,
+     1.4
+    ],
+    "tint": {
+     "color": "#6a7a80",
+     "saturation": 0.25,
+     "brightness": 0.45
+    }
+   }
+  ],
   "props": [
    {
     "models": [
@@ -168,9 +718,11 @@
     "density": 0.035,
     "light": {
      "color": "#ffb35a",
-     "energy": 1.4,
-     "range": 7,
-     "y": 1.8
+     "energy": 1.5,
+     "range": 7.5,
+     "y": 2.6,
+     "halo": 0.55,
+     "halo_size": 1.0
     }
    },
    {
@@ -198,7 +750,11 @@
      "hal:pumpkin_orange_jackolantern"
     ],
     "where": "any",
-    "density": 0.05
+    "density": 0.04,
+    "tint": {
+     "saturation": 0.55,
+     "brightness": 0.75
+    }
    },
    {
     "models": [
@@ -206,9 +762,10 @@
      "hal:tree_dead_medium"
     ],
     "where": "any",
-    "density": 0.05,
+    "density": 0.04,
     "blocking": true,
-    "shadow": true
+    "shadow": true,
+    "occlude": true
    },
    {
     "models": [
@@ -220,8 +777,10 @@
     "light": {
      "color": "#ffb566",
      "energy": 0.9,
-     "range": 5,
-     "y": 1.2
+     "range": 5.0,
+     "y": 1.2,
+     "halo": 0.45,
+     "halo_size": 0.7
     }
    },
    {
@@ -236,94 +795,2039 @@
    },
    {
     "models": [
+     "hal:skull",
+     "hal:bone_A",
+     "hal:bone_B",
+     "hex:nature/rock_single_A"
+    ],
+    "where": "any",
+    "density": 0.06,
+    "scale": [
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "models": [
      "chest"
     ],
     "where": "deadend",
-    "density": 0.5,
+    "density": 0.6,
     "chest": true
    }
   ],
+  "ambient": [
+   {
+    "kind": "fireflies",
+    "color": "#8fd9a0",
+    "amount": 14
+   },
+   {
+    "kind": "motes",
+    "color": "#9fb8c8",
+    "amount": 16,
+    "alpha": 0.5
+   }
+  ],
+  "critters": [
+   {
+    "kind": "crow",
+    "color": "#2c2834",
+    "count": 5,
+    "scale": 0.55
+   },
+   {
+    "kind": "bat",
+    "color": "#302a38",
+    "count": 2,
+    "scale": 0.45,
+    "fly": true
+   }
+  ],
   "env": {
-   "sky": "#0a0a14",
-   "ambient": "#3c4660",
+   "sky": "#0b1113",
+   "ambient": "#34484e",
    "ambient_energy": 1.0,
-   "fog": "#1a1e2e",
-   "fog_density": 0.025,
-   "sun": "#9fb0ff",
-   "sun_energy": 0.7,
+   "fog": "#22363a",
+   "fog_begin": 15,
+   "fog_end": 40,
+   "sun": "#9fb8c8",
+   "sun_energy": 0.6,
+   "sun_yaw": 20,
    "mist": 0.45,
-   "mist_color": "#6a7894",
-   "glow": 0.7
+   "mist_color": "#5a7478",
+   "glow": 0.75,
+   "contrast": 1.12,
+   "outline": "#0c1416"
   },
   "music": "graveyard"
  },
  {
-  "id": "town",
-  "name": "Lamplight Hollow",
+  "id": "bog",
+  "name": "Wickmire Bog",
+  "act": "act1",
   "outdoor": true,
   "corridor_width": 2,
   "floor": [
-   "floor_wood_large",
-   "floor_tile_large"
+   "hal:floor_dirt"
   ],
   "floor_alt": [
-   "floor_wood_large_dark"
+   "hal:floor_dirt_grave"
   ],
+  "floor_alt_chance": 0.1,
+  "ground": "#10181a",
+  "tint": {
+   "color": "#a8b8a8",
+   "saturation": 0.5,
+   "brightness": 0.7,
+   "top_color": "#3e5a44",
+   "top_amount": 0.55,
+   "top_scale": 0.08
+  },
   "boundary_props": [
-   "hal:fence",
-   "hal:tree_pine_yellow_large",
-   "hal:tree_pine_orange_large",
-   "hal:fence_pillar"
+   "hal:tree_dead_large",
+   "hal:tree_dead_medium",
+   "hal:tree_dead_large_decorated",
+   "hal:post_skull",
+   "hex:nature/waterplant_B"
   ],
-  "near_boundary": "hal:fence",
+  "boundary_tint": {
+   "color": "#a0b0a8",
+   "saturation": 0.4,
+   "brightness": 0.65
+  },
+  "near_boundary": [
+   "hex:nature/waterplant_A",
+   "hex:nature/waterplant_C",
+   "proc:lily_pads",
+   "hal:post"
+  ],
+  "backdrop": [
+   {
+    "models": [
+     "hal:tree_dead_large",
+     "hal:tree_dead_medium"
+    ],
+    "density": 0.55,
+    "scale": [
+     1.0,
+     1.5
+    ],
+    "tint": {
+     "color": "#607068",
+     "saturation": 0.2,
+     "brightness": 0.4
+    }
+   }
+  ],
   "props": [
+   {
+    "models": [
+     "proc:lily_pads"
+    ],
+    "where": "any",
+    "density": 0.12,
+    "free_rot": true
+   },
+   {
+    "models": [
+     "hex:nature/waterplant_A",
+     "hex:nature/waterplant_B",
+     "hex:nature/waterplant_C"
+    ],
+    "where": "any",
+    "density": 0.1,
+    "scale": [
+     1.25,
+     1.75
+    ],
+    "free_rot": true
+   },
    {
     "models": [
      "hal:post_lantern"
     ],
     "where": "any",
-    "density": 0.08,
+    "density": 0.03,
     "light": {
-     "color": "#ffc070",
+     "color": "#b8ffc8",
+     "energy": 1.2,
+     "range": 7.0,
+     "y": 2.6,
+     "halo": 0.5,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "hal:tree_dead_small",
+     "hal:tree_dead_medium"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
+   },
+   {
+    "models": [
+     "hal:gravemarker_A",
+     "hal:gravemarker_B",
+     "hal:post_skull"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "blocking": true
+   },
+   {
+    "models": [
+     "hex:nature/rock_single_A",
+     "hex:nature/rock_single_D"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "scale": [
+     1.25,
+     1.75
+    ],
+    "free_rot": true
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.6,
+    "chest": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "wisps",
+    "color": "#8fd9a0",
+    "amount": 6
+   },
+   {
+    "kind": "fireflies",
+    "color": "#b8f0a0",
+    "amount": 16
+   }
+  ],
+  "critters": [
+   {
+    "kind": "frog",
+    "color": "#4a6a48",
+    "count": 5,
+    "scale": 0.5
+   },
+   {
+    "kind": "crow",
+    "color": "#2c2834",
+    "count": 2,
+    "scale": 0.55
+   }
+  ],
+  "env": {
+   "sky": "#0a1210",
+   "ambient": "#2e4440",
+   "ambient_energy": 1.0,
+   "fog": "#22363a",
+   "fog_begin": 12,
+   "fog_end": 36,
+   "fog_height": 0.6,
+   "fog_height_density": 0.4,
+   "sun": "#9fb8c8",
+   "sun_energy": 0.5,
+   "mist": 0.7,
+   "mist_color": "#6a8a80",
+   "glow": 0.75,
+   "contrast": 1.12,
+   "outline": "#0a1412"
+  },
+  "music": "graveyard"
+ },
+ {
+  "id": "crypt",
+  "name": "Crypt",
+  "act": "act1",
+  "floor": [
+   "floor_tile_large"
+  ],
+  "floor_alt": [
+   "floor_tile_large_rocks",
+   "floor_tile_big_grate",
+   "floor_dirt_large"
+  ],
+  "floor_alt_chance": 0.18,
+  "wall": "wall",
+  "wall_near": "barrier",
+  "wall_variants": [
+   "wall_cracked",
+   "wall_broken",
+   "wall_archedwindow_gated",
+   "wall_shelves"
+  ],
+  "corner_pillar": "wall_pillar",
+  "tint": {
+   "color": "#c0c4d8",
+   "saturation": 0.6,
+   "brightness": 0.85
+  },
+  "floor_tint": {
+   "top_color": "#3a4438",
+   "top_amount": 0.18
+  },
+  "props": [
+   {
+    "models": [
+     "torch_mounted"
+    ],
+    "where": "wall_mount",
+    "density": 0.14,
+    "y": 1.4,
+    "light": {
+     "color": "#ff9a40",
      "energy": 1.6,
-     "range": 8,
-     "y": 1.8
+     "range": 8.0,
+     "y": 2.3,
+     "halo": 0.6,
+     "halo_size": 1.0
     }
    },
    {
     "models": [
      "barrel_large",
+     "barrel_small",
+     "box_small",
+     "box_stacked",
      "crates_stacked",
-     "keg_decorated",
-     "table_medium_tablecloth_decorated_B",
-     "stool"
+     "keg"
+    ],
+    "where": "corner",
+    "density": 0.35,
+    "blocking": true,
+    "scale": [
+     0.9,
+     1.1
+    ],
+    "shadow": true
+   },
+   {
+    "models": [
+     "banner_patternA_red",
+     "banner_patternB_brown",
+     "banner_thin_red",
+     "banner_shield_brown"
+    ],
+    "where": "wall",
+    "density": 0.08,
+    "tint": {
+     "saturation": 0.5
+    }
+   },
+   {
+    "models": [
+     "candle_triple",
+     "candle_melted",
+     "candle_thin_lit"
+    ],
+    "where": "wall",
+    "density": 0.1,
+    "light": {
+     "color": "#ffb566",
+     "energy": 0.9,
+     "range": 5.0,
+     "y": 1.2,
+     "halo": 0.45,
+     "halo_size": 0.7
+    }
+   },
+   {
+    "models": [
+     "hal:skull",
+     "hal:bone_A",
+     "hal:bone_B",
+     "hal:ribcage",
+     "rubble_half"
+    ],
+    "where": "any",
+    "density": 0.12
+   },
+   {
+    "models": [
+     "pillar"
+    ],
+    "where": "center",
+    "density": 0.06,
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
+   },
+   {
+    "models": [
+     "hal:coffin",
+     "hal:coffin_decorated"
+    ],
+    "where": "corner",
+    "density": 0.06,
+    "blocking": true
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.6,
+    "chest": true
+   },
+   {
+    "models": [
+     "chest_gold"
+    ],
+    "where": "corner",
+    "density": 0.012,
+    "chest": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "dust",
+    "color": "#b0a8c8",
+    "amount": 24
+   }
+  ],
+  "critters": [
+   {
+    "kind": "bat",
+    "color": "#2e2838",
+    "count": 3,
+    "scale": 0.45,
+    "fly": true
+   },
+   {
+    "kind": "spider",
+    "color": "#2a2430",
+    "count": 2,
+    "scale": 0.4
+   }
+  ],
+  "env": {
+   "sky": "#050409",
+   "ambient": "#302a44",
+   "ambient_energy": 1.0,
+   "fog": "#120f1c",
+   "fog_begin": 15,
+   "fog_end": 38,
+   "sun": "#7f8bd0",
+   "sun_energy": 0.35,
+   "mist": 0.25,
+   "mist_color": "#4a4a6a",
+   "glow": 0.75,
+   "contrast": 1.12,
+   "outline": "#0c0a14"
+  },
+  "music": "crypt"
+ },
+ {
+  "id": "whisperwood",
+  "name": "Whisperwood",
+  "act": "act2",
+  "outdoor": true,
+  "corridor_width": 2,
+  "floor": [
+   "hal:floor_dirt"
+  ],
+  "floor_alt": [
+   "floor_dirt_large"
+  ],
+  "floor_alt_chance": 0.12,
+  "ground": "#15121c",
+  "tint": {
+   "color": "#b8a8c8",
+   "saturation": 0.5,
+   "brightness": 0.75,
+   "top_color": "#4c6450",
+   "top_amount": 0.5,
+   "top_scale": 0.09
+  },
+  "boundary_props": [
+   "hal:tree_dead_large",
+   "hal:tree_dead_large_decorated",
+   "hal:tree_dead_medium",
+   "hex:nature/tree_single_B",
+   "hal:fence_broken"
+  ],
+  "boundary_tint": {
+   "color": "#a898b8",
+   "saturation": 0.35,
+   "brightness": 0.65,
+   "top_color": "#4c6450",
+   "top_amount": 0.4
+  },
+  "boundary_density": 3,
+  "near_boundary": [
+   "hal:pumpkin_orange",
+   "hex:nature/rock_single_D",
+   "hal:fence_broken",
+   "proc:mushroom_glow"
+  ],
+  "backdrop": [
+   {
+    "models": [
+     "hex:nature/trees_B_large",
+     "hex:nature/trees_A_large"
+    ],
+    "density": 0.8,
+    "scale": [
+     0.95,
+     1.25
+    ],
+    "tint": {
+     "color": "#5a4a70",
+     "saturation": 0.3,
+     "brightness": 0.45
+    }
+   },
+   {
+    "models": [
+     "hal:tree_dead_large"
+    ],
+    "density": 0.3,
+    "scale": [
+     1.2,
+     1.6
+    ],
+    "min_dist": 1,
+    "max_dist": 2,
+    "tint": {
+     "color": "#6a5a80",
+     "saturation": 0.25,
+     "brightness": 0.5
+    }
+   }
+  ],
+  "props": [
+   {
+    "models": [
+     "hal:tree_dead_small",
+     "hal:tree_dead_medium",
+     "hex:nature/tree_single_A"
+    ],
+    "where": "any",
+    "density": 0.06,
+    "blocking": true,
+    "shadow": true,
+    "occlude": true,
+    "scale": [
+     1.0,
+     1.3
+    ]
+   },
+   {
+    "models": [
+     "proc:mushroom_glow"
+    ],
+    "where": "any",
+    "density": 0.07,
+    "free_rot": true,
+    "scale": [
+     0.9,
+     1.5
+    ],
+    "crystal": {
+     "base": "#4a6a90",
+     "glow": "#7fb8e0",
+     "strength": 1.4
+    }
+   },
+   {
+    "models": [
+     "hal:pumpkin_orange",
+     "hal:pumpkin_yellow",
+     "hal:pumpkin_orange_small",
+     "hal:pumpkin_yellow_small"
+    ],
+    "where": "any",
+    "density": 0.06,
+    "tint": {
+     "saturation": 0.5,
+     "brightness": 0.7,
+     "top_amount": 0.0
+    }
+   },
+   {
+    "models": [
+     "hal:pumpkin_orange_jackolantern",
+     "hal:pumpkin_yellow_jackolantern"
+    ],
+    "where": "any",
+    "density": 0.02,
+    "tint": {
+     "saturation": 0.6,
+     "top_amount": 0.0
+    },
+    "light": {
+     "color": "#ff9a50",
+     "energy": 1.1,
+     "range": 5.5,
+     "y": 0.8,
+     "halo": 0.5,
+     "halo_size": 0.8
+    }
+   },
+   {
+    "models": [
+     "proc:root_arch"
+    ],
+    "where": "room",
+    "density": 0.02,
+    "blocking": true,
+    "free_rot": true,
+    "scale": [
+     1.2,
+     1.6
+    ],
+    "occlude": true
+   },
+   {
+    "models": [
+     "hex:nature/rock_single_A",
+     "hex:nature/rock_single_D",
+     "hex:nature/rock_single_E"
     ],
     "where": "any",
     "density": 0.05,
+    "scale": [
+     1.25,
+     2.0
+    ],
+    "free_rot": true
+   },
+   {
+    "models": [
+     "hal:post_lantern"
+    ],
+    "where": "any",
+    "density": 0.02,
+    "light": {
+     "color": "#b8a8ff",
+     "energy": 1.2,
+     "range": 7.0,
+     "y": 2.6,
+     "halo": 0.5,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.6,
+    "chest": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "spores",
+    "color": "#9fc8f0",
+    "amount": 30
+   },
+   {
+    "kind": "fireflies",
+    "color": "#c8b0ff",
+    "amount": 10
+   }
+  ],
+  "critters": [
+   {
+    "kind": "owl",
+    "color": "#6a5a70",
+    "count": 2,
+    "scale": 0.6
+   },
+   {
+    "kind": "lantern_moth",
+    "color": "#8a7aa8",
+    "count": 3,
+    "scale": 0.5,
+    "fly": true
+   },
+   {
+    "kind": "spider",
+    "color": "#2a2434",
+    "count": 2,
+    "scale": 0.45
+   },
+   {
+    "kind": "snail",
+    "color": "#8a6a9a",
+    "count": 2,
+    "scale": 0.5
+   }
+  ],
+  "env": {
+   "sky": "#110e18",
+   "ambient": "#3e3654",
+   "ambient_energy": 1.0,
+   "fog": "#3b3450",
+   "fog_begin": 13,
+   "fog_end": 38,
+   "sun": "#b8a8d8",
+   "sun_energy": 0.5,
+   "sun_yaw": 40,
+   "mist": 0.5,
+   "mist_color": "#6a6090",
+   "glow": 0.8,
+   "contrast": 1.12,
+   "outline": "#120e1a"
+  },
+  "music": "forest"
+ },
+ {
+  "id": "rootcellar",
+  "name": "Root Cellars",
+  "act": "act2",
+  "floor": [
+   "floor_dirt_large",
+   "floor_tile_large"
+  ],
+  "floor_alt": [
+   "floor_dirt_large_rocky"
+  ],
+  "floor_alt_chance": 0.25,
+  "wall": "wall",
+  "wall_near": "barrier",
+  "wall_variants": [
+   "wall_broken",
+   "wall_cracked",
+   "wall_scaffold"
+  ],
+  "corner_pillar": "wall_pillar",
+  "tint": {
+   "color": "#b8a8c8",
+   "saturation": 0.5,
+   "brightness": 0.75,
+   "hue": 8,
+   "top_color": "#4c6450",
+   "top_amount": 0.45,
+   "top_scale": 0.14
+  },
+  "props": [
+   {
+    "models": [
+     "proc:root_arch"
+    ],
+    "where": "wall",
+    "density": 0.08,
+    "scale": [
+     1.0,
+     1.4
+    ]
+   },
+   {
+    "models": [
+     "proc:mushroom_glow"
+    ],
+    "where": "corner",
+    "density": 0.35,
+    "scale": [
+     0.9,
+     1.4
+    ],
+    "free_rot": true,
+    "crystal": {
+     "base": "#4a6a90",
+     "glow": "#7fb8e0",
+     "strength": 1.5
+    }
+   },
+   {
+    "models": [
+     "trunk_large_A",
+     "trunk_medium_B",
+     "barrel_small_stack",
+     "hal:pumpkin_orange"
+    ],
+    "where": "corner",
+    "density": 0.25,
+    "blocking": true,
+    "shadow": true,
+    "tint": {
+     "saturation": 0.45,
+     "top_amount": 0.2
+    }
+   },
+   {
+    "models": [
+     "torch_mounted"
+    ],
+    "where": "wall_mount",
+    "density": 0.1,
+    "y": 1.4,
+    "light": {
+     "color": "#ff9a50",
+     "energy": 1.4,
+     "range": 7.0,
+     "y": 2.3,
+     "halo": 0.55,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "hal:skull",
+     "rubble_half",
+     "rubble_large"
+    ],
+    "where": "any",
+    "density": 0.08
+   },
+   {
+    "models": [
+     "pillar_decorated"
+    ],
+    "where": "center",
+    "density": 0.05,
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.6,
+    "chest": true
+   },
+   {
+    "models": [
+     "chest_gold"
+    ],
+    "where": "corner",
+    "density": 0.012,
+    "chest": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "spores",
+    "color": "#9fc8f0",
+    "amount": 28
+   }
+  ],
+  "critters": [
+   {
+    "kind": "spider",
+    "color": "#2a2434",
+    "count": 3,
+    "scale": 0.45
+   },
+   {
+    "kind": "moth",
+    "color": "#9a88b8",
+    "count": 2,
+    "scale": 0.45,
+    "fly": true
+   }
+  ],
+  "env": {
+   "sky": "#08060c",
+   "ambient": "#34304a",
+   "ambient_energy": 1.0,
+   "fog": "#241f30",
+   "fog_begin": 14,
+   "fog_end": 36,
+   "sun": "#b8a8d8",
+   "sun_energy": 0.3,
+   "mist": 0.35,
+   "mist_color": "#5a5080",
+   "glow": 0.8,
+   "contrast": 1.12,
+   "outline": "#100c16"
+  },
+  "music": "forest"
+ },
+ {
+  "id": "echo_mines",
+  "name": "Echo Mines",
+  "act": "act3",
+  "floor": [
+   "floor_dirt_large"
+  ],
+  "floor_alt": [
+   "floor_dirt_large_rocky",
+   "floor_wood_large_dark"
+  ],
+  "floor_alt_chance": 0.3,
+  "wall": "wall",
+  "wall_near": "barrier",
+  "wall_variants": [
+   "wall_scaffold",
+   "wall_open_scaffold",
+   "wall_broken",
+   "wall_cracked"
+  ],
+  "wall_variant_chance": 0.45,
+  "corner_pillar": "wall_pillar",
+  "tint": {
+   "color": "#c8a890",
+   "saturation": 0.5,
+   "brightness": 0.72
+  },
+  "wall_tint": {
+   "color": "#a89080",
+   "brightness": 0.6
+  },
+  "props": [
+   {
+    "models": [
+     "proc:rails"
+    ],
+    "where": "center",
+    "density": 0.15
+   },
+   {
+    "models": [
+     "proc:minecart"
+    ],
+    "where": "corner",
+    "density": 0.12,
+    "blocking": true,
+    "shadow": true,
+    "scale": [
+     1.2,
+     1.4
+    ]
+   },
+   {
+    "models": [
+     "proc:crystal_cluster",
+     "proc:crystal_small"
+    ],
+    "where": "corner",
+    "density": 0.28,
+    "free_rot": true,
+    "scale": [
+     1.0,
+     1.6
+    ],
+    "crystal": {
+     "base": "#6a8ea0",
+     "glow": "#cfe8f0",
+     "strength": 1.3
+    },
+    "light": {
+     "color": "#a8d8f0",
+     "energy": 0.8,
+     "range": 5.0,
+     "y": 1.0,
+     "halo": 0.45,
+     "halo_size": 0.8
+    }
+   },
+   {
+    "models": [
+     "proc:stalagmite",
+     "proc:rock_pile"
+    ],
+    "where": "any",
+    "density": 0.06,
+    "blocking": true,
+    "free_rot": true,
+    "scale": [
+     0.8,
+     1.3
+    ],
+    "shadow": true
+   },
+   {
+    "models": [
+     "hal:lantern_standing",
+     "hal:post_lantern"
+    ],
+    "where": "any",
+    "density": 0.025,
+    "light": {
+     "color": "#ffc070",
+     "energy": 1.6,
+     "range": 8.0,
+     "y": 2.4,
+     "halo": 0.6,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "torch_mounted"
+    ],
+    "where": "wall_mount",
+    "density": 0.06,
+    "y": 1.4,
+    "light": {
+     "color": "#ffc070",
+     "energy": 1.4,
+     "range": 7.0,
+     "y": 2.3,
+     "halo": 0.55,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "crates_stacked",
+     "box_stacked",
+     "barrel_small_stack",
+     "hex:props/wheelbarrow",
+     "hex:props/resource_stone"
+    ],
+    "where": "corner",
+    "density": 0.18,
+    "blocking": true,
+    "shadow": true,
+    "scale": [
+     1.0,
+     1.0
+    ]
+   },
+   {
+    "models": [
+     "rubble_half",
+     "rubble_large",
+     "hex:nature/rock_single_D"
+    ],
+    "where": "any",
+    "density": 0.07
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.6,
+    "chest": true
+   },
+   {
+    "models": [
+     "chest_gold"
+    ],
+    "where": "corner",
+    "density": 0.012,
+    "chest": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "dust",
+    "color": "#d0b090",
+    "amount": 30
+   }
+  ],
+  "critters": [
+   {
+    "kind": "bat",
+    "color": "#302820",
+    "count": 4,
+    "scale": 0.45,
+    "fly": true
+   },
+   {
+    "kind": "spider",
+    "color": "#2a2420",
+    "count": 2,
+    "scale": 0.45
+   }
+  ],
+  "env": {
+   "sky": "#060404",
+   "ambient": "#3a2e24",
+   "ambient_energy": 1.0,
+   "fog": "#1e1916",
+   "fog_begin": 12,
+   "fog_end": 32,
+   "fog_height": 0.5,
+   "fog_height_density": 0.35,
+   "sun": "#ffc890",
+   "sun_energy": 0.12,
+   "mist": 0.3,
+   "mist_color": "#4a3a30",
+   "glow": 0.85,
+   "contrast": 1.12,
+   "outline": "#140e0a"
+  },
+  "music": "mine"
+ },
+ {
+  "id": "echo_caverns",
+  "name": "Singing Caverns",
+  "act": "act3",
+  "floor": [
+   "floor_dirt_large_rocky"
+  ],
+  "floor_alt": [
+   "floor_dirt_large",
+   "floor_tile_large_rocks"
+  ],
+  "floor_alt_chance": 0.3,
+  "wall": "wall",
+  "wall_near": "barrier",
+  "wall_variants": [
+   "wall_broken",
+   "wall_cracked"
+  ],
+  "wall_variant_chance": 0.5,
+  "corner_pillar": "wall_pillar",
+  "tint": {
+   "color": "#a8b0c0",
+   "saturation": 0.4,
+   "brightness": 0.65,
+   "hue": -12
+  },
+  "props": [
+   {
+    "models": [
+     "proc:crystal_cluster"
+    ],
+    "where": "corner",
+    "density": 0.45,
+    "free_rot": true,
+    "scale": [
+     1.2,
+     2.2
+    ],
+    "crystal": {
+     "base": "#5a7ea0",
+     "glow": "#cfe8f0",
+     "strength": 1.5
+    },
+    "light": {
+     "color": "#a8d8f0",
+     "energy": 1.0,
+     "range": 6.0,
+     "y": 1.2,
+     "halo": 0.5,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "proc:crystal_small"
+    ],
+    "where": "any",
+    "density": 0.08,
+    "free_rot": true,
+    "scale": [
+     0.8,
+     1.4
+    ],
+    "crystal": {
+     "base": "#6a8eb0",
+     "glow": "#dff0ff",
+     "strength": 1.3
+    }
+   },
+   {
+    "models": [
+     "proc:stalagmite",
+     "proc:rock_pile"
+    ],
+    "where": "any",
+    "density": 0.07,
+    "blocking": true,
+    "free_rot": true,
+    "scale": [
+     0.9,
+     1.5
+    ],
+    "shadow": true
+   },
+   {
+    "models": [
+     "rubble_large"
+    ],
+    "where": "any",
+    "density": 0.05
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.6,
+    "chest": true
+   },
+   {
+    "models": [
+     "chest_gold"
+    ],
+    "where": "corner",
+    "density": 0.012,
+    "chest": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "motes",
+    "color": "#cfe8f0",
+    "amount": 30
+   }
+  ],
+  "critters": [
+   {
+    "kind": "bat",
+    "color": "#282838",
+    "count": 4,
+    "scale": 0.45,
+    "fly": true
+   },
+   {
+    "kind": "slime",
+    "color": "#6a9ab8",
+    "count": 2,
+    "scale": 0.5
+   }
+  ],
+  "env": {
+   "sky": "#040508",
+   "ambient": "#262c3a",
+   "ambient_energy": 1.0,
+   "fog": "#141820",
+   "fog_begin": 12,
+   "fog_end": 34,
+   "sun": "#a8c8e8",
+   "sun_energy": 0.1,
+   "mist": 0.25,
+   "mist_color": "#3a4a60",
+   "glow": 0.95,
+   "contrast": 1.12,
+   "outline": "#0a0c12"
+  },
+  "music": "mine"
+ },
+ {
+  "id": "rimehall",
+  "name": "Rimehall",
+  "act": "act4",
+  "floor": [
+   "floor_tile_large"
+  ],
+  "floor_alt": [
+   "floor_tile_big_gratefloor_tile_large_rocks"
+  ],
+  "floor_alt_chance": 0.2,
+  "wall": "wall",
+  "wall_near": "barrier",
+  "wall_variants": [
+   "wall_archedwindow_open",
+   "wall_window_closed",
+   "wall_cracked",
+   "wall_arched"
+  ],
+  "corner_pillar": "wall_pillar",
+  "tint": {
+   "color": "#c8dcf0",
+   "saturation": 0.35,
+   "brightness": 1.0,
+   "top_color": "#f0f6ff",
+   "top_amount": 0.6,
+   "top_scale": 0.1
+  },
+  "floor_tint": {
+   "top_amount": 0.35,
+   "brightness": 0.95
+  },
+  "props": [
+   {
+    "models": [
+     "proc:ice_cluster"
+    ],
+    "where": "corner",
+    "density": 0.35,
+    "free_rot": true,
+    "scale": [
+     1.0,
+     1.8
+    ],
+    "crystal": {
+     "base": "#8ab8d8",
+     "glow": "#9cc8e0",
+     "strength": 0.9,
+     "pulse": 0.1
+    }
+   },
+   {
+    "models": [
+     "torch_mounted"
+    ],
+    "where": "wall_mount",
+    "density": 0.1,
+    "y": 1.4,
+    "light": {
+     "color": "#bfe0ff",
+     "energy": 1.3,
+     "range": 7.0,
+     "y": 2.3,
+     "halo": 0.45,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "candle_triple",
+     "candle_thin_lit"
+    ],
+    "where": "wall",
+    "density": 0.06,
+    "light": {
+     "color": "#ffb566",
+     "energy": 0.9,
+     "range": 5.0,
+     "y": 1.2,
+     "halo": 0.45,
+     "halo_size": 0.7
+    }
+   },
+   {
+    "models": [
+     "banner_patternA_white",
+     "banner_patternB_blue",
+     "banner_thin_blue",
+     "banner_shield_white",
+     "banner_triple_blue"
+    ],
+    "where": "wall",
+    "density": 0.12,
+    "tint": {
+     "top_amount": 0.2
+    }
+   },
+   {
+    "models": [
+     "pillar_decorated",
+     "pillar"
+    ],
+    "where": "center",
+    "density": 0.08,
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
+   },
+   {
+    "models": [
+     "proc:snow_mound"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "free_rot": true
+   },
+   {
+    "models": [
+     "sword_shield",
+     "sword_shield_broken",
+     "table_long_broken",
+     "chair"
+    ],
+    "where": "corner",
+    "density": 0.12,
     "blocking": true,
     "shadow": true
    },
    {
     "models": [
-     "hal:pumpkin_yellow",
-     "hal:pumpkin_orange_small",
-     "candle_triple"
+     "chest"
     ],
-    "where": "any",
-    "density": 0.05
+    "where": "deadend",
+    "density": 0.6,
+    "chest": true
+   },
+   {
+    "models": [
+     "chest_gold"
+    ],
+    "where": "corner",
+    "density": 0.012,
+    "chest": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "snow",
+    "color": "#ffffff",
+    "amount": 44
+   }
+  ],
+  "critters": [
+   {
+    "kind": "owl",
+    "color": "#dfe4ec",
+    "count": 2,
+    "scale": 0.6
+   },
+   {
+    "kind": "bunny",
+    "color": "#eef0f6",
+    "count": 2,
+    "scale": 0.5
    }
   ],
   "env": {
-   "sky": "#0e0b14",
-   "ambient": "#5a4a60",
-   "ambient_energy": 1.3,
-   "fog": "#1c1620",
-   "fog_density": 0.015,
-   "sun": "#ffcf9a",
-   "sun_energy": 0.6,
-   "mist": 0.15,
-   "glow": 0.8
+   "sky": "#9fb2c6",
+   "ambient": "#5a6e80",
+   "ambient_energy": 1.05,
+   "fog": "#afc4d6",
+   "fog_begin": 14,
+   "fog_end": 38,
+   "sun": "#e0f0ff",
+   "sun_energy": 0.9,
+   "sun_yaw": 25,
+   "mist": 0.3,
+   "mist_color": "#dce8f4",
+   "glow": 0.55,
+   "glow_threshold": 1.2,
+   "contrast": 1.08,
+   "saturation": 0.95,
+   "outline": "#1a2432"
   },
-  "music": "town"
+  "music": "ice"
+ },
+ {
+  "id": "rime_court",
+  "name": "Frozen Court",
+  "act": "act4",
+  "outdoor": true,
+  "corridor_width": 2,
+  "floor": [
+   "hal:floor_dirt",
+   "floor_tile_large"
+  ],
+  "floor_alt": [
+   "floor_tile_large_rocks"
+  ],
+  "floor_alt_chance": 0.15,
+  "ground": "#c8d4e0",
+  "tint": {
+   "color": "#d0dcea",
+   "saturation": 0.35,
+   "brightness": 1.0,
+   "top_color": "#f4f8ff",
+   "top_amount": 0.75,
+   "top_scale": 0.1
+  },
+  "boundary_props": [
+   "hal:tree_dead_large",
+   "hal:tree_dead_medium",
+   "hex:buildings_neutral/wall_straight",
+   "hex:nature/rock_single_A"
+  ],
+  "boundary_tint": {
+   "top_amount": 0.85
+  },
+  "near_boundary": [
+   "hex:buildings_neutral/fence_stone_straight",
+   "proc:snow_mound",
+   "proc:ice_cluster"
+  ],
+  "backdrop": [
+   {
+    "models": [
+     "hex:nature/mountain_A",
+     "hex:nature/mountain_B",
+     "hex:nature/mountain_C"
+    ],
+    "density": 0.55,
+    "scale": [
+     1.25,
+     1.875
+    ],
+    "tint": {
+     "color": "#b8c8da",
+     "saturation": 0.25,
+     "brightness": 0.75,
+     "top_color": "#ffffff",
+     "top_amount": 0.95
+    }
+   }
+  ],
+  "props": [
+   {
+    "models": [
+     "proc:ice_cluster"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "free_rot": true,
+    "scale": [
+     1.2,
+     2.2
+    ],
+    "blocking": true,
+    "crystal": {
+     "base": "#8ab8d8",
+     "glow": "#9cc8e0",
+     "strength": 0.9,
+     "pulse": 0.1
+    }
+   },
+   {
+    "models": [
+     "proc:snow_mound"
+    ],
+    "where": "any",
+    "density": 0.07,
+    "free_rot": true,
+    "scale": [
+     1.0,
+     1.6
+    ]
+   },
+   {
+    "models": [
+     "hal:tree_dead_medium",
+     "hal:tree_dead_small"
+    ],
+    "where": "any",
+    "density": 0.04,
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
+   },
+   {
+    "models": [
+     "hal:post_lantern"
+    ],
+    "where": "any",
+    "density": 0.03,
+    "light": {
+     "color": "#ffb54a",
+     "energy": 1.5,
+     "range": 7.5,
+     "y": 2.6,
+     "halo": 0.55,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "hex:buildings_neutral/building_destroyed"
+    ],
+    "where": "room",
+    "density": 0.015,
+    "blocking": true,
+    "scale": [
+     0.875,
+     1.0
+    ],
+    "occlude": true,
+    "shadow": true
+   },
+   {
+    "models": [
+     "column",
+     "hal:gravestone",
+     "sword_shield_broken"
+    ],
+    "where": "any",
+    "density": 0.04,
+    "blocking": true
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.6,
+    "chest": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "snow",
+    "color": "#ffffff",
+    "amount": 48
+   }
+  ],
+  "critters": [
+   {
+    "kind": "bunny",
+    "color": "#f0f2f8",
+    "count": 3,
+    "scale": 0.5
+   },
+   {
+    "kind": "crow",
+    "color": "#2a2e3a",
+    "count": 2,
+    "scale": 0.55
+   }
+  ],
+  "env": {
+   "sky": "#b8c8d8",
+   "ambient": "#6a7e92",
+   "ambient_energy": 1.0,
+   "fog": "#afc4d6",
+   "fog_begin": 14,
+   "fog_end": 38,
+   "sun": "#e0f0ff",
+   "sun_energy": 0.95,
+   "sun_yaw": 25,
+   "mist": 0.35,
+   "mist_color": "#e4eef8",
+   "glow": 0.5,
+   "glow_threshold": 1.2,
+   "contrast": 1.06,
+   "saturation": 0.95,
+   "outline": "#1a2432"
+  },
+  "music": "ice"
+ },
+ {
+  "id": "well_of_hush",
+  "name": "Well of Hush",
+  "act": "act5",
+  "floor": [
+   "floor_tile_large"
+  ],
+  "floor_alt": [
+   "floor_tile_large_rocksfloor_dirt_large"
+  ],
+  "floor_alt_chance": 0.25,
+  "wall": "wall",
+  "wall_near": "barrier",
+  "wall_variants": [
+   "wall_broken",
+   "wall_cracked",
+   "wall_arched"
+  ],
+  "wall_variant_chance": 0.3,
+  "corner_pillar": "wall_pillar",
+  "tint": {
+   "color": "#d8d8e0",
+   "saturation": 0.0,
+   "brightness": 0.72
+  },
+  "props": [
+   {
+    "models": [
+     "proc:hush_obelisk"
+    ],
+    "where": "room",
+    "density": 0.03,
+    "blocking": true,
+    "shadow": true,
+    "occlude": true,
+    "scale": [
+     1.0,
+     1.4
+    ]
+   },
+   {
+    "models": [
+     "proc:bone_spire",
+     "rubble_large",
+     "rubble_half"
+    ],
+    "where": "any",
+    "density": 0.07,
+    "free_rot": true
+   },
+   {
+    "models": [
+     "candle",
+     "candle_melted",
+     "candle_thin"
+    ],
+    "where": "wall",
+    "density": 0.12
+   },
+   {
+    "models": [
+     "hal:coffin",
+     "hal:skull",
+     "hal:ribcage",
+     "sword_shield_broken",
+     "chair",
+     "table_medium_broken"
+    ],
+    "where": "corner",
+    "density": 0.18,
+    "blocking": true
+   },
+   {
+    "models": [
+     "pillar"
+    ],
+    "where": "center",
+    "density": 0.06,
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.6,
+    "chest": true
+   },
+   {
+    "models": [
+     "chest_gold"
+    ],
+    "where": "corner",
+    "density": 0.012,
+    "chest": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "motes",
+    "color": "#ffffff",
+    "amount": 40
+   },
+   {
+    "kind": "ash",
+    "color": "#a0a0a8",
+    "amount": 20,
+    "alpha": 0.5
+   }
+  ],
+  "critters": [
+   {
+    "kind": "ghost",
+    "color": "#c8c8d0",
+    "count": 2,
+    "scale": 0.5
+   },
+   {
+    "kind": "moth",
+    "color": "#9a9aa0",
+    "count": 2,
+    "scale": 0.45,
+    "fly": true
+   }
+  ],
+  "env": {
+   "sky": "#0c0c0e",
+   "ambient": "#34343a",
+   "ambient_energy": 1.0,
+   "fog": "#18181c",
+   "fog_begin": 12,
+   "fog_end": 32,
+   "sun": "#c8c8d0",
+   "sun_energy": 0.15,
+   "mist": 0.45,
+   "mist_color": "#6a6a70",
+   "glow": 0.8,
+   "contrast": 1.14,
+   "saturation": 0.85,
+   "outline": "#0c0c0e"
+  },
+  "music": "hush"
+ },
+ {
+  "id": "hush_wastes",
+  "name": "Hushed Fields",
+  "act": "act5",
+  "outdoor": true,
+  "corridor_width": 2,
+  "floor": [
+   "hal:floor_dirt"
+  ],
+  "floor_alt": [
+   "hal:floor_dirt_grave"
+  ],
+  "floor_alt_chance": 0.12,
+  "ground": "#141416",
+  "tint": {
+   "color": "#d0d0d8",
+   "saturation": 0.0,
+   "brightness": 0.7,
+   "top_color": "#8a8a90",
+   "top_amount": 0.3
+  },
+  "boundary_props": [
+   "hal:tree_dead_large",
+   "hal:tree_dead_medium",
+   "hal:fence_broken",
+   "proc:hush_obelisk",
+   "hal:crypt"
+  ],
+  "near_boundary": [
+   "hal:grave_A_destroyed",
+   "hal:gravemarker_B",
+   "proc:bone_spire"
+  ],
+  "backdrop": [
+   {
+    "models": [
+     "hal:tree_dead_large",
+     "proc:hush_obelisk"
+    ],
+    "density": 0.5,
+    "scale": [
+     1.0,
+     1.5
+    ],
+    "tint": {
+     "saturation": 0.0,
+     "brightness": 0.4
+    }
+   }
+  ],
+  "props": [
+   {
+    "models": [
+     "proc:hush_obelisk"
+    ],
+    "where": "any",
+    "density": 0.025,
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
+   },
+   {
+    "models": [
+     "hal:grave_A_destroyed",
+     "hal:gravestone",
+     "hal:gravemarker_A"
+    ],
+    "where": "any",
+    "density": 0.1,
+    "blocking": true
+   },
+   {
+    "models": [
+     "hal:tree_dead_small",
+     "hal:tree_dead_medium"
+    ],
+    "where": "any",
+    "density": 0.04,
+    "blocking": true,
+    "occlude": true,
+    "shadow": true
+   },
+   {
+    "models": [
+     "hal:skull",
+     "hal:bone_A",
+     "proc:bone_spire"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "free_rot": true
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.6,
+    "chest": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "motes",
+    "color": "#ffffff",
+    "amount": 44
+   },
+   {
+    "kind": "ash",
+    "color": "#a0a0a8",
+    "amount": 24,
+    "alpha": 0.5
+   }
+  ],
+  "critters": [
+   {
+    "kind": "crow",
+    "color": "#3a3a3e",
+    "count": 3,
+    "scale": 0.55
+   },
+   {
+    "kind": "ghost",
+    "color": "#c8c8d0",
+    "count": 2,
+    "scale": 0.5
+   }
+  ],
+  "env": {
+   "sky": "#0e0e10",
+   "ambient": "#38383c",
+   "ambient_energy": 1.0,
+   "fog": "#18181c",
+   "fog_begin": 13,
+   "fog_end": 34,
+   "sun": "#d0d0d8",
+   "sun_energy": 0.3,
+   "mist": 0.55,
+   "mist_color": "#707076",
+   "glow": 0.8,
+   "contrast": 1.14,
+   "saturation": 0.85,
+   "outline": "#0c0c0e"
+  },
+  "music": "hush"
+ },
+ {
+  "id": "deepdark",
+  "name": "Deepdark",
+  "act": "endgame",
+  "floor": [
+   "floor_tile_large"
+  ],
+  "floor_alt": [
+   "floor_tile_large_rocks",
+   "floor_tile_big_grate_open"
+  ],
+  "floor_alt_chance": 0.22,
+  "wall": "wall",
+  "wall_near": "barrier",
+  "wall_variants": [
+   "wall_broken",
+   "wall_cracked",
+   "wall_archedwindow_open"
+  ],
+  "corner_pillar": "wall_pillar",
+  "tint": {
+   "color": "#8a88b8",
+   "saturation": 0.35,
+   "brightness": 0.55,
+   "hue": 20
+  },
+  "props": [
+   {
+    "models": [
+     "proc:crystal_cluster",
+     "proc:crystal_small"
+    ],
+    "where": "corner",
+    "density": 0.3,
+    "free_rot": true,
+    "scale": [
+     1.0,
+     1.8
+    ],
+    "crystal": {
+     "base": "#3a2a6a",
+     "glow": "#8a6aff",
+     "strength": 1.5
+    },
+    "light": {
+     "color": "#8a6aff",
+     "energy": 0.9,
+     "range": 6.0,
+     "y": 1.2,
+     "halo": 0.5,
+     "halo_size": 0.9
+    }
+   },
+   {
+    "models": [
+     "proc:crystal_small"
+    ],
+    "where": "any",
+    "density": 0.05,
+    "free_rot": true,
+    "crystal": {
+     "base": "#2a4a6a",
+     "glow": "#35e0d0",
+     "strength": 1.3
+    }
+   },
+   {
+    "models": [
+     "proc:hush_obelisk",
+     "pillar"
+    ],
+    "where": "center",
+    "density": 0.06,
+    "blocking": true,
+    "shadow": true,
+    "occlude": true
+   },
+   {
+    "models": [
+     "rubble_large",
+     "rubble_half",
+     "proc:rock_pile"
+    ],
+    "where": "any",
+    "density": 0.06,
+    "free_rot": true
+   },
+   {
+    "models": [
+     "torch_mounted"
+    ],
+    "where": "wall_mount",
+    "density": 0.06,
+    "y": 1.4,
+    "light": {
+     "color": "#8ab0ff",
+     "energy": 1.2,
+     "range": 7.0,
+     "y": 2.3,
+     "halo": 0.5,
+     "halo_size": 1.0
+    }
+   },
+   {
+    "models": [
+     "chest"
+    ],
+    "where": "deadend",
+    "density": 0.6,
+    "chest": true
+   },
+   {
+    "models": [
+     "chest_gold"
+    ],
+    "where": "corner",
+    "density": 0.012,
+    "chest": true
+   }
+  ],
+  "ambient": [
+   {
+    "kind": "motes",
+    "color": "#9a8aff",
+    "amount": 30
+   },
+   {
+    "kind": "wisps",
+    "color": "#35e0d0",
+    "amount": 6
+   }
+  ],
+  "critters": [
+   {
+    "kind": "wisp",
+    "color": "#8a6aff",
+    "count": 3,
+    "scale": 0.4,
+    "fly": true
+   }
+  ],
+  "env": {
+   "sky": "#040308",
+   "ambient": "#2a2440",
+   "ambient_energy": 1.0,
+   "fog": "#0c0a14",
+   "fog_begin": 12,
+   "fog_end": 32,
+   "sun": "#8a80c8",
+   "sun_energy": 0.2,
+   "mist": 0.35,
+   "mist_color": "#3a3060",
+   "glow": 0.95,
+   "contrast": 1.15,
+   "outline": "#08060e"
+  },
+  "music": "hush"
  }
 ]

@@ -92,6 +92,9 @@ func load_zone(zone_id: String, seed_value := -1) -> void:
 		world_events.setup(self)
 	Sfx.play_music(zone.get("music", biome.get("music", "")))
 	Quests.notify(ch, "explore", zone_id)
+	ch.track("zones_visited")
+	MainQuest.notify(ch, "reach_zone", zone_id)
+	_place_story_object()
 	Events.zone_entered.emit(zone_id)
 
 # ------------------------------------------------------------------ setup
@@ -228,6 +231,10 @@ func spawn_monster(id: String, pos: Vector3, lvl: int, kind := "normal") -> Mons
 	if rec.is_empty():
 		push_warning("Unknown monster " + id)
 		return null
+	return spawn_monster_rec(rec, pos, lvl, kind)
+
+## Spawn from a record dictionary (generated monsters such as Echo Duel mirrors).
+func spawn_monster_rec(rec: Dictionary, pos: Vector3, lvl: int, kind := "normal") -> Monster:
 	var m = Monster.new()
 	m.net_id = _nid()
 	actors_root.add_child(m)
@@ -263,7 +270,7 @@ func _apply_elite(m: Monster) -> void:
 		mat.set_shader_parameter("rim_strength", 0.9)
 	m.display_name = ("%s %s" % [" ".join(names), m.display_name]).strip_edges()
 
-func _attach_healthbar(m: Monster) -> void:
+func _attach_healthbar(m) -> void:
 	var hb = preload("res://scripts/fx/healthbar3d.gd").new()
 	m.add_child(hb)
 	hb.setup(m)
@@ -382,6 +389,7 @@ func interact_npc(n: Npc) -> void:
 	var ch = Game.character
 	Events.npc_talked.emit(n.npc_id)
 	Quests.notify(ch, "talk", n.npc_id)
+	MainQuest.notify(ch, "talk", n.npc_id)
 	var done = Quests.ready_for(ch, n.npc_id)
 	for q in done:
 		var res = Quests.turn_in(ch, q.id, self)
@@ -402,6 +410,38 @@ func interact_npc(n: Npc) -> void:
 		get_tree().create_timer(0.6).timeout.connect(func():
 			if is_instance_valid(sess) and is_instance_valid(self):
 				sess.open_screen(scr))
+
+## Main-quest "solve" objectives: a glowing object to interact with somewhere in this zone.
+func _place_story_object() -> void:
+	var o = MainQuest.solve_object_for_zone(Game.character, zone.id)
+	if o.is_empty() or layout.rooms.size() < 2:
+		return
+	var rooms = range(layout.rooms.size())
+	rooms.erase(layout.start_room)
+	var pos = layout.cell_to_world(layout.rooms[rooms[Rng.int_on("world", 0, rooms.size() - 1)]].center)
+	var n = Node3D.new()
+	add_child(n)
+	n.global_position = pos
+	var mi = MeshInstance3D.new()
+	var pm = PrismMesh.new()
+	pm.size = Vector3(0.6, 0.9, 0.6)
+	mi.mesh = pm
+	var m = StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = Color(0.7, 0.9, 1.0)
+	m.emission_enabled = true
+	m.emission = Color(0.6, 0.85, 1.0)
+	m.emission_energy_multiplier = 3.0
+	mi.material_override = m
+	mi.position.y = 1.0
+	n.add_child(mi)
+	Fx.beam(n, Color(0.6, 0.85, 1.0), 6.0, 0.6)
+	var target = str(o.get("target", ""))
+	interactables.append({"node": n, "pos": pos, "radius": 2.0, "label": str(o.get("label", "Examine")), "once": true,
+		"action": func():
+			MainQuest.notify(Game.character, "solve", target)
+			Fx.burst(pos + Vector3(0, 1, 0), Color(0.6, 0.85, 1.0), 30, 4.0, 0.12, 0.9, 1.0)
+			n.queue_free()})
 
 ## "Portal back": after hearthing/travelling to town, a portal leads back to where you left.
 func _place_return_portal(center: Vector3) -> void:
@@ -617,9 +657,17 @@ func _on_monster_died(a: Actor) -> void:
 		Events.toast.emit("A companion found you: %s!" % Pets.rec(new_pet).get("name", new_pet), Color(1, 0.8, 0.95))
 		if ch.active_pet == new_pet:
 			spawn_pet()
-	Quests.notify(ch, "kill", str(m.rec.get("id", "")), 1, {"family": m.rec.get("family", ""), "kind": m.kind})
+	var fam = str(m.rec.get("family", ""))
+	Quests.notify(ch, "kill", str(m.rec.get("id", "")), 1, {"family": fam, "kind": m.kind})
+	MainQuest.notify(ch, "kill", str(m.rec.get("id", "")), 1, {"family": fam})
+	if fam != "":
+		ch.track("kills:family:" + fam)
+	ch.track("kills:monster:" + str(m.rec.get("id", "")))
+	if m.kind in ["champion", "rare"]:
+		ch.track("elites")
 	if m.kind == "boss" or m.rec.get("boss", false):
 		Quests.notify(ch, "boss", str(m.rec.get("id", "")), 1)
+		MainQuest.notify(ch, "boss", str(m.rec.get("id", "")), 1)
 	if world_events:
 		world_events.on_monster_died(m)
 	# Scripted first-session hook: first elite drops a guaranteed Rare
@@ -730,12 +778,14 @@ func pickup(d: Drop) -> bool:
 	if d.gold > 0:
 		ch.gold += d.gold
 		stats_session.gold += d.gold
+		ch.track("gold_earned", d.gold)
 		Events.gold_changed.emit(ch.gold)
 		Fx.float_text(d.global_position, "+%d gold" % d.gold, Color(1, 0.85, 0.3), 30)
 		Sfx.play("gold", -6.0)
 	elif d.material_id != "":
 		ch.add_material(d.material_id, d.material_count)
 		Quests.notify(ch, "collect", d.material_id, d.material_count)
+		MainQuest.notify(ch, "collect", d.material_id, d.material_count)
 		var m = Content.get_rec("materials", d.material_id)
 		Fx.float_text(d.global_position, "+%d %s" % [d.material_count, m.get("name", d.material_id)], Color(m.get("color", "#9be7ff")), 28)
 		Sfx.play("pickup", -6.0)
@@ -754,6 +804,7 @@ func pickup(d: Drop) -> bool:
 		stats_session.items += 1
 		if Items.rarity_index(it.rarity) >= 4 or it.has("unique") or it.has("named"):
 			Codex.record(it)
+			ch.track("uniques_found" if it.has("unique") else "legendaries_found")
 		Quests.notify(ch, "collect", str(it.get("base", "")), 1)
 		Events.item_picked_up.emit(it)
 		Events.inventory_changed.emit()

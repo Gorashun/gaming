@@ -27,6 +27,7 @@ const HAL := "res://assets/thirdparty/kaykit/halloween/models/"
 const HEX := "res://assets/thirdparty/kaykit/medieval-hexagon/"
 const DUN_ATLAS := "res://assets/thirdparty/kaykit/dungeon/texture/dungeon_texture.png"
 const NOISE := "res://assets/generated/textures/noise_rgba.png"
+const HEX_SCALE := 4.0   # medieval-hexagon models are authored ~1/4 of the dungeon/halloween kit scale
 const ENV_SHADER := "res://shaders/env_kit.gdshader"
 const CRYSTAL_SHADER := "res://shaders/crystal.gdshader"
 
@@ -68,6 +69,8 @@ static func mesh_of(path: String) -> Array:
 			while n and n != inst:
 				xf = (n as Node3D).transform * xf
 				n = n.get_parent()
+			if path.begins_with(HEX):
+				xf = Transform3D(Basis().scaled(Vector3.ONE * HEX_SCALE), Vector3.ZERO) * xf
 			out.append([mi.mesh, xf])
 		inst.free()
 	else:
@@ -475,6 +478,8 @@ func _build_ambient() -> void:
 	af.setup(biome.get("ambient", []), lights, halos)
 
 func _build_critters() -> void:
+	if biome.get("showcase_creatures", false):
+		_build_showcase()
 	var specs: Array = biome.get("critters", [])
 	if specs.is_empty():
 		return
@@ -493,3 +498,37 @@ func _build_critters() -> void:
 			cr.rotation.y = rng.randf() * TAU
 			if spec.get("wander", true) and cr.has_method("set_wander"):
 				cr.set_wander(float(spec.get("wander_radius", 2.5)), spec.get("fly", false))
+
+## Dev showcase (content/dev_art "dev_menagerie"): every CreatureFactory kind in two rings.
+func _build_showcase() -> void:
+	var center = layout.cell_to_world(layout.rooms[layout.start_room].center)
+	var cols = ["#8fd9a0", "#ffb54a", "#3a3040", "#9a88b8", "#b8a8ff", "#6ab88a", "#c8c8d8", "#2c2834", "#2a2434", "#4a6a48",
+		"#5a5060", "#8a7a6a", "#d8703a", "#8a6a9a", "#e8e0d8", "#5a5a68", "#6a4a3a", "#8a6a4a", "#7a8aa8", "#3a5a6a"]
+	var small = CreatureFactory.SMALL
+	for i in small.size():
+		var a = TAU * i / small.size()
+		var c = CreatureFactory.build(small[i], Color(cols[i % cols.size()]), 0.8, {"eyes": "glow" if i % 4 == 3 else "cute"})
+		root.add_child(c)
+		c.position = center + Vector3(cos(a), 0, sin(a)) * 4.2 + (Vector3(0, 1.4, 0) if small[i] in ["bat", "moth", "lantern_moth"] else Vector3.ZERO)
+		c.rotation.y = deg_to_rad(45.0)
+		_showcase_label(c, small[i])
+	var mounts = CreatureFactory.MOUNTS
+	for i in mounts.size():
+		var a = TAU * i / mounts.size() + 0.3
+		var m = CreatureFactory.build(mounts[i], Color(cols[(i + 15) % cols.size()]), 1.0, {"outline": true})
+		root.add_child(m)
+		m.position = center + Vector3(cos(a), 0, sin(a)) * 8.0
+		m.rotation.y = deg_to_rad(45.0)
+		_showcase_label(m, mounts[i])
+
+func _showcase_label(n: Node3D, text: String) -> void:
+	var l = Label3D.new()
+	l.text = text
+	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	l.fixed_size = true
+	l.pixel_size = 0.0012
+	l.font_size = 28
+	l.outline_size = 8
+	l.position.y = 2.2 / maxf(0.3, n.scale.y)
+	l.no_depth_test = true
+	n.add_child(l)

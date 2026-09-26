@@ -1,0 +1,7 @@
+Wickwright asset credits
+========================
+
+Audio: generated in-house. All sound effects, music and ambience in assets/generated/sfx and
+assets/generated/music are synthesized from our own code in tools/audio/ (see docs/design/AUDIO.md).
+Exception: UI sounds ui_click, menu_open, menu_close, error are converted from "UI SFX (uisfx) 0.4.0"
+by Romain Simon, CC0-1.0 (https://github.com/romainsimon/uisfx). Attribution not required; given with thanks.

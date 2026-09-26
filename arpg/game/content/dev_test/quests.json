@@ -1,0 +1,75 @@
+[
+ {
+  "id": "dev_q_kill",
+  "name": "Rattle the Rattlers",
+  "giver": "",
+  "act": "act1",
+  "type": "kill",
+  "target": "any",
+  "count": 3,
+  "reward": {
+   "gold": 50,
+   "xp": 20
+  }
+ },
+ {
+  "id": "dev_q_family",
+  "name": "Bone Count",
+  "giver": "dev_quest",
+  "type": "kill",
+  "target": "family:dev_family",
+  "count": 2,
+  "reward": {
+   "gold": 10,
+   "pet": "dev_digger"
+  }
+ },
+ {
+  "id": "dev_q_collect",
+  "name": "Soot Sweep",
+  "giver": "dev_quest",
+  "type": "collect",
+  "target": "soot",
+  "count": 5,
+  "reward": {
+   "materials": {
+    "wickthread": 2
+   },
+   "skill_points": 1
+  }
+ },
+ {
+  "id": "dev_q_explore",
+  "name": "See the Halls",
+  "giver": "dev_quest",
+  "type": "explore",
+  "target": "a1_z2",
+  "count": 1,
+  "reward": {
+   "item_rarity": "rare"
+  }
+ },
+ {
+  "id": "dev_q_talk",
+  "name": "Say Hello",
+  "giver": "dev_quest",
+  "type": "talk",
+  "target": "dev_inn",
+  "count": 1,
+  "reward": {
+   "mount": "dev_hound"
+  }
+ },
+ {
+  "id": "dev_q_boss",
+  "name": "Ring the Bell",
+  "giver": "dev_quest",
+  "type": "boss",
+  "target": "sunken_bellringer",
+  "count": 1,
+  "requires": "dev_q_kill",
+  "reward": {
+   "gold": 500
+  }
+ }
+]

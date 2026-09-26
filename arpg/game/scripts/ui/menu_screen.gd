@@ -1,68 +1,71 @@
 extends ScreenBase
-## Pause menu + settings (accessibility & parental).
+## ☰ Menu hub (pause): every screen is one tap from here (≤ 2 taps from the HUD).
+## Big icon tiles, then Resume / Return to town / Save & rest. No timers, the game is paused.
+
+const TILES := [
+	["character", "hero", "Hero"], ["inventory", "bag", "Bag"], ["skills", "skills", "Skills"], ["starmap", "starmap", "Stars"],
+	["quests", "quests", "Quests"], ["codex", "trophy", "Codex"], ["deeds", "star", "Deeds"], ["pets", "pets", "Pets"],
+	["mounts", "mounts", "Mounts"], ["wardrobe", "hero", "Wardrobe"], ["map", "map", "Map"], ["settings", "settings", "Settings"]]
 
 func _ready() -> void:
-	build("Paused")
-	var v = VBoxContainer.new()
-	v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	v.add_theme_constant_override("separation", 10)
-	body.add_child(v)
-	var cols = HBoxContainer.new()
-	cols.add_theme_constant_override("separation", 40)
-	v.add_child(cols)
-	var left = VBoxContainer.new()
-	left.add_theme_constant_override("separation", 12)
-	cols.add_child(left)
-	left.add_child(UiTheme.button("Resume", close, 24, Vector2(300, 70)))
-	left.add_child(UiTheme.button("Return to town", func():
-		close()
-		session.travel(Game.character.current_act_town()), 24, Vector2(300, 70)))
-	left.add_child(UiTheme.button("Save & quit to title", func():
+	if screen_id == "":
+		screen_id = "menu"
+	build("Paused", "menu", true)
+	var h = HBoxContainer.new()
+	h.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	h.add_theme_constant_override("separation", 24)
+	body.add_child(h)
+	var grid = GridContainer.new()
+	grid.columns = 4
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 12)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	h.add_child(grid)
+	var ch = Game.character
+	for t in TILES:
+		var id: String = t[0]
+		var b = UiTheme.icon_button(t[1], t[2], func(): goto(id), Vector2(176, 150), UiTheme.GOLD, false, 22)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var badge = ""
+		if id == "skills" and ch and ch.skill_points > 0:
+			badge = str(ch.skill_points)
+		if id == "starmap" and ch and ch.star_points > 0:
+			badge = str(ch.star_points)
+		if badge != "":
+			var bl = UiTheme.label(badge, 20, Color.WHITE, true)
+			var bp = PanelContainer.new()
+			var bs = UiTheme.panel_style(UiTheme.EMBER.darkened(0.2), UiTheme.GOLD, 16, 2)
+			bs.content_margin_top = 0
+			bs.content_margin_bottom = 0
+			bs.content_margin_left = 8
+			bs.content_margin_right = 8
+			bp.add_theme_stylebox_override("panel", bs)
+			bp.add_child(bl)
+			bp.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			b.add_child(bp)
+			UiTheme.place(bp, 1.0, 0.0, -48, 6, 42, 32)
+		grid.add_child(b)
+	var right = VBoxContainer.new()
+	right.add_theme_constant_override("separation", 12)
+	right.custom_minimum_size = Vector2(320, 0)
+	h.add_child(right)
+	if ch:
+		var who = card("", Color(ch.cls().get("color", "#ffd27a")))
+		who.add_child(UiTheme.label(ch.name, 28, Color(ch.cls().get("color", "#ffd27a")).lightened(0.2), true))
+		var tier = Content.get_rec("difficulties", ch.difficulty).get("name", "")
+		who.add_child(UiTheme.label("Level %d %s · %s" % [ch.level, ch.cls().get("name", ""), tier], 18, UiTheme.MUTED))
+		who.add_child(UiTheme.label("Played %s" % UiTheme.fmt_time(ch.play_seconds), 18, UiTheme.MUTED))
+		right.add_child(ScreenBase.card_panel(who))
+	var resume = UiTheme.icon_button("next", "Resume", close, Vector2(320, 84), UiTheme.GOOD, true, 24)
+	resume.add_theme_stylebox_override("normal", UiTheme.panel_style(Color(0.08, 0.22, 0.1, 0.97), UiTheme.GOOD, 14, 3))
+	right.add_child(resume)
+	if session and Game.world and not Game.world.get("is_town"):
+		right.add_child(UiTheme.icon_button("hearth", "Return to town", func():
+			close()
+			session.travel(Game.character.current_act_town()), Vector2(320, 76), UiTheme.EMBER, true, 20))
+	right.add_child(UiTheme.icon_button("rest", "Save & rest", func():
 		Game.save_character()
 		get_tree().paused = false
-		get_tree().change_scene_to_file("res://scenes/main.tscn"), 24, Vector2(300, 70)))
-	left.add_child(UiTheme.button("Credits & licenses", func(): session.open_screen("credits"), 20, Vector2(300, 60)))
-	var right = VBoxContainer.new()
-	right.add_theme_constant_override("separation", 6)
-	cols.add_child(right)
-	right.add_child(UiTheme.label("Settings", 24, UiTheme.GOLD, true))
-	_slider(right, "Music volume", "music_volume", 0, 1)
-	_slider(right, "Effects volume", "sfx_volume", 0, 1)
-	_slider(right, "Screen shake", "screen_shake", 0, 1.5)
-	_check(right, "Simple mode (auto-attack, auto-equip, auto-spend)", "simple_mode")
-	_check(right, "Auto-attack", "auto_attack")
-	_check(right, "Damage numbers", "damage_numbers")
-	_check(right, "Auto-pickup items", "auto_pickup", true)
-	var lf = HBoxContainer.new()
-	right.add_child(lf)
-	lf.add_child(UiTheme.label("Loot filter  ", 18))
-	var opt = OptionButton.new()
-	for s in ["Show all", "Hide Common", "Hide Magic & below", "Rare+ only"]:
-		opt.add_item(s)
-	opt.selected = int(Settings.get_value("loot_filter", 0))
-	opt.item_selected.connect(func(i): Settings.set_value("loot_filter", i))
-	lf.add_child(opt)
-	right.add_child(UiTheme.label("Build %s" % ProjectSettings.get_setting("application/config/version", "0.1.0"), 14, UiTheme.MUTED))
-
-func _slider(parent: Control, label: String, key: String, lo: float, hi: float) -> void:
-	var h = HBoxContainer.new()
-	parent.add_child(h)
-	var l = UiTheme.label(label, 18)
-	l.custom_minimum_size = Vector2(200, 0)
-	h.add_child(l)
-	var s = HSlider.new()
-	s.min_value = lo
-	s.max_value = hi
-	s.step = 0.05
-	s.custom_minimum_size = Vector2(260, 40)
-	s.value = float(Settings.get_value(key, 1.0))
-	s.value_changed.connect(func(v): Settings.set_value(key, v))
-	h.add_child(s)
-
-func _check(parent: Control, label: String, key: String, default := false) -> void:
-	var c = CheckButton.new()
-	c.text = label
-	c.button_pressed = bool(Settings.get_value(key, default))
-	c.add_theme_font_size_override("font_size", 18)
-	c.toggled.connect(func(on): Settings.set_value(key, on))
-	parent.add_child(c)
+		get_tree().change_scene_to_file("res://scenes/main.tscn"), Vector2(320, 76), UiTheme.XP, true, 20))
+	right.add_child(UiTheme.icon_button("credits", "Credits & licenses", func(): goto("credits"), Vector2(320, 68), UiTheme.MUTED, true, 18))
+	right.add_child(UiTheme.label("Your progress is always saved.", 17, UiTheme.MUTED))

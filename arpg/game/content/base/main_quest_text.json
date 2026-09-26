@@ -1,0 +1,2609 @@
+[
+ {
+  "id": "mq_a1_01",
+  "kind": "main_quest",
+  "act": "act1",
+  "chapter": 1,
+  "title": "A Light in the Bog",
+  "summary": "You drift into Lamplight Hollow on a raft, your little lantern still burning.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a1_town",
+    "count": 1,
+    "text": "Reach Lamplight Hollow"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a1_questgiver",
+    "count": 1,
+    "text": "Talk to Warden Hollis"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Warden Hollis",
+    "text": "A light! On a raft! Are you real?"
+   },
+   {
+    "speaker": "You",
+    "text": "I think so. Where am I?"
+   },
+   {
+    "speaker": "Warden Hollis",
+    "text": "Lamplight Hollow. What's left of it. Come in, quick — well, not quick. Come in."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Warden Hollis",
+    "text": "Your wick is still burning. Nobody's is, any more."
+   },
+   {
+    "speaker": "Warden Hollis",
+    "text": "You're a Wickbearer. We've been waiting for one."
+   },
+   {
+    "speaker": "You",
+    "text": "What do I do?"
+   },
+   {
+    "speaker": "Warden Hollis",
+    "text": "Carry the light. Share it when you can. We'll start small."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a1_questgiver"
+  ],
+  "next": "mq_a1_02"
+ },
+ {
+  "id": "mq_a1_02",
+  "kind": "main_quest",
+  "act": "act1",
+  "chapter": 2,
+  "title": "Bedtime for Bones",
+  "summary": "The Rattlebones have climbed out of the Drowned Graves. Send them home.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a1_z1",
+    "count": 1,
+    "text": "Enter the Drowned Graves"
+   },
+   {
+    "type": "rekindle",
+    "target": "rattler",
+    "count": 8,
+    "text": "Rekindle Rattlers"
+   },
+   {
+    "type": "collect",
+    "target": "qi_floating_lamp",
+    "count": 5,
+    "text": "Catch floating lamps"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Warden Hollis",
+    "text": "The graveyard slid into the bog. The bones woke up."
+   },
+   {
+    "speaker": "Warden Hollis",
+    "text": "They're not wicked. Just lost. Your light will remind them."
+   },
+   {
+    "speaker": "You",
+    "text": "And the floating lamps?"
+   },
+   {
+    "speaker": "Warden Hollis",
+    "text": "Grab any you see. We tie them down with string."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Warden Hollis",
+    "text": "Five lamps! Mother Mabble will cry into the soup."
+   },
+   {
+    "speaker": "Warden Hollis",
+    "text": "And the Rattlers went home to bed. Did you hear them say thank you?"
+   },
+   {
+    "speaker": "You",
+    "text": "Very quietly. Yes."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a1_questgiver",
+   "npc_a1_innkeeper"
+  ],
+  "next": "mq_a1_03"
+ },
+ {
+  "id": "mq_a1_03",
+  "kind": "main_quest",
+  "act": "act1",
+  "chapter": 3,
+  "title": "Flicker's Cousin",
+  "summary": "A tiny wisp is lost in the graves. Bring her home safely.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a1_waypoint",
+    "count": 1,
+    "text": "Talk to Flicker"
+   },
+   {
+    "type": "escort",
+    "target": "escort_wisp_glim",
+    "count": 1,
+    "text": "Guide Glim the wisp home"
+   },
+   {
+    "type": "reach",
+    "target": "a1_z2",
+    "count": 1,
+    "text": "Reach Bellcrypt Halls"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Flicker",
+    "text": "My cousin Glim went into the graves. I'm not worried! *flicker*"
+   },
+   {
+    "speaker": "Flicker",
+    "text": "Okay, I'm very worried."
+   },
+   {
+    "speaker": "You",
+    "text": "I'll find her."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Glim",
+    "text": "Thank you! It was so dark I forgot which way was up."
+   },
+   {
+    "speaker": "Flicker",
+    "text": "You brought her back! I'll open the waypoint to the crypts for you."
+   },
+   {
+    "speaker": "Flicker",
+    "text": "Oh, and— Glim said she saw a grey man in a grey hat. Just standing. Watching the bell tower."
+   }
+  ],
+  "twist": "First glimpse of the Grey Guest.",
+  "characters": [
+   "npc_a1_waypoint",
+   "escort_wisp_glim"
+  ],
+  "next": "mq_a1_04"
+ },
+ {
+  "id": "mq_a1_04",
+  "kind": "main_quest",
+  "act": "act1",
+  "chapter": 4,
+  "title": "Pocket Nineteen",
+  "summary": "A Magpie Imp stole the crypt key from Pocket Polly. Catch it!",
+  "objectives": [
+   {
+    "type": "rekindle",
+    "target": "magpie_imp",
+    "count": 1,
+    "text": "Catch the Magpie Imp"
+   },
+   {
+    "type": "collect",
+    "target": "qi_crypt_key",
+    "count": 1,
+    "text": "Get the crypt key back"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Pocket Polly",
+    "text": "Pocket nineteen! It had the crypt key! A Magpie Imp took it!"
+   },
+   {
+    "speaker": "Pocket Polly",
+    "text": "It's somewhere in Bellcrypt Halls. Giggling. They always giggle."
+   },
+   {
+    "speaker": "You",
+    "text": "How do I catch it?"
+   },
+   {
+    "speaker": "Pocket Polly",
+    "text": "Be faster than it. Or smarter. Faster's easier."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Pocket Polly",
+    "text": "The key! And a pile of gold! That imp was busy."
+   },
+   {
+    "speaker": "Pocket Polly",
+    "text": "Keep the gold. The imp won't miss it. Much."
+   },
+   {
+    "speaker": "Pocket Polly",
+    "text": "The key opens the Sunken Nave. That's where the bell sound comes from."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a1_trader",
+   "magpie_imp"
+  ],
+  "next": "mq_a1_05"
+ },
+ {
+  "id": "mq_a1_05",
+  "kind": "main_quest",
+  "act": "act1",
+  "chapter": 5,
+  "title": "The Yawning Nave",
+  "summary": "Villagers are asleep in the Sunken Nave. Wake them with the little bells.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a1_z3",
+    "count": 1,
+    "text": "Enter the Sunken Nave"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a1_bell_ropes",
+    "count": 1,
+    "text": "Ring the three hand-bells in order"
+   },
+   {
+    "type": "rekindle",
+    "target": "warden",
+    "count": 1,
+    "text": "Rekindle the Crypt Warden"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Sleepy villager",
+    "text": "Zzz… come home… zzz…"
+   },
+   {
+    "speaker": "You",
+    "text": "They're all asleep. Standing up."
+   },
+   {
+    "speaker": "Grandmother Purl",
+    "text": "(from far away) Little light! Ring the small bells: low, middle, high. That's the waking song."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Sleepy villager",
+    "text": "Huh? Where's my hat? Where's my HOUSE?"
+   },
+   {
+    "speaker": "You",
+    "text": "Home is that way. Follow the lamps."
+   },
+   {
+    "speaker": "Sleepy villager",
+    "text": "The big bell kept ringing. It sounded… so worried."
+   }
+  ],
+  "twist": "The sleeping curse comes from the bell. The bell is worried, not wicked.",
+  "characters": [
+   "npc_a1_storyteller"
+  ],
+  "next": "mq_a1_06"
+ },
+ {
+  "id": "mq_a1_06",
+  "kind": "main_quest",
+  "act": "act1",
+  "chapter": 6,
+  "title": "Who Rings the Bell?",
+  "summary": "Grandmother Purl knows that bell. She knows who rang it.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a1_storyteller",
+    "count": 1,
+    "text": "Ask Grandmother Purl"
+   },
+   {
+    "type": "collect",
+    "target": "jr_bell_log",
+    "count": 1,
+    "text": "Find Tolly's bell log"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a1_smith",
+    "count": 1,
+    "text": "Get the belfry gate opened by Big Bran"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Grandmother Purl",
+    "text": "That bell belongs to Tolly Clapperton. Sixty years he rang it."
+   },
+   {
+    "speaker": "Grandmother Purl",
+    "text": "'Come home, come home, the dark is coming.'"
+   },
+   {
+    "speaker": "You",
+    "text": "Where is he now?"
+   },
+   {
+    "speaker": "Grandmother Purl",
+    "text": "Nobody's seen him since the Lantern went out. Nobody's looked."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Big Bran",
+    "text": "The belfry gate's rusted shut. Hammer Gerald can fix that."
+   },
+   {
+    "speaker": "Big Bran",
+    "text": "CLANG. There. Oh no. Was that a moth?"
+   },
+   {
+    "speaker": "Grandmother Purl",
+    "text": "Be gentle with him, little light. He was only trying to call us home."
+   }
+  ],
+  "twist": "The boss is someone the village loved.",
+  "characters": [
+   "npc_a1_storyteller",
+   "npc_a1_smith"
+  ],
+  "next": "mq_a1_07"
+ },
+ {
+  "id": "mq_a1_07",
+  "kind": "main_quest",
+  "act": "act1",
+  "chapter": 7,
+  "title": "Belfry of the Drowned",
+  "summary": "Climb the sunken tower. Stop the bell. Bring Tolly home.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a1_boss",
+    "count": 1,
+    "text": "Climb the Belfry of the Drowned"
+   },
+   {
+    "type": "boss",
+    "target": "sunken_bellringer",
+    "count": 1,
+    "text": "Rekindle the Sunken Bellringer"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "The Sunken Bellringer",
+    "text": "DONG. Come home… come home…"
+   },
+   {
+    "speaker": "You",
+    "text": "Tolly! Everyone's home! You can stop!"
+   },
+   {
+    "speaker": "The Sunken Bellringer",
+    "text": "The dark is coming… DONG…"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Tolly",
+    "text": "Oh. Did everyone get home?"
+   },
+   {
+    "speaker": "You",
+    "text": "They did. You can rest now."
+   },
+   {
+    "speaker": "Tolly",
+    "text": "Then one more ring. The good one."
+   },
+   {
+    "speaker": "Tolly",
+    "text": "DING! Morning bell!"
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "sunken_bellringer"
+  ],
+  "next": "mq_a1_08"
+ },
+ {
+  "id": "mq_a1_08",
+  "kind": "main_quest",
+  "act": "act1",
+  "chapter": 8,
+  "title": "The Morning Bell",
+  "summary": "The lamps drift down. Tolly has something to tell you.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a1_town",
+    "count": 1,
+    "text": "Return to Lamplight Hollow"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a1_questgiver",
+    "count": 1,
+    "text": "Talk to Warden Hollis"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Warden Hollis",
+    "text": "The lamps came down on their own! Every one!"
+   },
+   {
+    "speaker": "Tolly",
+    "text": "And I'm ringing the town bell now. When you come home. Only then."
+   },
+   {
+    "speaker": "You",
+    "text": "Tolly, what happened that night?"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Tolly",
+    "text": "A grey man knocked on my door. He asked to sit down. Just for a minute."
+   },
+   {
+    "speaker": "Tolly",
+    "text": "I said I was busy. I had a bell to ring."
+   },
+   {
+    "speaker": "Tolly",
+    "text": "He looked so tired. Then he walked into the woods."
+   },
+   {
+    "speaker": "Warden Hollis",
+    "text": "Whisperwood. You'll follow him?"
+   },
+   {
+    "speaker": "You",
+    "text": "I'll follow him."
+   }
+  ],
+  "twist": "The Grey Guest wasn't attacking. He was asking for help.",
+  "characters": [
+   "npc_a1_questgiver",
+   "sunken_bellringer"
+  ],
+  "next": "mq_a2_01"
+ },
+ {
+  "id": "mq_a2_01",
+  "kind": "main_quest",
+  "act": "act2",
+  "chapter": 1,
+  "title": "Rope Bridges",
+  "summary": "Owlstead hangs in the trees. Someone up there jumps at every whisper.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a2_town",
+    "count": 1,
+    "text": "Reach Owlstead"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a2_questgiver",
+    "count": 1,
+    "text": "Talk to Ranger Sorrel"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Ranger Sorrel",
+    "text": "AH! Oh. A person. Sorry. The trees keep whispering."
+   },
+   {
+    "speaker": "You",
+    "text": "What are they saying?"
+   },
+   {
+    "speaker": "Ranger Sorrel",
+    "text": "Rumours. About you, now. Something about your boots."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Ranger Sorrel",
+    "text": "A grey man? Yes. He walked through a while ago."
+   },
+   {
+    "speaker": "Ranger Sorrel",
+    "text": "He didn't have a shadow. Nobody here does, any more."
+   },
+   {
+    "speaker": "You",
+    "text": "Look — neither do I."
+   }
+  ],
+  "twist": "Your own shadow is gone the moment you enter Whisperwood.",
+  "characters": [
+   "npc_a2_questgiver"
+  ],
+  "next": "mq_a2_02"
+ },
+ {
+  "id": "mq_a2_02",
+  "kind": "main_quest",
+  "act": "act2",
+  "chapter": 2,
+  "title": "What the Birches Say",
+  "summary": "The Gossiping Birches know where the shadows went. Only one of them tells the truth.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a2_z1",
+    "count": 1,
+    "text": "Enter the Gossiping Birches"
+   },
+   {
+    "type": "rekindle",
+    "target": "twigling",
+    "count": 12,
+    "text": "Rekindle Twiglings"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a2_honest_birch",
+    "count": 1,
+    "text": "Find the honest birch"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Birch",
+    "text": "Psst. The shadows went north."
+   },
+   {
+    "speaker": "Other birch",
+    "text": "Don't listen. They went south."
+   },
+   {
+    "speaker": "Third birch",
+    "text": "I'm the only one who never lies. Also, I love your boots."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Honest birch",
+    "text": "Fine. Fine! Mother Bark took them. For safekeeping, she says."
+   },
+   {
+    "speaker": "Honest birch",
+    "text": "And your boots are… okay."
+   },
+   {
+    "speaker": "You",
+    "text": "Thanks. I think."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a2_questgiver"
+  ],
+  "next": "mq_a2_03"
+ },
+ {
+  "id": "mq_a2_03",
+  "kind": "main_quest",
+  "act": "act2",
+  "chapter": 3,
+  "title": "Old Hoot's Questions",
+  "summary": "The oldest owl answers everything with a question. Somehow, that helps.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a2_storyteller",
+    "count": 1,
+    "text": "Visit Old Hoot"
+   },
+   {
+    "type": "collect",
+    "target": "qi_shadow_moth",
+    "count": 3,
+    "text": "Catch shadow-moths for Old Hoot"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Old Hoot",
+    "text": "Why would a tree take shadows? What is a shadow without light?"
+   },
+   {
+    "speaker": "You",
+    "text": "Nothing?"
+   },
+   {
+    "speaker": "Old Hoot",
+    "text": "Then what happens to shadows when the light goes out?"
+   },
+   {
+    "speaker": "You",
+    "text": "…They fade away. Oh."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Old Hoot",
+    "text": "So is Mother Bark stealing? Or saving?"
+   },
+   {
+    "speaker": "You",
+    "text": "Saving. She's saving them."
+   },
+   {
+    "speaker": "Old Hoot",
+    "text": "Who taught you to think like that? Was it me? Hoo."
+   }
+  ],
+  "twist": "Mother Bark is protecting the shadows, not stealing them.",
+  "characters": [
+   "npc_a2_storyteller"
+  ],
+  "next": "mq_a2_04"
+ },
+ {
+  "id": "mq_a2_04",
+  "kind": "main_quest",
+  "act": "act2",
+  "chapter": 4,
+  "title": "Doughnut Is Missing",
+  "summary": "Juniper's owlet flew into Puffcap Hollow. Owlets and spores do not mix.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a2_z2",
+    "count": 1,
+    "text": "Enter Puffcap Hollow"
+   },
+   {
+    "type": "escort",
+    "target": "escort_owlet_doughnut",
+    "count": 1,
+    "text": "Guide Doughnut home"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a2_alchemist",
+    "count": 1,
+    "text": "Ask Professor Puffcap about the spores"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Juniper",
+    "text": "Doughnut flew off! Hoo! Sorry. She's only small."
+   },
+   {
+    "speaker": "Juniper",
+    "text": "She'll follow a light. Please be her light."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Juniper",
+    "text": "DOUGHNUT! Hoo hoo hoo! Sorry. Happy hoots."
+   },
+   {
+    "speaker": "Professor Puffcap",
+    "text": "You walked through my Hollow and didn't sneeze once? Impressive. *puff*"
+   },
+   {
+    "speaker": "Professor Puffcap",
+    "text": "Come by the lab. I'll show you some alchemy. It helps with the Owl Towers."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a2_petkeeper",
+   "npc_a2_alchemist",
+   "escort_owlet_doughnut"
+  ],
+  "next": "mq_a2_05"
+ },
+ {
+  "id": "mq_a2_05",
+  "kind": "main_quest",
+  "act": "act2",
+  "chapter": 5,
+  "title": "The Owl Towers",
+  "summary": "Owlcrows guard the way to the Pantry. They'll let you pass — if you answer their riddle.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a2_z3",
+    "count": 1,
+    "text": "Climb the Owl Towers"
+   },
+   {
+    "type": "rekindle",
+    "target": "owlcrow",
+    "count": 10,
+    "text": "Rekindle Owlcrows"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a2_owlcrow_riddle",
+    "count": 1,
+    "text": "Answer the Owlcrow's riddle"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Owlcrow",
+    "text": "Riddle! What gets bigger the more you take away?"
+   },
+   {
+    "speaker": "You",
+    "text": "Um."
+   },
+   {
+    "speaker": "Owlcrow",
+    "text": "Take your time. We turn our heads all the way round while we wait."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "A hole! The answer is a hole."
+   },
+   {
+    "speaker": "Owlcrow",
+    "text": "Correct! You may pass. Also, we will be watching. We are always watching."
+   },
+   {
+    "speaker": "Owlcrow",
+    "text": "(kindly) Go gently with the old tree."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "owlcrow"
+  ],
+  "next": "mq_a2_06"
+ },
+ {
+  "id": "mq_a2_06",
+  "kind": "main_quest",
+  "act": "act2",
+  "chapter": 6,
+  "title": "The Shadow Pantry",
+  "summary": "Thousands of jars. Thousands of shadows. One very old tree.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a2_boss",
+    "count": 1,
+    "text": "Enter Mother Bark's Pantry"
+   },
+   {
+    "type": "boss",
+    "target": "mother_bark",
+    "count": 1,
+    "text": "Rekindle Mother Bark"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Mother Bark",
+    "text": "Thief! Shadow-snatcher! You'll not have my little darks!"
+   },
+   {
+    "speaker": "You",
+    "text": "I don't want to take them. I want to take them home."
+   },
+   {
+    "speaker": "Mother Bark",
+    "text": "Home? There IS no home for them! No light, no shadow!"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Mother Bark",
+    "text": "…Is that MY shadow? On the ground?"
+   },
+   {
+    "speaker": "You",
+    "text": "My light made it."
+   },
+   {
+    "speaker": "Mother Bark",
+    "text": "Ha! Haha! Oh, it's been a year!"
+   },
+   {
+    "speaker": "Mother Bark",
+    "text": "Open the jars, little darks. Go home."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "mother_bark"
+  ],
+  "next": "mq_a2_07"
+ },
+ {
+  "id": "mq_a2_07",
+  "kind": "main_quest",
+  "act": "act2",
+  "chapter": 7,
+  "title": "The Empty Jar",
+  "summary": "Every jar is open. All but one — and that one was always empty.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "mother_bark",
+    "count": 1,
+    "text": "Talk to Mother Bark"
+   },
+   {
+    "type": "collect",
+    "target": "qi_empty_jar",
+    "count": 1,
+    "text": "Take the empty jar"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a2_questgiver",
+    "count": 1,
+    "text": "Show Ranger Sorrel"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Mother Bark",
+    "text": "There's one jar I never filled. See the label?"
+   },
+   {
+    "speaker": "You",
+    "text": "'Shadow of a tall grey stranger.' It's empty."
+   },
+   {
+    "speaker": "Mother Bark",
+    "text": "He had no shadow to catch. His light was all the way out. Inside."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Mother Bark",
+    "text": "Here. An acorn, too. Plant it someday. Somebody in there needs a long nap."
+   },
+   {
+    "speaker": "Ranger Sorrel",
+    "text": "He went under the mountain, the birds say. To the Echo Mines."
+   },
+   {
+    "speaker": "Ranger Sorrel",
+    "text": "Wickbearer? Your shadow's back. It's following you. It likes you."
+   }
+  ],
+  "twist": "The Grey Guest's own light is completely out — he is Snuffed too.",
+  "characters": [
+   "mother_bark",
+   "npc_a2_questgiver"
+  ],
+  "next": "mq_a3_01"
+ },
+ {
+  "id": "mq_a3_01",
+  "kind": "main_quest",
+  "act": "act3",
+  "chapter": 1,
+  "title": "Going Down",
+  "summary": "Clinkerton sits on a giant lift. It creaks. Everything creaks.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a3_town",
+    "count": 1,
+    "text": "Ride down to Clinkerton"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a3_waypoint",
+    "count": 1,
+    "text": "Talk to Lou Lever"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a3_questgiver",
+    "count": 1,
+    "text": "Report to Foreman Hilda"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Lou Lever",
+    "text": "Going down! Floor one: Clinkerton! Floor two: also Clinkerton!"
+   },
+   {
+    "speaker": "Foreman Hilda",
+    "text": "A Wickbearer. Good. I have a list."
+   },
+   {
+    "speaker": "You",
+    "text": "A list of what?"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Foreman Hilda",
+    "text": "Why we dig. It's blank. We forgot."
+   },
+   {
+    "speaker": "Foreman Hilda",
+    "text": "My crew became Diglings. They dig and dig and don't know why."
+   },
+   {
+    "speaker": "Foreman Hilda",
+    "text": "And the mountain… copies us. Wrong way round."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a3_waypoint",
+   "npc_a3_questgiver"
+  ],
+  "next": "mq_a3_02"
+ },
+ {
+  "id": "mq_a3_02",
+  "kind": "main_quest",
+  "act": "act3",
+  "chapter": 2,
+  "title": "Scraps of a Song",
+  "summary": "The Saltwhistle Shafts whistle a tune. Pieces of it are written on old helmets.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a3_z1",
+    "count": 1,
+    "text": "Enter Saltwhistle Shafts"
+   },
+   {
+    "type": "rekindle",
+    "target": "digling",
+    "count": 15,
+    "text": "Rekindle Diglings"
+   },
+   {
+    "type": "collect",
+    "target": "qi_song_scrap",
+    "count": 3,
+    "text": "Find song scraps"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Foreman Hilda",
+    "text": "There used to be a song. Every crew had it on their helmets."
+   },
+   {
+    "speaker": "Foreman Hilda",
+    "text": "Find the helmets. Find the words."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "'Dig deep.' 'Bring the shine.' 'The mountain sings.'"
+   },
+   {
+    "speaker": "Foreman Hilda",
+    "text": "That's it! Some of it. It's in the wrong order, though."
+   },
+   {
+    "speaker": "Echo Annie",
+    "text": "Order. Order."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a3_questgiver",
+   "npc_a3_storyteller"
+  ],
+  "next": "mq_a3_03"
+ },
+ {
+  "id": "mq_a3_03",
+  "kind": "main_quest",
+  "act": "act3",
+  "chapter": 3,
+  "title": "Lenny's Lamp",
+  "summary": "A lamp ghost floats through the Glittering Gallery, calling for his miner.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a3_z2",
+    "count": 1,
+    "text": "Enter the Glittering Gallery"
+   },
+   {
+    "type": "rekindle",
+    "target": "crystal_spider",
+    "count": 10,
+    "text": "Rekindle Crystal Spiders"
+   },
+   {
+    "type": "escort",
+    "target": "escort_lamp_lenny",
+    "count": 1,
+    "text": "Guide Lenny the lamp ghost"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Lenny",
+    "text": "Have you seen my miner? Big boots. Bad jokes. I was his lamp."
+   },
+   {
+    "speaker": "You",
+    "text": "We'll find him together."
+   },
+   {
+    "speaker": "Lenny",
+    "text": "Mind the spiders. If the clinking stops, look up."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Lenny",
+    "text": "BARNABY! It's me! Your lamp!"
+   },
+   {
+    "speaker": "Barnaby",
+    "text": "LENNY! HA HA HA! Sorry! Lift's fine!"
+   },
+   {
+    "speaker": "Barnaby",
+    "text": "I remember now. I used to sing while you glowed. Something about… digging bright?"
+   }
+  ],
+  "twist": "Barnaby the innkeeper was a miner. He remembers a line.",
+  "characters": [
+   "npc_a3_innkeeper",
+   "escort_lamp_lenny"
+  ],
+  "next": "mq_a3_04"
+ },
+ {
+  "id": "mq_a3_04",
+  "kind": "main_quest",
+  "act": "act3",
+  "chapter": 4,
+  "title": "The Cart With Teeth",
+  "summary": "Something with teeth rattles on the Rattletrack Rails. It's guarding something.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a3_z3",
+    "count": 1,
+    "text": "Enter Rattletrack Rails"
+   },
+   {
+    "type": "rekindle",
+    "target": "cart_mimic",
+    "count": 1,
+    "text": "Rekindle the toothy cart"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a3_stash",
+    "count": 1,
+    "text": "Return cart six to Pickett"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Pickett",
+    "text": "Cart six never came back. There's a cart with TEETH out there instead."
+   },
+   {
+    "speaker": "You",
+    "text": "Maybe it ate cart six."
+   },
+   {
+    "speaker": "Pickett",
+    "text": "Don't say that. Cart six is adventurous, not edible."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "The toothy cart was guarding a little Digling. Asleep in cart six."
+   },
+   {
+    "speaker": "Pickett",
+    "text": "Keeping him safe? Aw. Even the teeth were kind."
+   },
+   {
+    "speaker": "Pickett",
+    "text": "Cart six, you hero."
+   }
+  ],
+  "twist": "The monster was protecting someone smaller.",
+  "characters": [
+   "npc_a3_stash",
+   "cart_mimic"
+  ],
+  "next": "mq_a3_05"
+ },
+ {
+  "id": "mq_a3_05",
+  "kind": "main_quest",
+  "act": "act3",
+  "chapter": 5,
+  "title": "Dig Deep, Dig Bright",
+  "summary": "Put the song back together. The mountain is listening.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a3_storyteller",
+    "count": 1,
+    "text": "Ask Echo Annie"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a3_song_order",
+    "count": 1,
+    "text": "Put the song lines in order"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a3_smith",
+    "count": 1,
+    "text": "Let Dorra sing it"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Echo Annie",
+    "text": "The song goes in a circle, dearie. Circle."
+   },
+   {
+    "speaker": "Echo Annie",
+    "text": "Start deep. End singing. Singing."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Dorra",
+    "text": "DIG DEEP, DIG BRIGHT, BRING THE SHINE TO LIGHT!"
+   },
+   {
+    "speaker": "Dorra",
+    "text": "DIG SLOW, DIG TRUE, THE MOUNTAIN SINGS FOR YOU!"
+   },
+   {
+    "speaker": "The mountain",
+    "text": "…THGIL OT ENIHS…"
+   },
+   {
+    "speaker": "You",
+    "text": "It's singing back. Backwards. It wants more."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a3_storyteller",
+   "npc_a3_smith"
+  ],
+  "next": "mq_a3_06"
+ },
+ {
+  "id": "mq_a3_06",
+  "kind": "main_quest",
+  "act": "act3",
+  "chapter": 6,
+  "title": "The Mouth of the Mountain",
+  "summary": "A cave so big it has weather. It copies everything. Give it something good to copy.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a3_boss",
+    "count": 1,
+    "text": "Enter the Mouth of the Mountain"
+   },
+   {
+    "type": "boss",
+    "target": "great_echo",
+    "count": 1,
+    "text": "Rekindle the Great Echo"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "The Great Echo",
+    "text": "…OLLEH? OLLEH?"
+   },
+   {
+    "speaker": "You",
+    "text": "Hello!"
+   },
+   {
+    "speaker": "The Great Echo",
+    "text": "!OLLEH! !OLLEH!"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "The miners",
+    "text": "Dig deep, dig bright…"
+   },
+   {
+    "speaker": "The Great Echo",
+    "text": "…BRING THE SHINE TO LIGHT."
+   },
+   {
+    "speaker": "The Great Echo",
+    "text": "(softly) Thank you. It was so quiet. I copied anything."
+   },
+   {
+    "speaker": "The Great Echo",
+    "text": "I even copied him. The grey one."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "great_echo"
+  ],
+  "next": "mq_a3_07"
+ },
+ {
+  "id": "mq_a3_07",
+  "kind": "main_quest",
+  "act": "act3",
+  "chapter": 7,
+  "title": "What the Echo Heard",
+  "summary": "The mountain remembers everything it ever heard. Including the Grey Guest.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "great_echo",
+    "count": 1,
+    "text": "Listen to the Echo"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a3_jeweler",
+    "count": 1,
+    "text": "Get the Echo Crystal set by Opaline"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "The Great Echo",
+    "text": "He walked through. He said one thing. I kept it."
+   },
+   {
+    "speaker": "The Great Echo",
+    "text": "(in a grey, tired voice) 'I'm so tired. Nobody ever asks who keeps it lit.'"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Opaline",
+    "text": "The Echo gave you a crystal? Hold still. *polish* Now it'll keep his words safe."
+   },
+   {
+    "speaker": "Foreman Hilda",
+    "text": "Keeps it lit? Keeps WHAT lit?"
+   },
+   {
+    "speaker": "You",
+    "text": "The Lantern. I think he was its keeper."
+   },
+   {
+    "speaker": "Foreman Hilda",
+    "text": "The birds say he went to Rimehall. The frozen castle."
+   }
+  ],
+  "twist": "The Grey Guest was the Lantern's keeper.",
+  "characters": [
+   "great_echo",
+   "npc_a3_jeweler",
+   "npc_a3_questgiver"
+  ],
+  "next": "mq_a4_01"
+ },
+ {
+  "id": "mq_a4_01",
+  "kind": "main_quest",
+  "act": "act4",
+  "chapter": 1,
+  "title": "The Warm Kitchens",
+  "summary": "Rimehall is frozen. Only the kitchens are warm. Everyone who stayed lives there.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a4_town",
+    "count": 1,
+    "text": "Reach Kettlekeep"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a4_innkeeper",
+    "count": 1,
+    "text": "Warm up with Nan Kettleby"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a4_questgiver",
+    "count": 1,
+    "text": "Meet Chancellor Snowdrop"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Nan Kettleby",
+    "text": "In, in, in! Kettle's on. You're blue at the edges."
+   },
+   {
+    "speaker": "Chancellor Snowdrop",
+    "text": "Ah. You're on my list. My list of people who might help. It's short."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Chancellor Snowdrop",
+    "text": "His Majesty froze mid-toast. Then he forgot his name."
+   },
+   {
+    "speaker": "Chancellor Snowdrop",
+    "text": "The less he remembers, the colder the castle gets."
+   },
+   {
+    "speaker": "You",
+    "text": "Then we help him remember."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a4_innkeeper",
+   "npc_a4_questgiver"
+  ],
+  "next": "mq_a4_02"
+ },
+ {
+  "id": "mq_a4_02",
+  "kind": "main_quest",
+  "act": "act4",
+  "chapter": 2,
+  "title": "A Princess With a Plan",
+  "summary": "The king's daughter has a plan. It involves a hare, a garden, and you.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a4_petkeeper",
+    "count": 1,
+    "text": "Talk to Princess Pip"
+   },
+   {
+    "type": "escort",
+    "target": "escort_sir_wobble",
+    "count": 1,
+    "text": "Guide Sir Wobble through the gardens"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Princess Pip",
+    "text": "I'm Princess Pip. My dad is the king. He forgot my name."
+   },
+   {
+    "speaker": "Princess Pip",
+    "text": "Sir Wobble can sniff out Dad's things. Take him to the gardens."
+   },
+   {
+    "speaker": "Princess Pip",
+    "text": "That's a royal order. Please."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Princess Pip",
+    "text": "Sir Wobble found something! A frozen letter. It says 'A'."
+   },
+   {
+    "speaker": "Princess Pip",
+    "text": "It's from Dad's name. His name is on everything, and the frost broke it into bits."
+   },
+   {
+    "speaker": "You",
+    "text": "Then we find all the bits."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a4_petkeeper",
+   "escort_sir_wobble"
+  ],
+  "next": "mq_a4_03"
+ },
+ {
+  "id": "mq_a4_03",
+  "kind": "main_quest",
+  "act": "act4",
+  "chapter": 3,
+  "title": "The Frosted Gardens",
+  "summary": "The hedges are shaped like animals. Some of them are animals.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a4_z1",
+    "count": 1,
+    "text": "Enter the Frosted Gardens"
+   },
+   {
+    "type": "rekindle",
+    "target": "snow_hound",
+    "count": 10,
+    "text": "Rekindle Snow Hounds"
+   },
+   {
+    "type": "collect",
+    "target": "qi_name_letter_a",
+    "count": 1,
+    "text": "Find the letter A"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Chancellor Snowdrop",
+    "text": "The gardens were His Majesty's favourite. He named every hedge."
+   },
+   {
+    "speaker": "You",
+    "text": "Did the hedges have names?"
+   },
+   {
+    "speaker": "Chancellor Snowdrop",
+    "text": "All of them were called 'Hedge'. He was very tired that day."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Princess Pip",
+    "text": "A! Now we need the rest."
+   },
+   {
+    "speaker": "Chancellor Snowdrop",
+    "text": "Mind the Looking-Glass Gallery next. The reflections run late."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a4_questgiver",
+   "npc_a4_petkeeper"
+  ],
+  "next": "mq_a4_04"
+ },
+ {
+  "id": "mq_a4_04",
+  "kind": "main_quest",
+  "act": "act4",
+  "chapter": 4,
+  "title": "Mind the Third Mirror",
+  "summary": "A hall of mirrors. Your reflection is late. Except in one.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a4_z2",
+    "count": 1,
+    "text": "Enter the Looking-Glass Gallery"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a4_third_mirror",
+    "count": 1,
+    "text": "Find the mirror that's early"
+   },
+   {
+    "type": "rekindle",
+    "target": "mirror_butler",
+    "count": 6,
+    "text": "Rekindle Mirror Butlers"
+   },
+   {
+    "type": "collect",
+    "target": "qi_name_letter_l",
+    "count": 1,
+    "text": "Find the letter L"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Mirror Butler",
+    "text": "Tea, sir? Madam? Hero? The tea is a trap. I am so sorry."
+   },
+   {
+    "speaker": "You",
+    "text": "Then why serve it?"
+   },
+   {
+    "speaker": "Mirror Butler",
+    "text": "I forgot how to stop."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "In the third mirror, my reflection moved first. It pointed at the letter."
+   },
+   {
+    "speaker": "You",
+    "text": "…It had a little lantern drawn on its hand."
+   },
+   {
+    "speaker": "Mister Ledger",
+    "text": "Curious. Noted. Underlined."
+   }
+  ],
+  "twist": "Your reflection in the third mirror acts before you do — a hint of the Answering Mailbox mystery.",
+  "characters": [
+   "npc_a4_stash",
+   "mirror_butler"
+  ],
+  "next": "mq_a4_05"
+ },
+ {
+  "id": "mq_a4_05",
+  "kind": "main_quest",
+  "act": "act4",
+  "chapter": 5,
+  "title": "The Everlasting Toast",
+  "summary": "Hundreds of frozen guests, cups raised. One chair is empty. It has a name card.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a4_z3",
+    "count": 1,
+    "text": "Enter the Everlasting Toast"
+   },
+   {
+    "type": "rekindle",
+    "target": "tin_soldier",
+    "count": 12,
+    "text": "Rekindle Tin Soldiers"
+   },
+   {
+    "type": "collect",
+    "target": "qi_name_letter_d",
+    "count": 1,
+    "text": "Find the letter D"
+   },
+   {
+    "type": "collect",
+    "target": "qi_name_letter_r",
+    "count": 1,
+    "text": "Find the letter R"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Tumblewit",
+    "text": "Welcome to the longest party in history. Nobody's had cake in a year."
+   },
+   {
+    "speaker": "Tumblewit",
+    "text": "That's the sad part. The funny part is also that."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "There's an empty seat at the king's right hand."
+   },
+   {
+    "speaker": "You",
+    "text": "The card says: 'Our Grey Guest.'"
+   },
+   {
+    "speaker": "Tumblewit",
+    "text": "He invited him in. The only one who ever did."
+   },
+   {
+    "speaker": "Tumblewit",
+    "text": "…That's not a joke. I don't have a joke for that."
+   }
+  ],
+  "twist": "The King was the only person who ever welcomed the Grey Guest.",
+  "characters": [
+   "npc_a4_storyteller"
+  ],
+  "next": "mq_a4_06"
+ },
+ {
+  "id": "mq_a4_06",
+  "kind": "main_quest",
+  "act": "act4",
+  "chapter": 6,
+  "title": "Who Are You?",
+  "summary": "The Throne of Frost. A king who has forgotten everything, even himself.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a4_boss",
+    "count": 1,
+    "text": "Enter the Throne of Frost"
+   },
+   {
+    "type": "boss",
+    "target": "king_who_forgot",
+    "count": 1,
+    "text": "Remind the King who he is"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "The King Who Forgot",
+    "text": "Who are you?"
+   },
+   {
+    "speaker": "You",
+    "text": "A Wickbearer. And you're—"
+   },
+   {
+    "speaker": "The King Who Forgot",
+    "text": "Who am I? No matter. Everyone must stay. Stay FROZEN."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "A-L-D-R-I-C. Your name is Aldric."
+   },
+   {
+    "speaker": "King Aldric",
+    "text": "Aldric. …Aldric Warmhearth."
+   },
+   {
+    "speaker": "King Aldric",
+    "text": "(raising his cup) — and to all of you, who stayed!"
+   },
+   {
+    "speaker": "Princess Pip",
+    "text": "DAD!"
+   },
+   {
+    "speaker": "King Aldric",
+    "text": "Pip. Pip! I remember you first."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "king_who_forgot",
+   "npc_a4_petkeeper"
+  ],
+  "next": "mq_a4_07"
+ },
+ {
+  "id": "mq_a4_07",
+  "kind": "main_quest",
+  "act": "act4",
+  "chapter": 7,
+  "title": "To All of You, Who Stayed",
+  "summary": "The castle thaws. The king remembers his last guest.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "king_who_forgot",
+    "count": 1,
+    "text": "Talk to King Aldric"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a4_runecarver",
+    "count": 1,
+    "text": "Have Master Quillon carve the Well-key"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "King Aldric",
+    "text": "He sat at my table, the grey fellow. Said, 'Thank you for asking me in.'"
+   },
+   {
+    "speaker": "King Aldric",
+    "text": "He said his name was… no. He wouldn't say it."
+   },
+   {
+    "speaker": "King Aldric",
+    "text": "Then he said he was going home. Down. To the Well of Hush."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Master Quillon",
+    "text": "A key for the Well. Carved in ice. Don't let it near the kettle."
+   },
+   {
+    "speaker": "King Aldric",
+    "text": "If you find him, tell him there's still a seat. Always."
+   },
+   {
+    "speaker": "You",
+    "text": "I'll tell him."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "king_who_forgot",
+   "npc_a4_runecarver"
+  ],
+  "next": "mq_a5_01"
+ },
+ {
+  "id": "mq_a5_01",
+  "kind": "main_quest",
+  "act": "act5",
+  "chapter": 1,
+  "title": "Lastlight Landing",
+  "summary": "A lighthouse on the rim of the world. The last hall of the Wickwright Guild.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_town",
+    "count": 1,
+    "text": "Reach Lastlight Landing"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a5_innkeeper",
+    "count": 1,
+    "text": "Warm up with Aunt Lumi"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a5_questgiver",
+    "count": 1,
+    "text": "Meet Ada Brightly"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Aunt Lumi",
+    "text": "Come in from the grey, love. There's a light in every window for you."
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "A Wickbearer. At last. Sit, sit. I'll stand. I always stand."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Ada Brightly",
+    "text": "The Well of Hush is below us. Down there, down is up."
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "At the bottom is the sky. And the Lantern."
+   },
+   {
+    "speaker": "You",
+    "text": "And the Grey Guest?"
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "(quietly) Yes. Him too."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a5_innkeeper",
+   "npc_a5_questgiver"
+  ],
+  "next": "mq_a5_02"
+ },
+ {
+  "id": "mq_a5_02",
+  "kind": "main_quest",
+  "act": "act5",
+  "chapter": 2,
+  "title": "Nobody Helps",
+  "summary": "The Upside-Down Stars. The Hushlings drift. One of them wears a hat.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_z1",
+    "count": 1,
+    "text": "Walk the Upside-Down Stars"
+   },
+   {
+    "type": "rekindle",
+    "target": "hushling",
+    "count": 15,
+    "text": "Rekindle Hushlings"
+   },
+   {
+    "type": "escort",
+    "target": "escort_nobody",
+    "count": 1,
+    "text": "Follow Nobody to the fallen lanterns"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Nobody",
+    "text": "…  (A Hushling in a hat tips it at you.)"
+   },
+   {
+    "speaker": "You",
+    "text": "You're… not attacking?"
+   },
+   {
+    "speaker": "Nobody",
+    "text": "…  (It points. It wants you to follow.)"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Nobody",
+    "text": "…  (It shows you a pile of fallen lanterns. Dozens. All dark.)"
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "(on the wind) The Guild's lanterns. Every keeper who gave up."
+   },
+   {
+    "speaker": "Nobody",
+    "text": "…  (It picks one up. It gives it to you. It seems to be saying: not all of us are gone.)"
+   }
+  ],
+  "twist": "Not every Hushling is lost. Nobody wants to help.",
+  "characters": [
+   "escort_nobody",
+   "npc_a5_waypoint"
+  ],
+  "next": "mq_a5_03"
+ },
+ {
+  "id": "mq_a5_03",
+  "kind": "main_quest",
+  "act": "act5",
+  "chapter": 3,
+  "title": "The Drift of Leftovers",
+  "summary": "Islands made of everything the Hush took. Including colours.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_z2",
+    "count": 1,
+    "text": "Cross the Drift of Leftovers"
+   },
+   {
+    "type": "collect",
+    "target": "qi_lost_colour",
+    "count": 5,
+    "text": "Gather the lost colours"
+   },
+   {
+    "type": "rekindle",
+    "target": "faded_knight",
+    "count": 6,
+    "text": "Rekindle Faded Knights"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "You",
+    "text": "A bog stair. A birch. A mine cart. A ballroom door."
+   },
+   {
+    "speaker": "You",
+    "text": "It's all the places I've been. Grey."
+   },
+   {
+    "speaker": "Nib",
+    "text": "(from the Landing, by glow-mail) Shinies! Colours are the best shinies! Bring them back!"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "Bog-green. Birch-violet. Crystal-white. Frost-blue. Lantern-gold."
+   },
+   {
+    "speaker": "Mother Simmer",
+    "text": "Pop them in the Cauldron, dearie. *burble* She'll mix them into something warm."
+   },
+   {
+    "speaker": "Mother Simmer",
+    "text": "There. A little lantern-oil. You'll need it at the top. Or the bottom."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a5_trader",
+   "npc_a5_alchemist"
+  ],
+  "next": "mq_a5_04"
+ },
+ {
+  "id": "mq_a5_04",
+  "kind": "main_quest",
+  "act": "act5",
+  "chapter": 4,
+  "title": "Ada's Confession",
+  "summary": "The Moth Choir sings a song the Guild never wanted sung.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a5_storyteller",
+    "count": 1,
+    "text": "Listen to the Moth Choir"
+   },
+   {
+    "type": "collect",
+    "target": "jr_pell_5",
+    "count": 1,
+    "text": "Find the last scrap of a name"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a5_questgiver",
+    "count": 1,
+    "text": "Ask Ada the truth"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "The Moth Choir",
+    "text": "*sing* One keeper climbed, and nobody came…"
+   },
+   {
+    "speaker": "The Moth Choir",
+    "text": "*sing* Night after night, and always the same…"
+   },
+   {
+    "speaker": "The Moth Choir",
+    "text": "*sing* His name was Pell, and he trimmed the flame…"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Ada Brightly",
+    "text": "Pell and I were apprentices. Together."
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "When the others left, I said: I'll climb up and help you tomorrow."
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "For forty years, I said tomorrow."
+   },
+   {
+    "speaker": "You",
+    "text": "He's not a monster, is he?"
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "No. He's my friend. And he was so, so tired."
+   }
+  ],
+  "twist": "The Grey Guest is Pell, the last Lantern keeper. Ada could have helped him.",
+  "characters": [
+   "npc_a5_storyteller",
+   "npc_a5_questgiver"
+  ],
+  "next": "mq_a5_05"
+ },
+ {
+  "id": "mq_a5_05",
+  "kind": "main_quest",
+  "act": "act5",
+  "chapter": 5,
+  "title": "The Quiet Stair",
+  "summary": "A spiral stair down to the sky. No sound at all. Your footsteps glow instead.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_z3",
+    "count": 1,
+    "text": "Descend the Quiet Stair"
+   },
+   {
+    "type": "rekindle",
+    "target": "sound_eater",
+    "count": 8,
+    "text": "Rekindle Sound Eaters"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_a5_silent_steps",
+    "count": 1,
+    "text": "Follow your glowing footsteps"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "You",
+    "text": "…"
+   },
+   {
+    "speaker": "You",
+    "text": "(Nothing. Not even your own voice.)"
+   },
+   {
+    "speaker": "You",
+    "text": "(But each step leaves a little light behind.)"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "(At the bottom, a sound: a small, tired breath.)"
+   },
+   {
+    "speaker": "You",
+    "text": "(Somebody is up there. Down there. Waiting.)"
+   }
+  ],
+  "twist": "",
+  "characters": [],
+  "next": "mq_a5_06"
+ },
+ {
+  "id": "mq_a5_06",
+  "kind": "main_quest",
+  "act": "act5",
+  "chapter": 6,
+  "title": "Every Light You Lit",
+  "summary": "Before the last door, the friends you rekindled send you their light.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "sunken_bellringer",
+    "count": 1,
+    "text": "Hear Tolly's bell"
+   },
+   {
+    "type": "talk",
+    "target": "mother_bark",
+    "count": 1,
+    "text": "Take Mother Bark's shadow-lantern"
+   },
+   {
+    "type": "talk",
+    "target": "great_echo",
+    "count": 1,
+    "text": "Hear the mountain's song"
+   },
+   {
+    "type": "talk",
+    "target": "king_who_forgot",
+    "count": 1,
+    "text": "Accept King Aldric's toast"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Tolly",
+    "text": "(a bell, from very far away) DING! Come home, Wickbearer. When you're done."
+   },
+   {
+    "speaker": "Mother Bark",
+    "text": "Take a shadow with you, little light. Shadows mean there's light."
+   },
+   {
+    "speaker": "The Great Echo",
+    "text": "DIG DEEP. DIG BRIGHT."
+   },
+   {
+    "speaker": "King Aldric",
+    "text": "To you, Wickbearer. And to him. There's still a seat."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "Four small lights. Bell, bark, song, toast."
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "(on the wind) A light shared is not a light lost, Wickbearer."
+   },
+   {
+    "speaker": "You",
+    "text": "I know. I think I finally know."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "sunken_bellringer",
+   "mother_bark",
+   "great_echo",
+   "king_who_forgot"
+  ],
+  "next": "mq_a5_07"
+ },
+ {
+  "id": "mq_a5_07",
+  "kind": "main_quest",
+  "act": "act5",
+  "chapter": 7,
+  "title": "The Lantern Room",
+  "summary": "Inside the dark World-Lantern. A small grey figure sits by the cold wick.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_boss",
+    "count": 1,
+    "text": "Enter the Lantern Room"
+   },
+   {
+    "type": "boss",
+    "target": "grey_guest",
+    "count": 1,
+    "text": "Share your light with the Grey Guest"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "The Grey Guest",
+    "text": "You came all this way."
+   },
+   {
+    "speaker": "The Grey Guest",
+    "text": "Please. Just let it stay dark."
+   },
+   {
+    "speaker": "The Grey Guest",
+    "text": "Then nobody has to carry it."
+   },
+   {
+    "speaker": "You",
+    "text": "Nobody has to carry it alone."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "(You hold out your lantern. He holds out his. Small. Old. Cold.)"
+   },
+   {
+    "speaker": "You",
+    "text": "(The flame jumps across.)"
+   },
+   {
+    "speaker": "Pell",
+    "text": "…Oh. It's warm."
+   },
+   {
+    "speaker": "Pell",
+    "text": "You carried it. I thought no one would."
+   },
+   {
+    "speaker": "You",
+    "text": "Pell. Your name is Pell."
+   }
+  ],
+  "twist": "You don't win by striking. The last prompt is 'Share your light.'",
+  "characters": [
+   "grey_guest"
+  ],
+  "next": "mq_a5_08"
+ },
+ {
+  "id": "mq_a5_08",
+  "kind": "main_quest",
+  "act": "act5",
+  "chapter": 8,
+  "title": "Carry the Light",
+  "summary": "The World-Lantern is lit — by every light you rekindled, shining up together.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "grey_guest",
+    "count": 1,
+    "text": "Sit with Pell"
+   },
+   {
+    "type": "reach",
+    "target": "a5_town",
+    "count": 1,
+    "text": "Return to Lastlight Landing"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a5_questgiver",
+    "count": 1,
+    "text": "Talk to Ada"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Pell",
+    "text": "Look. Down there. Up there. All those little lights."
+   },
+   {
+    "speaker": "Pell",
+    "text": "Tolly's bell. The shadows. The miners. Aldric's hall."
+   },
+   {
+    "speaker": "Pell",
+    "text": "They're all shining up. At the Lantern. Together."
+   },
+   {
+    "speaker": "You",
+    "text": "It's lit."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Ada Brightly",
+    "text": "Pell."
+   },
+   {
+    "speaker": "Pell",
+    "text": "Ada. You came up the stair."
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "I'm forty years late."
+   },
+   {
+    "speaker": "Pell",
+    "text": "You're here. That's what counts."
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "(to you) Kneel? No, don't. Just stand there. Wickwright."
+   },
+   {
+    "speaker": "Aunt Lumi",
+    "text": "And then everyone rests. That's an order. Kettle's on."
+   }
+  ],
+  "twist": "The player is named Wickwright. Night returns — with a morning at the end of it.",
+  "characters": [
+   "grey_guest",
+   "npc_a5_questgiver",
+   "npc_a5_innkeeper"
+  ],
+  "next": "mq_dd_01"
+ },
+ {
+  "id": "mq_dd_01",
+  "kind": "main_quest",
+  "act": "deepdark",
+  "chapter": 1,
+  "title": "Where the Hush Went",
+  "summary": "The Lantern is lit. But the Hush didn't vanish. It sank under everything.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a5_pell",
+    "count": 1,
+    "text": "Talk to Pell at the Landing"
+   },
+   {
+    "type": "reach",
+    "target": "deepdark",
+    "count": 1,
+    "text": "Step into the Deepdark"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Pell",
+    "text": "I trim the lighthouse wick once a week now. Because it's nice. Not because I must."
+   },
+   {
+    "speaker": "Pell",
+    "text": "But the Hush went down. Under everything. Like night under morning."
+   },
+   {
+    "speaker": "Pell",
+    "text": "It's not bad. It just needs tidying."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "It's all the places I've been. Upside down. Greyer."
+   },
+   {
+    "speaker": "Pell",
+    "text": "(on the wind) Take your time. The Deepdark has had a long night. So have you."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a5_pell"
+  ],
+  "next": "mq_dd_02"
+ },
+ {
+  "id": "mq_dd_02",
+  "kind": "main_quest",
+  "act": "deepdark",
+  "chapter": 2,
+  "title": "The First Lightwell",
+  "summary": "Every town's Lightwell drained into the Deepdark. Dive in and bring some light back up.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a1_questgiver",
+    "count": 1,
+    "text": "Ask Warden Hollis about the old well"
+   },
+   {
+    "type": "reach",
+    "target": "lightwell",
+    "count": 1,
+    "text": "Dive into a Lightwell"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Warden Hollis",
+    "text": "Our Lightwell was full of light once. For a dark day."
+   },
+   {
+    "speaker": "Warden Hollis",
+    "text": "Well. It's been a dark year. Want to fetch some?"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Warden Hollis",
+    "text": "Look at that! Proper old light!"
+   },
+   {
+    "speaker": "Warden Hollis",
+    "text": "Stop halfway next time and you'll still keep what you found. No rush. Ever."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a1_questgiver"
+  ],
+  "next": "mq_dd_03"
+ },
+ {
+  "id": "mq_dd_03",
+  "kind": "main_quest",
+  "act": "deepdark",
+  "chapter": 3,
+  "title": "Lantern Maps",
+  "summary": "Mae Coalbright draws maps into the Deepdark. Each one is a little different.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "npc_a5_smith",
+    "count": 1,
+    "text": "Talk to Mae Coalbright"
+   },
+   {
+    "type": "reach",
+    "target": "deepdark",
+    "count": 3,
+    "text": "Finish three Deepdark runs"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Mae Coalbright",
+    "text": "I've been making Lantern Maps. Still just learning."
+   },
+   {
+    "speaker": "Mae Coalbright",
+    "text": "Foggy ones. Echoing ones. One's upside-down. Well. More upside-down."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "Mae Coalbright",
+    "text": "Three runs! You're better at this than me, and I've had seventy years."
+   },
+   {
+    "speaker": "Mae Coalbright",
+    "text": "Keep going deeper, if you like. The Snuffed down there are stubborn, but they come round."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a5_smith"
+  ],
+  "next": "mq_dd_04"
+ },
+ {
+  "id": "mq_dd_04",
+  "kind": "main_quest",
+  "act": "deepdark",
+  "chapter": 4,
+  "title": "The Long Shadow",
+  "summary": "Every shadow Mother Bark couldn't save gathered into one. It's very big. And very lonely.",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "mother_bark",
+    "count": 1,
+    "text": "Hear Mother Bark's worry"
+   },
+   {
+    "type": "boss",
+    "target": "long_shadow",
+    "count": 1,
+    "text": "Rekindle the Long Shadow"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Mother Bark",
+    "text": "Some little darks were too far gone for my jars. They found each other down there."
+   },
+   {
+    "speaker": "Mother Bark",
+    "text": "Now it's one big dark. It just wants to be near a light."
+   },
+   {
+    "speaker": "The Long Shadow",
+    "text": "…"
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "The Long Shadow",
+    "text": "(It shrinks. And splits. Into hundreds of small, happy shadows.)"
+   },
+   {
+    "speaker": "Mother Bark",
+    "text": "There they go! Home, every one!"
+   },
+   {
+    "speaker": "Mother Bark",
+    "text": "It'll gather again, I expect. Shadows are sociable. Visit it whenever you like."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "mother_bark",
+   "long_shadow"
+  ],
+  "next": "mq_dd_05"
+ },
+ {
+  "id": "mq_dd_05",
+  "kind": "main_quest",
+  "act": "deepdark",
+  "chapter": 5,
+  "title": "The Ninety-Ninth Chair",
+  "summary": "The Guild hall has ninety-nine chairs. Somebody has been carving.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "a5_town",
+    "count": 1,
+    "text": "Return to Lastlight Landing"
+   },
+   {
+    "type": "talk",
+    "target": "npc_a5_questgiver",
+    "count": 1,
+    "text": "Talk to Ada"
+   },
+   {
+    "type": "solve",
+    "target": "puzzle_dd_chair",
+    "count": 1,
+    "text": "Find your chair"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Ada Brightly",
+    "text": "Ninety-nine chairs. For years, only mine was ever sat in."
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "Pell's been busy with a little knife. Go and look."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "One chair has my name on it."
+   },
+   {
+    "speaker": "Pell",
+    "text": "And one has mine. Next to yours. If that's alright."
+   },
+   {
+    "speaker": "Ada Brightly",
+    "text": "Sit. Both of you. Rule three."
+   }
+  ],
+  "twist": "",
+  "characters": [
+   "npc_a5_questgiver",
+   "npc_a5_pell"
+  ],
+  "next": "mq_dd_06"
+ },
+ {
+  "id": "mq_dd_06",
+  "kind": "main_quest",
+  "act": "deepdark",
+  "chapter": 6,
+  "title": "The Last Letter",
+  "summary": "At the very brightest, the Answering Mailbox has one more letter.",
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "brightness",
+    "count": 200,
+    "text": "Reach Brightness 200"
+   },
+   {
+    "type": "collect",
+    "target": "sc_mailbox_last",
+    "count": 1,
+    "text": "Open the last letter"
+   }
+  ],
+  "intro": [
+   {
+    "speaker": "Pell",
+    "text": "You're as bright as the Lantern ever was. Brighter, maybe."
+   },
+   {
+    "speaker": "Pell",
+    "text": "There's a letter for you. It's been there a long time. It's in your handwriting."
+   }
+  ],
+  "outro": [
+   {
+    "speaker": "You",
+    "text": "'Dear you. Your light never went out, because I lit it. From the other side.'"
+   },
+   {
+    "speaker": "You",
+    "text": "'Carry it well. — You.'"
+   },
+   {
+    "speaker": "Pell",
+    "text": "So that's why you kept glowing. You were never alone either."
+   },
+   {
+    "speaker": "Pell",
+    "text": "Kettle's on. Come and rest."
+   }
+  ],
+  "twist": "You lit your own wick, from another turn of the story.",
+  "characters": [
+   "npc_a5_pell"
+  ],
+  "next": ""
+ }
+]

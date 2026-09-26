@@ -1,0 +1,15 @@
+{
+ "id": "dev_art",
+ "name": "Art dev zones (not shipped)",
+ "version": "0.1.0",
+ "format_version": 1,
+ "engine_min": "4.7",
+ "load_order": 98,
+ "requires": [
+  "base"
+ ],
+ "tables": {
+  "zones": "zones.json",
+  "biomes": "biomes.json"
+ }
+}

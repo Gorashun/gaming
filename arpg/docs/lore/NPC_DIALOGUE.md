@@ -19,6 +19,7 @@
 - **Bark:** Hammer Gerald's cousin is Hammer Gertrude. She's for fancy work.
 - **Bark:** Every sword remembers the hand that made it. Mine remember hugs.
 - **After the act:** You rang the old bell back to life! Gerald is so proud.
+- **Quests:** `q_a1_shieldbones`
 
 ### Nettle Pim — Alchemist (`npc_a1_alchemist`)
 *Quirk:* Tiny. Sneezes glitter when potions fizz.
@@ -44,6 +45,7 @@
 - **Bark:** Never trust a Magpie Imp near a jewellery box.
 - **Bark:** Darling, that amulet is SO you.
 - **After the act:** The Bellringer's rekindled! I shall wear my celebration ring. Where is it…
+- **Quests:** `q_a1_ring_hunt`
 
 ### Grandpa Knurl — Runecarver (`npc_a1_runecarver`)
 *Quirk:* Carves runes on everything, including his spoons.
@@ -56,7 +58,7 @@
 - **Bark:** When you reach Rimehall, find Master Quillon. He carves ice!
 - **Bark:** My chair says 'sit'. So I do.
 - **After the act:** I carved 'thank you' on my door for you. Go and see.
-- **Quests:** `q_a1_candle_mages`
+- **Quests:** `q_a1_candle_mages`, `q_a1_rune_spoon`
 
 ### Pocket Polly — Trader (`npc_a1_trader`)
 *Quirk:* Coat with a hundred pockets. Never the right one.
@@ -82,6 +84,7 @@
 - **Bark:** Don't… rush. I never… do.
 - **Bark:** Shell… is also… a stash.
 - **After the act:** The… bell… rang. I… heard it. Twice.
+- **Quests:** `q_a1_humphrey_count`
 
 ### Hattie Hayloft — Stablemaster (`npc_a1_stablemaster`)
 *Quirk:* Rents giant bog-newts. Speaks for them.
@@ -107,6 +110,7 @@
 - **Bark:** I've got a list of all the pets in Lumenholm. It's long.
 - **Bark:** Pets don't fight. They help. That's different.
 - **After the act:** My pets and I made you a medal. It's a leaf. It's a medal leaf.
+- **Quests:** `q_a1_pet_egg`
 
 ### Mother Mabble — Innkeeper (`npc_a1_innkeeper`)
 *Quirk:* Runs The Soggy Candle. Believes soup fixes everything.
@@ -119,6 +123,7 @@
 - **Bark:** You look tired. Tired is allowed.
 - **Bark:** A warm bed, a warm bowl, a warm light. That's home.
 - **After the act:** Soup's on the house tonight. Well. Soup's always on the house.
+- **Quests:** `q_a1_bonepiles`
 
 ### Warden Hollis Reed — Warden (`npc_a1_questgiver`)
 *Quirk:* Last Lamplighter of Wickmire. Helmet two sizes too big.
@@ -159,7 +164,20 @@
 - **Bark:** Tap the map to go places!
 - **Bark:** I'm the brightest wisp in Wickmire! *flicker flicker*
 - **After the act:** You did it! I wasn't worried. *flicker* I was a bit worried.
-- **Quests:** `q_a1_drowned_graves`
+- **Quests:** `q_a1_drowned_graves`, `q_a1_wisp_lights`
+
+### Bounty Board — Bounty Board (`npc_a1_board`)
+*Quirk:* Not a person. A board. Repeatable bounties that bank and never expire.
+
+- **Greeting:** The Lamplight Hollow Bounty Board. Pinned notes flap in the bog breeze.
+- **Bark:** Bounties wait here. They never go stale.
+- **Bark:** Finished bounties bank up. Come back whenever you like.
+- **Bark:** New notes appear as you adventure.
+- **Bark:** A bounty a day? A bounty a month? Up to you.
+- **Bark:** Someone has drawn a smiley face on this note.
+- **Bark:** Unfinished bounties don't mind waiting.
+- **After the act:** Someone pinned a thank-you note to the board. It's addressed to you.
+- **Quests:** `q_a1_bounty_bones`, `q_a1_bounty_archers`, `q_a1_bounty_bonemeal`
 
 ### Side quests — Act I — Wickmire
 
@@ -174,6 +192,16 @@
 | `q_a1_warden_crypt` | The Warden Below | `npc_a1_questgiver` | kill | `warden` × 1 |
 | `q_a1_bellringer` | The Bell Under the Water | `npc_a1_questgiver` | boss | `sunken_bellringer` × 1 |
 | `q_a1_newt_ride` | Newt Test Drive | `npc_a1_stablemaster` | explore | `a1_z2` × 1 |
+| `q_a1_bounty_bones` | Bounty: Rattle Patrol | `npc_a1_board` | kill | `rattler` × 25 |
+| `q_a1_bounty_archers` | Bounty: Arrows in the Reeds | `npc_a1_board` | kill | `bog_archer` × 15 |
+| `q_a1_bounty_bonemeal` | Bounty: Big Soup Order | `npc_a1_board` | collect | `bone_meal` × 15 |
+| `q_a1_shieldbones` | Borrowed Shields | `npc_a1_smith` | kill | `shieldbones` × 8 |
+| `q_a1_bonepiles` | Tidy the Graves | `npc_a1_innkeeper` | kill | `bonepile` × 5 |
+| `q_a1_pet_egg` | Something Warm in the Nave | `npc_a1_petkeeper` | explore | `a1_z3` × 1 |
+| `q_a1_ring_hunt` | Rings for Madame | `npc_a1_jeweler` | collect | `topaz` × 2 |
+| `q_a1_humphrey_count` | Counting Spoons | `npc_a1_stash` | talk | `npc_a1_innkeeper` × 1 |
+| `q_a1_rune_spoon` | Runes for Supper | `npc_a1_runecarver` | collect | `soot` × 10 |
+| `q_a1_wisp_lights` | The Top of the Tower | `npc_a1_waypoint` | explore | `a1_boss` × 1 |
 
 **Bedtime for Bones** (`q_a1_lost_rattlers`)
 - *Offer:* The Rattlers climbed out of their graves and forgot why. Rekindle 10 and send them home to bed.
@@ -211,6 +239,46 @@
 - *Offer:* Puddle wants to stretch her legs! Ride through the Bellcrypt Halls and back. She says please.
 - *Done:* Puddle says that was the best day of her life. She says that every day.
 
+**Bounty: Rattle Patrol** (`q_a1_bounty_bones`)
+- *Offer:* BOUNTY: Rattlers wandering near the stilts again. Rekindle 25. No rush — this note will wait.
+- *Done:* Bounty done! The village sleeps easier. The Rattlers do too.
+
+**Bounty: Arrows in the Reeds** (`q_a1_bounty_archers`)
+- *Offer:* BOUNTY: Bog Archers keep shooting at the lamps. Rekindle 15.
+- *Done:* Bounty done! The lamps thank you. Well, they flicker gratefully.
+
+**Bounty: Big Soup Order** (`q_a1_bounty_bonemeal`)
+- *Offer:* BOUNTY: Mother Mabble needs 15 Bone Meal for… soup? Don't ask.
+- *Done:* Bounty done! Soup achieved. Nobody asked.
+
+**Borrowed Shields** (`q_a1_shieldbones`)
+- *Offer:* Those Shieldbones are carrying MY old shields. Rekindle 8 and Hammer Gerald gets his work back.
+- *Done:* My shields! Dented, soggy, perfect. Gerald is thrilled.
+
+**Tidy the Graves** (`q_a1_bonepiles`)
+- *Offer:* Bonepiles clutter up the graves. Rekindle 5, dear. Tidy graves, tidy mind.
+- *Done:* Lovely and tidy. Have a biscuit. It's a soup biscuit.
+
+**Something Warm in the Nave** (`q_a1_pet_egg`)
+- *Offer:* I heard there's a warm egg in the Sunken Nave. Go and look. Carefully. Eggs are delicate.
+- *Done:* It's a mystery egg! Carry it around. It'll hatch when it's ready. Very professional.
+
+**Rings for Madame** (`q_a1_ring_hunt`)
+- *Offer:* Darling, I need 2 Wick Topaz for a new ring. I'll wear it immediately. Then lose it.
+- *Done:* Gorgeous! Now, where did I put the ring I was wearing…
+
+**Counting Spoons** (`q_a1_humphrey_count`)
+- *Offer:* Mother… Mabble… borrowed… my… spoons. Ask… how… many.
+- *Done:* Twelve… spoons. Twelve. I… counted… twice. Thank… you.
+
+**Runes for Supper** (`q_a1_rune_spoon`)
+- *Offer:* I've run out of soot for my rune-ink. 10 Soot Dust, and I'll carve 'soup' on your spoon too.
+- *Done:* Here's your spoon. It says 'soup'. Very useful.
+
+**The Top of the Tower** (`q_a1_wisp_lights`)
+- *Offer:* Glim wants to see the top of the Belfry. From far away. Could you peek first? *flicker*
+- *Done:* The view's lovely? Great! We'll go. Someday. *flicker*
+
 ## Act II — Whisperwood · Owlstead (`a2_town`)
 
 ### Tamsin Knotwood — Smith (`npc_a2_smith`)
@@ -224,7 +292,7 @@
 - **Bark:** The birches told me a secret about you. I didn't listen.
 - **Bark:** Every nick in a blade is a story.
 - **After the act:** The shadows are home! The trees are finally quiet. Well. Quieter.
-- **Quests:** `q_a2_gossip`
+- **Quests:** `q_a2_gossip`, `q_a2_thorn_sprites`
 
 ### Professor Fennimore Puffcap — Alchemist (`npc_a2_alchemist`)
 *Quirk:* Part mushroom. Puffs sparkly spores when surprised.
@@ -251,6 +319,7 @@
 - **Bark:** Pretty things are best shared.
 - **Bark:** I found a gem in an owl's nest. The owl found me.
 - **After the act:** The morning dew is back! My shop is full again!
+- **Quests:** `q_a2_dew_gems`
 
 ### Hob Mossbeard — Runecarver (`npc_a2_runecarver`)
 *Quirk:* His beard grows moss. Carves runes on acorns.
@@ -263,6 +332,7 @@
 - **Bark:** The forest has its own runes. You just have to read bark.
 - **Bark:** Beard's getting long. It's got a mushroom now.
 - **After the act:** My beard grew a flower when the shadows came home. Look!
+- **Quests:** `q_a2_acorn_runes`
 
 ### Mister Quibble — Trader (`npc_a2_trader`)
 *Quirk:* An owl-man who haggles in riddles.
@@ -288,7 +358,7 @@
 - **Bark:** Don't worry. I've never lost anything. Recently.
 - **Bark:** Chitter chitter! That means 'safe' in squirrel.
 - **After the act:** I buried a present for you! Somewhere! It's a surprise for both of us!
-- **Quests:** `q_a2_moss_hounds`
+- **Quests:** `q_a2_moss_hounds`, `q_a2_nutsy_lost`
 
 ### Ferris Longstride — Stablemaster (`npc_a2_stablemaster`)
 *Quirk:* Rents moss-deer. Whistles instead of saying yes.
@@ -301,6 +371,7 @@
 - **Bark:** Faster through the woods, faster through the town.
 - **Bark:** *long whistle* That means 'have a good ride'.
 - **After the act:** *happy whistle* That means 'thank you', by the way.
+- **Quests:** `q_a2_deer_ride`
 
 ### Juniper Fitch — Pet Keeper (`npc_a2_petkeeper`)
 *Quirk:* Raises owlets. Answers in hoots when distracted.
@@ -326,6 +397,7 @@
 - **Bark:** Tea? It's acorn tea. It's a bit crunchy.
 - **Bark:** Nobody's fallen out of a hammock this week. Big week.
 - **After the act:** Whole forest's sleeping better since you came. Me too.
+- **Quests:** `q_a2_stump_grumble`
 
 ### Ranger Sorrel Vane — Ranger (`npc_a2_questgiver`)
 *Quirk:* Jumps at every whisper. Brave anyway.
@@ -351,7 +423,7 @@
 - **Bark:** Is the dark empty, or just waiting?
 - **Bark:** What's heavier: a lantern, or carrying it alone?
 - **After the act:** Who rekindled the oldest tree? And who will tell the story? Hm?
-- **Quests:** `q_a2_owl_towers`
+- **Quests:** `q_a2_owl_towers`, `q_a2_hoot_question`
 
 ### Lumen the Glowworm — Waypoint Keeper (`npc_a2_waypoint`)
 *Quirk:* A big glowworm. Speaks in rhymes.
@@ -365,6 +437,19 @@
 - **Bark:** A rhyme a day keeps the Hush away!
 - **After the act:** The wood is bright, the shadows home. Now pick a place wherever you roam!
 
+### Bounty Board — Bounty Board (`npc_a2_board`)
+*Quirk:* Not a person. A board. Repeatable bounties that bank and never expire.
+
+- **Greeting:** The Owlstead Bounty Board. Notes are pinned with acorns.
+- **Bark:** Bounties wait here. They never go stale.
+- **Bark:** Finished bounties bank up. Come back whenever you like.
+- **Bark:** New notes appear as you adventure.
+- **Bark:** A bounty a day? A bounty a month? Up to you.
+- **Bark:** Someone has drawn a smiley face on this note.
+- **Bark:** Unfinished bounties don't mind waiting.
+- **After the act:** Someone pinned a thank-you note to the board. It's addressed to you.
+- **Quests:** `q_a2_bounty_twigs`, `q_a2_bounty_puffers`, `q_a2_bounty_essence`
+
 ### Side quests — Act II — Whisperwood
 
 | id | Name | Giver | Type | Target × count |
@@ -377,6 +462,16 @@
 | `q_a2_trader_riddle` | A Riddle for Hob | `npc_a2_trader` | talk | `npc_a2_runecarver` × 1 |
 | `q_a2_gossip` | Hush, Birches | `npc_a2_smith` | explore | `a2_z1` × 1 |
 | `q_a2_mother_bark` | The Shadow Pantry | `npc_a2_questgiver` | boss | `mother_bark` × 1 |
+| `q_a2_bounty_twigs` | Bounty: Stick Check | `npc_a2_board` | kill | `twigling` × 30 |
+| `q_a2_bounty_puffers` | Bounty: Spore Season | `npc_a2_board` | kill | `sporecap` × 15 |
+| `q_a2_bounty_essence` | Bounty: Evening in a Bottle | `npc_a2_board` | collect | `dusk_essence` × 4 |
+| `q_a2_thorn_sprites` | Sorry, Thorns | `npc_a2_smith` | kill | `thorn_sprite` × 10 |
+| `q_a2_stump_grumble` | The Grumpy Stump | `npc_a2_innkeeper` | kill | `stump_grumble` × 1 |
+| `q_a2_dew_gems` | Gems That Stay | `npc_a2_jeweler` | collect | `emerald` × 2 |
+| `q_a2_acorn_runes` | Thread for Runes | `npc_a2_runecarver` | collect | `wickthread` × 3 |
+| `q_a2_deer_ride` | Fern Wants Out | `npc_a2_stablemaster` | explore | `a2_z2` × 1 |
+| `q_a2_nutsy_lost` | Where Did I Bury It | `npc_a2_stash` | explore | `a2_z1` × 1 |
+| `q_a2_hoot_question` | A Question for Quibble | `npc_a2_storyteller` | talk | `npc_a2_trader` × 1 |
 
 **Poke Every Stick** (`q_a2_twiglings`)
 - *Offer:* Twiglings pretend to be sticks, then jump out. Rekindle 12 before I jump out of my boots.
@@ -409,6 +504,46 @@
 **The Shadow Pantry** (`q_a2_mother_bark`)
 - *Offer:* Nobody in Whisperwood has a shadow. They're all in jars at Mother Bark's Pantry. Go gently.
 - *Done:* My shadow came home! It's shy. It's hiding behind me. Thank you.
+
+**Bounty: Stick Check** (`q_a2_bounty_twigs`)
+- *Offer:* BOUNTY: Twiglings pretending to be firewood. Rekindle 30. Take your time.
+- *Done:* Bounty done! The firewood pile is just firewood now.
+
+**Bounty: Spore Season** (`q_a2_bounty_puffers`)
+- *Offer:* BOUNTY: Sporecaps puffing in the Hollow. Rekindle 15. Bring a hanky.
+- *Done:* Bounty done! Spore levels: acceptable. *puff*
+
+**Bounty: Evening in a Bottle** (`q_a2_bounty_essence`)
+- *Offer:* BOUNTY: The Professor wants 4 Dusk Essence. He says it's for science. It's for cocoa.
+- *Done:* Bounty done! Science (cocoa) is served.
+
+**Sorry, Thorns** (`q_a2_thorn_sprites`)
+- *Offer:* Thorn Sprites are pricking my customers. Rekindle 10. And tell them sorry from me.
+- *Done:* Thank you. I apologised to the brambles too, just in case.
+
+**The Grumpy Stump** (`q_a2_stump_grumble`)
+- *Offer:* A huge Stump Grumble sits on the path to the Hollow. Grumbling. Rekindle it? Politely?
+- *Done:* It stopped grumbling and started snoring. Much better. Have a hammock.
+
+**Gems That Stay** (`q_a2_dew_gems`)
+- *Offer:* I want gems that DON'T evaporate. 2 Moss Emeralds, please!
+- *Done:* They're still here! It's been a whole minute! Thank you!
+
+**Thread for Runes** (`q_a2_acorn_runes`)
+- *Offer:* I tie my rune-acorns with Wickthread. 3 lengths, if you've got them. Beard's holding the rest.
+- *Done:* Lovely. My beard says thank you. It's grown a berry.
+
+**Fern Wants Out** (`q_a2_deer_ride`)
+- *Offer:* *whistles* That means: Fern wants a ride through Puffcap Hollow. You in?
+- *Done:* *two happy whistles* Fern's never been sparklier.
+
+**Where Did I Bury It** (`q_a2_nutsy_lost`)
+- *Offer:* I buried something important in the Birches! Or near them! Or I dreamed it! Go look?
+- *Done:* You found it! It's… an acorn. My favourite acorn! Thank you!
+
+**A Question for Quibble** (`q_a2_hoot_question`)
+- *Offer:* Will you ask Mister Quibble a question for me? Which question? Isn't that the question?
+- *Done:* He answered with a riddle? And you answered with a question? Now who's the owl?
 
 ## Act III — Echo Mines · Clinkerton (`a3_town`)
 
@@ -449,6 +584,7 @@
 - **Bark:** Dust is just shine that's shy.
 - **Bark:** *polish* Sorry. Habit. Your elbow was dull.
 - **After the act:** The whole mountain is sparkling. I don't even need to polish. I will anyway.
+- **Quests:** `q_a3_ruby_polish`
 
 ### Chisel — Runecarver (`npc_a3_runecarver`)
 *Quirk:* A small stone-golem child. Speaks one word at a time.
@@ -461,6 +597,7 @@
 - **Bark:** Quillon. Ice. Teacher. Far.
 - **Bark:** You. Nice.
 - **After the act:** Mountain. Song. Happy. Me. Happy.
+- **Quests:** `q_a3_chisel_friend`
 
 ### Gus Two-Carts — Trader (`npc_a3_trader`)
 *Quirk:* One cart sells. The other 'buys back'.
@@ -473,6 +610,7 @@
 - **Bark:** Best prices under the mountain! Only prices under the mountain!
 - **Bark:** Ever seen a cart with teeth? Don't buy that one.
 - **After the act:** I'm naming a third cart after you. I just need a third cart.
+- **Quests:** `q_a3_gus_carts`
 
 ### Pickett — Stash Keeper (`npc_a3_stash`)
 *Quirk:* Keeps stashes in mine carts. One rolls away daily. It comes back.
@@ -498,6 +636,7 @@
 - **Bark:** Riding's faster. Walking's scenic. Your choice.
 - **Bark:** Shortcut to happiness? Pat a pony.
 - **After the act:** The shortest way to a hero's heart is a pony ride. Free one, for you.
+- **Quests:** `q_a3_pony_route`
 
 ### Tuppence — Pet Keeper (`npc_a3_petkeeper`)
 *Quirk:* Tiny and fearless. Best friends with a glow-mole.
@@ -510,7 +649,7 @@
 - **Bark:** Pets get better the more you explore together.
 - **Bark:** Dimple says hi. That was the hi. The wiggle.
 - **After the act:** Dimple did a happy dig. It's a tunnel. It spells your name. Nearly.
-- **Quests:** `q_a3_lamp_ghosts`
+- **Quests:** `q_a3_lamp_ghosts`, `q_a3_dimple_dig`
 
 ### Barnaby Ballast — Innkeeper (`npc_a3_innkeeper`)
 *Quirk:* Runs The Deep Breath. Laughs so loud the lift shakes.
@@ -523,6 +662,7 @@
 - **Bark:** Stew's got salt. Everything's got salt. It's a salt mine.
 - **Bark:** Stay as long as you like, friend.
 - **After the act:** HA HA HA! Sorry, happy laugh. The lift will stop shaking soon.
+- **Quests:** `q_a3_lift_laugh`
 
 ### Foreman Hilda Pickwell — Foreman (`npc_a3_questgiver`)
 *Quirk:* Has a list of why they dig. The list is blank.
@@ -535,7 +675,7 @@
 - **Bark:** When your pack's full, come up. The mine's not going anywhere.
 - **Bark:** There used to be a song. I can almost hear it.
 - **After the act:** 'Dig deep, dig bright.' That's it. That's why. I'm writing it down.
-- **Quests:** `q_a3_diglings`, `q_a3_great_echo`
+- **Quests:** `q_a3_diglings`, `q_a3_great_echo`, `q_a3_salt_golem`
 
 ### Echo Annie — Storyteller (`npc_a3_storyteller`)
 *Quirk:* Repeats the last word of every sentence. Sentence.
@@ -563,6 +703,19 @@
 - **After the act:** Going up! All the way up! Well done, Wickbearer!
 - **Quests:** `q_a3_saltwhistle`
 
+### Bounty Board — Bounty Board (`npc_a3_board`)
+*Quirk:* Not a person. A board. Repeatable bounties that bank and never expire.
+
+- **Greeting:** The Clinkerton Bounty Board. Chalk on a slate. Someone drew a pickaxe with a face.
+- **Bark:** Bounties wait here. They never go stale.
+- **Bark:** Finished bounties bank up. Come back whenever you like.
+- **Bark:** New notes appear as you adventure.
+- **Bark:** A bounty a day? A bounty a month? Up to you.
+- **Bark:** Someone has drawn a smiley face on this note.
+- **Bark:** Unfinished bounties don't mind waiting.
+- **After the act:** Someone pinned a thank-you note to the board. It's addressed to you.
+- **Quests:** `q_a3_bounty_diglings`, `q_a3_bounty_bats`, `q_a3_bounty_wick`
+
 ### Side quests — Act III — Echo Mines
 
 | id | Name | Giver | Type | Target × count |
@@ -575,6 +728,16 @@
 | `q_a3_saltwhistle` | Floor Unknown | `npc_a3_waypoint` | explore | `a3_z1` × 1 |
 | `q_a3_lamp_ghosts` | Lost Lamps | `npc_a3_petkeeper` | kill | `lamp_ghost` × 6 |
 | `q_a3_great_echo` | The Mountain's Voice | `npc_a3_questgiver` | boss | `great_echo` × 1 |
+| `q_a3_bounty_diglings` | Bounty: Shift Change | `npc_a3_board` | kill | `digling` × 30 |
+| `q_a3_bounty_bats` | Bounty: Squeak Squad | `npc_a3_board` | kill | `echo_bat` × 20 |
+| `q_a3_bounty_wick` | Bounty: Fuse Supplies | `npc_a3_board` | collect | `wickthread` × 5 |
+| `q_a3_salt_golem` | Too Much Salt | `npc_a3_questgiver` | kill | `salt_golem` × 3 |
+| `q_a3_dimple_dig` | Dimple's Tunnel | `npc_a3_petkeeper` | explore | `a3_z3` × 1 |
+| `q_a3_ruby_polish` | Rubies for Polishing | `npc_a3_jeweler` | collect | `ruby` × 2 |
+| `q_a3_chisel_friend` | Chisel. Friend. | `npc_a3_runecarver` | talk | `npc_a3_petkeeper` × 1 |
+| `q_a3_gus_carts` | Not For Sale | `npc_a3_trader` | kill | `cart_mimic` × 3 |
+| `q_a3_pony_route` | Shortcut Test | `npc_a3_stablemaster` | explore | `a3_z2` × 1 |
+| `q_a3_lift_laugh` | Mind the Laugh | `npc_a3_innkeeper` | talk | `npc_a3_waypoint` × 1 |
 
 **The Forgetful Crew** (`q_a3_diglings`)
 - *Offer:* My crew became Diglings. Rekindle 15 and maybe they'll remember why we dig.
@@ -608,6 +771,46 @@
 - *Offer:* The Mouth of the Mountain copies everything, backwards. Go and give it something good to repeat.
 - *Done:* It's singing. The whole mountain. 'Dig deep, dig bright.' I remember now.
 
+**Bounty: Shift Change** (`q_a3_bounty_diglings`)
+- *Offer:* BOUNTY: Diglings digging where they shouldn't. Rekindle 30. Hard hats optional.
+- *Done:* Bounty done! The tunnels are tidy. The Diglings went for a nap.
+
+**Bounty: Squeak Squad** (`q_a3_bounty_bats`)
+- *Offer:* BOUNTY: Echo Bats copying everyone's sneezes. Rekindle 20.
+- *Done:* Bounty done! Sneezes are private again.
+
+**Bounty: Fuse Supplies** (`q_a3_bounty_wick`)
+- *Offer:* BOUNTY: Fizzwick needs 5 Wickthread. Again. For safety. Allegedly.
+- *Done:* Bounty done! Only a small pop. Eyebrows mostly fine.
+
+**Too Much Salt** (`q_a3_salt_golem`)
+- *Offer:* Salt Golems are blocking the lower shaft. Rekindle 3. They're big, but they're softies.
+- *Done:* Shaft's clear. One of the golems waved goodbye. With a whole arm of salt.
+
+**Dimple's Tunnel** (`q_a3_dimple_dig`)
+- *Offer:* Dimple dug a tunnel to the Rattletrack Rails! Check it's safe? I'd go, but— actually I'd go. You go.
+- *Done:* Safe! Dimple found a coin and a sock. She's keeping the sock.
+
+**Rubies for Polishing** (`q_a3_ruby_polish`)
+- *Offer:* Bring me 2 Candle Rubies. I'm going to polish them until they blush.
+- *Done:* *polish polish* Look at them glow. And look at you! *polish*
+
+**Chisel. Friend.** (`q_a3_chisel_friend`)
+- *Offer:* Tuppence. Friend? Ask. Please.
+- *Done:* Friend. Yes. Happy. Me.
+
+**Not For Sale** (`q_a3_gus_carts`)
+- *Offer:* Three toothy carts are pretending to be MY carts. Rekindle them before somebody buys one!
+- *Done:* My real carts! Both of them! Two carts, zero teeth.
+
+**Shortcut Test** (`q_a3_pony_route`)
+- *Offer:* I found a new shortcut through the Glittering Gallery. Test it on Gravel?
+- *Done:* Four seconds faster! Gravel's thrilled. Other Gravel is jealous.
+
+**Mind the Laugh** (`q_a3_lift_laugh`)
+- *Offer:* Tell Lou my laugh won't shake the lift any more. HA HA! …Tell him to hold on, actually.
+- *Done:* Lou says 'Going up, going down, going wobbly.' HA HA! Fair.
+
 ## Act IV — Rimehall · Kettlekeep (`a4_town`)
 
 ### Corporal Tinwhistle — Smith (`npc_a4_smith`)
@@ -621,7 +824,7 @@
 - **Bark:** My old regiment froze in the hall. I'll wait for them.
 - **Bark:** Left, right, left, CLANG.
 - **After the act:** My regiment thawed! They saluted me! I saluted back! We're still going!
-- **Quests:** `q_a4_tin_soldiers`
+- **Quests:** `q_a4_tin_soldiers`, `q_a4_tinwhistle_drill`
 
 ### Cook Dumplina — Alchemist (`npc_a4_alchemist`)
 *Quirk:* The castle cook. All her potions are soups.
@@ -647,6 +850,7 @@
 - **Bark:** A ring for the brave, a gem for the kind.
 - **Bark:** One's cousin Glimmerwick has too many rings. One has just enough.
 - **After the act:** The King said my name! He remembered my name! *giggle giggle*
+- **Quests:** `q_a4_sapphires`
 
 ### Master Quillon Rimecarve — Runecarver (`npc_a4_runecarver`)
 *Quirk:* Carves runes in ice. Hates warmth. Lives in a kitchen.
@@ -659,6 +863,7 @@
 - **Bark:** Knurl carves spoons. I carve spoons too. In ice. Better spoons.
 - **Bark:** Someone put the kettle on again. *sigh*
 - **After the act:** The castle is warm again. I hate it. I'm very happy. Both.
+- **Quests:** `q_a4_quillon_cold`
 
 ### Crumbsworth — Trader (`npc_a4_trader`)
 *Quirk:* A mouse merchant who runs his shop from a teacup.
@@ -671,6 +876,7 @@
 - **Bark:** Sell anything! I'll squeeze it in. Squeak.
 - **Bark:** Crumbsworth's rule: never trade with a cat.
 - **After the act:** In honour of the King, cheese is half price! Wait, I sell cheese?
+- **Quests:** `q_a4_crumbs`
 
 ### Mister Ledger — Stash Keeper (`npc_a4_stash`)
 *Quirk:* The only butler who didn't freeze. Writes everything down.
@@ -696,7 +902,7 @@
 - **Bark:** Faster in the gardens, faster in the halls.
 - **Bark:** Did you wrap up warm? Just checking.
 - **After the act:** It's warm now! …Wrap up anyway. Habit.
-- **Quests:** `q_a4_gardens`
+- **Quests:** `q_a4_gardens`, `q_a4_sleigh_run`
 
 ### Princess Pip — Pet Keeper (`npc_a4_petkeeper`)
 *Quirk:* The king's daughter, 8. Bossy, kind, misses her dad.
@@ -709,7 +915,7 @@
 - **Bark:** A pet can find treasure you'd never see.
 - **Bark:** I'm not sad. I'm just busy being brave.
 - **After the act:** He remembered me first. Before anyone. Before his own crown.
-- **Quests:** `q_a4_porcelain`
+- **Quests:** `q_a4_porcelain`, `q_a4_pip_letter`
 
 ### Nan Kettleby — Innkeeper (`npc_a4_innkeeper`)
 *Quirk:* Keeps the great kettle boiling. Tea solves most things.
@@ -734,7 +940,7 @@
 - **Bark:** Mind the mirrors. Reflections here are running late.
 - **Bark:** Do take breaks. It's on my list. Near the top.
 - **After the act:** Item one: the King is himself again. Item two: I'm crying. Item three: tissues.
-- **Quests:** `q_a4_letters`, `q_a4_the_king`
+- **Quests:** `q_a4_place_cards`, `q_a4_the_king`, `q_a4_courtiers`
 
 ### Tumblewit the Jester — Storyteller (`npc_a4_storyteller`)
 *Quirk:* Tells sad stories funnily and funny stories sadly.
@@ -761,11 +967,24 @@
 - **Bark:** Tick tock. That's my happy noise.
 - **After the act:** Tick. Tick. Tick-tick-tick! That's my VERY happy noise.
 
+### Bounty Board — Bounty Board (`npc_a4_board`)
+*Quirk:* Not a person. A board. Repeatable bounties that bank and never expire.
+
+- **Greeting:** The Kettlekeep Bounty Board. Notes written in very neat handwriting. Mister Ledger's, probably.
+- **Bark:** Bounties wait here. They never go stale.
+- **Bark:** Finished bounties bank up. Come back whenever you like.
+- **Bark:** New notes appear as you adventure.
+- **Bark:** A bounty a day? A bounty a month? Up to you.
+- **Bark:** Someone has drawn a smiley face on this note.
+- **Bark:** Unfinished bounties don't mind waiting.
+- **After the act:** Someone pinned a thank-you note to the board. It's addressed to you.
+- **Quests:** `q_a4_bounty_dolls`, `q_a4_bounty_jesters`, `q_a4_bounty_soot`
+
 ### Side quests — Act IV — Rimehall
 
 | id | Name | Giver | Type | Target × count |
 |---|---|---|---|---|
-| `q_a4_letters` | The King's Letters | `npc_a4_questgiver` | collect | `name_letter` × 4 |
+| `q_a4_place_cards` | The Guest List | `npc_a4_questgiver` | collect | `qi_place_card` × 6 |
 | `q_a4_porcelain` | Who Moved? | `npc_a4_petkeeper` | kill | `porcelain_doll` × 10 |
 | `q_a4_mirror_tea` | Tea Served Wrongly | `npc_a4_stash` | kill | `mirror_butler` × 6 |
 | `q_a4_soup` | Stoking the Pot | `npc_a4_alchemist` | collect | `soot` × 20 |
@@ -773,10 +992,20 @@
 | `q_a4_jester_joke` | A Joke for the Corporal | `npc_a4_storyteller` | talk | `npc_a4_smith` × 1 |
 | `q_a4_tin_soldiers` | My Old Regiment | `npc_a4_smith` | kill | `tin_soldier` × 12 |
 | `q_a4_the_king` | Who Are You? | `npc_a4_questgiver` | boss | `king_who_forgot` × 1 |
+| `q_a4_bounty_dolls` | Bounty: Tidy the Nursery | `npc_a4_board` | kill | `porcelain_doll` × 25 |
+| `q_a4_bounty_jesters` | Bounty: Cold Jokes | `npc_a4_board` | kill | `frost_jester` × 15 |
+| `q_a4_bounty_soot` | Bounty: Stoke the Kettle | `npc_a4_board` | collect | `soot` × 25 |
+| `q_a4_courtiers` | Frozen Manners | `npc_a4_questgiver` | kill | `ice_courtier` × 8 |
+| `q_a4_sleigh_run` | Sled to the Hall | `npc_a4_stablemaster` | explore | `a4_z3` × 1 |
+| `q_a4_sapphires` | The Crown's Missing Sapphires | `npc_a4_jeweler` | collect | `sapphire` × 3 |
+| `q_a4_quillon_cold` | Please, No Kettle | `npc_a4_runecarver` | talk | `npc_a4_innkeeper` × 1 |
+| `q_a4_crumbs` | Crumbs for Crumbsworth | `npc_a4_trader` | collect | `bone_meal` × 10 |
+| `q_a4_pip_letter` | A Letter for Dad | `npc_a4_petkeeper` | talk | `npc_a4_stash` × 1 |
+| `q_a4_tinwhistle_drill` | Hound Drill | `npc_a4_smith` | kill | `snow_hound` × 12 |
 
-**The King's Letters** (`q_a4_letters`)
-- *Offer:* The letters of His Majesty's name are scattered in the halls. Please find all 4. It's item one.
-- *Done:* Four letters! A, L, D, R… the rest is up to you, I think.
+**The Guest List** (`q_a4_place_cards`)
+- *Offer:* Six place cards blew off the banquet table. Find them? Everyone deserves to know where to sit. It's item one.
+- *Done:* All six! Everyone has a seat again. Even the ones who haven't thawed yet.
 
 **Who Moved?** (`q_a4_porcelain`)
 - *Offer:* The porcelain dolls only move when you don't look. Rekindle 10! That's a royal order. Please.
@@ -805,6 +1034,46 @@
 **Who Are You?** (`q_a4_the_king`)
 - *Offer:* His Majesty sits in the Throne of Frost, forgetting. Remind him who he is.
 - *Done:* '— and to all of you, who stayed.' He finished the toast. Item one: done.
+
+**Bounty: Tidy the Nursery** (`q_a4_bounty_dolls`)
+- *Offer:* BOUNTY: Porcelain dolls sneaking around the halls. Rekindle 25. Look behind you.
+- *Done:* Bounty done! The dolls are back on their shelves. Probably.
+
+**Bounty: Cold Jokes** (`q_a4_bounty_jesters`)
+- *Offer:* BOUNTY: Frost Jesters telling freezing jokes. Rekindle 15. Don't laugh. Actually, laugh.
+- *Done:* Bounty done! The jokes are warm again. Still not very good.
+
+**Bounty: Stoke the Kettle** (`q_a4_bounty_soot`)
+- *Offer:* BOUNTY: The great kettle needs 25 Soot Dust. Nan Kettleby says thank you in advance.
+- *Done:* Bounty done! Kettle's roaring. Tea for everyone.
+
+**Frozen Manners** (`q_a4_courtiers`)
+- *Offer:* Ice Courtiers keep bowing people into snowdrifts. Rekindle 8. It's on my list. Item four.
+- *Done:* Item four: done. Item five: have a sit-down. Please do item five.
+
+**Sled to the Hall** (`q_a4_sleigh_run`)
+- *Offer:* Mister Fluffington wants to pull a sled to the Everlasting Toast. Wrap up warm! Then go!
+- *Done:* Twelve seconds! A castle record! Did you wrap up? Good.
+
+**The Crown's Missing Sapphires** (`q_a4_sapphires`)
+- *Offer:* Three sapphires fell off the crown when it froze. One is ashamed. Bring me 3 Frost Sapphires? *giggle*
+- *Done:* The crown is complete! One is so pleased. *giggle giggle*
+
+**Please, No Kettle** (`q_a4_quillon_cold`)
+- *Offer:* Ask Nan Kettleby to move the kettle ONE step to the left. Away from my ice.
+- *Done:* She moved it one step. To the right. I'm choosing to be at peace.
+
+**Crumbs for Crumbsworth** (`q_a4_crumbs`)
+- *Offer:* I need 10 Bone Meal. For baking. Mouse baking. It's a whole thing.
+- *Done:* Squeak! Bone-meal biscuits! Try one. …Don't try one.
+
+**A Letter for Dad** (`q_a4_pip_letter`)
+- *Offer:* Give my letter to Mister Ledger. He'll keep it safe until Dad can read it.
+- *Done:* Mister Ledger says it's filed under 'P' for 'Pip'. And 'P' for 'precious'.
+
+**Hound Drill** (`q_a4_tinwhistle_drill`)
+- *Offer:* Snow Hounds keep chewing my boots. Rekindle 12! *salute*
+- *Done:* Boots saved! *salute* That was for you. *salute* That was for the boots.
 
 ## Act V — Well of Hush · Lastlight Landing (`a5_town`)
 
@@ -845,6 +1114,7 @@
 - **Bark:** Stargazers keep trying to throw me. Please don't.
 - **Bark:** Big twinkle or small twinkle, still a twinkle.
 - **After the act:** I can see the sky again! My family's up there! Hi, everyone!
+- **Quests:** `q_a5_twinkle_home`
 
 ### Vesper Inkwell — Runecarver (`npc_a5_runecarver`)
 *Quirk:* Writes runes in light. They fade if you blink.
@@ -857,6 +1127,7 @@
 - **Bark:** Read slowly. The words like it.
 - **Bark:** *writes* *you blink* *sigh* Again.
 - **After the act:** I wrote your name in light over the Landing. Nobody's blinked all day.
+- **Quests:** `q_a5_vesper_blink`
 
 ### Nib — Trader (`npc_a5_trader`)
 *Quirk:* A reformed Magpie Imp. 'I don't steal. I borrow permanently.'
@@ -869,7 +1140,7 @@
 - **Bark:** The Hoard? Never heard of it. What Hoard.
 - **Bark:** Sell me your shinies and I'll give them a good home.
 - **After the act:** You relit the whole SKY? That's the shiniest thing anyone's ever done!
-- **Quests:** `q_a5_leftovers`
+- **Quests:** `q_a5_leftovers`, `q_a5_nib_shinies`
 
 ### Keeper Stillwater — Stash Keeper (`npc_a5_stash`)
 *Quirk:* Perfectly calm. Has never hurried. Not even once.
@@ -894,6 +1165,7 @@
 - **Bark:** Faster on the islands. Faster through the Landing.
 - **Bark:** Big Bran's scared of my moths. Tell him they're friendly!
 - **After the act:** Moths everywhere tonight! Must be the brightest night in history!
+- **Quests:** `q_a5_moth_ride`
 
 ### Tansy Glow — Pet Keeper (`npc_a5_petkeeper`)
 *Quirk:* Keeps fireflies in jars and lets them out every night.
@@ -906,6 +1178,7 @@
 - **Bark:** Juniper sends me owl feathers. I send her fireflies.
 - **Bark:** Light is better shared. Even firefly light.
 - **After the act:** All my fireflies came back at once and spelled 'THANKS'. Mostly.
+- **Quests:** `q_a5_fireflies`
 
 ### Aunt Lumi — Innkeeper (`npc_a5_innkeeper`)
 *Quirk:* Runs The Last Lamp. Leaves a light in every window.
@@ -918,7 +1191,7 @@
 - **Bark:** Sit. Warm up. The Well will still be there.
 - **Bark:** Nobody's too tired to be welcome.
 - **After the act:** Every window in the world is lit tonight. I cried into the tea.
-- **Quests:** `q_a5_ada_talk`
+- **Quests:** `q_a5_ada_talk`, `q_a5_stillwater_tea`
 
 ### Ada Brightly — Master Wickwright (`npc_a5_questgiver`)
 *Quirk:* The last Guild master. Very old, very kind, very bad at rest.
@@ -944,7 +1217,7 @@
 - **Bark:** *giggle* You're very bright. We like bright.
 - **Bark:** *sing* Carry the light, and then pass it on…
 - **After the act:** *loudest tiny chorus ever* THE LANTERN! THE LANTERN! WE LOVE IT!
-- **Quests:** `q_a5_grey_moths`
+- **Quests:** `q_a5_grey_moths`, `q_a5_hollow_choir`
 
 ### Nobody — Waypoint Keeper (`npc_a5_waypoint`)
 *Quirk:* A friendly Hushling: just a hat and a polite silence.
@@ -959,6 +1232,32 @@
 - **After the act:** …!  (For the first time, Nobody makes a sound. It's a small 'yay'.)
 - **Quests:** `q_a5_quiet_stair`
 
+### Bounty Board — Bounty Board (`npc_a5_board`)
+*Quirk:* Not a person. A board. Repeatable bounties that bank and never expire.
+
+- **Greeting:** The Lastlight Bounty Board. The notes glow faintly. Nobody pinned them. They were just there.
+- **Bark:** Bounties wait here. They never go stale.
+- **Bark:** Finished bounties bank up. Come back whenever you like.
+- **Bark:** New notes appear as you adventure.
+- **Bark:** A bounty a day? A bounty a month? Up to you.
+- **Bark:** Someone has drawn a smiley face on this note.
+- **Bark:** Unfinished bounties don't mind waiting.
+- **After the act:** Someone pinned a thank-you note to the board. It's addressed to you.
+- **Quests:** `q_a5_bounty_hush`, `q_a5_bounty_moths`, `q_a5_bounty_essence`
+
+### Pell — Retired Keeper (`npc_a5_pell`)
+*Quirk:* Once the Grey Guest. Trims the lighthouse wick once a week, because it's nice.
+
+- **Greeting:** Oh, hello. Sit down, if you like. I've learned that sitting down is allowed.
+- **Bark:** I trim the wick on Sundays. Only Sundays.
+- **Bark:** Thank you for asking me in. Everyone did, in the end.
+- **Bark:** Ada makes me rest. I make Ada rest. It's a system.
+- **Bark:** The Hush isn't bad. It's just night that forgot about morning.
+- **Bark:** Rest when you need to. I wish I had.
+- **Bark:** Tolly rings his bell when I visit. I like that very much.
+- **Bark:** Aldric saved me a seat. I sit in it every week.
+- **After the act:** (Only appears after Act V.)
+
 ### Side quests — Act V — Well of Hush
 
 | id | Name | Giver | Type | Target × count |
@@ -971,6 +1270,16 @@
 | `q_a5_ada_talk` | Make Her Sit | `npc_a5_innkeeper` | talk | `npc_a5_questgiver` × 1 |
 | `q_a5_faded_knights` | Old Guild Guards | `npc_a5_smith` | kill | `faded_knight` × 6 |
 | `q_a5_grey_guest` | The Lantern Room | `npc_a5_questgiver` | boss | `grey_guest` × 1 |
+| `q_a5_bounty_hush` | Bounty: Soft Sweep | `npc_a5_board` | kill | `hushling` × 30 |
+| `q_a5_bounty_moths` | Bounty: Colour Back | `npc_a5_board` | kill | `grey_moth` × 20 |
+| `q_a5_bounty_essence` | Bounty: Cauldron Supper | `npc_a5_board` | collect | `dusk_essence` × 8 |
+| `q_a5_hollow_choir` | The Silent Singers | `npc_a5_storyteller` | kill | `hollow_choir` × 4 |
+| `q_a5_nib_shinies` | The Warmest Shiny | `npc_a5_trader` | collect | `ember_heart` × 2 |
+| `q_a5_twinkle_home` | Where I Fell | `npc_a5_jeweler` | explore | `a5_z1` × 1 |
+| `q_a5_vesper_blink` | Someone Who Doesn't Blink | `npc_a5_runecarver` | talk | `npc_a5_stash` × 1 |
+| `q_a5_moth_ride` | Dusty's Flight | `npc_a5_stablemaster` | explore | `a5_z2` × 1 |
+| `q_a5_fireflies` | Jars for Fireflies | `npc_a5_petkeeper` | collect | `wickthread` × 4 |
+| `q_a5_stillwater_tea` | Tell Mae to Sit | `npc_a5_innkeeper` | talk | `npc_a5_smith` × 1 |
 
 **Soft Shapes** (`q_a5_hushlings`)
 - *Offer:* Hushlings drift over the Upside-Down Stars. Rekindle 15. Give them a bit of sound back.
@@ -1003,3 +1312,43 @@
 **The Lantern Room** (`q_a5_grey_guest`)
 - *Offer:* He's up there. Down there. In the Lantern Room. Don't fight to win, Wickbearer. Share your light.
 - *Done:* He's home. The Lantern's lit. And for once, nobody's carrying it alone.
+
+**Bounty: Soft Sweep** (`q_a5_bounty_hush`)
+- *Offer:* BOUNTY: Hushlings drifting too close to the Landing. Rekindle 30. Go gently.
+- *Done:* Bounty done! The Landing hums a little louder.
+
+**Bounty: Colour Back** (`q_a5_bounty_moths`)
+- *Offer:* BOUNTY: Grey Moths without their colours. Rekindle 20. The Choir will sing about you.
+- *Done:* Bounty done! The Choir sang. It was very small and very loud.
+
+**Bounty: Cauldron Supper** (`q_a5_bounty_essence`)
+- *Offer:* BOUNTY: The Cauldron's peckish. 8 Dusk Essence. *burble* (that's from the Cauldron).
+- *Done:* Bounty done! *burble burble*
+
+**The Silent Singers** (`q_a5_hollow_choir`)
+- *Offer:* *sing* Four hollow choirs sing without sound… rekindle them, little light, bring their voices round!
+- *Done:* *sing* Four new voices! Our harmony is complete! Nearly!
+
+**The Warmest Shiny** (`q_a5_nib_shinies`)
+- *Offer:* Ember Hearts! The warmest shinies! Bring 2? I'll pay! Legally!
+- *Done:* So warm! So shiny! I didn't even try to borrow them!
+
+**Where I Fell** (`q_a5_twinkle_home`)
+- *Offer:* Find the spot where I fell, on the Upside-Down Stars? I want to know it's still there.
+- *Done:* It's there? With a little dent? My dent! Aw.
+
+**Someone Who Doesn't Blink** (`q_a5_vesper_blink`)
+- *Offer:* Keeper Stillwater never hurries. Maybe he never blinks. Ask him to read a rune for me?
+- *Done:* He read it. Slowly. Without blinking. The rune is still glowing. I'm moved.
+
+**Dusty's Flight** (`q_a5_moth_ride`)
+- *Offer:* Take Dusty over the Drift of Leftovers! Goggles on! Goggles on indoors, too!
+- *Done:* Dusty did a loop! Deliberately! Probably!
+
+**Jars for Fireflies** (`q_a5_fireflies`)
+- *Offer:* I need 4 Wickthread to tie new firefly jars. The fireflies are very excited.
+- *Done:* New jars! They'll come and go as they like. That's the whole point.
+
+**Tell Mae to Sit** (`q_a5_stillwater_tea`)
+- *Offer:* Mae's been at her anvil since breakfast. Yesterday's breakfast. Tell her to sit.
+- *Done:* She sat! She's 'still learning' how. It's a start.

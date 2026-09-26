@@ -19,6 +19,7 @@ static func grant_mount(ch: CharacterData, id: String) -> bool:
 	if rec(id).is_empty() or owns(ch, id):
 		return false
 	ch.mounts_owned.append(id)
+	ch.track("mounts_owned")
 	if ch.active_mount == "":
 		ch.active_mount = id
 	Events.toast.emit("New mount: %s!" % rec(id).get("name", id), Color(1, 0.85, 0.5))

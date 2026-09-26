@@ -36,6 +36,7 @@ static func grant_pet(ch: CharacterData, id: String) -> bool:
 	if rec(id).is_empty() or owns(ch, id):
 		return false
 	ch.pets_owned[id] = {"level": 1, "xp": 0}
+	ch.track("pets_owned")
 	if ch.active_pet == "":
 		ch.active_pet = id
 		ch.recalc()

@@ -1,0 +1,44 @@
+[
+ {
+  "id": "dev_deed_kills",
+  "name": "Dev Rekindler",
+  "counter": "dev_kills",
+  "tiers": [
+   {
+    "goal": 2,
+    "reward": {
+     "title": "Dev Spark",
+     "stats": {
+      "life": 5
+     }
+    }
+   },
+   {
+    "goal": 5,
+    "reward": {
+     "cosmetic": {
+      "aura": "ember"
+     },
+     "skill_points": 1,
+     "gold": 10
+    }
+   }
+  ]
+ },
+ {
+  "id": "dev_deed_account",
+  "name": "Dev Account Deed",
+  "counter": "dev_acc",
+  "account": true,
+  "tiers": [
+   {
+    "goal": 3,
+    "reward": {
+     "cosmetic": {
+      "cape_tint": "#3dd6ff"
+     }
+    }
+   }
+  ]
+ }
+]

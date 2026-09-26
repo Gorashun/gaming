@@ -1,0 +1,2797 @@
+[
+ {
+  "id": "deed_tiers",
+  "kind": "tiers",
+  "tier_names": [
+   "Spark",
+   "Glow",
+   "Flame",
+   "Beacon",
+   "Lantern"
+  ],
+  "categories": {
+   "combat": "Combat",
+   "exploration": "Exploration",
+   "crafting": "Crafting",
+   "collection": "Collection",
+   "story": "Story",
+   "difficulty": "Difficulty",
+   "bosses": "Bosses",
+   "economy": "Economy",
+   "hushfalls": "Hushfalls",
+   "last_flame": "Last Flame",
+   "kindness": "Kindness & Silliness"
+  },
+  "note": "Tier i of a deed shows as '<name> — <tier_names[i]>'. Single-count deeds have one tier. Title unlocks at the deed's top tier. No time-limited deeds (welfare)."
+ },
+ {
+  "id": "deed_bonecounter",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Bonecounter",
+  "desc": "Rekindle {n} Rattlebones.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Rekindle 100 Rattlebones."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Rekindle 1,000 Rattlebones."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Rekindle 10,000 Rattlebones."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 100000,
+    "text": "Rekindle 100,000 Rattlebones."
+   }
+  ],
+  "title": "the Bonecounter"
+ },
+ {
+  "id": "deed_stickpicker",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Stick Picker",
+  "desc": "Rekindle {n} Twiglings.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Rekindle 100 Twiglings."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Rekindle 1,000 Twiglings."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Rekindle 10,000 Twiglings."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 100000,
+    "text": "Rekindle 100,000 Twiglings."
+   }
+  ],
+  "title": "the Stick Picker"
+ },
+ {
+  "id": "deed_digdug",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Shift Supervisor",
+  "desc": "Rekindle {n} Diglings.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Rekindle 100 Diglings."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Rekindle 1,000 Diglings."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Rekindle 10,000 Diglings."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 100000,
+    "text": "Rekindle 100,000 Diglings."
+   }
+  ],
+  "title": "the Foreman"
+ },
+ {
+  "id": "deed_courtly",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Party Crasher",
+  "desc": "Rekindle {n} of the Frozen Court.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Rekindle 100 of the Frozen Court."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Rekindle 1,000 of the Frozen Court."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Rekindle 10,000 of the Frozen Court."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 100000,
+    "text": "Rekindle 100,000 of the Frozen Court."
+   }
+  ],
+  "title": "the Party Crasher"
+ },
+ {
+  "id": "deed_hushsweeper",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Hush Sweeper",
+  "desc": "Rekindle {n} Hushlings.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Rekindle 100 Hushlings."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Rekindle 1,000 Hushlings."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Rekindle 10,000 Hushlings."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 100000,
+    "text": "Rekindle 100,000 Hushlings."
+   }
+  ],
+  "title": "the Hush Sweeper"
+ },
+ {
+  "id": "deed_rekindler",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Rekindler",
+  "desc": "Rekindle {n} Snuffed of any kind.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1000,
+    "text": "Rekindle 1,000 Snuffed of any kind."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10000,
+    "text": "Rekindle 10,000 Snuffed of any kind."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 100000,
+    "text": "Rekindle 100,000 Snuffed of any kind."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 1000000,
+    "text": "Rekindle 1,000,000 Snuffed of any kind."
+   }
+  ],
+  "title": "the Rekindler"
+ },
+ {
+  "id": "deed_elite_hunter",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Glow-Ring Hunter",
+  "desc": "Rekindle {n} elites.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 25,
+    "text": "Rekindle 25 elites."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 250,
+    "text": "Rekindle 250 elites."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 2500,
+    "text": "Rekindle 2,500 elites."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 25000,
+    "text": "Rekindle 25,000 elites."
+   }
+  ],
+  "title": "the Ringbreaker"
+ },
+ {
+  "id": "deed_champion_packs",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Pack Leader",
+  "desc": "Rekindle {n} elite packs with 3+ affixes.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Rekindle 10 elite packs with 3+ affixes."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 100,
+    "text": "Rekindle 100 elite packs with 3+ affixes."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 1000,
+    "text": "Rekindle 1,000 elite packs with 3+ affixes."
+   }
+  ],
+  "title": "the Unflappable"
+ },
+ {
+  "id": "deed_magpie_catcher",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Magpie Catcher",
+  "desc": "Catch {n} Magpie Imps.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Catch 1 Magpie Imps."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Catch 10 Magpie Imps."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Catch 50 Magpie Imps."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 250,
+    "text": "Catch 250 Magpie Imps."
+   }
+  ],
+  "title": "the Magpie Catcher"
+ },
+ {
+  "id": "deed_dodger",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Roly-Poly",
+  "desc": "Dodge {n} attacks.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Dodge 100 attacks."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Dodge 1,000 attacks."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Dodge 10,000 attacks."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 100000,
+    "text": "Dodge 100,000 attacks."
+   }
+  ],
+  "title": "the Roly-Poly"
+ },
+ {
+  "id": "deed_red_means_move",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Red Means Move",
+  "desc": "Step out of {n} red telegraphs without getting hit.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 50,
+    "text": "Step out of 50 red telegraphs without getting hit."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 500,
+    "text": "Step out of 500 red telegraphs without getting hit."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 5000,
+    "text": "Step out of 5,000 red telegraphs without getting hit."
+   }
+  ],
+  "title": "the Light-Footed"
+ },
+ {
+  "id": "deed_crits",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Big Numbers",
+  "desc": "Land {n} critical hits.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 500,
+    "text": "Land 500 critical hits."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 5000,
+    "text": "Land 5,000 critical hits."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50000,
+    "text": "Land 50,000 critical hits."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 500000,
+    "text": "Land 500,000 critical hits."
+   }
+  ],
+  "title": "the Sparkler"
+ },
+ {
+  "id": "deed_potion_sipper",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Potion Sipper",
+  "desc": "Drink {n} potions.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 50,
+    "text": "Drink 50 potions."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 500,
+    "text": "Drink 500 potions."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 5000,
+    "text": "Drink 5,000 potions."
+   }
+  ],
+  "title": "the Well-Hydrated"
+ },
+ {
+  "id": "deed_combo_master",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Combo Chef",
+  "desc": "Rekindle 10 Snuffed within 3 seconds, {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Rekindle 10 Snuffed within 3 seconds, 1 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Rekindle 10 Snuffed within 3 seconds, 25 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 250,
+    "text": "Rekindle 10 Snuffed within 3 seconds, 250 times."
+   }
+  ],
+  "title": "the Clean Sweep"
+ },
+ {
+  "id": "deed_minion_friends",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Doll Parade",
+  "desc": "Have your dolls rekindle {n} Snuffed.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Have your dolls rekindle 100 Snuffed."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Have your dolls rekindle 1,000 Snuffed."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Have your dolls rekindle 10,000 Snuffed."
+   }
+  ],
+  "title": "the Doll Parent"
+ },
+ {
+  "id": "deed_bell_ringer",
+  "kind": "deed",
+  "category": "combat",
+  "name": "DING!",
+  "desc": "Stun {n} Snuffed with ringing blows.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Stun 100 Snuffed with ringing blows."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Stun 1,000 Snuffed with ringing blows."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Stun 10,000 Snuffed with ringing blows."
+   }
+  ],
+  "title": "the Loud"
+ },
+ {
+  "id": "deed_star_thrower",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Star Thrower",
+  "desc": "Hit {n} Snuffed with thrown constellations.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Hit 100 Snuffed with thrown constellations."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Hit 1,000 Snuffed with thrown constellations."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Hit 10,000 Snuffed with thrown constellations."
+   }
+  ],
+  "title": "the Starry-Eyed"
+ },
+ {
+  "id": "deed_glow_up",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Glow Up",
+  "desc": "Block {n} attacks.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Block 100 attacks."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Block 1,000 attacks."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Block 10,000 attacks."
+   }
+  ],
+  "title": "the Unbudgeable"
+ },
+ {
+  "id": "deed_trap_setter",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Trap Happy",
+  "desc": "Catch {n} Snuffed in traps.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Catch 100 Snuffed in traps."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Catch 1,000 Snuffed in traps."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Catch 10,000 Snuffed in traps."
+   }
+  ],
+  "title": "the Sneaky"
+ },
+ {
+  "id": "deed_weapon_mastery",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Weapon Friend",
+  "desc": "Reach proficiency 50 with {n} weapon types.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Reach proficiency 50 with 1 weapon types."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 3,
+    "text": "Reach proficiency 50 with 3 weapon types."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 7,
+    "text": "Reach proficiency 50 with 7 weapon types."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 14,
+    "text": "Reach proficiency 50 with 14 weapon types."
+   }
+  ],
+  "title": "the Armoury"
+ },
+ {
+  "id": "deed_skill_mastery",
+  "kind": "deed",
+  "category": "combat",
+  "name": "Well Practised",
+  "desc": "Reach mastery 20 in {n} skills.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Reach mastery 20 in 1 skills."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 5,
+    "text": "Reach mastery 20 in 5 skills."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 12,
+    "text": "Reach mastery 20 in 12 skills."
+   }
+  ],
+  "title": "the Practised"
+ },
+ {
+  "id": "deed_waypoints",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Pathfinder",
+  "desc": "Unlock {n} waypoints.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 5,
+    "text": "Unlock 5 waypoints."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 15,
+    "text": "Unlock 15 waypoints."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 25,
+    "text": "Unlock 25 waypoints."
+   }
+  ],
+  "title": "the Pathfinder"
+ },
+ {
+  "id": "deed_zones",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Map Maker",
+  "desc": "Clear {n} different zones.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 5,
+    "text": "Clear 5 different zones."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 15,
+    "text": "Clear 15 different zones."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 25,
+    "text": "Clear 25 different zones."
+   }
+  ],
+  "title": "the Cartographer"
+ },
+ {
+  "id": "deed_secrets",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Secret Keeper",
+  "desc": "Find {n} secrets.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Find 1 secrets."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 5,
+    "text": "Find 5 secrets."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 12,
+    "text": "Find 12 secrets."
+   }
+  ],
+  "title": "the Nosy"
+ },
+ {
+  "id": "deed_tenth_lantern",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "The Tenth Lantern",
+  "desc": "Light the Tenth Lantern.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Light the Tenth Lantern."
+   }
+  ],
+  "title": "the Moonlit"
+ },
+ {
+  "id": "deed_mailbox",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Pen Pal",
+  "desc": "Read {n} letters from the Answering Mailbox.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Read 1 letters from the Answering Mailbox."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 3,
+    "text": "Read 3 letters from the Answering Mailbox."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 6,
+    "text": "Read 6 letters from the Answering Mailbox."
+   }
+  ],
+  "title": "the Pen Pal"
+ },
+ {
+  "id": "deed_tea_party",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Snuffed, but Lovely",
+  "desc": "Sit through the Tea Party behind the waterfall.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Sit through the Tea Party behind the waterfall."
+   }
+  ],
+  "title": "the Well-Mannered"
+ },
+ {
+  "id": "deed_candy_crypt",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Sweet Tooth",
+  "desc": "Find the Candy Crypt.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Find the Candy Crypt."
+   }
+  ],
+  "title": "the Sweet Tooth"
+ },
+ {
+  "id": "deed_magpies_hoard",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Shiny Snooper",
+  "desc": "Enter the Magpie's Hoard {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Enter the Magpie's Hoard 1 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Enter the Magpie's Hoard 10 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Enter the Magpie's Hoard 50 times."
+   }
+  ],
+  "title": "the Glittering"
+ },
+ {
+  "id": "deed_frog",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Very Patient Frog",
+  "desc": "Meet the Frog That Never Jumped.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Meet the Frog That Never Jumped."
+   }
+  ],
+  "title": "the Patient"
+ },
+ {
+  "id": "deed_owlcrow_riddles",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Riddle Me Right",
+  "desc": "Answer {n} Owlcrow riddles.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 5,
+    "text": "Answer 5 Owlcrow riddles."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Answer 25 Owlcrow riddles."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Answer 50 Owlcrow riddles."
+   }
+  ],
+  "title": "the Riddle-Wise"
+ },
+ {
+  "id": "deed_dont_know",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "I Don't Know",
+  "desc": "Give the only right answer to the last riddle.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Give the only right answer to the last riddle."
+   }
+  ],
+  "title": "the Honest"
+ },
+ {
+  "id": "deed_stillness",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Very Still Indeed",
+  "desc": "Earn the Echo of Stillness.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Earn the Echo of Stillness."
+   }
+  ],
+  "title": "the Unmoving"
+ },
+ {
+  "id": "deed_mount_miles",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Saddle Sore",
+  "desc": "Ride {n} metres on mounts.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1000,
+    "text": "Ride 1,000 metres on mounts."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10000,
+    "text": "Ride 10,000 metres on mounts."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 100000,
+    "text": "Ride 100,000 metres on mounts."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 1000000,
+    "text": "Ride 1,000,000 metres on mounts."
+   }
+  ],
+  "title": "the Rider"
+ },
+ {
+  "id": "deed_hearth",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "There's No Place",
+  "desc": "Use the Homeward Wick {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Use the Homeward Wick 10 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 100,
+    "text": "Use the Homeward Wick 100 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 1000,
+    "text": "Use the Homeward Wick 1,000 times."
+   }
+  ],
+  "title": "the Homebody"
+ },
+ {
+  "id": "deed_journal",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Page Turner",
+  "desc": "Collect {n} journal pages.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 5,
+    "text": "Collect 5 journal pages."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Collect 10 journal pages."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 20,
+    "text": "Collect 20 journal pages."
+   }
+  ],
+  "title": "the Bookish"
+ },
+ {
+  "id": "deed_deepdark_runs",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Deep Diver",
+  "desc": "Finish {n} Deepdark runs.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Finish 10 Deepdark runs."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 100,
+    "text": "Finish 100 Deepdark runs."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 1000,
+    "text": "Finish 1,000 Deepdark runs."
+   }
+  ],
+  "title": "the Deep Diver"
+ },
+ {
+  "id": "deed_lightwells",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Well Done",
+  "desc": "Finish {n} Lightwells.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Finish 10 Lightwells."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 100,
+    "text": "Finish 100 Lightwells."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 1000,
+    "text": "Finish 1,000 Lightwells."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 5000,
+    "text": "Finish 5,000 Lightwells."
+   }
+  ],
+  "title": "the Well-Done"
+ },
+ {
+  "id": "deed_lightwell_trials",
+  "kind": "deed",
+  "category": "exploration",
+  "name": "Trial Lamp",
+  "desc": "Reach Lightwell Trial depth {n}.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Reach Lightwell Trial depth 10."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Reach Lightwell Trial depth 25."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Reach Lightwell Trial depth 50."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 100,
+    "text": "Reach Lightwell Trial depth 100."
+   }
+  ],
+  "title": "the Unfathomable"
+ },
+ {
+  "id": "deed_crafts",
+  "kind": "deed",
+  "category": "crafting",
+  "name": "Busy Hands",
+  "desc": "Craft {n} items.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Craft 10 items."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 100,
+    "text": "Craft 100 items."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 1000,
+    "text": "Craft 1,000 items."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 10000,
+    "text": "Craft 10,000 items."
+   }
+  ],
+  "title": "the Handy"
+ },
+ {
+  "id": "deed_upgrade_15",
+  "kind": "deed",
+  "category": "crafting",
+  "name": "Polished to +15",
+  "desc": "Upgrade {n} items to +15.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Upgrade 1 items to +15."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 5,
+    "text": "Upgrade 5 items to +15."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 12,
+    "text": "Upgrade 12 items to +15."
+   }
+  ],
+  "title": "the Polished"
+ },
+ {
+  "id": "deed_kindle",
+  "kind": "deed",
+  "category": "crafting",
+  "name": "Kindler",
+  "desc": "Spend {n} Kindle.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Spend 100 Kindle."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Spend 1,000 Kindle."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Spend 10,000 Kindle."
+   }
+  ],
+  "title": "the Kindler"
+ },
+ {
+  "id": "deed_salvage",
+  "kind": "deed",
+  "category": "crafting",
+  "name": "Let It Go",
+  "desc": "Salvage {n} items.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Salvage 100 items."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000,
+    "text": "Salvage 1,000 items."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10000,
+    "text": "Salvage 10,000 items."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 100000,
+    "text": "Salvage 100,000 items."
+   }
+  ],
+  "title": "the Unattached"
+ },
+ {
+  "id": "deed_smith_50",
+  "kind": "deed",
+  "category": "crafting",
+  "name": "Master Smith",
+  "desc": "Reach Smith profession level {n}.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Reach Smith profession level 10."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Reach Smith profession level 25."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Reach Smith profession level 50."
+   }
+  ],
+  "title": "the Smith"
+ },
+ {
+  "id": "deed_alchemist_50",
+  "kind": "deed",
+  "category": "crafting",
+  "name": "Master Alchemist",
+  "desc": "Reach Alchemist profession level {n}.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Reach Alchemist profession level 10."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Reach Alchemist profession level 25."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Reach Alchemist profession level 50."
+   }
+  ],
+  "title": "the Fizzy"
+ },
+ {
+  "id": "deed_jeweler_50",
+  "kind": "deed",
+  "category": "crafting",
+  "name": "Master Jeweler",
+  "desc": "Reach Jeweler profession level {n}.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Reach Jeweler profession level 10."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Reach Jeweler profession level 25."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Reach Jeweler profession level 50."
+   }
+  ],
+  "title": "the Sparkly"
+ },
+ {
+  "id": "deed_runecarver_50",
+  "kind": "deed",
+  "category": "crafting",
+  "name": "Master Runecarver",
+  "desc": "Reach Runecarver profession level {n}.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Reach Runecarver profession level 10."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Reach Runecarver profession level 25."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Reach Runecarver profession level 50."
+   }
+  ],
+  "title": "the Scribbler"
+ },
+ {
+  "id": "deed_cauldron",
+  "kind": "deed",
+  "category": "crafting",
+  "name": "Cauldron Cook",
+  "desc": "Discover {n} Cauldron recipes.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Discover 1 Cauldron recipes."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Discover 10 Cauldron recipes."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 30,
+    "text": "Discover 30 Cauldron recipes."
+   }
+  ],
+  "title": "the Stirrer"
+ },
+ {
+  "id": "deed_gems",
+  "kind": "deed",
+  "category": "crafting",
+  "name": "Gem Setter",
+  "desc": "Socket {n} gems.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Socket 10 gems."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 100,
+    "text": "Socket 100 gems."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 1000,
+    "text": "Socket 1,000 gems."
+   }
+  ],
+  "title": "the Gem Setter"
+ },
+ {
+  "id": "deed_named",
+  "kind": "deed",
+  "category": "crafting",
+  "name": "Impossible Things",
+  "desc": "Craft {n} Named items.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Craft 1 Named items."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 3,
+    "text": "Craft 3 Named items."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 5,
+    "text": "Craft 5 Named items."
+   }
+  ],
+  "title": "the Impossible"
+ },
+ {
+  "id": "deed_uniques",
+  "kind": "deed",
+  "category": "collection",
+  "name": "Crown Collector",
+  "desc": "Find {n} different Unique items.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Find 1 different Unique items."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Find 10 different Unique items."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 30,
+    "text": "Find 30 different Unique items."
+   }
+  ],
+  "title": "the Crowned"
+ },
+ {
+  "id": "deed_legendaries",
+  "kind": "deed",
+  "category": "collection",
+  "name": "Orange Glow",
+  "desc": "Find {n} Legendary items.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Find 1 Legendary items."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 50,
+    "text": "Find 50 Legendary items."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 500,
+    "text": "Find 500 Legendary items."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 5000,
+    "text": "Find 5,000 Legendary items."
+   }
+  ],
+  "title": "the Radiant"
+ },
+ {
+  "id": "deed_mythics",
+  "kind": "deed",
+  "category": "collection",
+  "name": "Red-Hot",
+  "desc": "Find {n} Mythic items.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Find 1 Mythic items."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Find 10 Mythic items."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 100,
+    "text": "Find 100 Mythic items."
+   }
+  ],
+  "title": "the Mythical"
+ },
+ {
+  "id": "deed_codex",
+  "kind": "deed",
+  "category": "collection",
+  "name": "Codex Keeper",
+  "desc": "Fill {n} Codex entries.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Fill 10 Codex entries."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 50,
+    "text": "Fill 50 Codex entries."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 150,
+    "text": "Fill 150 Codex entries."
+   }
+  ],
+  "title": "the Archivist"
+ },
+ {
+  "id": "deed_bestiary",
+  "kind": "deed",
+  "category": "collection",
+  "name": "Who's Who",
+  "desc": "Meet {n} kinds of Snuffed.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Meet 10 kinds of Snuffed."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Meet 25 kinds of Snuffed."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 40,
+    "text": "Meet 40 kinds of Snuffed."
+   }
+  ],
+  "title": "the Naturalist"
+ },
+ {
+  "id": "deed_pets",
+  "kind": "deed",
+  "category": "collection",
+  "name": "Pet Parade",
+  "desc": "Befriend {n} pets.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Befriend 1 pets."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 5,
+    "text": "Befriend 5 pets."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 15,
+    "text": "Befriend 15 pets."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 30,
+    "text": "Befriend 30 pets."
+   }
+  ],
+  "title": "the Pet Parent"
+ },
+ {
+  "id": "deed_pet_30",
+  "kind": "deed",
+  "category": "collection",
+  "name": "Best Friends",
+  "desc": "Raise {n} pets to level 30.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Raise 1 pets to level 30."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 5,
+    "text": "Raise 5 pets to level 30."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 15,
+    "text": "Raise 15 pets to level 30."
+   }
+  ],
+  "title": "the Best Friend"
+ },
+ {
+  "id": "deed_mounts",
+  "kind": "deed",
+  "category": "collection",
+  "name": "Stable Hand",
+  "desc": "Own {n} mounts.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Own 1 mounts."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 5,
+    "text": "Own 5 mounts."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10,
+    "text": "Own 10 mounts."
+   }
+  ],
+  "title": "the Stable Hand"
+ },
+ {
+  "id": "deed_eggs",
+  "kind": "deed",
+  "category": "collection",
+  "name": "Egg-cellent",
+  "desc": "Hatch {n} mystery eggs.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Hatch 1 mystery eggs."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Hatch 10 mystery eggs."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Hatch 50 mystery eggs."
+   }
+  ],
+  "title": "the Egg-cellent"
+ },
+ {
+  "id": "deed_hats",
+  "kind": "deed",
+  "category": "collection",
+  "name": "Hat Trick",
+  "desc": "Own {n} cosmetic hats.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 3,
+    "text": "Own 3 cosmetic hats."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Own 10 cosmetic hats."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 25,
+    "text": "Own 25 cosmetic hats."
+   }
+  ],
+  "title": "the Well-Hatted"
+ },
+ {
+  "id": "deed_act1",
+  "kind": "deed",
+  "category": "story",
+  "name": "Morning Bell",
+  "desc": "Rekindle the Sunken Bellringer.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Rekindle the Sunken Bellringer."
+   }
+  ],
+  "title": "of Wickmire"
+ },
+ {
+  "id": "deed_act2",
+  "kind": "deed",
+  "category": "story",
+  "name": "Shadows Home",
+  "desc": "Rekindle Mother Bark.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Rekindle Mother Bark."
+   }
+  ],
+  "title": "of Whisperwood"
+ },
+ {
+  "id": "deed_act3",
+  "kind": "deed",
+  "category": "story",
+  "name": "The Mountain Sings",
+  "desc": "Rekindle the Great Echo.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Rekindle the Great Echo."
+   }
+  ],
+  "title": "of the Echo Mines"
+ },
+ {
+  "id": "deed_act4",
+  "kind": "deed",
+  "category": "story",
+  "name": "To All Who Stayed",
+  "desc": "Rekindle the King Who Forgot His Name.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Rekindle the King Who Forgot His Name."
+   }
+  ],
+  "title": "of Rimehall"
+ },
+ {
+  "id": "deed_act5",
+  "kind": "deed",
+  "category": "story",
+  "name": "Carry the Light",
+  "desc": "Share your light with the Grey Guest.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Share your light with the Grey Guest."
+   }
+  ],
+  "title": "the Wickwright"
+ },
+ {
+  "id": "deed_pell_name",
+  "kind": "deed",
+  "category": "story",
+  "name": "Say My Name",
+  "desc": "Find all five scraps of Pell's name before Act V.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Find all five scraps of Pell's name before Act V."
+   }
+  ],
+  "title": "the Name-Finder"
+ },
+ {
+  "id": "deed_chapters",
+  "kind": "deed",
+  "category": "story",
+  "name": "Chapter and Verse",
+  "desc": "Complete {n} main quest chapters.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Complete 10 main quest chapters."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Complete 25 main quest chapters."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 43,
+    "text": "Complete 43 main quest chapters."
+   }
+  ],
+  "title": "the Storied"
+ },
+ {
+  "id": "deed_side_quests",
+  "kind": "deed",
+  "category": "story",
+  "name": "Helping Hand",
+  "desc": "Complete {n} side quests.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Complete 10 side quests."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 40,
+    "text": "Complete 40 side quests."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 90,
+    "text": "Complete 90 side quests."
+   }
+  ],
+  "title": "the Helpful"
+ },
+ {
+  "id": "deed_bounties",
+  "kind": "deed",
+  "category": "story",
+  "name": "Bounty Hunter",
+  "desc": "Complete {n} bounties.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Complete 10 bounties."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 100,
+    "text": "Complete 100 bounties."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 1000,
+    "text": "Complete 1,000 bounties."
+   }
+  ],
+  "title": "the Reliable"
+ },
+ {
+  "id": "deed_all_classes",
+  "kind": "deed",
+  "category": "story",
+  "name": "Every Kind of Light",
+  "desc": "Finish the story with {n} different classes.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 2,
+    "text": "Finish the story with 2 different classes."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 3,
+    "text": "Finish the story with 3 different classes."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 5,
+    "text": "Finish the story with 5 different classes."
+   }
+  ],
+  "title": "the Many-Wicks"
+ },
+ {
+  "id": "deed_brightness_200",
+  "kind": "deed",
+  "category": "story",
+  "name": "As Bright as the Lantern",
+  "desc": "Reach Brightness {n}.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Reach Brightness 100."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 150,
+    "text": "Reach Brightness 150."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 200,
+    "text": "Reach Brightness 200."
+   }
+  ],
+  "title": "the Brightest"
+ },
+ {
+  "id": "deed_nightfall",
+  "kind": "deed",
+  "category": "difficulty",
+  "name": "After Dark",
+  "desc": "Finish the story on Nightfall.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Finish the story on Nightfall."
+   }
+  ],
+  "title": "the Nightfaller"
+ },
+ {
+  "id": "deed_abyss",
+  "kind": "deed",
+  "category": "difficulty",
+  "name": "Deep End",
+  "desc": "Finish the story on Abyss.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Finish the story on Abyss."
+   }
+  ],
+  "title": "the Abyssal"
+ },
+ {
+  "id": "deed_eclipse",
+  "kind": "deed",
+  "category": "difficulty",
+  "name": "Eclipsed",
+  "desc": "Rekindle an act boss on Eclipse {n}.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Rekindle an act boss on Eclipse 1."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 5,
+    "text": "Rekindle an act boss on Eclipse 5."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 10,
+    "text": "Rekindle an act boss on Eclipse 10."
+   }
+  ],
+  "title": "the Eclipse"
+ },
+ {
+  "id": "deed_bellringer_x",
+  "kind": "deed",
+  "category": "bosses",
+  "name": "Ring-a-Ding",
+  "desc": "Rekindle the Sunken Bellringer {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Rekindle the Sunken Bellringer 10 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 50,
+    "text": "Rekindle the Sunken Bellringer 50 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 250,
+    "text": "Rekindle the Sunken Bellringer 250 times."
+   }
+  ],
+  "title": "the Bell Friend"
+ },
+ {
+  "id": "deed_bark_x",
+  "kind": "deed",
+  "category": "bosses",
+  "name": "Jar Opener",
+  "desc": "Rekindle Mother Bark {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Rekindle Mother Bark 10 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 50,
+    "text": "Rekindle Mother Bark 50 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 250,
+    "text": "Rekindle Mother Bark 250 times."
+   }
+  ],
+  "title": "the Jar Opener"
+ },
+ {
+  "id": "deed_echo_x",
+  "kind": "deed",
+  "category": "bosses",
+  "name": "Echo Echo",
+  "desc": "Rekindle the Great Echo {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Rekindle the Great Echo 10 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 50,
+    "text": "Rekindle the Great Echo 50 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 250,
+    "text": "Rekindle the Great Echo 250 times."
+   }
+  ],
+  "title": "the Echoing"
+ },
+ {
+  "id": "deed_king_x",
+  "kind": "deed",
+  "category": "bosses",
+  "name": "Royal Reminder",
+  "desc": "Rekindle the King Who Forgot {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Rekindle the King Who Forgot 10 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 50,
+    "text": "Rekindle the King Who Forgot 50 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 250,
+    "text": "Rekindle the King Who Forgot 250 times."
+   }
+  ],
+  "title": "the Reminder"
+ },
+ {
+  "id": "deed_guest_x",
+  "kind": "deed",
+  "category": "bosses",
+  "name": "Kettle's On",
+  "desc": "Share your light with the Grey Guest {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Share your light with the Grey Guest 10 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 50,
+    "text": "Share your light with the Grey Guest 50 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 250,
+    "text": "Share your light with the Grey Guest 250 times."
+   }
+  ],
+  "title": "the Guest's Friend"
+ },
+ {
+  "id": "deed_long_shadow",
+  "kind": "deed",
+  "category": "bosses",
+  "name": "Shadow Scatterer",
+  "desc": "Rekindle the Long Shadow {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Rekindle the Long Shadow 1 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Rekindle the Long Shadow 10 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Rekindle the Long Shadow 50 times."
+   }
+  ],
+  "title": "the Shadow Scatterer"
+ },
+ {
+  "id": "deed_no_hit_boss",
+  "kind": "deed",
+  "category": "bosses",
+  "name": "Untouched",
+  "desc": "Rekindle an act boss without being hit.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Rekindle an act boss without being hit."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 5,
+    "text": "Rekindle an act boss without being hit."
+   }
+  ],
+  "title": "the Untouchable"
+ },
+ {
+  "id": "deed_boss_fragments",
+  "kind": "deed",
+  "category": "bosses",
+  "name": "Bits and Pieces",
+  "desc": "Collect {n} boss fragments.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Collect 10 boss fragments."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 100,
+    "text": "Collect 100 boss fragments."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 1000,
+    "text": "Collect 1,000 boss fragments."
+   }
+  ],
+  "title": "the Collector"
+ },
+ {
+  "id": "deed_gold",
+  "kind": "deed",
+  "category": "economy",
+  "name": "Pocketful",
+  "desc": "Collect {n} gold.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10000,
+    "text": "Collect 10,000 gold."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 1000000,
+    "text": "Collect 1,000,000 gold."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 100000000,
+    "text": "Collect 100,000,000 gold."
+   }
+  ],
+  "title": "the Well-Off"
+ },
+ {
+  "id": "deed_sell",
+  "kind": "deed",
+  "category": "economy",
+  "name": "Pocket Polly's Friend",
+  "desc": "Sell {n} items to traders.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 50,
+    "text": "Sell 50 items to traders."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 500,
+    "text": "Sell 500 items to traders."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 5000,
+    "text": "Sell 5,000 items to traders."
+   }
+  ],
+  "title": "the Haggler"
+ },
+ {
+  "id": "deed_curio_cart",
+  "kind": "deed",
+  "category": "economy",
+  "name": "Curious",
+  "desc": "Buy {n} mystery items from the Curio Cart.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Buy 1 mystery items from the Curio Cart."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Buy 25 mystery items from the Curio Cart."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 250,
+    "text": "Buy 250 mystery items from the Curio Cart."
+   }
+  ],
+  "title": "the Curious"
+ },
+ {
+  "id": "deed_hushmarks",
+  "kind": "deed",
+  "category": "economy",
+  "name": "Hushmark Hoarder",
+  "desc": "Find {n} Hushmarks.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Find 1 Hushmarks."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 50,
+    "text": "Find 50 Hushmarks."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 500,
+    "text": "Find 500 Hushmarks."
+   }
+  ],
+  "title": "the Hushmark Hoarder"
+ },
+ {
+  "id": "deed_respec",
+  "kind": "deed",
+  "category": "economy",
+  "name": "Changed My Mind",
+  "desc": "Reset your skills {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Reset your skills 1 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Reset your skills 10 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Reset your skills 50 times."
+   }
+  ],
+  "title": "the Undecided"
+ },
+ {
+  "id": "deed_hushfalls",
+  "kind": "deed",
+  "category": "hushfalls",
+  "name": "Tear Mender",
+  "desc": "Close {n} Hushfalls.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Close 1 Hushfalls."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Close 25 Hushfalls."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 250,
+    "text": "Close 250 Hushfalls."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 2500,
+    "text": "Close 2,500 Hushfalls."
+   }
+  ],
+  "title": "the Tear Mender"
+ },
+ {
+  "id": "deed_hushfall_invasion",
+  "kind": "deed",
+  "category": "hushfalls",
+  "name": "Wave Goodbye",
+  "desc": "Finish {n} Invasion Hushfalls.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 5,
+    "text": "Finish 5 Invasion Hushfalls."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 50,
+    "text": "Finish 50 Invasion Hushfalls."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 500,
+    "text": "Finish 500 Invasion Hushfalls."
+   }
+  ],
+  "title": "the Unbothered"
+ },
+ {
+  "id": "deed_hushfall_swarm",
+  "kind": "deed",
+  "category": "hushfalls",
+  "name": "Treasure Swarm",
+  "desc": "Catch every imp in {n} Treasure Swarms.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Catch every imp in 1 Treasure Swarms."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Catch every imp in 10 Treasure Swarms."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 100,
+    "text": "Catch every imp in 100 Treasure Swarms."
+   }
+  ],
+  "title": "the Swarm Catcher"
+ },
+ {
+  "id": "deed_hushfall_wisp",
+  "kind": "deed",
+  "category": "hushfalls",
+  "name": "Wisp Walker",
+  "desc": "Guide {n} Lost Wisps to safety.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 5,
+    "text": "Guide 5 Lost Wisps to safety."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 50,
+    "text": "Guide 50 Lost Wisps to safety."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 500,
+    "text": "Guide 500 Lost Wisps to safety."
+   }
+  ],
+  "title": "the Wisp Walker"
+ },
+ {
+  "id": "deed_hushfall_duel",
+  "kind": "deed",
+  "category": "hushfalls",
+  "name": "Me, Myself and Light",
+  "desc": "Win {n} Echo Duels.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Win 1 Echo Duels."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 25,
+    "text": "Win 25 Echo Duels."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 250,
+    "text": "Win 250 Echo Duels."
+   }
+  ],
+  "title": "the Unmirrored"
+ },
+ {
+  "id": "deed_hushfall_cursed",
+  "kind": "deed",
+  "category": "hushfalls",
+  "name": "Curse Shrugger",
+  "desc": "Survive {n} Cursed Shrines.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 5,
+    "text": "Survive 5 Cursed Shrines."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 50,
+    "text": "Survive 50 Cursed Shrines."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 500,
+    "text": "Survive 500 Cursed Shrines."
+   }
+  ],
+  "title": "the Unjinxed"
+ },
+ {
+  "id": "deed_last_flame_60",
+  "kind": "deed",
+  "category": "last_flame",
+  "name": "One Bright Flame",
+  "desc": "Reach level {n} with a Last Flame hero.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 30,
+    "text": "Reach level 30 with a Last Flame hero."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 60,
+    "text": "Reach level 60 with a Last Flame hero."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 100,
+    "text": "Reach level 100 with a Last Flame hero."
+   },
+   {
+    "tier": 4,
+    "tier_name": "Beacon",
+    "count": 200,
+    "text": "Reach level 200 with a Last Flame hero."
+   }
+  ],
+  "title": "the Everburning"
+ },
+ {
+  "id": "deed_last_flame_story",
+  "kind": "deed",
+  "category": "last_flame",
+  "name": "Never Went Out",
+  "desc": "Finish the story with a Last Flame hero.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Finish the story with a Last Flame hero."
+   }
+  ],
+  "title": "the Unsnuffed"
+ },
+ {
+  "id": "deed_hall_of_embers",
+  "kind": "deed",
+  "category": "last_flame",
+  "name": "Remembered",
+  "desc": "Visit the Hall of Embers.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Visit the Hall of Embers."
+   }
+  ],
+  "title": "the Rememberer of Heroes"
+ },
+ {
+  "id": "deed_pet_the_cat",
+  "kind": "deed",
+  "category": "kindness",
+  "name": "Gentle Hands",
+  "desc": "Pet the grey cat on a full-moon night.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Pet the grey cat on a full-moon night."
+   }
+  ],
+  "title": "the Cat's Favourite"
+ },
+ {
+  "id": "deed_bran_moth",
+  "kind": "deed",
+  "category": "kindness",
+  "name": "Moth Diplomat",
+  "desc": "Introduce Big Bran to a friendly moth.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Introduce Big Bran to a friendly moth."
+   }
+  ],
+  "title": "the Diplomat"
+ },
+ {
+  "id": "deed_rested",
+  "kind": "deed",
+  "category": "kindness",
+  "name": "Well Rested",
+  "desc": "Come back to a full Rested Glow {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Come back to a full Rested Glow 1 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Come back to a full Rested Glow 10 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 50,
+    "text": "Come back to a full Rested Glow 50 times."
+   }
+  ],
+  "title": "the Well-Rested"
+ },
+ {
+  "id": "deed_stop_at_summary",
+  "kind": "deed",
+  "category": "kindness",
+  "name": "Good Place to Rest",
+  "desc": "Choose 'Return to town' on {n} zone summaries.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 10,
+    "text": "Choose 'Return to town' on 10 zone summaries."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 100,
+    "text": "Choose 'Return to town' on 100 zone summaries."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 500,
+    "text": "Choose 'Return to town' on 500 zone summaries."
+   }
+  ],
+  "title": "the Sensible"
+ },
+ {
+  "id": "deed_ada_sit",
+  "kind": "deed",
+  "category": "kindness",
+  "name": "Rule Three",
+  "desc": "Get Ada Brightly to sit down.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "",
+    "count": 1,
+    "text": "Get Ada Brightly to sit down."
+   }
+  ],
+  "title": "the Rule-Keeper"
+ },
+ {
+  "id": "deed_hat_on_nobody",
+  "kind": "deed",
+  "category": "kindness",
+  "name": "Nice Hat",
+  "desc": "Tip your hat to Nobody {n} times.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 1,
+    "text": "Tip your hat to Nobody 1 times."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10,
+    "text": "Tip your hat to Nobody 10 times."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 100,
+    "text": "Tip your hat to Nobody 100 times."
+   }
+  ],
+  "title": "the Hat-Tipper"
+ },
+ {
+  "id": "deed_thank_you",
+  "kind": "deed",
+  "category": "kindness",
+  "name": "Squeaky Thanks",
+  "desc": "Hear {n} rekindled Snuffed squeak 'thank you'.",
+  "tiers": [
+   {
+    "tier": 1,
+    "tier_name": "Spark",
+    "count": 100,
+    "text": "Hear 100 rekindled Snuffed squeak 'thank you'."
+   },
+   {
+    "tier": 2,
+    "tier_name": "Glow",
+    "count": 10000,
+    "text": "Hear 10,000 rekindled Snuffed squeak 'thank you'."
+   },
+   {
+    "tier": 3,
+    "tier_name": "Flame",
+    "count": 1000000,
+    "text": "Hear 1,000,000 rekindled Snuffed squeak 'thank you'."
+   }
+  ],
+  "title": "the Thanked"
+ }
+]

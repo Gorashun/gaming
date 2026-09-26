@@ -1,0 +1,66 @@
+[
+ {
+  "id": "dev_inn",
+  "name": "Marta Wicksworth",
+  "role": "innkeeper",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Mage.glb",
+  "attachments": [
+   "Mage_Hat"
+  ],
+  "anim": "Idle",
+  "screen": "",
+  "barks": [
+   "Rest your wick, dear.",
+   "Soup's warm, the beds are warmer."
+  ],
+  "greeting": "Welcome to the Last Light Inn!"
+ },
+ {
+  "id": "dev_quest",
+  "name": "Old Tobble",
+  "role": "questgiver",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "Barbarian_Hat"
+  ],
+  "anim": "Idle",
+  "screen": "quests",
+  "barks": [
+   "Bones in the graves again...",
+   "Could use a brave wick."
+  ],
+  "quest_ids": [
+   "dev_q_talk"
+  ]
+ },
+ {
+  "id": "dev_smith",
+  "name": "Brann Emberhand",
+  "role": "smith",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Barbarian.glb",
+  "attachments": [
+   "2H_Axe"
+  ],
+  "anim": "2H_Melee_Idle",
+  "screen": "crafting",
+  "barks": [
+   "Hot iron, happy iron!"
+  ]
+ },
+ {
+  "id": "dev_pets",
+  "name": "Pip",
+  "role": "petkeeper",
+  "town": "a1_town",
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Rogue.glb",
+  "attachments": [],
+  "anim": "Idle",
+  "screen": "pets",
+  "barks": [
+   "They all glow when they're happy!"
+  ]
+ }
+]

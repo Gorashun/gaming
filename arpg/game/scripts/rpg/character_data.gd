@@ -55,6 +55,16 @@ var skill_mods = {}         # skill_id -> [option ids]
 var skill_xp = {}           # skill_id -> mastery xp toward next rank
 var skill_mastery = {}      # skill_id -> mastery rank
 var loadouts = []           # up to 3 saved builds: {name, skill_ranks, skill_bar, skill_mods, gear:{slot: uid}}
+var main_quest = {}         # {chapter, objective, progress, done:[chapter ids]}
+var deeds = {}              # deed_id -> tiers reached
+var titles = []
+var title = ""
+var cosmetics_owned = {}    # slot -> [values]
+var cosmetics = {}          # slot -> equipped value (cape_tint, aura, name_frame, pet_hat, mount_tint)
+## Deed counters (alias of stats_tracking, which is what the save stores).
+var counters: Dictionary:
+	get:
+		return stats_tracking
 
 var stats = StatBlock.new()
 
@@ -113,6 +123,7 @@ func recalc() -> void:
 				stats.set_source("skillmod:%s:%s" % [sid, opt.get("id", "")], opt.stats)
 	stats.set_source("mastery", SkillMastery.stat_bonuses(self))
 	stats.set_source("pet", Pets.stat_bonuses(self))
+	stats.set_source("deeds", Deeds.stat_bonuses(self))
 	# Primary attribute conversions
 	var conv: Dictionary = Content.get_rec("config", "attributes").get("conversions", {})
 	var derived = {}
@@ -179,8 +190,9 @@ func spend_materials(cost: Dictionary) -> void:
 	for k in cost:
 		materials[k] = int(materials.get(k, 0)) - int(cost[k])
 
+## Increments a counter (hero + account) and completes deed tiers (see systems/deeds.gd).
 func track(key: String, n := 1) -> void:
-	stats_tracking[key] = int(stats_tracking.get(key, 0)) + n
+	Deeds.add(self, key, n)
 
 func to_dict() -> Dictionary:
 	return {
@@ -197,7 +209,8 @@ func to_dict() -> Dictionary:
 		"mounts_owned": mounts_owned, "active_mount": active_mount, "mount_fed_until": mount_fed_until,
 		"bound_town": bound_town, "hearth_ready_at": hearth_ready_at, "wick_charges": wick_charges,
 		"return_portal": return_portal, "quests": quests, "skill_mods": skill_mods, "skill_xp": skill_xp,
-		"skill_mastery": skill_mastery, "loadouts": loadouts,
+		"skill_mastery": skill_mastery, "loadouts": loadouts, "main_quest": main_quest, "deeds": deeds,
+		"titles": titles, "title": title, "cosmetics_owned": cosmetics_owned, "cosmetics": cosmetics,
 	}
 
 static func from_dict(d: Dictionary) -> CharacterData:
@@ -206,7 +219,7 @@ static func from_dict(d: Dictionary) -> CharacterData:
 	for k in d:
 		if k == "save_version":
 			continue
-		if k in c and k != "stats" and d[k] != null and typeof(d[k]) == typeof(c.get(k)):
+		if k in c and k != "stats" and k != "counters" and d[k] != null and typeof(d[k]) == typeof(c.get(k)):
 			c.set(k, d[k])
 		elif k in c and k != "stats" and d[k] != null and typeof(c.get(k)) in [TYPE_INT, TYPE_FLOAT] and typeof(d[k]) in [TYPE_INT, TYPE_FLOAT]:
 			c.set(k, d[k])
@@ -229,15 +242,16 @@ static func migrate(d: Dictionary) -> Dictionary:
 	var v = int(d.get("save_version", 1))
 	if v < 2:
 		# v2: proficiency, pets, mounts, travel, quests, skill mods/mastery, item upgrade levels
-		for k in ["proficiency", "pets_owned", "pet_state", "skill_mods", "skill_xp", "skill_mastery", "return_portal"]:
+		for k in ["proficiency", "pets_owned", "pet_state", "skill_mods", "skill_xp", "skill_mastery", "return_portal",
+				"main_quest", "deeds", "cosmetics_owned", "cosmetics"]:
 			if not (d.get(k) is Dictionary):
 				d[k] = {}
-		for k in ["mounts_owned", "loadouts"]:
+		for k in ["mounts_owned", "loadouts", "titles"]:
 			if not (d.get(k) is Array):
 				d[k] = []
 		if not (d.get("quests") is Dictionary):
 			d["quests"] = {"active": {}, "done": []}
-		for k in ["active_pet", "active_mount", "bound_town"]:
+		for k in ["active_pet", "active_mount", "bound_town", "title"]:
 			if not (d.get(k) is String):
 				d[k] = ""
 		d["hearth_ready_at"] = 0.0

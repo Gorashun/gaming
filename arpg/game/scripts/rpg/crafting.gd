@@ -98,6 +98,7 @@ static func craft(ch: CharacterData, recipe: Dictionary, item, affix_index := 0)
 				ch.stash.append(result)
 			msg = "Forged %s!" % result.name
 	gain_xp(ch, recipe.profession, int(recipe.get("xp", 10)))
+	ch.track("crafts")
 	ch.recalc()
 	Events.craft_completed.emit({"recipe": recipe.id, "item": result})
 	return {"ok": true, "message": msg, "item": result}

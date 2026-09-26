@@ -416,3 +416,11 @@ Twelve roles per town: smith, alchemist, jeweler, runecarver, trader, stash keep
 3. Does it avoid pressure (hurry, last chance, don't miss, limited, streak, expires)?
 4. Is every proper noun ours and BLOCKLIST-clean?
 5. Is there one small smile in it somewhere?
+
+---
+
+## 13. Related writing (v2.5)
+- **Main questline:** `MAIN_QUEST.md` / `game/content/base/main_quest_text.json` — 43 chapters (`mq_a1_01`…`mq_a5_08`, epilogue `mq_dd_01`…`mq_dd_06`).
+- **Side quests and bounty boards:** `NPC_DIALOGUE.md` / `npc_text.json` — 18–19 per act. Each town has a Bounty Board (`npc_a<n>_board`); bounties are repeatable, bank, and never expire.
+- **Pell after the ending:** `npc_a5_pell` lives at Lastlight Landing (appears only after Act V).
+- **Deeds (achievements) and titles:** `game/content/base/deeds_text.json`. Tier ladder: Spark → Glow → Flame → Beacon → Lantern. No time-limited deeds.

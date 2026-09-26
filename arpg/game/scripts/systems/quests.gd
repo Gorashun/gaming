@@ -147,6 +147,7 @@ static func turn_in(ch: CharacterData, id: String, world = null) -> Dictionary:
 	if r.has("skill_points"):
 		got.skill_points = int(r.skill_points)
 		ch.skill_points += got.skill_points
+	ch.track("quests_done")
 	ch.recalc()
 	Events.quest_completed.emit(id)
 	Events.inventory_changed.emit()

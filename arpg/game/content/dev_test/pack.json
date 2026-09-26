@@ -1,0 +1,30 @@
+{
+ "id": "dev_test",
+ "name": "Developer test data (dev only)",
+ "version": "0.1.0",
+ "format_version": 1,
+ "engine_min": "4.7",
+ "load_order": 99,
+ "dev_only": true,
+ "requires": [
+  "base"
+ ],
+ "tables": {
+  "classes": "classes.json",
+  "skills": "skills.json",
+  "item_bases": "item_bases.json",
+  "weapon_types": "weapon_types.json",
+  "pets": "pets.json",
+  "mounts": "mounts.json",
+  "npcs": "npcs.json",
+  "quests": "quests.json",
+  "starmap": "starmap.json",
+  "world_events": "world_events.json",
+  "vendors": "vendors.json",
+  "curio_offers": "curio_offers.json",
+  "materials": "materials.json",
+  "main_quest": "main_quest.json",
+  "main_quest_text": "main_quest_text.json",
+  "deeds": "deeds.json"
+ }
+}

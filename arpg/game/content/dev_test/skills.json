@@ -1,0 +1,121 @@
+[
+ {
+  "id": "dev_strike",
+  "name": "Dev Strike",
+  "class": "dev_tester",
+  "tags": [
+   "basic",
+   "melee"
+  ],
+  "cost": 0,
+  "cooldown": 0,
+  "anim": "1H_Melee_Attack_Chop",
+  "effects": [
+   {
+    "type": "melee_arc",
+    "radius": 2.3,
+    "angle": 120,
+    "mult": 1.0
+   }
+  ],
+  "unlock_level": 1,
+  "max_rank": 5
+ },
+ {
+  "id": "dev_nova",
+  "name": "Dev Nova",
+  "class": "dev_tester",
+  "tags": [
+   "area"
+  ],
+  "cost": 10,
+  "cooldown": 4,
+  "anim": "Spellcast_Raise",
+  "element": "holy",
+  "effects": [
+   {
+    "type": "nova",
+    "radius": 3.0,
+    "mult": 1.5
+   }
+  ],
+  "unlock_level": 1,
+  "max_rank": 5,
+  "modifiers": [
+   {
+    "rank": 2,
+    "options": [
+     {
+      "id": "dev_nova_wide",
+      "name": "Wide",
+      "patch": {
+       "0": {
+        "radius": "*1.5"
+       }
+      }
+     },
+     {
+      "id": "dev_nova_quick",
+      "name": "Quick",
+      "patch": {
+       "cooldown": 2
+      },
+      "stats": {
+       "cdr_pct": 5
+      }
+     },
+     {
+      "id": "dev_nova_twin",
+      "name": "Twin",
+      "patch": {
+       "effects+": {
+        "type": "nova",
+        "radius": 2.0,
+        "mult": 0.5,
+        "delay": 0.3
+       }
+      }
+     }
+    ]
+   },
+   {
+    "rank": 4,
+    "options": [
+     {
+      "id": "dev_nova_hot",
+      "name": "Hot",
+      "patch": {
+       "effects.0.element": "fire",
+       "effects.0.mult": "+0.5"
+      }
+     }
+    ]
+   }
+  ],
+  "mastery": {
+   "bonuses_per_rank": {
+    "damage_mult": 0.05,
+    "cooldown_mult": 0.02,
+    "area_mult": 0.02,
+    "crit_chance": 0.5
+   },
+   "milestones": [
+    {
+     "rank": 2,
+     "name": "Echoing Nova",
+     "stats": {
+      "life": 10
+     },
+     "patch": {
+      "effects+": {
+       "type": "nova",
+       "radius": 1.5,
+       "mult": 0.3,
+       "delay": 0.2
+      }
+     }
+    }
+   ]
+  }
+ }
+]

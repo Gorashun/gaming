@@ -1,0 +1,63 @@
+[
+ {
+  "id": "dev_wisp",
+  "name": "Dev Wisp",
+  "tint": "#9fe0ff",
+  "rarity": "magic",
+  "source": "drop",
+  "drop_chance": 0.02,
+  "max_level": 30,
+  "bonuses_per_level": {
+   "magic_find": 1.0,
+   "gold_find": 2.0,
+   "pickup_radius": 0.05
+  },
+  "perk": "fetch",
+  "perk_params": {
+   "radius": 9
+  },
+  "desc": "Fetches loot."
+ },
+ {
+  "id": "dev_digger",
+  "name": "Dev Digger",
+  "tint": "#d9a066",
+  "source": "quest",
+  "max_level": 30,
+  "bonuses_per_level": {
+   "material_find": 2.0
+  },
+  "perk": "dig",
+  "perk_params": {
+   "every": 3,
+   "chance": 1.0
+  }
+ },
+ {
+  "id": "dev_lucky",
+  "name": "Dev Clover",
+  "tint": "#7dff9a",
+  "source": "event",
+  "max_level": 30,
+  "bonuses_per_level": {
+   "xp_pct": 0.5
+  },
+  "perk": "lucky",
+  "perk_params": {
+   "pity_speed_pct": 20,
+   "per_level": 0
+  }
+ },
+ {
+  "id": "dev_glow",
+  "name": "Dev Glowbug",
+  "tint": "#fff1a8",
+  "source": "craft",
+  "max_level": 5,
+  "bonuses_per_level": {},
+  "perk": "glow",
+  "perk_params": {
+   "light_mult": 1.5
+  }
+ }
+]

@@ -1,0 +1,29 @@
+[
+ {
+  "id": "dev_curio_blade",
+  "name": "Mystery Dev Blade",
+  "category": {
+   "type": "dev_blade"
+  },
+  "price_hushmarks": 2,
+  "min_level": 1
+ },
+ {
+  "id": "dev_curio_chest",
+  "name": "Mystery Chest Armour",
+  "category": {
+   "slot": "chest"
+  },
+  "price_hushmarks": 3,
+  "min_level": 1
+ },
+ {
+  "id": "dev_curio_high",
+  "name": "Mystery Late Thing",
+  "category": {
+   "slot": "ring"
+  },
+  "price_hushmarks": 5,
+  "min_level": 50
+ }
+]

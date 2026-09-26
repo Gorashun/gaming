@@ -26,6 +26,8 @@ var _last_combat = -99.0
 var _mount_check = 0.0
 # Channel (hearth etc.)
 var _channel = {}                # {what, t, dur, cb}
+var _walked = 0.0
+var _aura: CPUParticles3D
 
 func setup(c: CharacterData) -> void:
 	ch = c
@@ -135,6 +137,58 @@ func refresh_gear() -> void:
 			if Items.rarity_index(str(it.get("rarity", "common"))) >= 4:
 				_tint_node(prop, Items.rarity_color(it.rarity), 0.18)
 	_apply_armor_tints(bones)
+	_apply_cosmetics(bones)
+
+const AURA_COLORS := {"ember": "#ff9a3c", "frost": "#8fd8ff", "holy": "#fff1a8", "shadow": "#a07bff", "verdant": "#7dff9a", "rose": "#ff8fc8"}
+
+static func cosmetic_color(v, fallback := Color(1, 0.85, 0.5)) -> Color:
+	var sv = str(v)
+	if AURA_COLORS.has(sv):
+		return Color(AURA_COLORS[sv])
+	if sv.begins_with("#") or sv.is_valid_html_color():
+		return Color(sv)
+	return fallback
+
+## Deed cosmetics: cape tint (overrides the rarity tint), aura ring at the feet.
+func _apply_cosmetics(bones: Dictionary) -> void:
+	var cos: Dictionary = ch.cosmetics
+	if cos.has("cape_tint") and bones.has("chest"):
+		_tint_node(bones["chest"], cosmetic_color(cos.cape_tint), 0.6)
+	if _aura and is_instance_valid(_aura):
+		_aura.queue_free()
+		_aura = null
+	if cos.has("aura") and str(cos.aura) != "":
+		var col = cosmetic_color(cos.aura)
+		_aura = CPUParticles3D.new()
+		_aura.amount = 20
+		_aura.lifetime = 1.2
+		_aura.emission_shape = CPUParticles3D.EMISSION_SHAPE_RING
+		_aura.emission_ring_axis = Vector3.UP
+		_aura.emission_ring_radius = 0.7
+		_aura.emission_ring_inner_radius = 0.55
+		_aura.emission_ring_height = 0.05
+		_aura.direction = Vector3.UP
+		_aura.spread = 10.0
+		_aura.gravity = Vector3(0, 0.8, 0)
+		_aura.initial_velocity_min = 0.2
+		_aura.initial_velocity_max = 0.5
+		_aura.scale_amount_min = 0.04
+		_aura.scale_amount_max = 0.08
+		var sm = SphereMesh.new()
+		sm.radius = 0.5
+		sm.height = 1.0
+		sm.radial_segments = 4
+		sm.rings = 2
+		var m = StandardMaterial3D.new()
+		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		m.albedo_color = col
+		m.emission_enabled = true
+		m.emission = col
+		m.emission_energy_multiplier = 2.5
+		sm.material = m
+		_aura.mesh = sm
+		_aura.position.y = 0.05
+		add_child(_aura)
 
 func _apply_armor_tints(bones: Dictionary) -> void:
 	for mi in _tinted:
@@ -153,6 +207,12 @@ func _apply_armor_tints(bones: Dictionary) -> void:
 
 func _tint_node(n: Node, col: Color, amount: float) -> void:
 	for mi in n.find_children("*", "MeshInstance3D", true, false):
+		var mo = (mi as MeshInstance3D).material_override
+		if mo is StandardMaterial3D:
+			var om: StandardMaterial3D = mo.duplicate()
+			om.albedo_color = om.albedo_color.lerp(col, amount)
+			(mi as MeshInstance3D).material_override = om
+			continue
 		var mesh: Mesh = (mi as MeshInstance3D).mesh
 		if mesh == null:
 			continue
@@ -195,8 +255,13 @@ func _physics_process(delta: float) -> void:
 		v = intent_move * move_speed * speed_mult()
 	var kb = _integrate_knockback(delta)
 	velocity = v + kb
+	var before = global_position
 	move_and_slide()
 	global_position.y = 0.0
+	_walked += Vector2(global_position.x - before.x, global_position.z - before.z).length()
+	if _walked >= 10.0:
+		ch.track("distance", int(_walked))
+		_walked -= float(int(_walked))
 	if intent_move.length() > 0.1 and can_act() and not anim_locked():
 		face_towards(global_position + intent_move)
 		play("Sit_Chair_Idle" if mounted and anim and anim.has_animation("Sit_Chair_Idle") else "Running_A", 0, clampf(speed_mult(), 0.8, 1.4))
@@ -305,6 +370,7 @@ func _process_casts() -> void:
 		anims = anims[randi() % anims.size()]
 	play(str(anims), lock, float(s.get("anim_speed", 1.3)) * speed, true)
 	Sfx.play(s.get("sfx", "swing"), -4.0)
+	ch.track("skills_cast")
 	Events.skill_cast.emit(req.skill)
 	var windup = float(s.get("windup", 0.12)) / speed
 	get_tree().create_timer(windup, false).timeout.connect(func():
@@ -371,6 +437,8 @@ func mount() -> bool:
 	ch.stats.set_source("mount", {"move_speed_pct": Mounts.speed_pct(ch)})
 	mount_visual = Mounts.make_visual(ch.active_mount)
 	add_child(mount_visual)
+	if ch.cosmetics.has("mount_tint"):
+		_tint_node(mount_visual, cosmetic_color(ch.cosmetics.mount_tint), 0.5)
 	mount_visual.rotation.y = 0.0
 	if model:
 		model.position.y = float(Mounts.rec(ch.active_mount).get("seat_height", 0.55))

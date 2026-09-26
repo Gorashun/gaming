@@ -4,33 +4,16 @@ extends RefCounted
 ## found, shared by every hero. Stored in user://account.json {"codex": {entry_id: {...}}}.
 ## A better roll of an already-known entry upgrades it. Entry ids: "power:<id>", "unique:<id>", "named:<id>".
 
-static var path := "user://account.json"
-static var _data = null
-
 static func _load() -> Dictionary:
-	if _data == null:
-		_data = {}
-		if FileAccess.file_exists(path):
-			var d = JSON.parse_string(FileAccess.get_file_as_string(path))
-			if d is Dictionary:
-				_data = d
-		if not (_data.get("codex") is Dictionary):
-			_data["codex"] = {}
-	return _data
+	return Account.data()
 
 static func _save() -> void:
-	var tmp = path + ".tmp"
-	var f = FileAccess.open(tmp, FileAccess.WRITE)
-	if f == null:
-		return
-	f.store_string(JSON.stringify(_load()))
-	f.close()
-	DirAccess.rename_absolute(tmp, path)
+	Account.mark_dirty()
+	Account.flush()
 
-## Test hook: point the codex at another file and drop the cache.
+## Test hook: point the account file elsewhere and drop the cache.
 static func use_path(p: String) -> void:
-	path = p
-	_data = null
+	Account.use_path(p)
 
 static func _quality(item: Dictionary) -> float:
 	var q = 0.0

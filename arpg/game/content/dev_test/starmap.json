@@ -1,0 +1,82 @@
+[
+ {
+  "id": "dev_s_start",
+  "name": "Dev First Star",
+  "kind": "star",
+  "start": true,
+  "links": [
+   "dev_s_b"
+  ],
+  "stats": {
+   "life": 10
+  },
+  "pos": [
+   0,
+   0
+  ]
+ },
+ {
+  "id": "dev_s_b",
+  "name": "Dev Star B",
+  "kind": "star",
+  "links": [
+   "dev_s_c"
+  ],
+  "stats": {
+   "might": 5
+  },
+  "pos": [
+   1,
+   0
+  ]
+ },
+ {
+  "id": "dev_s_c",
+  "name": "Dev Star C",
+  "kind": "star",
+  "links": [],
+  "stats": {
+   "might": 5
+  },
+  "pos": [
+   2,
+   0
+  ]
+ },
+ {
+  "id": "dev_s_far",
+  "name": "Dev Far Star",
+  "kind": "star",
+  "links": [],
+  "stats": {
+   "might": 50
+  },
+  "pos": [
+   9,
+   9
+  ]
+ },
+ {
+  "id": "dev_s_other",
+  "name": "Dev Other Class",
+  "kind": "star",
+  "start": true,
+  "class": "stargazer",
+  "links": [],
+  "stats": {
+   "wisdom": 5
+  }
+ },
+ {
+  "id": "dev_const",
+  "name": "Dev Constellation",
+  "kind": "constellation",
+  "nodes": [
+   "dev_s_start",
+   "dev_s_b"
+  ],
+  "bonus": {
+   "crit_chance": 3
+  }
+ }
+]

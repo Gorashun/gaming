@@ -1,0 +1,55 @@
+[
+ {
+  "id": "dev_tester",
+  "name": "Dev Tester",
+  "dev": true,
+  "model": "res://assets/thirdparty/kaykit/adventurers/characters/Knight.glb",
+  "attachments": [
+   "1H_Sword",
+   "Knight_Cape"
+  ],
+  "primary": "might",
+  "resource_name": "Glow",
+  "resource_regen": 5,
+  "resource_on_hit": 3,
+  "color": "#ffd27a",
+  "rim": "#ffd9a0",
+  "basic_attack": "dev_strike",
+  "base_stats": {
+   "might": 10,
+   "agility": 4,
+   "wisdom": 4,
+   "vitality": 10,
+   "life": 120,
+   "armor": 20,
+   "resource_max": 100
+  },
+  "per_level": {
+   "might": 2,
+   "life": 10
+  },
+  "start_skills": [
+   "dev_strike",
+   "dev_nova"
+  ],
+  "start_bar": [
+   "dev_nova",
+   "",
+   "",
+   ""
+  ],
+  "start_gear": [
+   "dev_blade_base"
+  ],
+  "pet_combat": true,
+  "affinities": {
+   "dev_blade": {
+    "damage_pct": 10,
+    "attack_speed_pct": 5
+   },
+   "sword": {
+    "damage_pct": 5
+   }
+  }
+ }
+]

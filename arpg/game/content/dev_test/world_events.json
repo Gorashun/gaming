@@ -1,0 +1,91 @@
+[
+ {
+  "id": "dev_invasion",
+  "name": "Hush Invasion",
+  "kind": "invasion",
+  "weight": 10,
+  "announce": "A Hushfall tears open!",
+  "color": "#b48cff",
+  "stages": [
+   {
+    "monsters": [
+     "zone"
+    ],
+    "count": 3
+   },
+   {
+    "monsters": [
+     "any_family"
+    ],
+    "count": 4,
+    "elite": "champion"
+   }
+  ],
+  "boss": "zone",
+  "reward": {
+   "loot_kind": "hushfall_cache",
+   "materials": [
+    {
+     "id": "soot",
+     "chance": 1.0,
+     "min": 2,
+     "max": 4
+    }
+   ]
+  }
+ },
+ {
+  "id": "dev_cursed",
+  "name": "Cursed Shrine",
+  "kind": "cursed_shrine",
+  "weight": 5,
+  "curse": {
+   "damage_reduction": -10
+  },
+  "stages": [
+   {
+    "monsters": [
+     "zone"
+    ],
+    "count": 3
+   }
+  ],
+  "reward": {
+   "mult": 2
+  }
+ },
+ {
+  "id": "dev_swarm",
+  "name": "Treasure Swarm",
+  "kind": "treasure_swarm",
+  "weight": 5,
+  "swarm_count": 4
+ },
+ {
+  "id": "dev_escort",
+  "name": "Lost Wisp",
+  "kind": "escort",
+  "weight": 5,
+  "escort_rooms": 2,
+  "stages": [
+   {
+    "monsters": [
+     "zone"
+    ],
+    "count": 2
+   },
+   {
+    "monsters": [
+     "zone"
+    ],
+    "count": 3
+   }
+  ]
+ },
+ {
+  "id": "dev_echo",
+  "name": "Echo Duel",
+  "kind": "echo_duel",
+  "weight": 5
+ }
+]

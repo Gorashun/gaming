@@ -1,0 +1,55 @@
+[
+ {
+  "id": "dev_ch1",
+  "act": "act1",
+  "order": 1,
+  "name": "Dev Chapter One",
+  "dialogue_start": "dev_txt_start",
+  "dialogue_end": "dev_txt_end",
+  "objectives": [
+   {
+    "type": "reach_zone",
+    "target": "a1_z1",
+    "text": "Enter the graves"
+   },
+   {
+    "type": "kill",
+    "target": "any",
+    "count": 2,
+    "text": "Rekindle two Snuffed"
+   },
+   {
+    "type": "talk",
+    "target": "dev_inn",
+    "text": "Talk to Marta"
+   }
+  ],
+  "unlocks": {
+   "zones": [
+    "dev_locked_zone"
+   ]
+  },
+  "reward": {
+   "gold": 25,
+   "skill_points": 1
+  }
+ },
+ {
+  "id": "dev_ch2",
+  "act": "act1",
+  "order": 2,
+  "name": "Dev Chapter Two",
+  "objectives": [
+   {
+    "type": "solve",
+    "target": "dev_relic",
+    "zone": "a1_z2",
+    "text": "Examine the relic"
+   },
+   {
+    "type": "boss",
+    "target": "sunken_bellringer"
+   }
+  ]
+ }
+]

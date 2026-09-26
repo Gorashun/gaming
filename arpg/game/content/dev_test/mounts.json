@@ -1,0 +1,19 @@
+[
+ {
+  "id": "dev_hound",
+  "name": "Dev Lantern Hound",
+  "tint": "#8a7a6a",
+  "speed_pct": 40,
+  "source": "vendor",
+  "cost_gold": 100,
+  "requires": "",
+  "desc": "Test mount."
+ },
+ {
+  "id": "dev_locked",
+  "name": "Dev Locked Steed",
+  "speed_pct": 60,
+  "cost_gold": 10,
+  "requires": "dev_q_kill"
+ }
+]

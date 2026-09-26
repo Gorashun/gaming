@@ -2,6 +2,7 @@ extends Node
 ## Session state: the active character, save slots, difficulty, rested bonus.
 
 const SAVE_DIR := "user://saves"
+const BACKUPS := 3            # rolling backups: <id>.bak1 (newest) … <id>.bak3
 
 var character: CharacterData
 var world: Node = null    # current GameWorld (authority for gameplay state)
@@ -63,10 +64,10 @@ func list_saves() -> Array:
 	out.sort_custom(func(a, b): return int(a.get("last_played_unix", 0)) > int(b.get("last_played_unix", 0)))
 	return out
 
+## Loads a hero; if the main file is missing/corrupt, falls back to the newest valid backup.
 func load_character(id: String) -> CharacterData:
-	var path = SAVE_DIR + "/" + id + ".json"
-	var d = JSON.parse_string(FileAccess.get_file_as_string(path))
-	if not (d is Dictionary):
+	var d = read_save_dict(id)
+	if d.is_empty():
 		return null
 	character = CharacterData.from_dict(d)
 	_apply_rested()
@@ -83,20 +84,66 @@ func _apply_rested() -> void:
 		character.rested_xp = min(character.rested_xp + gain, Progression.xp_to_next(character.level) * cap)
 	character.last_played_unix = now
 
+func read_save_dict(id: String) -> Dictionary:
+	for path in [SAVE_DIR + "/" + id + ".json"] + backup_paths(id):
+		if not FileAccess.file_exists(path):
+			continue
+		var d = JSON.parse_string(FileAccess.get_file_as_string(path))
+		if d is Dictionary and d.has("class_id"):
+			if path.ends_with(".json") == false:
+				push_warning("Save %s was unreadable; restored from %s" % [id, path])
+			return d
+	return {}
+
+func backup_paths(id: String) -> Array:
+	var out = []
+	for i in range(1, BACKUPS + 1):
+		out.append(SAVE_DIR + "/%s.bak%d" % [id, i])
+	return out
+
+## Atomic save (tmp + rename) with 3 rolling backups of the previous good file.
 func save_character() -> void:
 	if character == null:
 		return
 	character.last_played_unix = int(Time.get_unix_time_from_system())
-	var tmp = SAVE_DIR + "/" + character.id + ".tmp"
+	write_save(character)
+	Account.flush()
+
+func write_save(c: CharacterData) -> bool:
+	var main = SAVE_DIR + "/" + c.id + ".json"
+	var tmp = SAVE_DIR + "/" + c.id + ".tmp"
 	var f = FileAccess.open(tmp, FileAccess.WRITE)
 	if f == null:
-		return
-	f.store_string(JSON.stringify(character.to_dict()))
+		return false
+	f.store_string(JSON.stringify(c.to_dict()))
 	f.close()
-	DirAccess.rename_absolute(tmp, SAVE_DIR + "/" + character.id + ".json")
+	_rotate_backups(c.id)
+	DirAccess.rename_absolute(tmp, main)
+	return true
+
+func _rotate_backups(id: String) -> void:
+	var main = SAVE_DIR + "/" + id + ".json"
+	if not FileAccess.file_exists(main):
+		return
+	# Throttle: only roll when the newest backup is older than a minute (autosaves are frequent)
+	var b1 = SAVE_DIR + "/%s.bak1" % id
+	if FileAccess.file_exists(b1) and Time.get_unix_time_from_system() - FileAccess.get_modified_time(b1) < 60 and not testing_backups:
+		DirAccess.copy_absolute(main, b1)
+		return
+	for i in range(BACKUPS, 1, -1):
+		var older = SAVE_DIR + "/%s.bak%d" % [id, i]
+		var newer = SAVE_DIR + "/%s.bak%d" % [id, i - 1]
+		if FileAccess.file_exists(newer):
+			DirAccess.rename_absolute(newer, older)
+	DirAccess.copy_absolute(main, b1)
+
+var testing_backups = false   # tests: roll on every save
 
 func delete_character(id: String) -> void:
 	DirAccess.remove_absolute(SAVE_DIR + "/" + id + ".json")
+	for p in backup_paths(id):
+		if FileAccess.file_exists(p):
+			DirAccess.remove_absolute(p)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_APPLICATION_FOCUS_OUT:

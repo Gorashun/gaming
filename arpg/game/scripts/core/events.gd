@@ -47,3 +47,8 @@ signal world_event_stage(event_id: String, stage: int, total: int)
 signal world_event_completed(event_id: String)
 signal codex_updated(entry_id: String)
 signal blessing_changed(pct: float)
+signal deed_tier_completed(deed_id: String, tier: int)
+signal story_dialogue(lines: Array)                     # [{speaker, text, portrait?}]
+signal main_quest_updated(chapter_id: String, objective: int, progress: int, count: int)
+signal main_quest_chapter_completed(chapter_id: String)
+signal cosmetics_changed

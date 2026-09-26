@@ -1,0 +1,14 @@
+[
+ {
+  "id": "dev_blade",
+  "name": "Dev Blade",
+  "hand": "main",
+  "prop": "res://assets/thirdparty/kaykit/adventurers/props/sword_1handed.gltf",
+  "attach": "handslot.r",
+  "anim_set": "1h",
+  "proficiency_bonus": {
+   "damage_pct": 1.0,
+   "crit_chance": 0.1
+  }
+ }
+]

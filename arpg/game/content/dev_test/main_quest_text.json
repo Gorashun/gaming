@@ -1,0 +1,24 @@
+[
+ {
+  "id": "dev_txt_start",
+  "lines": [
+   {
+    "speaker": "Marta",
+    "text": "The graves are restless."
+   },
+   {
+    "speaker": "Hero",
+    "text": "I'll carry the light."
+   }
+  ]
+ },
+ {
+  "id": "dev_txt_end",
+  "lines": [
+   {
+    "speaker": "Marta",
+    "text": "Well done, little wick."
+   }
+  ]
+ }
+]

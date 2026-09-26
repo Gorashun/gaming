@@ -83,6 +83,7 @@ static func salvage(ch: CharacterData, index: int) -> Dictionary:
 	for m in y:
 		ch.add_material(m, y[m])
 	ch.inventory[index] = null
+	ch.track("salvages")
 	Crafting.gain_xp(ch, "smith", 2 + Items.rarity_index(item.rarity) * 3)
 	return y
 

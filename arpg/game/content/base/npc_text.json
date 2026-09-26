@@ -18,7 +18,9 @@
    "Every sword remembers the hand that made it. Mine remember hugs."
   ],
   "bark_after_act": "You rang the old bell back to life! Gerald is so proud.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a1_shieldbones"
+  ]
  },
  {
   "id": "npc_a1_alchemist",
@@ -60,7 +62,9 @@
    "Darling, that amulet is SO you."
   ],
   "bark_after_act": "The Bellringer's rekindled! I shall wear my celebration ring. Where is it…",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a1_ring_hunt"
+  ]
  },
  {
   "id": "npc_a1_runecarver",
@@ -81,7 +85,8 @@
   ],
   "bark_after_act": "I carved 'thank you' on my door for you. Go and see.",
   "quest_ids": [
-   "q_a1_candle_mages"
+   "q_a1_candle_mages",
+   "q_a1_rune_spoon"
   ]
  },
  {
@@ -124,7 +129,9 @@
    "Shell… is also… a stash."
   ],
   "bark_after_act": "The… bell… rang. I… heard it. Twice.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a1_humphrey_count"
+  ]
  },
  {
   "id": "npc_a1_stablemaster",
@@ -166,7 +173,9 @@
    "Pets don't fight. They help. That's different."
   ],
   "bark_after_act": "My pets and I made you a medal. It's a leaf. It's a medal leaf.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a1_pet_egg"
+  ]
  },
  {
   "id": "npc_a1_innkeeper",
@@ -186,7 +195,9 @@
    "A warm bed, a warm bowl, a warm light. That's home."
   ],
   "bark_after_act": "Soup's on the house tonight. Well. Soup's always on the house.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a1_bonepiles"
+  ]
  },
  {
   "id": "npc_a1_questgiver",
@@ -255,7 +266,32 @@
   ],
   "bark_after_act": "You did it! I wasn't worried. *flicker* I was a bit worried.",
   "quest_ids": [
-   "q_a1_drowned_graves"
+   "q_a1_drowned_graves",
+   "q_a1_wisp_lights"
+  ]
+ },
+ {
+  "id": "npc_a1_board",
+  "kind": "npc",
+  "name": "Bounty Board",
+  "title": "Bounty Board",
+  "role": "board",
+  "town": "a1_town",
+  "quirk": "Not a person. A board. Repeatable bounties that bank and never expire.",
+  "greeting": "The Lamplight Hollow Bounty Board. Pinned notes flap in the bog breeze.",
+  "barks": [
+   "Bounties wait here. They never go stale.",
+   "Finished bounties bank up. Come back whenever you like.",
+   "New notes appear as you adventure.",
+   "A bounty a day? A bounty a month? Up to you.",
+   "Someone has drawn a smiley face on this note.",
+   "Unfinished bounties don't mind waiting."
+  ],
+  "bark_after_act": "Someone pinned a thank-you note to the board. It's addressed to you.",
+  "quest_ids": [
+   "q_a1_bounty_bones",
+   "q_a1_bounty_archers",
+   "q_a1_bounty_bonemeal"
   ]
  },
  {
@@ -277,7 +313,8 @@
   ],
   "bark_after_act": "The shadows are home! The trees are finally quiet. Well. Quieter.",
   "quest_ids": [
-   "q_a2_gossip"
+   "q_a2_gossip",
+   "q_a2_thorn_sprites"
   ]
  },
  {
@@ -321,7 +358,9 @@
    "I found a gem in an owl's nest. The owl found me."
   ],
   "bark_after_act": "The morning dew is back! My shop is full again!",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a2_dew_gems"
+  ]
  },
  {
   "id": "npc_a2_runecarver",
@@ -341,7 +380,9 @@
    "Beard's getting long. It's got a mushroom now."
   ],
   "bark_after_act": "My beard grew a flower when the shadows came home. Look!",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a2_acorn_runes"
+  ]
  },
  {
   "id": "npc_a2_trader",
@@ -384,7 +425,8 @@
   ],
   "bark_after_act": "I buried a present for you! Somewhere! It's a surprise for both of us!",
   "quest_ids": [
-   "q_a2_moss_hounds"
+   "q_a2_moss_hounds",
+   "q_a2_nutsy_lost"
   ]
  },
  {
@@ -405,7 +447,9 @@
    "*long whistle* That means 'have a good ride'."
   ],
   "bark_after_act": "*happy whistle* That means 'thank you', by the way.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a2_deer_ride"
+  ]
  },
  {
   "id": "npc_a2_petkeeper",
@@ -447,7 +491,9 @@
    "Nobody's fallen out of a hammock this week. Big week."
   ],
   "bark_after_act": "Whole forest's sleeping better since you came. Me too.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a2_stump_grumble"
+  ]
  },
  {
   "id": "npc_a2_questgiver",
@@ -491,7 +537,8 @@
   ],
   "bark_after_act": "Who rekindled the oldest tree? And who will tell the story? Hm?",
   "quest_ids": [
-   "q_a2_owl_towers"
+   "q_a2_owl_towers",
+   "q_a2_hoot_question"
   ]
  },
  {
@@ -513,6 +560,30 @@
   ],
   "bark_after_act": "The wood is bright, the shadows home. Now pick a place wherever you roam!",
   "quest_ids": []
+ },
+ {
+  "id": "npc_a2_board",
+  "kind": "npc",
+  "name": "Bounty Board",
+  "title": "Bounty Board",
+  "role": "board",
+  "town": "a2_town",
+  "quirk": "Not a person. A board. Repeatable bounties that bank and never expire.",
+  "greeting": "The Owlstead Bounty Board. Notes are pinned with acorns.",
+  "barks": [
+   "Bounties wait here. They never go stale.",
+   "Finished bounties bank up. Come back whenever you like.",
+   "New notes appear as you adventure.",
+   "A bounty a day? A bounty a month? Up to you.",
+   "Someone has drawn a smiley face on this note.",
+   "Unfinished bounties don't mind waiting."
+  ],
+  "bark_after_act": "Someone pinned a thank-you note to the board. It's addressed to you.",
+  "quest_ids": [
+   "q_a2_bounty_twigs",
+   "q_a2_bounty_puffers",
+   "q_a2_bounty_essence"
+  ]
  },
  {
   "id": "npc_a3_smith",
@@ -576,7 +647,9 @@
    "*polish* Sorry. Habit. Your elbow was dull."
   ],
   "bark_after_act": "The whole mountain is sparkling. I don't even need to polish. I will anyway.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a3_ruby_polish"
+  ]
  },
  {
   "id": "npc_a3_runecarver",
@@ -596,7 +669,9 @@
    "You. Nice."
   ],
   "bark_after_act": "Mountain. Song. Happy. Me. Happy.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a3_chisel_friend"
+  ]
  },
  {
   "id": "npc_a3_trader",
@@ -616,7 +691,9 @@
    "Ever seen a cart with teeth? Don't buy that one."
   ],
   "bark_after_act": "I'm naming a third cart after you. I just need a third cart.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a3_gus_carts"
+  ]
  },
  {
   "id": "npc_a3_stash",
@@ -658,7 +735,9 @@
    "Shortcut to happiness? Pat a pony."
   ],
   "bark_after_act": "The shortest way to a hero's heart is a pony ride. Free one, for you.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a3_pony_route"
+  ]
  },
  {
   "id": "npc_a3_petkeeper",
@@ -679,7 +758,8 @@
   ],
   "bark_after_act": "Dimple did a happy dig. It's a tunnel. It spells your name. Nearly.",
   "quest_ids": [
-   "q_a3_lamp_ghosts"
+   "q_a3_lamp_ghosts",
+   "q_a3_dimple_dig"
   ]
  },
  {
@@ -700,7 +780,9 @@
    "Stay as long as you like, friend."
   ],
   "bark_after_act": "HA HA HA! Sorry, happy laugh. The lift will stop shaking soon.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a3_lift_laugh"
+  ]
  },
  {
   "id": "npc_a3_questgiver",
@@ -722,7 +804,8 @@
   "bark_after_act": "'Dig deep, dig bright.' That's it. That's why. I'm writing it down.",
   "quest_ids": [
    "q_a3_diglings",
-   "q_a3_great_echo"
+   "q_a3_great_echo",
+   "q_a3_salt_golem"
   ]
  },
  {
@@ -770,6 +853,30 @@
   ]
  },
  {
+  "id": "npc_a3_board",
+  "kind": "npc",
+  "name": "Bounty Board",
+  "title": "Bounty Board",
+  "role": "board",
+  "town": "a3_town",
+  "quirk": "Not a person. A board. Repeatable bounties that bank and never expire.",
+  "greeting": "The Clinkerton Bounty Board. Chalk on a slate. Someone drew a pickaxe with a face.",
+  "barks": [
+   "Bounties wait here. They never go stale.",
+   "Finished bounties bank up. Come back whenever you like.",
+   "New notes appear as you adventure.",
+   "A bounty a day? A bounty a month? Up to you.",
+   "Someone has drawn a smiley face on this note.",
+   "Unfinished bounties don't mind waiting."
+  ],
+  "bark_after_act": "Someone pinned a thank-you note to the board. It's addressed to you.",
+  "quest_ids": [
+   "q_a3_bounty_diglings",
+   "q_a3_bounty_bats",
+   "q_a3_bounty_wick"
+  ]
+ },
+ {
   "id": "npc_a4_smith",
   "kind": "npc",
   "name": "Corporal Tinwhistle",
@@ -788,7 +895,8 @@
   ],
   "bark_after_act": "My regiment thawed! They saluted me! I saluted back! We're still going!",
   "quest_ids": [
-   "q_a4_tin_soldiers"
+   "q_a4_tin_soldiers",
+   "q_a4_tinwhistle_drill"
   ]
  },
  {
@@ -831,7 +939,9 @@
    "One's cousin Glimmerwick has too many rings. One has just enough."
   ],
   "bark_after_act": "The King said my name! He remembered my name! *giggle giggle*",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a4_sapphires"
+  ]
  },
  {
   "id": "npc_a4_runecarver",
@@ -851,7 +961,9 @@
    "Someone put the kettle on again. *sigh*"
   ],
   "bark_after_act": "The castle is warm again. I hate it. I'm very happy. Both.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a4_quillon_cold"
+  ]
  },
  {
   "id": "npc_a4_trader",
@@ -871,7 +983,9 @@
    "Crumbsworth's rule: never trade with a cat."
   ],
   "bark_after_act": "In honour of the King, cheese is half price! Wait, I sell cheese?",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a4_crumbs"
+  ]
  },
  {
   "id": "npc_a4_stash",
@@ -914,7 +1028,8 @@
   ],
   "bark_after_act": "It's warm now! …Wrap up anyway. Habit.",
   "quest_ids": [
-   "q_a4_gardens"
+   "q_a4_gardens",
+   "q_a4_sleigh_run"
   ]
  },
  {
@@ -936,7 +1051,8 @@
   ],
   "bark_after_act": "He remembered me first. Before anyone. Before his own crown.",
   "quest_ids": [
-   "q_a4_porcelain"
+   "q_a4_porcelain",
+   "q_a4_pip_letter"
   ]
  },
  {
@@ -978,8 +1094,9 @@
   ],
   "bark_after_act": "Item one: the King is himself again. Item two: I'm crying. Item three: tissues.",
   "quest_ids": [
-   "q_a4_letters",
-   "q_a4_the_king"
+   "q_a4_place_cards",
+   "q_a4_the_king",
+   "q_a4_courtiers"
   ]
  },
  {
@@ -1023,6 +1140,30 @@
   ],
   "bark_after_act": "Tick. Tick. Tick-tick-tick! That's my VERY happy noise.",
   "quest_ids": []
+ },
+ {
+  "id": "npc_a4_board",
+  "kind": "npc",
+  "name": "Bounty Board",
+  "title": "Bounty Board",
+  "role": "board",
+  "town": "a4_town",
+  "quirk": "Not a person. A board. Repeatable bounties that bank and never expire.",
+  "greeting": "The Kettlekeep Bounty Board. Notes written in very neat handwriting. Mister Ledger's, probably.",
+  "barks": [
+   "Bounties wait here. They never go stale.",
+   "Finished bounties bank up. Come back whenever you like.",
+   "New notes appear as you adventure.",
+   "A bounty a day? A bounty a month? Up to you.",
+   "Someone has drawn a smiley face on this note.",
+   "Unfinished bounties don't mind waiting."
+  ],
+  "bark_after_act": "Someone pinned a thank-you note to the board. It's addressed to you.",
+  "quest_ids": [
+   "q_a4_bounty_dolls",
+   "q_a4_bounty_jesters",
+   "q_a4_bounty_soot"
+  ]
  },
  {
   "id": "npc_a5_smith",
@@ -1086,7 +1227,9 @@
    "Big twinkle or small twinkle, still a twinkle."
   ],
   "bark_after_act": "I can see the sky again! My family's up there! Hi, everyone!",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a5_twinkle_home"
+  ]
  },
  {
   "id": "npc_a5_runecarver",
@@ -1106,7 +1249,9 @@
    "*writes* *you blink* *sigh* Again."
   ],
   "bark_after_act": "I wrote your name in light over the Landing. Nobody's blinked all day.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a5_vesper_blink"
+  ]
  },
  {
   "id": "npc_a5_trader",
@@ -1127,7 +1272,8 @@
   ],
   "bark_after_act": "You relit the whole SKY? That's the shiniest thing anyone's ever done!",
   "quest_ids": [
-   "q_a5_leftovers"
+   "q_a5_leftovers",
+   "q_a5_nib_shinies"
   ]
  },
  {
@@ -1168,7 +1314,9 @@
    "Big Bran's scared of my moths. Tell him they're friendly!"
   ],
   "bark_after_act": "Moths everywhere tonight! Must be the brightest night in history!",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a5_moth_ride"
+  ]
  },
  {
   "id": "npc_a5_petkeeper",
@@ -1188,7 +1336,9 @@
    "Light is better shared. Even firefly light."
   ],
   "bark_after_act": "All my fireflies came back at once and spelled 'THANKS'. Mostly.",
-  "quest_ids": []
+  "quest_ids": [
+   "q_a5_fireflies"
+  ]
  },
  {
   "id": "npc_a5_innkeeper",
@@ -1209,7 +1359,8 @@
   ],
   "bark_after_act": "Every window in the world is lit tonight. I cried into the tea.",
   "quest_ids": [
-   "q_a5_ada_talk"
+   "q_a5_ada_talk",
+   "q_a5_stillwater_tea"
   ]
  },
  {
@@ -1254,7 +1405,8 @@
   ],
   "bark_after_act": "*loudest tiny chorus ever* THE LANTERN! THE LANTERN! WE LOVE IT!",
   "quest_ids": [
-   "q_a5_grey_moths"
+   "q_a5_grey_moths",
+   "q_a5_hollow_choir"
   ]
  },
  {
@@ -1280,6 +1432,51 @@
   ]
  },
  {
+  "id": "npc_a5_board",
+  "kind": "npc",
+  "name": "Bounty Board",
+  "title": "Bounty Board",
+  "role": "board",
+  "town": "a5_town",
+  "quirk": "Not a person. A board. Repeatable bounties that bank and never expire.",
+  "greeting": "The Lastlight Bounty Board. The notes glow faintly. Nobody pinned them. They were just there.",
+  "barks": [
+   "Bounties wait here. They never go stale.",
+   "Finished bounties bank up. Come back whenever you like.",
+   "New notes appear as you adventure.",
+   "A bounty a day? A bounty a month? Up to you.",
+   "Someone has drawn a smiley face on this note.",
+   "Unfinished bounties don't mind waiting."
+  ],
+  "bark_after_act": "Someone pinned a thank-you note to the board. It's addressed to you.",
+  "quest_ids": [
+   "q_a5_bounty_hush",
+   "q_a5_bounty_moths",
+   "q_a5_bounty_essence"
+  ]
+ },
+ {
+  "id": "npc_a5_pell",
+  "kind": "npc",
+  "name": "Pell",
+  "title": "Retired Keeper",
+  "role": "pell",
+  "town": "a5_town",
+  "quirk": "Once the Grey Guest. Trims the lighthouse wick once a week, because it's nice.",
+  "greeting": "Oh, hello. Sit down, if you like. I've learned that sitting down is allowed.",
+  "barks": [
+   "I trim the wick on Sundays. Only Sundays.",
+   "Thank you for asking me in. Everyone did, in the end.",
+   "Ada makes me rest. I make Ada rest. It's a system.",
+   "The Hush isn't bad. It's just night that forgot about morning.",
+   "Rest when you need to. I wish I had.",
+   "Tolly rings his bell when I visit. I like that very much.",
+   "Aldric saved me a seat. I sit in it every week."
+  ],
+  "bark_after_act": "(Only appears after Act V.)",
+  "quest_ids": []
+ },
+ {
   "id": "q_a1_lost_rattlers",
   "kind": "quest",
   "act": "act1",
@@ -1289,7 +1486,8 @@
   "count": 10,
   "name": "Bedtime for Bones",
   "text_offer": "The Rattlers climbed out of their graves and forgot why. Rekindle 10 and send them home to bed.",
-  "text_done": "Ten sleepy Rattlers, back in bed. They even said goodnight!"
+  "text_done": "Ten sleepy Rattlers, back in bed. They even said goodnight!",
+  "repeatable": false
  },
  {
   "id": "q_a1_bone_meal",
@@ -1301,7 +1499,8 @@
   "count": 8,
   "name": "Glitter Ingredients",
   "text_offer": "I need 8 Bone Meal for my potions. Don't ask. Ah— ACHOO! See? Very important. Well, a bit important. Whenever!",
-  "text_done": "Perfect! One potion coming up. Stand back. Glitter incoming."
+  "text_done": "Perfect! One potion coming up. Stand back. Glitter incoming.",
+  "repeatable": false
  },
  {
   "id": "q_a1_drowned_graves",
@@ -1313,7 +1512,8 @@
   "count": 1,
   "name": "Where the Graves Went",
   "text_offer": "The old graveyard slid into the bog! Go and find the far end? I'd come too but *flicker*.",
-  "text_done": "You found it! And came back! I knew you would. *no flicker*"
+  "text_done": "You found it! And came back! I knew you would. *no flicker*",
+  "repeatable": false
  },
  {
   "id": "q_a1_magpie",
@@ -1325,7 +1525,8 @@
   "count": 1,
   "name": "Pocket Thief",
   "text_offer": "A Magpie Imp nicked something from pocket nineteen! It's in the Bellcrypt Halls. Catch it!",
-  "text_done": "My thimble! And some extra gold? Keep that. The imp won't miss it. Much."
+  "text_done": "My thimble! And some extra gold? Keep that. The imp won't miss it. Much.",
+  "repeatable": false
  },
  {
   "id": "q_a1_candle_mages",
@@ -1337,7 +1538,8 @@
   "count": 5,
   "name": "Too Many Candles",
   "text_offer": "Candle Mages keep lighting cold, grey candles. Wrong sort of light. Rekindle 5 of them?",
-  "text_done": "Proper warm light again. I carved you a rune. It says 'ta'."
+  "text_done": "Proper warm light again. I carved you a rune. It says 'ta'.",
+  "repeatable": false
  },
  {
   "id": "q_a1_purl_yarn",
@@ -1349,7 +1551,8 @@
   "count": 1,
   "name": "The Borrowed Yarn",
   "text_offer": "Madame Glimmerwick borrowed my silver yarn for a ring. Could you ask for it back? Nicely.",
-  "text_done": "My silver yarn! The scarf grows another inch. Thank you, little light."
+  "text_done": "My silver yarn! The scarf grows another inch. Thank you, little light.",
+  "repeatable": false
  },
  {
   "id": "q_a1_warden_crypt",
@@ -1361,7 +1564,8 @@
   "count": 1,
   "name": "The Warden Below",
   "text_offer": "A Crypt Warden guards the Sunken Nave. It thinks it's still on duty. Relieve it of its shift.",
-  "text_done": "The old Warden's resting at last. So can you, if you like."
+  "text_done": "The old Warden's resting at last. So can you, if you like.",
+  "repeatable": false
  },
  {
   "id": "q_a1_bellringer",
@@ -1373,7 +1577,8 @@
   "count": 1,
   "name": "The Bell Under the Water",
   "text_offer": "Every DONG makes someone fall asleep in the bog. Climb the Belfry of the Drowned and stop that bell.",
-  "text_done": "It was Tolly. All this time, calling us home. And now he's home too."
+  "text_done": "It was Tolly. All this time, calling us home. And now he's home too.",
+  "repeatable": false
  },
  {
   "id": "q_a1_newt_ride",
@@ -1385,7 +1590,8 @@
   "count": 1,
   "name": "Newt Test Drive",
   "text_offer": "Puddle wants to stretch her legs! Ride through the Bellcrypt Halls and back. She says please.",
-  "text_done": "Puddle says that was the best day of her life. She says that every day."
+  "text_done": "Puddle says that was the best day of her life. She says that every day.",
+  "repeatable": false
  },
  {
   "id": "q_a2_twiglings",
@@ -1397,7 +1603,8 @@
   "count": 12,
   "name": "Poke Every Stick",
   "text_offer": "Twiglings pretend to be sticks, then jump out. Rekindle 12 before I jump out of my boots.",
-  "text_done": "Twelve sticks, twelve thank-yous. Only jumped nine times!"
+  "text_done": "Twelve sticks, twelve thank-yous. Only jumped nine times!",
+  "repeatable": false
  },
  {
   "id": "q_a2_spores",
@@ -1409,7 +1616,8 @@
   "count": 3,
   "name": "A Little Evening",
   "text_offer": "I need 3 Dusk Essence for a new elixir. Bottled evening. Smells like cocoa. *puff*",
-  "text_done": "Marvellous! This elixir will be ever so glowy. *happy puff*"
+  "text_done": "Marvellous! This elixir will be ever so glowy. *happy puff*",
+  "repeatable": false
  },
  {
   "id": "q_a2_owl_towers",
@@ -1421,7 +1629,8 @@
   "count": 1,
   "name": "The Tower Question",
   "text_offer": "What's at the top of the Owl Towers? Why don't you go and see? And who'll tell me after?",
-  "text_done": "You went. You saw. And now — what will you ask next?"
+  "text_done": "You went. You saw. And now — what will you ask next?",
+  "repeatable": false
  },
  {
   "id": "q_a2_owlcrows",
@@ -1433,7 +1642,8 @@
   "count": 8,
   "name": "Hoo's Grumpy",
   "text_offer": "The Snuffed Owlcrows scare my owlets. Rekindle 8? They'll be nicer after. Promise. Hoo.",
-  "text_done": "The owlets are napping again. Hoo. Thank you. Hoo."
+  "text_done": "The owlets are napping again. Hoo. Thank you. Hoo.",
+  "repeatable": false
  },
  {
   "id": "q_a2_moss_hounds",
@@ -1445,7 +1655,8 @@
   "count": 6,
   "name": "Dig Dog Trouble",
   "text_offer": "Moss Hounds keep digging up my buried stashes! Six of them! Help!",
-  "text_done": "Stashes safe! I buried a snack for you. Somewhere!"
+  "text_done": "Stashes safe! I buried a snack for you. Somewhere!",
+  "repeatable": false
  },
  {
   "id": "q_a2_trader_riddle",
@@ -1457,7 +1668,8 @@
   "count": 1,
   "name": "A Riddle for Hob",
   "text_offer": "Riddle: what's green, grows on a face, and owes me money? Go ask Hob. Hoo-hoo!",
-  "text_done": "He paid in acorns! Carved acorns! What a fine deal."
+  "text_done": "He paid in acorns! Carved acorns! What a fine deal.",
+  "repeatable": false
  },
  {
   "id": "q_a2_gossip",
@@ -1469,7 +1681,8 @@
   "count": 1,
   "name": "Hush, Birches",
   "text_offer": "The Gossiping Birches keep telling rumours about my axe. Walk through and shine your light?",
-  "text_done": "Quiet at last. They only said one mean thing. Sorry, trees."
+  "text_done": "Quiet at last. They only said one mean thing. Sorry, trees.",
+  "repeatable": false
  },
  {
   "id": "q_a2_mother_bark",
@@ -1481,7 +1694,8 @@
   "count": 1,
   "name": "The Shadow Pantry",
   "text_offer": "Nobody in Whisperwood has a shadow. They're all in jars at Mother Bark's Pantry. Go gently.",
-  "text_done": "My shadow came home! It's shy. It's hiding behind me. Thank you."
+  "text_done": "My shadow came home! It's shy. It's hiding behind me. Thank you.",
+  "repeatable": false
  },
  {
   "id": "q_a3_diglings",
@@ -1493,7 +1707,8 @@
   "count": 15,
   "name": "The Forgetful Crew",
   "text_offer": "My crew became Diglings. Rekindle 15 and maybe they'll remember why we dig.",
-  "text_done": "They're back! They still don't know why. But they know they're friends."
+  "text_done": "They're back! They still don't know why. But they know they're friends.",
+  "repeatable": false
  },
  {
   "id": "q_a3_crystal_spiders",
@@ -1505,7 +1720,8 @@
   "count": 8,
   "name": "SPIDERS!",
   "text_offer": "CRYSTAL SPIDERS IN THE GALLERY! My nephew won't go near them. Rekindle 8? THANK YOU!",
-  "text_done": "No more clinking in the dark! My nephew says thank you from under the bed."
+  "text_done": "No more clinking in the dark! My nephew says thank you from under the bed.",
+  "repeatable": false
  },
  {
   "id": "q_a3_salt",
@@ -1517,7 +1733,8 @@
   "count": 5,
   "name": "Wick Required",
   "text_offer": "I need 5 Wickthread for a fuse. A safe fuse! A mostly safe fuse!",
-  "text_done": "It fizzled perfectly. Eyebrows intact. A good day!"
+  "text_done": "It fizzled perfectly. Eyebrows intact. A good day!",
+  "repeatable": false
  },
  {
   "id": "q_a3_cart_mimic",
@@ -1529,7 +1746,8 @@
   "count": 1,
   "name": "That's Not Cart Six",
   "text_offer": "Cart six came back with TEETH. That's not cart six! Find the real one on the Rattletrack Rails?",
-  "text_done": "The real cart six! And the toothy one ran home. Everyone's happy."
+  "text_done": "The real cart six! And the toothy one ran home. Everyone's happy.",
+  "repeatable": false
  },
  {
   "id": "q_a3_annie_song",
@@ -1541,7 +1759,8 @@
   "count": 1,
   "name": "The First Line",
   "text_offer": "Barnaby used to hum the old song. Ask him if he remembers a line. Line.",
-  "text_done": "'Dig deep.' Two words. Two whole words! Words."
+  "text_done": "'Dig deep.' Two words. Two whole words! Words.",
+  "repeatable": false
  },
  {
   "id": "q_a3_saltwhistle",
@@ -1553,7 +1772,8 @@
   "count": 1,
   "name": "Floor Unknown",
   "text_offer": "The Saltwhistle Shafts aren't on my lift list. Go explore and I'll add a floor!",
-  "text_done": "New floor! Floor Saltwhistle! Ding! Everybody out!"
+  "text_done": "New floor! Floor Saltwhistle! Ding! Everybody out!",
+  "repeatable": false
  },
  {
   "id": "q_a3_lamp_ghosts",
@@ -1565,7 +1785,8 @@
   "count": 6,
   "name": "Lost Lamps",
   "text_offer": "Lamp ghosts are looking for their miners. Rekindle 6 so they can find their way home?",
-  "text_done": "Dimple saw them float up the shaft, all glowy. She did a happy wiggle."
+  "text_done": "Dimple saw them float up the shaft, all glowy. She did a happy wiggle.",
+  "repeatable": false
  },
  {
   "id": "q_a3_great_echo",
@@ -1577,19 +1798,21 @@
   "count": 1,
   "name": "The Mountain's Voice",
   "text_offer": "The Mouth of the Mountain copies everything, backwards. Go and give it something good to repeat.",
-  "text_done": "It's singing. The whole mountain. 'Dig deep, dig bright.' I remember now."
+  "text_done": "It's singing. The whole mountain. 'Dig deep, dig bright.' I remember now.",
+  "repeatable": false
  },
  {
-  "id": "q_a4_letters",
+  "id": "q_a4_place_cards",
   "kind": "quest",
   "act": "act4",
   "giver": "npc_a4_questgiver",
   "type": "collect",
-  "target": "name_letter",
-  "count": 4,
-  "name": "The King's Letters",
-  "text_offer": "The letters of His Majesty's name are scattered in the halls. Please find all 4. It's item one.",
-  "text_done": "Four letters! A, L, D, R… the rest is up to you, I think."
+  "target": "qi_place_card",
+  "count": 6,
+  "name": "The Guest List",
+  "text_offer": "Six place cards blew off the banquet table. Find them? Everyone deserves to know where to sit. It's item one.",
+  "text_done": "All six! Everyone has a seat again. Even the ones who haven't thawed yet.",
+  "repeatable": false
  },
  {
   "id": "q_a4_porcelain",
@@ -1601,7 +1824,8 @@
   "count": 10,
   "name": "Who Moved?",
   "text_offer": "The porcelain dolls only move when you don't look. Rekindle 10! That's a royal order. Please.",
-  "text_done": "Nobody moved! Except the right things! Sir Wobble says thank you."
+  "text_done": "Nobody moved! Except the right things! Sir Wobble says thank you.",
+  "repeatable": false
  },
  {
   "id": "q_a4_mirror_tea",
@@ -1613,7 +1837,8 @@
   "count": 6,
   "name": "Tea Served Wrongly",
   "text_offer": "My old colleagues, the Mirror Butlers, serve trap tea now. Rekindle 6. Kindly.",
-  "text_done": "Six butlers restored. One offered me proper tea. I wept. Discreetly."
+  "text_done": "Six butlers restored. One offered me proper tea. I wept. Discreetly.",
+  "repeatable": false
  },
  {
   "id": "q_a4_soup",
@@ -1625,7 +1850,8 @@
   "count": 20,
   "name": "Stoking the Pot",
   "text_offer": "The big pot needs stoking. 20 Soot Dust keeps it bubbling for the thawing guests!",
-  "text_done": "Bubbling beautifully! Have the first bowl, pet."
+  "text_done": "Bubbling beautifully! Have the first bowl, pet.",
+  "repeatable": false
  },
  {
   "id": "q_a4_gardens",
@@ -1637,7 +1863,8 @@
   "count": 1,
   "name": "Hare Run",
   "text_offer": "Flurry wants to see the Frosted Gardens. Ride through? Wrap up warm first!",
-  "text_done": "Flurry did twelve happy hops. Did you wrap up warm? Good."
+  "text_done": "Flurry did twelve happy hops. Did you wrap up warm? Good.",
+  "repeatable": false
  },
  {
   "id": "q_a4_jester_joke",
@@ -1649,7 +1876,8 @@
   "count": 1,
   "name": "A Joke for the Corporal",
   "text_offer": "The Corporal hasn't laughed since the freeze. Tell him my best joke: 'Why did the soldier salute the fridge?'",
-  "text_done": "He laughed! Then saluted the laugh. That counts."
+  "text_done": "He laughed! Then saluted the laugh. That counts.",
+  "repeatable": false
  },
  {
   "id": "q_a4_tin_soldiers",
@@ -1661,7 +1889,8 @@
   "count": 12,
   "name": "My Old Regiment",
   "text_offer": "My regiment froze on parade. Rekindle 12 tin soldiers and they'll march again! *salute*",
-  "text_done": "They marched straight into the kitchen for soup. Good lads. *salute*"
+  "text_done": "They marched straight into the kitchen for soup. Good lads. *salute*",
+  "repeatable": false
  },
  {
   "id": "q_a4_the_king",
@@ -1673,7 +1902,8 @@
   "count": 1,
   "name": "Who Are You?",
   "text_offer": "His Majesty sits in the Throne of Frost, forgetting. Remind him who he is.",
-  "text_done": "'— and to all of you, who stayed.' He finished the toast. Item one: done."
+  "text_done": "'— and to all of you, who stayed.' He finished the toast. Item one: done.",
+  "repeatable": false
  },
  {
   "id": "q_a5_hushlings",
@@ -1685,7 +1915,8 @@
   "count": 15,
   "name": "Soft Shapes",
   "text_offer": "Hushlings drift over the Upside-Down Stars. Rekindle 15. Give them a bit of sound back.",
-  "text_done": "Fifteen little hums. You can almost hear the Well breathing."
+  "text_done": "Fifteen little hums. You can almost hear the Well breathing.",
+  "repeatable": false
  },
  {
   "id": "q_a5_grey_moths",
@@ -1697,7 +1928,8 @@
   "count": 10,
   "name": "Grey Wings",
   "text_offer": "*sing* Some moths forgot their colours… Rekindle 10, little light, and bring them home!",
-  "text_done": "*loud tiny cheer* Ten new voices in the Choir!"
+  "text_done": "*loud tiny cheer* Ten new voices in the Choir!",
+  "repeatable": false
  },
  {
   "id": "q_a5_leftovers",
@@ -1709,7 +1941,8 @@
   "count": 1,
   "name": "The Shiniest Leftovers",
   "text_offer": "The Drift of Leftovers has bits of everywhere floating about. Go look! Not to borrow. Just look.",
-  "text_done": "You didn't borrow anything? Not even a tiny thing? …Respect."
+  "text_done": "You didn't borrow anything? Not even a tiny thing? …Respect.",
+  "repeatable": false
  },
  {
   "id": "q_a5_essence",
@@ -1721,7 +1954,8 @@
   "count": 6,
   "name": "Feed the Cauldron",
   "text_offer": "The Cauldron's peckish. 6 Dusk Essence, dearie? *burble*",
-  "text_done": "*burble burble* That's a very happy burble."
+  "text_done": "*burble burble* That's a very happy burble.",
+  "repeatable": false
  },
  {
   "id": "q_a5_quiet_stair",
@@ -1733,7 +1967,8 @@
   "count": 1,
   "name": "The Quiet Stair",
   "text_offer": "…  (Nobody points down the Quiet Stair. Then at you. Then tips its hat.)",
-  "text_done": "…!  (Nobody does a tiny, silent dance.)"
+  "text_done": "…!  (Nobody does a tiny, silent dance.)",
+  "repeatable": false
  },
  {
   "id": "q_a5_ada_talk",
@@ -1745,7 +1980,8 @@
   "count": 1,
   "name": "Make Her Sit",
   "text_offer": "Ada hasn't sat down in forty years. Go and ask her to sit. Just for a minute.",
-  "text_done": "She sat! For a whole minute! Then stood up. It's a start, love."
+  "text_done": "She sat! For a whole minute! Then stood up. It's a start, love.",
+  "repeatable": false
  },
  {
   "id": "q_a5_faded_knights",
@@ -1757,7 +1993,8 @@
   "count": 6,
   "name": "Old Guild Guards",
   "text_offer": "Faded Knights were Guild guards once. Rekindle 6 and I'll make them new lanterns.",
-  "text_done": "Six new lanterns, six old friends back. Still learning, me."
+  "text_done": "Six new lanterns, six old friends back. Still learning, me.",
+  "repeatable": false
  },
  {
   "id": "q_a5_grey_guest",
@@ -1769,6 +2006,672 @@
   "count": 1,
   "name": "The Lantern Room",
   "text_offer": "He's up there. Down there. In the Lantern Room. Don't fight to win, Wickbearer. Share your light.",
-  "text_done": "He's home. The Lantern's lit. And for once, nobody's carrying it alone."
+  "text_done": "He's home. The Lantern's lit. And for once, nobody's carrying it alone.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a1_bounty_bones",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_board",
+  "type": "kill",
+  "target": "rattler",
+  "count": 25,
+  "name": "Bounty: Rattle Patrol",
+  "text_offer": "BOUNTY: Rattlers wandering near the stilts again. Rekindle 25. No rush — this note will wait.",
+  "text_done": "Bounty done! The village sleeps easier. The Rattlers do too.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a1_bounty_archers",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_board",
+  "type": "kill",
+  "target": "bog_archer",
+  "count": 15,
+  "name": "Bounty: Arrows in the Reeds",
+  "text_offer": "BOUNTY: Bog Archers keep shooting at the lamps. Rekindle 15.",
+  "text_done": "Bounty done! The lamps thank you. Well, they flicker gratefully.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a1_bounty_bonemeal",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_board",
+  "type": "collect",
+  "target": "bone_meal",
+  "count": 15,
+  "name": "Bounty: Big Soup Order",
+  "text_offer": "BOUNTY: Mother Mabble needs 15 Bone Meal for… soup? Don't ask.",
+  "text_done": "Bounty done! Soup achieved. Nobody asked.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a1_shieldbones",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_smith",
+  "type": "kill",
+  "target": "shieldbones",
+  "count": 8,
+  "name": "Borrowed Shields",
+  "text_offer": "Those Shieldbones are carrying MY old shields. Rekindle 8 and Hammer Gerald gets his work back.",
+  "text_done": "My shields! Dented, soggy, perfect. Gerald is thrilled.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a1_bonepiles",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_innkeeper",
+  "type": "kill",
+  "target": "bonepile",
+  "count": 5,
+  "name": "Tidy the Graves",
+  "text_offer": "Bonepiles clutter up the graves. Rekindle 5, dear. Tidy graves, tidy mind.",
+  "text_done": "Lovely and tidy. Have a biscuit. It's a soup biscuit.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a1_pet_egg",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_petkeeper",
+  "type": "explore",
+  "target": "a1_z3",
+  "count": 1,
+  "name": "Something Warm in the Nave",
+  "text_offer": "I heard there's a warm egg in the Sunken Nave. Go and look. Carefully. Eggs are delicate.",
+  "text_done": "It's a mystery egg! Carry it around. It'll hatch when it's ready. Very professional.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a1_ring_hunt",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_jeweler",
+  "type": "collect",
+  "target": "topaz",
+  "count": 2,
+  "name": "Rings for Madame",
+  "text_offer": "Darling, I need 2 Wick Topaz for a new ring. I'll wear it immediately. Then lose it.",
+  "text_done": "Gorgeous! Now, where did I put the ring I was wearing…",
+  "repeatable": false
+ },
+ {
+  "id": "q_a1_humphrey_count",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_stash",
+  "type": "talk",
+  "target": "npc_a1_innkeeper",
+  "count": 1,
+  "name": "Counting Spoons",
+  "text_offer": "Mother… Mabble… borrowed… my… spoons. Ask… how… many.",
+  "text_done": "Twelve… spoons. Twelve. I… counted… twice. Thank… you.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a1_rune_spoon",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_runecarver",
+  "type": "collect",
+  "target": "soot",
+  "count": 10,
+  "name": "Runes for Supper",
+  "text_offer": "I've run out of soot for my rune-ink. 10 Soot Dust, and I'll carve 'soup' on your spoon too.",
+  "text_done": "Here's your spoon. It says 'soup'. Very useful.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a1_wisp_lights",
+  "kind": "quest",
+  "act": "act1",
+  "giver": "npc_a1_waypoint",
+  "type": "explore",
+  "target": "a1_boss",
+  "count": 1,
+  "name": "The Top of the Tower",
+  "text_offer": "Glim wants to see the top of the Belfry. From far away. Could you peek first? *flicker*",
+  "text_done": "The view's lovely? Great! We'll go. Someday. *flicker*",
+  "repeatable": false
+ },
+ {
+  "id": "q_a2_bounty_twigs",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_board",
+  "type": "kill",
+  "target": "twigling",
+  "count": 30,
+  "name": "Bounty: Stick Check",
+  "text_offer": "BOUNTY: Twiglings pretending to be firewood. Rekindle 30. Take your time.",
+  "text_done": "Bounty done! The firewood pile is just firewood now.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a2_bounty_puffers",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_board",
+  "type": "kill",
+  "target": "sporecap",
+  "count": 15,
+  "name": "Bounty: Spore Season",
+  "text_offer": "BOUNTY: Sporecaps puffing in the Hollow. Rekindle 15. Bring a hanky.",
+  "text_done": "Bounty done! Spore levels: acceptable. *puff*",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a2_bounty_essence",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_board",
+  "type": "collect",
+  "target": "dusk_essence",
+  "count": 4,
+  "name": "Bounty: Evening in a Bottle",
+  "text_offer": "BOUNTY: The Professor wants 4 Dusk Essence. He says it's for science. It's for cocoa.",
+  "text_done": "Bounty done! Science (cocoa) is served.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a2_thorn_sprites",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_smith",
+  "type": "kill",
+  "target": "thorn_sprite",
+  "count": 10,
+  "name": "Sorry, Thorns",
+  "text_offer": "Thorn Sprites are pricking my customers. Rekindle 10. And tell them sorry from me.",
+  "text_done": "Thank you. I apologised to the brambles too, just in case.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a2_stump_grumble",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_innkeeper",
+  "type": "kill",
+  "target": "stump_grumble",
+  "count": 1,
+  "name": "The Grumpy Stump",
+  "text_offer": "A huge Stump Grumble sits on the path to the Hollow. Grumbling. Rekindle it? Politely?",
+  "text_done": "It stopped grumbling and started snoring. Much better. Have a hammock.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a2_dew_gems",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_jeweler",
+  "type": "collect",
+  "target": "emerald",
+  "count": 2,
+  "name": "Gems That Stay",
+  "text_offer": "I want gems that DON'T evaporate. 2 Moss Emeralds, please!",
+  "text_done": "They're still here! It's been a whole minute! Thank you!",
+  "repeatable": false
+ },
+ {
+  "id": "q_a2_acorn_runes",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_runecarver",
+  "type": "collect",
+  "target": "wickthread",
+  "count": 3,
+  "name": "Thread for Runes",
+  "text_offer": "I tie my rune-acorns with Wickthread. 3 lengths, if you've got them. Beard's holding the rest.",
+  "text_done": "Lovely. My beard says thank you. It's grown a berry.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a2_deer_ride",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_stablemaster",
+  "type": "explore",
+  "target": "a2_z2",
+  "count": 1,
+  "name": "Fern Wants Out",
+  "text_offer": "*whistles* That means: Fern wants a ride through Puffcap Hollow. You in?",
+  "text_done": "*two happy whistles* Fern's never been sparklier.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a2_nutsy_lost",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_stash",
+  "type": "explore",
+  "target": "a2_z1",
+  "count": 1,
+  "name": "Where Did I Bury It",
+  "text_offer": "I buried something important in the Birches! Or near them! Or I dreamed it! Go look?",
+  "text_done": "You found it! It's… an acorn. My favourite acorn! Thank you!",
+  "repeatable": false
+ },
+ {
+  "id": "q_a2_hoot_question",
+  "kind": "quest",
+  "act": "act2",
+  "giver": "npc_a2_storyteller",
+  "type": "talk",
+  "target": "npc_a2_trader",
+  "count": 1,
+  "name": "A Question for Quibble",
+  "text_offer": "Will you ask Mister Quibble a question for me? Which question? Isn't that the question?",
+  "text_done": "He answered with a riddle? And you answered with a question? Now who's the owl?",
+  "repeatable": false
+ },
+ {
+  "id": "q_a3_bounty_diglings",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_board",
+  "type": "kill",
+  "target": "digling",
+  "count": 30,
+  "name": "Bounty: Shift Change",
+  "text_offer": "BOUNTY: Diglings digging where they shouldn't. Rekindle 30. Hard hats optional.",
+  "text_done": "Bounty done! The tunnels are tidy. The Diglings went for a nap.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a3_bounty_bats",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_board",
+  "type": "kill",
+  "target": "echo_bat",
+  "count": 20,
+  "name": "Bounty: Squeak Squad",
+  "text_offer": "BOUNTY: Echo Bats copying everyone's sneezes. Rekindle 20.",
+  "text_done": "Bounty done! Sneezes are private again.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a3_bounty_wick",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_board",
+  "type": "collect",
+  "target": "wickthread",
+  "count": 5,
+  "name": "Bounty: Fuse Supplies",
+  "text_offer": "BOUNTY: Fizzwick needs 5 Wickthread. Again. For safety. Allegedly.",
+  "text_done": "Bounty done! Only a small pop. Eyebrows mostly fine.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a3_salt_golem",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_questgiver",
+  "type": "kill",
+  "target": "salt_golem",
+  "count": 3,
+  "name": "Too Much Salt",
+  "text_offer": "Salt Golems are blocking the lower shaft. Rekindle 3. They're big, but they're softies.",
+  "text_done": "Shaft's clear. One of the golems waved goodbye. With a whole arm of salt.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a3_dimple_dig",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_petkeeper",
+  "type": "explore",
+  "target": "a3_z3",
+  "count": 1,
+  "name": "Dimple's Tunnel",
+  "text_offer": "Dimple dug a tunnel to the Rattletrack Rails! Check it's safe? I'd go, but— actually I'd go. You go.",
+  "text_done": "Safe! Dimple found a coin and a sock. She's keeping the sock.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a3_ruby_polish",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_jeweler",
+  "type": "collect",
+  "target": "ruby",
+  "count": 2,
+  "name": "Rubies for Polishing",
+  "text_offer": "Bring me 2 Candle Rubies. I'm going to polish them until they blush.",
+  "text_done": "*polish polish* Look at them glow. And look at you! *polish*",
+  "repeatable": false
+ },
+ {
+  "id": "q_a3_chisel_friend",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_runecarver",
+  "type": "talk",
+  "target": "npc_a3_petkeeper",
+  "count": 1,
+  "name": "Chisel. Friend.",
+  "text_offer": "Tuppence. Friend? Ask. Please.",
+  "text_done": "Friend. Yes. Happy. Me.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a3_gus_carts",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_trader",
+  "type": "kill",
+  "target": "cart_mimic",
+  "count": 3,
+  "name": "Not For Sale",
+  "text_offer": "Three toothy carts are pretending to be MY carts. Rekindle them before somebody buys one!",
+  "text_done": "My real carts! Both of them! Two carts, zero teeth.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a3_pony_route",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_stablemaster",
+  "type": "explore",
+  "target": "a3_z2",
+  "count": 1,
+  "name": "Shortcut Test",
+  "text_offer": "I found a new shortcut through the Glittering Gallery. Test it on Gravel?",
+  "text_done": "Four seconds faster! Gravel's thrilled. Other Gravel is jealous.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a3_lift_laugh",
+  "kind": "quest",
+  "act": "act3",
+  "giver": "npc_a3_innkeeper",
+  "type": "talk",
+  "target": "npc_a3_waypoint",
+  "count": 1,
+  "name": "Mind the Laugh",
+  "text_offer": "Tell Lou my laugh won't shake the lift any more. HA HA! …Tell him to hold on, actually.",
+  "text_done": "Lou says 'Going up, going down, going wobbly.' HA HA! Fair.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a4_bounty_dolls",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_board",
+  "type": "kill",
+  "target": "porcelain_doll",
+  "count": 25,
+  "name": "Bounty: Tidy the Nursery",
+  "text_offer": "BOUNTY: Porcelain dolls sneaking around the halls. Rekindle 25. Look behind you.",
+  "text_done": "Bounty done! The dolls are back on their shelves. Probably.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a4_bounty_jesters",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_board",
+  "type": "kill",
+  "target": "frost_jester",
+  "count": 15,
+  "name": "Bounty: Cold Jokes",
+  "text_offer": "BOUNTY: Frost Jesters telling freezing jokes. Rekindle 15. Don't laugh. Actually, laugh.",
+  "text_done": "Bounty done! The jokes are warm again. Still not very good.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a4_bounty_soot",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_board",
+  "type": "collect",
+  "target": "soot",
+  "count": 25,
+  "name": "Bounty: Stoke the Kettle",
+  "text_offer": "BOUNTY: The great kettle needs 25 Soot Dust. Nan Kettleby says thank you in advance.",
+  "text_done": "Bounty done! Kettle's roaring. Tea for everyone.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a4_courtiers",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_questgiver",
+  "type": "kill",
+  "target": "ice_courtier",
+  "count": 8,
+  "name": "Frozen Manners",
+  "text_offer": "Ice Courtiers keep bowing people into snowdrifts. Rekindle 8. It's on my list. Item four.",
+  "text_done": "Item four: done. Item five: have a sit-down. Please do item five.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a4_sleigh_run",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_stablemaster",
+  "type": "explore",
+  "target": "a4_z3",
+  "count": 1,
+  "name": "Sled to the Hall",
+  "text_offer": "Mister Fluffington wants to pull a sled to the Everlasting Toast. Wrap up warm! Then go!",
+  "text_done": "Twelve seconds! A castle record! Did you wrap up? Good.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a4_sapphires",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_jeweler",
+  "type": "collect",
+  "target": "sapphire",
+  "count": 3,
+  "name": "The Crown's Missing Sapphires",
+  "text_offer": "Three sapphires fell off the crown when it froze. One is ashamed. Bring me 3 Frost Sapphires? *giggle*",
+  "text_done": "The crown is complete! One is so pleased. *giggle giggle*",
+  "repeatable": false
+ },
+ {
+  "id": "q_a4_quillon_cold",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_runecarver",
+  "type": "talk",
+  "target": "npc_a4_innkeeper",
+  "count": 1,
+  "name": "Please, No Kettle",
+  "text_offer": "Ask Nan Kettleby to move the kettle ONE step to the left. Away from my ice.",
+  "text_done": "She moved it one step. To the right. I'm choosing to be at peace.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a4_crumbs",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_trader",
+  "type": "collect",
+  "target": "bone_meal",
+  "count": 10,
+  "name": "Crumbs for Crumbsworth",
+  "text_offer": "I need 10 Bone Meal. For baking. Mouse baking. It's a whole thing.",
+  "text_done": "Squeak! Bone-meal biscuits! Try one. …Don't try one.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a4_pip_letter",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_petkeeper",
+  "type": "talk",
+  "target": "npc_a4_stash",
+  "count": 1,
+  "name": "A Letter for Dad",
+  "text_offer": "Give my letter to Mister Ledger. He'll keep it safe until Dad can read it.",
+  "text_done": "Mister Ledger says it's filed under 'P' for 'Pip'. And 'P' for 'precious'.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a4_tinwhistle_drill",
+  "kind": "quest",
+  "act": "act4",
+  "giver": "npc_a4_smith",
+  "type": "kill",
+  "target": "snow_hound",
+  "count": 12,
+  "name": "Hound Drill",
+  "text_offer": "Snow Hounds keep chewing my boots. Rekindle 12! *salute*",
+  "text_done": "Boots saved! *salute* That was for you. *salute* That was for the boots.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a5_bounty_hush",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_board",
+  "type": "kill",
+  "target": "hushling",
+  "count": 30,
+  "name": "Bounty: Soft Sweep",
+  "text_offer": "BOUNTY: Hushlings drifting too close to the Landing. Rekindle 30. Go gently.",
+  "text_done": "Bounty done! The Landing hums a little louder.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a5_bounty_moths",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_board",
+  "type": "kill",
+  "target": "grey_moth",
+  "count": 20,
+  "name": "Bounty: Colour Back",
+  "text_offer": "BOUNTY: Grey Moths without their colours. Rekindle 20. The Choir will sing about you.",
+  "text_done": "Bounty done! The Choir sang. It was very small and very loud.",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a5_bounty_essence",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_board",
+  "type": "collect",
+  "target": "dusk_essence",
+  "count": 8,
+  "name": "Bounty: Cauldron Supper",
+  "text_offer": "BOUNTY: The Cauldron's peckish. 8 Dusk Essence. *burble* (that's from the Cauldron).",
+  "text_done": "Bounty done! *burble burble*",
+  "repeatable": true,
+  "bounty": true
+ },
+ {
+  "id": "q_a5_hollow_choir",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_storyteller",
+  "type": "kill",
+  "target": "hollow_choir",
+  "count": 4,
+  "name": "The Silent Singers",
+  "text_offer": "*sing* Four hollow choirs sing without sound… rekindle them, little light, bring their voices round!",
+  "text_done": "*sing* Four new voices! Our harmony is complete! Nearly!",
+  "repeatable": false
+ },
+ {
+  "id": "q_a5_nib_shinies",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_trader",
+  "type": "collect",
+  "target": "ember_heart",
+  "count": 2,
+  "name": "The Warmest Shiny",
+  "text_offer": "Ember Hearts! The warmest shinies! Bring 2? I'll pay! Legally!",
+  "text_done": "So warm! So shiny! I didn't even try to borrow them!",
+  "repeatable": false
+ },
+ {
+  "id": "q_a5_twinkle_home",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_jeweler",
+  "type": "explore",
+  "target": "a5_z1",
+  "count": 1,
+  "name": "Where I Fell",
+  "text_offer": "Find the spot where I fell, on the Upside-Down Stars? I want to know it's still there.",
+  "text_done": "It's there? With a little dent? My dent! Aw.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a5_vesper_blink",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_runecarver",
+  "type": "talk",
+  "target": "npc_a5_stash",
+  "count": 1,
+  "name": "Someone Who Doesn't Blink",
+  "text_offer": "Keeper Stillwater never hurries. Maybe he never blinks. Ask him to read a rune for me?",
+  "text_done": "He read it. Slowly. Without blinking. The rune is still glowing. I'm moved.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a5_moth_ride",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_stablemaster",
+  "type": "explore",
+  "target": "a5_z2",
+  "count": 1,
+  "name": "Dusty's Flight",
+  "text_offer": "Take Dusty over the Drift of Leftovers! Goggles on! Goggles on indoors, too!",
+  "text_done": "Dusty did a loop! Deliberately! Probably!",
+  "repeatable": false
+ },
+ {
+  "id": "q_a5_fireflies",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_petkeeper",
+  "type": "collect",
+  "target": "wickthread",
+  "count": 4,
+  "name": "Jars for Fireflies",
+  "text_offer": "I need 4 Wickthread to tie new firefly jars. The fireflies are very excited.",
+  "text_done": "New jars! They'll come and go as they like. That's the whole point.",
+  "repeatable": false
+ },
+ {
+  "id": "q_a5_stillwater_tea",
+  "kind": "quest",
+  "act": "act5",
+  "giver": "npc_a5_innkeeper",
+  "type": "talk",
+  "target": "npc_a5_smith",
+  "count": 1,
+  "name": "Tell Mae to Sit",
+  "text_offer": "Mae's been at her anvil since breakfast. Yesterday's breakfast. Tell her to sit.",
+  "text_done": "She sat! She's 'still learning' how. It's a start.",
+  "repeatable": false
  }
 ]
