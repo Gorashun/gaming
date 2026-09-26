@@ -176,3 +176,11 @@ python3 tools/sim_upgrade.py                      # gold/material sinks
 - Code notes: open items 2–6 above are implemented (see ARCHITECTURE/CONTENT_SCHEMA); implemented passive hooks:
   crit_gain_resource, low_life_buff, bonus_vs_status, chain_bonus_jumps, dodge_next_crit, aoe_repeat_chance,
   quake_stun_bonus, minion_death_burst, block_casts, holy_area_leaves_zone, zone_expire_burst.
+
+### Changelog 2026-09-26 — owner loot retune ("higher rarities drop too often in the first map")
+- Base rarity weights: common 74, magic 23, rare 2.4, epic 0.4, legendary 0.1, mythic 0.015 (lvl 60+).
+- Epic needs monster level ≥ 4, Legendary ≥ 6 (first maps drop Common/Magic/occasional Rare).
+- Rare pity removed; Legendary pity 45 → 90 min of active play; scripted first Legendary 11 → 15 min.
+- Better loot concentrates on harder enemies: champion ×2 (rare/epic/leg), rare elite ×3, boss ×4/×5/×6 (+mythic ×4), boss drops Magic+.
+- Normal monster item chance 0.12 → 0.10.
+- Sim (Tier 1, lvl 8): rare 12.9/h, epic 2.6/h, legendary 1.2/h (incl. pity), unique 0.39/h. QA §5.3 bands updated.

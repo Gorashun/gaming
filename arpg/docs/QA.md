@@ -79,9 +79,9 @@ Hardcore uses the same numbers; additionally **0** hardcore deaths attributed to
 | All items | 2.5–4.0 (3.0–4.5) | 150–270 |
 | Common | 1.4–2.2 | — |
 | Magic | 0.75–1.2 | — |
-| Rare | 0.24–0.38 | 14–23 |
-| Epic | 0.07–0.11 (↑ with Tier 2 bonus) | 4–7 |
-| Legendary | 0.04–0.07 (×2 on Tier 2) | 2.4–4.2 |
+| Rare | 0.15–0.26 (owner retune 2026-09-26) | 9–16 |
+| Epic | 0.03–0.06 (↑ with Tier 2 bonus; min monster lvl 4) | 2–3.6 |
+| Legendary | 0.012–0.03 incl. pity (×2 on Tier 2; min monster lvl 6) | 0.7–1.8 |
 | Unique (boss) | — | ~1 per 40 boss kills (sim: 30–50) |
 | Mythic | 0 | 0 |
 

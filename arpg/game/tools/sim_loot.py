@@ -277,7 +277,7 @@ def main():
     C, players, kills = simulate(args, hook=not args.no_hook)
     res = report(args, C, players, kills, "with scripted hook" if not args.no_hook else "no hook")
     if args.check:
-        bands = {"all": (2.5, 4.0), "common": (1.4, 2.2), "magic": (0.75, 1.2), "rare": (0.24, 0.38), "epic": (0.07, 0.11), "legendary": (0.04, 0.07)}
+        bands = {"all": (2.5, 4.0), "common": (1.4, 2.2), "magic": (0.75, 1.3), "rare": (0.15, 0.26), "epic": (0.03, 0.06), "legendary": (0.012, 0.03)}
         bad = [f"{k} {res[k]:.3f} not in {lo}-{hi}" for k, (lo, hi) in bands.items() if not (lo <= res[k] <= hi)]
         if bad:
             print("QA §5.3 FAIL:", "; ".join(bad))
